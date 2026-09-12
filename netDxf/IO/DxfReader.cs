@@ -2893,6 +2893,7 @@ namespace netDxf.IO
             Vector3 origin = Vector3.Zero;
             Vector3 xDir = Vector3.UnitX;
             Vector3 yDir = Vector3.UnitY;
+            double elevation = 0.0;
             List<XData> xData = new List<XData>();
 
             this.chunk.Next();
@@ -2942,7 +2943,7 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 146:
-                        //elevation = this.chunk.ReadDouble();
+                        elevation = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 1001:
@@ -2963,7 +2964,7 @@ namespace netDxf.IO
                 return null;
             }
 
-            UCS ucs = new UCS(name, origin, xDir, yDir, false);
+            UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation };
             if (xData.Count > 0)
             {
                 this.tableEntryXData.Add(ucs, xData);

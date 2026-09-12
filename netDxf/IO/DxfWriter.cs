@@ -1857,6 +1857,7 @@ namespace netDxf.IO
             this.chunk.Write(32, ucs.YAxis.Z);
 
             this.chunk.Write(79, (short) 0);
+            this.chunk.Write(146, ucs.Elevation);
 
             this.WriteXData(ucs.XData);
         }

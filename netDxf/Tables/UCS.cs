@@ -41,6 +41,7 @@ namespace netDxf.Tables
         private Vector3 xAxis;
         private Vector3 yAxis;
         private Vector3 zAxis;
+        private double elevation;
 
         #endregion
 
@@ -111,6 +112,27 @@ namespace netDxf.Tables
         {
             get { return this.origin; }
             set { this.origin = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the elevation associated with this user coordinate system.
+        /// </summary>
+        /// <remarks>
+        /// This is the UCS table record elevation (DXF group code 146), in drawing units.
+        /// It is independent of the origin and does not modify coordinate transformations.
+        /// The default value is zero.
+        /// </remarks>
+        public double Elevation
+        {
+            get { return this.elevation; }
+            set
+            {
+                if (double.IsNaN(value) || double.IsInfinity(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "The UCS elevation must be finite.");
+                }
+                this.elevation = value;
+            }
         }
 
         /// <summary>
@@ -357,6 +379,7 @@ namespace netDxf.Tables
             UCS copy = new UCS(newName)
             {
                 Origin = this.origin,
+                Elevation = this.elevation,
                 xAxis = this.xAxis,
                 yAxis = this.yAxis,
                 zAxis = this.zAxis,
