@@ -47,7 +47,7 @@ namespace netDxf.IO
     /// <summary>
     /// Low level DXF writer.
     /// </summary>
-    internal sealed class DxfWriter
+    internal sealed partial class DxfWriter
     {
         #region private fields
 
@@ -365,6 +365,10 @@ namespace netDxf.IO
 
             //view
             this.BeginTable(this.doc.Views.CodeName, this.doc.Views.Handle, (short) this.doc.Views.Count, this.doc.Views.XData);
+            foreach (View view in this.doc.Views.Items)
+            {
+                this.WriteView(view);
+            }
             this.EndTable();
 
             //UCS

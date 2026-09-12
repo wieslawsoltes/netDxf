@@ -47,7 +47,7 @@ namespace netDxf.IO
     /// <summary>
     /// Low level DXF reader
     /// </summary>
-    internal sealed class DxfReader
+    internal sealed partial class DxfReader
     {
         #region private fields
 
@@ -1425,8 +1425,12 @@ namespace netDxf.IO
                         }
                         break;
                     case DxfObjectCode.ViewTable:
-                        this.ReadView();
-                        //this.doc.Views.Add((View) entry);
+                        View view = this.ReadView();
+                        if (view != null)
+                        {
+                            view.Handle = handle;
+                            this.doc.Views.Add(view, false);
+                        }
                         break;
                     case DxfObjectCode.VportTable:
                         if (active == null)
@@ -2970,21 +2974,6 @@ namespace netDxf.IO
                 this.tableEntryXData.Add(ucs, xData);
             }
             return ucs;
-        }
-
-        private View ReadView()
-        {
-            // placeholder method for view table objects
-            Debug.Assert(this.chunk.ReadString() == SubclassMarker.View);
-
-            this.chunk.Next();
-
-            while (this.chunk.Code != 0)
-            {
-                this.chunk.Next();
-            }
-
-            return null;
         }
 
         private VPort ReadVPort()

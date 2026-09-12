@@ -8,5 +8,6 @@ internal static partial class Program
         RegisterBinaryChunkTests();
         RegisterXDataCloneTests();
         RegisterUcsElevationTests();
+        RegisterNamedViewTests();
     }
 }
