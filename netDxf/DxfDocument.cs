@@ -480,10 +480,10 @@ namespace netDxf
         /// <summary>
         /// Gets the <see cref="Views">views</see> collection.
         /// </summary>
-        internal Views Views
+        public Views Views
         {
             get { return this.views; }
-            set { this.views = value; }
+            internal set { this.views = value; }
         }
 
         /// <summary>
