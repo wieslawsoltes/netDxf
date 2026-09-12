@@ -6,5 +6,6 @@ internal static partial class Program
     {
         RegisterBinarySentinelTests();
         RegisterBinaryChunkTests();
+        RegisterXDataCloneTests();
     }
 }
