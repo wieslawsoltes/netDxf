@@ -46,7 +46,7 @@ namespace netDxf.IO
 
         public TextCodeValueReader(TextReader reader)
         {
-            this.reader = reader;
+            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
             this.code = 0;
             this.value = null;
             this.currentPosition = 0;
@@ -80,19 +80,27 @@ namespace netDxf.IO
             string readCode = this.reader.ReadLine();
             if (readCode == null)
             {
-                this.code = 0;
-                this.value = DxfObjectCode.EndOfFile;
+                // Physical EOF is not a synthetic DXF 0/EOF record. Fabricating
+                // one can accept truncated documents or keep section readers looping.
+                throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                    "Missing DXF group code at line {0}.", this.currentPosition + 1));
             }
-            else
+
+            this.currentPosition += 1;
+            if (!short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
             {
-                this.currentPosition += 1;
-                if (!short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
-                {
-                    throw new Exception(string.Format("Code {0} not valid at line {1}", this.code, this.currentPosition));
-                }
-                this.value = this.ReadValue(this.reader.ReadLine());
-                this.currentPosition += 1;
+                throw new FormatException(string.Format(CultureInfo.InvariantCulture,
+                    "Invalid DXF group code at line {0}.", this.currentPosition));
             }
+
+            string valueString = this.reader.ReadLine();
+            if (valueString == null)
+            {
+                throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                    "Missing value for group code {0} at line {1}.", this.code, this.currentPosition + 1));
+            }
+            this.value = this.ReadValue(valueString);
+            this.currentPosition += 1;
         }
 
         public byte ReadByte()
