@@ -20,7 +20,6 @@ jobs:
         run: |
           set -euo pipefail
           export AUDIT_DOTNET_ROOT="$(dirname "$(readlink -f "$(command -v dotnet)")")"
-          export AUDIT_SDK_VERSION="$(dotnet --version)"
           mkdir -p artifacts
           python3 - <<'PY'
           import hashlib, json, os, pathlib, shutil
@@ -35,7 +34,7 @@ jobs:
           for relative in ['host/fxr', 'shared/Microsoft.NETCore.App']:
               version = latest(root / relative)
               shutil.copytree(version, kit / relative / version.name)
-          compiler = root / 'sdk' / os.environ['AUDIT_SDK_VERSION'] / 'Roslyn' / 'bincore'
+          compiler = latest(root / 'sdk') / 'Roslyn' / 'bincore'
           shutil.copytree(compiler, kit / 'compiler')
           references = latest(root / 'packs' / 'Microsoft.NETCore.App.Ref') / 'ref' / 'net8.0'
           (kit / 'references').mkdir()
