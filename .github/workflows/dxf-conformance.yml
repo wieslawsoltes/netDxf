@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
@@ -32,6 +34,8 @@ jobs:
         if: runner.os == 'Linux' && matrix.configuration == 'Debug'
         run: |
           python3 tools/dxf_audit_inventory.py > artifacts/inventory.json
+          dotnet run --project tools/netDxf.FieldAudit -- --self-test
+          dotnet run --project tools/netDxf.FieldAudit -- . artifacts/field-audit
           git archive --format=tar.gz --output=artifacts/source.tar.gz HEAD
       - name: Retain fixtures, results, and source evidence
         if: always()
