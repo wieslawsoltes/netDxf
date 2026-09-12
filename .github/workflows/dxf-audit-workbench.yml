@@ -1,0 +1,56 @@
+name: Temporary DXF audit workbench
+on:
+  push:
+    branches: [audit/workbench-20260912]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Export runtime, compiler and reference assemblies only
+        shell: bash
+        run: |
+          set -euo pipefail
+          export AUDIT_DOTNET_ROOT="$(dirname "$(readlink -f "$(command -v dotnet)")")"
+          export AUDIT_SDK_VERSION="$(dotnet --version)"
+          mkdir -p artifacts
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, shutil
+          root = pathlib.Path(os.environ['AUDIT_DOTNET_ROOT'])
+          kit = pathlib.Path('artifacts/workbench')
+          kit.mkdir(parents=True)
+          def latest(directory):
+              return max((p for p in directory.iterdir() if p.name.startswith('8.0.')), key=lambda p: tuple(map(int, p.name.split('.'))))
+          shutil.copy2(root / 'dotnet', kit / 'dotnet')
+          for name in ['LICENSE.txt', 'ThirdPartyNotices.txt']:
+              if (root / name).exists(): shutil.copy2(root / name, kit / name)
+          for relative in ['host/fxr', 'shared/Microsoft.NETCore.App']:
+              version = latest(root / relative)
+              shutil.copytree(version, kit / relative / version.name)
+          compiler = root / 'sdk' / os.environ['AUDIT_SDK_VERSION'] / 'Roslyn' / 'bincore'
+          shutil.copytree(compiler, kit / 'compiler')
+          references = latest(root / 'packs' / 'Microsoft.NETCore.App.Ref') / 'ref' / 'net8.0'
+          (kit / 'references').mkdir()
+          for source in references.glob('*.dll'):
+              shutil.copy2(source, kit / 'references' / source.name)
+          manifest = {str(p.relative_to(kit)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(kit.rglob('*')) if p.is_file()}
+          (kit / 'SHA256.json').write_text(json.dumps(manifest, indent=2))
+          PY
+          tar -C artifacts -czf artifacts/workbench.tar.gz workbench
+          rm -rf artifacts/workbench
+          git archive --format=tar.gz HEAD > artifacts/source.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netDxf-offline-compiler-workbench
+          path: artifacts/*.tar.gz
+          compression-level: 0
+          retention-days: 1
+# Branch-only audit tooling. Never merge this temporary workflow into netstandard.
