@@ -9,5 +9,6 @@ internal static partial class Program
         RegisterXDataCloneTests();
         RegisterUcsElevationTests();
         RegisterNamedViewTests();
+        RegisterTextFramingTests();
     }
 }
