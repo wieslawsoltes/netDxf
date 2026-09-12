@@ -48,18 +48,20 @@ namespace netDxf.IO
 
         public BinaryCodeValueReader(BinaryReader reader, Encoding encoding)
         {
-            this.reader = reader;
-            this.encoding = encoding;
-            byte[] sentinel = this.reader.ReadBytes(22);
-            StringBuilder sb = new StringBuilder(18);
-            for (int i = 0; i < 18; i++)
+            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
+            this.encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+            const string signature = "AutoCAD Binary DXF\r\n\u001a\0";
+            byte[] sentinel = this.reader.ReadBytes(signature.Length);
+            if (sentinel.Length != signature.Length)
             {
-                sb.Append((char) sentinel[i]);
+                throw new EndOfStreamException("The binary DXF sentinel is incomplete; 22 bytes are required.");
             }
-
-            if (sb.ToString() != "AutoCAD Binary DXF")
+            for (int i = 0; i < signature.Length; i++)
             {
-                throw new ArgumentException("Not a valid binary DXF.");
+                if (sentinel[i] != (byte)signature[i])
+                {
+                    throw new InvalidDataException("Not a valid binary DXF sentinel.");
+                }
             }
 
             this.code = 0;
