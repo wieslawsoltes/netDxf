@@ -14,5 +14,6 @@ internal static partial class Program
         RegisterHeaderProbeTests();
         RegisterStrictTextValueTests();
         RegisterStrictBinaryValueTests();
+        RegisterUcsOrthographicTests();
     }
 }
