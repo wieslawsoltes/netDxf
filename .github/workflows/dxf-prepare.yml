@@ -1,0 +1,52 @@
+name: Prepare isolated DXF source change
+on:
+  push:
+    branches: [codex/dxf-binary-sentinel]
+    paths: [.github/workflows/dxf-prepare.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/dxf-binary-sentinel'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply checked source replacement and remove preparation workflow
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('netDxf/IO/BinaryCodeValueReader.cs')
+          source = path.read_text()
+          start = source.index('            this.reader = reader;')
+          end = source.index('            this.code = 0;', start)
+          expected = source[start:end]
+          assert 'StringBuilder sb = new StringBuilder(18);' in expected
+          assert 'ReadBytes(22)' in expected
+          replacement = '''            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
+                      this.encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+                      const string signature = "AutoCAD Binary DXF\\r\\n\\u001a\\0";
+                      byte[] sentinel = this.reader.ReadBytes(signature.Length);
+                      if (sentinel.Length != signature.Length)
+                      {
+                          throw new EndOfStreamException("The binary DXF sentinel is incomplete; 22 bytes are required.");
+                      }
+                      for (int i = 0; i < signature.Length; i++)
+                      {
+                          if (sentinel[i] != (byte)signature[i])
+                          {
+                              throw new InvalidDataException("Not a valid binary DXF sentinel.");
+                          }
+                      }
+          
+          '''
+          # The YAML block contributes no indentation; normalize the literal's C# indentation.
+          lines = replacement.splitlines(True)
+          replacement = lines[0] + ''.join(line[10:] if line.startswith('          ') else line for line in lines[1:])
+          source = source[:start] + replacement + source[end:]
+          path.write_text(source)
+          Path('.github/workflows/dxf-prepare.yml').unlink()
+          PY
+          git add netDxf/IO/BinaryCodeValueReader.cs .github/workflows/dxf-prepare.yml
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'fix: validate the complete binary DXF sentinel'
+          git push origin HEAD:codex/dxf-binary-sentinel
