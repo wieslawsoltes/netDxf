@@ -1,0 +1,63 @@
+name: Prepare reviewed UCS orthographic origins
+on:
+  push:
+    branches: [feature/dxf-ucs-orthographic-origins]
+    paths: [.github/workflows/prepare-ucs-orthographic.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-ucs-orthographic-origins'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/dxf-ucs-orthographic-origins
+      - name: Apply only the reviewed source payload and verify every final file
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, io, os, subprocess, zipfile
+          archive = Path('.github/patches/ucs-orthographic-source.zip')
+          data = bytearray(archive.read_bytes())
+          # Correct the single known binary-transfer typo before checking the complete archive.
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == '5a9545f42c7060afb3a4f9b711d6b8ae2ffddfa4'
+          assert data[421] == 61
+          data[421] = 63
+          assert hashlib.sha256(data).hexdigest() == '432c51bcce0db37cd2fa572c6210a02c07156f2888c6b02db0675d9e720a0286'
+          new_files = ['netDxf/Tables/UcsOrthographicType.cs', 'tests/netDxf.Conformance/UcsOrthographicTests.cs', 'doc/dxf-conformance/ucs-orthographic-origins.md']
+          with zipfile.ZipFile(io.BytesIO(data)) as source:
+              assert set(source.namelist()) == set(new_files + ['ucs-ortho.patch'])
+              for name in new_files:
+                  path = Path(name)
+                  assert not path.exists()
+                  path.parent.mkdir(parents=True, exist_ok=True)
+                  path.write_bytes(source.read(name))
+              patch = Path(os.environ['RUNNER_TEMP']) / 'ucs-ortho.patch'
+              patch.write_bytes(source.read('ucs-ortho.patch'))
+          ucs = Path('netDxf/Tables/UCS.cs')
+          ucs.write_bytes(ucs.read_bytes().replace(b'\r\n', b'\n'))
+          subprocess.run(['git', 'apply', '--check', str(patch)], check=True)
+          subprocess.run(['git', 'apply', str(patch)], check=True)
+          ucs.write_bytes(ucs.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
+          expected = {
+              'netDxf/Tables/UCS.cs': 'f01eccafdff5fabb058827f9dd82d818803fe88bf85b11172605a41dcbfeaacc',
+              'netDxf/Tables/UcsOrthographicType.cs': '47ab7f58a612880f06aeac540e9ade13531a7d00da98ac641d50f443cf4b1f3f',
+              'netDxf/IO/DxfReader.cs': '74296b7d8cb0f12630a4e0aea35d8c1f0386212d68fd5a09386691813c8b9a59',
+              'netDxf/IO/DxfWriter.cs': 'cdf859648c6d5e4c7654714220bc11a2e3f142577cb81b2442cf80618b40e229',
+              'tests/netDxf.Conformance/RegressionTests.cs': '85a602674e6f37335277b9eb510a625f996ba9110133e4ba8b8b3a4b44d3d706',
+              'tests/netDxf.Conformance/UcsOrthographicTests.cs': 'd3b5a72acae34ec145eca8a6860f233e61a63c44aadd81bb9b07484b14bd512f',
+              'doc/dxf-conformance/ucs-orthographic-origins.md': '0d17738c7f93294812e87cf9ee29fee3ccac8278149458694a378019577735f3'
+          }
+          for name, digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          archive.unlink()
+          Path('.github/workflows/prepare-ucs-orthographic.yml').unlink()
+          subprocess.run(['git', 'add', *expected, '.github/patches/ucs-orthographic-source.zip', '.github/workflows/prepare-ucs-orthographic.yml'], check=True)
+      - name: Commit only the feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: preserve and edit UCS orthographic origin overrides'
+          git push origin HEAD:feature/dxf-ucs-orthographic-origins
