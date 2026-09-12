@@ -12,5 +12,6 @@ internal static partial class Program
         RegisterTextFramingTests();
         RegisterMinimalDocumentTests();
         RegisterHeaderProbeTests();
+        RegisterStrictTextValueTests();
     }
 }

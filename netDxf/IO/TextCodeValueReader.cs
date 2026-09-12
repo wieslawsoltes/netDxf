@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
@@ -159,6 +158,10 @@ namespace netDxf.IO
 
         private object ReadValue(string valueString)
         {
+            if (this.code == 5 || this.code == 1005) // object or extended-data handle
+            {
+                return this.ReadHex(valueString);
+            }
             if (this.code >= 0 && this.code <= 9) // string
             {
                 return this.ReadString(valueString);
@@ -315,7 +318,7 @@ namespace netDxf.IO
             {
                 return this.ReadBytes(valueString);
             }
-            if (this.code >= 1005 && this.code <= 1009) // string (same limits as indicated with 0-9 code range)
+            if (this.code >= 1006 && this.code <= 1009) // string (same limits as indicated with 0-9 code range)
             {
                 return this.ReadString(valueString);
             }
@@ -330,18 +333,6 @@ namespace netDxf.IO
 
             throw new Exception(string.Format("Code \"{0}\" not valid at line {1}", this.code, this.currentPosition));
         }
-
-        //private byte ReadByte(string valueString)
-        //{
-        //    if (byte.TryParse(valueString, NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out byte result))
-        //    {
-        //        return result;
-        //    }
-
-        //    Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-        //    return 0;
-        //}
 
         private byte[] ReadBytes(string valueString)
         {
@@ -393,62 +384,53 @@ namespace netDxf.IO
 
         private short ReadShort(string valueString)
         {
-            if (short.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out short result))
+            if (valueString.IndexOf('\0') < 0 &&
+                short.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out short result))
             {
                 return result;
             }
-
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-            return 0;
+            throw this.InvalidValue("16-bit integer");
         }
 
         private int ReadInt(string valueString)
         {
-            if (int.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+            if (valueString.IndexOf('\0') < 0 &&
+                int.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
             {
                 return result;
             }
-
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-            return 0;
+            throw this.InvalidValue("32-bit integer");
         }
 
         private long ReadLong(string valueString)
         {
-            if (long.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out long result))
+            if (valueString.IndexOf('\0') < 0 &&
+                long.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out long result))
             {
                 return result;
             }
-
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-            return 0;
+            throw this.InvalidValue("64-bit integer");
         }
 
         private bool ReadBool(string valueString)
         {
-            if (byte.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte result))
+            if (valueString.IndexOf('\0') < 0 &&
+                byte.TryParse(valueString, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte result) && result <= 1)
             {
-                return result > 0;
+                return result == 1;
             }
-
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-            return false;
+            throw this.InvalidValue("boolean (0 or 1)");
         }
 
         private double ReadDouble(string valueString)
         {
-            if (double.TryParse(valueString, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
+            if (valueString.IndexOf('\0') < 0 &&
+                double.TryParse(valueString, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) &&
+                !double.IsNaN(result) && !double.IsInfinity(result))
             {
                 return result;
             }
-
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-            return 0.0;
+            throw this.InvalidValue("finite double-precision number");
         }
 
         private string ReadString(string valueString)
@@ -458,14 +440,35 @@ namespace netDxf.IO
 
         private string ReadHex(string valueString)
         {
-            if (long.TryParse(valueString, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long result))
+            // A handle is an unsigned value with at most sixteen ASCII hexadecimal
+            // digits. Do not let integer parsing accept a sign, prefix or trailing NUL.
+            int start = 0;
+            int end = valueString.Length;
+            while (start < end && char.IsWhiteSpace(valueString[start])) start++;
+            while (end > start && char.IsWhiteSpace(valueString[end - 1])) end--;
+            if (end == start || end - start > 16)
             {
-                return result.ToString("X");
+                throw this.InvalidValue("hexadecimal handle (1 to 16 digits)");
             }
 
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
+            ulong result = 0;
+            for (int i = start; i < end; i++)
+            {
+                int digit = HexDigit(valueString[i]);
+                if (digit < 0)
+                {
+                    throw this.InvalidValue("hexadecimal handle (1 to 16 digits)");
+                }
+                result = (result << 4) | (uint) digit;
+            }
+            return result.ToString("X", CultureInfo.InvariantCulture);
+        }
 
-            return string.Empty;
+        private FormatException InvalidValue(string kind)
+        {
+            // Avoid echoing arbitrary, possibly very large input into diagnostics.
+            return new FormatException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid {0} value for group code {1} at line {2}.", kind, this.code, this.currentPosition + 1));
         }
 
         #endregion
