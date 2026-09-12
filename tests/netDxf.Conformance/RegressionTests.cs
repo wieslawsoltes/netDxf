@@ -11,5 +11,6 @@ internal static partial class Program
         RegisterNamedViewTests();
         RegisterTextFramingTests();
         RegisterMinimalDocumentTests();
+        RegisterHeaderProbeTests();
     }
 }
