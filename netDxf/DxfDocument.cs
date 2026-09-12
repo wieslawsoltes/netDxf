@@ -740,7 +740,7 @@ namespace netDxf
         /// Checks the AutoCAD DXF file database version.
         /// </summary>
         /// <param name="file">File name.</param>
-        /// <returns>String that represents the DXF file version.</returns>
+        /// <returns>The declared DXF database version, or Unknown when it cannot be determined.</returns>
         public static DxfVersion CheckDxfFileVersion(string file)
         {
             return CheckDxfFileVersion(file, out bool _);
@@ -751,7 +751,7 @@ namespace netDxf
         /// </summary>
         /// <param name="file">File name.</param>
         /// <param name="isBinary">Returns true if the DXF is a binary file.</param>
-        /// <returns>String that represents the DXF file version.</returns>
+        /// <returns>The declared DXF database version, or Unknown when it cannot be determined.</returns>
         public static DxfVersion CheckDxfFileVersion(string file, out bool isBinary)
         {
             Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -764,8 +764,12 @@ namespace netDxf
         /// Checks the AutoCAD DXF file database version.
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <returns>String that represents the DXF file version.</returns>
-        /// <remarks>The caller will be responsible of closing the stream.</remarks>
+        /// <returns>The declared DXF database version, or Unknown when it cannot be determined.</returns>
+        /// <remarks>
+        /// Requires readable, seekable input. The caller owns the stream.
+        /// The entry position is restored after successful probing or a parsing failure.
+        /// This reads the declared version; it does not validate the remainder of the document.
+        /// </remarks>
         public static DxfVersion CheckDxfFileVersion(Stream stream)
         {
             return CheckDxfFileVersion(stream, out bool _);
@@ -776,8 +780,12 @@ namespace netDxf
         /// </summary>
         /// <param name="stream">Stream</param>
         /// <param name="isBinary">Returns true if the DXF is a binary file.</param>
-        /// <returns>String that represents the DXF file version.</returns>
-        /// <remarks>The caller will be responsible of closing the stream.</remarks>
+        /// <returns>The declared DXF database version, or Unknown when it cannot be determined.</returns>
+        /// <remarks>
+        /// Requires readable, seekable input. The caller owns the stream.
+        /// The entry position is restored after successful probing or a parsing failure.
+        /// This reads the declared version; it does not validate the remainder of the document.
+        /// </remarks>
         public static DxfVersion CheckDxfFileVersion(Stream stream, out bool isBinary)
         {
             string value;
