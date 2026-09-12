@@ -109,7 +109,9 @@ namespace netDxf
             XData xdata = new XData((ApplicationRegistry) this.appReg.Clone());
             foreach (XDataRecord record in this.xData)
             {
-                xdata.XDataRecord.Add(new XDataRecord(record.Code, record.Value));
+                // Binary chunks are mutable; a clone must not share their storage.
+                object value = record.Value is byte[] bytes ? bytes.Clone() : record.Value;
+                xdata.XDataRecord.Add(new XDataRecord(record.Code, value));
             }
 
             return xdata;
