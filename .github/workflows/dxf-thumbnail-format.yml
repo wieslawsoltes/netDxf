@@ -1,0 +1,50 @@
+name: Align thumbnail API formatting
+on:
+  push:
+    branches: [codex/dxf-thumbnail-preservation]
+permissions:
+  contents: write
+jobs:
+  format:
+    if: github.ref == 'refs/heads/codex/dxf-thumbnail-preservation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/dxf-thumbnail-preservation
+      - shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('netDxf/DxfDocument.cs')
+          s = p.read_bytes()
+          start = s.index(b'        public byte[] ThumbnailImage\r\n')
+          end = s.index(b'\r\n        /// <summary>', start)
+          lines = [
+              '        public byte[] ThumbnailImage',
+              '        {',
+              '            get { return (byte[]) this.thumbnailImage.Clone(); }',
+              '            set',
+              '            {',
+              '                if (value == null)',
+              '                {',
+              '                    throw new ArgumentNullException(nameof(value));',
+              '                }',
+              '                this.thumbnailImage = (byte[]) value.Clone();',
+              '            }',
+              '        }',
+              ''
+          ]
+          replacement = '\r\n'.join(lines).encode()
+          assert s[start:end] != replacement
+          p.write_bytes(s[:start] + replacement + s[end:])
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          git rm .github/workflows/dxf-thumbnail-format.yml
+          git add netDxf/DxfDocument.cs
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'style: retain existing indentation in thumbnail property'
+          git push origin HEAD:refs/heads/codex/dxf-thumbnail-preservation
