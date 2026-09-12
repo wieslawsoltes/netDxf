@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -41,6 +40,7 @@ namespace netDxf.IO
         private readonly Encoding encoding;
         private short code;
         private object value;
+        private long valuePosition;
 
         #endregion
 
@@ -94,18 +94,23 @@ namespace netDxf.IO
         public void Next()
         {
             this.code = this.reader.ReadInt16();
+            this.valuePosition = this.reader.BaseStream.CanSeek ? this.reader.BaseStream.Position : -1;
 
-            if (this.code >= 0 && this.code <= 9) // string
+            if (this.code == 5 || this.code == 1005) // object or extended-data handle
+            {
+                this.value = this.ReadHex(this.NullTerminatedString());
+            }
+            else if (this.code >= 0 && this.code <= 9) // string
             {
                 this.value = this.NullTerminatedString();
             }
             else if (this.code >= 10 && this.code <= 39) // double precision 3D point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 40 && this.code <= 59) // double precision floating point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 60 && this.code <= 79) // 16-bit integer value
             {
@@ -133,19 +138,19 @@ namespace netDxf.IO
             }
             else if (this.code >= 110 && this.code <= 119) // double precision floating point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 120 && this.code <= 129) // double precision floating point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 130 && this.code <= 139) // double precision floating point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 140 && this.code <= 149) // double precision scalar floating-point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 160 && this.code <= 169) // 64-bit integer value
             {
@@ -157,7 +162,7 @@ namespace netDxf.IO
             }
             else if (this.code >= 210 && this.code <= 239) // double precision scalar floating-point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 270 && this.code <= 279) // 16-bit integer value
             {
@@ -169,7 +174,7 @@ namespace netDxf.IO
             }
             else if (this.code >= 290 && this.code <= 299) // byte (boolean flag value)
             {
-                this.value = this.reader.ReadByte() > 0;
+                this.value = this.ReadBooleanValue();
             }
             else if (this.code >= 300 && this.code <= 309) // arbitrary text string
             {
@@ -225,7 +230,7 @@ namespace netDxf.IO
             }
             else if (this.code >= 460 && this.code <= 469) // double-precision floating-point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 470 && this.code <= 479) // string
             {
@@ -241,7 +246,7 @@ namespace netDxf.IO
             }
             else if (this.code >= 1010 && this.code <= 1059) // double-precision floating-point value
             {
-                this.value = this.reader.ReadDouble();
+                this.value = this.ReadFiniteDouble();
             }
             else if (this.code >= 1000 && this.code <= 1003) // string (same limits as indicated with 0-9 code range)
             {
@@ -251,7 +256,7 @@ namespace netDxf.IO
             {
                 this.value = this.ReadBinaryData();
             }
-            else if (this.code >= 1005 && this.code <= 1009) // string (same limits as indicated with 0-9 code range)
+            else if (this.code >= 1006 && this.code <= 1009) // string (same limits as indicated with 0-9 code range)
             {
                 this.value = this.NullTerminatedString();
             }
@@ -348,17 +353,56 @@ namespace netDxf.IO
             return this.encoding.GetString(bytes.ToArray(), 0, bytes.Count);
         }
 
+        private double ReadFiniteDouble()
+        {
+            double result = this.reader.ReadDouble();
+            if (double.IsNaN(result) || double.IsInfinity(result))
+            {
+                throw this.InvalidValue("finite double-precision number");
+            }
+            return result;
+        }
+
+        private bool ReadBooleanValue()
+        {
+            byte result = this.reader.ReadByte();
+            if (result > 1)
+            {
+                throw this.InvalidValue("boolean (0 or 1)");
+            }
+            return result == 1;
+        }
+
         private string ReadHex(string hex)
         {
-            if (long.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long result))
+            int start = 0;
+            int end = hex.Length;
+            while (start < end && char.IsWhiteSpace(hex[start])) start++;
+            while (end > start && char.IsWhiteSpace(hex[end - 1])) end--;
+            if (end == start || end - start > 16)
             {
-                return result.ToString("X");
+                throw this.InvalidValue("hexadecimal handle (1 to 16 digits)");
             }
 
-            Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", hex, this.CurrentPosition));
+            ulong result = 0;
+            for (int i = start; i < end; i++)
+            {
+                char c = hex[i];
+                int digit;
+                if (c >= '0' && c <= '9') digit = c - '0';
+                else if (c >= 'A' && c <= 'F') digit = c - 'A' + 10;
+                else if (c >= 'a' && c <= 'f') digit = c - 'a' + 10;
+                else throw this.InvalidValue("hexadecimal handle (1 to 16 digits)");
+                result = (result << 4) | (uint) digit;
+            }
+            return result.ToString("X", CultureInfo.InvariantCulture);
+        }
 
-            return String.Empty;
-
+        private InvalidDataException InvalidValue(string kind)
+        {
+            string position = this.valuePosition < 0 ? "unknown" : this.valuePosition.ToString(CultureInfo.InvariantCulture);
+            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid {0} value for group code {1} at byte address {2}.", kind, this.code, position));
         }
 
         #endregion       
