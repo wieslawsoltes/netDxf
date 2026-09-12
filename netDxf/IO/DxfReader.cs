@@ -283,12 +283,15 @@ namespace netDxf.IO
                             this.ReadTables();
                             break;
                         case DxfObjectCode.BlocksSection:
+                            this.EnsureTableCollections();
                             this.ReadBlocks();
                             break;
                         case DxfObjectCode.EntitiesSection:
+                            this.EnsureTableCollections();
                             this.ReadEntities();
                             break;
                         case DxfObjectCode.ObjectsSection:
+                            this.EnsureTableCollections();
                             this.ReadObjects();
                             break;
                         case DxfObjectCode.ThumbnailImageSection:
@@ -303,6 +306,15 @@ namespace netDxf.IO
                     }
                 }
                 this.chunk.Next();
+            }
+
+            // Optional sections may be absent in minimal or entity-only exports.
+            // Establish the model-space graph before resolving deferred entities.
+            this.EnsureTableCollections();
+            if (this.doc.Layouts == null)
+            {
+                this.EnsureObjectCollections();
+                this.RelinkOrphanLayouts();
             }
 
             // perform all necessary post processes
@@ -799,47 +811,7 @@ namespace netDxf.IO
                 this.ReadTable();
             }
 
-            // check if all table collections has been created
-            if (this.doc.ApplicationRegistries == null)
-            {
-                this.doc.ApplicationRegistries = new ApplicationRegistries(this.doc);
-            }
-            if (this.doc.Blocks == null)
-            {
-                this.doc.Blocks = new BlockRecords(this.doc);
-            }
-            if (this.doc.DimensionStyles == null)
-            {
-                this.doc.DimensionStyles = new DimensionStyles(this.doc);
-            }
-            if (this.doc.Layers == null)
-            {
-                this.doc.Layers = new Layers(this.doc);
-            }
-            if (this.doc.Linetypes == null)
-            {
-                this.doc.Linetypes = new Linetypes(this.doc);
-            }
-            if (this.doc.TextStyles == null)
-            {
-                this.doc.TextStyles = new TextStyles(this.doc);
-            }
-            if (this.doc.ShapeStyles == null)
-            {
-                this.doc.ShapeStyles = new ShapeStyles(this.doc);
-            }
-            if (this.doc.UCSs == null)
-            {
-                this.doc.UCSs = new UCSs(this.doc);
-            }
-            if (this.doc.Views == null)
-            {
-                this.doc.Views = new Views(this.doc);
-            }
-            if (this.doc.VPorts == null)
-            {
-                this.doc.VPorts = new VPorts(this.doc);
-            }
+            this.EnsureTableCollections();
 
             // post process complex linetypes
             foreach (KeyValuePair<LinetypeSegment, string> pair in this.linetypeSegmentStyleHandles)
@@ -1132,17 +1104,13 @@ namespace netDxf.IO
                 }
             }
 
+            this.EnsureObjectCollections();
+
             this.BuildLayerStateManager();
 
             // this will try to fix problems with layouts and model/paper space blocks
             // nothing of this is be necessary in a well formed DXF
             this.RelinkOrphanLayouts();
-
-            // raster variables
-            if (this.doc.RasterVariables == null)
-            {
-                this.doc.RasterVariables = new RasterVariables(this.doc);
-            }
 
             // assign XData to collections
             foreach (KeyValuePair<string, DictionaryObject> dictionary in this.dictionaries)
@@ -3249,7 +3217,7 @@ namespace netDxf.IO
             this.blockRecords.TryGetValue(name, out BlockRecord blockRecord);
             if (blockRecord == null)
             {
-                Debug.Assert(false, string.Format("The block record {0} is not defined.", name));
+                // BLOCK_RECORD can be absent with an omitted TABLES section.
                 blockRecord = new BlockRecord(name);
                 this.doc.NumHandles = blockRecord.AssignHandle(this.doc.NumHandles);
             }
@@ -11419,8 +11387,7 @@ namespace netDxf.IO
                 return;
             }
 
-            DictionaryObject lsMangerDictionary = this.dictionaries[this.layerStateManagerDictionaryHandle];
-            if (lsMangerDictionary == null)
+            if (!this.dictionaries.TryGetValue(this.layerStateManagerDictionaryHandle, out DictionaryObject lsMangerDictionary))
             {
                 return;
             }
