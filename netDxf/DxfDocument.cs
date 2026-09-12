@@ -220,15 +220,15 @@ namespace netDxf
         /// <exception cref="ArgumentNullException">The assigned value is null.</exception>
         public byte[] ThumbnailImage
         {
-  get { return (byte[]) this.thumbnailImage.Clone(); }
-  set
-  {
-      if (value == null)
-      {
-          throw new ArgumentNullException(nameof(value));
-      }
-      this.thumbnailImage = (byte[]) value.Clone();
-  }
+            get { return (byte[]) this.thumbnailImage.Clone(); }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                this.thumbnailImage = (byte[]) value.Clone();
+            }
         }
 
         /// <summary>
