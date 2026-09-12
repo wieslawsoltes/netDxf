@@ -10,5 +10,6 @@ internal static partial class Program
         RegisterUcsElevationTests();
         RegisterNamedViewTests();
         RegisterTextFramingTests();
+        RegisterMinimalDocumentTests();
     }
 }
