@@ -489,6 +489,7 @@ namespace netDxf.IO
 
             this.EndSection(); //End section objects
 
+            DxfThumbnailImage.Write(this.chunk, this.doc.ThumbnailImage);
             this.Close();
 
         }
