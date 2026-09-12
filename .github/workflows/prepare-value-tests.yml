@@ -1,0 +1,34 @@
+name: Prepare isolated value-codec tests
+on:
+  push:
+    branches: [feature/dxf-strict-text-values]
+    paths: [.github/workflows/prepare-value-tests.yml]
+permissions:
+  contents: read
+jobs:
+  compiler:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-strict-text-values'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Archive only public compiler, runtime, and reference assemblies
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=$(dirname "$(readlink -f "$(command -v dotnet)")")
+          cd "$root"
+          sdk=$(find sdk -mindepth 1 -maxdepth 1 -type d -name '8.0.*' | sort -V | tail -1)
+          runtime=$(find shared/Microsoft.NETCore.App -mindepth 1 -maxdepth 1 -type d -name '8.0.*' | sort -V | tail -1)
+          fxr=$(find host/fxr -mindepth 1 -maxdepth 1 -type d -name '8.0.*' | sort -V | tail -1)
+          refs=$(find packs/Microsoft.NETCore.App.Ref -mindepth 1 -maxdepth 1 -type d -name '8.0.*' | sort -V | tail -1)
+          test -n "$sdk" && test -n "$runtime" && test -n "$fxr" && test -n "$refs"
+          tar -czf "$RUNNER_TEMP/compiler.tar.gz" dotnet "$sdk/Roslyn/bincore" "$runtime" "$fxr" "$refs" LICENSE.txt ThirdPartyNotices.txt
+          sha256sum "$RUNNER_TEMP/compiler.tar.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isolated-net8-compiler
+          path: ${{ runner.temp }}/compiler.tar.gz
+          retention-days: 1
