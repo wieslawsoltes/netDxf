@@ -1,0 +1,42 @@
+name: DXF conformance
+on:
+  push:
+    branches: [netstandard, 'codex/dxf-*']
+  pull_request:
+    branches: [netstandard]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dxf-conformance-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  conformance:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        configuration: [Debug, Release]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Run version and format regression tests
+        run: dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj --configuration ${{ matrix.configuration }}
+      - name: Build netstandard API target
+        run: dotnet build netDxf/netDxf.csproj --configuration ${{ matrix.configuration }} --framework netstandard2.0 --no-restore
+      - name: Collect source-level audit evidence
+        if: runner.os == 'Linux' && matrix.configuration == 'Debug'
+        run: |
+          python3 tools/dxf_audit_inventory.py > artifacts/inventory.json
+          git archive --format=tar.gz --output=artifacts/source.tar.gz HEAD
+      - name: Retain fixtures, results, and source evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dxf-conformance-${{ matrix.os }}-${{ matrix.configuration }}
+          path: artifacts/
+          retention-days: 14
