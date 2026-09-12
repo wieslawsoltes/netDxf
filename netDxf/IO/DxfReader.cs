@@ -1159,15 +1159,7 @@ namespace netDxf.IO
         private void ReadThumbnailImage()
         {
             Debug.Assert(this.chunk.ReadString() == DxfObjectCode.ThumbnailImageSection);
-
-            while (this.chunk.ReadString() != DxfObjectCode.EndSection)
-            {
-                //read the thumbnail image
-                do
-                {
-                    this.chunk.Next();
-                } while (this.chunk.Code != 0);
-            }
+            this.doc.ThumbnailImage = DxfThumbnailImage.Read(this.chunk);
         }
 
         private void ReadAcdsData()

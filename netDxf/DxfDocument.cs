@@ -53,6 +53,7 @@ namespace netDxf
         private readonly SupportFolders supportFolders;
         private bool buildDimensionBlocks;
         private long numHandles;
+        private byte[] thumbnailImage = new byte[0];
 
         // DXF objects added to the document (key: handle, value: DXF object).
         internal ObservableDictionary<string, DxfObject> AddedObjects;
@@ -205,6 +206,30 @@ namespace netDxf
         #endregion
 
         #region public properties
+
+        /// <summary>
+        /// Gets or sets the opaque preview bytes stored in the DXF THUMBNAILIMAGE section.
+        /// </summary>
+        /// <remarks>
+        /// The default is an empty array. Assign an empty array to remove the preview.
+        /// Input and output arrays are copied; changing an array does not change the document.
+        /// These bytes are preserved without decoding or regenerating an image. Editing
+        /// drawing entities does not refresh the preview; callers should replace or clear it.
+        /// An empty preview section is normalized to an absent section when saving.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The assigned value is null.</exception>
+        public byte[] ThumbnailImage
+        {
+            get { return (byte[]) this.thumbnailImage.Clone(); }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                this.thumbnailImage = (byte[]) value.Clone();
+            }
+        }
 
         /// <summary>
         /// Gets the list of folders where the drawing support files are present.

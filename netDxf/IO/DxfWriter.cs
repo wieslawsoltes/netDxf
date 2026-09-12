@@ -368,7 +368,7 @@ namespace netDxf.IO
             this.EndTable();
 
             //UCS
-            this.BeginTable(this.doc.UCSs.CodeName, this.doc.UCSs.Handle, (short) this.doc.UCSs.Count, this.doc.Blocks.XData);
+            this.BeginTable(this.doc.UCSs.CodeName, this.doc.UCSs.Handle, (short) this.doc.UCSs.Count, this.doc.UCSs.XData);
             foreach (UCS ucs in this.doc.UCSs.Items)
             {
                 this.WriteUCS(ucs);
@@ -489,6 +489,7 @@ namespace netDxf.IO
 
             this.EndSection(); //End section objects
 
+            DxfThumbnailImage.Write(this.chunk, this.doc.ThumbnailImage);
             this.Close();
 
         }

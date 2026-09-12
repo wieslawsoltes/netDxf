@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -338,23 +337,50 @@ namespace netDxf.IO
 
         private byte[] ReadBytes(string valueString)
         {
-            List<byte> bytes = new List<byte>();
-            for (int i = 0; i < valueString.Length; i++)
+            // Next has consumed the group-code line; the value is on the following line.
+            long valueLine = this.currentPosition + 1;
+            if (valueString == null)
             {
-                string hex = string.Concat(valueString[i], valueString[++i]);
-                if (byte.TryParse(hex, NumberStyles.AllowHexSpecifier | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out byte result))
-                {
-                    bytes.Add(result);
-                }
-                else
-                {
-                    Debug.Assert(false, string.Format("Value \"{0}\" not valid at line {1}", valueString, this.currentPosition));
-
-                    return new byte[0];
-                }
+                throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                    "Missing binary chunk value for group code {0} at line {1}.", this.code, valueLine));
+            }
+            if ((valueString.Length & 1) != 0)
+            {
+                throw new FormatException(string.Format(CultureInfo.InvariantCulture,
+                    "Binary chunk for group code {0} at line {1} must contain an even number of hexadecimal digits.", this.code, valueLine));
             }
 
-            return bytes.ToArray();
+            byte[] bytes = new byte[valueString.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                int high = HexDigit(valueString[2 * i]);
+                int low = HexDigit(valueString[2 * i + 1]);
+                if (high < 0 || low < 0)
+                {
+                    throw new FormatException(string.Format(CultureInfo.InvariantCulture,
+                        "Invalid hexadecimal digit in binary chunk for group code {0} at line {1}, byte {2}.", this.code, valueLine, i));
+                }
+                bytes[i] = (byte) ((high << 4) | low);
+            }
+
+            return bytes;
+        }
+
+        private static int HexDigit(char value)
+        {
+            if (value >= '0' && value <= '9')
+            {
+                return value - '0';
+            }
+            if (value >= 'A' && value <= 'F')
+            {
+                return value - 'A' + 10;
+            }
+            if (value >= 'a' && value <= 'f')
+            {
+                return value - 'a' + 10;
+            }
+            return -1;
         }
 
         private short ReadShort(string valueString)
