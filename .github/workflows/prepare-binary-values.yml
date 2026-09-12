@@ -1,0 +1,76 @@
+name: Prepare reviewed binary-value correction
+on:
+  push:
+    branches: [feature/dxf-strict-binary-values]
+    paths: [.github/workflows/prepare-binary-values.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-strict-binary-values'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/dxf-strict-binary-values
+      - name: Apply and hash-check the locally tested source
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          p = Path('netDxf/IO/BinaryCodeValueReader.cs')
+          s = p.read_text().replace('using System.Diagnostics;\n', '')
+          s = s.replace('        private object value;', '        private object value;\n        private long valuePosition;')
+          s = s.replace('            this.code = this.reader.ReadInt16();\n\n            if (this.code >= 0', '            this.code = this.reader.ReadInt16();\n            this.valuePosition = this.reader.BaseStream.CanSeek ? this.reader.BaseStream.Position : -1;\n\n            if (this.code == 5 || this.code == 1005) // object or extended-data handle\n            {\n                this.value = this.ReadHex(this.NullTerminatedString());\n            }\n            else if (this.code >= 0')
+          s = s.replace('this.value = this.reader.ReadDouble();', 'this.value = this.ReadFiniteDouble();')
+          s = s.replace('this.value = this.reader.ReadByte() > 0;', 'this.value = this.ReadBooleanValue();')
+          s = s.replace('this.code >= 1005 && this.code <= 1009', 'this.code >= 1006 && this.code <= 1009')
+          a = s.index('        private string ReadHex(string hex)')
+          b = s.index('        #endregion', a)
+          body = [
+              '        private double ReadFiniteDouble()', '        {',
+              '            double result = this.reader.ReadDouble();',
+              '            if (double.IsNaN(result) || double.IsInfinity(result))', '            {',
+              '                throw this.InvalidValue("finite double-precision number");', '            }',
+              '            return result;', '        }', '',
+              '        private bool ReadBooleanValue()', '        {',
+              '            byte result = this.reader.ReadByte();', '            if (result > 1)', '            {',
+              '                throw this.InvalidValue("boolean (0 or 1)");', '            }',
+              '            return result == 1;', '        }', '',
+              '        private string ReadHex(string hex)', '        {',
+              '            int start = 0;', '            int end = hex.Length;',
+              '            while (start < end && char.IsWhiteSpace(hex[start])) start++;',
+              '            while (end > start && char.IsWhiteSpace(hex[end - 1])) end--;',
+              '            if (end == start || end - start > 16)', '            {',
+              '                throw this.InvalidValue("hexadecimal handle (1 to 16 digits)");', '            }', '',
+              '            ulong result = 0;', '            for (int i = start; i < end; i++)', '            {',
+              '                char c = hex[i];', '                int digit;',
+              "                if (c >= '0' && c <= '9') digit = c - '0';",
+              "                else if (c >= 'A' && c <= 'F') digit = c - 'A' + 10;",
+              "                else if (c >= 'a' && c <= 'f') digit = c - 'a' + 10;",
+              '                else throw this.InvalidValue("hexadecimal handle (1 to 16 digits)");',
+              '                result = (result << 4) | (uint) digit;', '            }',
+              '            return result.ToString("X", CultureInfo.InvariantCulture);', '        }', '',
+              '        private InvalidDataException InvalidValue(string kind)', '        {',
+              '            string position = this.valuePosition < 0 ? "unknown" : this.valuePosition.ToString(CultureInfo.InvariantCulture);',
+              '            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,',
+              '                "Invalid {0} value for group code {1} at byte address {2}.", kind, this.code, position));',
+              '        }', '', ''
+          ]
+          s = s[:a] + '\n'.join(body) + s[b:]
+          assert hashlib.sha256(s.encode()).hexdigest() == 'e8565b46bcb09066dfd35402d3f6ca881ab41d29ae72eebf02825ec3937bb0c3'
+          p.write_text(s)
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          s = p.read_text().replace('        RegisterStrictTextValueTests();', '        RegisterStrictTextValueTests();\n        RegisterStrictBinaryValueTests();')
+          assert hashlib.sha256(s.encode()).hexdigest() == '1665e7819b69d6653ec4bb4a770d477665885054cbae6d8d4e07de621c651cf9'
+          p.write_text(s)
+          assert hashlib.sha256(Path('tests/netDxf.Conformance/StrictBinaryValueTests.cs').read_bytes()).hexdigest() == '399edcc6f62b15ba3c5d570c8de356f511d54c532c5290ef65f34735bc9ceea9'
+          Path('.github/workflows/prepare-binary-values.yml').unlink()
+      - name: Commit only the reviewed feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/IO/BinaryCodeValueReader.cs tests/netDxf.Conformance/RegressionTests.cs .github/workflows/prepare-binary-values.yml
+          git commit -m 'fix: validate binary DXF values consistently with text'
+          git push origin HEAD:feature/dxf-strict-binary-values
