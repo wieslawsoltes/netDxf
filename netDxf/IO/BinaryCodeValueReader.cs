@@ -326,7 +326,14 @@ namespace netDxf.IO
         private byte[] ReadBinaryData()
         {
             byte length = this.reader.ReadByte();
-            return this.reader.ReadBytes(length);
+            byte[] bytes = this.reader.ReadBytes(length);
+            if (bytes.Length != length)
+            {
+                throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                    "Incomplete binary DXF chunk for group {0}: expected {1} bytes, received {2}.",
+                    this.code, length, bytes.Length));
+            }
+            return bytes;
         }
 
         private string NullTerminatedString()
