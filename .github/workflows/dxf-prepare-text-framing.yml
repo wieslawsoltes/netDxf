@@ -1,0 +1,75 @@
+name: Prepare strict text framing fix
+on:
+  push:
+    branches: [feature/dxf-text-framing]
+    paths: [.github/workflows/dxf-prepare-text-framing.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-text-framing'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply checked codec edit and remove preparation workflow
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p = Path('netDxf/IO/TextCodeValueReader.cs')
+          s = p.read_text()
+          old = '            this.reader = reader;'
+          assert s.count(old) == 1
+          s = s.replace(old, '            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));')
+          a = s.index('        public void Next()\n')
+          b = s.index('        public byte ReadByte()\n', a)
+          new = '''        public void Next()
+                  {
+                      string readCode = this.reader.ReadLine();
+                      if (readCode == null)
+                      {
+                          // Physical EOF is not a synthetic DXF 0/EOF record. Fabricating
+                          // one can accept truncated documents or keep section readers looping.
+                          throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                              "Missing DXF group code at line {0}.", this.currentPosition + 1));
+                      }
+
+                      this.currentPosition += 1;
+                      if (!short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
+                      {
+                          throw new FormatException(string.Format(CultureInfo.InvariantCulture,
+                              "Invalid DXF group code at line {0}.", this.currentPosition));
+                      }
+
+                      string valueString = this.reader.ReadLine();
+                      if (valueString == null)
+                      {
+                          throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                              "Missing value for group code {0} at line {1}.", this.code, this.currentPosition + 1));
+                      }
+                      this.value = this.ReadValue(valueString);
+                      this.currentPosition += 1;
+                  }
+
+          '''
+          p.write_text(s[:a] + new + s[b:])
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          s = p.read_text()
+          old = '        RegisterNamedViewTests();\n'
+          assert s.count(old) == 1
+          p.write_text(s.replace(old, old + '        RegisterTextFramingTests();\n'))
+          expected = {
+              'netDxf/IO/TextCodeValueReader.cs': 'ff23f4b77f35d6f69efb28b92754088f3112564a696d3caabe76c29eaf616f8c',
+              'tests/netDxf.Conformance/TextFramingTests.cs': '1c7f8604f9aab405bbf9572d06537e77836a612acd2a4575db1220425d1dc022',
+              'tests/netDxf.Conformance/RegressionTests.cs': 'f8af05b4344c15b50732c8dcc0c1d03b52d6490107a1342d97f6e8d8b4c9054e'
+          }
+          for path, digest in expected.items():
+              if hashlib.sha256(Path(path).read_bytes()).hexdigest() != digest:
+                  raise RuntimeError('Tested-source hash mismatch: ' + path)
+          Path('.github/workflows/dxf-prepare-text-framing.yml').unlink()
+          PY
+          git add netDxf/IO/TextCodeValueReader.cs tests/netDxf.Conformance/RegressionTests.cs .github/workflows/dxf-prepare-text-framing.yml
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'fix: reject truncated text records without synthetic EOF'
+          git push origin HEAD:feature/dxf-text-framing
