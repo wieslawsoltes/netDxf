@@ -1,0 +1,79 @@
+name: Prepare isolated UCS elevation feature
+on:
+  push:
+    branches: [feature/dxf-ucs-elevation]
+    paths: [.github/workflows/dxf-prepare-ucs-elevation.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-ucs-elevation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed source edits and remove this temporary workflow
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace(path, old, new):
+              p = Path(path)
+              b = p.read_bytes()
+              nl = '\r\n' if b'\r\n' in b else '\n'
+              s = b.decode('utf-8').replace('\r\n', '\n')
+              if s.count(old) != 1:
+                  raise RuntimeError(path + ': source precondition failed')
+              p.write_bytes(s.replace(old, new).replace('\n', nl).encode('utf-8'))
+          replace('netDxf/Tables/UCS.cs',
+                  '        private Vector3 zAxis;\n',
+                  '        private Vector3 zAxis;\n        private double elevation;\n')
+          old = '        /// <summary>\n        /// Gets the user coordinate system x-axis direction in WCS.\n'
+          new = '''        /// <summary>
+                  /// Gets or sets the elevation associated with this user coordinate system.
+                  /// </summary>
+                  /// <remarks>
+                  /// This is the UCS table record elevation (DXF group code 146), in drawing units.
+                  /// It is independent of the origin and does not modify coordinate transformations.
+                  /// The default value is zero.
+                  /// </remarks>
+                  public double Elevation
+                  {
+                      get { return this.elevation; }
+                      set
+                      {
+                          if (double.IsNaN(value) || double.IsInfinity(value))
+                          {
+                              throw new ArgumentOutOfRangeException(nameof(value), value, "The UCS elevation must be finite.");
+                          }
+                          this.elevation = value;
+                      }
+                  }
+
+                  /// <summary>
+                  /// Gets the user coordinate system x-axis direction in WCS.
+          '''
+          replace('netDxf/Tables/UCS.cs', old, new)
+          replace('netDxf/Tables/UCS.cs',
+                  '                Origin = this.origin,\n                xAxis = this.xAxis,\n',
+                  '                Origin = this.origin,\n                Elevation = this.elevation,\n                xAxis = this.xAxis,\n')
+          replace('netDxf/IO/DxfReader.cs',
+                  '            Vector3 yDir = Vector3.UnitY;\n            List<XData> xData = new List<XData>();\n',
+                  '            Vector3 yDir = Vector3.UnitY;\n            double elevation = 0.0;\n            List<XData> xData = new List<XData>();\n')
+          replace('netDxf/IO/DxfReader.cs',
+                  '                    case 146:\n                        //elevation = this.chunk.ReadDouble();\n',
+                  '                    case 146:\n                        elevation = this.chunk.ReadDouble();\n')
+          replace('netDxf/IO/DxfReader.cs',
+                  '            UCS ucs = new UCS(name, origin, xDir, yDir, false);\n',
+                  '            UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation };\n')
+          replace('netDxf/IO/DxfWriter.cs',
+                  '            this.chunk.Write(79, (short) 0);\n\n            this.WriteXData(ucs.XData);\n',
+                  '            this.chunk.Write(79, (short) 0);\n            this.chunk.Write(146, ucs.Elevation);\n\n            this.WriteXData(ucs.XData);\n')
+          replace('tests/netDxf.Conformance/RegressionTests.cs',
+                  '        RegisterXDataCloneTests();\n',
+                  '        RegisterXDataCloneTests();\n        RegisterUcsElevationTests();\n')
+          Path('.github/workflows/dxf-prepare-ucs-elevation.yml').unlink()
+          PY
+          git add netDxf/Tables/UCS.cs netDxf/IO/DxfReader.cs netDxf/IO/DxfWriter.cs tests/netDxf.Conformance/RegressionTests.cs .github/workflows/dxf-prepare-ucs-elevation.yml
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'feat: preserve named UCS elevation'
+          git push origin HEAD:feature/dxf-ucs-elevation
