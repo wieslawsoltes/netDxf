@@ -35,7 +35,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a block insertion <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class Insert :
+    public partial class Insert :
         EntityObject
     {
         #region delegates and events
@@ -399,9 +399,12 @@ namespace netDxf.Entities
         /// <returns>A list of entities.</returns>
         public List<EntityObject> Explode()
         {
+            return new List<EntityObject>(this.ExplodeEnumerable());
+        }
+
+        private List<EntityObject> ExplodeCellCore(Matrix3 transformation, Vector3 translation, Vector3 arrayOffset)
+        {
             List<EntityObject> entities = new List<EntityObject>();
-            Matrix3 transformation = this.GetTransformation();
-            Vector3 translation = this.Position - transformation * this.block.Origin;
 
             foreach (EntityObject entity in this.block.Entities)
             {
@@ -572,7 +575,7 @@ namespace netDxf.Entities
                     ObliqueAngle = attribute.ObliqueAngle,
                     Value = attribute.Value,
                     Style = (TextStyle) attribute.Style.Clone(),
-                    Position = attribute.Position,
+                    Position = attribute.Position + arrayOffset,
                     Rotation = attribute.Rotation,
                     Alignment = attribute.Alignment,
                     IsBackward = attribute.IsBackward,
@@ -599,6 +602,12 @@ namespace netDxf.Entities
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
+            if (this.IsMultiple)
+            {
+                this.TransformArray(transformation, translation);
+                return;
+            }
+
             Vector3 newPosition = transformation * this.Position + translation;
             Vector3 newNormal = transformation * this.Normal;
             if (Vector3.Equals(Vector3.Zero, newNormal))
@@ -684,6 +693,10 @@ namespace netDxf.Entities
                 Block = (Block) this.block.Clone(),
                 Scale = this.scale,
                 Rotation = this.rotation,
+                ColumnCount = this.columnCount,
+                RowCount = this.rowCount,
+                ColumnSpacing = this.columnSpacing,
+                RowSpacing = this.rowSpacing,
             };
 
             // copy extended data

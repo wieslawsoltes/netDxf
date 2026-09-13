@@ -7916,6 +7916,8 @@ namespace netDxf.IO
             Vector3 normal = Vector3.UnitZ;
             Vector3 scale = new Vector3(1.0, 1.0, 1.0);
             double rotation = 0.0;
+            short columns = 1, rows = 1;
+            double columnSpacing = 0.0, rowSpacing = 0.0;
             string blockName = null;
             Block block = null;
             List<Attribute> attributes = new List<Attribute>();
@@ -7959,6 +7961,25 @@ namespace netDxf.IO
                     case 43:
                         scale.Z = this.chunk.ReadDouble();
                         if (MathHelper.IsZero(scale.Z)) scale.Z = 1.0; // just in case, the insert scale components cannot be zero
+                        this.chunk.Next();
+                        break;
+                    case 70:
+                    case 71:
+                        short count = this.chunk.ReadShort();
+                        if (count < 1)
+                        {
+                            throw new InvalidDataException(string.Format("INSERT array count for group {0} must be positive at position {1}.", this.chunk.Code, this.chunk.CurrentPosition));
+                        }
+                        if (this.chunk.Code == 70) columns = count;
+                        else rows = count;
+                        this.chunk.Next();
+                        break;
+                    case 44:
+                        columnSpacing = this.chunk.ReadDouble();
+                        this.chunk.Next();
+                        break;
+                    case 45:
+                        rowSpacing = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 50:
@@ -8020,6 +8041,10 @@ namespace netDxf.IO
                 Position = wcsBasePoint,
                 Rotation = rotation,
                 Scale = scale,
+                ColumnCount = columns,
+                RowCount = rows,
+                ColumnSpacing = columnSpacing,
+                RowSpacing = rowSpacing,
                 Normal = normal
             };
             insert.XData.AddRange(xData);
