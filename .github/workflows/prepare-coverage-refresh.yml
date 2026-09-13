@@ -1,0 +1,42 @@
+name: Apply checked post-seed coverage snapshot
+on:
+  push:
+    branches: [docs/dxf-coverage-after-seeds]
+    paths: [.github/workflows/prepare-coverage-refresh.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/docs/dxf-coverage-after-seeds'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/dxf-coverage-after-seeds
+      - name: Validate patch, documentation and exact source tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import gzip, hashlib, os, subprocess
+          parts=[Path('.github/patches/coverage-refresh-'+str(i)+'.bin') for i in range(3)]
+          data=b''.join(p.read_bytes() for p in parts)
+          assert hashlib.sha256(data).hexdigest()=='e2ad7eeb615ba32971db618e6b969617aaacc092e3679db62c6ad1c1fde13157'
+          patch=gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest()=='1176f29d67862ff768a2c4586879109319ec6cd9b4f87eb4c2d66c29088b597d'
+          path=Path(os.environ['RUNNER_TEMP'])/'coverage-refresh.patch';path.write_bytes(patch)
+          subprocess.run(['git','apply','--check',str(path)],check=True)
+          subprocess.run(['git','apply',str(path)],check=True)
+          subprocess.run(['python','tools/generate_dxf_coverage.py','--check'],check=True)
+          subprocess.run(['python','-m','unittest','discover','-s','tests/dxf_coverage','-p','test_*.py'],check=True)
+          for p in parts:p.unlink()
+          workflow=Path('.github/workflows/prepare-coverage-refresh.yml');workflow.unlink()
+          paths=['README.md','doc/dxf-conformance/README.md','doc/dxf-conformance/coverage.json','doc/dxf-conformance/version-feature-matrix.md','doc/dxf-conformance/checkpoint-2026-09-13.md']
+          subprocess.run(['git','add',*paths,*[str(p) for p in parts],str(workflow)],check=True)
+          assert subprocess.check_output(['git','write-tree'],text=True).strip()=='8c6fd6de26f6aec9f088ed44f1a6dd8973513851'
+      - name: Commit only the documentation branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'docs: refresh coverage after HATCH seed support and record verified checkpoint'
+          git push origin HEAD:docs/dxf-coverage-after-seeds
