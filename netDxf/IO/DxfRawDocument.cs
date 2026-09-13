@@ -143,6 +143,68 @@ namespace netDxf.IO
             return edited;
         }
 
+        /// <summary>Replaces one indexed record in a new document snapshot.</summary>
+        /// <param name="record">A record from this exact document snapshot.</param>
+        /// <param name="replacement">One complete record, including its opening marker.</param>
+        /// <returns>A new document retaining every tag outside the selected range.</returns>
+        /// <remarks>
+        /// Foreign or stale record indexes are rejected before replacement enumeration. The marker
+        /// code must remain the same, and the replacement cannot contain another record boundary.
+        /// Version/code-page edits retain WithTags restrictions. References are not repaired or remapped;
+        /// modified output is normalized rather than byte-identical. Use WithoutRecord for removal.
+        /// </remarks>
+        public DxfRawDocument WithRecord(DxfRawRecord record, IEnumerable<DxfTag> replacement)
+        {
+            this.ValidateRecordSnapshot(record);
+            if (replacement == null) throw new ArgumentNullException(nameof(replacement));
+            return this.WithTags(this.RewriteRecord(record, replacement, false));
+        }
+
+        /// <summary>Removes one indexed record in a new document snapshot.</summary>
+        /// <param name="record">A record from this exact document snapshot.</param>
+        /// <returns>A new document without the selected tag range.</returns>
+        /// <remarks>
+        /// This removes only the lexical record, including comments within its range. Children,
+        /// sequence terminators and incoming references are not removed. The caller must preserve
+        /// semantic validity; mandatory profile declarations still cannot be removed implicitly.
+        /// </remarks>
+        public DxfRawDocument WithoutRecord(DxfRawRecord record)
+        {
+            this.ValidateRecordSnapshot(record);
+            return this.WithTags(this.RewriteRecord(record, new DxfTag[0], true));
+        }
+
+        private void ValidateRecordSnapshot(DxfRawRecord record)
+        {
+            if (record == null) throw new ArgumentNullException(nameof(record));
+            if (!ReferenceEquals(record.SourceTags, this.Tags))
+                throw new ArgumentException("The raw record belongs to a different document snapshot. Retrieve its current index before editing.", nameof(record));
+        }
+
+        private IEnumerable<DxfTag> RewriteRecord(DxfRawRecord record, IEnumerable<DxfTag> replacement, bool remove)
+        {
+            for (int i = 0; i < record.StartTagIndex; i++) yield return this.Tags[i];
+            bool first = true;
+            foreach (DxfTag tag in replacement)
+            {
+                if (tag == null) throw new ArgumentException("A replacement record cannot contain null tags.", nameof(replacement));
+                if (Is(tag, 0, "EOF") || Is(tag, 0, "ENDSEC"))
+                    throw new ArgumentException("A replacement record cannot terminate a section or document.", nameof(replacement));
+                if (first)
+                {
+                    if (tag.Code != record.MarkerCode || string.IsNullOrEmpty(tag.RawValue as string))
+                        throw new ArgumentException("A replacement must begin with the same record marker code and a nonempty name.", nameof(replacement));
+                    first = false;
+                }
+                else if (tag.Code == record.MarkerCode || tag.Code == 0)
+                    throw new ArgumentException("A replacement must contain exactly one lexical record.", nameof(replacement));
+                yield return tag;
+            }
+            if (first && !remove)
+                throw new ArgumentException("An empty replacement is not a record. Use WithoutRecord to remove it explicitly.", nameof(replacement));
+            for (int i = record.EndTagIndex; i < this.Tags.Count; i++) yield return this.Tags[i];
+        }
+
         /// <summary>Saves using the document's input or selected transport.</summary>
         /// <param name="stream">Writable destination, left open.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
