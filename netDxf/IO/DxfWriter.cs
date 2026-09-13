@@ -88,6 +88,7 @@ namespace netDxf.IO
             }
 
             this.ValidateMTextBackgroundVersions();
+            DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
             this.encodedStrings = new Dictionary<string, string>();
             this.polylines = new Dictionary<string, Polyline>();
@@ -299,12 +300,9 @@ namespace netDxf.IO
             //CLASSES SECTION
             this.BeginSection(DxfObjectCode.ClassesSection);
 
-            this.WriteRasterVariablesClass(1);
-            if (this.doc.ImageDefinitions.Items.Count > 0)
+            foreach (DxfClass definition in classDefinitions)
             {
-                this.WriteImageDefClass(this.doc.ImageDefinitions.Count);
-                this.WriteImageDefRectorClass(this.doc.Entities.Images.Count());
-                this.WriteImageClass(this.doc.Entities.Images.Count());
+                this.WriteClassDefinition(definition);
             }
             this.EndSection();
 
@@ -1114,82 +1112,6 @@ namespace netDxf.IO
             this.chunk.Write(9, "$DIMLTEX2");
             this.chunk.Write(6, this.EncodeNonAsciiCharacters(style.ExtLine2Linetype.Name));
     }
-
-        #endregion
-
-        #region methods for Classes section
-
-        private void WriteImageClass(int count)
-        {
-            this.chunk.Write(0, DxfObjectCode.Class);
-            this.chunk.Write(1, DxfObjectCode.Image);
-            this.chunk.Write(2, SubclassMarker.RasterImage);
-            this.chunk.Write(3, "ISM");
-
-            // default codes as shown in the DXF documentation
-            this.chunk.Write(90, 127);
-            if (this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
-            {
-                this.chunk.Write(91, count);
-            }
-
-            this.chunk.Write(280, (short) 0);
-            this.chunk.Write(281, (short) 1);
-        }
-        
-        private void WriteImageDefClass(int count)
-        {
-            this.chunk.Write(0, DxfObjectCode.Class);
-            this.chunk.Write(1, DxfObjectCode.ImageDef);
-            this.chunk.Write(2, SubclassMarker.RasterImageDef);
-            this.chunk.Write(3, "ISM");
-
-            // default codes as shown in the DXF documentation
-            this.chunk.Write(90, 0);
-            if (this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
-            {
-                this.chunk.Write(91, count);
-            }
-
-            this.chunk.Write(280, (short) 0);
-            this.chunk.Write(281, (short) 0);
-        }
-
-        private void WriteImageDefRectorClass(int count)
-        {
-            this.chunk.Write(0, DxfObjectCode.Class);
-            this.chunk.Write(1, DxfObjectCode.ImageDefReactor);
-            this.chunk.Write(2, SubclassMarker.RasterImageDefReactor);
-            this.chunk.Write(3, "ISM");
-
-            // default codes as shown in the DXF documentation
-            this.chunk.Write(90, 1);
-            if (this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
-            {
-                this.chunk.Write(91, count);
-            }
-
-            this.chunk.Write(280, (short) 0);
-            this.chunk.Write(281, (short) 0);
-        }
-
-        private void WriteRasterVariablesClass(int count)
-        {
-            this.chunk.Write(0, DxfObjectCode.Class);
-            this.chunk.Write(1, DxfObjectCode.RasterVariables);
-            this.chunk.Write(2, SubclassMarker.RasterVariables);
-            this.chunk.Write(3, "ISM");
-
-            // default codes as shown in the DXF documentation
-            this.chunk.Write(90, 0);
-            if (this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
-            {
-                this.chunk.Write(91, count);
-            }
-
-            this.chunk.Write(280, (short) 0);
-            this.chunk.Write(281, (short) 0);
-        }
 
         #endregion
 

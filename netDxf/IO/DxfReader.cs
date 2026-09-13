@@ -734,11 +734,7 @@ namespace netDxf.IO
         {
             Debug.Assert(this.chunk.ReadString() == DxfObjectCode.ClassesSection);
 
-            this.chunk.Next();
-            while (this.chunk.ReadString() != DxfObjectCode.EndSection)
-            {
-                this.ReadUnknowData();
-            }
+            this.ReadClassDefinitions();
         }
 
         private void ReadTables()

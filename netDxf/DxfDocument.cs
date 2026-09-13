@@ -44,7 +44,7 @@ namespace netDxf
     /// The DxfDocument class derives from DxfObject for convenience of this library not because of the DXF structure.
     /// It can contain external data (XData) information, but it is not saved in the DXF.
     /// </remarks>
-    public sealed class DxfDocument :
+    public sealed partial class DxfDocument :
         DxfObject
     {
         #region private fields
