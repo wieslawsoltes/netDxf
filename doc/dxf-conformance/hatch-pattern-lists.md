@@ -40,6 +40,10 @@ python tools/verify_hatch_pattern_lists.py artifacts/conformance
 
 The 15 Python ledger tests and generated coverage check remain separate. Final-head Linux/Windows Debug/Release, netstandard2.0 and source-audit CI are merge gates, not inferred from these local runs.
 
+## Concurrent-base integration
+
+PRs #45 and #46 were merged by concurrent repository work after the initial PR44-based checkpoint. Both boundary fixes, their tests and their independent verifiers are retained. The combined source after merged PR46 (`c9f886c553c2f8469c526ce7e9cdeaf4292c3fa7`) plus this isolated pattern fix passes **7,546 cases / 0 failures** in local Debug and Release. The conflict resolution adds all three test registrations; no existing registration or boundary implementation is removed. Final-head CI must run on this integrated tree.
+
 ## References and remaining scope
 
 Autodesk defines the group-78 repetition and links the Pattern Data grammar from its HATCH reference: https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-DXF/files/GUID-C6C71CED-CE0F-4184-82A5-07AD6241F15B.htm

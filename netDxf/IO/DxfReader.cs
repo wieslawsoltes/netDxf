@@ -9590,50 +9590,94 @@ namespace netDxf.IO
 
         private HatchBoundaryPath ReadEdgePolylineBoundaryPath()
         {
-            HatchBoundaryPath.Polyline poly = new HatchBoundaryPath.Polyline();
+            this.ReadNextHatchPolylineTag();
+            // Validate the advertised flag, but use each actual optional group 42 to retain
+            // producer data even when a zero has-bulge flag disagrees with the payload.
+            this.ReadHatchPolylineFlag(72);
+            this.ReadNextHatchPolylineTag();
+            bool closed = this.ReadHatchPolylineFlag(73);
+            this.ReadNextHatchPolylineTag();
+            int vertexCount = this.ReadHatchPolylineCount(93);
+            this.ReadNextHatchPolylineTag();
 
-            this.chunk.Next();
-
-            bool hasBulge = this.chunk.ReadShort() != 0; // code 72
-            this.chunk.Next();
-
-            // is polyline closed
-            // poly.IsClosed = this.chunk.ReadShort() != 0; // code 73, this value must always be true
-            this.chunk.Next();
-
-            int numVertexes = this.chunk.ReadInt(); // code 93
-            poly.Vertexes = new Vector3[numVertexes];
-            this.chunk.Next();
-
-            for (int i = 0; i < numVertexes; i++)
+            // Counts describe the input, not trusted allocation sizes. Grow only as complete
+            // vertices are consumed so truncated or forged counts cannot preallocate arrays.
+            List<Vector3> vertexes = new List<Vector3>();
+            for (int i = 0; i < vertexCount; i++)
             {
+                this.RequireHatchPolylineCode(10);
+                double x = this.chunk.ReadDouble();
+                this.ReadNextHatchPolylineTag();
+                this.RequireHatchPolylineCode(20);
+                double y = this.chunk.ReadDouble();
+                this.ReadNextHatchPolylineTag();
                 double bulge = 0.0;
-                double x = this.chunk.ReadDouble(); // code 10
-                this.chunk.Next();
-                double y = this.chunk.ReadDouble(); // code 20
-                this.chunk.Next();
-                if (hasBulge)
+                if (this.chunk.Code == 42)
                 {
-                    bulge = this.chunk.ReadDouble(); // code 42
-                    this.chunk.Next();
+                    bulge = this.chunk.ReadDouble();
+                    this.ReadNextHatchPolylineTag();
                 }
-                poly.Vertexes[i] = new Vector3(x, y, bulge);
+                vertexes.Add(new Vector3(x, y, bulge));
             }
-            HatchBoundaryPath path = new HatchBoundaryPath(new List<HatchBoundaryPath.Edge> {poly});
 
-            // read all referenced entities
-            Debug.Assert(this.chunk.Code == 97, "The reference count code 97 was expected.");
-            int numBoundaryObjects = this.chunk.ReadInt();
-            this.hatchContours.Add(path, new List<string>(numBoundaryObjects));
-            this.chunk.Next();
-            for (int i = 0; i < numBoundaryObjects; i++)
+            int referenceCount = this.ReadHatchPolylineCount(97);
+            this.ReadNextHatchPolylineTag();
+            List<string> references = new List<string>();
+            for (int i = 0; i < referenceCount; i++)
             {
-                Debug.Assert(this.chunk.Code == 330, "The reference handle code 330 was expected.");
-                this.hatchContours[path].Add(this.chunk.ReadString());
-                this.chunk.Next();
+                this.RequireHatchPolylineCode(330);
+                references.Add(this.chunk.ReadHex());
+                this.ReadNextHatchPolylineTag();
             }
+            // Do not let the enclosing entity parser silently skip over excess list data.
+            if (this.chunk.Code == 10 || this.chunk.Code == 20 || this.chunk.Code == 42 ||
+                this.chunk.Code == 72 || this.chunk.Code == 73 || this.chunk.Code == 93 ||
+                this.chunk.Code == 97 || this.chunk.Code == 330)
+                throw this.InvalidHatchPolylineData("unexpected data after the counted polyline lists");
 
+            HatchBoundaryPath.Polyline poly = new HatchBoundaryPath.Polyline
+            {
+                IsClosed = closed,
+                Vertexes = vertexes.ToArray()
+            };
+            HatchBoundaryPath path = new HatchBoundaryPath(new List<HatchBoundaryPath.Edge> { poly });
+            this.hatchContours.Add(path, references);
             return path;
+        }
+
+        private void ReadNextHatchPolylineTag()
+        {
+            do { this.chunk.Next(); } while (this.chunk.Code == 999);
+        }
+
+        private void RequireHatchPolylineCode(short code)
+        {
+            if (this.chunk.Code != code)
+                throw this.InvalidHatchPolylineData("expected group code " + code);
+        }
+
+        private bool ReadHatchPolylineFlag(short code)
+        {
+            this.RequireHatchPolylineCode(code);
+            short value = this.chunk.ReadShort();
+            if (value != 0 && value != 1)
+                throw this.InvalidHatchPolylineData("expected a flag of zero or one");
+            return value != 0;
+        }
+
+        private int ReadHatchPolylineCount(short code)
+        {
+            this.RequireHatchPolylineCode(code);
+            int value = this.chunk.ReadInt();
+            if (value < 0) throw this.InvalidHatchPolylineData("expected a nonnegative list count");
+            return value;
+        }
+
+        private InvalidDataException InvalidHatchPolylineData(string detail)
+        {
+            return new InvalidDataException(string.Format(
+                "Invalid HATCH polyline boundary at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, detail));
         }
 
         private HatchBoundaryPath ReadEdgeBoundaryPath(int numEdges)
