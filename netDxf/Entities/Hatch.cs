@@ -68,6 +68,7 @@ namespace netDxf.Entities
         private HatchPattern pattern;
         private double elevation;
         private bool associative;
+        private readonly SeedPointCollection seedPoints = new SeedPointCollection { Vector2.Zero };
 
         #endregion
 
@@ -149,6 +150,20 @@ namespace netDxf.Entities
         #endregion
 
         #region public properties
+
+        /// <summary>Gets editable seed points in the hatch's object coordinate system.</summary>
+        /// <remarks>
+        /// These are the ordered group-98 / group-10,20 points, distinct from pattern origin
+        /// and boundary vertices. A new hatch retains the historical single zero seed default;
+        /// clear the collection to write an explicit zero count. Loading absent data yields an
+        /// empty collection. Points must be finite; duplicates and ordering are preserved.
+        /// Clone copies the collection, and TransformBy maps seeds with the hatch's OCS/elevation.
+        /// This property stores hints; it does not generate boundaries or evaluate a flood fill.
+        /// </remarks>
+        public IList<Vector2> SeedPoints
+        {
+            get { return this.seedPoints; }
+        }
 
         /// <summary>
         /// Gets the hatch pattern.
@@ -432,6 +447,14 @@ namespace netDxf.Entities
             Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
             Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
 
+            SeedPointCollection transformedSeeds = new SeedPointCollection();
+            foreach (Vector2 seed in this.seedPoints)
+            {
+                Vector3 world = transOW * new Vector3(seed.X, seed.Y, this.Elevation);
+                Vector3 transformed = transWO * (transformation * world + translation);
+                transformedSeeds.Add(new Vector2(transformed.X, transformed.Y));
+            }
+
             Vector3 position = transOW * new Vector3(0.0, 0.0, this.Elevation);
 
             List<HatchBoundaryPath> paths = new List<HatchBoundaryPath>();
@@ -492,6 +515,8 @@ namespace netDxf.Entities
             this.Normal = newNormal;
             this.BoundaryPaths.Clear();
             this.BoundaryPaths.AddRange(paths);
+            this.seedPoints.Clear();
+            foreach (Vector2 seed in transformedSeeds) this.seedPoints.Add(seed);
         }
 
         /// <summary>
@@ -519,6 +544,9 @@ namespace netDxf.Entities
                 Elevation = this.elevation
             };
 
+            entity.seedPoints.Clear();
+            foreach (Vector2 seed in this.seedPoints) entity.seedPoints.Add(seed);
+
             foreach (HatchBoundaryPath path in this.boundaryPaths)
             {
                 entity.boundaryPaths.Add((HatchBoundaryPath) path.Clone());
@@ -533,6 +561,29 @@ namespace netDxf.Entities
         }
 
         #endregion
+
+        // Collection<T> routes generic and non-generic mutations through these overrides.
+        private sealed class SeedPointCollection : System.Collections.ObjectModel.Collection<Vector2>
+        {
+            protected override void InsertItem(int index, Vector2 item)
+            {
+                Validate(item);
+                base.InsertItem(index, item);
+            }
+
+            protected override void SetItem(int index, Vector2 item)
+            {
+                Validate(item);
+                base.SetItem(index, item);
+            }
+
+            private static void Validate(Vector2 item)
+            {
+                if (double.IsNaN(item.X) || double.IsInfinity(item.X) ||
+                    double.IsNaN(item.Y) || double.IsInfinity(item.Y))
+                    throw new ArgumentOutOfRangeException(nameof(item), item, "HATCH seed points must be finite.");
+            }
+        }
 
         #region HatchBoundaryPath collection events
 

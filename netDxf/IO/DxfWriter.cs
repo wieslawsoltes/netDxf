@@ -3123,7 +3123,7 @@ namespace netDxf.IO
             this.WriteHatchBoundaryPaths(hatch.BoundaryPaths);
 
             // pattern info
-            this.WriteHatchPattern(hatch.Pattern);
+            this.WriteHatchPattern(hatch);
 
             // add the required extended data entries to the hatch XData
             AddHatchPatternXData(hatch);
@@ -3303,8 +3303,9 @@ namespace netDxf.IO
             }
         }
 
-        private void WriteHatchPattern(HatchPattern pattern)
+        private void WriteHatchPattern(Hatch hatch)
         {
+            HatchPattern pattern = hatch.Pattern;
             this.chunk.Write(75, (short) pattern.Style);
             this.chunk.Write(76, (short) pattern.Type);
 
@@ -3317,11 +3318,14 @@ namespace netDxf.IO
                 this.WriteHatchPatternDefinitionLines(pattern);
             }
 
-            // I don't know what is the purpose of these codes, it seems that it doesn't change anything but they are needed
+            // Pixel-size policy is unchanged; seed-point data is independently editable.
             this.chunk.Write(47, 0.0);
-            this.chunk.Write(98, 1);
-            this.chunk.Write(10, 0.0);
-            this.chunk.Write(20, 0.0);
+            this.chunk.Write(98, hatch.SeedPoints.Count);
+            foreach (Vector2 seed in hatch.SeedPoints)
+            {
+                this.chunk.Write(10, seed.X);
+                this.chunk.Write(20, seed.Y);
+            }
 
             // DXF AutoCad2000 does not support hatch gradient patterns
             if (this.doc.DrawingVariables.AcadVer <= DxfVersion.AutoCad2000)
