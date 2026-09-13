@@ -38,6 +38,7 @@ namespace netDxf.IO
 
         private readonly BinaryReader reader;
         private readonly Encoding encoding;
+        private readonly bool legacyGroupCodes;
         private short code;
         private object value;
         private long valuePosition;
@@ -47,7 +48,15 @@ namespace netDxf.IO
         #region constructors
 
         public BinaryCodeValueReader(BinaryReader reader, Encoding encoding)
+            : this(reader, encoding, false)
         {
+        }
+
+        // Pre-R13 framing is selected explicitly by the raw-document profile bootstrap.
+        // Keep the existing constructor's modern framing for typed document IO.
+        public BinaryCodeValueReader(BinaryReader reader, Encoding encoding, bool legacyGroupCodes)
+        {
+            this.legacyGroupCodes = legacyGroupCodes;
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
             this.encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
             const string signature = "AutoCAD Binary DXF\r\n\u001a\0";
@@ -96,7 +105,17 @@ namespace netDxf.IO
 
         public void Next()
         {
-            this.code = this.reader.ReadInt16();
+            if (this.legacyGroupCodes)
+            {
+                this.code = this.reader.ReadByte();
+                if (this.code == 255)
+                {
+                    this.code = this.reader.ReadInt16();
+                    if (this.code < 255)
+                        throw new InvalidDataException("A legacy binary DXF escape requires a group code of at least 255.");
+                }
+            }
+            else this.code = this.reader.ReadInt16();
             this.valuePosition = this.reader.BaseStream.CanSeek ? this.reader.BaseStream.Position : -1;
 
             if ((this.code == 5 && !this.Code5IsString) || this.code == 1005) // object or extended-data handle

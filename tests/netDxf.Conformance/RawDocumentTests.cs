@@ -332,7 +332,7 @@ internal static partial class Program
             case 8: tags[3] = new DxfTag(3, "AC1032"); break;
             case 9: tags.InsertRange(4, new[] { new DxfTag(9, "$ACADVER"), new DxfTag(1, "AC1032") }); break;
             case 10: tags.InsertRange(6, new[] { new DxfTag(9, "$DWGCODEPAGE"), new DxfTag(3, "ANSI_1252") }); break;
-            case 11: tags[3] = new DxfTag(1, "AC1009"); break;
+            case 11: tags[3] = new DxfTag(1, "AC1006"); break;
             case 12: tags[3] = new DxfTag(1, "AC9999"); break;
             case 13: tags[5] = new DxfTag(1, "ANSI_1252"); break;
             case 14: tags.InsertRange(tags.Count - 1, tags.Take(11).ToArray()); break;
