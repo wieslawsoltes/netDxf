@@ -116,6 +116,10 @@ namespace netDxf.Entities
             get { return this.edges; }
         }
 
+        /// <summary>Gets or sets the blend-crease flag, DXF group 72.</summary>
+        /// <remarks>False is the default. This stores subdivision metadata; it does not evaluate a smoothed mesh.</remarks>
+        public bool BlendCrease { get; set; }
+
         /// <summary>
         /// Gets or sets the mesh subdivision level.
         /// </summary>
@@ -208,7 +212,8 @@ namespace netDxf.Entities
                 Normal = this.Normal,
                 IsVisible = this.IsVisible,
                 //Mesh properties
-                SubdivisionLevel = this.subdivisionLevel
+                SubdivisionLevel = this.subdivisionLevel,
+                BlendCrease = this.BlendCrease
             };
 
             foreach (XData data in this.XData.Values)

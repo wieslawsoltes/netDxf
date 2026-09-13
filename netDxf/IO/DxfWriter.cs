@@ -2322,7 +2322,7 @@ namespace netDxf.IO
             this.chunk.Write(100, SubclassMarker.Mesh);
 
             this.chunk.Write(71, (short) 2);
-            this.chunk.Write(72, (short) 0);
+            this.chunk.Write(72, mesh.BlendCrease ? (short) 1 : (short) 0);
 
             this.chunk.Write(91, (int) mesh.SubdivisionLevel);
 
