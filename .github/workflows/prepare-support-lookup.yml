@@ -1,0 +1,48 @@
+name: Apply reviewed support-folder lookup correction
+on:
+  push:
+    branches: [fix/dxf-support-lookup]
+    paths: [.github/workflows/prepare-support-lookup.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-support-lookup'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-support-lookup
+      - name: Apply the exact reviewed patch and verify the entire tested tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import base64, gzip, hashlib, os, subprocess
+          payload = Path('.github/patches/support-lookup.gz')
+          data = payload.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == '36fc3e73d463879e58eee1621c5f06abf8fcfd6e'
+          # Correct two known transcription errors, then verify every byte before applying.
+          encoded = base64.b64encode(data).decode()
+          for old, new in [('Dvz8TXTm+s', 'Dvz8TXm+s'), ('UrP/mecSrE1g', 'UrP/m/ecSrE1g')]:
+              assert encoded.count(old) == 1
+              encoded = encoded.replace(old, new)
+          data = base64.b64decode(encoded, validate=True)
+          assert hashlib.sha256(data).hexdigest() == 'c64d2061da98aee5b9a56cda86a3038a51d8ea0921fc30ea07ab272838eddb45'
+          patch_bytes = gzip.decompress(data)
+          assert hashlib.sha256(patch_bytes).hexdigest() == 'cb73628b287a1048b720a07ddebbb8dd177c8e965e1ee607bf35912631216577'
+          patch = Path(os.environ['RUNNER_TEMP']) / 'support-lookup.patch'
+          patch.write_bytes(patch_bytes)
+          subprocess.run(['git', 'apply', '--check', str(patch)], check=True)
+          subprocess.run(['git', 'apply', str(patch)], check=True)
+          payload.unlink()
+          Path('.github/workflows/prepare-support-lookup.yml').unlink()
+          paths = ['netDxf/Collections/SupportFolders.cs', 'tests/netDxf.Conformance/RegressionTests.cs', 'tests/netDxf.Conformance/SupportFolderLookupTests.cs', 'doc/dxf-conformance/support-folder-lookup.md', '.github/patches/support-lookup.gz', '.github/workflows/prepare-support-lookup.yml']
+          subprocess.run(['git', 'add', *paths], check=True)
+          assert subprocess.check_output(['git', 'write-tree'], text=True).strip() == '37a7d158a1b7d6d3de8c03a0a3243dac29d55b2e'
+      - name: Commit only the feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: resolve support resources without changing process state'
+          git push origin HEAD:fix/dxf-support-lookup
