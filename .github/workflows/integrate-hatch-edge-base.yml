@@ -1,0 +1,45 @@
+name: Integrate verified HATCH metadata ordering
+on:
+  push:
+    branches: [fix/dxf-hatch-edge-packets]
+    paths: [.github/workflows/integrate-hatch-edge-base.yml]
+permissions:
+  contents: write
+jobs:
+  integrate:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-hatch-edge-packets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-edge-packets
+          fetch-depth: 32
+      - name: Merge only the pinned prerequisite and verify the complete tested tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import subprocess
+          base='53f267c20bfb3e87320e1f24a029297238e05a91'
+          subprocess.run(['git','config','user.name','DXF conformance automation'],check=True)
+          subprocess.run(['git','config','user.email','wieslawsoltes@users.noreply.github.com'],check=True)
+          subprocess.run(['git','fetch','--depth=32','origin',base],check=True)
+          merged=subprocess.run(['git','merge','--no-commit','--no-ff','--no-edit',base])
+          assert merged.returncode in (0,1)
+          conflicts=subprocess.check_output(['git','diff','--name-only','--diff-filter=U'],text=True).splitlines()
+          assert conflicts in ([],['tests/netDxf.Conformance/RegressionTests.cs']),conflicts
+          registration='tests/netDxf.Conformance/RegressionTests.cs'
+          s=subprocess.check_output(['git','show',base+':'+registration],text=True)
+          marker='        RegisterHatchPatternOrderTests();'
+          assert s.count(marker)==1 and 'RegisterHatchEdgeDispatchTests' not in s
+          Path(registration).write_text(s.replace(marker,marker+'\n        RegisterHatchEdgeDispatchTests();'))
+          p=Path('doc/dxf-conformance/hatch-edge-packets.md')
+          p.write_text(p.read_text()+'\n## Integration with the independently developed pattern-order correction\n\nPR #49 merged as `53f267c20bfb3e87320e1f24a029297238e05a91` while this edge-packet PR was being published. Its pattern-metadata collection/conversion code, 552 tests and independent verifier are retained. Both registrations remain active. The combined signed-library suite passes **9,140 cases / 0 failures** in local Debug and Release. The edge-packet, pattern-order, boundary-flag, pattern-list, sparse-bulge and closure verifiers all pass on the combined outputs. Final CI must test this integrated base, not only the original 8,588-case checkpoint.\n')
+          workflow=Path('.github/workflows/integrate-hatch-edge-base.yml');workflow.unlink()
+          subprocess.run(['git','add',registration,str(p),str(workflow)],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual=='365eec7a7c69da87838a2f8e7cfc286b7dc84a27',actual
+      - name: Commit only the isolated feature branch
+        run: |
+          git commit -m 'test: retain metadata ordering alongside HATCH edge validation'
+          git push origin HEAD:fix/dxf-hatch-edge-packets
