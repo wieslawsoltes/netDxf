@@ -9440,7 +9440,13 @@ namespace netDxf.IO
             HatchFillType fill = HatchFillType.SolidFill;
             double elevation = 0.0;
             Vector3 normal = Vector3.UnitZ;
-            HatchPattern pattern = HatchPattern.Line;
+            HatchPattern pattern = null;
+            double patternAngle = 0.0;
+            double patternScale = 1.0;
+            HatchType patternType = HatchType.UserDefined;
+            HatchStyle patternStyle = HatchStyle.Normal;
+            bool isDouble = false;
+            List<HatchPatternLineData> patternLines = null;
             bool associative = false;
             List<HatchBoundaryPath> paths = new List<HatchBoundaryPath>();
             List<XData> xData = new List<XData>();
@@ -9490,10 +9496,53 @@ namespace netDxf.IO
                             associative = true;
                         this.chunk.Next();
                         break;
+                    // Metadata belongs to the complete HATCH record, not to a
+                    // group-75-prefixed suffix. Counted packets still own their data.
+                    case 52:
+                        patternAngle = this.chunk.ReadDouble();
+                        this.chunk.Next();
+                        break;
+                    case 41:
+                        patternScale = this.chunk.ReadDouble();
+                        if (patternScale <= 0.0)
+                            patternScale = 1.0; // retain the existing import policy
+                        this.chunk.Next();
+                        break;
                     case 75:
-                        // the next lines hold the information about the hatch pattern
-                        pattern = this.ReadHatchPattern(name, ref seedPoints, ref pixelSize);
-                        pattern.Fill = fill;
+                        patternStyle = (HatchStyle) this.chunk.ReadShort();
+                        this.chunk.Next();
+                        break;
+                    case 76:
+                        patternType = (HatchType) this.chunk.ReadShort();
+                        this.chunk.Next();
+                        break;
+                    case 77:
+                        short doubleFlag = this.chunk.ReadShort();
+                        if (doubleFlag != 0 && doubleFlag != 1)
+                            throw new InvalidDataException(string.Format(
+                                "Invalid HATCH double-pattern flag for group code 77 at position {0}: expected 0 or 1.",
+                                this.chunk.CurrentPosition));
+                        isDouble = doubleFlag == 1;
+                        this.chunk.Next();
+                        break;
+                    case 78:
+                        if (patternLines != null)
+                            throw this.InvalidHatchPatternData("duplicate group-78 definition list");
+                        patternLines = this.ReadHatchPatternDefinitionLine(this.chunk.ReadShort());
+                        break;
+                    case 53:
+                    case 43:
+                    case 44:
+                    case 45:
+                    case 46:
+                    case 79:
+                    case 49:
+                        throw this.InvalidHatchPatternData("pattern field outside its declared line or dash count");
+                    case 450:
+                        if (this.chunk.ReadInt() == 1)
+                            pattern = this.ReadHatchGradientPattern();
+                        else
+                            this.chunk.Next();
                         break;
                     case 47:
                         this.ReadHatchPixelSize(ref pixelSize);
@@ -9515,6 +9564,18 @@ namespace netDxf.IO
 
             if (paths.Count == 0)
                 return null;
+
+            if (pattern == null)
+                pattern = new HatchPattern(name);
+            pattern.Angle = patternAngle;
+            pattern.Scale = patternScale;
+            pattern.Type = patternType;
+            pattern.Style = patternStyle;
+            pattern.IsDouble = isDouble;
+            pattern.Fill = fill;
+            if (patternLines != null)
+                foreach (HatchPatternLineData line in patternLines)
+                    pattern.LineDefinitions.Add(line.ToPatternLine(patternScale, patternAngle));
 
             Hatch entity = new Hatch(pattern, new List<HatchBoundaryPath>(), associative)
             {
@@ -9878,105 +9939,6 @@ namespace netDxf.IO
             this.chunk.Next();
         }
 
-        private HatchPattern ReadHatchPattern(string name, ref List<Vector2> seedPoints, ref double? pixelSize)
-        {
-            HatchPattern hatch = null;
-            double angle = 0.0;
-            double scale = 1.0;
-            bool isGradient = false;
-            bool isDouble = false;
-            bool hasLineDefinitions = false;
-            List<HatchPatternLineDefinition> lineDefinitions = new List<HatchPatternLineDefinition>();
-            HatchType type = HatchType.UserDefined;
-            HatchStyle style = HatchStyle.Normal;
-
-            while (this.chunk.Code != 0 && this.chunk.Code != 1001)
-            {
-                switch (this.chunk.Code)
-                {
-                    case 52:
-                        angle = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 41:
-                        scale = this.chunk.ReadDouble();
-                        if (scale <= 0)
-                            scale = 1.0;
-                        this.chunk.Next();
-                        break;
-                    case 47:
-                        this.ReadHatchPixelSize(ref pixelSize);
-                        break;
-                    case 98:
-                        this.ReadHatchSeedPoints(ref seedPoints);
-                        break;
-                    case 10:
-                        this.chunk.Next();
-                        break;
-                    case 20:
-                        this.chunk.Next();
-                        break;
-                    case 75:
-                        style = (HatchStyle) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 76:
-                        type = (HatchType) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 77:
-                        short doubleFlag = this.chunk.ReadShort();
-                        if (doubleFlag != 0 && doubleFlag != 1)
-                            throw new InvalidDataException(string.Format(
-                                "Invalid HATCH double-pattern flag for group code 77 at position {0}: expected 0 or 1.",
-                                this.chunk.CurrentPosition));
-                        isDouble = doubleFlag == 1;
-                        this.chunk.Next();
-                        break;
-                    case 78:
-                        if (hasLineDefinitions)
-                            throw this.InvalidHatchPatternData("duplicate group-78 definition list");
-                        hasLineDefinitions = true;
-                        short numLines = this.chunk.ReadShort();
-                        lineDefinitions = this.ReadHatchPatternDefinitionLine(scale, angle, numLines);
-                        break;
-                    case 53:
-                    case 43:
-                    case 44:
-                    case 45:
-                    case 46:
-                    case 79:
-                    case 49:
-                        throw this.InvalidHatchPatternData("pattern field outside its declared line or dash count");
-                    case 450:
-                        if (this.chunk.ReadInt() == 1)
-                        {
-                            isGradient = true; // gradient pattern
-                            hatch = this.ReadHatchGradientPattern();
-                        }
-                        else
-                            this.chunk.Next(); // solid hatch, we do not need to read anything else
-                        break;
-                    default:
-                        this.chunk.Next();
-                        break;
-                }
-            }
-
-            if (!isGradient)
-            {
-                hatch = new HatchPattern(name);
-            }
-
-            hatch.Angle = angle;
-            hatch.Style = style;
-            hatch.Scale = scale;
-            hatch.Type = type;
-            hatch.IsDouble = isDouble;
-            hatch.LineDefinitions.AddRange(lineDefinitions);
-            return hatch;
-        }
-
         private HatchGradientPattern ReadHatchGradientPattern()
         {
             // the information for gradient pattern must follow an strict order
@@ -10021,13 +9983,13 @@ namespace netDxf.IO
             };
         }
 
-        private List<HatchPatternLineDefinition> ReadHatchPatternDefinitionLine(double patternScale, double patternAngle, short numLines)
+        private List<HatchPatternLineData> ReadHatchPatternDefinitionLine(short numLines)
         {
             if (numLines < 0)
                 throw this.InvalidHatchPatternData("negative group-78 line count");
 
             // Counts constrain the grammar; they are never trusted allocation sizes.
-            List<HatchPatternLineDefinition> lineDefinitions = new List<HatchPatternLineDefinition>();
+            List<HatchPatternLineData> lineDefinitions = new List<HatchPatternLineData>();
             this.ReadNextHatchPatternTag();
             for (int i = 0; i < numLines; i++)
             {
@@ -10081,25 +10043,52 @@ namespace netDxf.IO
                     }
                 }
 
-                // DXF stores global pattern data; the public model uses PAT-local data.
-                double sinOrigin = Math.Sin(patternAngle*MathHelper.DegToRad);
-                double cosOrigin = Math.Cos(patternAngle*MathHelper.DegToRad);
-                origin = new Vector2(cosOrigin*origin.X/patternScale + sinOrigin*origin.Y/patternScale, -sinOrigin*origin.X/patternScale + cosOrigin*origin.Y/patternScale);
-                double sinDelta = Math.Sin(angle*MathHelper.DegToRad);
-                double cosDelta = Math.Cos(angle*MathHelper.DegToRad);
-                delta = new Vector2(cosDelta*delta.X/patternScale + sinDelta*delta.Y/patternScale, -sinDelta*delta.X/patternScale + cosDelta*delta.Y/patternScale);
-
-                HatchPatternLineDefinition lineDefinition = new HatchPatternLineDefinition
-                {
-                    Angle = angle - patternAngle,
-                    Origin = origin,
-                    Delta = delta
-                };
-                foreach (double dash in dashes)
-                    lineDefinition.DashPattern.Add(dash/patternScale);
-                lineDefinitions.Add(lineDefinition);
+                lineDefinitions.Add(new HatchPatternLineData(angle, origin, delta, dashes));
             }
             return lineDefinitions;
+        }
+
+        // Store unnormalized wire angles and geometry until global angle/scale are
+        // known. Passing through the public Angle setter here would normalize too early.
+        private sealed class HatchPatternLineData
+        {
+            private readonly double angle;
+            private readonly Vector2 origin;
+            private readonly Vector2 delta;
+            private readonly List<double> dashes;
+
+            public HatchPatternLineData(double angle, Vector2 origin, Vector2 delta, List<double> dashes)
+            {
+                this.angle = angle;
+                this.origin = origin;
+                this.delta = delta;
+                this.dashes = dashes;
+            }
+
+            public HatchPatternLineDefinition ToPatternLine(double patternScale, double patternAngle)
+            {
+                // DXF stores global pattern data; the public model uses PAT-local data.
+                // Keep the established arithmetic, but apply it exactly once at record end.
+                double sinOrigin = Math.Sin(patternAngle*MathHelper.DegToRad);
+                double cosOrigin = Math.Cos(patternAngle*MathHelper.DegToRad);
+                Vector2 localOrigin = new Vector2(
+                    cosOrigin*this.origin.X/patternScale + sinOrigin*this.origin.Y/patternScale,
+                    -sinOrigin*this.origin.X/patternScale + cosOrigin*this.origin.Y/patternScale);
+                double sinDelta = Math.Sin(this.angle*MathHelper.DegToRad);
+                double cosDelta = Math.Cos(this.angle*MathHelper.DegToRad);
+                Vector2 localDelta = new Vector2(
+                    cosDelta*this.delta.X/patternScale + sinDelta*this.delta.Y/patternScale,
+                    -sinDelta*this.delta.X/patternScale + cosDelta*this.delta.Y/patternScale);
+                HatchPatternLineDefinition result = new HatchPatternLineDefinition
+                {
+                    Angle = this.angle - patternAngle,
+                    Origin = localOrigin,
+                    Delta = localDelta
+                };
+                foreach (double dash in this.dashes)
+                    result.DashPattern.Add(dash/patternScale);
+                return result;
+            }
         }
 
         private void ReadNextHatchPatternTag()

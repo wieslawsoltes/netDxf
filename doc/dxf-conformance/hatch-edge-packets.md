@@ -51,3 +51,7 @@ Final-head Linux/Windows Debug/Release, netstandard2.0, generated-ledger integri
 
 Primary source: Autodesk Boundary Path Data, including edge kinds, component codes, counts, optional weights and source references:
 https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-DXF/files/GUID-DC5215D6-E73F-4DFF-8BE9-01CA9610FAEE.htm
+
+## Integration with the independently developed pattern-order correction
+
+PR #49 merged as `53f267c20bfb3e87320e1f24a029297238e05a91` while this edge-packet PR was being published. Its pattern-metadata collection/conversion code, 552 tests and independent verifier are retained. Both registrations remain active. The combined signed-library suite passes **9,140 cases / 0 failures** in local Debug and Release. The edge-packet, pattern-order, boundary-flag, pattern-list, sparse-bulge and closure verifiers all pass on the combined outputs. Final CI must test this integrated base, not only the original 8,588-case checkpoint.
