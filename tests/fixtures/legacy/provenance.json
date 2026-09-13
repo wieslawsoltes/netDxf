@@ -1,0 +1,36 @@
+{
+  "repository": "mozman/ezdxf",
+  "commit": "d6f2ac10caeddc712ed1824aaeb3b9c050de4a04",
+  "files": [
+    {
+      "file": "small_r13.dxf",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/small_r13.dxf",
+      "git_blob": "3693b689db808e8c6eb23f666efcaa87b0be4022",
+      "sha256": "a1007452f8ada2e71fdef60f79923924045cb371f37eeab896a61f5628573d0b"
+    },
+    {
+      "file": "small_r14.dxf",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/small_r14.dxf",
+      "git_blob": "118140edba4a289824a2cb09c9aa9e6b53ff0668",
+      "sha256": "92e792f8f9169e4226c9b7dbe848ba9afb96d3e388e6297c55481e1941c65fb0"
+    },
+    {
+      "file": "bin_dxf_r13.dxf",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/bin_dxf_r13.dxf",
+      "git_blob": "be4f0cb3fc488139ae72f92d756c1c6aa80aad83",
+      "sha256": "c65782683815ff0f1680d26207da1637a486f96b30bc215685e26cf7adee8464"
+    },
+    {
+      "file": "bin_dxf_r14.dxf",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/bin_dxf_r14.dxf",
+      "git_blob": "f09316f33b366264424482d8f58becbb5217200c",
+      "sha256": "177a97e5dc86ca106d0dd6365d139122fc54ff78df87670847eb7174a8bbd5eb"
+    },
+    {
+      "file": "LICENSE",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/LICENSE",
+      "git_blob": "33a77673a9100f1f8553745ac6c924a6b8e58410",
+      "sha256": "db97ca426fc0d2b8124145de0f36181db73e6e713ce642d42fed2efc442edf19"
+    }
+  ]
+}

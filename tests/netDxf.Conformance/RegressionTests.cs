@@ -32,5 +32,6 @@ internal static partial class Program
         RegisterRawRecordTests();
         RegisterSupportFolderLookupTests();
         RegisterRawDimensionStyleNameTests();
+        RegisterRawLegacyProfileTests();
     }
 }

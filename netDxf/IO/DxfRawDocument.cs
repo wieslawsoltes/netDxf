@@ -39,7 +39,7 @@ namespace netDxf.IO
     /// This is a preservation API, separate from DxfDocument's typed geometry model. It does not
     /// evaluate entities, repair ownership, remap handles, execute application data or downgrade schemas.
     /// Unchanged same-transport saves reproduce the original bytes. Edited or cross-transport saves
-    /// normalize lexical formatting while retaining tag order and values. Modern 2000+ profiles only.
+    /// normalize lexical formatting while retaining tag order and values. R13 and later profiles only.
     /// </remarks>
     public sealed class DxfRawDocument
     {
@@ -498,9 +498,10 @@ namespace netDxf.IO
             DxfVersion version = StringEnum<DxfVersion>.Parse(name, StringComparison.OrdinalIgnoreCase);
             switch (version)
             {
+                case DxfVersion.AutoCad13: case DxfVersion.AutoCad14:
                 case DxfVersion.AutoCad2000: case DxfVersion.AutoCad2004: case DxfVersion.AutoCad2007:
                 case DxfVersion.AutoCad2010: case DxfVersion.AutoCad2013: case DxfVersion.AutoCad2018: return version;
-                default: throw new DxfVersionNotSupportedException("This raw DXF profile requires a recognized 2000–2018 database family.", version);
+                default: throw new DxfVersionNotSupportedException("This raw DXF profile requires a recognized R13–2018 database family.", version);
             }
         }
 
@@ -508,9 +509,16 @@ namespace netDxf.IO
         {
             if (version >= DxfVersion.AutoCad2007) return new UTF8Encoding(false, true);
             int codePage = 1252;
-            if (name != null && (!name.StartsWith("ANSI_", StringComparison.OrdinalIgnoreCase) ||
-                !int.TryParse(name.Substring(5), NumberStyles.None, CultureInfo.InvariantCulture, out codePage)))
-                throw new NotSupportedException("The legacy raw DXF profile requires an ANSI_<codepage> declaration, or the default 1252.");
+            if (name != null)
+            {
+                // R13 producers also use DOS names such as dos932. Resolve only numeric
+                // ANSI_/DOS aliases, never arbitrary runtime encoding names or silent fallbacks.
+                int prefixLength = name.StartsWith("ANSI_", StringComparison.OrdinalIgnoreCase) ? 5 :
+                    name.StartsWith("DOS", StringComparison.OrdinalIgnoreCase) ? 3 : -1;
+                if (prefixLength < 0 || !int.TryParse(name.Substring(prefixLength), NumberStyles.None,
+                    CultureInfo.InvariantCulture, out codePage))
+                    throw new NotSupportedException("The legacy raw DXF profile requires ANSI_<codepage>, DOS<codepage>, or absent/default 1252.");
+            }
 #if !NET4X && !NETSTANDARD
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
