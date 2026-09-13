@@ -1,0 +1,45 @@
+name: Integrate verified HATCH pattern-list base
+on:
+  push:
+    branches: [fix/dxf-hatch-boundary-flags]
+    paths: [.github/workflows/integrate-hatch-pattern-base.yml]
+permissions:
+  contents: write
+jobs:
+  integrate:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-hatch-boundary-flags'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-boundary-flags
+          fetch-depth: 16
+      - name: Merge only the pinned verified prerequisite
+        shell: python
+        run: |
+          from pathlib import Path
+          import subprocess
+          base='a54698d1a2e033cab0d4f0a0e6e2e51b5ed91858'
+          subprocess.run(['git','config','user.name','DXF conformance automation'],check=True)
+          subprocess.run(['git','config','user.email','wieslawsoltes@users.noreply.github.com'],check=True)
+          subprocess.run(['git','fetch','--depth=16','origin',base],check=True)
+          merged=subprocess.run(['git','merge','--no-commit','--no-ff','--no-edit',base])
+          assert merged.returncode in (0,1)
+          conflicts=subprocess.check_output(['git','diff','--name-only','--diff-filter=U'],text=True).splitlines()
+          assert conflicts in ([],['tests/netDxf.Conformance/RegressionTests.cs']),conflicts
+          registration='tests/netDxf.Conformance/RegressionTests.cs'
+          s=subprocess.check_output(['git','show',base+':'+registration],text=True)
+          old='        RegisterHatchPatternValidationTests();'
+          assert s.count(old)==1 and 'RegisterHatchBoundaryFlagsTests' not in s
+          Path(registration).write_text(s.replace(old,old+'\n        RegisterHatchBoundaryFlagsTests();'))
+          p=Path('doc/dxf-conformance/hatch-boundary-flags.md')
+          p.write_text(p.read_text()+'\n## Integration with concurrent pattern-list work\n\nPR #47 was developed independently against the same merged PR #46 base and has now merged as `a54698d1a2e033cab0d4f0a0e6e2e51b5ed91858` (tree `0e7308a2ac536e25a4c37060bdab07112b89d77a`). Its pattern parser, 450 tests and verifier are retained alongside this classification correction; both test registrations remain active. The combined signed-library suite passes **7,970 cases / 0 failures** in local Debug and Release. The initial red/green counts above describe the original PR #46-based comparison, not a fabricated test run on the integrated base. Final-head CI must use this integrated tree.\n')
+          workflow=Path('.github/workflows/integrate-hatch-pattern-base.yml');workflow.unlink()
+          subprocess.run(['git','add',registration,str(p),str(workflow)],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual=='8ef3dabb5001d31c9dc430d30ed669eb7a715bff',actual
+      - name: Publish only the fully verified merge tree
+        run: |
+          git commit -m 'test: retain merged pattern validation alongside boundary flag support'
+          git push origin HEAD:fix/dxf-hatch-boundary-flags
