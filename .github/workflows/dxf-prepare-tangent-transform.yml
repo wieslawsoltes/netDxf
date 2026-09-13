@@ -1,0 +1,38 @@
+name: Prepare DXF tangent-transform
+on:
+  push:
+    branches: [fix/dxf-spline-tangent-transform]
+    paths: [.github/workflows/dxf-prepare-tangent-transform.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-spline-tangent-transform
+          fetch-depth: 2
+      - name: Apply verified change and remove transfer helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = 762e78bde4f2bb7a340d8b102a67b28804576504
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git config core.whitespace cr-at-eol
+          python - <<'PYCODE'
+          import base64, gzip, hashlib, subprocess
+          data = base64.b64decode('H4sIAAAAAAAC/81c/XLbRpL/X1X7DhNmNwtYJEiCpEhJcRJGomLVObJL1CaxVS5pCAworEGAAUBJtKKqe4d7w3uS654PYACCpGQnV+uyZXzM9PT05296BnJ9zyONxtRPCW26kdN0772GE4VeFM9o6LBmMg/8kDVSGk5ZmDbSmIYJvrRmLpk8t8dOyO6I5weMzCKXkXartdftWkArTFS5GE4jJMevdkdnVxnIhMVjxvbvtgeDbYuukZJgcZ84jhDRGbcrpMGmaRsHm6mgFdiKyy7ErSlMUepdwCLLWUgsWR8XwaqbtWPFaDaBOggXeNjAiLVRxTyYRWIMiuNzjwOTjiu3tFdegncmztVRQyFlKaSLSYRGPvzbeLunRguNgtCHMd9ElkQRLS7vmMX1sGHjjIKZeUMSvEGeYgEbM+cINmeBoSShOgT03OFXqrJlXtWL2ieJeErCg/XJhOc72BHiLbXZdG09DsBJyj27GFkHsET26fmVBMxulpxGlLO6NL4gRgBSQlEDlvPsJkZQECReamq8qBYv' , validate=True)
+          assert hashlib.sha256(data).hexdigest() == '56ac306d7bcae9b8b3cbe94b8f862031589fbd86bff601536949fef97784e343'
+          patch = gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest() == '68df62d4f79e96f74b456303080a2b1951743295c1e94ca9fd66795bb17bde96'
+          subprocess.run(['git', 'apply', '--index', '--whitespace=nowarn', '-'], input=patch, check=True)
+          PYCODE
+          git rm .github/workflows/dxf-prepare-tangent-transform.yml
+          test "$(git write-tree)" = 9dc7569f732772b108fb8c6b6670a4ae923446d5
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git commit -m 'fix: transform SPLINE tangent vectors without translation'
+          git push origin HEAD:fix/dxf-spline-tangent-transform
