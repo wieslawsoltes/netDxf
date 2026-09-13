@@ -94,6 +94,7 @@ namespace netDxf.Entities
             : base("SOLID", description)
         {
             this.color1 = color ?? throw new ArgumentNullException(nameof(color));
+            ValidateTint(tint, nameof(tint));
             this.color2 = this.Color2FromTint(tint);
             this.singleColor = true;
             this.gradientType = type;
@@ -128,6 +129,17 @@ namespace netDxf.Entities
             this.gradientType = type;
             this.tint = 1.0;
             this.shift = 0.0;
+        }
+
+        // Restore authored DXF state without interpreting the dialog mode as a
+        // request to recompute the second color. Both RGB stops remain authoritative.
+        internal HatchGradientPattern(AciColor color1, AciColor color2, bool singleColor,
+            double tint, HatchGradientPatternType type)
+            : this(color1, color2, type)
+        {
+            ValidateTint(tint, nameof(tint));
+            this.singleColor = singleColor;
+            this.tint = tint;
         }
 
         #endregion
@@ -166,8 +178,8 @@ namespace netDxf.Entities
             get { return this.color2; }
             set
             {
-                this.singleColor = false;
                 this.color2 = value ?? throw new ArgumentNullException(nameof(value));
+                this.singleColor = false;
             }
         }
 
@@ -180,7 +192,7 @@ namespace netDxf.Entities
             set
             {
                 if (value)
-                    this.Color2 = this.Color2FromTint(this.tint);
+                    this.color2 = this.Color2FromTint(this.tint);
                 this.singleColor = value;
             }
         }
@@ -188,14 +200,19 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the gradient pattern tint.
         /// </summary>
-        /// <remarks>It only applies to single color gradient patterns.</remarks>
+        /// <remarks>
+        /// The value must be finite and in [0, 1]. Setting the tint derives Color2
+        /// only in single-color mode and does not change that mode. In two-color
+        /// mode the tint remains stored dialog metadata; neither RGB stop changes.
+        /// </remarks>
         public double Tint
         {
             get { return this.tint; }
             set
             {
+                ValidateTint(value, nameof(value));
                 if (this.singleColor)
-                    this.Color2 = this.Color2FromTint(value);
+                    this.color2 = this.Color2FromTint(value);
                 this.tint = value;
             }
         }
@@ -239,6 +256,13 @@ namespace netDxf.Entities
 
         #region private methods
 
+        private static void ValidateTint(double value, string parameterName)
+        {
+            if (double.IsNaN(value) || double.IsInfinity(value) || value < 0.0 || value > 1.0)
+                throw new ArgumentOutOfRangeException(parameterName, value,
+                    "The gradient tint must be finite and between zero and one.");
+        }
+
         private AciColor Color2FromTint(double value)
         {
             AciColor.ToHsl(this.color1, out double h, out double s, out double _);
@@ -251,9 +275,12 @@ namespace netDxf.Entities
 
         public override object Clone()
         {
-            HatchGradientPattern copy = new HatchGradientPattern
+            HatchGradientPattern copy = new HatchGradientPattern(
+                (AciColor) this.color1.Clone(), (AciColor) this.color2.Clone(),
+                this.singleColor, this.tint, this.gradientType)
             {
                 // Pattern
+                Description = this.Description,
                 Fill = this.Fill,
                 Type = this.Type,
                 IsDouble = this.IsDouble,
@@ -261,14 +288,13 @@ namespace netDxf.Entities
                 Angle = this.Angle,
                 Scale = this.Scale,
                 Style = this.Style,
-                // GraientPattern
-                GradientType = this.gradientType,
-                Color1 = (AciColor) this.color1.Clone(),
-                Color2 = (AciColor) this.color2.Clone(),
-                SingleColor = this.singleColor,
-                Tint = this.tint,
+                // Gradient metadata; colors and dialog state were copied without
+                // running editing setters or regenerating the authored second stop.
                 Shift = this.shift
             };
+
+            foreach (HatchPatternLineDefinition line in this.LineDefinitions)
+                copy.LineDefinitions.Add((HatchPatternLineDefinition) line.Clone());
 
             return copy;
         }
