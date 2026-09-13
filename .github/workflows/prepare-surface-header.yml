@@ -1,0 +1,48 @@
+name: Apply reviewed surface header routing fix
+on:
+  push:
+    branches: [fix/dxf-surface-header-routing]
+    paths: [.github/workflows/prepare-surface-header.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-surface-header-routing'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-surface-header-routing
+      - name: Apply exact reviewed assignments and verify locally tested files
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          p = Path('netDxf/IO/DxfReader.cs'); data = p.read_bytes()
+          assert hashlib.sha256(data).hexdigest() == 'd62650a2fb107cc9b6c8d13a0c1ec06d09ff0a55e406aed36168846e52e8a969'
+          for axis in 'UV':
+              old = f'this.doc.DrawingVariables.SplineSegs = surf{axis};'.encode()
+              new = f'this.doc.DrawingVariables.Surf{axis} = surf{axis};'.encode()
+              assert data.count(old) == 1
+              data = data.replace(old, new)
+          p.write_bytes(data)
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '3285c195f6039478777512f20856831e7e2a40e4f41bc91b37adf2381dea3566'
+          p.write_text(p.read_text().replace('        RegisterHeaderCommentTests();', '        RegisterHeaderCommentTests();\n        RegisterSurfaceDensityHeaderTests();'))
+          expected = {
+              'netDxf/IO/DxfReader.cs': '10763d3acfcce46e667bab745d62a98951827158e9d4987b91dca012d1a5fb09',
+              'tests/netDxf.Conformance/RegressionTests.cs': '5e00712ece67a675385bfdfa0d1e1728513da0e70910bb2474e5bb49336c98eb',
+              'tests/netDxf.Conformance/SurfaceDensityHeaderTests.cs': '2e632a0af1e3f607a9b5db0eb7fd3d440781a47a0909aa714218d54e8928340d',
+              'doc/dxf-conformance/surface-density-routing.md': '008a2b00588a017d5d36a2284db2a1c4cd7e1e2a80844b356d95a50ba409afb5'
+          }
+          for name, digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          Path('.github/workflows/prepare-surface-header.yml').unlink()
+      - name: Commit only the reviewed feature branch changes
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/IO/DxfReader.cs tests/netDxf.Conformance/RegressionTests.cs .github/workflows/prepare-surface-header.yml
+          git commit -m 'fix: route SURFU and SURFV to independent header properties'
+          git push origin HEAD:fix/dxf-surface-header-routing
