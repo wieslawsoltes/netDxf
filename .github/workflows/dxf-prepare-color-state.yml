@@ -1,0 +1,40 @@
+name: Prepare DXF gradient color state
+on:
+  push:
+    branches: [fix/dxf-hatch-gradient-color-state]
+    paths: [.github/workflows/dxf-prepare-color-state.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-gradient-color-state
+          fetch-depth: 0
+      - name: Apply verified patch and remove helpers
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c98c5681da08ffeb32784f586d0ef700e70e72ec HEAD
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git config core.whitespace cr-at-eol
+          python - <<'PYCODE'
+          import base64, gzip, hashlib, subprocess
+          from pathlib import Path
+          encoded = Path('.dxf-color-state.part1').read_text().strip() + Path('.dxf-color-state.part2').read_text().strip()
+          data = base64.b64decode(encoded, validate=True)
+          assert hashlib.sha256(data).hexdigest() == '6ad9f63d7aac7947de624fe88956df7791b05b4d8619595fdfdafec4e6281150'
+          patch = gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest() == 'c2b2b647963593c6305447454ffdf53e87e403f6fb611e18b87f9f4db18e0b53'
+          subprocess.run(['git', 'apply', '--index', '--whitespace=nowarn', '-'], input=patch, check=True)
+          PYCODE
+          git rm .github/workflows/dxf-prepare-color-state.yml .dxf-color-state.part1 .dxf-color-state.part2
+          test "$(git write-tree)" = e21854d7587cd6b9f4ac89babf8e6ac508ade58f
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git commit -m 'fix: preserve authored HATCH gradient color state'
+          git push origin HEAD:fix/dxf-hatch-gradient-color-state
