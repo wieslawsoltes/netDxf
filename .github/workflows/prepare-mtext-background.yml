@@ -1,0 +1,74 @@
+name: Apply reviewed MTEXT background integration
+on:
+  push:
+    branches: [codex/dxf-mtext-background]
+    paths: [.github/workflows/prepare-mtext-background.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/dxf-mtext-background'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/dxf-mtext-background
+      - name: Apply exact locally tested integration and verify all source hashes
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          before = {
+              'netDxf/Entities/MText.cs': '800f905f9ec2759af850fa3e81a1715a03a2ae736c2ae2e7c1a01cd6166c0a42',
+              'netDxf/IO/DxfReader.cs': '74296b7d8cb0f12630a4e0aea35d8c1f0386212d68fd5a09386691813c8b9a59',
+              'netDxf/IO/DxfWriter.cs': 'cdf859648c6d5e4c7654714220bc11a2e3f142577cb81b2442cf80618b40e229',
+              'tests/netDxf.Conformance/RegressionTests.cs': 'ba20bf96922cf4ea6c343dff212e7b169e6e70e3aeadf92f866f84aca8ad3981'
+          }
+          for name, digest in before.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          p = Path('netDxf/Entities/MText.cs'); data = p.read_bytes()
+          i = data.index(b'        public MTextDrawingDirection DrawingDirection\r\n')
+          start = data.rfind(b'        /// <summary>', 0, i)
+          addition = ('        /// <summary>Gets or sets optional background-fill and text-frame data.</summary>\r\n'
+              '        /// <remarks>Null means no background data. Clone creates an independent copy. Rendering is outside this model.</remarks>\r\n'
+              '        public MTextBackgroundFill BackgroundFill { get; set; }\r\n\r\n').encode()
+          data = data[:start] + addition + data[start:]
+          needle = b'                DrawingDirection = this.drawingDirection,\r\n'
+          assert data.count(needle) == 1
+          data = data.replace(needle, needle + b'                BackgroundFill = this.BackgroundFill == null ? null : (MTextBackgroundFill) this.BackgroundFill.Clone(),\r\n')
+          p.write_bytes(data)
+          p = Path('netDxf/IO/DxfReader.cs'); text = p.read_text()
+          a = text.index('        private MText ReadMText()'); b = text.index('        private Hatch ReadHatch()', a)
+          body = text[a:b]
+          body = body.replace('            List<XData> xData = new List<XData>();', '            List<XData> xData = new List<XData>();\n            MTextBackgroundFill background = null;')
+          body = body.replace('            while (this.chunk.Code != 0)\n            {\n                switch', '            while (this.chunk.Code != 0)\n            {\n                if (this.TryReadMTextBackground(ref background))\n                {\n                    this.chunk.Next();\n                    continue;\n                }\n                switch')
+          body = body.replace('                DrawingDirection = drawingDirection,', '                DrawingDirection = drawingDirection,\n                BackgroundFill = background,')
+          p.write_text(text[:a] + body + text[b:])
+          p = Path('netDxf/IO/DxfWriter.cs'); text = p.read_text()
+          text = text.replace('            this.encodedStrings = new Dictionary<string, string>();', '            this.ValidateMTextBackgroundVersions();\n\n            this.encodedStrings = new Dictionary<string, string>();', 1)
+          a = text.index('        private void WriteMText(MText mText)'); b = text.index('        private void WriteMTextChunks', a)
+          body = text[a:b].replace('            this.WriteXData(mText.XData);', '            this.WriteMTextBackground(mText.BackgroundFill);\n            this.WriteXData(mText.XData);')
+          p.write_text(text[:a] + body + text[b:])
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          p.write_text(p.read_text().replace('        RegisterMTextCloneDirectionTests();', '        RegisterMTextCloneDirectionTests();\n        RegisterMTextBackgroundTests();'))
+          expected = {
+              'netDxf/Entities/MText.cs': '8470b5d8625af300be2172fbcc248d9754638e2a603b154dca842a429814f2b7',
+              'netDxf/IO/DxfReader.cs': '832356b11c1a2e74d34e90caaca343073f99d5c401e1d6838889ec2209bc333e',
+              'netDxf/IO/DxfWriter.cs': '952333bc7e7c8712b5c23ed9a2b02e55d78720596fbad1bc991102596f55afbe',
+              'tests/netDxf.Conformance/RegressionTests.cs': '6ece2914c404251befdee6f390f5378ca7046cfd6e80dcc844e304449ed65aba',
+              'netDxf/Entities/MTextBackgroundFill.cs': 'bce11d46f5c86a9e62043b19762b93e6a0987e368f6ad6a5021841d5236a821a',
+              'netDxf/IO/DxfMTextBackground.cs': '3d9e64aeb8ff38e87210a4b61b365e7f307e057b918b7f66aca7ddff503d654a',
+              'tests/netDxf.Conformance/MTextBackgroundTests.cs': '9651794312994cb168f66552678a1483e1b8e7ee12e038882fb67d1c17fd3807',
+              'doc/dxf-conformance/mtext-background.md': 'd005f8ab9ebb1ada0f2e8757ddc353011ae167fb79021cd4a4b9337369f3cac3'
+          }
+          for name, digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          Path('.github/workflows/prepare-mtext-background.yml').unlink()
+      - name: Commit only reviewed integration on its feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/Entities/MText.cs netDxf/IO/DxfReader.cs netDxf/IO/DxfWriter.cs tests/netDxf.Conformance/RegressionTests.cs .github/workflows/prepare-mtext-background.yml
+          git commit -m 'feat: integrate MTEXT background read write and version preflight'
+          git push origin HEAD:codex/dxf-mtext-background
