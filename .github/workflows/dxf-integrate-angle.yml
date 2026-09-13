@@ -1,0 +1,41 @@
+name: Integrate gradient angle
+on:
+  push:
+    branches: [fix/dxf-hatch-gradient-angle]
+    paths: [.github/workflows/dxf-integrate-angle.yml]
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-gradient-angle
+          fetch-depth: 0
+      - name: Integrate pinned merged source and verify entire tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          base=f14661eff1f7fb5d09e35155215d9880fe1bad0c
+          test "$(git rev-parse origin/netstandard)" = "$base"
+          git merge --no-commit --no-ff "$base" || test "$(git diff --name-only --diff-filter=U)" = 'tests/netDxf.Conformance/RegressionTests.cs'
+          git show "$base:tests/netDxf.Conformance/RegressionTests.cs" > tests/netDxf.Conformance/RegressionTests.cs
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          s = p.read_text()
+          old = '        RegisterHatchEdgeDispatchTests();'
+          assert s.count(old) == 1
+          p.write_text(s.replace(old, old + '\n        RegisterHatchGradientAngleTests();'))
+          PY
+          git rm .github/workflows/dxf-integrate-angle.yml
+          git add tests/netDxf.Conformance/RegressionTests.cs
+          test "$(git write-tree)" = c29035e272d319b9e6e5149ed8e32b4484a457e0
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git commit -m 'fix: integrate gradient-angle regression with merged edge-packet coverage'
+          git push origin HEAD:fix/dxf-hatch-gradient-angle
