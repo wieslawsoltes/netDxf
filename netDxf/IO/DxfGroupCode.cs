@@ -77,6 +77,8 @@ namespace netDxf.IO
     /// <summary>Primitive encoding metadata for the group codes recognized by the modern codecs.</summary>
     /// <remarks>
     /// Encoding recognition is not permission to use a field in every record or DXF version.
+    /// Group 5 is classified as a handle without context. The obsolete DIMBLK name in a
+    /// DIMSTYLE table entry is an exception; use DxfTag.CreateDimensionStyleArrowName for that field.
     /// Negative AutoLISP-only codes and gaps without a known encoding are not supported.
     /// The broad legacy codec ranges within 1000 through 1071 are retained for compatibility;
     /// this is not a declaration that every code in those ranges is a defined XData field.

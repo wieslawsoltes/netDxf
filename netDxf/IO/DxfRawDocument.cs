@@ -291,12 +291,16 @@ namespace netDxf.IO
         {
             if (tags == null) throw new ArgumentNullException(nameof(tags));
             List<DxfTag> result = new List<DxfTag>();
+            DxfRawTagContext context = new DxfRawTagContext();
             foreach (DxfTag tag in tags)
             {
                 token.ThrowIfCancellationRequested();
                 if (tag == null) throw new ArgumentException("A raw DXF tag sequence cannot contain null.", nameof(tags));
                 if (result.Count >= options.MaximumTags) throw new InvalidDataException("Raw DXF exceeds the tag-count budget.");
                 CheckValueBudget(tag, options);
+                if (tag.Code == 5 && (tag.ValueType == DxfTagValueType.String) != context.Code5IsString)
+                    throw new ArgumentException("Group 5 requires a DIMBLK name only inside a DIMSTYLE table entry, and a handle elsewhere.", nameof(tags));
+                context.Advance(tag);
                 result.Add(tag);
             }
             return result;
@@ -361,13 +365,18 @@ namespace netDxf.IO
         private static IEnumerable<DxfTag> ReadTagCore(ICodeValueReader reader, DxfRawOptions options, CancellationToken token)
         {
             int count = 0;
+            DxfRawTagContext context = new DxfRawTagContext();
             while (true)
             {
                 token.ThrowIfCancellationRequested();
                 if (count++ >= options.MaximumTags) throw new InvalidDataException("Raw DXF exceeds the tag-count budget.");
+                reader.Code5IsString = context.Code5IsString;
                 reader.Next();
-                DxfTag tag = new DxfTag(reader.Code, reader.Value);
+                DxfTag tag = reader.Code == 5 && reader.Code5IsString
+                    ? DxfTag.CreateDimensionStyleArrowName(reader.ReadString())
+                    : new DxfTag(reader.Code, reader.Value);
                 CheckValueBudget(tag, options);
+                context.Advance(tag);
                 yield return tag;
                 if (Is(tag, 0, "EOF")) yield break;
             }
