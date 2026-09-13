@@ -1,0 +1,156 @@
+        private HatchBoundaryPath ReadEdgeBoundaryPath(int numEdges)
+        {
+            if (numEdges < 0) throw this.InvalidHatchEdgeData("negative edge count");
+            List<HatchBoundaryPath.Edge> edges = new List<HatchBoundaryPath.Edge>();
+            this.ReadNextHatchEdgeTag();
+            for (int i = 0; i < numEdges; i++)
+            {
+                this.RequireHatchEdgeCode(72);
+                short kind = this.chunk.ReadShort();
+                if (kind < 1 || kind > 4)
+                    throw this.InvalidHatchEdgeData("unsupported edge type " + kind);
+                this.ReadNextHatchEdgeTag();
+                switch ((HatchBoundaryPath.EdgeType) kind)
+                {
+                    case HatchBoundaryPath.EdgeType.Line:
+                        edges.Add(new HatchBoundaryPath.Line
+                        {
+                            Start = this.ReadHatchEdgePoint(10, 20),
+                            End = this.ReadHatchEdgePoint(11, 21)
+                        });
+                        break;
+                    case HatchBoundaryPath.EdgeType.Arc:
+                        edges.Add(new HatchBoundaryPath.Arc
+                        {
+                            Center = this.ReadHatchEdgePoint(10, 20),
+                            Radius = this.ReadHatchEdgeDouble(40),
+                            StartAngle = this.ReadHatchEdgeDouble(50),
+                            EndAngle = this.ReadHatchEdgeDouble(51),
+                            IsCounterclockwise = this.ReadHatchEdgeFlag(73)
+                        });
+                        break;
+                    case HatchBoundaryPath.EdgeType.Ellipse:
+                        edges.Add(new HatchBoundaryPath.Ellipse
+                        {
+                            Center = this.ReadHatchEdgePoint(10, 20),
+                            EndMajorAxis = this.ReadHatchEdgePoint(11, 21),
+                            MinorRatio = this.ReadHatchEdgeDouble(40),
+                            StartAngle = this.ReadHatchEdgeDouble(50),
+                            EndAngle = this.ReadHatchEdgeDouble(51),
+                            IsCounterclockwise = this.ReadHatchEdgeFlag(73)
+                        });
+                        break;
+                    case HatchBoundaryPath.EdgeType.Spline:
+                        edges.Add(this.ReadHatchSplineEdge());
+                        break;
+                }
+            }
+
+            int referenceCount = this.ReadHatchEdgeCount(97);
+            List<string> references = new List<string>();
+            for (int i = 0; i < referenceCount; i++)
+            {
+                this.RequireHatchEdgeCode(330);
+                references.Add(this.chunk.ReadHex());
+                this.ReadNextHatchEdgeTag();
+            }
+            if (this.chunk.Code == 72 || this.chunk.Code == 97 || this.chunk.Code == 330)
+                throw this.InvalidHatchEdgeData("excess edge or source-reference data");
+            HatchBoundaryPath path = new HatchBoundaryPath(edges);
+            this.hatchContours.Add(path, references);
+            return path;
+        }
+
+        private HatchBoundaryPath.Spline ReadHatchSplineEdge()
+        {
+            this.RequireHatchEdgeCode(94);
+            int degree = this.chunk.ReadInt();
+            // The typed edge model stores a short; never silently truncate the DXF integer.
+            if (degree < 1 || degree > short.MaxValue)
+                throw this.InvalidHatchEdgeData("spline degree cannot be represented by the positive Int16 typed model");
+            this.ReadNextHatchEdgeTag();
+            bool rational = this.ReadHatchEdgeFlag(73);
+            bool periodic = this.ReadHatchEdgeFlag(74);
+            int knotCount = this.ReadHatchEdgeCount(95);
+            int controlCount = this.ReadHatchEdgeCount(96);
+            // Only consumed data grows these collections, never a producer-controlled capacity.
+            List<double> knots = new List<double>();
+            for (int i = 0; i < knotCount; i++) knots.Add(this.ReadHatchEdgeDouble(40));
+            List<Vector3> controls = new List<Vector3>();
+            for (int i = 0; i < controlCount; i++)
+            {
+                Vector2 point = this.ReadHatchEdgePoint(10, 20);
+                double weight = this.chunk.Code == 42 ? this.ReadHatchEdgeDouble(42) : 1.0;
+                controls.Add(new Vector3(point.X, point.Y, weight));
+            }
+
+            // Retain the existing version/representation contract: fit data and tangents are
+            // validated and consumed here, but are not modeled by HatchBoundaryPath.Spline.
+            if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2010)
+            {
+                int fitCount = this.ReadHatchEdgeCount(97);
+                for (int i = 0; i < fitCount; i++) this.ReadHatchEdgePoint(11, 21);
+                if (this.chunk.Code == 12) this.ReadHatchEdgePoint(12, 22);
+                if (this.chunk.Code == 13) this.ReadHatchEdgePoint(13, 23);
+            }
+            return new HatchBoundaryPath.Spline
+            {
+                Degree = (short) degree,
+                IsRational = rational,
+                IsPeriodic = periodic,
+                Knots = knots.ToArray(),
+                ControlPoints = controls.ToArray()
+            };
+        }
+
+        private void ReadNextHatchEdgeTag()
+        {
+            do { this.chunk.Next(); } while (this.chunk.Code == 999);
+        }
+
+        private void RequireHatchEdgeCode(short code)
+        {
+            if (this.chunk.Code != code)
+                throw this.InvalidHatchEdgeData("expected group code " + code);
+        }
+
+        private double ReadHatchEdgeDouble(short code)
+        {
+            this.RequireHatchEdgeCode(code);
+            double value = this.chunk.ReadDouble();
+            this.ReadNextHatchEdgeTag();
+            return value;
+        }
+
+        private Vector2 ReadHatchEdgePoint(short xCode, short yCode)
+        {
+            double x = this.ReadHatchEdgeDouble(xCode);
+            double y = this.ReadHatchEdgeDouble(yCode);
+            return new Vector2(x, y);
+        }
+
+        private int ReadHatchEdgeCount(short code)
+        {
+            this.RequireHatchEdgeCode(code);
+            int value = this.chunk.ReadInt();
+            if (value < 0) throw this.InvalidHatchEdgeData("negative list count");
+            this.ReadNextHatchEdgeTag();
+            return value;
+        }
+
+        private bool ReadHatchEdgeFlag(short code)
+        {
+            this.RequireHatchEdgeCode(code);
+            short value = this.chunk.ReadShort();
+            if (value != 0 && value != 1) throw this.InvalidHatchEdgeData("expected a flag of zero or one");
+            this.ReadNextHatchEdgeTag();
+            return value != 0;
+        }
+
+        private InvalidDataException InvalidHatchEdgeData(string detail)
+        {
+            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid HATCH edge boundary at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, detail));
+        }
+
