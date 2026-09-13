@@ -371,6 +371,10 @@ namespace netDxf.Entities
             }
         }
 
+        /// <summary>Gets or sets optional background-fill and text-frame data.</summary>
+        /// <remarks>Null means no background data. Clone creates an independent copy. Rendering is outside this model.</remarks>
+        public MTextBackgroundFill BackgroundFill { get; set; }
+
         /// <summary>
         /// Get or sets the <see cref="MTextDrawingDirection">text drawing direction</see>.
         /// </summary>
@@ -965,6 +969,7 @@ namespace netDxf.Entities
                 LineSpacingFactor = this.lineSpacing,
                 LineSpacingStyle = this.lineSpacingStyle,
                 DrawingDirection = this.drawingDirection,
+                BackgroundFill = this.BackgroundFill == null ? null : (MTextBackgroundFill) this.BackgroundFill.Clone(),
                 RectangleWidth = this.rectangleWidth,
                 AttachmentPoint = this.attachmentPoint,
                 Style = (TextStyle) this.style.Clone(),
