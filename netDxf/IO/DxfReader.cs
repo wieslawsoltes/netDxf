@@ -9444,6 +9444,7 @@ namespace netDxf.IO
             bool associative = false;
             List<HatchBoundaryPath> paths = new List<HatchBoundaryPath>();
             List<XData> xData = new List<XData>();
+            List<Vector2> seedPoints = null;
 
             this.chunk.Next();
 
@@ -9490,8 +9491,11 @@ namespace netDxf.IO
                         break;
                     case 75:
                         // the next lines hold the information about the hatch pattern
-                        pattern = this.ReadHatchPattern(name);
+                        pattern = this.ReadHatchPattern(name, ref seedPoints);
                         pattern.Fill = fill;
+                        break;
+                    case 98:
+                        this.ReadHatchSeedPoints(ref seedPoints);
                         break;
                     case 1001:
                         string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
@@ -9513,6 +9517,10 @@ namespace netDxf.IO
                 Elevation = elevation,
                 Normal = normal
             };
+
+            entity.SeedPoints.Clear();
+            if (seedPoints != null)
+                foreach (Vector2 seed in seedPoints) entity.SeedPoints.Add(seed);
 
             this.hatchToPaths.Add(entity, paths);
 
@@ -9829,7 +9837,45 @@ namespace netDxf.IO
             return path;
         }
 
-        private HatchPattern ReadHatchPattern(string name)
+        private void ReadHatchSeedPoints(ref List<Vector2> seedPoints)
+        {
+            if (seedPoints != null)
+                throw this.InvalidHatchSeedData("duplicate group-98 list");
+            int count = this.chunk.ReadInt();
+            if (count < 0)
+                throw this.InvalidHatchSeedData("negative group-98 count");
+
+            // Allocate from consumed input, never from a producer-controlled capacity.
+            List<Vector2> values = new List<Vector2>();
+            this.ReadNextHatchSeedTag();
+            for (int i = 0; i < count; i++)
+            {
+                if (this.chunk.Code != 10)
+                    throw this.InvalidHatchSeedData("expected group 10 for seed X");
+                double x = this.chunk.ReadDouble();
+                this.ReadNextHatchSeedTag();
+                if (this.chunk.Code != 20)
+                    throw this.InvalidHatchSeedData("expected group 20 for seed Y");
+                double y = this.chunk.ReadDouble();
+                values.Add(new Vector2(x, y));
+                this.ReadNextHatchSeedTag();
+            }
+            seedPoints = values;
+        }
+
+        private void ReadNextHatchSeedTag()
+        {
+            do { this.chunk.Next(); } while (this.chunk.Code == 999);
+        }
+
+        private InvalidDataException InvalidHatchSeedData(string detail)
+        {
+            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid HATCH seed-point data at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, detail));
+        }
+
+        private HatchPattern ReadHatchPattern(string name, ref List<Vector2> seedPoints)
         {
             HatchPattern hatch = null;
             double angle = 0.0;
@@ -9858,7 +9904,7 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 98:
-                        this.chunk.Next();
+                        this.ReadHatchSeedPoints(ref seedPoints);
                         break;
                     case 10:
                         this.chunk.Next();
