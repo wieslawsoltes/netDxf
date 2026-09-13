@@ -1,0 +1,41 @@
+name: Apply checked HATCH XData preservation
+on:
+  push:
+    branches: [fix/dxf-hatch-xdata-preservation]
+    paths: [.github/workflows/prepare-hatch-xdata.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-hatch-xdata-preservation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-xdata-preservation
+      - name: Verify exact tested patch and complete tree before committing
+        shell: python
+        run: |
+          from pathlib import Path
+          import gzip, hashlib, os, subprocess
+          parts = [Path('.github/patches/hatch-xdata-' + str(i) + '.bin') for i in range(3)]
+          data = b''.join(p.read_bytes() for p in parts)
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == '65515a4079b8043bf05c703a7fa15933a527d446'
+          patch = gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest() == '42eba2d48e62ddc041f7feb6fbc4918b13aa3be5702eb03cf05a2fcad73ab065'
+          path = Path(os.environ['RUNNER_TEMP']) / 'hatch-xdata.patch'
+          path.write_bytes(patch)
+          subprocess.run(['git', 'apply', '--check', str(path)], check=True)
+          subprocess.run(['git', 'apply', str(path)], check=True)
+          for p in parts: p.unlink()
+          workflow = Path('.github/workflows/prepare-hatch-xdata.yml'); workflow.unlink()
+          paths = ['netDxf/IO/DxfReader.cs', 'netDxf/IO/DxfWriter.cs', 'netDxf/IO/HatchPatternXData.cs', 'tests/netDxf.Conformance/RegressionTests.cs', 'tests/netDxf.Conformance/HatchXDataPreservationTests.cs', 'tools/verify_hatch_xdata_preservation.py', 'doc/dxf-conformance/hatch-xdata-preservation.md']
+          subprocess.run(['git', 'add', *paths, *[str(p) for p in parts], str(workflow)], check=True)
+          assert subprocess.check_output(['git', 'write-tree'], text=True).strip() == 'ca9b48a22380d461a76d08e6ea63426d0648ea63'
+      - name: Commit only the isolated feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: preserve HATCH XData without destructive source mutation'
+          git push origin HEAD:fix/dxf-hatch-xdata-preservation
