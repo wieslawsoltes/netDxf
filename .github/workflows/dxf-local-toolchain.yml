@@ -1,0 +1,40 @@
+name: DXF local test toolchain
+on:
+  push:
+    branches: [fix/dxf-hatch-pattern-validation]
+    paths: [.github/workflows/dxf-local-toolchain.yml]
+permissions:
+  contents: read
+jobs:
+  toolchain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Package runtime, compiler and reference assemblies
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$(dirname "$(readlink -f "$(command -v dotnet)")")"
+          sdk="$(dotnet --version)"
+          runtime="$(dotnet --list-runtimes | awk '$1 == "Microsoft.NETCore.App" && $2 ~ /^8\./ {print $2}' | sort -V | tail -1)"
+          ref="$(find "$root/packs/Microsoft.NETCore.App.Ref" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)"
+          mkdir -p out/portable/sdk/"$sdk" out/portable/shared/Microsoft.NETCore.App out/portable/host/fxr out/portable/packs/Microsoft.NETCore.App.Ref
+          cp "$root/dotnet" out/portable/
+          cp -a "$root/sdk/$sdk/Roslyn" "out/portable/sdk/$sdk/"
+          cp -a "$root/shared/Microsoft.NETCore.App/$runtime" out/portable/shared/Microsoft.NETCore.App/
+          cp -a "$root/host/fxr/$runtime" out/portable/host/fxr/
+          cp -a "$root/packs/Microsoft.NETCore.App.Ref/$ref" out/portable/packs/Microsoft.NETCore.App.Ref/
+          dotnet --info > out/dotnet-info.txt
+          tar -czf out/toolchain.tar.gz -C out portable
+          sha256sum out/toolchain.tar.gz > out/toolchain.sha256
+          rm -rf out/portable
+      - name: Download independent-reader development wheels
+        run: python -m pip download --only-binary=:all: --dest out/wheels ezdxf==1.4.4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dxf-offline-test-toolchain
+          path: out/
+          retention-days: 2
