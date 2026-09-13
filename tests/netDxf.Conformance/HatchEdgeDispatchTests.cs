@@ -246,7 +246,7 @@ internal static partial class Program
         {
             case 0: tags[fit] = new(97, -1); break;
             case 1: tags[fit] = new(97, 1); break;
-            case 2: tags[fit] = new(97, 1); tags.InsertRange(fit + 1, new DxfTag[] { new(11, 0.0), new(21, 0.0) }); break;
+            case 2: tags[fit] = new(97, 1); tags.InsertRange(fit + 1, new DxfTag[] { new(11, 0.0), new(22, 0.0) }); break;
             case 3: tags.InsertRange(fit + 1, new DxfTag[] { new(12, 1.0), new(23, 0.0) }); break;
             case 4: tags.Insert(fit + 1, new(13, 1.0)); break;
             case 5: tags[fit] = new(98, 0); break;
