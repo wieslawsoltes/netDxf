@@ -4748,6 +4748,7 @@ namespace netDxf.IO
         private Mesh ReadMesh()
         {
             int subdivisionLevel = 0;
+            bool blendCrease = false;
             List<Vector3> vertexes = null;
             List<int[]> faces = null;
             List<MeshEdge> edges = null;
@@ -4757,6 +4758,13 @@ namespace netDxf.IO
             {
                 switch (this.chunk.Code)
                 {
+                    case 72:
+                        short blend = this.chunk.ReadShort();
+                        if (blend != 0 && blend != 1)
+                            throw new InvalidDataException("MESH group 72 (Blend Crease) must be zero or one.");
+                        blendCrease = blend == 1;
+                        this.chunk.Next();
+                        break;
                     case 91:
                         subdivisionLevel = this.chunk.ReadInt();
                         if (subdivisionLevel < 0 || subdivisionLevel > 255)
@@ -4808,6 +4816,7 @@ namespace netDxf.IO
             Mesh entity = new Mesh(vertexes, faces, edges)
             {
                 SubdivisionLevel = (byte) subdivisionLevel,
+                BlendCrease = blendCrease,
             };
 
             entity.XData.AddRange(xData);

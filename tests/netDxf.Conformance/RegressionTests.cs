@@ -35,5 +35,6 @@ internal static partial class Program
         RegisterRawLegacyProfileTests();
         RegisterRawR12Tests();
         RegisterMeshVersionTests();
+        RegisterMeshBlendCreaseTests();
     }
 }
