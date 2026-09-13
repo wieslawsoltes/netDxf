@@ -1,0 +1,72 @@
+name: Apply reviewed CLASS definition integration
+on:
+  push:
+    branches: [feature/dxf-class-definitions]
+    paths: [.github/workflows/prepare-class-definitions.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-class-definitions'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/dxf-class-definitions
+      - name: Apply only reviewed integration and validate complete file hashes
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          before = {
+              'netDxf/DxfDocument.cs': '175c0bcd7212c474ba3dae41e57b8694b5572ae821823d5dff74ffbba8a1156a',
+              'netDxf/IO/DxfReader.cs': '10763d3acfcce46e667bab745d62a98951827158e9d4987b91dca012d1a5fb09',
+              'netDxf/IO/DxfWriter.cs': 'a5b0602b25ecd5d5fc3af71e688f6fba228052a9a7c85fc85107006ae99950a2',
+              'tests/netDxf.Conformance/RegressionTests.cs': '5e00712ece67a675385bfdfa0d1e1728513da0e70910bb2474e5bb49336c98eb'
+          }
+          for name, digest in before.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          license = Path('netDxf/IO/DxfReader.cs').read_text().split('using System;')[0]
+          for name in ['netDxf/DxfClass.cs', 'netDxf/Collections/DxfClassCollection.cs', 'netDxf/DxfDocument.Classes.cs', 'netDxf/IO/DxfClasses.cs']:
+              p = Path(name); text = p.read_text(); assert text.startswith('using ')
+              p.write_text(license + text)
+          p = Path('netDxf/DxfDocument.cs'); data = p.read_bytes()
+          old = b'public sealed class DxfDocument :'; assert data.count(old) == 1
+          p.write_bytes(data.replace(old, b'public sealed partial class DxfDocument :'))
+          p = Path('netDxf/IO/DxfReader.cs'); s = p.read_text()
+          a = s.index('        private void ReadClasses()'); b = s.index('        private void ReadTables()', a)
+          old = '            this.chunk.Next();\n            while (this.chunk.ReadString() != DxfObjectCode.EndSection)\n            {\n                this.ReadUnknowData();\n            }\n'
+          part = s[a:b]; assert part.count(old) == 1
+          p.write_text(s[:a] + part.replace(old, '            this.ReadClassDefinitions();\n') + s[b:])
+          p = Path('netDxf/IO/DxfWriter.cs'); s = p.read_text()
+          marker = '            this.ValidateMTextBackgroundVersions();'; assert s.count(marker) == 1
+          s = s.replace(marker, marker + '\n            DxfClassCollection classDefinitions = this.PrepareClassDefinitions();')
+          a = s.index('            this.WriteRasterVariablesClass(1);'); b = s.index('            this.EndSection();', a)
+          s = s[:a] + '            foreach (DxfClass definition in classDefinitions)\n            {\n                this.WriteClassDefinition(definition);\n            }\n' + s[b:]
+          a = s.index('        #region methods for Classes section'); b = s.index('        #region methods for Table section', a)
+          p.write_text(s[:a] + s[b:])
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          p.write_text(p.read_text().replace('        RegisterSurfaceDensityHeaderTests();', '        RegisterSurfaceDensityHeaderTests();\n        RegisterClassDefinitionTests();'))
+          expected = {
+              'netDxf/DxfDocument.cs': 'b3ac674389822d646e99429ed6460b56af3447c6f362495d758bf4c2f43de382',
+              'netDxf/IO/DxfReader.cs': '60b803facda8a7f96d9f8251d89a1894cc95bbecbfb792d67087f92c96100c7e',
+              'netDxf/IO/DxfWriter.cs': 'a62dcc2aa1178556123037218e946666a2cc2e9916fb134e462c6751cc1ae1e8',
+              'tests/netDxf.Conformance/RegressionTests.cs': 'bab9083fbb028638b160d413211b7fdfe872f382a86bff39e481371ae5246431',
+              'netDxf/DxfClass.cs': 'b267f6de9ddbc24ff0ae583aac866708441855293919794a4dddb5e3d4e544b3',
+              'netDxf/Collections/DxfClassCollection.cs': 'ea869af0270a6bc2b6feea97db5d10d8739b62f24fbfe40ab6d2b0d9cc1995cb',
+              'netDxf/DxfDocument.Classes.cs': '78bd2ef0a0bff627868708e1a21dcd4e02e0ec6f50ed31c4801ed86e8b461c0a',
+              'netDxf/IO/DxfClasses.cs': '495c754eb5dcb8c7232f77a879c8742d1064509ffa57a7ec8d5b8a97722d1071',
+              'tests/netDxf.Conformance/ClassDefinitionTests.cs': '975145032579e6608f1f551397ac9656469800718cbe180f6ab2c2f5df08c74c',
+              'doc/dxf-conformance/class-definitions.md': 'd89e7f722ab719e0eebb4a7b2cd689dbff3fc91058705f63fe3fd336b88907f6'
+          }
+          for name, digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          Path('.github/workflows/prepare-class-definitions.yml').unlink()
+      - name: Commit verified implementation only to the feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/DxfDocument.cs netDxf/IO/DxfReader.cs netDxf/IO/DxfWriter.cs tests/netDxf.Conformance/RegressionTests.cs netDxf/DxfClass.cs netDxf/Collections/DxfClassCollection.cs netDxf/DxfDocument.Classes.cs netDxf/IO/DxfClasses.cs .github/workflows/prepare-class-definitions.yml
+          git commit -m 'feat: integrate typed CLASS preservation and raster reconciliation'
+          git push origin HEAD:feature/dxf-class-definitions
