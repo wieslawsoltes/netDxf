@@ -1,0 +1,57 @@
+name: Apply reviewed custom HEADER Unicode correction
+on:
+  push:
+    branches: [codex/dxf-header-unicode]
+    paths: [.github/workflows/prepare-header-unicode.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/dxf-header-unicode'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/dxf-header-unicode
+      - name: Apply locally tested codec calls and verify complete file hashes
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          p = Path('netDxf/IO/DxfReader.cs'); text = p.read_text()
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '832356b11c1a2e74d34e90caaca343073f99d5c401e1d6838889ec2209bc333e'
+          before = '                                variable = new HeaderVariable(varName, this.chunk.Code, this.chunk.Value);'
+          after = '\n'.join([
+              '                                object value = this.chunk.Value;',
+              '                                if (value is string text)',
+              '                                {',
+              '                                    value = this.DecodeEncodedNonAsciiCharacters(text);',
+              '                                }',
+              '                                variable = new HeaderVariable(varName, this.chunk.Code, value);'])
+          assert text.count(before) == 1; p.write_text(text.replace(before, after))
+          p = Path('netDxf/IO/DxfWriter.cs'); text = p.read_text()
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '24856cbff312401b9329457856117c381e3dfaf290e36b67d74d455054adeab7'
+          before = '                else\n                {\n                    this.chunk.Write(variable.GroupCode, variable.Value);\n                }'
+          after = '                else if (variable.Value is string text)\n                {\n                    this.chunk.Write(variable.GroupCode, this.EncodeNonAsciiCharacters(text));\n                }\n' + before
+          assert text.count(before) == 1; p.write_text(text.replace(before, after))
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '034d5476adeaae19480c571500c0acac2317ab91827b629c962989f5dbcca149'
+          p.write_text(p.read_text().replace('        RegisterRasterOwnershipTests();', '        RegisterRasterOwnershipTests();\n        RegisterCustomHeaderUnicodeTests();'))
+          expected = {
+              'netDxf/IO/DxfReader.cs': '82416b5d45d579cd5e5f969e07e8ca5227015ec780998f80ab3316db8cd93e03',
+              'netDxf/IO/DxfWriter.cs': 'a5b0602b25ecd5d5fc3af71e688f6fba228052a9a7c85fc85107006ae99950a2',
+              'tests/netDxf.Conformance/RegressionTests.cs': '6e7d638a98bffc9ed4fd1d1e6e0344d3a0bddf14f023a514e23749d73fa3aeeb',
+              'tests/netDxf.Conformance/CustomHeaderUnicodeTests.cs': '8f6c0c771d17964aebb122f49fbd894928fc4b1002bf4f6bb9e22b21458bd0dd',
+              'doc/dxf-conformance/custom-header-unicode.md': '96a28d6340ec66af240a9e8d8910ecfecdc38fc05f835e2034485f7dced627f3'
+          }
+          for name, digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          Path('.github/workflows/prepare-header-unicode.yml').unlink()
+      - name: Commit the checked correction only on its feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/IO/DxfReader.cs netDxf/IO/DxfWriter.cs tests/netDxf.Conformance/RegressionTests.cs .github/workflows/prepare-header-unicode.yml
+          git commit -m 'fix: apply document Unicode codec to custom HEADER strings'
+          git push origin HEAD:codex/dxf-header-unicode
