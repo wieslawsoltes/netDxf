@@ -44,5 +44,6 @@ internal static partial class Program
         RegisterHatchPixelSizeApiTests();
         RegisterHatchXDataPreservationTests();
         RegisterHatchPolylineClosureTests();
+        RegisterHatchPolylineInputTests();
     }
 }
