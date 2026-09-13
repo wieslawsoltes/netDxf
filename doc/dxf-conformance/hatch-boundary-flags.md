@@ -35,3 +35,7 @@ Autodesk defines group 92 as the bit-coded Default/External/Polyline/Derived/Tex
 https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-DXF/files/GUID-DC5215D6-E73F-4DFF-8BE9-01CA9610FAEE.htm
 
 Counted non-polyline edge grammar, spline fit/tangent data, fractional gradient shift, complete affine geometry handling and dependency-safe associations remain separate work. Path updates retain existing nontransactional failure behavior and applicability to associated contours.
+
+## Integration with concurrent pattern-list work
+
+PR #47 was developed independently against the same merged PR #46 base and has now merged as `a54698d1a2e033cab0d4f0a0e6e2e51b5ed91858` (tree `0e7308a2ac536e25a4c37060bdab07112b89d77a`). Its pattern parser, 450 tests and verifier are retained alongside this classification correction; both test registrations remain active. The combined signed-library suite passes **7,970 cases / 0 failures** in local Debug and Release. The initial red/green counts above describe the original PR #46-based comparison, not a fabricated test run on the integrated base. Final-head CI must use this integrated tree.
