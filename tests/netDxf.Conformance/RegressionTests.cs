@@ -18,5 +18,6 @@ internal static partial class Program
         RegisterMTextCloneDirectionTests();
         RegisterMTextBackgroundTests();
         RegisterRasterOwnershipTests();
+        RegisterCustomHeaderUnicodeTests();
     }
 }
