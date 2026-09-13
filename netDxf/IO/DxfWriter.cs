@@ -285,6 +285,10 @@ namespace netDxf.IO
                     this.chunk.Write(10, vector.X);
                     this.chunk.Write(20, vector.Y);
                 }
+                else if (variable.Value is string text)
+                {
+                    this.chunk.Write(variable.GroupCode, this.EncodeNonAsciiCharacters(text));
+                }
                 else
                 {
                     this.chunk.Write(variable.GroupCode, variable.Value);

@@ -662,7 +662,12 @@ namespace netDxf.IO
                             }
                             else
                             {
-                                variable = new HeaderVariable(varName, this.chunk.Code, this.chunk.Value);
+                                object value = this.chunk.Value;
+                                if (value is string text)
+                                {
+                                    value = this.DecodeEncodedNonAsciiCharacters(text);
+                                }
+                                variable = new HeaderVariable(varName, this.chunk.Code, value);
                                 this.chunk.Next();
                             }
 
