@@ -1,0 +1,53 @@
+name: Align path oracle with documented drive matching
+on:
+  push:
+    branches: [fix/dxf-support-lookup]
+    paths: [.github/workflows/prepare-support-oracle.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-support-lookup
+      - name: Apply checked test-only correction and documentation
+        shell: python
+        run: |
+          from pathlib import Path
+          import subprocess
+          p = Path('tests/netDxf.Conformance/SupportFolderLookupTests.cs')
+          s = p.read_text()
+          old = '                string expected = Path.GetFullPath(path, basePath);'
+          new = '\n'.join([
+              '                // .NET 8 compares drive names case-sensitively here; current .NET uses',
+              '                // ordinal-ignore-case. Normalize only this oracle input for the same drive.',
+              '                string oraclePath = path;',
+              '                string root = Path.GetPathRoot(basePath)!;',
+              r'                int driveOffset = root.StartsWith(@"\\?\", StringComparison.Ordinal) || root.StartsWith(@"\\.\", StringComparison.Ordinal) ? 4 : 0;',
+              "                if (OperatingSystem.IsWindows() && path.Length >= 2 && path[1] == ':' &&",
+              "                    root.Length > driveOffset + 1 && root[driveOffset + 1] == ':' &&",
+              '                    char.ToUpperInvariant(path[0]) == char.ToUpperInvariant(root[driveOffset]))',
+              '                    oraclePath = root[driveOffset] + path[1..];',
+              '                string expected = Path.GetFullPath(oraclePath, basePath);'])
+          assert s.count(old) == 1
+          p.write_text(s.replace(old, new))
+          p = Path('doc/dxf-conformance/support-folder-lookup.md')
+          s = p.read_text()
+          old = 'Modern-runtime path-oracle tests compare this compatibility code against `Path.GetFullPath(path, basePath)` without opening UNC/device resources.'
+          new = old + ' Same-drive recognition is case-insensitive, matching the current .NET implementation. .NET 8 instead compares drive names case-sensitively in this specific overload; the oracle normalizes same-drive letter casing before calling that older implementation, while the resolver itself receives the original input.'
+          assert s.count(old) == 1
+          s = s.replace(old, new)
+          s += '\n' + r"The first Windows CI run identified only the older runtime's drive-letter case comparison: `c:drive.shx` against `C:\projects\drawings` resolved at the drive root in .NET 8. The current official .NET source uses ordinal-ignore-case for that comparison. The test oracle was made version-aware for that one input distinction; the production case-insensitive resolver was retained. See the .NET 8 source (blob `e5ee3e8fec49f02f9fb7d7610daad9ada2149be1`): https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/IO/Path.Windows.cs" + '\n'
+          p.write_text(s)
+          Path('.github/workflows/prepare-support-oracle.yml').unlink()
+          subprocess.run(['git', 'add', 'tests/netDxf.Conformance/SupportFolderLookupTests.cs', 'doc/dxf-conformance/support-folder-lookup.md', '.github/workflows/prepare-support-oracle.yml'], check=True)
+          assert subprocess.check_output(['git', 'write-tree'], text=True).strip() == 'afcba19aa21bd94c85a59b7f3cb89aeb5b2b4688'
+      - name: Commit only the feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'test: account for older runtime drive-case behavior in path oracle'
+          git push origin HEAD:fix/dxf-support-lookup
