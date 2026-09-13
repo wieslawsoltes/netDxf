@@ -32,7 +32,8 @@ jobs:
           sha256sum out/toolchain.tar.gz > out/toolchain.sha256
           rm -rf out/portable
       - name: Download independent-reader development wheels
-        run: python -m pip download --only-binary=:all: --dest out/wheels ezdxf==1.4.4
+        run: |
+          python -m pip download --only-binary=:all: --dest out/wheels ezdxf==1.4.4
       - uses: actions/upload-artifact@v4
         with:
           name: dxf-offline-test-toolchain
