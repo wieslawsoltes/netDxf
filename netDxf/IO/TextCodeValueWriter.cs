@@ -338,8 +338,15 @@ namespace netDxf.IO
 
         public void WriteDouble(double value)
         {
-            // float values always use the dot as the decimal separator
-            this.writer.WriteLine(value.ToString("0.0###############", CultureInfo.InvariantCulture));
+            // G17 preserves all significant binary64 digits on every target, including
+            // .NET Framework where the R format has known round-trip limitations.
+            // Keep signed zero explicit even on runtimes whose formatter normalizes it.
+            string text = value == 0.0
+                ? (BitConverter.DoubleToInt64Bits(value) < 0 ? "-0.0" : "0.0")
+                : value.ToString("G17", CultureInfo.InvariantCulture);
+            if (text.IndexOf('.') < 0 && text.IndexOf('E') < 0 &&
+                !double.IsNaN(value) && !double.IsInfinity(value)) text += ".0";
+            this.writer.WriteLine(text);
         }
 
         public void Flush()
