@@ -35,6 +35,7 @@ namespace netDxf.IO
         #region private fields
 
         private readonly BinaryWriter writer;
+        private readonly bool legacyGroupCodes;
         private short dxfCode;
         private object dxfValue;
 
@@ -43,8 +44,14 @@ namespace netDxf.IO
         #region constructors
 
         public BinaryCodeValueWriter(BinaryWriter writer)
+            : this(writer, false)
+        {
+        }
+
+        public BinaryCodeValueWriter(BinaryWriter writer, bool legacyGroupCodes)
         {
             this.writer = writer;
+            this.legacyGroupCodes = legacyGroupCodes;
 
             // binary DXF file begins with a 22-byte sentinel consisting of the following
             // AutoCAD Binary DXF<CR><LF><SUB><NULL>
@@ -83,8 +90,19 @@ namespace netDxf.IO
         {
             // Validate before writing the code or changing the current-tag state.
             if ((code >= 310 && code <= 319) || code == 1004) ValidateBinaryChunk(value);
+            if (this.legacyGroupCodes && (code == 999 || !DxfGroupCode.TryGetValueType(code, out _)))
+                throw new ArgumentOutOfRangeException(nameof(code), code, "No supported legacy binary DXF value encoding exists for this group code.");
             this.dxfCode = code;
-            this.writer.Write(code);
+            if (this.legacyGroupCodes)
+            {
+                if (code >= 255)
+                {
+                    this.writer.Write((byte)255);
+                    this.writer.Write(code);
+                }
+                else this.writer.Write((byte)code);
+            }
+            else this.writer.Write(code);
 
             if (code >= 0 && code <= 9) // string
             {

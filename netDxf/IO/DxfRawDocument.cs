@@ -39,7 +39,7 @@ namespace netDxf.IO
     /// This is a preservation API, separate from DxfDocument's typed geometry model. It does not
     /// evaluate entities, repair ownership, remap handles, execute application data or downgrade schemas.
     /// Unchanged same-transport saves reproduce the original bytes. Edited or cross-transport saves
-    /// normalize lexical formatting while retaining tag order and values. R13 and later profiles only.
+    /// normalize lexical formatting while retaining tag order and values. R11/R12 and later profiles only.
     /// </remarks>
     public sealed class DxfRawDocument
     {
@@ -100,19 +100,26 @@ namespace netDxf.IO
             options = options ?? new DxfRawOptions();
             byte[] bytes = ReadBounded(stream, options.MaximumBytes, cancellationToken);
             bool binary = HasBinaryPrefix(bytes);
+            // Every supported binary file begins with a group-0 structural string. Modern
+            // framing places a second zero code byte before that string; pre-R13 does not.
+            // Detect framing, not an arbitrary occurrence of $ACADVER in payload data.
+            bool legacyGroupCodes = binary && bytes.Length > 23 && bytes[22] == 0 && bytes[23] != 0;
             if (!binary && HasUnsupportedBom(bytes))
                 throw new NotSupportedException("This raw DXF profile supports ASCII-compatible code pages and UTF-8, not UTF-16/UTF-32 transports.");
 
             // Bootstrap with a byte-preserving single-byte encoding. Only the ASCII profile fields
             // are used here; the real pass uses the declared encoding with exception fallbacks.
             DxfRawOptions bootstrap = new DxfRawOptions(options.MaximumBytes, options.MaximumTags, options.MaximumBytes);
-            List<DxfTag> header = FindHeader(ReadTags(bytes, binary, Encoding.GetEncoding(28591), bootstrap, cancellationToken));
+            List<DxfTag> header = FindHeader(ReadTags(bytes, binary, Encoding.GetEncoding(28591), bootstrap, cancellationToken, legacyGroupCodes));
             string versionName, codePage;
             ReadProfile(header, out versionName, out codePage);
-            Encoding encoding = ResolveEncoding(ParseVersion(versionName), codePage);
+            DxfVersion version = ParseVersion(versionName);
+            if (binary && legacyGroupCodes != (version < DxfVersion.AutoCad13))
+                throw new FormatException("Binary DXF group-code framing conflicts with its declared $ACADVER profile.");
+            Encoding encoding = ResolveEncoding(version, codePage);
             if (!binary && HasUtf8Bom(bytes) && encoding.CodePage != 65001)
                 throw new NotSupportedException("A UTF-8 byte-order mark conflicts with the legacy raw DXF encoding profile.");
-            List<DxfTag> tags = Snapshot(ReadTags(bytes, binary, encoding, options, cancellationToken), options, cancellationToken);
+            List<DxfTag> tags = Snapshot(ReadTags(bytes, binary, encoding, options, cancellationToken, legacyGroupCodes), options, cancellationToken);
             return new DxfRawDocument(tags, binary, bytes, options);
         }
 
@@ -262,7 +269,7 @@ namespace netDxf.IO
                 {
                     using (BinaryWriter writer = new BinaryWriter(output, this.encoding, true))
                     {
-                        WriteTags(new BinaryCodeValueWriter(writer), this.Tags, cancellationToken);
+                        WriteTags(new BinaryCodeValueWriter(writer, this.Version < DxfVersion.AutoCad13), this.Tags, cancellationToken);
                     }
                 }
                 else
@@ -332,7 +339,7 @@ namespace netDxf.IO
         }
 
         private static IEnumerable<DxfTag> ReadTags(byte[] bytes, bool binary, Encoding encoding,
-            DxfRawOptions options, CancellationToken token)
+            DxfRawOptions options, CancellationToken token, bool legacyGroupCodes)
         {
             using (MemoryStream input = new MemoryStream(bytes, false))
             {
@@ -340,7 +347,7 @@ namespace netDxf.IO
                 {
                     using (BinaryReader reader = new BinaryReader(input, encoding, true))
                     {
-                        foreach (DxfTag tag in ReadTagCore(new BinaryCodeValueReader(reader, encoding), options, token)) yield return tag;
+                        foreach (DxfTag tag in ReadTagCore(new BinaryCodeValueReader(reader, encoding, legacyGroupCodes), options, token)) yield return tag;
                         if (input.Position != input.Length) throw new FormatException("Unexpected bytes after binary DXF EOF.");
                     }
                 }
@@ -498,10 +505,10 @@ namespace netDxf.IO
             DxfVersion version = StringEnum<DxfVersion>.Parse(name, StringComparison.OrdinalIgnoreCase);
             switch (version)
             {
-                case DxfVersion.AutoCad13: case DxfVersion.AutoCad14:
+                case DxfVersion.AutoCad12: case DxfVersion.AutoCad13: case DxfVersion.AutoCad14:
                 case DxfVersion.AutoCad2000: case DxfVersion.AutoCad2004: case DxfVersion.AutoCad2007:
                 case DxfVersion.AutoCad2010: case DxfVersion.AutoCad2013: case DxfVersion.AutoCad2018: return version;
-                default: throw new DxfVersionNotSupportedException("This raw DXF profile requires a recognized R13–2018 database family.", version);
+                default: throw new DxfVersionNotSupportedException("This raw DXF profile requires a recognized R11/R12–2018 database family.", version);
             }
         }
 

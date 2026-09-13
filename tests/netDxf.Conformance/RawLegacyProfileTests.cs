@@ -100,7 +100,7 @@ internal static partial class Program
         using var cancelled = new MemoryStream(bytes);
         Throws<OperationCanceledException>(() => DxfRawDocument.Load(cancelled, cancellationToken: new CancellationToken(true)));
         Check(cancelled.CanRead, "Legacy cancellation closed input");
-        foreach (string unsupported in new[] { "AC1009", "AC1034", "VENDOR_UNKNOWN" })
+        foreach (string unsupported in new[] { "AC1006", "AC1034", "VENDOR_UNKNOWN" })
         {
             var changed = tags.Select(t => t.Code == 1 ? new DxfTag(1, unsupported) : t);
             Throws<DxfVersionNotSupportedException>(() => LoadRaw(RawFixtureBytes(changed, binary)));

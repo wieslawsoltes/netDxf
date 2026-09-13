@@ -31,6 +31,18 @@
       "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/LICENSE",
       "git_blob": "33a77673a9100f1f8553745ac6c924a6b8e58410",
       "sha256": "db97ca426fc0d2b8124145de0f36181db73e6e713ce642d42fed2efc442edf19"
+    },
+    {
+      "file": "ASCII_R12.dxf",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/ASCII_R12.dxf",
+      "git_blob": "1352ec0904ab49df4b6657d75dc21ad524d2cf42",
+      "sha256": "b476d3e53fe24c1db3c701d20b2bebd774f7bd7966b12d81891505b9b29e4d21"
+    },
+    {
+      "file": "bin_dxf_r12.dxf",
+      "source": "https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/bin_dxf_r12.dxf",
+      "git_blob": "d30f0b6430ec7ddefc753e023acdd8601241947a",
+      "sha256": "1e7a904d67bc7036bd3f78a6273cdf28124ba7e8b731604c0593288182f2aa0e"
     }
   ]
 }
