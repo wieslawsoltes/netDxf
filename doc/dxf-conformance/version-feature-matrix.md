@@ -2,8 +2,8 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-13**. Production baseline after PR **#39**: [`8758b6b390290de7797135653b0cdb29bc233e8e`](https://github.com/wieslawsoltes/netDxf/tree/8758b6b390290de7797135653b0cdb29bc233e8e).
-Source tree: `598ec94baffed0fa8e55115f9a4c426024e264cb`. Branch: `netstandard`.
+Audit date: **2026-09-13**. Production baseline after PR **#41**: [`0fe160164428b6e5628bd7d91897451f274cdd66`](https://github.com/wieslawsoltes/netDxf/tree/0fe160164428b6e5628bd7d91897451f274cdd66).
+Source tree: `7e73d5ec5e270a0775615b846342c6138466422d`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
@@ -117,7 +117,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | DIMENSION: angular 2-line / 3-point · typed | X | X | X | P | P | P | P | P | P | Typed geometry; all styles/overrides/edge cases unverified. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
 | DIMENSION: diameter / radius / ordinate · typed | X | X | X | P | P | P | P | P | P | Typed geometry; dependency graph incomplete. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
 | ARC_DIMENSION: arc length · typed | X | X | X | P | P | P | P | P | P | Model present; historical eligibility still needs release fixtures. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
-| HATCH: solid / patterned · typed | X | X | X | P | P | P | P | P | P | Loops, patterns and selected associativity. Double-pattern flag now retained; seed points and pixel-size retention, full counted-boundary validation and dependencies remain open. [HDOUBLE](hatch-double-pattern.md), [B](version-feature-matrix-2026-09-12.md) |
+| HATCH: solid / patterned · typed | X | X | X | P | P | P | P | P | P | Loops, patterns and selected associativity. Double flag and seed points retained; pixel size, unrelated ACAD XData, complete counted-boundary validation and dependencies remain open. [HDOUBLE](hatch-double-pattern.md), [HSEED](hatch-seed-points.md), [B](version-feature-matrix-2026-09-12.md) |
 | HATCH: gradients · typed | X | X | X | L | P | P | P | P | P | Gradient payload omitted for 2000 without explicit loss report. `WriteGradientHatchPattern`. [B](version-feature-matrix-2026-09-12.md) |
 | HATCH: spline fit boundary data · typed | X | X | X | L | L | L | P | P | P | Fit-data path has a 2010 threshold. `ReadEdgeBoundaryPath/WriteHatchBoundaryPathData`. [B](version-feature-matrix-2026-09-12.md) |
 | MLINE · typed | X | X | X | P | P | P | P | P | P | Vertices/segments/styles; full break/fill/joint semantics not certified. `ReadMLine/WriteMLine`. [B](version-feature-matrix-2026-09-12.md) |
@@ -236,6 +236,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Binary XData clone independence · typed | X | X | X | T | T | T | T | T | T | No shared mutable byte-array storage through cloned records/entities. [XDCL](xdata-clone.md) |
 | Owned file-stream disposal · typed | X | X | X | T | T | T | T | T | T | All success/setup/read/write/probe exits; caller-owned streams stay open. File replacement remains nontransactional. [FILE](file-stream-lifetime.md) |
 | Support-resource lookup isolation · typed | X | X | X | T | T | T | T | T | T | No process-CWD mutation; direct resource then ordered folder precedence. Not a sandbox or concurrently mutable collection. [LOOKUP](support-folder-lookup.md) |
+| HATCH authored seed points · typed | X | X | X | T | T | T | T | T | T | Group98 count and ordered OCS10/20 points; finite edits, independent clones, selected OCS/INSERT transforms and malformed-list validation. No flood-fill evaluation or arbitrary-affine repair. [HSEED](hatch-seed-points.md) |
 
 ## 10. Raw preservation pipeline
 
@@ -258,8 +259,7 @@ Product release years and database-format families are separate: an AC1032 file 
 
 | Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
 |---|---|---|---|---|---|---|---|---|---|---|
-| HATCH authored seed points · typed | X | X | X | M | M | M | M | M | M | Groups98 and repeated10/20 are currently discarded and replaced with one zero seed on typed output. [HDOUBLE](hatch-double-pattern.md) |
-| HATCH pixel-size metadata · typed | X | X | X | L | L | L | L | L | L | Group47 is consumed but typed output writes0.0; retention/validation remains open. [HDOUBLE](hatch-double-pattern.md) |
+| HATCH pixel-size metadata · typed | X | X | X | L | L | L | L | L | L | Group47 is consumed but typed output writes0.0; retention/validation remains open. [HSEED](hatch-seed-points.md), [HDOUBLE](hatch-double-pattern.md) |
 | MESH subentity overrides · typed | X | X | X | V | V | V | M | M | M | Repeated90/91/92 need a distinct override context; current core topology checks do not implement this grammar. [MREAD](mesh-read-validation.md) |
 | MTEXT column contexts · typed | X | X | X | M | M | M | M | M | M | Column type/count/flow/autoheight/width/gutter/heights, legacy linked records and context-sensitive code50 remain open. [MTBG](mtext-background.md), [B](version-feature-matrix-2026-09-12.md) |
 | Transactional typed file replacement · typed | X | X | X | M | M | M | M | M | M | File-path Save creates/truncates the destination before serialization. Deterministic disposal is not a transaction. [FILE](file-stream-lifetime.md) |
@@ -269,7 +269,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Workstream | Required scope |
 |---|---|
 | Context-aware handle graph and dependency-safe editing | Identity/pointer/owner/reactor contexts, graph diagnostics, clone/import closure and handle reservation; preserve opaque data without pretending to evaluate it. |
-| Finish partial supported records | HATCH seeds/pixel size/boundary list grammar; MESH overrides and writer validation; MTEXT columns; complete UCS/VIEW/VPORT contexts and common entity fields. Each is its own PR. |
+| Finish partial supported records | HATCH pixel size, unrelated ACAD XData and boundary list grammar; MESH overrides and writer validation; MTEXT columns; complete UCS/VIEW/VPORT contexts and common entity fields. Each is its own PR. |
 | Missing typed entity families | HELIX; MULTILEADER; structured TABLE; LIGHT/SECTION; inert OLE/proxy/ACIS/surface payload records. Keep metadata/serialization separate from rendering or geometric evaluation. |
 | Missing object families | Generic XRECORD/dictionary variants, draw order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. |
 | Typed historical dialects and schema-aware down-save | R12/R13/R14 typed grammar plus earlier raw profiles with pinned files; explicit per-property downgrade diagnostics instead of enum-only admission. |
@@ -279,7 +279,7 @@ Every feature/fix requires an isolated PR, independently authored positive and m
 
 ## 13. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **6,101 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **6,355 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 

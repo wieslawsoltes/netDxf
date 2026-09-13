@@ -1,7 +1,7 @@
 # netDxf
 netDxf Copyright(C) 2009-2023 Daniel Carvajal, licensed under MIT License
 ## Description
-netDxf is a .net library programmed in C# to read and write AutoCAD DXF files. It supports AutoCad2000, AutoCad2004, AutoCad2007, AutoCad2010,  AutoCad2013, and AutoCad2018 DXF database versions, in both text and binary format.
+netDxf is a .net library programmed in C# to read and write AutoCAD DXF files. The typed `DxfDocument` API reads and writes the AutoCad2000, AutoCad2004, AutoCad2007, AutoCad2010, AutoCad2013, and AutoCad2018 DXF database families in text and binary format. Feature coverage within each family is partial.
 
 The library is easy to use and I tried to keep the procedures as straightforward as possible, for example you will not need to fill up the table section with layers, styles or line type definitions. The DxfDocument will take care of that every time a new item is added.
 
@@ -26,12 +26,20 @@ public static void Main()
 
 	// this check is optional but recommended before loading a DXF file
 	DxfVersion dxfVersion = DxfDocument.CheckDxfFileVersion(file);
-	// netDxf is only compatible with AutoCad2000 and higher DXF versions
+	// Typed DxfDocument admits AutoCad2000 and higher DXF families
 	if (dxfVersion < DxfVersion.AutoCad2000) return;
 	// load file
 	DxfDocument loaded = DxfDocument.Load(file);
 }
 ```
+
+## DXF version and feature coverage
+
+See the [current version-by-feature comparison](doc/dxf-conformance/version-feature-matrix.md) and its [machine-readable coverage ledger](doc/dxf-conformance/coverage.json). Each entry distinguishes tested field-level support, partial typed models, known losses, rejected writer profiles and opaque preservation. The comparison is generated and checked in CI; its production commit and evidence are pinned.
+
+`netDxf.IO.DxfRawDocument` is a separate immutable ordered-tag/record API for R11/R12, R13, R14 and the six modern families above. It supports exact unedited same-transport saves and scoped raw edits. It does not add those historical versions to typed `DxfDocument`, evaluate unknown entities, repair handle dependencies, or provide an automatic fallback inside typed load/save. See [raw preservation](doc/dxf-conformance/raw-document.md), [record editing](doc/dxf-conformance/raw-records.md), [R12 framing](doc/dxf-conformance/raw-r12.md), and [R13/R14 profiles](doc/dxf-conformance/raw-r13-r14.md).
+
+Full AutoCAD DXF capability is not yet achieved. Passing regression tests and preserving opaque records are not a native AutoCAD interoperability certificate. The [conformance guide](doc/dxf-conformance/README.md) records scope, verification commands and remaining work.
 
 ## Samples and Demos 
 Are contained in the source code.

@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "8758b6b390290de7797135653b0cdb29bc233e8e",
-    "tree": "598ec94baffed0fa8e55115f9a4c426024e264cb"
+    "commit": "0fe160164428b6e5628bd7d91897451f274cdd66",
+    "tree": "7e73d5ec5e270a0775615b846342c6138466422d"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 6101,
+    "test_cases": 6355,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 39,
-    "ci_run": 34760068596
+    "last_implementation_pr": 41,
+    "ci_run": 34762014287
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -291,6 +291,10 @@
     "THUMB": {
       "label": "thumbnail image",
       "path": "doc/dxf-conformance/thumbnail-image.md"
+    },
+    "HSEED": {
+      "label": "hatch seed points",
+      "path": "doc/dxf-conformance/hatch-seed-points.md"
     }
   },
   "features": [
@@ -1208,9 +1212,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Loops, patterns and selected associativity. Double-pattern flag now retained; seed points and pixel-size retention, full counted-boundary validation and dependencies remain open.",
+      "scope": "Loops, patterns and selected associativity. Double flag and seed points retained; pixel size, unrelated ACAD XData, complete counted-boundary validation and dependencies remain open.",
       "evidence": [
         "HDOUBLE",
+        "HSEED",
         "B"
       ]
     },
@@ -3549,23 +3554,23 @@
     },
     {
       "id": "hatch-seeds",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH authored seed points",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Groups98 and repeated10/20 are currently discarded and replaced with one zero seed on typed output.",
+      "scope": "Group98 count and ordered OCS10/20 points; finite edits, independent clones, selected OCS/INSERT transforms and malformed-list validation. No flood-fill evaluation or arbitrary-affine repair.",
       "evidence": [
-        "HDOUBLE"
+        "HSEED"
       ]
     },
     {
@@ -3586,6 +3591,7 @@
       },
       "scope": "Group47 is consumed but typed output writes0.0; retention/validation remains open.",
       "evidence": [
+        "HSEED",
         "HDOUBLE"
       ]
     },
@@ -3663,7 +3669,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial supported records",
-      "scope": "HATCH seeds/pixel size/boundary list grammar; MESH overrides and writer validation; MTEXT columns; complete UCS/VIEW/VPORT contexts and common entity fields. Each is its own PR."
+      "scope": "HATCH pixel size, unrelated ACAD XData and boundary list grammar; MESH overrides and writer validation; MTEXT columns; complete UCS/VIEW/VPORT contexts and common entity fields. Each is its own PR."
     },
     {
       "id": "new-entities",
