@@ -33,6 +33,7 @@ namespace netDxf.IO
     /// Values retain their exact CLR type. No integer narrowing, culture-dependent coercion,
     /// handle remapping, Unicode escape decoding, or geometry interpretation is performed.
     /// Byte arrays are copied on input and output. This is a typed tag, not its lexical spelling.
+    /// CR/LF are retained for binary strings; a text transport must reject them before writing.
     /// Record-specific constraints and historical version eligibility require a higher-level schema.
     /// </remarks>
     public sealed class DxfTag
@@ -65,8 +66,8 @@ namespace netDxf.IO
                 throw new ArgumentOutOfRangeException(nameof(value), value, "DXF numeric values must be finite in this library.");
             if (value is string text)
             {
-                if (text.IndexOfAny(new[] { '\0', '\r', '\n' }) >= 0)
-                    throw new ArgumentException("A DXF tag string cannot contain NUL or a physical line terminator.", nameof(value));
+                if (text.IndexOf('\0') >= 0)
+                    throw new ArgumentException("A DXF tag string cannot contain NUL.", nameof(value));
                 if (this.ValueType == DxfTagValueType.Handle &&
                     (text.Length == 0 || text.Length > 16 || !ulong.TryParse(text, NumberStyles.AllowHexSpecifier,
                         CultureInfo.InvariantCulture, out _)))

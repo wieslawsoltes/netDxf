@@ -19,7 +19,7 @@ byte[] copy = (byte[])data.Value;
 copy[0] = 99; // cannot modify the stored tag
 ```
 
-Binary input and output arrays are copied. Strings retain ordinary .NET string contents and handle spelling; no Unicode escape decoding or handle normalization is performed by the constructor. Doubles retain their bits, including negative zero and subnormals; NaN/infinity are rejected by the existing library finite-number policy. Handles must contain 1–16 ASCII hexadecimal digits; full unsigned 64-bit values are admitted without signed overflow. Physical newlines and NUL are rejected in string values.
+Binary input and output arrays are copied. Strings retain ordinary .NET string contents and handle spelling; no Unicode escape decoding or handle normalization is performed by the constructor. Doubles retain their bits, including negative zero and subnormals; NaN/infinity are rejected by the existing library finite-number policy. Handles must contain 1–16 ASCII hexadecimal digits; full unsigned 64-bit values are admitted without signed overflow. NUL is rejected in string values. The raw-document continuation permits physical CR/LF in binary string values; raw text export rejects those values before writing. This supersedes the initial transport-independent newline rejection.
 
 ## Boundaries
 
