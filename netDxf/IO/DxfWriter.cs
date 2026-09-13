@@ -88,6 +88,7 @@ namespace netDxf.IO
             }
 
             this.ValidateMTextBackgroundVersions();
+            this.ValidateMeshVersions();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
             this.encodedStrings = new Dictionary<string, string>();
