@@ -964,6 +964,7 @@ namespace netDxf.Entities
                 Height = this.height,
                 LineSpacingFactor = this.lineSpacing,
                 LineSpacingStyle = this.lineSpacingStyle,
+                DrawingDirection = this.drawingDirection,
                 RectangleWidth = this.rectangleWidth,
                 AttachmentPoint = this.attachmentPoint,
                 Style = (TextStyle) this.style.Clone(),
