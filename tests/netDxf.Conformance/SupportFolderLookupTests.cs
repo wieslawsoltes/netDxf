@@ -164,7 +164,16 @@ internal static partial class Program
         foreach (string basePath in bases)
             foreach (string path in paths)
             {
-                string expected = Path.GetFullPath(path, basePath);
+                // .NET 8 compares drive names case-sensitively here; current .NET uses
+                // ordinal-ignore-case. Normalize only this oracle input for the same drive.
+                string oraclePath = path;
+                string root = Path.GetPathRoot(basePath)!;
+                int driveOffset = root.StartsWith(@"\\?\", StringComparison.Ordinal) || root.StartsWith(@"\\.\", StringComparison.Ordinal) ? 4 : 0;
+                if (OperatingSystem.IsWindows() && path.Length >= 2 && path[1] == ':' &&
+                    root.Length > driveOffset + 1 && root[driveOffset + 1] == ':' &&
+                    char.ToUpperInvariant(path[0]) == char.ToUpperInvariant(root[driveOffset]))
+                    oraclePath = root[driveOffset] + path[1..];
+                string expected = Path.GetFullPath(oraclePath, basePath);
                 string actual = (string)resolve.Invoke(null, new object[] { path, basePath })!;
                 Equal(expected, actual, $"Explicit-base path resolution for {path} relative to {basePath}");
             }
