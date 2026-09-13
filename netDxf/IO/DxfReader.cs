@@ -9959,6 +9959,10 @@ namespace netDxf.IO
             bool singleColor = this.chunk.ReadInt() != 0; // code 452
             this.chunk.Next();
             double tint = this.chunk.ReadDouble(); // code 462
+            if (tint < 0.0 || tint > 1.0)
+                throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                    "Invalid HATCH gradient tint for group code 462 at position {0}: expected a value between zero and one.",
+                    this.chunk.CurrentPosition));
             this.chunk.Next(); // code 453 not needed
 
             this.chunk.Next(); // code 463 not needed (0.0)
@@ -9976,14 +9980,7 @@ namespace netDxf.IO
             
             HatchGradientPatternType type = StringEnum<HatchGradientPatternType>.Parse(typeName, StringComparison.OrdinalIgnoreCase);
 
-            if (singleColor)
-                return new HatchGradientPattern(color1, tint, type)
-                {
-                    Shift = shift,
-                    Angle = angle*MathHelper.RadToDeg
-                };
-
-            return new HatchGradientPattern(color1, color2, type)
+            return new HatchGradientPattern(color1, color2, singleColor, tint, type)
             {
                 Shift = shift,
                 Angle = angle*MathHelper.RadToDeg
