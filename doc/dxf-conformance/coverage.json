@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "0fe160164428b6e5628bd7d91897451f274cdd66",
-    "tree": "7e73d5ec5e270a0775615b846342c6138466422d"
+    "commit": "f4c8234494a3088677a366f9575feb05b1a88a0b",
+    "tree": "365eec7a7c69da87838a2f8e7cfc286b7dc84a27"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 6355,
+    "test_cases": 9140,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 41,
-    "ci_run": 34762014287
+    "last_implementation_pr": 50,
+    "ci_run": 34780590182
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -295,6 +295,42 @@
     "HSEED": {
       "label": "hatch seed points",
       "path": "doc/dxf-conformance/hatch-seed-points.md"
+    },
+    "HPIX": {
+      "label": "hatch pixel size",
+      "path": "doc/dxf-conformance/hatch-pixel-size.md"
+    },
+    "HXDATA": {
+      "label": "hatch ACAD XData preservation",
+      "path": "doc/dxf-conformance/hatch-xdata-preservation.md"
+    },
+    "HCLOSE": {
+      "label": "hatch polyline closure",
+      "path": "doc/dxf-conformance/hatch-polyline-closure.md"
+    },
+    "HPOLY": {
+      "label": "hatch polyline input",
+      "path": "doc/dxf-conformance/hatch-polyline-input.md"
+    },
+    "HPAT": {
+      "label": "hatch pattern list grammar",
+      "path": "doc/dxf-conformance/hatch-pattern-lists.md"
+    },
+    "HFLAGS": {
+      "label": "hatch boundary classification",
+      "path": "doc/dxf-conformance/hatch-boundary-flags.md"
+    },
+    "HORDER": {
+      "label": "hatch pattern metadata order",
+      "path": "doc/dxf-conformance/hatch-pattern-order.md"
+    },
+    "HEDGE": {
+      "label": "hatch edge packet validation",
+      "path": "doc/dxf-conformance/hatch-edge-packets.md"
+    },
+    "HGAPS": {
+      "label": "remaining hatch source audit",
+      "path": "doc/dxf-conformance/hatch-remaining-audit.md"
     }
   },
   "features": [
@@ -1212,11 +1248,18 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Loops, patterns and selected associativity. Double flag and seed points retained; pixel size, unrelated ACAD XData, complete counted-boundary validation and dependencies remain open.",
+      "scope": "Double flag, seeds, pixel size, ACAD XData, closure, classification, sparse bulges, counted edge/pattern packets and final metadata conversion tested separately. Outer grammar, geometry, fit metadata and dependencies remain partial.",
       "evidence": [
         "HDOUBLE",
         "HSEED",
-        "B"
+        "HPIX",
+        "HXDATA",
+        "HCLOSE",
+        "HPOLY",
+        "HPAT",
+        "HFLAGS",
+        "HORDER",
+        "HEDGE"
       ]
     },
     {
@@ -1235,8 +1278,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Gradient payload omitted for 2000 without explicit loss report. `WriteGradientHatchPattern`.",
+      "scope": "2000 output drops gradient payload. Later typed payload is partial: fractional shift becomes a Boolean endpoint; gradient rotation is overwritten by pattern angle. Color-stop/tint and packet fidelity remain open.",
       "evidence": [
+        "HGAPS",
         "B"
       ]
     },
@@ -1252,13 +1296,14 @@
         "AC1015": "L",
         "AC1018": "L",
         "AC1021": "L",
-        "AC1024": "P",
-        "AC1027": "P",
-        "AC1032": "P"
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
       },
-      "scope": "Fit-data path has a 2010 threshold. `ReadEdgeBoundaryPath/WriteHatchBoundaryPathData`.",
+      "scope": "Typed spline has no fit/tangent storage. Existing 2010+ packet is validated then discarded; writer emits zero fit count. Earlier typed profiles do not consume that packet. Historical availability is not inferred.",
       "evidence": [
-        "B"
+        "HEDGE",
+        "HGAPS"
       ]
     },
     {
@@ -3575,24 +3620,23 @@
     },
     {
       "id": "hatch-pixel-size",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH pixel-size metadata",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Group47 is consumed but typed output writes0.0; retention/validation remains open.",
+      "scope": "Nullable group47 retains absence/zero/finite values; clone/INSERT and export. Sampling hint is stored, not evaluated.",
       "evidence": [
-        "HSEED",
-        "HDOUBLE"
+        "HPIX"
       ]
     },
     {
@@ -3658,6 +3702,195 @@
       "evidence": [
         "FILE"
       ]
+    },
+    {
+      "id": "hatch-acad-xdata-origin",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH ACAD XData and pattern-origin projection",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Scoped origin update preserves unrelated ACAD records without mutating source XData; no general application-schema validation.",
+      "evidence": [
+        "HXDATA"
+      ]
+    },
+    {
+      "id": "hatch-polyline-closure",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH polyline closure",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group73 retained through loading/cloning/INSERT; open paths stay open and conversion does not invent a closing segment.",
+      "evidence": [
+        "HCLOSE"
+      ]
+    },
+    {
+      "id": "hatch-polyline-input",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH optional bulges and counted polyline lists",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Optional42 defaults zero; checked components/counts/references, comments, adjacent data and incremental storage. Writer normalizes zero bulges.",
+      "evidence": [
+        "HPOLY"
+      ]
+    },
+    {
+      "id": "hatch-pattern-lists",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH counted pattern lines and dashes",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group78/53 lines, keyed43-46 fields and counted79/49 dash packets; rejects negative/duplicate/surplus data; local comments allowed.",
+      "evidence": [
+        "HPAT"
+      ]
+    },
+    {
+      "id": "hatch-boundary-flags",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH boundary classification",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Exact group92 bits through read/clone/transform; only structural Polyline bit follows representation changes; constructor defaults unchanged.",
+      "evidence": [
+        "HFLAGS"
+      ]
+    },
+    {
+      "id": "hatch-pattern-order",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH pattern metadata ordering",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Intact pattern packets and scalar metadata can reorder; PAT-local conversion happens once final angle/scale are known. Gradient packet remains separate.",
+      "evidence": [
+        "HORDER"
+      ]
+    },
+    {
+      "id": "hatch-edge-packets",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH edge dispatch and counted packets",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Rejects non-progressing unknown kinds; checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Fit/tangent framing is not retention or geometric validation.",
+      "evidence": [
+        "HEDGE"
+      ]
+    },
+    {
+      "id": "hatch-gradient-shift",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "HATCH fractional gradient shift",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Source audit: group461 is reduced to bool Centered and export emits only0/1. Fractional values are not retained; 2000 omits the gradient payload.",
+      "evidence": [
+        "HGAPS"
+      ]
+    },
+    {
+      "id": "hatch-gradient-rotation",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "HATCH gradient rotation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Source audit: group460 is read into gradient Angle, then overwritten by group52 patternAngle/default zero in ReadHatch. Not fixed by pattern-order support.",
+      "evidence": [
+        "HGAPS"
+      ]
     }
   ],
   "next_work": [
@@ -3669,7 +3902,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial supported records",
-      "scope": "HATCH pixel size, unrelated ACAD XData and boundary list grammar; MESH overrides and writer validation; MTEXT columns; complete UCS/VIEW/VPORT contexts and common entity fields. Each is its own PR."
+      "scope": "HATCH fit/tangent retention, gradient shift/rotation/color metadata, outer path grammar and geometric/affine validity; MESH overrides/writer checks; MTEXT columns; complete UCS/VIEW/VPORT contexts. Each is an isolated PR."
     },
     {
       "id": "new-entities",

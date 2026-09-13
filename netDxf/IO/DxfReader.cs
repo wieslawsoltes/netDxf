@@ -9739,200 +9739,158 @@ namespace netDxf.IO
 
         private HatchBoundaryPath ReadEdgeBoundaryPath(int numEdges)
         {
-            // the information of the boundary path data always appear exactly as it is read
-            List<HatchBoundaryPath.Edge> entities = new List<HatchBoundaryPath.Edge>();
-            this.chunk.Next();
-
-            while (entities.Count < numEdges)
+            if (numEdges < 0) throw this.InvalidHatchEdgeData("negative edge count");
+            List<HatchBoundaryPath.Edge> edges = new List<HatchBoundaryPath.Edge>();
+            this.ReadNextHatchEdgeTag();
+            for (int i = 0; i < numEdges; i++)
             {
-                // Edge type (only if boundary is not a polyline): 1 = Line; 2 = Circular arc; 3 = Elliptic arc; 4 = Spline
-                HatchBoundaryPath.EdgeType type = (HatchBoundaryPath.EdgeType) this.chunk.ReadShort();
-                switch (type)
+                this.RequireHatchEdgeCode(72);
+                short kind = this.chunk.ReadShort();
+                if (kind < 1 || kind > 4)
+                    throw this.InvalidHatchEdgeData("unsupported edge type " + kind);
+                this.ReadNextHatchEdgeTag();
+                switch ((HatchBoundaryPath.EdgeType) kind)
                 {
                     case HatchBoundaryPath.EdgeType.Line:
-                        this.chunk.Next();
-                        // line
-                        double lX1 = this.chunk.ReadDouble(); // code 10
-                        this.chunk.Next();
-                        double lY1 = this.chunk.ReadDouble(); // code 20
-                        this.chunk.Next();
-                        double lX2 = this.chunk.ReadDouble(); // code 11
-                        this.chunk.Next();
-                        double lY2 = this.chunk.ReadDouble(); // code 21
-                        this.chunk.Next();
-
-                        HatchBoundaryPath.Line line = new HatchBoundaryPath.Line
+                        edges.Add(new HatchBoundaryPath.Line
                         {
-                            Start = new Vector2(lX1, lY1),
-                            End = new Vector2(lX2, lY2)
-                        };
-                        entities.Add(line);
+                            Start = this.ReadHatchEdgePoint(10, 20),
+                            End = this.ReadHatchEdgePoint(11, 21)
+                        });
                         break;
                     case HatchBoundaryPath.EdgeType.Arc:
-                        this.chunk.Next();
-                        // circular arc
-                        double aX = this.chunk.ReadDouble(); // code 10
-                        this.chunk.Next();
-                        double aY = this.chunk.ReadDouble(); // code 40
-                        this.chunk.Next();
-                        double aR = this.chunk.ReadDouble(); // code 40
-                        this.chunk.Next();
-                        double aStart = this.chunk.ReadDouble(); // code 50
-                        this.chunk.Next();
-                        double aEnd = this.chunk.ReadDouble(); // code 51
-                        this.chunk.Next();
-                        bool aCCW = this.chunk.ReadShort() != 0; // code 73
-                        this.chunk.Next();
-
-                        HatchBoundaryPath.Arc arc = new HatchBoundaryPath.Arc
+                        edges.Add(new HatchBoundaryPath.Arc
                         {
-                            Center = new Vector2(aX, aY),
-                            Radius = aR,
-                            StartAngle = aStart,
-                            EndAngle = aEnd,
-                            IsCounterclockwise = aCCW
-                        };
-                        entities.Add(arc);
+                            Center = this.ReadHatchEdgePoint(10, 20),
+                            Radius = this.ReadHatchEdgeDouble(40),
+                            StartAngle = this.ReadHatchEdgeDouble(50),
+                            EndAngle = this.ReadHatchEdgeDouble(51),
+                            IsCounterclockwise = this.ReadHatchEdgeFlag(73)
+                        });
                         break;
                     case HatchBoundaryPath.EdgeType.Ellipse:
-                        this.chunk.Next();
-                        // elliptic arc
-                        double eX = this.chunk.ReadDouble(); // code 10
-                        this.chunk.Next();
-                        double eY = this.chunk.ReadDouble(); // code 20
-                        this.chunk.Next();
-                        double eAxisX = this.chunk.ReadDouble(); // code 11
-                        this.chunk.Next();
-                        double eAxisY = this.chunk.ReadDouble(); // code 21
-                        this.chunk.Next();
-                        double eAxisRatio = this.chunk.ReadDouble(); // code 40
-                        this.chunk.Next();
-                        double eStart = this.chunk.ReadDouble(); // code 50
-                        this.chunk.Next();
-                        double eEnd = this.chunk.ReadDouble(); // code 51
-                        this.chunk.Next();
-                        bool eCCW = this.chunk.ReadShort() != 0; // code 73
-                        this.chunk.Next();
-
-                        HatchBoundaryPath.Ellipse ellipse = new HatchBoundaryPath.Ellipse
+                        edges.Add(new HatchBoundaryPath.Ellipse
                         {
-                            Center = new Vector2(eX, eY),
-                            EndMajorAxis = new Vector2(eAxisX, eAxisY),
-                            MinorRatio = eAxisRatio,
-                            StartAngle = eStart,
-                            EndAngle = eEnd,
-                            IsCounterclockwise = eCCW
-                        };
-
-                        entities.Add(ellipse);
+                            Center = this.ReadHatchEdgePoint(10, 20),
+                            EndMajorAxis = this.ReadHatchEdgePoint(11, 21),
+                            MinorRatio = this.ReadHatchEdgeDouble(40),
+                            StartAngle = this.ReadHatchEdgeDouble(50),
+                            EndAngle = this.ReadHatchEdgeDouble(51),
+                            IsCounterclockwise = this.ReadHatchEdgeFlag(73)
+                        });
                         break;
                     case HatchBoundaryPath.EdgeType.Spline:
-                        this.chunk.Next();
-                        // spline
-
-                        short degree = (short) this.chunk.ReadInt(); // code 94
-                        this.chunk.Next();
-
-                        bool isRational = this.chunk.ReadShort() != 0; // code 73
-                        this.chunk.Next();
-
-                        bool isPeriodic = this.chunk.ReadShort() != 0; // code 74
-                        this.chunk.Next();
-
-                        int numKnots = this.chunk.ReadInt(); // code 95
-                        double[] knots = new double[numKnots];
-                        this.chunk.Next();
-
-                        int numControlPoints = this.chunk.ReadInt(); // code 96
-                        Vector3[] controlPoints = new Vector3[numControlPoints];
-                        this.chunk.Next();
-
-                        for (int i = 0; i < numKnots; i++)
-                        {
-                            knots[i] = this.chunk.ReadDouble(); // code 40
-                            this.chunk.Next();
-                        }
-
-                        for (int i = 0; i < numControlPoints; i++)
-                        {
-                            double x = this.chunk.ReadDouble(); // code 10
-                            this.chunk.Next();
-
-                            double y = this.chunk.ReadDouble(); // code 20
-                            this.chunk.Next();
-
-                            // control point weight might not be present
-                            double w = 1.0;
-                            if (this.chunk.Code == 42)
-                            {
-                                w = this.chunk.ReadDouble(); // code 42
-                                this.chunk.Next();
-                            }
-
-                            controlPoints[i] = new Vector3(x, y, w);
-                        }
-
-                        // this information is only required for AutoCAD version 2010 and newer
-                        // stores information about spline fit point (the spline entity does not make use of this information)
-                        if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2010)
-                        {
-                            int numFitData = this.chunk.ReadInt(); // code 97
-                            this.chunk.Next();
-                            for (int i = 0; i < numFitData; i++)
-                            {
-                                //double fitX = this.chunk.ReadDouble(); // code 11
-                                this.chunk.Next();
-                                //double fitY = this.chunk.ReadDouble(); // code 21
-                                this.chunk.Next();
-                            }
-
-                            // the info on start tangent might not appear
-                            if (this.chunk.Code == 12)
-                            {
-                                //double startTanX = this.chunk.ReadDouble(); // code 12
-                                this.chunk.Next();
-                                //double startTanY = this.chunk.ReadDouble(); // code 22
-                                this.chunk.Next();
-                            }
-                            // the info on end tangent might not appear
-                            if (this.chunk.Code == 13)
-                            {
-                                //double endTanX = this.chunk.ReadDouble(); // code 13
-                                this.chunk.Next();
-                                //double endTanY = this.chunk.ReadDouble(); // code 23
-                                this.chunk.Next();
-                            }
-                        }
-
-                        HatchBoundaryPath.Spline spline = new HatchBoundaryPath.Spline
-                        {
-                            Degree = degree,
-                            IsPeriodic = isPeriodic,
-                            IsRational = isRational,
-                            ControlPoints = controlPoints,
-                            Knots = knots
-                        };
-
-                        entities.Add(spline);
+                        edges.Add(this.ReadHatchSplineEdge());
                         break;
                 }
             }
 
-            HatchBoundaryPath path = new HatchBoundaryPath(entities);
-
-            // read all referenced entities
-            Debug.Assert(this.chunk.Code == 97, "The reference count code 97 was expected.");
-            int numBoundaryObjects = this.chunk.ReadInt();
-            this.hatchContours.Add(path, new List<string>(numBoundaryObjects));
-            this.chunk.Next();
-            for (int i = 0; i < numBoundaryObjects; i++)
+            int referenceCount = this.ReadHatchEdgeCount(97);
+            List<string> references = new List<string>();
+            for (int i = 0; i < referenceCount; i++)
             {
-                Debug.Assert(this.chunk.Code == 330, "The reference handle code 330 was expected.");
-                this.hatchContours[path].Add(this.chunk.ReadString());
-                this.chunk.Next();
+                this.RequireHatchEdgeCode(330);
+                references.Add(this.chunk.ReadHex());
+                this.ReadNextHatchEdgeTag();
+            }
+            if (this.chunk.Code == 72 || this.chunk.Code == 97 || this.chunk.Code == 330)
+                throw this.InvalidHatchEdgeData("excess edge or source-reference data");
+            HatchBoundaryPath path = new HatchBoundaryPath(edges);
+            this.hatchContours.Add(path, references);
+            return path;
+        }
+
+        private HatchBoundaryPath.Spline ReadHatchSplineEdge()
+        {
+            this.RequireHatchEdgeCode(94);
+            int degree = this.chunk.ReadInt();
+            // The typed edge model stores a short; never silently truncate the DXF integer.
+            if (degree < 1 || degree > short.MaxValue)
+                throw this.InvalidHatchEdgeData("spline degree cannot be represented by the positive Int16 typed model");
+            this.ReadNextHatchEdgeTag();
+            bool rational = this.ReadHatchEdgeFlag(73);
+            bool periodic = this.ReadHatchEdgeFlag(74);
+            int knotCount = this.ReadHatchEdgeCount(95);
+            int controlCount = this.ReadHatchEdgeCount(96);
+            // Only consumed data grows these collections, never a producer-controlled capacity.
+            List<double> knots = new List<double>();
+            for (int i = 0; i < knotCount; i++) knots.Add(this.ReadHatchEdgeDouble(40));
+            List<Vector3> controls = new List<Vector3>();
+            for (int i = 0; i < controlCount; i++)
+            {
+                Vector2 point = this.ReadHatchEdgePoint(10, 20);
+                double weight = this.chunk.Code == 42 ? this.ReadHatchEdgeDouble(42) : 1.0;
+                controls.Add(new Vector3(point.X, point.Y, weight));
             }
 
-            return path;
+            // Retain the existing version/representation contract: fit data and tangents are
+            // validated and consumed here, but are not modeled by HatchBoundaryPath.Spline.
+            if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2010)
+            {
+                int fitCount = this.ReadHatchEdgeCount(97);
+                for (int i = 0; i < fitCount; i++) this.ReadHatchEdgePoint(11, 21);
+                if (this.chunk.Code == 12) this.ReadHatchEdgePoint(12, 22);
+                if (this.chunk.Code == 13) this.ReadHatchEdgePoint(13, 23);
+            }
+            return new HatchBoundaryPath.Spline
+            {
+                Degree = (short) degree,
+                IsRational = rational,
+                IsPeriodic = periodic,
+                Knots = knots.ToArray(),
+                ControlPoints = controls.ToArray()
+            };
+        }
+
+        private void ReadNextHatchEdgeTag()
+        {
+            do { this.chunk.Next(); } while (this.chunk.Code == 999);
+        }
+
+        private void RequireHatchEdgeCode(short code)
+        {
+            if (this.chunk.Code != code)
+                throw this.InvalidHatchEdgeData("expected group code " + code);
+        }
+
+        private double ReadHatchEdgeDouble(short code)
+        {
+            this.RequireHatchEdgeCode(code);
+            double value = this.chunk.ReadDouble();
+            this.ReadNextHatchEdgeTag();
+            return value;
+        }
+
+        private Vector2 ReadHatchEdgePoint(short xCode, short yCode)
+        {
+            double x = this.ReadHatchEdgeDouble(xCode);
+            double y = this.ReadHatchEdgeDouble(yCode);
+            return new Vector2(x, y);
+        }
+
+        private int ReadHatchEdgeCount(short code)
+        {
+            this.RequireHatchEdgeCode(code);
+            int value = this.chunk.ReadInt();
+            if (value < 0) throw this.InvalidHatchEdgeData("negative list count");
+            this.ReadNextHatchEdgeTag();
+            return value;
+        }
+
+        private bool ReadHatchEdgeFlag(short code)
+        {
+            this.RequireHatchEdgeCode(code);
+            short value = this.chunk.ReadShort();
+            if (value != 0 && value != 1) throw this.InvalidHatchEdgeData("expected a flag of zero or one");
+            this.ReadNextHatchEdgeTag();
+            return value != 0;
+        }
+
+        private InvalidDataException InvalidHatchEdgeData(string detail)
+        {
+            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid HATCH edge boundary at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, detail));
         }
 
         private void ReadHatchSeedPoints(ref List<Vector2> seedPoints)
