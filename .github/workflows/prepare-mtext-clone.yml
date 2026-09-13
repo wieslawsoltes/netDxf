@@ -1,0 +1,43 @@
+name: Apply reviewed MTEXT clone correction
+on:
+  push:
+    branches: [codex/dxf-mtext-clone-direction]
+    paths: [.github/workflows/prepare-mtext-clone.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/dxf-mtext-clone-direction'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/dxf-mtext-clone-direction
+      - name: Apply the single reviewed property copy
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          path = Path('netDxf/Entities/MText.cs')
+          data = path.read_bytes()
+          assert hashlib.sha256(data).hexdigest() == 'aa7564a9f3550338ca85625a237ebba10b0a6572b32b5bd27e8b63af0b93fa31'
+          before = b'                LineSpacingStyle = this.lineSpacingStyle,\r\n'
+          assert data.count(before) == 1
+          path.write_bytes(data.replace(before, before + b'                DrawingDirection = this.drawingDirection,\r\n'))
+          expected = {
+              'netDxf/Entities/MText.cs': '800f905f9ec2759af850fa3e81a1715a03a2ae736c2ae2e7c1a01cd6166c0a42',
+              'tests/netDxf.Conformance/RegressionTests.cs': 'ba20bf96922cf4ea6c343dff212e7b169e6e70e3aeadf92f866f84aca8ad3981',
+              'tests/netDxf.Conformance/MTextCloneDirectionTests.cs': 'e1ad45e13d6ac2ecf671d4fd9a8ccdf274c35b5cdf6e17ea0165fd30eb98062a',
+              'doc/dxf-conformance/mtext-clone-direction.md': '025749668e16e3463696d40d9b46fd31532988e52da99eae911a2869a771cebe'
+          }
+          for name, digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, name
+          Path('.github/workflows/prepare-mtext-clone.yml').unlink()
+      - name: Commit the correction on its feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/Entities/MText.cs .github/workflows/prepare-mtext-clone.yml
+          git commit -m 'fix: retain MTEXT drawing direction when cloning'
+          git push origin HEAD:codex/dxf-mtext-clone-direction
