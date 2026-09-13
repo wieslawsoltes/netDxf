@@ -42,6 +42,9 @@ namespace netDxf.IO
         /// </summary>
         long CurrentPosition { get; }
 
+        // Set only by a context-aware caller before Next. Standalone/typed readers remain strict.
+        bool Code5IsString { get; set; }
+
         void Next();
         byte ReadByte();
         byte[] ReadBytes();

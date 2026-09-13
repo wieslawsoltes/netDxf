@@ -44,8 +44,13 @@ namespace netDxf.IO
         /// <param name="code">A group code supported by the modern codecs.</param>
         /// <param name="value">A value with the exact CLR type required by the code.</param>
         public DxfTag(short code, object value)
+            : this(code, value, false)
         {
-            this.ValueType = DxfGroupCode.GetValueType(code);
+        }
+
+        private DxfTag(short code, object value, bool dimensionStyleArrowName)
+        {
+            this.ValueType = dimensionStyleArrowName ? DxfTagValueType.String : DxfGroupCode.GetValueType(code);
             if (value == null) throw new ArgumentNullException(nameof(value));
             Type expected;
             switch (this.ValueType)
@@ -77,6 +82,20 @@ namespace netDxf.IO
             this.value = value is byte[] bytes ? bytes.Clone() : value;
         }
 
+        /// <summary>Creates the obsolete group 5 DIMBLK arrow-block name of a DIMSTYLE table entry.</summary>
+        /// <param name="name">The exact block name; empty means the default arrow. NUL is not permitted.</param>
+        /// <returns>A string tag, not a hexadecimal handle, with its spelling unchanged.</returns>
+        /// <remarks>
+        /// Raw documents accept this tag only in a DIMSTYLE record of the DIMSTYLE table, outside
+        /// application control groups and XData. The DIMSTYLE object's identity is group 105.
+        /// This does not resolve a block reference or replace modern group 342 handle semantics.
+        /// The ordinary DxfTag constructor still interprets group 5 as a strict object handle.
+        /// </remarks>
+        public static DxfTag CreateDimensionStyleArrowName(string name)
+        {
+            return new DxfTag(5, name, true);
+        }
+
         /// <summary>Gets the group code.</summary>
         public short Code { get; }
 
@@ -87,7 +106,7 @@ namespace netDxf.IO
         public object Value { get { return this.value is byte[] bytes ? bytes.Clone() : this.value; } }
 
         /// <summary>Gets the handle category; it does not resolve the reference or its context.</summary>
-        public DxfHandleKind HandleKind { get { return DxfGroupCode.GetHandleKind(this.Code); } }
+        public DxfHandleKind HandleKind { get { return this.ValueType == DxfTagValueType.Handle ? DxfGroupCode.GetHandleKind(this.Code) : DxfHandleKind.None; } }
 
         // Only trusted codecs access the backing array. They must never mutate it.
         internal object RawValue { get { return this.value; } }
