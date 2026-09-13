@@ -46,5 +46,6 @@ internal static partial class Program
         RegisterHatchPolylineClosureTests();
         RegisterHatchPolylineInputTests();
         RegisterHatchPatternValidationTests();
+        RegisterHatchBoundaryFlagsTests();
     }
 }

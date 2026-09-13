@@ -511,7 +511,12 @@ namespace netDxf.Entities
                     entity.TransformBy(transformation, translation);
                     data.Add(entity);
                 }
-                paths.Add(new HatchBoundaryPath(data));
+                HatchBoundaryPath transformedPath = new HatchBoundaryPath(data);
+                // Classification survives a transform; bit 2 describes the resulting
+                // representation and may change when an open polyline becomes edge segments.
+                transformedPath.PathType = (path.PathType & ~HatchBoundaryPathTypeFlags.Polyline) |
+                    (transformedPath.PathType & HatchBoundaryPathTypeFlags.Polyline);
+                paths.Add(transformedPath);
             }
 
             position = transformation * position + translation;
