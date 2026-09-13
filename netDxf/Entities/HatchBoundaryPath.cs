@@ -885,6 +885,7 @@ namespace netDxf.Entities
             if (clearEdges)
             {
                 this.edges.Clear();
+                this.pathType &= ~HatchBoundaryPathTypeFlags.Polyline;
             }
 
             foreach (EntityObject entity in contour)
@@ -967,7 +968,7 @@ namespace netDxf.Entities
                 copyEdges.Add((Edge) edge.Clone());
             }
 
-            return new HatchBoundaryPath(copyEdges);
+            return new HatchBoundaryPath(copyEdges) { PathType = this.pathType };
         }
 
         #endregion

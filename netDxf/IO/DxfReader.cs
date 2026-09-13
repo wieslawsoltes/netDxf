@@ -9558,13 +9558,6 @@ namespace netDxf.IO
                 {
                     case 92:
                         pathType = (HatchBoundaryPathTypeFlags) this.chunk.ReadInt();
-                        // adding External and Derived to all path type flags solves an strange problem with code 98 not found,
-                        // it seems related to the code 47 that appears before, only some combinations of flags are affected
-                        // this is what the documentation says about code 47:
-                        // Pixel size used to determine the density to perform various intersection and ray casting operations
-                        // in hatch pattern computation for associative hatches and hatches created with the Flood method of hatching
-                        pathType = pathType | HatchBoundaryPathTypeFlags.External | HatchBoundaryPathTypeFlags.Derived;
-
                         if (pathType.HasFlag(HatchBoundaryPathTypeFlags.Polyline))
                         {
                             path = this.ReadEdgePolylineBoundaryPath();
