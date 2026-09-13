@@ -1,0 +1,39 @@
+name: Apply reviewed MESH version preflight
+on:
+  push:
+    branches: [fix/dxf-mesh-version]
+    paths: [.github/workflows/prepare-mesh-version.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-mesh-version'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-mesh-version
+      - name: Apply exact tested registration and preflight call
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, subprocess
+          for name, old_hash, before, after in [
+              ('netDxf/IO/DxfWriter.cs', '840fadb49b2e39555a81d81d48a6f5d6574a5e4741e23a13504e22af03dd76ca', '            this.ValidateMTextBackgroundVersions();', '            this.ValidateMTextBackgroundVersions();\n            this.ValidateMeshVersions();'),
+              ('tests/netDxf.Conformance/RegressionTests.cs', '6d71bc0b81c58f5cceb5fa32b29bd7abf1bf6badd236def5e15c65082fd5335f', '        RegisterRawR12Tests();', '        RegisterRawR12Tests();\n        RegisterMeshVersionTests();')
+          ]:
+              path=Path(name)
+              assert hashlib.sha256(path.read_bytes()).hexdigest()==old_hash
+              text=path.read_text();assert text.count(before)==1
+              path.write_text(text.replace(before,after))
+          Path('.github/workflows/prepare-mesh-version.yml').unlink()
+          subprocess.run(['git','add','netDxf/IO/DxfWriter.cs','tests/netDxf.Conformance/RegressionTests.cs','.github/workflows/prepare-mesh-version.yml'],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual=='010805bdceea5cfdb4e2800005c7dd1719d86370',actual
+      - name: Commit only the verified feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: reject modern MESH in older DXF output profiles'
+          git push origin HEAD:fix/dxf-mesh-version
