@@ -34,5 +34,6 @@ internal static partial class Program
         RegisterRawDimensionStyleNameTests();
         RegisterRawLegacyProfileTests();
         RegisterRawR12Tests();
+        RegisterMeshVersionTests();
     }
 }
