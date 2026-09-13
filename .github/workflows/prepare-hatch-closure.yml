@@ -21,9 +21,11 @@ jobs:
           import base64, gzip, hashlib, os, subprocess
           payload=Path('.github/patches/hatch-closure.gz')
           encoded=base64.b64encode(payload.read_bytes()).decode()
-          # Repair the recorded transcription insertion; require the canonical hash before use.
+          # Repair the recorded insertion and truncated zero tail; require canonical hashes.
           assert encoded.count('pdbGG565') == 1
-          data=base64.b64decode(encoded.replace('pdbGG565','pdbG565'),validate=True)
+          encoded=encoded.replace('pdbGG565','pdbG565').rstrip('=')
+          encoded += 'A' * (-len(encoded) % 4)
+          data=base64.b64decode(encoded,validate=True)
           assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest() == '7615541c08ae1809922ce9d90cbb8880e8debf8f'
           patch=gzip.decompress(data)
           assert hashlib.sha256(patch).hexdigest() == '404fbf6f7c70a8a3de933b6ea05b19825735a02b9fe0d56e309c772d0649832f'
