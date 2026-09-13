@@ -81,6 +81,8 @@ namespace netDxf.IO
 
         public void Write(short code, object value)
         {
+            // Validate before writing the code or changing the current-tag state.
+            if ((code >= 310 && code <= 319) || code == 1004) ValidateBinaryChunk(value);
             this.dxfCode = code;
             this.writer.Write(code);
 
@@ -308,8 +310,21 @@ namespace netDxf.IO
 
         public void WriteBytes(byte[] value)
         {
+            ValidateBinaryChunk(value);
             this.writer.Write((byte) value.Length);
             this.writer.Write(value);
+        }
+
+        private static void ValidateBinaryChunk(object value)
+        {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            byte[] bytes = value as byte[];
+            if (bytes == null)
+                throw new ArgumentException("A binary DXF chunk requires a byte array.", nameof(value));
+            // This is the framing limit, not a replacement for smaller record-specific limits.
+            if (bytes.Length > byte.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(value), bytes.Length,
+                    "A binary DXF chunk cannot exceed its one-byte length prefix. Split the data into valid records explicitly.");
         }
 
         public void WriteShort(short value)
