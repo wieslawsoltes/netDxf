@@ -9890,6 +9890,7 @@ namespace netDxf.IO
             double scale = 1.0;
             bool isGradient = false;
             bool isDouble = false;
+            bool hasLineDefinitions = false;
             List<HatchPatternLineDefinition> lineDefinitions = new List<HatchPatternLineDefinition>();
             HatchType type = HatchType.UserDefined;
             HatchStyle style = HatchStyle.Normal;
@@ -9938,10 +9939,20 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 78:
-                        // number of pattern definition lines
+                        if (hasLineDefinitions)
+                            throw this.InvalidHatchPatternData("duplicate group-78 definition list");
+                        hasLineDefinitions = true;
                         short numLines = this.chunk.ReadShort();
                         lineDefinitions = this.ReadHatchPatternDefinitionLine(scale, angle, numLines);
                         break;
+                    case 53:
+                    case 43:
+                    case 44:
+                    case 45:
+                    case 46:
+                    case 79:
+                    case 49:
+                        throw this.InvalidHatchPatternData("pattern field outside its declared line or dash count");
                     case 450:
                         if (this.chunk.ReadInt() == 1)
                         {
@@ -10017,38 +10028,68 @@ namespace netDxf.IO
 
         private List<HatchPatternLineDefinition> ReadHatchPatternDefinitionLine(double patternScale, double patternAngle, short numLines)
         {
-            List<HatchPatternLineDefinition> lineDefinitions = new List<HatchPatternLineDefinition>();
+            if (numLines < 0)
+                throw this.InvalidHatchPatternData("negative group-78 line count");
 
-            this.chunk.Next();
+            // Counts constrain the grammar; they are never trusted allocation sizes.
+            List<HatchPatternLineDefinition> lineDefinitions = new List<HatchPatternLineDefinition>();
+            this.ReadNextHatchPatternTag();
             for (int i = 0; i < numLines; i++)
             {
+                if (this.chunk.Code != 53)
+                    throw this.InvalidHatchPatternData("expected group 53 to start the next pattern line");
+                double angle = this.chunk.ReadDouble();
+                this.ReadNextHatchPatternTag();
+
                 Vector2 origin = Vector2.Zero;
                 Vector2 delta = Vector2.Zero;
+                List<double> dashes = new List<double>();
+                int fields = 0;
+                // Scalar order within a group-53 line is not significant. The dash
+                // list remains explicitly delimited by group 79 and its count.
+                while (fields != 31)
+                {
+                    int field;
+                    switch (this.chunk.Code)
+                    {
+                        case 43: field = 1; break;
+                        case 44: field = 2; break;
+                        case 45: field = 4; break;
+                        case 46: field = 8; break;
+                        case 79: field = 16; break;
+                        default:
+                            throw this.InvalidHatchPatternData("expected unconsumed line fields 43, 44, 45, 46 and 79");
+                    }
+                    if ((fields & field) != 0)
+                        throw this.InvalidHatchPatternData("duplicate scalar or dash-count field in one pattern line");
+                    fields |= field;
 
-                double angle = this.chunk.ReadDouble(); // code 53
-                this.chunk.Next();
+                    switch (this.chunk.Code)
+                    {
+                        case 43: origin.X = this.chunk.ReadDouble(); this.ReadNextHatchPatternTag(); break;
+                        case 44: origin.Y = this.chunk.ReadDouble(); this.ReadNextHatchPatternTag(); break;
+                        case 45: delta.X = this.chunk.ReadDouble(); this.ReadNextHatchPatternTag(); break;
+                        case 46: delta.Y = this.chunk.ReadDouble(); this.ReadNextHatchPatternTag(); break;
+                        case 79:
+                            short numSegments = this.chunk.ReadShort();
+                            if (numSegments < 0)
+                                throw this.InvalidHatchPatternData("negative group-79 dash count");
+                            this.ReadNextHatchPatternTag();
+                            for (int j = 0; j < numSegments; j++)
+                            {
+                                if (this.chunk.Code != 49)
+                                    throw this.InvalidHatchPatternData("expected group 49 for the next dash length");
+                                dashes.Add(this.chunk.ReadDouble());
+                                this.ReadNextHatchPatternTag();
+                            }
+                            break;
+                    }
+                }
 
-                origin.X = this.chunk.ReadDouble(); // code 43
-                this.chunk.Next();
-
-                origin.Y = this.chunk.ReadDouble(); // code 44
-                this.chunk.Next();
-
-                delta.X = this.chunk.ReadDouble(); // code 45
-                this.chunk.Next();
-
-                delta.Y = this.chunk.ReadDouble(); // code 46
-                this.chunk.Next();
-
-                short numSegments = this.chunk.ReadShort(); // code 79
-                this.chunk.Next();
-
-                // Pattern fill data. In theory this should hold the same information as the pat file but for unknown reason the DXF requires global data instead of local.
-                // this means we have to convert the global data into local, since we are storing the pattern line definition as it appears in the acad.pat file.
+                // DXF stores global pattern data; the public model uses PAT-local data.
                 double sinOrigin = Math.Sin(patternAngle*MathHelper.DegToRad);
                 double cosOrigin = Math.Cos(patternAngle*MathHelper.DegToRad);
                 origin = new Vector2(cosOrigin*origin.X/patternScale + sinOrigin*origin.Y/patternScale, -sinOrigin*origin.X/patternScale + cosOrigin*origin.Y/patternScale);
-
                 double sinDelta = Math.Sin(angle*MathHelper.DegToRad);
                 double cosDelta = Math.Cos(angle*MathHelper.DegToRad);
                 delta = new Vector2(cosDelta*delta.X/patternScale + sinDelta*delta.Y/patternScale, -sinDelta*delta.X/patternScale + cosDelta*delta.Y/patternScale);
@@ -10057,20 +10098,25 @@ namespace netDxf.IO
                 {
                     Angle = angle - patternAngle,
                     Origin = origin,
-                    Delta = delta,
+                    Delta = delta
                 };
-
-                for (int j = 0; j < numSegments; j++)
-                {
-                    // positive values means solid segments and negative values means spaces (one entry per element)
-                    lineDefinition.DashPattern.Add(this.chunk.ReadDouble()/patternScale); // code 49
-                    this.chunk.Next();
-                }
-
+                foreach (double dash in dashes)
+                    lineDefinition.DashPattern.Add(dash/patternScale);
                 lineDefinitions.Add(lineDefinition);
             }
-
             return lineDefinitions;
+        }
+
+        private void ReadNextHatchPatternTag()
+        {
+            do { this.chunk.Next(); } while (this.chunk.Code == 999);
+        }
+
+        private InvalidDataException InvalidHatchPatternData(string detail)
+        {
+            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid HATCH pattern definition at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, detail));
         }
 
         #endregion
