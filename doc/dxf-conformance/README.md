@@ -6,7 +6,9 @@ Start with the [current version and feature comparison](version-feature-matrix.m
 
 The [12 September source-pinned 113-row snapshot](version-feature-matrix-2026-09-12.md) is retained as history; its missing raw/VIEW/CLASSES/UCS entries are no longer the current state. Subsequent feature notes record their own baselines, red/green tests, version contracts and remaining boundaries.
 
-Recent implementation evidence: [MESH input validation](mesh-read-validation.md), [MESH blend crease](mesh-blend-crease.md), [MESH export guards](mesh-version-export.md), [HATCH double-pattern flag](hatch-double-pattern.md), [R12 raw framing](raw-r12.md), [R13/R14 raw profiles](raw-r13-r14.md), [raw record edits](raw-records.md), and [raw preservation](raw-document.md). The comparison links the remaining feature notes at their affected rows.
+Recent implementation evidence: [HATCH seed points](hatch-seed-points.md), [MESH input validation](mesh-read-validation.md), [MESH blend crease](mesh-blend-crease.md), [MESH export guards](mesh-version-export.md), [HATCH double-pattern flag](hatch-double-pattern.md), [R12 raw framing](raw-r12.md), [R13/R14 raw profiles](raw-r13-r14.md), [raw record edits](raw-records.md), and [raw preservation](raw-document.md). The comparison links the remaining feature notes at their affected rows.
+
+The [13 September execution checkpoint](checkpoint-2026-09-13.md) records merged PRs #38–#41, exact CI runs and the next unimplemented scopes.
 
 ## Updating the comparison
 
