@@ -9190,10 +9190,16 @@ namespace netDxf.IO
             TextStyle style = TextStyle.Default;
             string textString = string.Empty;
             List<XData> xData = new List<XData>();
+            MTextBackgroundFill background = null;
 
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                if (this.TryReadMTextBackground(ref background))
+                {
+                    this.chunk.Next();
+                    continue;
+                }
                 switch (this.chunk.Code)
                 {
                     case 1:
@@ -9340,6 +9346,7 @@ namespace netDxf.IO
                 AttachmentPoint = attachmentPoint,
                 LineSpacingStyle = spacingStyle,
                 DrawingDirection = drawingDirection,
+                BackgroundFill = background,
                 Rotation = isRotationDefined ? rotation : Vector2.Angle(new Vector2(ocsDirection.X, ocsDirection.Y))*MathHelper.RadToDeg,
                 Normal = normal,
             };

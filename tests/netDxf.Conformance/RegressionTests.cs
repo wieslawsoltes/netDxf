@@ -16,5 +16,6 @@ internal static partial class Program
         RegisterStrictBinaryValueTests();
         RegisterUcsOrthographicTests();
         RegisterMTextCloneDirectionTests();
+        RegisterMTextBackgroundTests();
     }
 }

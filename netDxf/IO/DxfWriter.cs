@@ -87,6 +87,8 @@ namespace netDxf.IO
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
             }
 
+            this.ValidateMTextBackgroundVersions();
+
             this.encodedStrings = new Dictionary<string, string>();
             this.polylines = new Dictionary<string, Polyline>();
             this.imageDefReactors = new Dictionary<string, Dictionary<string, ImageDefinitionReactor>>();
@@ -3145,6 +3147,7 @@ namespace netDxf.IO
 
             this.chunk.Write(7, this.EncodeNonAsciiCharacters(mText.Style.Name));
 
+            this.WriteMTextBackground(mText.BackgroundFill);
             this.WriteXData(mText.XData);
         }
 
