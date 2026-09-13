@@ -116,7 +116,22 @@ internal static partial class Program
     private static void FileLifetimeMalformed(DxfVersion version, bool binary) => WithLifetimeFile(file =>
     {
         byte[] bytes = FileLifetimeFixture(version, binary);
-        File.WriteAllBytes(file, bytes.Take(bytes.Length / 2).ToArray());
+        // Truncate at a complete tag boundary, independent of timestamps, locale and
+        // platform line endings. An arbitrary byte midpoint can instead split a value.
+        if (binary)
+        {
+            byte[] eof = { 0, 0, (byte)'E', (byte)'O', (byte)'F', 0 };
+            Check(bytes.TakeLast(eof.Length).SequenceEqual(eof), "Binary fixture EOF framing changed.");
+            File.WriteAllBytes(file, bytes.Take(bytes.Length - eof.Length).ToArray());
+        }
+        else
+        {
+            string text = Encoding.UTF8.GetString(bytes).TrimStart('\uFEFF').Replace("\r\n", "\n");
+            string[] lines = text.TrimEnd('\n').Split('\n');
+            Equal("0", lines[^2].Trim(), "Text fixture EOF group code");
+            Equal("EOF", lines[^1], "Text fixture EOF value");
+            File.WriteAllText(file, string.Join("\n", lines.Take(lines.Length - 2)) + "\n", new UTF8Encoding(false));
+        }
 #if DEBUG
         Throws<EndOfStreamException>(() => DxfDocument.Load(file));
 #else

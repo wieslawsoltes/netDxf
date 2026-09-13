@@ -22,6 +22,8 @@ This is resource-lifetime correction, not transactional output. `File.Create` st
 
 With unchanged production code: **5,259 passed / 50 failed in Debug**, and **5,285 passed / 24 failed in Release**. With owned-stream scopes: **5,309 passed / 0 failed**, both configurations, using the local signed-library .NET 8 workbench. Final-head Linux/Windows SDK, netstandard2.0 and source-audit CI are additional merge gates. Existing targets and strong naming are unchanged; compiling older targets is not older-runtime execution evidence.
 
+The first Windows Debug CI run exposed six failures in the malformed-text test, which cut generated files at an arbitrary byte midpoint. The final fixture instead removes the complete terminal EOF tag in both transports, yielding a deterministic physical-EOF error independently of generated field lengths or platform newlines. The old/fixed production comparison above was repeated with this corrected fixture; production logic and expected exception types were not weakened.
+
 ## Primary reference
 
 Microsoft's C# using statement guarantees disposal on block exit, including exceptions and early returns: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using
