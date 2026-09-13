@@ -1,0 +1,42 @@
+name: Integrate HATCH pattern and boundary fixes
+on:
+  push:
+    branches: [fix/dxf-hatch-pattern-validation]
+    paths: [.github/workflows/dxf-integrate-pattern.yml]
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge pinned PR46 and preserve all regression registrations
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git merge --no-commit --no-ff c9f886c553c2f8469c526ce7e9cdeaf4292c3fa7 || test "$(git diff --name-only --diff-filter=U)" = tests/netDxf.Conformance/RegressionTests.cs
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tests/netDxf.Conformance/RegressionTests.cs')
+          s = p.read_text()
+          a = s.index('<<<<<<< HEAD')
+          b = s.index('\n', s.index('>>>>>>> ', a))
+          s = s[:a] + '        RegisterHatchPolylineClosureTests();\n        RegisterHatchPolylineInputTests();\n        RegisterHatchPatternValidationTests();' + s[b:]
+          for name in ('RegisterHatchPolylineClosureTests', 'RegisterHatchPolylineInputTests', 'RegisterHatchPatternValidationTests'):
+              assert s.count(name + '();') == 1
+          p.write_text(s)
+          p = Path('doc/dxf-conformance/hatch-pattern-lists.md')
+          s = p.read_text().replace('## References and remaining scope', '## Concurrent-base integration\n\nPRs #45 and #46 were merged by concurrent repository work after the initial PR44-based checkpoint. Both boundary fixes, their tests and their independent verifiers are retained. The combined source after merged PR46 (`c9f886c553c2f8469c526ce7e9cdeaf4292c3fa7`) plus this isolated pattern fix passes **7,546 cases / 0 failures** in local Debug and Release. The conflict resolution adds all three test registrations; no existing registration or boundary implementation is removed. Final-head CI must run on this integrated tree.\n\n## References and remaining scope')
+          p.write_text(s)
+          PY
+          git rm .github/workflows/dxf-integrate-pattern.yml
+          git add -A
+          test "$(git write-tree)" = 0e7308a2ac536e25a4c37060bdab07112b89d77a
+          git diff --cached c9f886c553c2f8469c526ce7e9cdeaf4292c3fa7 --check
+          git commit -m 'Merge tested PR46 boundary fixes while retaining pattern grammar validation'
+          git push origin HEAD:refs/heads/fix/dxf-hatch-pattern-integration-ready
