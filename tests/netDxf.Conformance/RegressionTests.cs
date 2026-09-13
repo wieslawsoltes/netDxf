@@ -28,5 +28,6 @@ internal static partial class Program
         RegisterBinaryChunkWriterTests();
         RegisterRawDocumentTests();
         RegisterRawDocumentBoundaryTests();
+        RegisterFileStreamLifetimeTests();
     }
 }

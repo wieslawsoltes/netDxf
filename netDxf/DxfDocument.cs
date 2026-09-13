@@ -530,38 +530,33 @@ namespace netDxf
         /// </remarks>
         public static DxfDocument Load(string file, IEnumerable<string> supportFolders)
         {
-            Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            // The path overload owns its stream, including failures during reader setup.
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                FileInfo fileInfo = new FileInfo(file);
+                SupportFolders folders = new SupportFolders(supportFolders) { WorkingFolder = fileInfo.DirectoryName };
+                DxfReader dxfReader = new DxfReader();
 
-            FileInfo fileInfo = new FileInfo(file);
-            SupportFolders folders = new SupportFolders(supportFolders) { WorkingFolder = fileInfo.DirectoryName };
-            
-            DxfReader dxfReader = new DxfReader();
-            
 #if DEBUG
-            DxfDocument document = dxfReader.Read(stream, folders);
-            stream.Close();
+                DxfDocument document = dxfReader.Read(stream, folders);
 #else
-            DxfDocument document;
-            try
-            {
-                document = dxfReader.Read(stream, folders);
-            }
-            catch (DxfVersionNotSupportedException)
-            {
-                throw;
-            }
-            catch
-            {
-                return null;
-            }
-            finally
-            {
-                stream.Close();
-            }
-
+                DxfDocument document;
+                try
+                {
+                    document = dxfReader.Read(stream, folders);
+                }
+                catch (DxfVersionNotSupportedException)
+                {
+                    throw;
+                }
+                catch
+                {
+                    return null;
+                }
 #endif
-            document.name = Path.GetFileNameWithoutExtension(file);
-            return document;
+                document.name = Path.GetFileNameWithoutExtension(file);
+                return document;
+            }
         }
 
         /// <summary>
@@ -649,41 +644,35 @@ namespace netDxf
         {
             FileInfo fileInfo = new FileInfo(file);
             this.name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-            
-
             DxfWriter dxfWriter = new DxfWriter();
 
-            Stream stream = File.Create(file);
-
-            string workingFolder = fileInfo.DirectoryName;
-            if (!string.IsNullOrEmpty(workingFolder))
+            // Retain File.Create's overwrite behavior, but release the owned file on every exit.
+            using (Stream stream = File.Create(file))
             {
-                this.supportFolders.WorkingFolder = workingFolder;
-            }
+                string workingFolder = fileInfo.DirectoryName;
+                if (!string.IsNullOrEmpty(workingFolder))
+                {
+                    this.supportFolders.WorkingFolder = workingFolder;
+                }
 
 #if DEBUG
-            dxfWriter.Write(stream, this, isBinary);
-            stream.Close();
-#else
-            try
-            {
                 dxfWriter.Write(stream, this, isBinary);
-            }
-            catch (DxfVersionNotSupportedException)
-            {
-                throw;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                stream.Close();
-            }
-                
+#else
+                try
+                {
+                    dxfWriter.Write(stream, this, isBinary);
+                }
+                catch (DxfVersionNotSupportedException)
+                {
+                    throw;
+                }
+                catch
+                {
+                    return false;
+                }
 #endif
-            return true;
+                return true;
+            }
         }
 
         /// <summary>
@@ -754,10 +743,10 @@ namespace netDxf
         /// <returns>The declared DXF database version, or Unknown when it cannot be determined.</returns>
         public static DxfVersion CheckDxfFileVersion(string file, out bool isBinary)
         {
-            Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            DxfVersion version = CheckDxfFileVersion(stream, out isBinary);
-            stream.Close();
-            return version;
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                return CheckDxfFileVersion(stream, out isBinary);
+            }
         }
 
         /// <summary>
