@@ -13,16 +13,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/dxf-hatch-gradient-shift
-          fetch-depth: 2
+          fetch-depth: 0
       - name: Apply verified change and remove transfer helper
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = b2226fabca6752055c50fa45c7b74f5af464679f
+          git merge-base --is-ancestor b2226fabca6752055c50fa45c7b74f5af464679f HEAD
           git config user.name 'Wiesław Šoltés'
           git config user.email 'wieslawsoltes@users.noreply.github.com'
           git config core.whitespace cr-at-eol
           python - <<'PYCODE'
           import base64, gzip, hashlib, subprocess
-          data = base64.b64decode('H4sIAAAAAAAC/8U8aXPbOLLfXbX/AeN5b02NJeqw5DPOjGM7GVclTsr2zG5tKuVAJChxQ5EaHj7i8X9/3Q2ABClSljPHc1UiiQAajUbfDcL1PY91OhM/ZbzrRk7XvfM6ThR6UTzjoSO6U546084k5q4vwrSTTH0vtWcuGz+n91oobpnnB4LNIlewfq+3PRyu+aEr7lhP/tn29s7Q2xM7a51Oh3VdcdMNsyBY29zcfOZcP/3EOr12j23226MB++mntc3v2XEUpn6YRVnCfj66Ov6Z6WGMhq1tQqfv2YnwhJO2CcmA8dBlTjSb89Qf+4Gf3mOvoyyFxuQLAIiyORtu95mfMM7cKBsHonPDg0wAcQIBg8civRUiZGEUSuygBYHq7zkOrvD80E/9KExsdjUVDNcoYhYL7sKHw5OUwQalEQxnfpiKCTwlSGkUA6AoDO4Bh1dRFAgeShC3sZ9Cr3QKCIiZn+KEwoefMfsq4ohFMQwTbZbgV9cPeXzPvJg7iAUP5AoSWH8WuLAAoFMW3/g3gokbAMhZEHG3m3B44Nw7gbCRNp9/xh15o1b1gcOccWhf4mo/A4xbiW4COPFUkcj1Y6B4cC9xTu/ngOXRhzPGHUfM04QRXQQjsiawdFwPfDhBliAyMQ8ngn3stVn/U5vdwvKiLGWwMyGsaNJmTsBnc/iGq02BODEyTmfMEyRG6M4jn6ifClq2zS6A4ERYoh7QP+VqzjCDDfEdiUlb8kYABOyenV+eXlwxcTcPogSAmIMSPhNyoXJ94s5PUkTn8zEQSMDWfdabRquOxQyGJmwOVIIO+7DpCZsIpCNyWRpnCIMjwRiQkCjLDg9Z74DxJPEnIcKmXokIYE0J6xGmRaPHg6Ro7SNaAHiG+0YbI9gPP8DsNz5KimShjaQgFYgfbD/S6ocfgLpRjLtHk8LICDjl3+/eoszMkKtvp74zZVOgKAiME/tjIDr20yue8TntzZg7X2557ALvHxWrMDoix4eSL2HhsZgH3AFsVQtIiuvzVBGamACbNM4HJEVVkG4EAJCtZ1mKY/1UcvDnz04y5fF8bfOGx2wuWZgdMtRfoUhP7jz7FFBJfZHYddy+tvmwtsngT+0N69lbO6O2fHYUTkADHrKtHbu3tvl4sLbZ7eo5bM0RuNG0S202Bl6em1KEbcBAQZBzAYG3JbZONL8H6NYqeLbyaZGJrRbggsMLLA6Jjw4YYEgN+XoOQJb8iY86QrOrRgKoh0Q8C0FIfCXHtKHGH9h','validate')
+          from pathlib import Path
+          encoded = Path('.dxf-shift.part1').read_text().strip() + Path('.dxf-shift.part2').read_text().strip()
+          data = base64.b64decode(encoded, validate=True)
+          assert hashlib.sha256(data).hexdigest() == '288607eff75f6724362468081e0a4c446d5faa65672a1a49ae2fb6f7954f7d0c'
+          patch = gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest() == '5ebe98f33f5e017cc31c988bd38cdd23fa47f7b6d92da1deab8c6ac29c9d4273'
+          subprocess.run(['git', 'apply', '--index', '--whitespace=nowarn', '-'], input=patch, check=True)
           PYCODE
+          git rm .github/workflows/dxf-prepare-shift.yml .dxf-shift.part1 .dxf-shift.part2
+          test "$(git write-tree)" = d84d85946d8876b36b78319f8c79fe9b15145249
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git commit -m 'feat: preserve continuous HATCH gradient shift'
+          git push origin HEAD:feat/dxf-hatch-gradient-shift
