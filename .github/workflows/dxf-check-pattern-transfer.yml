@@ -1,0 +1,19 @@
+name: Inspect pattern patch transfer
+on:
+  push:
+    branches: [fix/dxf-hatch-pattern-order]
+    paths: [.github/workflows/dxf-check-pattern-transfer.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pattern-transfer-inspection
+          path: .github/workflows/dxf-prepare-pattern-order.yml
+          include-hidden-files: true
+          retention-days: 1
