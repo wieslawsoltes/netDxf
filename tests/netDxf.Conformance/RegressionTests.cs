@@ -21,5 +21,6 @@ internal static partial class Program
         RegisterCustomHeaderUnicodeTests();
         RegisterHeaderCommentTests();
         RegisterSurfaceDensityHeaderTests();
+        RegisterClassDefinitionTests();
     }
 }
