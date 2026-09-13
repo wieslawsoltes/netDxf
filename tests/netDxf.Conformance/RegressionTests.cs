@@ -23,5 +23,6 @@ internal static partial class Program
         RegisterSurfaceDensityHeaderTests();
         RegisterClassDefinitionTests();
         RegisterInsertArrayTests();
+        RegisterRawTagTests();
     }
 }
