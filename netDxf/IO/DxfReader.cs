@@ -359,12 +359,12 @@ namespace netDxf.IO
             Vector3 ucsXDir = Vector3.UnitX;
             Vector3 ucsYDir = Vector3.UnitY;
 
-            this.chunk.Next();
+            this.ReadNextHeaderTag();
             while (this.chunk.ReadString() != DxfObjectCode.EndSection)
             {
                 string varName = this.chunk.ReadString();
                 double julian;
-                this.chunk.Next();
+                this.ReadNextHeaderTag();
 
                 switch (varName)
                 {
@@ -376,61 +376,61 @@ namespace netDxf.IO
                             throw new NotSupportedException("Only AutoCad2000 and higher DXF versions are supported.");
                         }
                         this.doc.DrawingVariables.AcadVer = acadVer;
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.HandleSeed:
                         string handleSeed = this.chunk.ReadHex();
                         this.doc.DrawingVariables.HandleSeed = handleSeed;
                         this.doc.NumHandles = long.Parse(handleSeed, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.Angbase:
                         this.doc.DrawingVariables.Angbase = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.Angdir:
                         this.doc.DrawingVariables.Angdir = (AngleDirection) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.AttMode:
                         this.doc.DrawingVariables.AttMode = (AttMode) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.AUnits:
                         this.doc.DrawingVariables.AUnits = (AngleUnitType) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.AUprec:
                         this.doc.DrawingVariables.AUprec = this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CeColor:
                         this.doc.DrawingVariables.CeColor = AciColor.FromCadIndex(this.chunk.ReadShort());
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CeLtScale:
                         this.doc.DrawingVariables.CeLtScale = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CeLtype:
                         this.doc.DrawingVariables.CeLtype = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CeLweight:
                         this.doc.DrawingVariables.CeLweight = (Lineweight) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CLayer:
                         this.doc.DrawingVariables.CLayer = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CMLJust:
                         this.doc.DrawingVariables.CMLJust = (MLineJustification) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CMLScale:
                         this.doc.DrawingVariables.CMLScale = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.CMLStyle:
                         string mLineStyleName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
@@ -438,7 +438,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.CMLStyle = mLineStyleName;
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.DimStyle:
                         string dimStyleName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
@@ -446,7 +446,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.DimStyle = dimStyleName;
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TextSize:
                         double size = this.chunk.ReadDouble();
@@ -454,7 +454,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TextSize = size;
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TextStyle:
                         string textStyleName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
@@ -462,15 +462,15 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TextStyle = textStyleName;
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.LastSavedBy:
                         this.doc.DrawingVariables.LastSavedBy = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.LUnits:
                         this.doc.DrawingVariables.LUnits = (LinearUnitType) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.LUprec:
                         short luprec = this.chunk.ReadShort();
@@ -479,51 +479,51 @@ namespace netDxf.IO
                             luprec = 4;
                         }
                         this.doc.DrawingVariables.LUprec = luprec;
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.DwgCodePage:
                         this.doc.DrawingVariables.DwgCodePage = this.chunk.ReadString();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.Extnames:
                         this.doc.DrawingVariables.Extnames = this.chunk.ReadBool();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.InsBase:
                         this.doc.DrawingVariables.InsBase = this.ReadHeaderVector();
                         break;
                     case HeaderVariableCode.InsUnits:
                         this.doc.DrawingVariables.InsUnits = (DrawingUnits) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.LtScale:
                         this.doc.DrawingVariables.LtScale = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.LwDisplay:
                         this.doc.DrawingVariables.LwDisplay = this.chunk.ReadBool();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.MirrText:
                         short mirrText = this.chunk.ReadShort();
                         this.doc.DrawingVariables.MirrText = mirrText != 0;
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.PdMode:
                         this.doc.DrawingVariables.PdMode = (PointShape) this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.PdSize:
                         this.doc.DrawingVariables.PdSize = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.PLineGen:
                         this.doc.DrawingVariables.PLineGen = this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.PsLtScale:
                         this.doc.DrawingVariables.PsLtScale = this.chunk.ReadShort();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.SplineSegs:
                         short splineSegs = this.chunk.ReadShort();
@@ -532,7 +532,7 @@ namespace netDxf.IO
                             // only positive values are supported
                             this.doc.DrawingVariables.SplineSegs = Math.Abs(splineSegs);
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.SurfU:
                         short surfU = this.chunk.ReadShort();
@@ -541,7 +541,7 @@ namespace netDxf.IO
                             surfU = 6;
                         }
                         this.doc.DrawingVariables.SplineSegs = surfU;
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.SurfV:
                         short surfV = this.chunk.ReadShort();
@@ -550,7 +550,7 @@ namespace netDxf.IO
                             surfV = 6;
                         }
                         this.doc.DrawingVariables.SplineSegs = surfV;
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TdCreate:
                         julian = this.chunk.ReadDouble();
@@ -562,7 +562,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TdCreate = DrawingTime.FromJulianCalendar(julian);
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TduCreate:
                         julian = this.chunk.ReadDouble();
@@ -574,7 +574,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TduCreate = DrawingTime.FromJulianCalendar(julian);
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TdUpdate:
                         julian = this.chunk.ReadDouble();
@@ -586,7 +586,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TdUpdate = DrawingTime.FromJulianCalendar(julian);
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TduUpdate:
                         julian = this.chunk.ReadDouble();
@@ -598,7 +598,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TduUpdate = DrawingTime.FromJulianCalendar(julian);
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TdinDwg:
                         double elapsed = this.chunk.ReadDouble();
@@ -610,7 +610,7 @@ namespace netDxf.IO
                         {
                             this.doc.DrawingVariables.TdinDwg = DrawingTime.EditingTime(elapsed);
                         }
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.UcsOrg:
                         ucsOrg = this.ReadHeaderVector();
@@ -635,7 +635,7 @@ namespace netDxf.IO
                             // some header variables have more than one entry
                             while (this.chunk.Code != 0 && this.chunk.Code != 9)
                             {
-                                this.chunk.Next();
+                                this.ReadNextHeaderTag();
                             }
                         }
                         else 
@@ -645,14 +645,14 @@ namespace netDxf.IO
                             if (this.chunk.Code == 10)
                             {
                                 double x = this.chunk.ReadDouble();
-                                this.chunk.Next();
+                                this.ReadNextHeaderTag();
                                 double y = this.chunk.ReadDouble();
-                                this.chunk.Next();
+                                this.ReadNextHeaderTag();
                                 // the code 30 might not exist
                                 if (this.chunk.Code == 30)
                                 {
                                     double z = this.chunk.ReadDouble();
-                                    this.chunk.Next();
+                                    this.ReadNextHeaderTag();
                                     variable = new HeaderVariable(varName, 30, new Vector3(x, y, z));
                                 }
                                 else
@@ -668,7 +668,7 @@ namespace netDxf.IO
                                     value = this.DecodeEncodedNonAsciiCharacters(text);
                                 }
                                 variable = new HeaderVariable(varName, this.chunk.Code, value);
-                                this.chunk.Next();
+                                this.ReadNextHeaderTag();
                             }
 
                             //avoid duplicate custom header variables
@@ -702,21 +702,32 @@ namespace netDxf.IO
                 {
                     case 10:
                         pos.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case 20:
                         pos.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     case 30:
                         pos.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
+                        this.ReadNextHeaderTag();
                         break;
                     default:
                         throw new Exception("Invalid code in vector header variable.");
                 }
             }
             return pos;
+        }
+
+        private void ReadNextHeaderTag()
+        {
+            // Group 999 comments are transport records, not HEADER values or boundaries.
+            // Keep this policy local to semantic HEADER parsing; the low-level reader
+            // still exposes comments to consumers that need the original tag stream.
+            do
+            {
+                this.chunk.Next();
+            } while (this.chunk.Code == 999);
         }
 
         private void ReadClasses()
