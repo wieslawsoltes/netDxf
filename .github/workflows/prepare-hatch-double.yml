@@ -1,0 +1,40 @@
+name: Apply checked HATCH double-pattern support
+on:
+  push:
+    branches: [feature/dxf-hatch-double]
+    paths: [.github/workflows/prepare-hatch-double.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-hatch-double'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/dxf-hatch-double
+      - name: Apply exact tested patch and verify complete source tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import base64, gzip, hashlib, os, subprocess
+          parts=[Path('.github/patches/hatch-double-'+str(i)+'.bin') for i in range(3)]
+          data=b''.join(p.read_bytes() for p in parts)+base64.b64decode('m4a+jKXhqxOHLenOgeTjMa4CogNMp8djdO7jcU1RWlL3+gHCn8XoHlgmfX99738ALv37pI5YAAA=')
+          assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()=='eabb0229f65920f5dc617ec3f01b67654e48ee9a'
+          patch=gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest()=='f2b0676f9b7bc8e0fb5fe2f4f6947c7403024928922e8c04bf763f50de4f9551'
+          path=Path(os.environ['RUNNER_TEMP'])/'hatch-double.patch';path.write_bytes(patch)
+          subprocess.run(['git','apply','--check',str(path)],check=True)
+          subprocess.run(['git','apply',str(path)],check=True)
+          for p in parts:p.unlink()
+          Path('.github/workflows/prepare-hatch-double.yml').unlink()
+          paths=['netDxf/Entities/HatchPattern.cs','netDxf/Entities/HatchGradientPattern.cs','netDxf/IO/DxfReader.cs','netDxf/IO/DxfWriter.cs','tests/netDxf.Conformance/RegressionTests.cs','tests/netDxf.Conformance/HatchDoublePatternTests.cs','tools/verify_hatch_double.py','doc/dxf-conformance/hatch-double-pattern.md']
+          subprocess.run(['git','add',*paths,*[str(p) for p in parts],'.github/workflows/prepare-hatch-double.yml'],check=True)
+          assert subprocess.check_output(['git','write-tree'],text=True).strip()=='598ec94baffed0fa8e55115f9a4c426024e264cb'
+      - name: Commit only the feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: preserve HATCH double-pattern flags through editing and cloning'
+          git push origin HEAD:feature/dxf-hatch-double
