@@ -29,5 +29,6 @@ internal static partial class Program
         RegisterRawDocumentTests();
         RegisterRawDocumentBoundaryTests();
         RegisterFileStreamLifetimeTests();
+        RegisterRawRecordTests();
     }
 }
