@@ -31,5 +31,6 @@ internal static partial class Program
         RegisterFileStreamLifetimeTests();
         RegisterRawRecordTests();
         RegisterSupportFolderLookupTests();
+        RegisterRawDimensionStyleNameTests();
     }
 }

@@ -72,6 +72,9 @@ namespace netDxf.IO
 
         #region public properties
 
+        // The DIMSTYLE table's obsolete DIMBLK field is the sole raw group-5 name exception.
+        public bool Code5IsString { get; set; }
+
         public short Code
         {
             get { return this.code; }
@@ -96,7 +99,7 @@ namespace netDxf.IO
             this.code = this.reader.ReadInt16();
             this.valuePosition = this.reader.BaseStream.CanSeek ? this.reader.BaseStream.Position : -1;
 
-            if (this.code == 5 || this.code == 1005) // object or extended-data handle
+            if ((this.code == 5 && !this.Code5IsString) || this.code == 1005) // object or extended-data handle
             {
                 this.value = this.ReadHex(this.NullTerminatedString());
             }
