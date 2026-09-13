@@ -262,7 +262,8 @@ namespace netDxf.Entities
             {
                 Polyline copy = new Polyline
                 {
-                    Vertexes = new Vector3[this.Vertexes.Length]
+                    Vertexes = new Vector3[this.Vertexes.Length],
+                    IsClosed = this.IsClosed
                 };
 
                 for (int i = 0; i < this.Vertexes.Length; i++)
