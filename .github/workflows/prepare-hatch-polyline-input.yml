@@ -1,0 +1,44 @@
+name: Apply checked HATCH polyline input correction
+on:
+  push:
+    branches: [fix/dxf-hatch-polyline-input]
+    paths: [.github/workflows/prepare-hatch-polyline-input.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-hatch-polyline-input'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-polyline-input
+      - name: Apply exact source and verify the complete tested tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, subprocess
+          p=Path('netDxf/IO/DxfReader.cs')
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == 'cab23dbeeb14a6e24cfed4cf1bb7e8158127e26c2c60247120ad48f5939b9339'
+          s=p.read_text()
+          a=s.index('        private HatchBoundaryPath ReadEdgePolylineBoundaryPath()')
+          b=s.index('        private HatchBoundaryPath ReadEdgeBoundaryPath(int numEdges)',a)
+          snippet=Path('.github/patches/hatch-polyline-method.txt')
+          p.write_text(s[:a]+snippet.read_text()+s[b:])
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == 'cf805257c5cb1f242e6d6248e53e5b53adf9a102b7837c3b99e7d5a502bd248f'
+          p=Path('tests/netDxf.Conformance/RegressionTests.cs')
+          s=p.read_text(); needle='        RegisterHatchPolylineClosureTests();'
+          assert s.count(needle) == 1
+          p.write_text(s.replace(needle, needle+'\n        RegisterHatchPolylineInputTests();'))
+          snippet.unlink()
+          workflow=Path('.github/workflows/prepare-hatch-polyline-input.yml'); workflow.unlink()
+          subprocess.run(['git','add','netDxf/IO/DxfReader.cs','tests/netDxf.Conformance/RegressionTests.cs',str(snippet),str(workflow)],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual == 'c50f06f5b951e1cae1cd2ba1767bdaf440f540b8',actual
+      - name: Commit only the isolated feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: validate HATCH polyline input and retain optional bulges'
+          git push origin HEAD:fix/dxf-hatch-polyline-input
