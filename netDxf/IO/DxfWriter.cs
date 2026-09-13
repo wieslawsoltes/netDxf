@@ -478,7 +478,7 @@ namespace netDxf.IO
                 this.WriteUnderlayDefinition(underlayDef, pdfDefinitionDictionary.Handle);
             }
 
-            this.WriteRasterVariables(this.doc.RasterVariables, imageDefDictionary.Handle);
+            this.WriteRasterVariables(this.doc.RasterVariables, namedObjectDictionary.Handle);
             foreach (ImageDefinition imageDef in this.doc.ImageDefinitions.Items)
             {
                 foreach (ImageDefinitionReactor reactor in this.imageDefReactors[imageDef.Handle].Values)
