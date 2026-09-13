@@ -73,9 +73,14 @@ namespace netDxf.Collections
         #region public properties
 
         /// <summary>
-        /// Gets or sets the base folder to resolver relative paths of external references.
+        /// Gets or sets the base folder used to resolve relative paths of external references.
         /// </summary>
-        /// <remarks>By default it points to the current System.Environment.CurrentDirectory when the DxfDocument was created.</remarks>
+        /// <remarks>
+        /// Defaults to the process current directory captured when this collection was created.
+        /// An absolute folder is recommended for independent concurrent document lookups.
+        /// A relative folder is resolved once per lookup without changing the process directory.
+        /// The folder need not exist to search an absolute resource or absolute support folder.
+        /// </remarks>
         public string WorkingFolder
         {
             get { return this.workingFolder; }
@@ -87,36 +92,114 @@ namespace netDxf.Collections
         #region public methods
 
         /// <summary>
-        /// Looks for a file in one of the support folders.
+        /// Finds a file relative to the working folder, then by name in the ordered support folders.
         /// </summary>
-        /// <param name="file">File name to find in one of the support folders.</param>
-        /// <returns>The path to the file found in one of the support folders. It includes both the path and the specified file name.</returns>
-        /// <remarks>If the specified file already exists it return the same value, if neither it cannot be found in any of the support folders it will return an empty string.</remarks>
+        /// <param name="file">An absolute or relative file path; null or empty returns an empty string.</param>
+        /// <returns>The full path of the first existing file, or an empty string if none is found.</returns>
+        /// <remarks>
+        /// An existing supplied path takes precedence over every support folder. Otherwise its file
+        /// name is searched in collection order. Relative support folders use WorkingFolder as their
+        /// base. Empty entries admitted by the collection constructor or AddRange are ignored.
+        /// Lookup never changes Environment.CurrentDirectory and does not open the resource contents.
+        /// Configure separate collections, or synchronize mutations, when using them concurrently.
+        /// This is path resolution, not a sandbox: absolute paths, parent traversal and links are allowed.
+        /// </remarks>
         public string FindFile(string file)
         {
-            string foundFile = string.Empty;
+            if (string.IsNullOrEmpty(file)) return string.Empty;
 
-            string currentDirectory = Environment.CurrentDirectory;
-            Environment.CurrentDirectory = this.workingFolder;
+            string basePath = Path.GetFullPath(this.workingFolder);
+            string candidate = ResolvePath(file, basePath);
+            if (File.Exists(candidate)) return candidate;
 
-            if (File.Exists(file))
-            {
-                foundFile = Path.GetFullPath(file);
-            }
-            
             string name = Path.GetFileName(file);
-
+            if (string.IsNullOrEmpty(name)) return string.Empty;
             foreach (string folder in this.folders)
             {
-                string newFile = string.Format("{0}{1}{2}", folder, Path.DirectorySeparatorChar, name);
-                if (File.Exists(newFile))
+                if (string.IsNullOrEmpty(folder)) continue;
+                candidate = ResolvePath(Path.Combine(folder, name), basePath);
+                if (File.Exists(candidate)) return candidate;
+            }
+            return string.Empty;
+        }
+
+        // Explicit-base resolution also supports netstandard2.0 and .NET Framework, where
+        // Path.GetFullPath(path, basePath) is unavailable. Never emulate it by changing CWD.
+        private static string ResolvePath(string path, string basePath)
+        {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+            if (path.IndexOf('\0') >= 0) throw new ArgumentException("A path cannot contain NUL.", nameof(path));
+            if (path.Length == 0) return basePath;
+            if (Path.DirectorySeparatorChar != '\\')
+                return Path.GetFullPath(Path.IsPathRooted(path) ? path : Path.Combine(basePath, path));
+
+            bool rooted = IsWindowsSeparator(path[0]);
+            bool drive = path.Length >= 2 && path[1] == ':' && IsDriveLetter(path[0]);
+            if ((rooted && path.Length >= 2 && IsWindowsSeparator(path[1])) ||
+                (drive && path.Length >= 3 && IsWindowsSeparator(path[2])))
+                return Path.GetFullPath(path);
+
+            string root = Path.GetPathRoot(basePath);
+            string combined;
+            if (rooted)
+            {
+                combined = Path.Combine(root, path.Substring(1));
+            }
+            else if (drive)
+            {
+                int driveOffset = IsDevicePath(basePath) ? 4 : 0;
+                bool sameDrive = root.Length > driveOffset + 1 && root[driveOffset + 1] == ':' &&
+                    char.ToUpperInvariant(root[driveOffset]) == char.ToUpperInvariant(path[0]);
+                if (sameDrive) combined = Path.Combine(basePath, path.Substring(2));
+                else
                 {
-                    foundFile = Path.GetFullPath(newFile);
+                    string device = IsDevicePath(basePath) ? basePath.Substring(0, 4) : string.Empty;
+                    combined = device + path.Substring(0, 2) + "\\" + path.Substring(2);
                 }
             }
+            else
+            {
+                combined = Path.Combine(basePath, path);
+            }
+            // Fully qualified device paths are normally verbatim; a RELATIVE path joined to
+            // a device base still needs its dot segments resolved within that base's root.
+            return IsDevicePath(combined) ? NormalizeDeviceRelativePath(combined) : Path.GetFullPath(combined);
+        }
 
-            Environment.CurrentDirectory = currentDirectory;
-            return foundFile;
+        private static bool IsWindowsSeparator(char value)
+        {
+            return value == '\\' || value == '/';
+        }
+
+        private static bool IsDriveLetter(char value)
+        {
+            return (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z');
+        }
+
+        private static bool IsDevicePath(string path)
+        {
+            return path.Length >= 4 && IsWindowsSeparator(path[0]) && IsWindowsSeparator(path[1]) &&
+                (path[2] == '?' || path[2] == '.') && IsWindowsSeparator(path[3]);
+        }
+
+        private static string NormalizeDeviceRelativePath(string path)
+        {
+            string root = Path.GetPathRoot(path);
+            List<string> segments = new List<string>();
+            string rest = path.Substring(root.Length);
+            foreach (string segment in rest.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (segment == ".") continue;
+                if (segment == "..")
+                {
+                    if (segments.Count > 0) segments.RemoveAt(segments.Count - 1);
+                }
+                else segments.Add(segment);
+            }
+            string result = root + (segments.Count == 0 ? string.Empty :
+                (IsWindowsSeparator(root[root.Length - 1]) ? string.Empty : "\\") + string.Join("\\", segments));
+            if (IsWindowsSeparator(path[path.Length - 1]) && !IsWindowsSeparator(result[result.Length - 1])) result += "\\";
+            return result;
         }
 
         #endregion
