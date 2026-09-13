@@ -1,0 +1,48 @@
+name: Apply reviewed raw R12 framing
+on:
+  push:
+    branches: [feature/dxf-raw-r12]
+    paths: [.github/workflows/prepare-raw-r12.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-raw-r12'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/dxf-raw-r12
+      - name: Apply exact tested patch and verify whole source tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import gzip, hashlib, json, os, subprocess, urllib.request
+          payload=Path('.github/patches/raw-r12.gz')
+          patch=gzip.decompress(payload.read_bytes())
+          assert hashlib.sha256(patch).hexdigest()=='7036b234d88377f8ff740f493abc03db825201da9e2accc0fcd1ffc8baeff5ef'
+          path=Path(os.environ['RUNNER_TEMP'])/'r12.patch';path.write_bytes(patch)
+          subprocess.run(['git','apply','--check',str(path)],check=True)
+          subprocess.run(['git','apply',str(path)],check=True)
+          root=Path('tests/fixtures/legacy')
+          rows=json.loads((root/'provenance.json').read_text())['files']
+          for row in rows:
+              if row['file'] not in ('ASCII_R12.dxf','bin_dxf_r12.dxf'):continue
+              assert row['source'].startswith('https://raw.githubusercontent.com/mozman/ezdxf/d6f2ac10caeddc712ed1824aaeb3b9c050de4a04/integration_tests/data/')
+              with urllib.request.urlopen(row['source'],timeout=30) as response:data=response.read(1024*1024+1)
+              assert len(data)<=1024*1024
+              assert hashlib.sha256(data).hexdigest()==row['sha256']
+              assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()==row['git_blob']
+              (root/row['file']).write_bytes(data)
+          payload.unlink()
+          Path('.github/workflows/prepare-raw-r12.yml').unlink()
+          subprocess.run(['git','add','netDxf/IO','tests/fixtures/legacy','tests/netDxf.Conformance','.github/patches/raw-r12.gz','.github/workflows/prepare-raw-r12.yml'],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual=='7d924aae8cae3854ef471b82e676685a01a4911e',actual
+      - name: Commit checked source to the feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: preserve R11 R12 raw DXF with version-aware binary framing'
+          git push origin HEAD:feature/dxf-raw-r12
