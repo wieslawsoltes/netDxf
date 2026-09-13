@@ -1,0 +1,3689 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-09-13",
+  "source": {
+    "repository": "wieslawsoltes/netDxf",
+    "branch": "netstandard",
+    "commit": "8758b6b390290de7797135653b0cdb29bc233e8e",
+    "tree": "598ec94baffed0fa8e55115f9a4c426024e264cb"
+  },
+  "qualification": {
+    "full_standard_complete": false,
+    "autocad_executed": false,
+    "dotnet_runtime": "8.0",
+    "test_cases": 6101,
+    "test_failures": 0,
+    "independent_reader": "ezdxf 1.4.4",
+    "last_implementation_pr": 39,
+    "ci_run": 34760068596
+  },
+  "status_definitions": {
+    "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
+    "P": "Typed path exists but is incomplete or not comprehensively verified.",
+    "P!": "Typed path exists with a known unresolved version-legality concern.",
+    "L": "Known lossy omission/conversion/regeneration in the selected pipeline.",
+    "O": "Tested opaque/original data preservation, not semantic evaluation.",
+    "M": "Missing in this pipeline; does not imply historical availability in this version.",
+    "V": "The typed writer rejects this feature/profile combination; read-side retention can be more permissive.",
+    "X": "Version not admitted to the typed DxfDocument API.",
+    "N": "This transport-specific implementation does not apply to the column.",
+    "CP": "Declared legacy code-page strategy; detailed rules depend on typed versus raw pipeline.",
+    "U8": "UTF-8 strategy."
+  },
+  "profiles": [
+    {
+      "id": "AC1009",
+      "label": "R11/R12",
+      "typed": false,
+      "raw": true,
+      "binary_group_code": "one byte + 255/Int16 escape",
+      "encoding": "legacy"
+    },
+    {
+      "id": "AC1012",
+      "label": "R13",
+      "typed": false,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "legacy"
+    },
+    {
+      "id": "AC1014",
+      "label": "R14",
+      "typed": false,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "legacy"
+    },
+    {
+      "id": "AC1015",
+      "label": "2000",
+      "typed": true,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "legacy"
+    },
+    {
+      "id": "AC1018",
+      "label": "2004",
+      "typed": true,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "legacy"
+    },
+    {
+      "id": "AC1021",
+      "label": "2007",
+      "typed": true,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "UTF-8"
+    },
+    {
+      "id": "AC1024",
+      "label": "2010",
+      "typed": true,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "UTF-8"
+    },
+    {
+      "id": "AC1027",
+      "label": "2013",
+      "typed": true,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "UTF-8"
+    },
+    {
+      "id": "AC1032",
+      "label": "2018",
+      "typed": true,
+      "raw": true,
+      "binary_group_code": "two-byte Int16",
+      "encoding": "UTF-8"
+    }
+  ],
+  "unadmitted_profiles": [
+    {
+      "label": "R1.1",
+      "id": "MC0.0",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R1.2",
+      "id": "AC1.2",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R1.4",
+      "id": "AC1.4",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R2.0",
+      "id": "AC1.50",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R2.10",
+      "id": "AC2.10",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R2.5",
+      "id": "AC1002",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R2.6",
+      "id": "AC1003",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R9",
+      "id": "AC1004",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    },
+    {
+      "label": "R10",
+      "id": "AC1006",
+      "scope": "Enum spelling is declared by the repository; raw and typed admission remain absent. Historical spelling/aliases require independent fixtures."
+    }
+  ],
+  "evidence": {
+    "B": {
+      "label": "historical source catalog",
+      "path": "doc/dxf-conformance/version-feature-matrix-2026-09-12.md"
+    },
+    "TXT": {
+      "label": "strict text values",
+      "path": "doc/dxf-conformance/strict-text-values.md"
+    },
+    "BIN": {
+      "label": "strict binary values",
+      "path": "doc/dxf-conformance/strict-binary-values.md"
+    },
+    "FRAME": {
+      "label": "text framing",
+      "path": "doc/dxf-conformance/text-framing.md"
+    },
+    "CHUNK": {
+      "label": "binary chunks",
+      "path": "doc/dxf-conformance/binary-chunks.md"
+    },
+    "CHOUT": {
+      "label": "binary chunk output",
+      "path": "doc/dxf-conformance/binary-chunk-output.md"
+    },
+    "PREC": {
+      "label": "double output precision",
+      "path": "doc/dxf-conformance/double-output-precision.md"
+    },
+    "UNICODE": {
+      "label": "custom header unicode",
+      "path": "doc/dxf-conformance/custom-header-unicode.md"
+    },
+    "COMMENT": {
+      "label": "header comments",
+      "path": "doc/dxf-conformance/header-comments.md"
+    },
+    "SURF": {
+      "label": "surface density routing",
+      "path": "doc/dxf-conformance/surface-density-routing.md"
+    },
+    "CLS": {
+      "label": "class definitions",
+      "path": "doc/dxf-conformance/class-definitions.md"
+    },
+    "UCS": {
+      "label": "ucs elevation",
+      "path": "doc/dxf-conformance/ucs-elevation.md"
+    },
+    "ORTHO": {
+      "label": "ucs orthographic origins",
+      "path": "doc/dxf-conformance/ucs-orthographic-origins.md"
+    },
+    "UCSX": {
+      "label": "ucs table xdata",
+      "path": "doc/dxf-conformance/ucs-table-xdata.md"
+    },
+    "VIEW": {
+      "label": "named views",
+      "path": "doc/dxf-conformance/named-views.md"
+    },
+    "MTBG": {
+      "label": "mtext background",
+      "path": "doc/dxf-conformance/mtext-background.md"
+    },
+    "MTCL": {
+      "label": "mtext clone direction",
+      "path": "doc/dxf-conformance/mtext-clone-direction.md"
+    },
+    "RASTER": {
+      "label": "raster ownership",
+      "path": "doc/dxf-conformance/raster-ownership.md"
+    },
+    "INSERT": {
+      "label": "insert arrays",
+      "path": "doc/dxf-conformance/insert-arrays.md"
+    },
+    "XDCL": {
+      "label": "xdata clone",
+      "path": "doc/dxf-conformance/xdata-clone.md"
+    },
+    "FILE": {
+      "label": "file stream lifetime",
+      "path": "doc/dxf-conformance/file-stream-lifetime.md"
+    },
+    "LOOKUP": {
+      "label": "support folder lookup",
+      "path": "doc/dxf-conformance/support-folder-lookup.md"
+    },
+    "RAW": {
+      "label": "raw document",
+      "path": "doc/dxf-conformance/raw-document.md"
+    },
+    "REC": {
+      "label": "raw records",
+      "path": "doc/dxf-conformance/raw-records.md"
+    },
+    "TAG": {
+      "label": "raw tags",
+      "path": "doc/dxf-conformance/raw-tags.md"
+    },
+    "DIMBLK": {
+      "label": "dimstyle arrow names",
+      "path": "doc/dxf-conformance/dimstyle-arrow-names.md"
+    },
+    "R13": {
+      "label": "raw r13 r14",
+      "path": "doc/dxf-conformance/raw-r13-r14.md"
+    },
+    "R12": {
+      "label": "raw r12",
+      "path": "doc/dxf-conformance/raw-r12.md"
+    },
+    "MVER": {
+      "label": "mesh version export",
+      "path": "doc/dxf-conformance/mesh-version-export.md"
+    },
+    "MBLEND": {
+      "label": "mesh blend crease",
+      "path": "doc/dxf-conformance/mesh-blend-crease.md"
+    },
+    "MREAD": {
+      "label": "mesh read validation",
+      "path": "doc/dxf-conformance/mesh-read-validation.md"
+    },
+    "HDOUBLE": {
+      "label": "hatch double pattern",
+      "path": "doc/dxf-conformance/hatch-double-pattern.md"
+    },
+    "MIN": {
+      "label": "minimal documents",
+      "path": "doc/dxf-conformance/minimal-documents.md"
+    },
+    "PROBE": {
+      "label": "header probe",
+      "path": "doc/dxf-conformance/header-probe.md"
+    },
+    "THUMB": {
+      "label": "thumbnail image",
+      "path": "doc/dxf-conformance/thumbnail-image.md"
+    }
+  },
+  "features": [
+    {
+      "id": "typed-text-dxf",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Text DXF",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Version detection and four primitive geometries tested; not every record. `DxfReader.Read`, `DxfWriter.Write`, `DocumentRoundTrip`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-binary-dxf-modern-two-byte-codes",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Binary DXF: modern two-byte codes",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Typed modern codec; full sentinel and exact binary-chunk framing checks. Separate raw API now selects pre-R13 one-byte/escaped codes.",
+      "evidence": [
+        "BIN",
+        "CHUNK",
+        "R12"
+      ]
+    },
+    {
+      "id": "typed-character-encoding",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Character encoding",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "CP",
+        "AC1018": "CP",
+        "AC1021": "U8",
+        "AC1024": "U8",
+        "AC1027": "U8",
+        "AC1032": "U8"
+      },
+      "scope": "Typed code-page input / Unicode-escape output before 2007; UTF-8 from 2007. Custom HEADER strings now share the modeled-string codec.",
+      "evidence": [
+        "UNICODE"
+      ]
+    },
+    {
+      "id": "typed-text-binary-chunk-decoding",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Text binary-chunk decoding",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-ordered-unknown-record-preservation",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Ordered unknown-record preservation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Still absent from DxfDocument typed load/save. DxfRawDocument now retains ordered unfamiliar data; the two pipelines must not be conflated.",
+      "evidence": [
+        "RAW",
+        "REC"
+      ]
+    },
+    {
+      "id": "typed-strict-numeric-handle-boolean-parsing",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Strict numeric/handle/boolean parsing",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Strict text and binary primitive-value regressions; finite-number/Boolean/hex policies are library policies, not a universal recovery mode.",
+      "evidence": [
+        "TXT",
+        "BIN"
+      ]
+    },
+    {
+      "id": "typed-target-version-downgrade-diagnostics",
+      "area": "Transport and validation",
+      "pipeline": "typed",
+      "feature": "Target-version/downgrade diagnostics",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Selected guards for MESH, MTEXT backgrounds/frames and VIEW plottability. No centralized schema legality, complete per-loss report or transactional file save.",
+      "evidence": [
+        "MVER",
+        "MTBG",
+        "VIEW"
+      ]
+    },
+    {
+      "id": "typed-header-typed-variables",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "HEADER: typed variables",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Modeled scalar/UCS subset; surface-density routing and comment handling fixed. Active DIMSTYLE fields still regenerate selected overrides.",
+      "evidence": [
+        "SURF",
+        "COMMENT",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-header-custom-scalars-vectors",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "HEADER: custom scalars/vectors",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Custom scalars/vectors retained; Unicode and comment handling fixed. Arbitrary multi-tag values, duplicates and independent DIM overrides still require the raw API.",
+      "evidence": [
+        "UNICODE",
+        "COMMENT",
+        "RAW"
+      ]
+    },
+    {
+      "id": "typed-classes",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "CLASSES",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Ordered public DxfClass metadata, cloning and generated raster-class reconciliation. Group 91 omitted in AC1015; no preservation of unsupported entity instances through typed IO.",
+      "evidence": [
+        "CLS"
+      ]
+    },
+    {
+      "id": "typed-tables",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "TABLES",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Named VIEW core is now implemented alongside other typed families. VPORT remains reduced; raw indexing is the preservation alternative.",
+      "evidence": [
+        "VIEW",
+        "REC",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-blocks-entities",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "BLOCKS / ENTITIES",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Supported models/relationships only, not unknown-content preservation. `ReadBlocks`, `ReadEntity`, `WriteBlock`, `WriteEntity`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-objects",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "OBJECTS",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Eleven explicit dispatch cases; no generic ownership graph. `ReadObjects`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-thumbnailimage",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "THUMBNAILIMAGE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "O",
+        "AC1032": "O"
+      },
+      "scope": "Exact preview bytes retained; no generation. Empty preview normalizes to absent section.",
+      "evidence": [
+        "THUMB"
+      ]
+    },
+    {
+      "id": "typed-acdsdata",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "ACDSDATA",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Typed reader still discards the section. Ordered generic tags survive through raw IO; there is no typed ASM schema, decoding or dependency interpretation.",
+      "evidence": [
+        "RAW"
+      ]
+    },
+    {
+      "id": "typed-unknown-custom-sections",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "Unknown/custom sections",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "No typed fallback; raw sections and records now have independent preservation/editing APIs.",
+      "evidence": [
+        "RAW",
+        "REC"
+      ]
+    },
+    {
+      "id": "typed-line",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "LINE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Endpoints and binary XData tested; common fields partial. `ReadLine/WriteLine`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-circle",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "CIRCLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Center/radius tested; OCS/transforms/optional fields need broader fixtures. `ReadCircle/WriteCircle`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-arc",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ARC",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Center/radius/angles tested; common fields partial. `ReadArc/WriteArc`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-point",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "POINT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Position tested; all display semantics not certified. `ReadPoint/WritePoint`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-3dface",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "3DFACE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Face3D model; invisible-edge/degenerate cases need tests. `ReadFace3d/WriteFace3D`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-solid",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "SOLID",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Planar corners/thickness/normal, not a 3DSOLID. `ReadSolid/WriteSolid`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-trace",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "TRACE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Geometry implemented; full OCS/default behavior unverified. `ReadTrace/WriteTrace`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-ellipse",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ELLIPSE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Axis/ratio/parameter model and conversion paths. `ReadEllipse/WriteEllipse`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-spline",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "SPLINE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Control/fit data, knots, weights; all periodic/degenerate cases unverified. `ReadSpline/WriteSpline`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-lwpolyline",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "LWPOLYLINE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Bulges/widths/flags/elevation; per-vertex IDs/optional codes need review. `ReadLwPolyline/WriteLwPolyline`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-polyline-2d-vertex-seqend",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "POLYLINE: 2D / VERTEX / SEQEND",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Legacy entity representation in modern files, not a legacy file dialect. `ReadPolyline/WritePolyline`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-polyline-3d",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "POLYLINE: 3D",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Polyline3D topology/flags; transform fixtures needed. `ReadPolyline/WritePolyline`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-polyline-polyface-mesh",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "POLYLINE: polyface mesh",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Topology modeled; index/invisible-edge validation needs fixtures. `ReadPolyline/WritePolyline`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-polyline-polygon-mesh",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "POLYLINE: polygon mesh",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "PolygonMesh and smoothing preprocessing. `ReadPolyline/WritePolyline`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-mesh-subdivision-mesh",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "MESH: subdivision mesh",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Typed export rejects pre-2010 versions before writes. Core topology, creases, blend flag and counted-list validation are implemented; subentity override grammar and subdivision evaluation remain incomplete.",
+      "evidence": [
+        "MVER",
+        "MBLEND",
+        "MREAD"
+      ]
+    },
+    {
+      "id": "typed-ray",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "RAY",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Origin/direction; common fields partial. `ReadRay/WriteRay`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-xline",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "XLINE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Origin/direction; common fields partial. `ReadXLine/WriteXLine`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-shape",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "SHAPE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Number/SHX style resolution; SHX geometry is a separate resource concern. `ReadShape/WriteShape`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-text",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "TEXT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Text/alignment/style; encoding/OCS corpus incomplete. `ReadText/WriteText`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-mtext",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "MTEXT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Content/direction/spacing plus clone direction and editable background subset. Column contexts, fields and complete annotations remain incomplete.",
+      "evidence": [
+        "MTCL",
+        "MTBG"
+      ]
+    },
+    {
+      "id": "typed-insert",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "INSERT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Block transforms/attributes plus column/row arrays and clone/explode handling; dynamic-block evaluation and complete referenced graphs remain absent.",
+      "evidence": [
+        "INSERT"
+      ]
+    },
+    {
+      "id": "typed-attdef-attrib",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ATTDEF / ATTRIB",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Definitions/instances; newer embedded-MTEXT/context variants need audit. `ReadAttributeDefinition/ReadAttribute/WriteAttribute`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dimension-aligned-linear",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "DIMENSION: aligned / linear",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Geometric models/picture blocks; full association/context graphs absent. `ReadDimension/WriteDimension`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dimension-angular-2-line-3-point",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "DIMENSION: angular 2-line / 3-point",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Typed geometry; all styles/overrides/edge cases unverified. `ReadDimension/WriteDimension`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dimension-diameter-radius-ordinate",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "DIMENSION: diameter / radius / ordinate",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Typed geometry; dependency graph incomplete. `ReadDimension/WriteDimension`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-arc-dimension-arc-length",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ARC_DIMENSION: arc length",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Model present; historical eligibility still needs release fixtures. `ReadDimension/WriteDimension`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-hatch-solid-patterned",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "HATCH: solid / patterned",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Loops, patterns and selected associativity. Double-pattern flag now retained; seed points and pixel-size retention, full counted-boundary validation and dependencies remain open.",
+      "evidence": [
+        "HDOUBLE",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-hatch-gradients",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "HATCH: gradients",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Gradient payload omitted for 2000 without explicit loss report. `WriteGradientHatchPattern`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-hatch-spline-fit-boundary-data",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "HATCH: spline fit boundary data",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Fit-data path has a 2010 threshold. `ReadEdgeBoundaryPath/WriteHatchBoundaryPathData`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-mline",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "MLINE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Vertices/segments/styles; full break/fill/joint semantics not certified. `ReadMLine/WriteMLine`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-leader",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "LEADER",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Path/annotation relationships; not MULTILEADER. `ReadLeader/WriteLeader`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-tolerance",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "TOLERANCE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Geometric tolerance text; all formatting/rendering separate. `ReadTolerance/WriteTolerance`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-image",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "IMAGE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Reference/definition/clip/reactor subset; not raster rendering. `ReadImage/WriteImage`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dgnunderlay-dwfunderlay-pdfunderlay",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "DGNUNDERLAY / DWFUNDERLAY / PDFUNDERLAY",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "References/definitions/clipping; historical admission not comprehensively gated. `ReadUnderlay/WriteUnderlay`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-wipeout",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "WIPEOUT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Boundary and IO; full variable/dependency coverage not certified. `ReadWipeout/WriteWipeout`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-viewport-entity",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "VIEWPORT entity",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Paper-space viewport model, distinct from VPORT table. `ReadViewport/WriteViewport`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-acad-table-table",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ACAD_TABLE / TABLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Imported as INSERT; cells/formulas/formatting/table semantics lost. `ReadAcadTable`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-helix",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "HELIX",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Helix model and IO.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-multileader",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "MULTILEADER",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Multi-context leader model; MLEADERSTYLE object also absent.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-light",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "LIGHT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Light entity; SUN is a separate missing object.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-section",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "SECTION",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Section-plane entity and dependency graph.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-region-body-3dsolid",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "REGION / BODY / 3DSOLID",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "No typed ACIS entities. Generic raw tags can retain admitted opaque payloads; ACIS/ASM-specific evaluation and dependency-qualified editing remain unimplemented.",
+      "evidence": [
+        "RAW",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-surface-base-extruded-lofted-revolved-swept",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "SURFACE: base / extruded / lofted / revolved / swept",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "No typed surface-family schemas. Generic raw preservation is not a surface parameter editor or geometric evaluator.",
+      "evidence": [
+        "RAW",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-oleframe-ole2frame",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "OLEFRAME / OLE2FRAME",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Inert embedded OLE payload preservation.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-acad-proxy-entity",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ACAD_PROXY_ENTITY",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Class/unknown subclass/proxy payload preservation.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-coordination-model",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "COORDINATION_MODEL",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Coordination-model entity/definition dependencies.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-appid",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "APPID",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Registry/XData registration. `ReadApplicationId/WriteApplicationRegistry`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-block-record",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "BLOCK_RECORD",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Block ownership/layout links; all flags/dependencies unverified. `ReadBlockRecord/WriteBlockRecord`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dimstyle",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "DIMSTYLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Large typed subset, not a complete versioned override catalog. `ReadDimensionStyle/WriteDimensionStyle`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-layer",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "LAYER",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Layer/style/color subset; material/plot-style graphs missing. `ReadLayer/WriteLayer`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-ltype",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "LTYPE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Simple/complex text/shape segments; resources/missing-style cases need fixtures. `ReadLinetype/WriteLinetype`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-style",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "STYLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Text/shape styles; defaults/obsolete fields need review. `ReadTextStyle/WriteTextStyle/WriteShapeStyle`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-ucs",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "UCS",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Origin/axes, elevation 146, orthographic origin pairs and table XData now retained. Base-UCS references and complete VIEW/VPORT contexts remain open.",
+      "evidence": [
+        "UCS",
+        "ORTHO",
+        "UCSX"
+      ]
+    },
+    {
+      "id": "typed-view",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "VIEW",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Public named collection and core camera/target/clip/mode/XData IO. Camera plottability requires 2007+ writer profile; extended UCS/render/background references remain open.",
+      "evidence": [
+        "VIEW"
+      ]
+    },
+    {
+      "id": "typed-vport",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "VPORT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Only first *Active configuration retained; other records/many fields discarded. `ReadTableEntry/ReadVPort/WriteVPort`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dictionary",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "DICTIONARY",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Known named collections, not arbitrary nested extension dictionaries. `ReadDictionary/WriteDictionary`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-group",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "GROUP",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Named groups/entity references. `ReadGroup/WriteGroup`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-layout",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "LAYOUT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Model/paper layouts and embedded plot settings subset. `ReadLayout/WriteLayout`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-mlinestyle",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "MLINESTYLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Multiline styles, not multileader styles. `ReadMLineStyle/WriteMLineStyle`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-imagedef",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "IMAGEDEF",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Definitions/selected dictionaries. `ReadImageDefinition/WriteImageDef`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-imagedef-reactor",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "IMAGEDEF_REACTOR",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Independent authored object not retained; regenerated. `ReadImageDefReactor/WriteImageDefReactor`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-rastervariables",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "RASTERVARIABLES",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Raster display values/XData; owner 330 now points to the actual named dictionary containing ACAD_IMAGE_VARS. Broader object-graph validation remains open.",
+      "evidence": [
+        "RASTER"
+      ]
+    },
+    {
+      "id": "typed-dgndefinition-dwfdefinition-pdfdefinition",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "DGNDEFINITION / DWFDEFINITION / PDFDEFINITION",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Three explicit underlay object cases. `ReadUnderlayDefinition/WriteUnderlayDefinition`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-xrecord",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "XRECORD",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Private cache/layer states, not generic public ownership graph. `ReadXRecord/ReadLayerState/WriteLayerState`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-plotsettings-standalone",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "PLOTSETTINGS standalone",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Type exists in LAYOUT; standalone OBJECTS dispatch absent. `ReadObjects/ReadPlotSettings`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-acad-proxy-object-acdbplaceholder",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "ACAD_PROXY_OBJECT / ACDBPLACEHOLDER",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Proxy/class/payload fidelity.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-acdbdictionarywdflt-dictionaryvar",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "ACDBDICTIONARYWDFLT / DICTIONARYVAR",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Default dictionaries and typed dictionary variables.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-acdbnavisworksmodeldef",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "ACDBNAVISWORKSMODELDEF",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Coordination-model definition.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-datatable",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "DATATABLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Object data table schema.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dimassoc",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "DIMASSOC",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Associative dimension records/links.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-field",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "FIELD",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Field expression/evaluation records.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-geodata",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "GEODATA",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Georeferencing object.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-idbuffer-object-ptr",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "IDBUFFER / OBJECT_PTR",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Pointer-container records.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-layer-filter-layer-index",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "LAYER_FILTER / LAYER_INDEX",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Layer filters/indexes.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-lightlist",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "LIGHTLIST",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Light-object lists.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-material",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "MATERIAL",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Materials/textures/mappers and references.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-rendersettings-mentalrayrendersettings",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "RENDERSETTINGS / MENTALRAYRENDERSETTINGS",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Rendering setting families.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-renderenvironment-renderglobal",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "RENDERENVIRONMENT / RENDERGLOBAL",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Environment/global records.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-rapidrtrenderenvironment-rapidrtrendersettings",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "RAPIDRTRENDERENVIRONMENT / RAPIDRTRENDERSETTINGS",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "RapidRT families.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-section-manager-settings-type-geometry-objects",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SECTION manager/settings/type/geometry objects",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Section-settings graph.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-sortentstable",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SORTENTSTABLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Draw-order records.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-spatial-filter-spatial-index",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SPATIAL_FILTER / SPATIAL_INDEX",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Spatial clipping/filter/index graph.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-sun-sunstudy",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SUN / SUNSTUDY",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Sun configuration/study objects.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-tablestyle",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLESTYLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Table style schema.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-vba-project",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "VBA_PROJECT",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Inert VBA payload preservation, not execution.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-visualstyle",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "VISUALSTYLE",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Visual-style records and dependent references.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-wipeoutvariables",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "WIPEOUTVARIABLES",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Standalone wipeout settings.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-layer-linetype-aci-lineweight-scale-visibility",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Layer/linetype/ACI/lineweight/scale/visibility",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Implemented common subset; defaults/off-layer semantics need fixtures. `ReadEntity/WriteEntityCommonCodes`.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-rgb-true-color",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "RGB true color",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "420 emitted without complete version policy; TrueColor appears in 2004 API history.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-transparency",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Transparency",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "440 path exists; version eligibility/all flags unverified.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-material-plot-style-references",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Material / plot-style references",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Common 347/390 graph relationships incomplete.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-color-names-shadow-mode-proxy-graphics",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Color names / shadow mode / proxy graphics",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Common 430,284,92/310 paths absent.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-xdata-basic-typed-records",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "XData basic typed records",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Basic records/APPID registration; binary clone storage is now isolated. Full type-dependent transforms, quotas and handle-closure remapping remain open.",
+      "evidence": [
+        "XDCL",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-xdata-binary-round-trips",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "XData binary round trips",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Exact bytes/chunk counts across all formats and transports, #4.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-extension-dictionaries-persistent-reactors",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Extension dictionaries / persistent reactors",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      },
+      "scope": "Selected relationships; arbitrary dependency closure absent.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-dynamic-blocks-annotation-associative-networks",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Dynamic blocks / annotation / associative networks",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Static appearance may survive; graphs/evaluation absent.",
+      "evidence": [
+        "B"
+      ]
+    },
+    {
+      "id": "typed-unknown-application-subclass-fields",
+      "area": "Common fields and dependency graphs",
+      "pipeline": "typed",
+      "feature": "Unknown application/subclass fields",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "No universal typed fallback. The raw API retains admitted primitive tag streams without interpreting unknown subclasses.",
+      "evidence": [
+        "RAW",
+        "TAG"
+      ]
+    },
+    {
+      "id": "codec-text-framing",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Text physical EOF and missing-value detection",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Explicit truncation handling and caller-stream ownership; not arbitrary malformed-record recovery.",
+      "evidence": [
+        "FRAME"
+      ]
+    },
+    {
+      "id": "codec-binary-exact-chunks",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Binary exact-length input chunks",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Declared payload length must be consumed; truncated data cannot become a short successful value.",
+      "evidence": [
+        "CHUNK"
+      ]
+    },
+    {
+      "id": "codec-binary-output-length",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Binary output chunk-length guard",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Reject >255 before code/state writes. This physical limit does not expand standard 127-byte semantic limits.",
+      "evidence": [
+        "CHOUT"
+      ]
+    },
+    {
+      "id": "codec-binary64-output",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Text binary64 numeric precision",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "G17 with explicit signed zero; exact .NET 8 primitive/document tests. Older runtime parsing is not certified by target compilation.",
+      "evidence": [
+        "PREC"
+      ]
+    },
+    {
+      "id": "header-probe",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HEADER version/encoding probe",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Structured probe and malformed/stream-position cases; not a payload substring search.",
+      "evidence": [
+        "PROBE"
+      ]
+    },
+    {
+      "id": "header-custom-unicode",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Custom HEADER string Unicode",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Code-page escape and UTF-8 output, independently authored input and scalar/vector controls.",
+      "evidence": [
+        "UNICODE"
+      ]
+    },
+    {
+      "id": "header-comments",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Interleaved HEADER comments",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Skip group 999 at every HEADER advance; raw comments remain accessible in their separate API.",
+      "evidence": [
+        "COMMENT"
+      ]
+    },
+    {
+      "id": "header-surface-routing",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "SURFU/SURFV field routing",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Distinct surface-density variables remain independent instead of being assigned to the wrong destination.",
+      "evidence": [
+        "SURF"
+      ]
+    },
+    {
+      "id": "document-minimal-sections",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Minimal modern documents",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Initialize omitted required collections/model-space graph; cannot reconstruct absent authored object metadata.",
+      "evidence": [
+        "MIN"
+      ]
+    },
+    {
+      "id": "class-metadata",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "CLASS names, proxy flags and identity reconciliation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Documented names/flags and custom ordering; no plugin execution or custom entity count verification.",
+      "evidence": [
+        "CLS"
+      ]
+    },
+    {
+      "id": "class-instance-count",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "CLASS optional instance-count export",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 91 retained in memory; AC1015 writer omits it, later profiles retain supplied counts.",
+      "evidence": [
+        "CLS"
+      ]
+    },
+    {
+      "id": "ucs-elevation",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "UCS elevation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 146 read/write and clone.",
+      "evidence": [
+        "UCS"
+      ]
+    },
+    {
+      "id": "ucs-orthographic-origins",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "UCS orthographic origin overrides",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Repeated 71 plus 13/23/33; absent override differs from explicit zero. Not base-UCS graph resolution.",
+      "evidence": [
+        "ORTHO"
+      ]
+    },
+    {
+      "id": "ucs-table-xdata",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "UCS TABLE XData isolation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "UCS TABLE metadata no longer aliases BLOCK_RECORD metadata.",
+      "evidence": [
+        "UCSX"
+      ]
+    },
+    {
+      "id": "view-core",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Named VIEW core fields",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Name, camera/target/size/clip/twist/modes/XData with indexed identity. See detailed field list; no complete VIEW schema claim.",
+      "evidence": [
+        "VIEW"
+      ]
+    },
+    {
+      "id": "view-plottable",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "VIEW plottable-camera export",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 73: profile rejects true for pre-2007 output. Historical boundary corroborated by independent implementation, not AutoCAD execution.",
+      "evidence": [
+        "VIEW"
+      ]
+    },
+    {
+      "id": "insert-arrays",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "INSERT row/column arrays",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Counts/spacing, read/write, clone and explosion; not dynamic blocks.",
+      "evidence": [
+        "INSERT"
+      ]
+    },
+    {
+      "id": "mtext-clone-direction",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT clone drawing direction",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 72 state survives direct/nested copies and explosion.",
+      "evidence": [
+        "MTCL"
+      ]
+    },
+    {
+      "id": "mtext-background",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT background-fill data",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Groups 90/45/63/421/431/441; explicit conservative writer profile, not a first-historical-release assertion.",
+      "evidence": [
+        "MTBG"
+      ]
+    },
+    {
+      "id": "mtext-frame",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT text-frame export",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "V",
+        "AC1027": "V",
+        "AC1032": "T"
+      },
+      "scope": "Frame flag bit16: conservative AC1032 writer profile; earlier real-world eligibility still needs historical fixtures.",
+      "evidence": [
+        "MTBG"
+      ]
+    },
+    {
+      "id": "mesh-version-preflight",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MESH version preflight",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "All registered blocks inspected; pre-2010 rejection does not affect legacy POLYLINE meshes.",
+      "evidence": [
+        "MVER"
+      ]
+    },
+    {
+      "id": "mesh-blend-crease",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MESH blend-crease metadata",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 72 read/write/clone and 0/1 validation. Not subdivision evaluation.",
+      "evidence": [
+        "MBLEND"
+      ]
+    },
+    {
+      "id": "mesh-counted-input",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MESH counted topology input",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Type/count/index/crease validation; incremental allocation from consumed data, not a universal memory quota.",
+      "evidence": [
+        "MREAD"
+      ]
+    },
+    {
+      "id": "hatch-double",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH double-pattern flag",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 77 Boolean, clone/INSERT/transform and explicit field omission for solid fills. No visual hatch evaluation claimed.",
+      "evidence": [
+        "HDOUBLE"
+      ]
+    },
+    {
+      "id": "raster-owner",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "RASTERVARIABLES owner edge",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 330 agrees with ACAD_IMAGE_VARS owning dictionary; IMAGEDEF ownership stays separate.",
+      "evidence": [
+        "RASTER"
+      ]
+    },
+    {
+      "id": "xdata-clone",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Binary XData clone independence",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "No shared mutable byte-array storage through cloned records/entities.",
+      "evidence": [
+        "XDCL"
+      ]
+    },
+    {
+      "id": "file-disposal",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Owned file-stream disposal",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "All success/setup/read/write/probe exits; caller-owned streams stay open. File replacement remains nontransactional.",
+      "evidence": [
+        "FILE"
+      ]
+    },
+    {
+      "id": "support-path-lookup",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Support-resource lookup isolation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "No process-CWD mutation; direct resource then ordered folder precedence. Not a sandbox or concurrently mutable collection.",
+      "evidence": [
+        "LOOKUP"
+      ]
+    },
+    {
+      "id": "raw-input-output",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw text/binary admitted profiles",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Complete admitted section grammar and primitive tags; typed historical geometry is not enabled.",
+      "evidence": [
+        "RAW",
+        "R13",
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-original-bytes",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw unchanged same-transport bytes",
+      "status": {
+        "AC1009": "O",
+        "AC1012": "O",
+        "AC1014": "O",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "O",
+        "AC1032": "O"
+      },
+      "scope": "Original input bytes are retained for exact output; normalizing or editing intentionally loses lexical identity.",
+      "evidence": [
+        "RAW",
+        "R13",
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-ordered-sections",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw ordered unknown sections/records",
+      "status": {
+        "AC1009": "O",
+        "AC1012": "O",
+        "AC1014": "O",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "O",
+        "AC1032": "O"
+      },
+      "scope": "Generic preservation of admitted primitive tags, repeats, subclasses and inert application payloads. Not per-family schema validation.",
+      "evidence": [
+        "RAW",
+        "REC"
+      ]
+    },
+    {
+      "id": "raw-record-edits",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw scoped immutable record edits",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Record replacement/removal preserves other tag ranges; stale/foreign indexes rejected. Records are not BLOCK/POLYLINE dependency aggregates.",
+      "evidence": [
+        "REC"
+      ]
+    },
+    {
+      "id": "raw-profile-consistency",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw profile/framing consistency",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Explicit HEADER version/code page, correct binary dialect; no automatic schema down-conversion.",
+      "evidence": [
+        "RAW",
+        "R13",
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-pre-r13-framing",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw pre-R13 binary code widths",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "N",
+        "AC1014": "N",
+        "AC1015": "N",
+        "AC1018": "N",
+        "AC1021": "N",
+        "AC1024": "N",
+        "AC1027": "N",
+        "AC1032": "N"
+      },
+      "scope": "AC1009 uses a single code byte plus 255/Int16 escape; modern codec constructors retain two-byte behavior.",
+      "evidence": [
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-modern-framing",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw R13+ binary code widths",
+      "status": {
+        "AC1009": "N",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Little-endian Int16 group code; validated against pinned legacy and modern fixtures.",
+      "evidence": [
+        "R13",
+        "R12",
+        "RAW"
+      ]
+    },
+    {
+      "id": "raw-code-pages",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw declared character encoding",
+      "status": {
+        "AC1009": "CP",
+        "AC1012": "CP",
+        "AC1014": "CP",
+        "AC1015": "CP",
+        "AC1018": "CP",
+        "AC1021": "U8",
+        "AC1024": "U8",
+        "AC1027": "U8",
+        "AC1032": "U8"
+      },
+      "scope": "Legacy ANSI/DOS aliases; UTF-8 for 2007+. Strings retain raw escapes; invalid encoding is rejected, not replaced.",
+      "evidence": [
+        "RAW",
+        "R13",
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-dimstyle-code5",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw DIMSTYLE group-5 name context",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Arrow block names preserve spelling and are not remapped as identity handles; normal group 5 remains a strict handle elsewhere.",
+      "evidence": [
+        "DIMBLK",
+        "R13",
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-budgets",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw budgets, cancellation and stream ownership",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Encoded bytes, tags and decoded-string budgets; not total-heap accounting. Staged output can still be partial on final destination IO failure.",
+      "evidence": [
+        "RAW",
+        "R13",
+        "R12"
+      ]
+    },
+    {
+      "id": "raw-graph-remapping",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw dependency-closed clone/import/remapping",
+      "status": {
+        "AC1009": "M",
+        "AC1012": "M",
+        "AC1014": "M",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Handle categories exist, but owners/reactors/reference closure, allocation and graph-safe edits are not implemented.",
+      "evidence": [
+        "TAG",
+        "REC"
+      ]
+    },
+    {
+      "id": "raw-headerless",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw headerless version inference",
+      "status": {
+        "AC1009": "M",
+        "AC1012": "M",
+        "AC1014": "M",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "This explicit-profile API requires HEADER and ACADVER. Headerless/default-version recovery is not implemented.",
+      "evidence": [
+        "RAW",
+        "R12"
+      ]
+    },
+    {
+      "id": "hatch-seeds",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "HATCH authored seed points",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Groups98 and repeated10/20 are currently discarded and replaced with one zero seed on typed output.",
+      "evidence": [
+        "HDOUBLE"
+      ]
+    },
+    {
+      "id": "hatch-pixel-size",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "HATCH pixel-size metadata",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Group47 is consumed but typed output writes0.0; retention/validation remains open.",
+      "evidence": [
+        "HDOUBLE"
+      ]
+    },
+    {
+      "id": "mesh-subentity-overrides",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "MESH subentity overrides",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Repeated90/91/92 need a distinct override context; current core topology checks do not implement this grammar.",
+      "evidence": [
+        "MREAD"
+      ]
+    },
+    {
+      "id": "mtext-columns",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "MTEXT column contexts",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "Column type/count/flow/autoheight/width/gutter/heights, legacy linked records and context-sensitive code50 remain open.",
+      "evidence": [
+        "MTBG",
+        "B"
+      ]
+    },
+    {
+      "id": "typed-transactional-save",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "Transactional typed file replacement",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "M",
+        "AC1018": "M",
+        "AC1021": "M",
+        "AC1024": "M",
+        "AC1027": "M",
+        "AC1032": "M"
+      },
+      "scope": "File-path Save creates/truncates the destination before serialization. Deterministic disposal is not a transaction.",
+      "evidence": [
+        "FILE"
+      ]
+    }
+  ],
+  "next_work": [
+    {
+      "id": "opaque-graph",
+      "title": "Context-aware handle graph and dependency-safe editing",
+      "scope": "Identity/pointer/owner/reactor contexts, graph diagnostics, clone/import closure and handle reservation; preserve opaque data without pretending to evaluate it."
+    },
+    {
+      "id": "field-fidelity",
+      "title": "Finish partial supported records",
+      "scope": "HATCH seeds/pixel size/boundary list grammar; MESH overrides and writer validation; MTEXT columns; complete UCS/VIEW/VPORT contexts and common entity fields. Each is its own PR."
+    },
+    {
+      "id": "new-entities",
+      "title": "Missing typed entity families",
+      "scope": "HELIX; MULTILEADER; structured TABLE; LIGHT/SECTION; inert OLE/proxy/ACIS/surface payload records. Keep metadata/serialization separate from rendering or geometric evaluation."
+    },
+    {
+      "id": "new-objects",
+      "title": "Missing object families",
+      "scope": "Generic XRECORD/dictionary variants, draw order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families."
+    },
+    {
+      "id": "historical-typed",
+      "title": "Typed historical dialects and schema-aware down-save",
+      "scope": "R12/R13/R14 typed grammar plus earlier raw profiles with pinned files; explicit per-property downgrade diagnostics instead of enum-only admission."
+    },
+    {
+      "id": "qualification",
+      "title": "Independent interoperability and robustness",
+      "scope": "Native AutoCAD open/AUDIT/save/reopen when an execution environment is available; corpus expansion, total-resource budgets, fuzzing and actual older-runtime execution."
+    }
+  ]
+}

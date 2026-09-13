@@ -26,6 +26,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check coverage ledger and generated comparison
+        run: |
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p "test_*.py"
       - name: Run version and format regression tests
         run: dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj --configuration ${{ matrix.configuration }}
       - name: Build netstandard API target
