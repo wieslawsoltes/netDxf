@@ -43,7 +43,7 @@ namespace netDxf.Entities
         private AciColor color2;
         private bool singleColor;
         private double tint;
-        private bool centered;
+        private double shift;
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace netDxf.Entities
             this.singleColor = false;
             this.gradientType = HatchGradientPatternType.Linear;
             this.tint = 1.0;
-            this.centered = true;
+            this.shift = 0.0;
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace netDxf.Entities
             this.singleColor = true;
             this.gradientType = type;
             this.tint = tint;
-            this.centered = true;
+            this.shift = 0.0;
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace netDxf.Entities
             this.singleColor = false;
             this.gradientType = type;
             this.tint = 1.0;
-            this.centered = true;
+            this.shift = 0.0;
         }
 
         #endregion
@@ -201,16 +201,38 @@ namespace netDxf.Entities
         }
 
         /// <summary>
-        /// Gets or sets if the pattern is centered or not.
+        /// Gets or sets the blend between non-shifted (0.0) and shifted (1.0)
+        /// gradient definitions, stored in DXF group 461.
         /// </summary>
         /// <remarks>
-        /// Each gradient has two definitions, shifted and unsifted. A shift value describes the blend of the two definitions that should be used.
-        /// A value of 0.0 (false) means only the unsifted version should be used, and a value of 1.0 (true) means that only the shifted version should be used.
+        /// Intermediate values retain the authored blend. The value must be finite
+        /// and in the inclusive range [0, 1]. The default is 0.0.
+        /// </remarks>
+        public double Shift
+        {
+            get { return this.shift; }
+            set
+            {
+                if (double.IsNaN(value) || double.IsInfinity(value) || value < 0.0 || value > 1.0)
+                    throw new ArgumentOutOfRangeException(nameof(value), value,
+                        "The gradient shift must be finite and between zero and one.");
+                this.shift = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the gradient uses only its non-shifted definition.
+        /// </summary>
+        /// <remarks>
+        /// This compatibility property is true exactly when <see cref="Shift"/> is zero.
+        /// Setting true assigns Shift = 0.0; setting false assigns Shift = 1.0,
+        /// preserving the existing writer's endpoint convention. Use Shift directly
+        /// to retain or edit an intermediate blend without quantizing it.
         /// </remarks>
         public bool Centered
         {
-            get { return this.centered; }
-            set { this.centered = value; }
+            get { return this.shift == 0.0; }
+            set { this.shift = value ? 0.0 : 1.0; }
         }
 
         #endregion
@@ -245,7 +267,7 @@ namespace netDxf.Entities
                 Color2 = (AciColor) this.color2.Clone(),
                 SingleColor = this.singleColor,
                 Tint = this.tint,
-                Centered = this.centered
+                Shift = this.shift
             };
 
             return copy;

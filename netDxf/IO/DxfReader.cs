@@ -9950,7 +9950,11 @@ namespace netDxf.IO
             this.chunk.Next();
             double angle = this.chunk.ReadDouble(); // code 460
             this.chunk.Next();
-            bool centered = (int) this.chunk.ReadDouble() == 0; // code 461
+            double shift = this.chunk.ReadDouble(); // code 461
+            if (shift < 0.0 || shift > 1.0)
+                throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                    "Invalid HATCH gradient shift for group code 461 at position {0}: expected a value between zero and one.",
+                    this.chunk.CurrentPosition));
             this.chunk.Next();
             bool singleColor = this.chunk.ReadInt() != 0; // code 452
             this.chunk.Next();
@@ -9975,13 +9979,13 @@ namespace netDxf.IO
             if (singleColor)
                 return new HatchGradientPattern(color1, tint, type)
                 {
-                    Centered = centered,
+                    Shift = shift,
                     Angle = angle*MathHelper.RadToDeg
                 };
 
             return new HatchGradientPattern(color1, color2, type)
             {
-                Centered = centered,
+                Shift = shift,
                 Angle = angle*MathHelper.RadToDeg
             };
         }

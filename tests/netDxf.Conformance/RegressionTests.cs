@@ -50,5 +50,7 @@ internal static partial class Program
         RegisterHatchPatternOrderTests();
         RegisterHatchEdgeDispatchTests();
         RegisterHatchGradientAngleTests();
+        RegisterHatchGradientShiftTests();
+        RegisterHatchGradientShiftApiTests();
     }
 }
