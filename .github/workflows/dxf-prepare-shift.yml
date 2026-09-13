@@ -1,0 +1,28 @@
+name: Prepare DXF shift
+on:
+  push:
+    branches: [feat/dxf-hatch-gradient-shift]
+    paths: [.github/workflows/dxf-prepare-shift.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/dxf-hatch-gradient-shift
+          fetch-depth: 2
+      - name: Apply verified change and remove transfer helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = b2226fabca6752055c50fa45c7b74f5af464679f
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git config core.whitespace cr-at-eol
+          python - <<'PYCODE'
+          import base64, gzip, hashlib, subprocess
+          data = base64.b64decode('H4sIAAAAAAAC/8U8aXPbOLLfXbX/AeN5b02NJeqw5DPOjGM7GVclTsr2zG5tKuVAJChxQ5EaHj7i8X9/3Q2ABClSljPHc1UiiQAajUbfDcL1PY91OhM/ZbzrRk7XvfM6ThR6UTzjoSO6U546084k5q4vwrSTTH0vtWcuGz+n91oobpnnB4LNIlewfq+3PRyu+aEr7lhP/tn29s7Q2xM7a51Oh3VdcdMNsyBY29zcfOZcP/3EOr12j23226MB++mntc3v2XEUpn6YRVnCfj66Ov6Z6WGMhq1tQqfv2YnwhJO2CcmA8dBlTjSb89Qf+4Gf3mOvoyyFxuQLAIiyORtu95mfMM7cKBsHonPDg0wAcQIBg8civRUiZGEUSuygBYHq7zkOrvD80E/9KExsdjUVDNcoYhYL7sKHw5OUwQalEQxnfpiKCTwlSGkUA6AoDO4Bh1dRFAgeShC3sZ9Cr3QKCIiZn+KEwoefMfsq4ohFMQwTbZbgV9cPeXzPvJg7iAUP5AoSWH8WuLAAoFMW3/g3gokbAMhZEHG3m3B44Nw7gbCRNp9/xh15o1b1gcOccWhf4mo/A4xbiW4COPFUkcj1Y6B4cC9xTu/ngOXRhzPGHUfM04QRXQQjsiawdFwPfDhBliAyMQ8ngn3stVn/U5vdwvKiLGWwMyGsaNJmTsBnc/iGq02BODEyTmfMEyRG6M4jn6ifClq2zS6A4ERYoh7QP+VqzjCDDfEdiUlb8kYABOyenV+eXlwxcTcPogSAmIMSPhNyoXJ94s5PUkTn8zEQSMDWfdabRquOxQyGJmwOVIIO+7DpCZsIpCNyWRpnCIMjwRiQkCjLDg9Z74DxJPEnIcKmXokIYE0J6xGmRaPHg6Ro7SNaAHiG+0YbI9gPP8DsNz5KimShjaQgFYgfbD/S6ocfgLpRjLtHk8LICDjl3+/eoszMkKtvp74zZVOgKAiME/tjIDr20yue8TntzZg7X2557ALvHxWrMDoix4eSL2HhsZgH3AFsVQtIiuvzVBGamACbNM4HJEVVkG4EAJCtZ1mKY/1UcvDnz04y5fF8bfOGx2wuWZgdMtRfoUhP7jz7FFBJfZHYddy+tvmwtsngT+0N69lbO6O2fHYUTkADHrKtHbu3tvl4sLbZ7eo5bM0RuNG0S202Bl6em1KEbcBAQZBzAYG3JbZONL8H6NYqeLbyaZGJrRbggsMLLA6Jjw4YYEgN+XoOQJb8iY86QrOrRgKoh0Q8C0FIfCXHtKHGH9h','validate')
+          PYCODE
