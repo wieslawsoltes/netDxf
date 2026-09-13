@@ -1,0 +1,47 @@
+name: Collect pinned legacy DXF audit corpus
+on:
+  push:
+    branches: [feature/dxf-raw-r13-r14]
+    paths: [.github/workflows/collect-legacy-corpus.yml]
+permissions:
+  contents: read
+jobs:
+  collect:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-raw-r13-r14'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch data only and verify pinned Git blob identities
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, json, urllib.request
+          commit = 'd6f2ac10caeddc712ed1824aaeb3b9c050de4a04'
+          files = {
+              'integration_tests/data/small_r13.dxf': '3693b689db808e8c6eb23f666efcaa87b0be4022',
+              'integration_tests/data/small_r14.dxf': '118140edba4a289824a2cb09c9aa9e6b53ff0668',
+              'integration_tests/data/bin_dxf_r13.dxf': 'be4f0cb3fc488139ae72f92d756c1c6aa80aad83',
+              'integration_tests/data/bin_dxf_r14.dxf': 'f09316f33b366264424482d8f58becbb5217200c',
+              'integration_tests/data/ASCII_R12.dxf': '1352ec0904ab49df4b6657d75dc21ad524d2cf42',
+              'integration_tests/data/bin_dxf_r12.dxf': 'd30f0b6430ec7ddefc753e023acdd8601241947a',
+              'integration_tests/data/AC1003_LINE_Example.dxf': 'b03b49cb282bcde32dfb3f06e16602cc8e19bfcc',
+              'LICENSE': '33a77673a9100f1f8553745ac6c924a6b8e58410',
+          }
+          root = Path('corpus'); root.mkdir()
+          rows = []
+          for path, expected in files.items():
+              url = 'https://raw.githubusercontent.com/mozman/ezdxf/' + commit + '/' + path
+              with urllib.request.urlopen(url, timeout=45) as response:
+                  data = response.read(2 * 1024 * 1024 + 1)
+              assert len(data) <= 2 * 1024 * 1024
+              actual = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+              assert actual == expected, (path, actual, expected)
+              name = Path(path).name
+              (root / name).write_bytes(data)
+              rows.append({'file': name, 'source': url, 'git_blob': actual, 'sha256': hashlib.sha256(data).hexdigest()})
+          (root / 'provenance.json').write_text(json.dumps({'repository': 'mozman/ezdxf', 'commit': commit, 'files': rows}, indent=2) + '\n')
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netdxf-pinned-legacy-corpus
+          path: corpus/
+          retention-days: 14
