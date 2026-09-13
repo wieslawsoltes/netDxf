@@ -1,0 +1,22 @@
+name: Verify DIMBLK patch transport
+on:
+  push:
+    branches: [fix/dxf-raw-dimstyle-code5]
+    paths: [.github/workflows/prepare-dimblk.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-raw-dimstyle-code5'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dimblk-patch-transport
+          path: .github/patches/dimblk.gz
+          include-hidden-files: true
+          retention-days: 1
