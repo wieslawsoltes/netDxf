@@ -4763,43 +4763,34 @@ namespace netDxf.IO
                         if (blend != 0 && blend != 1)
                             throw new InvalidDataException("MESH group 72 (Blend Crease) must be zero or one.");
                         blendCrease = blend == 1;
-                        this.chunk.Next();
+                        this.ReadNextMeshTag();
                         break;
                     case 91:
                         subdivisionLevel = this.chunk.ReadInt();
                         if (subdivisionLevel < 0 || subdivisionLevel > 255)
-                        {
-                            subdivisionLevel = 0;
-                        }
-                        this.chunk.Next();
+                            throw this.MeshReadError(91, "Subdivision level must be between zero and 255.");
+                        this.ReadNextMeshTag();
                         break;
                     case 92:
                         int numVertexes = this.chunk.ReadInt();
-                        this.chunk.Next();
+                        this.ReadNextMeshTag();
                         vertexes = this.ReadMeshVertexes(numVertexes);
                         break;
                     case 93:
                         int sizeFaceList = this.chunk.ReadInt();
-                        this.chunk.Next();
+                        this.ReadNextMeshTag();
                         faces = this.ReadMeshFaces(sizeFaceList);
                         break;
                     case 94:
                         int numEdges = this.chunk.ReadInt();
-                        this.chunk.Next();
+                        this.ReadNextMeshTag();
                         edges = this.ReadMeshEdges(numEdges);
                         break;
                     case 95:
                         int numCrease = this.chunk.ReadInt();
-                        this.chunk.Next();
-                        if (edges == null)
-                        {
-                            throw new NullReferenceException("The edges list is not initialized.");
-                        }
-
-                        if (numCrease != edges.Count)
-                        {
-                            throw new Exception("The number of edge creases must be the same as the number of edges.");
-                        }
+                        this.ReadNextMeshTag();
+                        if (numCrease < 0 || edges == null || numCrease != edges.Count)
+                            throw this.MeshReadError(95, "The crease count must match an existing edge list.");
                         this.ReadMeshEdgeCreases(edges);
                         break;
                     case 1001:
@@ -4809,10 +4800,11 @@ namespace netDxf.IO
                         break;
                     default:
                         Debug.Assert(!(this.chunk.Code >= 1000 && this.chunk.Code <= 1071), "The extended data of an entity must start with the application registry code.");
-                        this.chunk.Next();
+                        this.ReadNextMeshTag();
                         break;
                 }
             }
+            this.ValidateReadMeshIndices(vertexes, faces, edges);
             Mesh entity = new Mesh(vertexes, faces, edges)
             {
                 SubdivisionLevel = (byte) subdivisionLevel,
@@ -4824,73 +4816,113 @@ namespace netDxf.IO
             return entity;
         }
 
+        private void ReadNextMeshTag()
+        {
+            do { this.chunk.Next(); } while (this.chunk.Code == 999);
+        }
+
+        private void RequireMeshCode(short code)
+        {
+            if (this.chunk.Code != code)
+                throw this.MeshReadError(code, "Unexpected group " + this.chunk.Code + " in a counted list.");
+        }
+
+        private InvalidDataException MeshReadError(short code, string message)
+        {
+            return new InvalidDataException(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "Invalid MESH group {0} at position {1}: {2}", code, this.chunk.CurrentPosition, message));
+        }
+
         private List<Vector3> ReadMeshVertexes(int count)
         {
-            if (count <= 0)
-                throw new ArgumentOutOfRangeException(nameof(count), count, "The number of vertexes must be greater than zero.");
-
-            List<Vector3> vertexes = new List<Vector3>(count);
+            if (count < 0) throw this.MeshReadError(92, "The vertex count cannot be negative.");
+            // Never reserve memory from an untrusted declared count. Grow only as tags arrive.
+            List<Vector3> vertexes = new List<Vector3>();
             for (int i = 0; i < count; i++)
             {
+                this.RequireMeshCode(10);
                 double x = this.chunk.ReadDouble();
-                this.chunk.Next();
+                this.ReadNextMeshTag();
+                this.RequireMeshCode(20);
                 double y = this.chunk.ReadDouble();
-                this.chunk.Next();
+                this.ReadNextMeshTag();
+                this.RequireMeshCode(30);
                 double z = this.chunk.ReadDouble();
-                this.chunk.Next();
-
+                this.ReadNextMeshTag();
                 vertexes.Add(new Vector3(x, y, z));
             }
-
             return vertexes;
         }
 
         private List<int[]> ReadMeshFaces(int size)
         {
-            Debug.Assert(size > 0, "The size of face list must be greater than zero.");
-
+            if (size < 0) throw this.MeshReadError(93, "The face-list size cannot be negative.");
             List<int[]> faces = new List<int[]>();
-
-            for (int i = 0; i < size; i++)
+            int remaining = size;
+            while (remaining > 0)
             {
-                int indexes = this.chunk.ReadInt();
-                this.chunk.Next();
-                int[] face = new int[indexes];
-                for (int j = 0; j < indexes; j++)
+                this.RequireMeshCode(90);
+                int count = this.chunk.ReadInt();
+                if (count < 3 || count > remaining - 1)
+                    throw this.MeshReadError(93, "Each face needs at least three indices and must fit the declared face-list size.");
+                remaining--;
+                this.ReadNextMeshTag();
+                // A forged face size must not allocate an array before its actual indices exist.
+                List<int> indices = new List<int>();
+                for (int i = 0; i < count; i++)
                 {
-                    face[j] = this.chunk.ReadInt();
-                    this.chunk.Next();
+                    this.RequireMeshCode(90);
+                    int index = this.chunk.ReadInt();
+                    if (index < 0) throw this.MeshReadError(90, "Face vertex indices cannot be negative.");
+                    indices.Add(index);
+                    remaining--;
+                    this.ReadNextMeshTag();
                 }
-                faces.Add(face);
-                i += indexes;
+                faces.Add(indices.ToArray());
             }
-
             return faces;
         }
 
         private List<MeshEdge> ReadMeshEdges(int count)
         {
-            List<MeshEdge> vertexes = new List<MeshEdge>(count);
-
+            if (count < 0) throw this.MeshReadError(94, "The edge count cannot be negative.");
+            List<MeshEdge> edges = new List<MeshEdge>();
             for (int i = 0; i < count; i++)
             {
+                this.RequireMeshCode(90);
                 int start = this.chunk.ReadInt();
-                this.chunk.Next();
+                this.ReadNextMeshTag();
+                this.RequireMeshCode(90);
                 int end = this.chunk.ReadInt();
-                this.chunk.Next();
-
-                vertexes.Add(new MeshEdge(start, end));
+                if (start < 0 || end < 0) throw this.MeshReadError(90, "Edge vertex indices cannot be negative.");
+                this.ReadNextMeshTag();
+                edges.Add(new MeshEdge(start, end));
             }
-            return vertexes;
+            return edges;
         }
 
         private void ReadMeshEdgeCreases(IEnumerable<MeshEdge> edges)
         {
             foreach (MeshEdge edge in edges)
             {
+                this.RequireMeshCode(140);
                 edge.Crease = this.chunk.ReadDouble();
-                this.chunk.Next();
+                this.ReadNextMeshTag();
             }
+        }
+
+        private void ValidateReadMeshIndices(List<Vector3> vertexes, List<int[]> faces, List<MeshEdge> edges)
+        {
+            if (vertexes == null) throw this.MeshReadError(92, "The vertex list is missing.");
+            if (faces == null) throw this.MeshReadError(93, "The face list is missing.");
+            foreach (int[] face in faces)
+                foreach (int index in face)
+                    if (index >= vertexes.Count)
+                        throw this.MeshReadError(90, "A face index is outside the vertex list.");
+            if (edges != null)
+                foreach (MeshEdge edge in edges)
+                    if (edge.StartVertexIndex >= vertexes.Count || edge.EndVertexIndex >= vertexes.Count)
+                        throw this.MeshReadError(90, "An edge index is outside the vertex list.");
         }
 
         private Viewport ReadViewport()
