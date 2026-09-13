@@ -3312,7 +3312,7 @@ namespace netDxf.IO
             {
                 this.chunk.Write(52, pattern.Angle);
                 this.chunk.Write(41, pattern.Scale);
-                this.chunk.Write(77, (short) 0); // Hatch pattern double flag
+                this.chunk.Write(77, pattern.IsDouble ? (short) 1 : (short) 0); // Hatch pattern double flag
                 this.chunk.Write(78, (short) pattern.LineDefinitions.Count); // Number of pattern definition lines  
                 this.WriteHatchPatternDefinitionLines(pattern);
             }

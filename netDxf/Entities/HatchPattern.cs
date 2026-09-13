@@ -239,6 +239,15 @@ namespace netDxf.Entities
             set { this.type = value; }
         }
 
+        /// <summary>Gets or sets the pattern-fill double flag (DXF group 77).</summary>
+        /// <remarks>
+        /// Defaults to false. For user-defined patterns, true requests a second line set
+        /// perpendicular to the first. The flag is retained for predefined/custom pattern
+        /// fills even though AutoCAD ignores it there. It does not alter LineDefinitions.
+        /// Solid/gradient fills do not emit this field. PAT files do not store this flag.
+        /// </remarks>
+        public bool IsDouble { get; set; }
+
         /// <summary>
         /// Gets the solid fill flag.
         /// </summary>
@@ -461,6 +470,7 @@ namespace netDxf.Entities
                 Style = this.style,
                 Fill = this.fill,
                 Type = this.type,
+                IsDouble = this.IsDouble,
                 Origin = this.origin,
                 Angle = this.angle,
                 Scale = this.scale,
