@@ -2660,7 +2660,7 @@ namespace netDxf.IO
 
         private void WriteInsert(Insert insert)
         {
-            this.chunk.Write(100, SubclassMarker.Insert);
+            this.chunk.Write(100, insert.IsMultiple ? SubclassMarker.MInsert : SubclassMarker.Insert);
 
             this.chunk.Write(2, this.EncodeNonAsciiCharacters(insert.Block.Name));
 
@@ -2679,6 +2679,13 @@ namespace netDxf.IO
             this.chunk.Write(43, insert.Scale.Z*scale);
 
             this.chunk.Write(50, insert.Rotation);
+
+            if (insert.ColumnCount != 1) this.chunk.Write(70, insert.ColumnCount);
+            if (insert.RowCount != 1) this.chunk.Write(71, insert.RowCount);
+            // Grid spacing is already in the containing coordinate system's units.
+            // The block scale/unit conversion above does not apply to these distances.
+            if (insert.ColumnSpacing != 0.0) this.chunk.Write(44, insert.ColumnSpacing);
+            if (insert.RowSpacing != 0.0) this.chunk.Write(45, insert.RowSpacing);
 
             this.chunk.Write(210, insert.Normal.X);
             this.chunk.Write(220, insert.Normal.Y);
