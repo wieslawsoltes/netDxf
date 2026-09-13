@@ -9567,7 +9567,10 @@ namespace netDxf.IO
 
             if (pattern == null)
                 pattern = new HatchPattern(name);
-            pattern.Angle = patternAngle;
+            // Group 52 applies only to pattern fills; gradient rotation comes
+            // from group 460 and has already been converted from radians.
+            if (!(pattern is HatchGradientPattern))
+                pattern.Angle = patternAngle;
             pattern.Scale = patternScale;
             pattern.Type = patternType;
             pattern.Style = patternStyle;
