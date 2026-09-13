@@ -150,8 +150,10 @@ internal static partial class Program
         foreach (string bad in new[] { "", " 1", "1 ", "+1", "-1", "0x1", "G", "FFFFFFFFFFFFFFFFF", "Ｆ", "1\0" })
             foreach (short code in new short[] { 5, 105, 320, 330, 340, 350, 360, 390, 480, 1005 })
                 Throws<ArgumentException>(() => new DxfTag(code, bad));
-        foreach (string bad in new[] { "a\0b", "a\rb", "a\nb" })
+        foreach (string bad in new[] { "a\0b" })
             Throws<ArgumentException>(() => new DxfTag(1, bad));
+        foreach (string text in new[] { "a\rb", "a\nb", "a\r\nb" })
+            Equal(text, (string)new DxfTag(300, text).Value, "Binary-compatible tag string");
         foreach (double bad in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity })
             Throws<ArgumentOutOfRangeException>(() => new DxfTag(10, bad));
         Throws<ArgumentException>(() => new DxfTag(70, 1));

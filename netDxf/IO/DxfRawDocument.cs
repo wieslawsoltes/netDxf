@@ -56,7 +56,7 @@ namespace netDxf.IO
             DxfRawSection header = null;
             foreach (DxfRawSection section in this.Sections)
             {
-                if (!string.Equals(section.Name, "HEADER", StringComparison.Ordinal)) continue;
+                if (!string.Equals(section.Name, "HEADER", StringComparison.OrdinalIgnoreCase)) continue;
                 if (header != null) throw new FormatException("Raw DXF requires an unambiguous single HEADER section.");
                 header = section;
             }
@@ -313,7 +313,7 @@ namespace netDxf.IO
 
         private static bool Is(DxfTag tag, short code, string value)
         {
-            return tag.Code == code && string.Equals(tag.RawValue as string, value, StringComparison.Ordinal);
+            return tag.Code == code && string.Equals(tag.RawValue as string, value, StringComparison.OrdinalIgnoreCase);
         }
 
         private static List<DxfRawSection> IndexSections(IReadOnlyList<DxfTag> tags)
@@ -407,15 +407,15 @@ namespace netDxf.IO
                 }
                 completedProfileValue = false;
                 string name = (string)tag.RawValue;
-                if (name == "$ACADVER")
+                if (string.Equals(name, "$ACADVER", StringComparison.OrdinalIgnoreCase))
                 {
                     if (version != null) throw new FormatException("Duplicate $ACADVER makes the raw DXF profile ambiguous.");
-                    pending = name;
+                    pending = name.ToUpperInvariant();
                 }
-                else if (name == "$DWGCODEPAGE")
+                else if (string.Equals(name, "$DWGCODEPAGE", StringComparison.OrdinalIgnoreCase))
                 {
                     if (codePage != null) throw new FormatException("Duplicate $DWGCODEPAGE makes the raw DXF profile ambiguous.");
-                    pending = name;
+                    pending = name.ToUpperInvariant();
                 }
             }
             if (pending != null) throw new FormatException("Missing value for " + pending + ".");

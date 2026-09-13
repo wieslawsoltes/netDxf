@@ -26,5 +26,7 @@ internal static partial class Program
         RegisterRawTagTests();
         RegisterDoublePrecisionWriterTests();
         RegisterBinaryChunkWriterTests();
+        RegisterRawDocumentTests();
+        RegisterRawDocumentBoundaryTests();
     }
 }
