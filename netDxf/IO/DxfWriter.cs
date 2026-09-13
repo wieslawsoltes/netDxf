@@ -3329,7 +3329,7 @@ namespace netDxf.IO
             this.chunk.Write(450, 1);
             this.chunk.Write(451, 0);
             this.chunk.Write(460, pattern.Angle*MathHelper.DegToRad);
-            this.chunk.Write(461, pattern.Centered ? 0.0 : 1.0);
+            this.chunk.Write(461, pattern.Shift);
             this.chunk.Write(452, pattern.SingleColor ? 1 : 0);
             this.chunk.Write(462, pattern.Tint);
             this.chunk.Write(453, 2);
