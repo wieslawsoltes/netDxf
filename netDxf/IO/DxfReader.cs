@@ -2790,6 +2790,10 @@ namespace netDxf.IO
             Vector3 xDir = Vector3.UnitX;
             Vector3 yDir = Vector3.UnitY;
             double elevation = 0.0;
+            Dictionary<UcsOrthographicType, Vector3> orthographicOrigins = new Dictionary<UcsOrthographicType, Vector3>();
+            UcsOrthographicType orthographicType = 0;
+            Vector3 orthographicOrigin = Vector3.Zero;
+            int orthographicComponents = 0;
             List<XData> xData = new List<XData>();
 
             this.chunk.Next();
@@ -2838,6 +2842,32 @@ namespace netDxf.IO
                         yDir.Z = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
+                    case 71:
+                        CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
+                        orthographicType = (UcsOrthographicType) this.chunk.ReadShort();
+                        if (orthographicType < UcsOrthographicType.Top || orthographicType > UcsOrthographicType.Right)
+                        {
+                            throw new InvalidDataException("UCS group 71 must identify an orthographic type in the range 1 through 6.");
+                        }
+                        orthographicOrigin = Vector3.Zero;
+                        orthographicComponents = 0;
+                        this.chunk.Next();
+                        break;
+                    case 13:
+                    case 23:
+                    case 33:
+                        int component = this.chunk.Code == 13 ? 1 : this.chunk.Code == 23 ? 2 : 4;
+                        if (orthographicType == 0 || (orthographicComponents & component) != 0)
+                        {
+                            throw new InvalidDataException("UCS orthographic origin coordinates must follow group 71 and occur only once per pair.");
+                        }
+                        double coordinate = this.chunk.ReadDouble();
+                        if (component == 1) orthographicOrigin.X = coordinate;
+                        else if (component == 2) orthographicOrigin.Y = coordinate;
+                        else orthographicOrigin.Z = coordinate;
+                        orthographicComponents |= component;
+                        this.chunk.Next();
+                        break;
                     case 146:
                         elevation = this.chunk.ReadDouble();
                         this.chunk.Next();
@@ -2854,6 +2884,8 @@ namespace netDxf.IO
                 }
             }
 
+            CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
+
             Debug.Assert(TableObject.IsValidName(name), "Table object name is not valid.");
             if (!TableObject.IsValidName(name))
             {
@@ -2861,11 +2893,30 @@ namespace netDxf.IO
             }
 
             UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation };
+            foreach (KeyValuePair<UcsOrthographicType, Vector3> pair in orthographicOrigins)
+            {
+                ucs.SetOrthographicOrigin(pair.Key, pair.Value);
+            }
             if (xData.Count > 0)
             {
                 this.tableEntryXData.Add(ucs, xData);
             }
             return ucs;
+        }
+
+        private static void CompleteUcsOrthographicOrigin(Dictionary<UcsOrthographicType, Vector3> origins,
+            UcsOrthographicType type, Vector3 origin, int components)
+        {
+            if (type == 0) return;
+            if (components != 7)
+            {
+                throw new InvalidDataException("A UCS orthographic origin pair requires all three coordinate groups 13, 23 and 33.");
+            }
+            if (origins.ContainsKey(type))
+            {
+                throw new InvalidDataException("A UCS record cannot contain duplicate orthographic origin types.");
+            }
+            origins.Add(type, origin);
         }
 
         private VPort ReadVPort()

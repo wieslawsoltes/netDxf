@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using netDxf.Collections;
 
 namespace netDxf.Tables
@@ -42,6 +43,8 @@ namespace netDxf.Tables
         private Vector3 yAxis;
         private Vector3 zAxis;
         private double elevation;
+        private readonly Dictionary<UcsOrthographicType, Vector3> orthographicOrigins = new Dictionary<UcsOrthographicType, Vector3>();
+        private readonly ReadOnlyDictionary<UcsOrthographicType, Vector3> readOnlyOrthographicOrigins;
 
         #endregion
 
@@ -64,6 +67,7 @@ namespace netDxf.Tables
                 throw new ArgumentNullException(nameof(name), "The UCS name should be at least one character long.");
             }
 
+            this.readOnlyOrthographicOrigins = new ReadOnlyDictionary<UcsOrthographicType, Vector3>(this.orthographicOrigins);
             this.origin = Vector3.Zero;
             this.xAxis = Vector3.UnitX;
             this.yAxis = Vector3.UnitY;
@@ -93,6 +97,7 @@ namespace netDxf.Tables
                 throw new ArgumentException("X-axis direction and Y-axis direction must be perpendicular.");
             }
 
+            this.readOnlyOrthographicOrigins = new ReadOnlyDictionary<UcsOrthographicType, Vector3>(this.orthographicOrigins);
             this.origin = origin;
             this.xAxis = xDirection;
             this.xAxis.Normalize();
@@ -136,6 +141,20 @@ namespace netDxf.Tables
         }
 
         /// <summary>
+        /// Gets a read-only view of the explicitly stored orthographic origin overrides.
+        /// </summary>
+        /// <remarks>
+        /// These are the DXF group 71 and 13/23/33 pairs, in the coordinate representation
+        /// of the UCS record. An absent override is distinct from an explicit zero point.
+        /// Use SetOrthographicOrigin and RemoveOrthographicOrigin to change this collection.
+        /// No coordinate transformation is applied when storing or retrieving an override.
+        /// </remarks>
+        public IReadOnlyDictionary<UcsOrthographicType, Vector3> OrthographicOrigins
+        {
+            get { return this.readOnlyOrthographicOrigins; }
+        }
+
+        /// <summary>
         /// Gets the user coordinate system x-axis direction in WCS.
         /// </summary>
         public Vector3 XAxis
@@ -171,6 +190,48 @@ namespace netDxf.Tables
         #endregion
 
         #region public methods
+
+        /// <summary>Sets an origin override for one of the six orthographic UCS types.</summary>
+        /// <param name="type">Orthographic type, from Top through Right.</param>
+        /// <param name="origin">Finite origin point stored in the UCS record.</param>
+        public void SetOrthographicOrigin(UcsOrthographicType type, Vector3 origin)
+        {
+            ValidateOrthographicType(type);
+            if (double.IsNaN(origin.X) || double.IsInfinity(origin.X) ||
+                double.IsNaN(origin.Y) || double.IsInfinity(origin.Y) ||
+                double.IsNaN(origin.Z) || double.IsInfinity(origin.Z))
+            {
+                throw new ArgumentOutOfRangeException(nameof(origin), origin, "The orthographic origin must be finite.");
+            }
+            this.orthographicOrigins[type] = origin;
+        }
+
+        /// <summary>Gets an explicitly stored orthographic origin without inventing an override.</summary>
+        /// <param name="type">Orthographic type, from Top through Right.</param>
+        /// <param name="origin">Stored point, or the zero vector when no override exists.</param>
+        /// <returns>True when an explicit origin override exists.</returns>
+        public bool TryGetOrthographicOrigin(UcsOrthographicType type, out Vector3 origin)
+        {
+            ValidateOrthographicType(type);
+            return this.orthographicOrigins.TryGetValue(type, out origin);
+        }
+
+        /// <summary>Removes an explicit origin override, restoring the DXF default for that type.</summary>
+        /// <param name="type">Orthographic type, from Top through Right.</param>
+        /// <returns>True if an override was removed.</returns>
+        public bool RemoveOrthographicOrigin(UcsOrthographicType type)
+        {
+            ValidateOrthographicType(type);
+            return this.orthographicOrigins.Remove(type);
+        }
+
+        private static void ValidateOrthographicType(UcsOrthographicType type)
+        {
+            if (type < UcsOrthographicType.Top || type > UcsOrthographicType.Right)
+            {
+                throw new ArgumentOutOfRangeException(nameof(type), type, "The orthographic type must be in the range 1 through 6.");
+            }
+        }
 
         /// <summary>
         /// Sets the user coordinate system x-axis and y-axis direction.
@@ -384,6 +445,11 @@ namespace netDxf.Tables
                 yAxis = this.yAxis,
                 zAxis = this.zAxis,
             };
+
+            foreach (KeyValuePair<UcsOrthographicType, Vector3> pair in this.orthographicOrigins)
+            {
+                copy.orthographicOrigins.Add(pair.Key, pair.Value);
+            }
 
             foreach (XData data in this.XData.Values)
             {

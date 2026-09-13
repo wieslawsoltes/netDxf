@@ -1863,6 +1863,18 @@ namespace netDxf.IO
             this.chunk.Write(79, (short) 0);
             this.chunk.Write(146, ucs.Elevation);
 
+            // Canonical order is independent of insertion order and Dictionary implementation.
+            for (short value = 1; value <= 6; value++)
+            {
+                if (ucs.TryGetOrthographicOrigin((UcsOrthographicType) value, out Vector3 point))
+                {
+                    this.chunk.Write(71, value);
+                    this.chunk.Write(13, point.X);
+                    this.chunk.Write(23, point.Y);
+                    this.chunk.Write(33, point.Z);
+                }
+            }
+
             this.WriteXData(ucs.XData);
         }
 
