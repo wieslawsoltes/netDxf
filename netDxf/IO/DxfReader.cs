@@ -9535,18 +9535,10 @@ namespace netDxf.IO
             Vector2 origin = Vector2.Zero;
             if (entity.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData patternOrigin))
             {
-                foreach (XDataRecord record in patternOrigin.XDataRecord)
-                {
-                    if (record.Code == XDataCode.RealX)
-                    {
-                        origin.X = (double) record.Value;
-                    }
-                    else if (record.Code == XDataCode.RealY)
-                    {
-                        origin.Y = (double) record.Value;
-                    }
-                    // record.Code == XDataCode.RealZ is always 0
-                }
+                int index = HatchPatternXData.FindOrigin(patternOrigin.XDataRecord);
+                if (index >= 0)
+                    origin = new Vector2((double) patternOrigin.XDataRecord[index].Value,
+                        (double) patternOrigin.XDataRecord[index + 1].Value);
             }
             pattern.Origin = origin;
 

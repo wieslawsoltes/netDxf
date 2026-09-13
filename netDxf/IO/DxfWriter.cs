@@ -3125,57 +3125,42 @@ namespace netDxf.IO
             // pattern info
             this.WriteHatchPattern(hatch);
 
-            // add the required extended data entries to the hatch XData
-            AddHatchPatternXData(hatch);
-
-            this.WriteXData(hatch.XData);
+            this.WriteHatchXData(hatch);
         }
 
-        private static void AddHatchPatternXData(Hatch hatch)
+        private void WriteHatchXData(Hatch hatch)
         {
-            XData xdataEntry;
-            if (hatch.XData.ContainsAppId(ApplicationRegistry.DefaultName))
+            HatchGradientPattern gradient = hatch.Pattern as HatchGradientPattern;
+            bool originWritten = false, color1Written = false, color2Written = false;
+            foreach (string app in hatch.XData.AppIds)
             {
-                xdataEntry = hatch.XData[ApplicationRegistry.DefaultName];
-                xdataEntry.XDataRecord.Clear();
+                IList<XDataRecord> records = hatch.XData[app].XDataRecord;
+                if (string.Equals(app, ApplicationRegistry.DefaultName, StringComparison.OrdinalIgnoreCase))
+                {
+                    records = HatchPatternXData.WithOrigin(records, hatch.Pattern.Origin);
+                    originWritten = true;
+                }
+                else if (gradient != null && string.Equals(app, "GradientColor1ACI", StringComparison.OrdinalIgnoreCase))
+                {
+                    records = HatchPatternXData.WithColorIndex(records, gradient.Color1.Index);
+                    color1Written = true;
+                }
+                else if (gradient != null && string.Equals(app, "GradientColor2ACI", StringComparison.OrdinalIgnoreCase))
+                {
+                    records = HatchPatternXData.WithColorIndex(records, gradient.Color2.Index);
+                    color2Written = true;
+                }
+                this.WriteXDataRecords(app, records);
             }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry(ApplicationRegistry.DefaultName));
-                hatch.XData.Add(xdataEntry);
-            }
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.RealX, hatch.Pattern.Origin.X));
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.RealY, hatch.Pattern.Origin.Y));
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.RealZ, 0.0));
-
-            HatchGradientPattern grad = hatch.Pattern as HatchGradientPattern;
-
-            if (grad == null) return;
-
-            if (hatch.XData.ContainsAppId("GradientColor1ACI"))
-            {
-                xdataEntry = hatch.XData["GradientColor1ACI"];
-                xdataEntry.XDataRecord.Clear();
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry("GradientColor1ACI"));
-                hatch.XData.Add(xdataEntry);
-            }
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, grad.Color1.Index));
-
-
-            if (hatch.XData.ContainsAppId("GradientColor2ACI"))
-            {
-                xdataEntry = hatch.XData["GradientColor2ACI"];
-                xdataEntry.XDataRecord.Clear();
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry("GradientColor2ACI"));
-                hatch.XData.Add(xdataEntry);
-            }
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, grad.Color2.Index));
+            // Managed APPIDs are registered before the tables are emitted. Do not attach temporary
+            // XData dictionaries to the source: that mutates caller state and subscribes to events.
+            if (!originWritten)
+                this.WriteXDataRecords(ApplicationRegistry.DefaultName, HatchPatternXData.WithOrigin(null, hatch.Pattern.Origin));
+            if (gradient == null) return;
+            if (!color1Written)
+                this.WriteXDataRecords("GradientColor1ACI", HatchPatternXData.WithColorIndex(null, gradient.Color1.Index));
+            if (!color2Written)
+                this.WriteXDataRecords("GradientColor2ACI", HatchPatternXData.WithColorIndex(null, gradient.Color2.Index));
         }
 
         private void WriteHatchBoundaryPaths(ObservableCollection<HatchBoundaryPath> boundaryPaths)
@@ -5461,39 +5446,42 @@ namespace netDxf.IO
         private void WriteXData(XDataDictionary xData)
         {
             foreach (string appReg in xData.AppIds)
-            {
-                this.chunk.Write((short) XDataCode.AppReg, this.EncodeNonAsciiCharacters(appReg));
+                this.WriteXDataRecords(appReg, xData[appReg].XDataRecord);
+        }
 
-                foreach (XDataRecord x in xData[appReg].XDataRecord)
+        private void WriteXDataRecords(string appReg, IEnumerable<XDataRecord> records)
+        {
+            this.chunk.Write((short) XDataCode.AppReg, this.EncodeNonAsciiCharacters(appReg));
+
+            foreach (XDataRecord x in records)
+            {
+                short code = (short) x.Code;
+                object value = x.Value;
+                if (code == 1000 || code == 1003)
                 {
-                    short code = (short) x.Code;
-                    object value = x.Value;
-                    if (code == 1000 || code == 1003)
+                    this.chunk.Write(code, this.EncodeNonAsciiCharacters((string) value));
+                }
+                else if (code == 1004) // binary extended data is written in chunks of 127 bytes
+                {
+                    byte[] bytes = (byte[]) value;
+                    byte[] data;
+                    int count = bytes.Length;
+                    int index = 0;
+                    while (count > 127)
                     {
-                        this.chunk.Write(code, this.EncodeNonAsciiCharacters((string) value));
-                    }
-                    else if (code == 1004) // binary extended data is written in chunks of 127 bytes
-                    {
-                        byte[] bytes = (byte[]) value;
-                        byte[] data;
-                        int count = bytes.Length;
-                        int index = 0;
-                        while (count > 127)
-                        {
-                            data = new byte[127];
-                            Array.Copy(bytes, index, data, 0, 127);
-                            this.chunk.Write(code, data);
-                            count -= 127;
-                            index += 127;
-                        }
-                        data = new byte[bytes.Length - index];
-                        Array.Copy(bytes, index, data, 0, bytes.Length - index);
+                        data = new byte[127];
+                        Array.Copy(bytes, index, data, 0, 127);
                         this.chunk.Write(code, data);
+                        count -= 127;
+                        index += 127;
                     }
-                    else
-                    {
-                        this.chunk.Write(code, value);
-                    }
+                    data = new byte[bytes.Length - index];
+                    Array.Copy(bytes, index, data, 0, bytes.Length - index);
+                    this.chunk.Write(code, data);
+                }
+                else
+                {
+                    this.chunk.Write(code, value);
                 }
             }
         }
