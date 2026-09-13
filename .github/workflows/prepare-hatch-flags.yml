@@ -1,0 +1,65 @@
+name: Apply checked HATCH boundary flag preservation
+on:
+  push:
+    branches: [fix/dxf-hatch-boundary-flags]
+    paths: [.github/workflows/prepare-hatch-flags.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/fix/dxf-hatch-boundary-flags'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-boundary-flags
+      - name: Apply exact tested edits and verify whole tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, subprocess
+          before={
+            'netDxf/IO/DxfReader.cs':'cf805257c5cb1f242e6d6248e53e5b53adf9a102b7837c3b99e7d5a502bd248f',
+            'netDxf/Entities/Hatch.cs':'f50918c2fc7bdd8055ebf0377c6b11fa8b4d58f35c692c45658a22881e9ea749',
+            'netDxf/Entities/HatchBoundaryPath.cs':'dc866f9b618e55578936479a5c09af63e5993c9c9db00b0b72b16eabaa3dd156'}
+          for name,digest in before.items():
+            assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
+          p=Path('netDxf/IO/DxfReader.cs');s=p.read_text()
+          a=s.index('                        // adding External and Derived to all path type flags')
+          b=s.index('                        if (pathType.HasFlag',a)
+          p.write_text(s[:a]+s[b:])
+          p=Path('netDxf/Entities/HatchBoundaryPath.cs');s=p.read_bytes()
+          old=b'                this.edges.Clear();\r\n';assert s.count(old)==1
+          s=s.replace(old,old+b'                this.pathType &= ~HatchBoundaryPathTypeFlags.Polyline;\r\n')
+          old=b'            return new HatchBoundaryPath(copyEdges);';assert s.count(old)==1
+          p.write_bytes(s.replace(old,b'            return new HatchBoundaryPath(copyEdges) { PathType = this.pathType };'))
+          p=Path('netDxf/Entities/Hatch.cs');s=p.read_bytes()
+          old=b'                paths.Add(new HatchBoundaryPath(data));';assert s.count(old)==1
+          replacement='\r\n'.join([
+            '                HatchBoundaryPath transformedPath = new HatchBoundaryPath(data);',
+            '                // Classification survives a transform; bit 2 describes the resulting',
+            '                // representation and may change when an open polyline becomes edge segments.',
+            '                transformedPath.PathType = (path.PathType & ~HatchBoundaryPathTypeFlags.Polyline) |',
+            '                    (transformedPath.PathType & HatchBoundaryPathTypeFlags.Polyline);',
+            '                paths.Add(transformedPath);']).encode()
+          p.write_bytes(s.replace(old,replacement))
+          p=Path('tests/netDxf.Conformance/RegressionTests.cs');s=p.read_text()
+          old='        RegisterHatchPolylineInputTests();';assert s.count(old)==1
+          p.write_text(s.replace(old,old+'\n        RegisterHatchBoundaryFlagsTests();'))
+          after={
+            'netDxf/IO/DxfReader.cs':'44a3f5c7f1f0ff8b46b7dfd72575b6858bcf2d5dc09bd0906c3ec5860e40b8e3',
+            'netDxf/Entities/Hatch.cs':'44842013f973d1c74e7cc6314c83b3fe183535aacfe868d2fceb2abf36bd1680',
+            'netDxf/Entities/HatchBoundaryPath.cs':'29a99d3e7d4a50b9373aeea0475f041bc1563af2a9903f975af474695b4ebe91'}
+          for name,digest in after.items():
+            assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
+          workflow=Path('.github/workflows/prepare-hatch-flags.yml');workflow.unlink()
+          subprocess.run(['git','add',*before,'tests/netDxf.Conformance/RegressionTests.cs',str(workflow)],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual=='0eb7a8238a486ca5dc009b922ba291ed3c79b980',actual
+      - name: Commit only the isolated feature branch
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: retain HATCH boundary classification through read clone and transform'
+          git push origin HEAD:fix/dxf-hatch-boundary-flags
