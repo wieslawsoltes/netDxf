@@ -40,5 +40,7 @@ internal static partial class Program
         RegisterHatchDoublePatternTests();
         RegisterHatchSeedPointTests();
         RegisterHatchSeedPointApiTests();
+        RegisterHatchPixelSizeTests();
+        RegisterHatchPixelSizeApiTests();
     }
 }

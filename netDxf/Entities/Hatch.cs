@@ -68,6 +68,7 @@ namespace netDxf.Entities
         private HatchPattern pattern;
         private double elevation;
         private bool associative;
+        private double? pixelSize = 0.0;
         private readonly SeedPointCollection seedPoints = new SeedPointCollection { Vector2.Zero };
 
         #endregion
@@ -150,6 +151,25 @@ namespace netDxf.Entities
         #endregion
 
         #region public properties
+
+        /// <summary>Gets or sets the optional group-47 sampling pixel size.</summary>
+        /// <remarks>
+        /// Used by CAD consumers for intersection/ray-casting density, not display resolution.
+        /// Null omits the tag; zero is retained for compatibility with existing netDxf output.
+        /// New hatches default to zero. Loading an absent field sets null. Values must be finite
+        /// and nonnegative. This is a stored computation hint; TransformBy leaves it unchanged
+        /// and does not regenerate hatch sampling or evaluate a flood fill.
+        /// </remarks>
+        public double? PixelSize
+        {
+            get { return this.pixelSize; }
+            set
+            {
+                if (value.HasValue && (double.IsNaN(value.Value) || double.IsInfinity(value.Value) || value.Value < 0.0))
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "HATCH pixel size must be finite and nonnegative.");
+                this.pixelSize = value;
+            }
+        }
 
         /// <summary>Gets editable seed points in the hatch's object coordinate system.</summary>
         /// <remarks>
@@ -541,7 +561,8 @@ namespace netDxf.Entities
                 Normal = this.Normal,
                 IsVisible = this.IsVisible,
                 //Hatch properties
-                Elevation = this.elevation
+                Elevation = this.elevation,
+                PixelSize = this.pixelSize
             };
 
             entity.seedPoints.Clear();

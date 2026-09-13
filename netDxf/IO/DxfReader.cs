@@ -9445,6 +9445,7 @@ namespace netDxf.IO
             List<HatchBoundaryPath> paths = new List<HatchBoundaryPath>();
             List<XData> xData = new List<XData>();
             List<Vector2> seedPoints = null;
+            double? pixelSize = null;
 
             this.chunk.Next();
 
@@ -9491,8 +9492,11 @@ namespace netDxf.IO
                         break;
                     case 75:
                         // the next lines hold the information about the hatch pattern
-                        pattern = this.ReadHatchPattern(name, ref seedPoints);
+                        pattern = this.ReadHatchPattern(name, ref seedPoints, ref pixelSize);
                         pattern.Fill = fill;
+                        break;
+                    case 47:
+                        this.ReadHatchPixelSize(ref pixelSize);
                         break;
                     case 98:
                         this.ReadHatchSeedPoints(ref seedPoints);
@@ -9515,7 +9519,8 @@ namespace netDxf.IO
             Hatch entity = new Hatch(pattern, new List<HatchBoundaryPath>(), associative)
             {
                 Elevation = elevation,
-                Normal = normal
+                Normal = normal,
+                PixelSize = pixelSize
             };
 
             entity.SeedPoints.Clear();
@@ -9875,7 +9880,18 @@ namespace netDxf.IO
                 this.chunk.Code, this.chunk.CurrentPosition, detail));
         }
 
-        private HatchPattern ReadHatchPattern(string name, ref List<Vector2> seedPoints)
+        private void ReadHatchPixelSize(ref double? pixelSize)
+        {
+            double value = this.chunk.ReadDouble();
+            if (pixelSize.HasValue || value < 0.0)
+                throw new InvalidDataException(string.Format(
+                    "Invalid HATCH pixel size for group code 47 at position {0}: expected one nonnegative value.",
+                    this.chunk.CurrentPosition));
+            pixelSize = value;
+            this.chunk.Next();
+        }
+
+        private HatchPattern ReadHatchPattern(string name, ref List<Vector2> seedPoints, ref double? pixelSize)
         {
             HatchPattern hatch = null;
             double angle = 0.0;
@@ -9901,7 +9917,7 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 47:
-                        this.chunk.Next();
+                        this.ReadHatchPixelSize(ref pixelSize);
                         break;
                     case 98:
                         this.ReadHatchSeedPoints(ref seedPoints);

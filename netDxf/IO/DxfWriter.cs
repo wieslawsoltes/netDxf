@@ -3318,8 +3318,7 @@ namespace netDxf.IO
                 this.WriteHatchPatternDefinitionLines(pattern);
             }
 
-            // Pixel-size policy is unchanged; seed-point data is independently editable.
-            this.chunk.Write(47, 0.0);
+            if (hatch.PixelSize.HasValue) this.chunk.Write(47, hatch.PixelSize.Value);
             this.chunk.Write(98, hatch.SeedPoints.Count);
             foreach (Vector2 seed in hatch.SeedPoints)
             {
