@@ -1,0 +1,3 @@
+# Corpus bytes and license are hash-pinned; never apply platform newline conversion.
+*.dxf -text
+LICENSE -text
