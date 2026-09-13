@@ -234,6 +234,7 @@ namespace netDxf.Entities
                 // Pattern
                 Fill = this.Fill,
                 Type = this.Type,
+                IsDouble = this.IsDouble,
                 Origin = this.Origin,
                 Angle = this.Angle,
                 Scale = this.Scale,

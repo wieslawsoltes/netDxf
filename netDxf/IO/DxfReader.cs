@@ -9835,6 +9835,7 @@ namespace netDxf.IO
             double angle = 0.0;
             double scale = 1.0;
             bool isGradient = false;
+            bool isDouble = false;
             List<HatchPatternLineDefinition> lineDefinitions = new List<HatchPatternLineDefinition>();
             HatchType type = HatchType.UserDefined;
             HatchStyle style = HatchStyle.Normal;
@@ -9874,7 +9875,12 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 77:
-                        // hatch pattern double flag (not used)
+                        short doubleFlag = this.chunk.ReadShort();
+                        if (doubleFlag != 0 && doubleFlag != 1)
+                            throw new InvalidDataException(string.Format(
+                                "Invalid HATCH double-pattern flag for group code 77 at position {0}: expected 0 or 1.",
+                                this.chunk.CurrentPosition));
+                        isDouble = doubleFlag == 1;
                         this.chunk.Next();
                         break;
                     case 78:
@@ -9906,6 +9912,7 @@ namespace netDxf.IO
             hatch.Style = style;
             hatch.Scale = scale;
             hatch.Type = type;
+            hatch.IsDouble = isDouble;
             hatch.LineDefinitions.AddRange(lineDefinitions);
             return hatch;
         }
