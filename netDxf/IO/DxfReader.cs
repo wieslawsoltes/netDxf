@@ -540,7 +540,7 @@ namespace netDxf.IO
                         {
                             surfU = 6;
                         }
-                        this.doc.DrawingVariables.SplineSegs = surfU;
+                        this.doc.DrawingVariables.SurfU = surfU;
                         this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.SurfV:
@@ -549,7 +549,7 @@ namespace netDxf.IO
                         {
                             surfV = 6;
                         }
-                        this.doc.DrawingVariables.SplineSegs = surfV;
+                        this.doc.DrawingVariables.SurfV = surfV;
                         this.ReadNextHeaderTag();
                         break;
                     case HeaderVariableCode.TdCreate:

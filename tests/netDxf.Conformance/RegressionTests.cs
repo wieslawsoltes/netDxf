@@ -20,5 +20,6 @@ internal static partial class Program
         RegisterRasterOwnershipTests();
         RegisterCustomHeaderUnicodeTests();
         RegisterHeaderCommentTests();
+        RegisterSurfaceDensityHeaderTests();
     }
 }
