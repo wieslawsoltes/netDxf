@@ -1,0 +1,37 @@
+name: Apply reviewed MESH Blend Crease support
+on:
+  push:
+    branches: [feature/dxf-mesh-blend]
+    paths: [.github/workflows/prepare-mesh-blend.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/feature/dxf-mesh-blend'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/dxf-mesh-blend
+      - name: Apply exact tested production patch and verify entire tree
+        shell: python
+        run: |
+          from pathlib import Path
+          import base64, gzip, hashlib, os, subprocess
+          encoded='H4sIAAAAAAAC/5VWbW/bNhD+LiD/4dYPhQXLkiW/Jk69bk26BUjaISmyAsM+UNLJFiJLBkk7ztL89x0pv0iy7DRCEFrk3fF4z3OPGMZRBK3WJJbAnBTlxSpyLlMZyxiFc4NiagcC/EMrRpyGuAKv60Y49Gx74Pf9IfPBbbf73a7RarUORzWazeaRyB8/Qst1+1Yfmmpw20AzKZuhmLMAIXezN24GFJ8JSngGjnLBU5DTWNgYTlCM4OVkZ6h+nxjNzavjOHAuFrMZ40/jP1AKyDgINcopgp9gGrYCjkwgRAmbWHDx/TNMeLaYw8Czz52NazUkR5p+EOPPLCHXOA8XYsQWibThGyUHQmYcaVj4YbyMRZylMEPJQibZCAiYMKPVNJOAS5YsmERgIGZZRpFCsqR6nTubbQrbzxd+EgfgZ1kCv6v8P+XpP6v6jNTZdEGahZqUilCZ36uJ2rmUdIJLTOxquEJlFKZee2gNoOm5njV8A6Tq+ZLxGUvgQw5p/mad7NtdiXtKiCDbmG4n6qwdTTmY82yOXG18YrSqNne7U16rQ24Ci8p8ofpvdbVqfIuord0KU5WzvIw0oUtzERGLBVNofL8gMoFiFMTrltBT9j0xCoV5YoQ1QnD11aHhFlmIvKQDlYW1DAzbnW4w7No20dv3eu1aGai6llSguqgI0x10h0oF9DiopczV192x5zxeqhbRoKpI6kfD3Bk8l0sUpxLEPkbtURkO3UV+CY9IdfSoHO06FvL8HgPq6M4YlkQoXFHzfoB0kSR1trT9P/+OKVZw1Ewd4pI0bAxaybaWeYF6g7xAvaHldl6tUE0R1CMeY6mooskRTBfpg/0pC9Hct3zeZ6p6AlWWgXdWv6q3mGZc5lXc8DnfSOF0pxYb5uiwexxBI3f+hQCC9+9h++aah93UI6c8e6RiPMJVSiIah4r8l6sA55JAb7y7ubz7c6vm0NBdBjnSJswWgrJG+A95phQwS9F+dyzRMk/W56Ukj7gUivEFV8fr4FPkh5EBB0E4dc+Mg6UQBwRph8RVqveHYzjsRTknRH782I8+Bq/XM3OiDtt5Jw/pgz74KZ7qLkb1RXhSnCf8dDtvGsvKG8fKu8J8leM1YtzwnyRhvCfHr6lxAWOrKsQGlGfyA6wV97cwvGXpBBsr9Up1Pqy8f/NY1irvdmGtvFG3w8I2XcBYcOq7ve4R5d251ijvblF/qjuep7/V+fgzeBWYpGM1KBFLlT1ImBA3dEWh8ApCc69Ie64D1yKeKVUwwSP71nFrb2fdrnZPrbW+ORVB/XUbwIWzUrDXUj1VqZKUm3nQKs10hBLMEoUU69qTzKaRusykATq3OKG7oPL8pkxy7N9gvSbEKeuGftAnQnT64cCvEOIt8XKWvMVDUafTs3rQpP99RRuqDPKUrm5CMklX0jmjixa9alLAXzybcDbblZhi0jcP+S17vMYJC57IIooT1DuUlKlgeet6h9cV4+6Rb9MsyWvRqECHcrQXg/7+B3ofIkktDQAA'
+          patch=gzip.decompress(base64.b64decode(encoded,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='1157dd74ab6cd3b00a914b9bb000caf22436702cf78efaa42072e43050a46362'
+          path=Path(os.environ['RUNNER_TEMP'])/'mesh-blend.patch';path.write_bytes(patch)
+          subprocess.run(['git','apply','--check',str(path)],check=True)
+          subprocess.run(['git','apply',str(path)],check=True)
+          Path('.github/workflows/prepare-mesh-blend.yml').unlink()
+          subprocess.run(['git','add','netDxf/Entities/Mesh.cs','netDxf/IO/DxfReader.cs','netDxf/IO/DxfWriter.cs','tests/netDxf.Conformance/RegressionTests.cs','.github/workflows/prepare-mesh-blend.yml'],check=True)
+          actual=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert actual=='1b8c4f4e36eefdbc0f3a2c9001cb21abb4a2f741',actual
+      - name: Commit the verified feature branch only
+        run: |
+          git config user.name 'DXF conformance automation'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: retain and edit MESH Blend Crease metadata'
+          git push origin HEAD:feature/dxf-mesh-blend
