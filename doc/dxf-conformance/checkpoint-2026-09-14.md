@@ -1,5 +1,7 @@
 # DXF conformance checkpoint — 14 September 2026
 
+> Historical PR #58 snapshot. For current merged support and PR #69–#75 verification, use the [later merged checkpoint](checkpoint-merged-2026-09-14.md). The original results below are retained, not replaced by later suite totals.
+
 Production snapshot: [`82361078d1b84f2345d150fa4142ea315c04723f`](https://github.com/wieslawsoltes/netDxf/commit/82361078d1b84f2345d150fa4142ea315c04723f), after merged PR #58. Exact tree: `7e6507c4fa27b8db7a09f4a51352b961f6c8daac`. Target branch: `netstandard`.
 
 The [173-row, nine-profile comparison](version-feature-matrix.md) and [machine-readable ledger](coverage.json) distinguish 161 typed rows from 12 separate raw-preservation rows. A row can represent a narrow field or a broad partial model; rows are not equally weighted standard requirements. **No completion percentage follows from the row or test counts.**

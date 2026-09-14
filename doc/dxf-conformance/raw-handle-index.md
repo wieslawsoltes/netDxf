@@ -1,4 +1,6 @@
-# Context-aware raw handle index (unmerged implementation)
+# Context-aware raw handle index
+
+> Merged as [PR #71](https://github.com/wieslawsoltes/netDxf/pull/71). Final-head [CI 34862523340](https://github.com/wieslawsoltes/netDxf/actions/runs/34862523340) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,235 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
 
 `DxfRawHandleIndex.Create(raw, options, cancellationToken)` builds an immutable index without changing tags or original bytes. Identities use numeric hexadecimal keys, so case and leading zeroes do not hide collisions. `FindDefinitions` returns every candidate instead of overwriting duplicate identities; `FindReferences` and `GetOccurrences` expose exact source-tag positions and records.
 
@@ -16,4 +18,8 @@ Primary references: Autodesk's [group-code table](https://help.autodesk.com/clou
 
 ## Executed evidence
 
-Base is merged PR #68 (`cf533ba32d6c732e475192ee021b78f938eda0cb`). The complete signed-library .NET 8 suite passes **15,752 / zero failures** in both Debug and Release. This includes HEADER seed/reference/opaque distinctions and actual XData following XRECORD ordinary-code payloads. These new APIs do not compile against the old assembly; no artificial red-test total is claimed. Windows, SDK/MSBuild, netstandard2.0 and native AutoCAD runs have not been executed for this unmerged feature.
+Base is merged PR #68 (`cf533ba32d6c732e475192ee021b78f938eda0cb`). The complete signed-library .NET 8 suite passes **15,752 / zero failures** in both Debug and Release. This includes HEADER seed/reference/opaque distinctions and actual XData following XRECORD ordinary-code payloads. These new APIs do not compile against the old assembly; no artificial red-test total is claimed. This original experiment did not execute SDK/MSBuild or Windows. The merged PR subsequently passed those CI gates as recorded above; native AutoCAD remains unexecuted.
+
+## Embedded-object follow-up
+
+Merged [PR #75](raw-embedded-handle-context.md) keeps the recognized group-101 embedded-object tail opaque through the record boundary. Its private fields, including 100/102/1001-looking values, must not become enclosing identities or references. This is conservative exposure/remapping safety, not a private class schema.

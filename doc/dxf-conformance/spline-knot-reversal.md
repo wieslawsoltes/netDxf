@@ -1,5 +1,7 @@
 # Knot-aware SPLINE reversal
 
+> Merged as [PR #69](https://github.com/wieslawsoltes/netDxf/pull/69). Final-head [CI 34859831437](https://github.com/wieslawsoltes/netDxf/actions/runs/34859831437) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **15,919 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
+
 ## Corrected contract
 
 `Spline.Reverse()` must reverse parameter direction without changing the curve locus.
@@ -43,7 +45,7 @@ swap and negate. There is no refitting or knot-domain normalization.
 
 Base: merged PR #68, `cf533ba32d6c732e475192ee021b78f938eda0cb`,
 source tree `34d5583bd5a27aa297dd4c07e5ee03fcec760bdb`.
-This increment is **local and unmerged**, not an existing remote PR.
+The standalone local experiment below preceded the PR publication recorded above.
 
 The recovered earlier patch omitted its test registration. Registration was restored
 before both unchanged-production and corrected runs reported here.

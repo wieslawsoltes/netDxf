@@ -4,22 +4,22 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "82361078d1b84f2345d150fa4142ea315c04723f",
-    "tree": "7e6507c4fa27b8db7a09f4a51352b961f6c8daac"
+    "commit": "6420dd213b018d6f8698167aca4473bc3d3a499f",
+    "tree": "280e1b80946fc2e4133e69ead3bc8651825b13bd"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 12907,
+    "test_cases": 16765,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 58,
-    "ci_run": 34817070669
+    "last_implementation_pr": 75,
+    "ci_run": 34867250706
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
-    "P": "Typed path exists but is incomplete or not comprehensively verified.",
+    "P": "The named pipeline has a partial implementation or lacks comprehensive verification.",
     "P!": "Typed path exists with a known unresolved version-legality concern.",
     "L": "Known lossy omission/conversion/regeneration in the selected pipeline.",
     "O": "Tested opaque/original data preservation, not semantic evaluation.",
@@ -363,6 +363,66 @@
     "CHECK14": {
       "label": "14 September verified checkpoint",
       "path": "doc/dxf-conformance/checkpoint-2026-09-14.md"
+    },
+    "HACI": {
+      "label": "gradient optional ACI retention",
+      "path": "doc/dxf-conformance/hatch-gradient-aci.md"
+    },
+    "MWRITE": {
+      "label": "MESH writer topology preflight",
+      "path": "doc/dxf-conformance/mesh-write-validation.md"
+    },
+    "SCLONE": {
+      "label": "stored SPLINE cloning",
+      "path": "doc/dxf-conformance/spline-clone-state.md"
+    },
+    "TCOM": {
+      "label": "typed comment handling",
+      "path": "doc/dxf-conformance/typed-comments.md"
+    },
+    "BEZK": {
+      "label": "Bezier knot parameterization",
+      "path": "doc/dxf-conformance/bezier-knot-parameterization.md"
+    },
+    "SFLAG": {
+      "label": "SPLINE output flags",
+      "path": "doc/dxf-conformance/spline-export-flags.md"
+    },
+    "SPER": {
+      "label": "standard periodic input",
+      "path": "doc/dxf-conformance/spline-periodic-input.md"
+    },
+    "HELIX": {
+      "label": "typed HELIX parameters",
+      "path": "doc/dxf-conformance/helix.md"
+    },
+    "HAUTH": {
+      "label": "analytic HELIX authoring",
+      "path": "doc/dxf-conformance/helix-authoring.md"
+    },
+    "SREV": {
+      "label": "knot-aware SPLINE reversal",
+      "path": "doc/dxf-conformance/spline-knot-reversal.md"
+    },
+    "ATOMIC": {
+      "label": "explicit atomic file saving",
+      "path": "doc/dxf-conformance/atomic-file-save.md"
+    },
+    "HINDEX": {
+      "label": "contextual raw handle index",
+      "path": "doc/dxf-conformance/raw-handle-index.md"
+    },
+    "HOPS": {
+      "label": "selected traversal and simultaneous remapping",
+      "path": "doc/dxf-conformance/raw-handle-operations.md"
+    },
+    "HEMPTY": {
+      "label": "empty HATCH input and safe export rejection",
+      "path": "doc/dxf-conformance/empty-hatch-retention.md"
+    },
+    "EMBED": {
+      "label": "opaque embedded-object handle context",
+      "path": "doc/dxf-conformance/raw-embedded-handle-context.md"
     }
   },
   "features": [
@@ -512,11 +572,14 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Selected guards for MESH, MTEXT backgrounds/frames and VIEW plottability. No centralized schema legality, complete per-loss report or transactional file save.",
+      "scope": "Selected guards for MESH, HELIX, HATCH, MTEXT and VIEW. No centralized complete schema legality or per-loss report. Explicit SaveAtomic is separately available; existing Save remains nontransactional.",
       "evidence": [
         "MVER",
         "MTBG",
-        "VIEW"
+        "VIEW",
+        "ATOMIC",
+        "HELIX",
+        "HEMPTY"
       ]
     },
     {
@@ -885,7 +948,7 @@
     },
     {
       "id": "typed-spline",
-      "area": "Entities",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "SPLINE",
       "status": {
@@ -899,10 +962,15 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Control/fit data, knots and weights; tangent vectors now exclude translation. Periodic/degenerate geometry and complete NURBS semantics remain unverified. ReadSpline/WriteSpline.",
+      "scope": "Partial typed family. Stored clone state, Bezier domains, flag composition, supported periodic input, tangent transforms and knot-aware reversal are tested separately; full NURBS/degenerate schemas remain incomplete.",
       "evidence": [
         "B",
-        "STANGENT"
+        "STANGENT",
+        "SCLONE",
+        "BEZK",
+        "SFLAG",
+        "SPER",
+        "SREV"
       ]
     },
     {
@@ -1012,7 +1080,7 @@
     },
     {
       "id": "typed-mesh-subdivision-mesh",
-      "area": "Entities",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "MESH: subdivision mesh",
       "status": {
@@ -1026,11 +1094,12 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Typed export rejects pre-2010 versions before writes. Core topology, creases, blend flag and counted-list validation are implemented; subentity override grammar and subdivision evaluation remain incomplete.",
+      "scope": "Partial typed family. Core topology, creases, blend flags, counted input and mutable writer preflight are tested; subentity overrides and subdivision evaluation remain incomplete.",
       "evidence": [
         "MVER",
         "MBLEND",
-        "MREAD"
+        "MREAD",
+        "MWRITE"
       ]
     },
     {
@@ -1281,7 +1350,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Tested field subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata and outer path framing. General geometric/affine validity, associations and empty-HATCH preservation remain incomplete.",
+      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer path framing and empty-input retention. Empty output rejects. General geometry, affine validity and associations remain partial.",
       "evidence": [
         "HDOUBLE",
         "HSEED",
@@ -1294,7 +1363,8 @@
         "HORDER",
         "HEDGE",
         "HFIT",
-        "HPATH"
+        "HPATH",
+        "HEMPTY"
       ]
     },
     {
@@ -1313,12 +1383,13 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "2000 output still drops gradient payload. Later profiles retain rotation, fractional shift, authored RGB/tint/mode and checked two-stop packets. Optional ACI identity/presence, reserved future forms and full appearance/evaluation remain incomplete.",
+      "scope": "AC1015 output drops gradient payload. Later profiles retain rotation, continuous shift, authored RGB/tint/mode, checked two-stop packets and exact optional ACI metadata. Reserved future forms and complete appearance/evaluation remain partial.",
       "evidence": [
         "HANGLE",
         "HSHIFT",
         "HCOLOR",
-        "HGRAD"
+        "HGRAD",
+        "HACI"
       ]
     },
     {
@@ -1513,23 +1584,24 @@
     },
     {
       "id": "typed-helix",
-      "area": "Entities",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HELIX",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Helix model and IO.",
+      "scope": "PR67/68: inherited SPLINE and independent finite HELIX parameters, clones, conservative2007+ output and explicit analytic authoring. No implicit constraint solving; inherited complete SPLINE grammar remains partial.",
       "evidence": [
-        "B"
+        "HELIX",
+        "HAUTH"
       ]
     },
     {
@@ -3339,9 +3411,10 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All success/setup/read/write/probe exits; caller-owned streams stay open. File replacement remains nontransactional.",
+      "scope": "Owned file streams dispose on all success/setup/read/write/probe exits; caller streams stay open. Existing Save remains nontransactional; explicit SaveAtomic is a separate operation.",
       "evidence": [
-        "FILE"
+        "FILE",
+        "ATOMIC"
       ]
     },
     {
@@ -3596,20 +3669,21 @@
       "pipeline": "raw",
       "feature": "Raw dependency-closed clone/import/remapping",
       "status": {
-        "AC1009": "M",
-        "AC1012": "M",
-        "AC1014": "M",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1009": "P",
+        "AC1012": "P",
+        "AC1014": "P",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Handle categories exist, but owners/reactors/reference closure, allocation and graph-safe edits are not implemented.",
+      "scope": "Partial: contextual index, selected outgoing traversal and guarded simultaneous exposed-handle renaming exist. Lexical aggregate extraction, cross-document import, private references and typed integration remain missing.",
       "evidence": [
-        "TAG",
-        "REC"
+        "HINDEX",
+        "HOPS",
+        "EMBED"
       ]
     },
     {
@@ -3721,23 +3795,23 @@
     },
     {
       "id": "typed-transactional-save",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
-      "feature": "Transactional typed file replacement",
+      "feature": "Explicit typed atomic file replacement (SaveAtomic)",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "File-path Save creates/truncates the destination before serialization. Deterministic disposal is not a transaction.",
+      "scope": "PR70: sibling staging, flush and single replacement/move, cancellation and failure cleanup. Opt-in destination-byte protection, not all-document rollback, power-loss durability or hostile-filesystem isolation.",
       "evidence": [
-        "FILE"
+        "ATOMIC"
       ]
     },
     {
@@ -3947,7 +4021,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Retains authored two-color and single-color RGB endpoints plus dormant tint; finite tint validation, independent clones and explicit authoring setter behavior. Optional ACI is a separate lossy row.",
+      "scope": "Authored RGB endpoints, dormant tint, finite tint validation and independent clone/mode state. Optional ACI retention is separately implemented by PR60. AC1015 still downgrades gradients.",
       "evidence": [
         "HCOLOR"
       ]
@@ -4017,7 +4091,7 @@
     },
     {
       "id": "hatch-gradient-aci-preservation",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH gradient optional ACI metadata",
       "status": {
@@ -4025,22 +4099,253 @@
         "AC1012": "X",
         "AC1014": "X",
         "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "The RGB model accepts optional group63 input but derives exported indices instead of preserving exact index identity/absence. AC1015 additionally omits the entire gradient payload.",
+      "scope": "PR60: exact per-stop Int16 value/absence independent of RGB, tint and mode; clones retain automatic/explicit/absent authoring state. AC1015 output still omits gradients.",
       "evidence": [
-        "HGRAD"
+        "HACI"
       ]
     },
     {
       "id": "hatch-empty-boundary-preservation",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
-      "feature": "HATCH with no boundary payload",
+      "feature": "Empty HATCH typed export",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "V",
+        "AC1027": "V",
+        "AC1032": "V"
+      },
+      "scope": "PR73: reject zero-boundary HATCH in all registered blocks before preprocessing or caller-stream writes. Input is retained; no invented boundaries or empty-HATCH rendering guarantee.",
+      "evidence": [
+        "HEMPTY"
+      ]
+    },
+    {
+      "id": "mesh-mutable-output-validation",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MESH mutable output preflight",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR61: finite vertices/creases, face sizes, serialized Int32 limits and topology indices across registered blocks. Stream preflight, not manifoldness or subdivision evaluation.",
+      "evidence": [
+        "MWRITE"
+      ]
+    },
+    {
+      "id": "spline-stored-clone-state",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "SPLINE clone without refitting",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR62: independent exact control/fit representations, weights, knots, tolerances, tangents and common metadata, without regeneration.",
+      "evidence": [
+        "SCLONE"
+      ]
+    },
+    {
+      "id": "typed-global-ascii-comments",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Typed ASCII comment skipping",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR63: skip group999 in typed text parsers while retaining the leading preamble. Raw codecs retain tags; binary comment rejection unchanged.",
+      "evidence": [
+        "TCOM"
+      ]
+    },
+    {
+      "id": "bezier-composite-knot-domains",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Composite Bezier knot domains",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR64: equal normalized spans for authored quadratic/cubic chains and constructor validation. Imported and explicitly supplied knots unchanged.",
+      "evidence": [
+        "BEZK"
+      ]
+    },
+    {
+      "id": "spline-output-flag-composition",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "SPLINE output flag composition",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR65: closure, periodic/rational and compatibility flags composed by OR, not ordinal addition. No universal historical flag or geometry-regeneration claim.",
+      "evidence": [
+        "SFLAG"
+      ]
+    },
+    {
+      "id": "spline-standard-periodic-input",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Standard periodic SPLINE input",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR66: standard bit2 independent of legacy2048; retain exact degree-fold overlap/weights in supported compact layouts; reject nonrepresentable layouts.",
+      "evidence": [
+        "SPER"
+      ]
+    },
+    {
+      "id": "helix-parameter-persistence",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HELIX separate parameter persistence",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR67: AcDbHelix and inherited AcDbSpline remain independently authored. Conservative2007+ export, class counts, clones and selected transforms.",
+      "evidence": [
+        "HELIX"
+      ]
+    },
+    {
+      "id": "helix-analytic-authoring",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HELIX analytic authoring",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR68: cylindrical/tapered/fractional helices and planar spirals; signed pitch/zero radii; explicit cubic approximation with segment budget and truncation bound excluding floating-point error.",
+      "evidence": [
+        "HAUTH"
+      ]
+    },
+    {
+      "id": "spline-knot-aware-reversal",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "SPLINE knot-aware reversal",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR69: reflect full knot domain and reverse periodic control/weight phase plus fit/tangent state. Preflight before mutation; no refitting or automatic HELIX parameter reconciliation.",
+      "evidence": [
+        "SREV"
+      ]
+    },
+    {
+      "id": "hatch-empty-input-retention",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Empty HATCH typed input retention",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR73: preserve identity, fill metadata, seeds, elevation and XData on zero/absent boundary lists; clones remain independent. Typed output rejection is a separate row.",
+      "evidence": [
+        "HEMPTY"
+      ]
+    },
+    {
+      "id": "typed-legacy-save-nontransactional",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Existing Save file-path behavior",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
@@ -4052,27 +4357,136 @@
         "AC1027": "L",
         "AC1032": "L"
       },
-      "scope": "Typed loading retains the existing discard policy when boundary count is zero or absent and no paths occur; the raw pipeline remains separate. Checked counts do not make empty-HATCH round trips lossless.",
+      "scope": "The original Save overload still creates/truncates before serialization. Deterministic disposal is not a transaction; SaveAtomic is a separate explicit API.",
       "evidence": [
-        "HPATH"
+        "FILE",
+        "ATOMIC"
+      ]
+    },
+    {
+      "id": "raw-atomic-file-save",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw atomic file replacement",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR70: same-transport preservation or explicit conversion staged beside the destination before replacement/move. Failure cleanup and cancellation; no destructive fallback or full durability guarantee.",
+      "evidence": [
+        "ATOMIC"
+      ]
+    },
+    {
+      "id": "raw-contextual-handle-index",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Contextual raw handle index",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR71/75: identities, common owners, pointers, reactors, dictionaries, XData, arbitrary handles and seeds with diagnostic/occurrence budgets. Embedded/private payloads stay opaque; no historical-schema certification.",
+      "evidence": [
+        "HINDEX",
+        "EMBED"
+      ]
+    },
+    {
+      "id": "raw-selected-reference-traversal",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Selected raw outgoing reference traversal",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR72: selectable interpreted outgoing links with unresolved, ambiguous and opaque evidence. Not a standalone drawing extractor or proof of private dependency completeness.",
+      "evidence": [
+        "HOPS",
+        "EMBED"
+      ]
+    },
+    {
+      "id": "raw-simultaneous-handle-remap",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Guarded raw simultaneous handle remapping",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR72/75: permutations, collision/ambiguity/dangling-capture/affected-opaque guards, seed advancement, immutable snapshots and numeric no-op behavior. Private strings/binary and arbitrary handles are not inferred references.",
+      "evidence": [
+        "HOPS",
+        "EMBED"
+      ]
+    },
+    {
+      "id": "raw-embedded-handle-isolation",
+      "area": "Raw preservation pipeline",
+      "pipeline": "raw",
+      "feature": "Raw embedded-object handle isolation",
+      "status": {
+        "AC1009": "T",
+        "AC1012": "T",
+        "AC1014": "T",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "PR75: recognize the exposed101 Embedded Object separator outside established private controls/payloads; retain its entire tail as opaque until the record boundary. No typed columns or implicit post-embedded XData grammar.",
+      "evidence": [
+        "EMBED"
       ]
     }
   ],
   "next_work": [
     {
       "id": "opaque-graph",
-      "title": "Context-aware handle graph and dependency-safe editing",
-      "scope": "Identity/pointer/owner/reactor contexts, graph diagnostics, clone/import closure and handle reservation; preserve opaque data without pretending to evaluate it."
+      "title": "Class-specific dependencies and typed integration",
+      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, cross-document clone/import and typed unknown-record preservation. Selected raw traversal/remapping is implemented, not complete semantic closure."
     },
     {
       "id": "field-fidelity",
-      "title": "Finish partial supported records",
-      "scope": "HATCH optional ACI identity/presence, empty-HATCH preservation, inner scalar dispatch, geometric/affine validity and source dependencies; MESH overrides/writer checks; MTEXT columns; complete UCS/VIEW/VPORT contexts. Completed gradient/fit/outer-count increments remain separately evidenced."
+      "title": "Finish partial typed records",
+      "scope": "MTEXT columns and linked legacy contexts; HATCH inner scalar ordering, spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships. Existing Save remains nontransactional; SaveAtomic is opt-in."
     },
     {
       "id": "new-entities",
       "title": "Missing typed entity families",
-      "scope": "HELIX; MULTILEADER; structured TABLE; LIGHT/SECTION; inert OLE/proxy/ACIS/surface payload records. Keep metadata/serialization separate from rendering or geometric evaluation."
+      "scope": "MULTILEADER, structured TABLE, LIGHT/SECTION and inert OLE/proxy/ACIS/surface payloads. HELIX is already implemented with scoped limitations, not a missing family."
     },
     {
       "id": "new-objects",
@@ -4081,13 +4495,13 @@
     },
     {
       "id": "historical-typed",
-      "title": "Typed historical dialects and schema-aware down-save",
-      "scope": "R12/R13/R14 typed grammar plus earlier raw profiles with pinned files; explicit per-property downgrade diagnostics instead of enum-only admission."
+      "title": "Historical typed dialects and schema-aware down-save",
+      "scope": "R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit per-property downgrade reports. Marker safety on raw profiles is not proof of historical feature legality."
     },
     {
       "id": "qualification",
-      "title": "Independent interoperability and robustness",
-      "scope": "Native AutoCAD open/AUDIT/save/reopen when an execution environment is available; corpus expansion, total-resource budgets, fuzzing and actual older-runtime execution."
+      "title": "Native interoperability and robustness",
+      "scope": "Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Expand independent corpora, resource accounting, fuzzing and actual older-runtime execution; netstandard2.0 compilation is not execution on every consumer runtime."
     }
   ]
 }
