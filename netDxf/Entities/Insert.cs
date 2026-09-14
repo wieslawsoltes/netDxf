@@ -417,6 +417,18 @@ namespace netDxf.Entities
                     continue;
                 }
 
+                // General affine images of a circular helix need not be helices.
+                // Preserve the stored spline instead of retaining false parameters.
+                Helix helix = entity as Helix;
+                double helixScale;
+                if (helix != null && !Helix.TryGetSimilarityScale(transformation, out helixScale))
+                {
+                    Spline curve = helix.ToSpline();
+                    curve.TransformBy(transformation, translation);
+                    entities.Add(curve);
+                    continue;
+                }
+
                 if(!isUniformScale)
                 {
                     switch (entity.Type)

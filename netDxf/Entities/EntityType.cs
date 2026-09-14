@@ -173,6 +173,9 @@ namespace netDxf.Entities
         /// <summary>
         /// XLine entity.
         /// </summary>
-        XLine
+        XLine,
+
+        /// <summary>HELIX entity with stored spline geometry and helix parameters.</summary>
+        Helix
     }
 }

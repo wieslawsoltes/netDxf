@@ -320,6 +320,9 @@ namespace netDxf
         /// </summary>
         public const string Spline = "SPLINE";
 
+        /// <summary>Helix entity.</summary>
+        public const string Helix = "HELIX";
+
         /// <summary>
         /// Solid.
         /// </summary>

@@ -276,8 +276,14 @@ namespace netDxf.Collections
         }
 
         /// <summary>
-        /// Gets the list of <see cref="Spline">splines</see> in the active layout.
+        /// Gets the list of <see cref="Helix">helices</see> in the active layout.
         /// </summary>
+        public IEnumerable<Helix> Helices
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Helix>(); }
+        }
+
+        /// <summary>Gets splines, including derived HELIX entities, in the active layout.</summary>
         public IEnumerable<Spline> Splines
         {
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Spline>(); }

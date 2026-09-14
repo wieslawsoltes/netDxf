@@ -115,6 +115,7 @@ namespace netDxf.IO
                 foreach (string name in new[] { DxfObjectCode.ImageDef, DxfObjectCode.ImageDefReactor, DxfObjectCode.Image })
                     if (definitions.Contains(name)) definitions[name].InstanceCount = 0;
             }
+            this.PrepareHelixClass(definitions);
             return definitions;
         }
 
