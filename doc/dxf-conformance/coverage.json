@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "1c199e95133725d07a5573c76422edd57184065a",
-    "tree": "e54d79fe70e9326efe1ec66bc4d519edd416cca3"
+    "commit": "005d5401c5c6514e54a64121ac5888f7525a4eca",
+    "tree": "731b4c04178e4888af6921cabbd99eb958f0e3b2"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 21097,
+    "test_cases": 22047,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 84,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/84/checks"
+    "last_implementation_pr": 85,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/85/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -491,6 +491,30 @@
     "GEODATA": {
       "label": "public GEODATA version 2",
       "path": "doc/dxf-conformance/geodata.md"
+    },
+    "DIMPAR": {
+      "label": "DIMSTYLE stored settings and overrides",
+      "path": "doc/dxf-conformance/dimstyle-stored-settings.md"
+    },
+    "STYLEFID": {
+      "label": "STYLE flags and font metadata",
+      "path": "doc/dxf-conformance/text-style-fidelity.md"
+    },
+    "OUTSET": {
+      "label": "Standalone and embedded output settings",
+      "path": "doc/dxf-conformance/output-settings.md"
+    },
+    "SAT": {
+      "label": "Inert pre-2013 ACIS SAT envelope",
+      "path": "doc/dxf-conformance/acis-sat.md"
+    },
+    "MLEAD": {
+      "label": "MULTILEADER stored contexts and styles",
+      "path": "doc/dxf-conformance/multileader-contexts.md"
+    },
+    "ATTEMPTY": {
+      "label": "Attribute defaults and null normalization",
+      "path": "doc/dxf-conformance/attribute-default-values.md"
     }
   },
   "features": [
@@ -1315,9 +1339,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Definitions/instances; newer embedded-MTEXT/context variants need audit. `ReadAttributeDefinition/ReadAttribute/WriteAttribute`.",
+      "scope": "Definitions/instances; newer embedded-MTEXT/context variants need audit. `ReadAttributeDefinition/ReadAttribute/WriteAttribute`. Default values and null prompts now normalize to empty strings; null styles reject with the intended argument exception.",
       "evidence": [
-        "B"
+        "B",
+        "ATTEMPTY"
       ]
     },
     {
@@ -1683,16 +1708,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Multi-context leader model; MLEADERSTYLE object also absent.",
+      "scope": "Editable single stored context with typed MTEXT/block content, nested leaders, references and MLEADERSTYLE. Annotation-scale graphs, style evaluation, tolerance content and rendering remain outside the implementation.",
       "evidence": [
-        "B"
+        "MLEAD"
       ]
     },
     {
@@ -1747,17 +1772,17 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "V",
+        "AC1032": "V"
       },
-      "scope": "No typed ACIS entities. Generic raw tags can retain admitted opaque payloads; ACIS/ASM-specific evaluation and dependency-qualified editing remain unimplemented.",
+      "scope": "Typed inert SAT envelopes for BODY/REGION/3DSOLID through 2010. No modeler evaluation; 2013+ SAB/ACDSDATA and live history graphs reject.",
       "evidence": [
-        "RAW",
-        "B"
+        "SAT",
+        "RAW"
       ]
     },
     {
@@ -1906,8 +1931,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Large typed subset, not a complete versioned override catalog. `ReadDimensionStyle/WriteDimensionStyle`.",
+      "scope": "Large typed subset including stored 142/145/288, corrected DIMRND/DIMALT overrides and clone parity. Complete versioned override evaluation and rendering remain separate.",
       "evidence": [
+        "DIMPAR",
         "B"
       ]
     },
@@ -1969,8 +1995,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Text/shape styles; defaults/obsolete fields need review. `ReadTextStyle/WriteTextStyle/WriteShapeStyle`.",
+      "scope": "Text/shape flags, optional last height, stored font filenames and canonical ACAD font metadata are preserved. Font resolution, shaping and rendering are not implemented.",
       "evidence": [
+        "STYLEFID",
         "B"
       ]
     },
@@ -2100,8 +2127,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Model/paper layouts and embedded plot settings subset. `ReadLayout/WriteLayout`.",
+      "scope": "Model/paper layouts with shared plot-settings payload, corrected window-axis mapping, independent scale metadata and shade references. Other layout fields and historical legality remain partial.",
       "evidence": [
+        "OUTSET",
         "B"
       ]
     },
@@ -2240,16 +2268,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P!",
+        "AC1018": "P!",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Type exists in LAYOUT; standalone OBJECTS dispatch absent. `ReadObjects/ReadPlotSettings`.",
+      "scope": "Registered PLOTSETTINGS, named page setups, cloning and shared LAYOUT payload. Historical legality of inherited shade groups 76-78 remains partial; group 333 has a separate conservative 2007+ export gate.",
       "evidence": [
-        "B"
+        "OUTSET"
       ]
     },
     {
@@ -2703,16 +2731,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Standalone wipeout settings.",
+      "scope": "Editable boolean frame flag under canonical ACAD_WIPEOUT_VARS, common metadata and typed object graph cloning; no rendering claim.",
       "evidence": [
-        "B"
+        "OUTSET"
       ]
     },
     {
@@ -5241,13 +5269,265 @@
       "evidence": [
         "COMMON"
       ]
+    },
+    {
+      "id": "typed-dimstyle-stored-parity",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "DIMSTYLE stored 142/145/288 and DSTYLE parity",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "TickSize, TextVerticalPosition and UserPositionedText roundtrip in table and override data; DIMRND uses real 1040 and DIMALT uses true=1. Clone retains previously omitted stored settings.",
+      "evidence": [
+        "DIMPAR"
+      ]
+    },
+    {
+      "id": "typed-dimension-header-presence",
+      "area": "Sections",
+      "pipeline": "typed",
+      "feature": "Explicit DIMTSZ / DIMTVP / DIMUPT header presence",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Explicit custom-header values, including zero and false, remain independent of the active style; absent values derive from it and each header is emitted once.",
+      "evidence": [
+        "DIMPAR"
+      ]
+    },
+    {
+      "id": "typed-style-font-fidelity",
+      "area": "Symbol tables",
+      "pipeline": "typed",
+      "feature": "STYLE flags, last height and ACAD font prefix",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Complete stored 70/71 bits, nullable 42, independent font filenames and full signed 1071. Canonical font-prefix edits preserve unrelated XData; ambiguous removal and malformed UTF-16 reject.",
+      "evidence": [
+        "STYLEFID"
+      ]
+    },
+    {
+      "id": "typed-output-settings-scalars",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "PLOTSETTINGS / LAYOUT scale and window storage",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 75 type, nullable explicit 147 and correctly paired 48/49 and 140/141 coordinates. Finite explicit 147 includes zero and negative values as wire storage; those values have no rendering qualification.",
+      "evidence": [
+        "OUTSET"
+      ]
+    },
+    {
+      "id": "typed-output-shade-reference",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "PLOTSETTINGS / LAYOUT shade object 333",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Exact registered nongraphical reference, deferred input fixup, explicit clone mapping and before-output profile validation. 2007 is a conservative export boundary, not a first-release claim.",
+      "evidence": [
+        "OUTSET"
+      ]
+    },
+    {
+      "id": "typed-object-clone-entrypoint",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "Clone a registered OBJECTS ownership subtree",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "CloneObject copies values and owned children with exact external reference mappings, independent metadata and preallocation rejection. Dictionary name removal remains unlink-only; universal erasure is not implied.",
+      "evidence": [
+        "OUTSET"
+      ]
+    },
+    {
+      "id": "typed-acis-sat-envelope",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "BODY / REGION / 3DSOLID SAT chunk fidelity",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "V",
+        "AC1032": "V"
+      },
+      "scope": "Bounded immutable exact encoded 1/3 chunks and decoded lines, literal escape spellings, continuation boundaries, cloning, identity-only transforms and SaveAtomic failure preservation. SAT syntax remains opaque.",
+      "evidence": [
+        "SAT"
+      ]
+    },
+    {
+      "id": "typed-acis-history-presence",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "3DSOLID absent or zero history 350",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "V",
+        "AC1032": "V"
+      },
+      "scope": "Retains absent versus explicit zero history in qualified 2007/2010 SAT envelopes. Nonzero live history and other profile combinations reject.",
+      "evidence": [
+        "SAT"
+      ]
+    },
+    {
+      "id": "typed-multileader-stored-context",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "MULTILEADER nested stored context grammar",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "One context with none/block/MTEXT content, complete vectors, branch and indexed breaks, optional matrix, repeated arrows and ATTDEF values. Exact identity transforms only; no layout or style evaluation.",
+      "evidence": [
+        "MLEAD"
+      ]
+    },
+    {
+      "id": "typed-mleaderstyle-stored-parameters",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "MLEADERSTYLE stored public parameters",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Typed editable public parameter schema, nullable group 293, named dictionary placement and explicit graph clone mappings. Older profiles retain unknown objects opaquely, while typed style export rejects.",
+      "evidence": [
+        "MLEAD"
+      ]
+    },
+    {
+      "id": "typed-multileader-resource-lifecycle",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "MULTILEADER resource identity and lifecycle",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Current nested references contribute exact use counts and protect STYLE/LTYPE/BLOCK/ATTDEF removal. Callback-safe rename and block-record unregistration retain coherent identity; legacy association teardown is unchanged.",
+      "evidence": [
+        "MLEAD"
+      ]
+    },
+    {
+      "id": "typed-attribute-empty-values",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "ATTDEF / ATTRIB empty-value invariants",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Constructor defaults, null values and null prompts become explicit empty strings in both transports. Cloning, INSERT synchronization and missing input fields preserve the same meaning; null style arguments reject consistently.",
+      "evidence": [
+        "ATTEMPTY"
+      ]
     }
   ],
   "next_work": [
     {
       "id": "opaque-graph",
       "title": "Class-specific dependencies and typed integration",
-      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented."
+      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented. An explicit typed-object erase operation with incoming-reference validation and owned-subtree cleanup remains to be implemented."
     },
     {
       "id": "field-fidelity",
@@ -5257,12 +5537,12 @@
     {
       "id": "new-entities",
       "title": "Missing typed entity families",
-      "scope": "MULTILEADER, structured TABLE, SECTION and proxy/ACIS/surface payload families. HELIX, published LIGHT parameters and inert OLEFRAME/OLE2FRAME are implemented with scoped limitations."
+      "scope": "Structured TABLE, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Stored MULTILEADER contexts and pre-2013 inert SAT now join HELIX, LIGHT and OLE frame subsets; rendering and private graphs remain unqualified."
     },
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC, OBJECT_PTR/SPATIAL_INDEX, MATERIAL/VISUALSTYLE/rendering and sun families. Typed IDBUFFER, SORTENTSTABLE, SPATIAL_FILTER and public GEODATA version 2 now join dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders. Other GEODATA versions and private payloads remain unqualified."
+      "scope": "TABLESTYLE, FIELD/DIMASSOC, OBJECT_PTR/SPATIAL_INDEX, LAYER_FILTER/LAYER_INDEX, MATERIAL/VISUALSTYLE/rendering, sun and other public object families. Stored MLEADERSTYLE, standalone output settings and WIPEOUTVARIABLES now join the earlier typed containers and GEODATA subset."
     },
     {
       "id": "historical-typed",
