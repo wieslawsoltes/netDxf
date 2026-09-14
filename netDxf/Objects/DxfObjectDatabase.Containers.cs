@@ -20,7 +20,7 @@ namespace netDxf.Objects
             if (source == null || source.Database == null) throw new ArgumentException("The source has no registered extension dictionary.", nameof(sourceOwner));
             this.CheckRegistered(destinationOwner);
             if (destinationOwner == this.Document.Layers || destinationOwner.ExtensionDictionary != null) throw new InvalidOperationException("The destination extension-dictionary slot is occupied or reserved.");
-            Dictionary<DxfObject, DxfObject> mappings = new Dictionary<DxfObject, DxfObject>();
+            Dictionary<DxfObject, DxfObject> mappings = new Dictionary<DxfObject, DxfObject>(ObjectIdentity);
             if (externalReferences != null) foreach (KeyValuePair<DxfObject, DxfObject> pair in externalReferences) mappings.Add(pair.Key, pair.Value);
             if (mappings.TryGetValue(sourceOwner, out DxfObject supplied) && supplied != destinationOwner) throw new ArgumentException("The source owner mapping conflicts with the destination owner.", nameof(externalReferences));
             mappings[sourceOwner] = destinationOwner;

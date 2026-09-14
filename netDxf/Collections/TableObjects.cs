@@ -147,7 +147,7 @@ namespace netDxf.Collections
         /// </returns>
         public bool HasReferences(string name)
         {
-            return !this.references[name].IsEmpty();
+            return !this.references[name].IsEmpty() || (this.list.TryGetValue(name, out T target) && this.Owner.MLeaderReferences(target).Count > 0);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace netDxf.Collections
         /// </returns>
         public bool HasReferences(T item)
         {
-            return !this.references[item.Name].IsEmpty();
+            return !this.references[item.Name].IsEmpty() || this.Owner.MLeaderReferences(item).Count > 0;
         }
 
         /// <summary>
@@ -173,7 +173,9 @@ namespace netDxf.Collections
         /// </remarks>
         public List<DxfObjectReference> GetReferences(string name)
         {
-            return this.references[name].ToList();
+            List<DxfObjectReference> result = this.references[name].ToList();
+            if (this.list.TryGetValue(name, out T target)) this.MergeMLeaderReferences(result, target);
+            return result;
         }
 
         /// <summary>
@@ -187,7 +189,19 @@ namespace netDxf.Collections
         /// </remarks>
         public List<DxfObjectReference> GetReferences(T item)
         {
-            return this.references[item.Name].ToList();
+            List<DxfObjectReference> result = this.references[item.Name].ToList();
+            this.MergeMLeaderReferences(result, item);
+            return result;
+        }
+
+        private void MergeMLeaderReferences(List<DxfObjectReference> result, T target)
+        {
+            foreach(DxfObjectReference reference in this.Owner.MLeaderReferences(target))
+            {
+                int index=result.FindIndex(item=>ReferenceEquals(item.Reference,reference.Reference));
+                if(index<0) result.Add(reference);
+                else result[index]=new DxfObjectReference(reference.Reference,result[index].Uses+reference.Uses);
+            }
         }
 
         /// <summary>

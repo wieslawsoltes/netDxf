@@ -283,7 +283,25 @@ namespace netDxf.Collections
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Helix>(); }
         }
 
-        /// <summary>Gets the inert legacy OLEFRAME entities in the active layout.</summary>
+        /// <summary>Gets the ACIS bodies in the active layout.</summary>
+        public IEnumerable<Body> Bodies
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Body>(); }
+        }
+
+        /// <summary>Gets the ACIS regions in the active layout.</summary>
+        public IEnumerable<Region> Regions
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Region>(); }
+        }
+
+        /// <summary>Gets the ACIS 3D solids in the active layout.</summary>
+        public IEnumerable<Solid3D> Solids3D
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Solid3D>(); }
+        }
+
+        /// <summary>Gets the legacy OLE frames in the active layout.</summary>
         public IEnumerable<OleFrame> OleFrames
         {
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<OleFrame>(); }
@@ -293,6 +311,12 @@ namespace netDxf.Collections
         public IEnumerable<Ole2Frame> Ole2Frames
         {
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Ole2Frame>(); }
+        }
+
+        /// <summary>Gets MULTILEADER entities in the active layout.</summary>
+        public IEnumerable<MultiLeader> MultiLeaders
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<MultiLeader>(); }
         }
 
         /// <summary>Gets lights in the active layout.</summary>

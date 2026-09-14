@@ -215,7 +215,6 @@ namespace netDxf.Collections
 
             linetype.Owner = this;
 
-            linetype.NameChanged += this.Item_NameChanged;
             linetype.LinetypeSegmentAdded += this.Linetype_SegmentAdded;
             linetype.LinetypeSegmentRemoved += this.Linetype_SegmentRemoved;
             linetype.LinetypeTextSegmentStyleChanged += this.Linetype_TextSegmentStyleChanged;
@@ -250,7 +249,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!ReferenceEquals(item.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }
@@ -276,7 +275,6 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
             item.LinetypeSegmentAdded -= this.Linetype_SegmentAdded;
             item.LinetypeSegmentRemoved -= this.Linetype_SegmentRemoved;
             item.LinetypeTextSegmentStyleChanged -= this.Linetype_TextSegmentStyleChanged;
@@ -289,20 +287,17 @@ namespace netDxf.Collections
 
         #region Linetype events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateMLeaderResourceRename(Linetype record, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
-                throw new ArgumentException("There is already another line type with the same name.");
-            }
+            if (this.List.TryGetValue(newName, out Linetype existing) && !ReferenceEquals(existing, record))
+                throw new ArgumentException("There is already another Linetype with the same name.");
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (Linetype) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitMLeaderResourceRename(Linetype record, string newName)
+        {
+            DxfObjectReferences references = this.References[record.Name];
+            this.List.Remove(record.Name); this.References.Remove(record.Name);
+            this.List.Add(newName, record); this.References.Add(newName, references);
         }
 
         private void Linetype_SegmentAdded(Linetype sender, LinetypeSegmentChangeEventArgs e)

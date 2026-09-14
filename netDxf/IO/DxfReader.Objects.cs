@@ -113,7 +113,7 @@ namespace netDxf.IO
                 for (int i = payload; i < tags.Count; i++)
                     if (tags[i].Code == 1001) { this.ReadDatabaseXData(result.Object, tags, i); break; }
             }
-            else if (!this.ReadContainerPayload(result, codeName, tags, payload) && !this.ReadGeoDataPayload(result, codeName, tags, payload)) result.Object = new DxfOpaqueObject(codeName, tags.Skip(payload).ToList());
+            else if (!this.ReadContainerPayload(result, codeName, tags, payload) && !this.ReadGeoDataPayload(result, codeName, tags, payload) && !this.ReadOutputSettingsPayload(result, codeName, tags, payload) && !this.ReadMLeaderStylePayload(result, codeName, tags, payload)) result.Object = new DxfOpaqueObject(codeName, tags.Skip(payload).ToList());
             result.Object.Handle = handle;
             this.databaseRecords.Add(result);
             return result;
@@ -157,7 +157,7 @@ namespace netDxf.IO
         }
         private void ImportDatabaseObjects()
         {
-            if (this.databaseRecords.Count == 0) return;
+            if (this.databaseRecords.Count == 0) { this.ResolveOutputSettingsReferences(); return; }
             // Reserve source identities before lazily creating the document's temporary root.
             foreach (DatabaseRecord record in this.databaseRecords)
                 if (long.TryParse(record.Object.Handle, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture, out long sourceHandle) && sourceHandle >= this.doc.NumHandles && sourceHandle < long.MaxValue)
@@ -232,6 +232,7 @@ namespace netDxf.IO
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
             this.ResolveGeoDataHosts();
+            this.ResolveOutputSettingsReferences();
         }
         private void ApplyDatabaseMetadata(DxfObject item, DatabaseMetadata metadata)
         {

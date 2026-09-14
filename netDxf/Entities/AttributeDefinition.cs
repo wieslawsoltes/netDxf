@@ -132,7 +132,7 @@ namespace netDxf.Entities
         /// <param name="tag">Attribute identifier.</param>
         /// <param name="style">Attribute <see cref="TextStyle">text style</see>.</param>
         public AttributeDefinition(string tag, TextStyle style)
-            : this(tag, MathHelper.IsZero(style.Height) ? 1.0 : style.Height, style)
+            : this(tag, MathHelper.IsZero((style ?? throw new ArgumentNullException(nameof(style))).Height) ? 1.0 : style.Height, style)
         {
         }
 
@@ -153,7 +153,7 @@ namespace netDxf.Entities
             this.tag = tag;
             this.flags = AttributeFlags.None;
             this.prompt = string.Empty;
-            this.attValue = null;
+            this.attValue = string.Empty;
             this.position = Vector3.Zero;
             this.style = style ?? throw new ArgumentNullException(nameof(style));
             if (textHeight <= 0.0)
@@ -304,11 +304,11 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the attribute information text.
         /// </summary>
-        /// <remarks>This is the text prompt shown to introduce the attribute value when new Insert entities are inserted into the drawing.</remarks>
+        /// <remarks>This is the text prompt shown to introduce the attribute value when new Insert entities are inserted into the drawing. The default is empty; assigning null stores an empty string.</remarks>
         public string Prompt
         {
             get { return this.prompt; }
-            set { this.prompt = value; }
+            set { this.prompt = value ?? string.Empty; }
         }
 
         /// <summary>
@@ -388,6 +388,7 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the attribute default value.
         /// </summary>
+        /// <remarks>The default is an empty string. Assigning null stores an empty string; empty values are valid.</remarks>
         public string Value
         {
             get { return this.attValue; }

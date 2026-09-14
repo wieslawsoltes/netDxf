@@ -34,7 +34,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represents a dimension style.
     /// </summary>
-    public class DimensionStyle :
+    public partial class DimensionStyle :
         TableObject
     {
         #region delegates and events
@@ -1276,10 +1276,13 @@ namespace netDxf.Tables
                 ExtLine2Off = this.dimse2,
                 ExtLineOffset = this.dimexo,
                 ExtLineExtend = this.dimexe,
+                ExtLineFixed = this.dimfxlon,
+                ExtLineFixedLength = this.dimfxl,
 
                 // symbols and arrows
                 ArrowSize = this.dimasz,
                 CenterMarkSize = this.dimcen,
+                TickSize = this.TickSize,
                 LeaderArrow  = (Block) this.dimldrblk?.Clone(),
                 DimArrow1 = (Block) this.dimblk1?.Clone(),
                 DimArrow2 = (Block) this.dimblk2?.Clone(),
@@ -1293,6 +1296,10 @@ namespace netDxf.Tables
                 TextVerticalPlacement = this.dimtad,
                 TextOffset = this.dimgap,
                 TextFractionHeightScale = this.dimtfac,
+                TextInsideAlign = this.dimtih,
+                TextOutsideAlign = this.dimtoh,
+                TextDirection = this.dimtxtdirection,
+                TextVerticalPosition = this.TextVerticalPosition,
 
                 // fit
                 FitDimLineForce = this.dimtofl,
@@ -1301,6 +1308,7 @@ namespace netDxf.Tables
                 FitOptions = this.dimatfit,
                 FitTextInside = this.dimtix,
                 FitTextMove = this.dimtmove,
+                UserPositionedText = this.UserPositionedText,
 
                 // primary units
                 AngularPrecision = this.dimadec,

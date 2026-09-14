@@ -46,6 +46,14 @@ namespace netDxf.Tables
             // check if the value is valid for its assigned type
             switch (type)
             {
+                case DimensionStyleOverrideType.TickSize:
+                case DimensionStyleOverrideType.TextVerticalPosition:
+                    if (!(value is double)) throw new ArgumentException("The stored dimension setting must be a double.", nameof(value));
+                    DimensionStyle.ValidateStoredDimensionReal((double) value, type == DimensionStyleOverrideType.TickSize, nameof(value));
+                    break;
+                case DimensionStyleOverrideType.UserPositionedText:
+                    if (!(value is bool)) throw new ArgumentException("DIMUPT must be a bool.", nameof(value));
+                    break;
                 case DimensionStyleOverrideType.DimLineColor:
                     if (!(value is AciColor))
                     {

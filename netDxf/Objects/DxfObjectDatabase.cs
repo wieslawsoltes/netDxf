@@ -10,6 +10,12 @@ namespace netDxf.Objects
     /// <summary>Manages document registration, ownership, extension dictionaries, validation and graph cloning.</summary>
     public sealed partial class DxfObjectDatabase
     {
+        private static readonly IEqualityComparer<DxfObject> ObjectIdentity = new ObjectIdentityComparer();
+        private sealed class ObjectIdentityComparer : IEqualityComparer<DxfObject>
+        {
+            public bool Equals(DxfObject first, DxfObject second) { return ReferenceEquals(first, second); }
+            public int GetHashCode(DxfObject value) { return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(value); }
+        }
         private readonly Dictionary<string, DxfDatabaseObject> objects = new Dictionary<string, DxfDatabaseObject>(StringComparer.OrdinalIgnoreCase);
         internal DxfObjectDatabase(DxfDocument document)
         {
@@ -53,7 +59,7 @@ namespace netDxf.Objects
                 if (item.Owner != null && !this.IsRegistered(item.Owner)) errors.Add("Owner is outside the document: " + item.Handle);
                 if (item.Owner is DxfDictionary parent && !parent.Entries.Any(e => e.Target == item) && parent.ExtensionDictionary != item)
                     errors.Add("Owned object has no owning dictionary entry: " + item.Handle);
-                HashSet<DxfObject> ancestors = new HashSet<DxfObject>();
+                HashSet<DxfObject> ancestors = new HashSet<DxfObject>(ObjectIdentity);
                 for (DxfObject owner = item; owner != null; owner = owner.Owner)
                     if (!ancestors.Add(owner)) { errors.Add("Ownership cycle: " + item.Handle); break; }
                 if (item is DxfDictionary dictionary)
@@ -102,10 +108,12 @@ namespace netDxf.Objects
             return this.CloneDictionaryGraph(source, destination, name, false, externalReferences);
         }
         private DxfDictionary CloneDictionaryGraph(DxfDictionary source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences)
+        { return (DxfDictionary)this.CloneOwnershipGraph(source, destination, name, extension, externalReferences); }
+        private DxfDatabaseObject CloneOwnershipGraph(DxfDatabaseObject source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences)
         {
             // Enumerating caller mappings can run application code. Snapshot it before reading
             // graph state and recheck the destination slot after the final external callback.
-            var externalMap = new Dictionary<DxfObject, DxfObject>();
+            var externalMap = new Dictionary<DxfObject, DxfObject>(ObjectIdentity);
             if (externalReferences != null)
                 foreach (KeyValuePair<DxfObject, DxfObject> pair in externalReferences) externalMap.Add(pair.Key, pair.Value);
             this.CheckRegistered(destination);
@@ -121,7 +129,7 @@ namespace netDxf.Objects
             IReadOnlyList<string> sourceErrors = source.Database.Validate();
             if (sourceErrors.Count > 0) throw new InvalidOperationException("Cannot clone an invalid source graph: " + string.Join("; ", sourceErrors));
             List<DxfDatabaseObject> originals = source.Database.objects.Values.Where(o => o == source || IsAncestor(source, o)).ToList();
-            Dictionary<DxfObject, DxfObject> map = new Dictionary<DxfObject, DxfObject>();
+            Dictionary<DxfObject, DxfObject> map = new Dictionary<DxfObject, DxfObject>(ObjectIdentity);
             foreach (DxfDatabaseObject original in originals) map.Add(original, original.CloneShell());
             Func<DxfObject, DxfObject> resolve = value =>
             {
@@ -187,15 +195,15 @@ namespace netDxf.Objects
                             clone.XData[data.ApplicationRegistry.Name].XDataRecord[i] = new XDataRecord(XDataCode.DatabaseHandle, resolve(source.Database.Document.GetObjectByHandle((string)tag.Value)).Handle);
                     }
             }
-            DxfDictionary result = (DxfDictionary)map[source];
-            if (extension) destination.ExtensionDictionary = result;
+            DxfDatabaseObject result = (DxfDatabaseObject)map[source];
+            if (extension) destination.ExtensionDictionary = (DxfDictionary)result;
             else ((DxfDictionary)destination).AddLoaded(name, result, true);
             return result;
         }
         internal static bool IsReference(DxfTag tag) { return tag.HandleKind == DxfHandleKind.SoftPointer || tag.HandleKind == DxfHandleKind.HardPointer || tag.HandleKind == DxfHandleKind.SoftOwner || tag.HandleKind == DxfHandleKind.HardOwner; }
         internal static bool IsAncestor(DxfObject possibleAncestor, DxfObject item)
         {
-            HashSet<DxfObject> seen = new HashSet<DxfObject>();
+            HashSet<DxfObject> seen = new HashSet<DxfObject>(ObjectIdentity);
             for (DxfObject current = item; current != null && seen.Add(current); current = current.Owner)
                 if (current == possibleAncestor) return true;
             return false;

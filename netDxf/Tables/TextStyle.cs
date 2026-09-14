@@ -33,7 +33,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represents a text style.
     /// </summary>
-    public class TextStyle :
+    public partial class TextStyle :
         TableObject
     {
         #region private fields
@@ -41,13 +41,8 @@ namespace netDxf.Tables
         private string file;
         private string bigFont;
         private double height;
-        private bool isBackward;
-        private bool isUpsideDown;
-        private bool isVertical;
         private double obliqueAngle;
         private double widthFactor;
-        private FontStyle fontStyle;
-        private string fontFamilyName;
 
         #endregion
 
@@ -116,11 +111,6 @@ namespace netDxf.Tables
             this.widthFactor = 1.0;
             this.obliqueAngle = 0.0;
             this.height = 0.0;
-            this.isVertical = false;
-            this.isBackward = false;
-            this.isUpsideDown = false;
-            this.fontFamilyName = string.Empty;
-            this.fontStyle = FontStyle.Regular;
         }
 
         /// <summary>
@@ -151,15 +141,11 @@ namespace netDxf.Tables
             this.widthFactor = 1.0;
             this.obliqueAngle = 0.0;
             this.height = 0.0;
-            this.isVertical = false;
-            this.isBackward = false;
-            this.isUpsideDown = false;
             if (string.IsNullOrEmpty(fontFamily))
             {
                 throw new ArgumentNullException(nameof(fontFamily));
             }
-            this.fontFamilyName = fontFamily;
-            this.fontStyle = fontStyle;
+            this.ExtendedFontData = new TextStyleFontData(fontFamily, (int)fontStyle << 24);
         }
 
         #endregion
@@ -190,9 +176,8 @@ namespace netDxf.Tables
                     throw new ArgumentException("Only true type TTF fonts and ACAD compiled shape SHX fonts are allowed.");
                 }
 
-                this.fontFamilyName = string.Empty;
+                this.ExtendedFontData = null;
                 this.bigFont = string.Empty;
-                this.fontStyle = FontStyle.Regular;
                 this.file = value;
             }
         }
@@ -243,17 +228,17 @@ namespace netDxf.Tables
         /// </remarks>
         public string FontFamilyName
         {
-            get { return this.fontFamilyName; }
+            get { return this.ExtendedFontData?.FamilyName ?? string.Empty; }
             set
             {
                 if (string.IsNullOrEmpty(value))
                 {
                     throw new ArgumentNullException(nameof(value));
                 }
+                TextStyleFontData data = new TextStyleFontData(value, 0);
+                this.ExtendedFontData = data;
                 this.file = string.Empty;
                 this.bigFont = string.Empty;
-                this.fontStyle = FontStyle.Regular;
-                this.fontFamilyName = value;
             }
         }
 
@@ -261,18 +246,18 @@ namespace netDxf.Tables
         /// Gets or sets the true type font style.
         /// </summary>
         /// <remarks>
-        /// The font style value is ignored and will always return FontStyle.Regular when a font file has been specified.<br />
+        /// The font style value updates the bold and italic bits when extended font data is present.<br />
         /// All styles may not be available for the current font family.
         /// </remarks>
         public FontStyle FontStyle
         {
-            get { return this.fontStyle; }
+            get { return this.ExtendedFontData?.FontStyle ?? FontStyle.Regular; }
             set
             {
-                if (string.IsNullOrEmpty(this.file))
-                {
-                    this.fontStyle = value;
-                }
+                TextStyleFontData data = this.ExtendedFontData;
+                if (data != null)
+                this.ExtendedFontData = new TextStyleFontData(data.FamilyName,
+                        (data.Flags & ~0x03000000) | (((int)value & 3) << 24));
             }
         }
 
@@ -332,8 +317,8 @@ namespace netDxf.Tables
         /// </summary>
         public bool IsVertical
         {
-            get { return this.isVertical; }
-            set { this.isVertical = value; }
+            get { return (this.flags & TextStyleFlags.Vertical) != 0; }
+            set { this.flags = value ? this.flags | TextStyleFlags.Vertical : this.flags & ~TextStyleFlags.Vertical; }
         }
 
         /// <summary>
@@ -341,8 +326,8 @@ namespace netDxf.Tables
         /// </summary>
         public bool IsBackward
         {
-            get { return this.isBackward; }
-            set { this.isBackward = value; }
+            get { return (this.TextGenerationFlags & 2) != 0; }
+            set { this.TextGenerationFlags = (short)(value ? this.TextGenerationFlags | 2 : this.TextGenerationFlags & ~2); }
         }
 
         /// <summary>
@@ -350,8 +335,8 @@ namespace netDxf.Tables
         /// </summary>
         public bool IsUpsideDown
         {
-            get { return this.isUpsideDown; }
-            set { this.isUpsideDown = value; }
+            get { return (this.TextGenerationFlags & 4) != 0; }
+            set { this.TextGenerationFlags = (short)(value ? this.TextGenerationFlags | 4 : this.TextGenerationFlags & ~4); }
         }
 
         /// <summary>
@@ -452,32 +437,17 @@ namespace netDxf.Tables
         /// <returns>A new TextStyle that is a copy of this instance.</returns>
         public override TableObject Clone(string newName)
         {
-            TextStyle copy;
-
-            if (string.IsNullOrEmpty(this.FontFamilyName))
+            TextStyle copy = new TextStyle(newName, DefaultFont)
             {
-                copy = new TextStyle(newName, this.file)
-                {
-                    Height = this.height,
-                    IsBackward = this.isBackward,
-                    IsUpsideDown = this.isUpsideDown,
-                    IsVertical = this.isVertical,
-                    ObliqueAngle = this.obliqueAngle,
-                    WidthFactor = this.widthFactor
-                };
-            }
-            else
-            {
-                copy = new TextStyle(newName, this.fontFamilyName, this.fontStyle)
-                {
-                    Height = this.height,
-                    IsBackward = this.isBackward,
-                    IsUpsideDown = this.isUpsideDown,
-                    IsVertical = this.isVertical,
-                    ObliqueAngle = this.obliqueAngle,
-                    WidthFactor = this.widthFactor
-                };
-            }
+                file = this.file,
+                bigFont = this.bigFont,
+                Height = this.height,
+                Flags = this.Flags,
+                TextGenerationFlags = this.TextGenerationFlags,
+                LastHeight = this.LastHeight,
+                ObliqueAngle = this.obliqueAngle,
+                WidthFactor = this.widthFactor
+            };
 
             foreach (XData data in this.XData.Values)
             {

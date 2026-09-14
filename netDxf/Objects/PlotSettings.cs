@@ -30,7 +30,7 @@ namespace netDxf.Objects
     /// <summary>
     /// Represents the plot settings of a layout.
     /// </summary>
-    public class PlotSettings :
+    public partial class PlotSettings :
         ICloneable
     {
         #region private fields
@@ -47,7 +47,6 @@ namespace netDxf.Objects
         private Vector2 windowUpRight;
         private Vector2 windowBottomLeft;
 
-        private bool scaleToFit ;
         private double numeratorScale;
         private double denominatorScale;
         private PlotFlags flags;
@@ -83,7 +82,7 @@ namespace netDxf.Objects
             this.windowUpRight = Vector2.Zero;
             this.windowBottomLeft = Vector2.Zero;
 
-            this.scaleToFit = true;
+            this.standardScaleType = 0;
             this.numeratorScale = 1.0;
             this.denominatorScale = 1.0;
             this.flags = PlotFlags.DrawViewportsFirst | PlotFlags.PrintLineweights | PlotFlags.PlotPlotStyles | PlotFlags.UseStandardScale;
@@ -200,8 +199,8 @@ namespace netDxf.Objects
         /// </remarks>
         public bool ScaleToFit
         {
-            get { return this.scaleToFit; }
-            set { this.scaleToFit = value; }
+            get { return this.standardScaleType == 0; }
+            set { if (value) this.standardScaleType = 0; else if (this.standardScaleType == 0) this.standardScaleType = 16; }
         }
 
         /// <summary>
@@ -352,7 +351,9 @@ namespace netDxf.Objects
                 Origin = this.origin,
                 WindowUpRight = this.windowUpRight,
                 WindowBottomLeft = this.windowBottomLeft,
-                ScaleToFit = this.scaleToFit,
+                StandardScaleType = this.standardScaleType,
+                StandardScaleFactor = this.standardScaleFactor,
+                ShadePlotObject = this.shadePlotObject,
                 PrintScaleNumerator = this.numeratorScale,
                 PrintScaleDenominator = this.denominatorScale,
                 Flags = this.flags,

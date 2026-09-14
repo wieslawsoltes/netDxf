@@ -70,6 +70,11 @@ namespace netDxf
 
         /// <summary>Legacy OLEFRAME subclass.</summary>
         public const string OleFrame = "AcDbOleFrame";
+
+        /// <summary>ACIS modeler geometry.</summary>
+        public const string ModelerGeometry = "AcDbModelerGeometry";
+        /// <summary>ACIS solid history metadata.</summary>
+        public const string Solid3D = "AcDb3dSolid";
         public const string Insert = "AcDbBlockReference";
         public const string MInsert = "AcDbMInsertBlock";
         public const string Line = "AcDbLine";

@@ -37,7 +37,7 @@ namespace netDxf.Blocks
     /// <summary>
     /// Represents a block definition.
     /// </summary>
-    public class Block :
+    public partial class Block :
         TableObject
     {
         #region delegates and events
@@ -283,7 +283,7 @@ namespace netDxf.Blocks
                         // like dynamic blocks, arrays, and tables; although the information of those objects is lost when importing the DXF,
                         // the block that represent its graphical appearance is imported.
                         // They should be safe to rename.
-                        this.flags &= ~BlockTypeFlags.AnonymousBlock;
+                        // Clear the anonymous flag only after the name change has been accepted.
                     }
                     else
                     {
@@ -291,6 +291,7 @@ namespace netDxf.Blocks
                     }
                 }
                 base.Name = value;
+                if (this.forInternalUse) this.flags &= ~BlockTypeFlags.AnonymousBlock;
                 this.Record.Name = value;
             }
         }
@@ -732,6 +733,7 @@ namespace netDxf.Blocks
 
         private void Entities_BeforeAddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
+            if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
             // null items, entities already owned by another Block, attribute definitions and attributes are not allowed in the entities list.
             if (e.Item == null)
             {
@@ -843,7 +845,7 @@ namespace netDxf.Blocks
         private void AttributeDefinitions_BeforeRemoveItem(AttributeDefinitionDictionary sender, AttributeDefinitionDictionaryEventArgs e)
         {
             // only attribute definitions owned by the actual block can be removed
-            e.Cancel = !ReferenceEquals(e.Item.Owner, this) ;
+            e.Cancel = !ReferenceEquals(e.Item.Owner, this) || (this.Record.Owner != null && this.Record.Owner.Owner.MLeaderReferences(e.Item).Count > 0);
         }
 
         private void AttributeDefinitions_RemoveItem(AttributeDefinitionDictionary sender, AttributeDefinitionDictionaryEventArgs e)

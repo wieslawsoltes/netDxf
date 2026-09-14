@@ -82,7 +82,6 @@ namespace netDxf.Collections
 
             style.Owner = this;
 
-            style.NameChanged += this.Item_NameChanged;
 
             this.Owner.AddedObjects.Add(style.Handle, style);
 
@@ -113,7 +112,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!ReferenceEquals(item.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }
@@ -135,7 +134,6 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
 
             return true;
         }
@@ -144,20 +142,17 @@ namespace netDxf.Collections
 
         #region TextStyle events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateMLeaderResourceRename(TextStyle record, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
-                throw new ArgumentException("There is already another text style with the same name.");
-            }
+            if (this.List.TryGetValue(newName, out TextStyle existing) && !ReferenceEquals(existing, record))
+                throw new ArgumentException("There is already another TextStyle with the same name.");
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (TextStyle) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitMLeaderResourceRename(TextStyle record, string newName)
+        {
+            DxfObjectReferences references = this.References[record.Name];
+            this.List.Remove(record.Name); this.References.Remove(record.Name);
+            this.List.Add(newName, record); this.References.Add(newName, references);
         }
 
         #endregion

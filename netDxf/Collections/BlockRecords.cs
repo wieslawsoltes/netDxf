@@ -75,6 +75,9 @@ namespace netDxf.Collections
                 return add;
             }
 
+            foreach (EntityObject entity in block.Entities)
+                if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this.Owner);
+
             if (assignHandle || string.IsNullOrEmpty(block.Handle))
             {
                 this.Owner.NumHandles = block.AssignHandle(this.Owner.NumHandles);
@@ -100,7 +103,6 @@ namespace netDxf.Collections
 
             block.Record.Owner = this;
 
-            block.NameChanged += this.Item_NameChanged;
             block.LayerChanged += this.Block_LayerChanged;
             block.EntityAdded += this.Block_EntityAdded;
             block.EntityRemoved += this.Block_EntityRemoved;
@@ -138,7 +140,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!ReferenceEquals(item.Record.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }
@@ -160,15 +162,18 @@ namespace netDxf.Collections
             foreach (EntityObject entity in item.Entities)
             {
                 this.Owner.RemoveEntityFromDocument(entity);
+                entity.Owner = item;
             }
 
             // remove all attribute definitions from the associated layers
             foreach (AttributeDefinition attDef in item.AttributeDefinitions.Values)
             {
                 this.Owner.RemoveAttributeDefinitionFromDocument(attDef);
+                attDef.Owner = item;
             }
 
             this.Owner.AddedObjects.Remove(item.Handle);
+            this.Owner.AddedObjects.Remove(item.Record.Handle);
             this.References.Remove(item.Name);
             this.List.Remove(item.Name);
 
@@ -176,9 +181,8 @@ namespace netDxf.Collections
             item.Record.Owner = null;
 
             item.Handle = null;
-            item.Owner = null;
+            // Keep the detached BlockRecord: it is the permanent block identity used by re-add and clone.
 
-            item.NameChanged -= this.Item_NameChanged;
             item.LayerChanged -= this.Block_LayerChanged;
             item.EntityAdded -= this.Block_EntityAdded;
             item.EntityRemoved -= this.Block_EntityRemoved;
@@ -192,20 +196,17 @@ namespace netDxf.Collections
 
         #region Block events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateMLeaderResourceRename(Block record, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
-                throw new ArgumentException("There is already another block with the same name.");
-            }
+            if (this.List.TryGetValue(newName, out Block existing) && !ReferenceEquals(existing, record))
+                throw new ArgumentException("There is already another Block with the same name.");
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (Block) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitMLeaderResourceRename(Block record, string newName)
+        {
+            DxfObjectReferences references = this.References[record.Name];
+            this.List.Remove(record.Name); this.References.Remove(record.Name);
+            this.List.Add(newName, record); this.References.Add(newName, references);
         }
 
         private void Block_LayerChanged(Block sender, TableObjectChangedEventArgs<Layer> e)

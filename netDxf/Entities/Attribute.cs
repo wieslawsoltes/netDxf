@@ -129,6 +129,7 @@ namespace netDxf.Entities
             : base(DxfObjectCode.Attribute)
         {
             this.tag = string.IsNullOrEmpty(tag) ? string.Empty : tag;
+            this.attValue = string.Empty;
         }
 
         /// <summary>
@@ -155,7 +156,7 @@ namespace netDxf.Entities
 
             this.definition = definition;
             this.tag = definition.Tag;
-            this.attValue = definition.Value;
+            this.Value = definition.Value;
             this.style = definition.Style;
             this.position = definition.Position;
             this.flags = definition.Flags;
@@ -383,6 +384,7 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the attribute value.
         /// </summary>
+        /// <remarks>The initial value is copied from the definition. Assigning null stores an empty string; empty values are valid.</remarks>
         public string Value
         {
             get { return this.attValue; }
