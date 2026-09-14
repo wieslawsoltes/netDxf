@@ -1995,6 +1995,9 @@ namespace netDxf.IO
                 case EntityType.Solid:
                     this.WriteSolid((Solid) entity);
                     break;
+                case EntityType.OleFrame:
+                    this.WriteOleFrame((OleFrame) entity);
+                    break;
                 case EntityType.Ole2Frame:
                     this.WriteOle2Frame((Ole2Frame) entity);
                     break;

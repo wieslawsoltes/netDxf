@@ -182,6 +182,9 @@ namespace netDxf.Entities
         Light,
 
         /// <summary>Inert OLE2FRAME binary object.</summary>
-        Ole2Frame
+        Ole2Frame,
+
+        /// <summary>Inert legacy OLEFRAME object.</summary>
+        OleFrame
     }
 }
