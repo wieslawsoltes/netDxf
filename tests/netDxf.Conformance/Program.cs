@@ -35,6 +35,7 @@ internal static partial class Program
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
+        RunNamedObjectDatabaseTests();
         File.WriteAllText(Path.Combine(ArtifactDirectory, "results.json"),
             JsonSerializer.Serialize(Results, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"Conformance: {Results.Count - failures} passed; {failures} failed.");

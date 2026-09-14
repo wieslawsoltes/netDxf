@@ -87,7 +87,7 @@ namespace netDxf.Entities
     /// <br />
     /// Codes and braces can be nested up to 8 levels deep.<br />
     /// </remarks>
-    public class MText :
+    public partial class MText :
         EntityObject
     {
         #region delegates and events
@@ -831,6 +831,7 @@ namespace netDxf.Entities
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
+            this.ValidateColumnTransform(transformation);
             bool mirrText = this.Owner == null ? DefaultMirrText : this.Owner.Record.Owner.Owner.DrawingVariables.MirrText;
 
             Vector3 newPosition = transformation * this.Position + translation;
@@ -942,6 +943,8 @@ namespace netDxf.Entities
             this.Rotation = newRotation;
             this.Height = newHeight;
             this.RectangleWidth *= scale;
+            if (this.Columns != null) { this.Columns.Scale(scale); this.Columns.ResetEmbeddedPlacement(); }
+            if (this.DefinedHeight.HasValue) this.DefinedHeight *= scale;
 
         }
 
@@ -970,6 +973,8 @@ namespace netDxf.Entities
                 LineSpacingStyle = this.lineSpacingStyle,
                 DrawingDirection = this.drawingDirection,
                 BackgroundFill = this.BackgroundFill == null ? null : (MTextBackgroundFill) this.BackgroundFill.Clone(),
+                Columns = this.Columns == null ? null : (MTextColumns)this.Columns.Clone(),
+                DefinedHeight = this.DefinedHeight,
                 RectangleWidth = this.rectangleWidth,
                 AttachmentPoint = this.attachmentPoint,
                 Style = (TextStyle) this.style.Clone(),

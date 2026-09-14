@@ -4,11 +4,15 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterIntegratedDatabaseTests();
         RegisterBinarySentinelTests();
+        RegisterLwPolylineIntegrityTests();
         RegisterBinaryChunkTests();
         RegisterXDataCloneTests();
         RegisterUcsElevationTests();
         RegisterNamedViewTests();
+        RegisterVPortWireTests();
+        RegisterVPortApiTests();
         RegisterTextFramingTests();
         RegisterMinimalDocumentTests();
         RegisterHeaderProbeTests();
@@ -17,6 +21,7 @@ internal static partial class Program
         RegisterUcsOrthographicTests();
         RegisterMTextCloneDirectionTests();
         RegisterMTextBackgroundTests();
+        RegisterMTextColumnTests();
         RegisterRasterOwnershipTests();
         RegisterCustomHeaderUnicodeTests();
         RegisterHeaderCommentTests();
@@ -66,6 +71,7 @@ internal static partial class Program
         RegisterLightNameTests();
         RegisterOle2FrameTests();
         RegisterOleFrameTests();
+        RegisterRawObjectStoreTests();
         RegisterOleVersionPresenceTests();
         RegisterOleVersionPresenceApiTests();
         RegisterOleMetadataTests();

@@ -24,6 +24,8 @@
 #endregion
 
 using netDxf.Collections;
+using System.Collections.ObjectModel;
+using netDxf.Objects;
 using netDxf.Tables;
 
 namespace netDxf
@@ -128,6 +130,12 @@ namespace netDxf
         }
 
         #endregion
+
+        /// <summary>Gets the attached extension dictionary. Use DxfDocument.Objects.SetExtensionDictionary to attach one.</summary>
+        public DxfDictionary ExtensionDictionary { get; internal set; }
+
+        /// <summary>Gets editable persistent reactor references, separate from automatically managed entity reactors.</summary>
+        public Collection<DxfObject> PersistentReactors { get; } = new Collection<DxfObject>();
 
         #region internal methods
 

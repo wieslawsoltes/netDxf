@@ -41,6 +41,7 @@ namespace netDxf.IO
             }
             this.chunk.Write(0, view.CodeName);
             this.chunk.Write(5, view.Handle);
+            this.WriteDatabaseMetadata(view);
             this.chunk.Write(330, view.Owner.Handle);
             this.chunk.Write(100, SubclassMarker.TableRecord);
             this.chunk.Write(100, SubclassMarker.View);

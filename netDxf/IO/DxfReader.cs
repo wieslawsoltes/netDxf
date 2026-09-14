@@ -212,6 +212,8 @@ namespace netDxf.IO
             }
 
             
+            this.chunk = new DatabaseMetadataReader(this.chunk, this.entityDatabaseMetadata);
+
             this.doc = new DxfDocument(new HeaderVariables(), false, supportFolders);
             this.shapeStyleCounter = 0;
 
@@ -268,7 +270,8 @@ namespace netDxf.IO
 
             // All typed record parsers see the same non-comment tag sequence.
             // Raw documents continue to expose every original comment/tag.
-            if (!this.isBinary) ((TextCodeValueReader)this.chunk).SkipComments = true;
+            ((DatabaseMetadataReader)this.chunk).SkipComments();
+
 
             while (this.chunk.ReadString() != DxfObjectCode.EndOfFile)
             {
@@ -323,6 +326,8 @@ namespace netDxf.IO
 
             // perform all necessary post processes
             this.PostProcesses();
+            this.ResolveMTextColumnLinks();
+            this.ImportDatabaseObjects();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -950,8 +955,9 @@ namespace netDxf.IO
             {
                 switch (this.chunk.ReadString())
                 {
+                    case "ACDBDICTIONARYWDFLT":
                     case DxfObjectCode.Dictionary:
-                        DictionaryObject dictionary = this.ReadDictionary();
+                        DictionaryObject dictionary = this.ReadDictionaryDatabaseRecord();
                         this.dictionaries.Add(dictionary.Handle, dictionary);
                         // the named dictionary is always the first in the objects section
                         if (this.namedDictionary == null)
@@ -974,6 +980,7 @@ namespace netDxf.IO
                     case DxfObjectCode.ImageDefReactor:
                         // this information is not needed
                         ImageDefinitionReactor reactor = this.ReadImageDefReactor();
+                        this.managedReactorHandles.Add(reactor.Handle);
                         break;
                     case DxfObjectCode.MLineStyle:
                         MLineStyle style = this.ReadMLineStyle();
@@ -1028,7 +1035,7 @@ namespace netDxf.IO
                         }
                         break;
                     case DxfObjectCode.XRecord:
-                        XRecord xRecord = this.ReadXRecord();
+                        XRecord xRecord = this.ReadXRecordDatabaseRecord();
                         Debug.Assert(xRecord != null, "XRecord cannot be null");
                         if (xRecord != null)
                         {
@@ -1036,10 +1043,7 @@ namespace netDxf.IO
                         }
                         break;
                     default:
-                        do
-                        {
-                            this.chunk.Next();
-                        } while (this.chunk.Code != 0);
+                        this.ReadDatabaseRecord();
                         break;
                 }
             }
@@ -1196,7 +1200,7 @@ namespace netDxf.IO
                     }
                     break;
                 case DxfObjectCode.VportTable:
-                    this.doc.VPorts = new VPorts(this.doc, handle);
+                    this.doc.VPorts = new VPorts(this.doc, handle, false);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.VPorts, xData);
@@ -1211,6 +1215,7 @@ namespace netDxf.IO
             {
                 this.ReadTableEntry();
             }
+            if (tableName == DxfObjectCode.VportTable) this.doc.VPorts.EnsureActive();
 
             this.chunk.Next();
         }
@@ -1219,9 +1224,6 @@ namespace netDxf.IO
         {
             string dxfCode = this.chunk.ReadString();
             string handle = null;
-
-            // only the first *Active VPort is supported, this one describes the current document view.
-            VPort active = null;
 
             while (this.chunk.ReadString() != DxfObjectCode.EndTable)
             {
@@ -1341,35 +1343,9 @@ namespace netDxf.IO
                         }
                         break;
                     case DxfObjectCode.VportTable:
-                        if (active == null)
-                        {
-                            VPort vport = this.ReadVPort();
-                            if (vport != null)
-                            {
-                                // only the first *Active VPort is supported, this one describes the current document view.
-                                if (vport.Name.Equals(VPort.DefaultName, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    this.doc.Viewport.Handle = handle;
-                                    this.doc.Viewport.ViewCenter = vport.ViewCenter;
-                                    this.doc.Viewport.SnapBasePoint = vport.SnapBasePoint;
-                                    this.doc.Viewport.SnapSpacing = vport.SnapSpacing;
-                                    this.doc.Viewport.GridSpacing = vport.GridSpacing;
-                                    this.doc.Viewport.ViewDirection = vport.ViewDirection;
-                                    this.doc.Viewport.ViewTarget = vport.ViewTarget;
-                                    this.doc.Viewport.ViewHeight = vport.ViewHeight;
-                                    this.doc.Viewport.ViewAspectRatio = vport.ViewAspectRatio;
-                                    this.doc.Viewport.ShowGrid = vport.ShowGrid;
-                                    this.doc.Viewport.SnapMode = vport.SnapMode;
-                                    active = this.doc.Viewport;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // there is only need to read the first active VPort
-                            // multiple Model viewports are not supported
-                            this.ReadUnknowData();
-                        }                     
+                        VPort vport = this.ReadVPort();
+                        vport.Handle = handle;
+                        this.doc.VPorts.AddRecord(vport, false);
                         break;
                     default:
                         this.ReadUnknowData();
@@ -2935,157 +2911,6 @@ namespace netDxf.IO
             origins.Add(type, origin);
         }
 
-        private VPort ReadVPort()
-        {
-            Debug.Assert(this.chunk.ReadString() == SubclassMarker.VPort);
-
-            string name = string.Empty;
-            Vector2 center = Vector2.Zero;
-            Vector2 snapBasePoint = Vector2.Zero;
-            Vector2 snapSpacing = new Vector2(0.5);
-            Vector2 gridSpacing = new Vector2(10.0);
-            Vector3 target = Vector3.Zero;
-            Vector3 direction = Vector3.UnitZ;
-            double height = 10.0;
-            double ratio = 1.0;
-            bool showGrid = true;
-            bool snapMode = false;
-            List<XData> xData = new List<XData>();
-
-            this.chunk.Next();
-
-            while (this.chunk.Code != 0)
-            {
-                switch (this.chunk.Code)
-                {
-                    case 2:
-                        name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 12:
-                        center.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 22:
-                        center.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 13:
-                        snapBasePoint.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 23:
-                        snapBasePoint.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 14:
-                        snapSpacing.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 24:
-                        snapSpacing.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 15:
-                        gridSpacing.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 25:
-                        gridSpacing.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 16:
-                        direction.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 26:
-                        direction.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 36:
-                        direction.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 17:
-                        target.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 27:
-                        target.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 37:
-                        target.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 40:
-                        height = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 41:
-                        ratio = this.chunk.ReadDouble();
-                        if (ratio <= 0)
-                        {
-                            ratio = 1.0;
-                        }
-                        this.chunk.Next();
-                        break;
-                    case 75:
-                        snapMode = this.chunk.ReadShort() != 0;
-                        this.chunk.Next();
-                        break;
-                    case 76:
-                        showGrid = this.chunk.ReadShort() != 0;
-                        this.chunk.Next();
-                        break;
-                    case 1001:
-                        string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        XData data = this.ReadXDataRecord(new ApplicationRegistry(appId));
-                        xData.Add(data);
-                        break;
-                    default:
-                        Debug.Assert(!(this.chunk.Code >= 1000 && this.chunk.Code <= 1071), "The extended data of an entity must start with the application registry code.");
-                        this.chunk.Next();
-                        break;
-                }
-            }
-
-            if (name.Equals(VPort.DefaultName, StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-
-            Debug.Assert(TableObject.IsValidName(name), "Table object name is not valid.");
-            if (!TableObject.IsValidName(name))
-            {
-                return null;
-            }
-
-            VPort vport = new VPort(name, false)
-            {
-                ViewCenter = center,
-                SnapBasePoint = snapBasePoint,
-                SnapSpacing = snapSpacing,
-                GridSpacing = gridSpacing,
-                ViewTarget = target,
-                ViewDirection = direction,
-                ViewHeight = height,
-                ViewAspectRatio = ratio,
-                ShowGrid = showGrid,
-                SnapMode = snapMode,
-            };
-
-            if (xData.Count > 0)
-            {
-                this.tableEntryXData.Add(vport, xData);
-            }
-
-            return vport;
-        }
-
-        #endregion
-
-        #region block methods
 
         private Block ReadBlock()
         {
@@ -8497,118 +8322,6 @@ namespace netDxf.IO
             return segments;
         }
 
-        private Polyline2D ReadLwPolyline()
-        {
-            double elevation = 0.0;
-            double thickness = 0.0;
-            PolylineTypeFlags flags = PolylineTypeFlags.OpenPolyline;
-            double constantWidth = -1.0;
-            List<Polyline2DVertex> polVertexes = new List<Polyline2DVertex>();
-            Polyline2DVertex v = new Polyline2DVertex();
-            double vX = 0.0;
-            Vector3 normal = Vector3.UnitZ;
-
-            List<XData> xData = new List<XData>();
-
-            this.chunk.Next();
-
-            while (this.chunk.Code != 0)
-            {
-                switch (this.chunk.Code)
-                {
-                    case 38:
-                        elevation = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 39:
-                        thickness = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 43:
-                        // constant width (optional; default = 0). If present it will override any vertex width (codes 40 and/or 41)
-                        constantWidth = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 70:
-                        flags = (PolylineTypeFlags) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 90:
-                        //numVertexes = int.Parse(code.Value);
-                        this.chunk.Next();
-                        break;
-                    case 10:
-                        vX = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 20:
-                        double vY = this.chunk.ReadDouble();
-                        v = new Polyline2DVertex(vX, vY);
-                        polVertexes.Add(v);
-                        this.chunk.Next();
-                        break;
-                    case 40:
-                        double startWidth = this.chunk.ReadDouble();
-                        if (startWidth >= 0.0)
-                        {
-                            v.StartWidth = startWidth;
-                        }
-                        this.chunk.Next();
-                        break;
-                    case 41:
-                        double endWidth = this.chunk.ReadDouble();
-                        if (endWidth >= 0.0)
-                        {
-                            v.EndWidth = endWidth;
-                        }
-                        this.chunk.Next();
-                        break;
-                    case 42:
-                        v.Bulge = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 210:
-                        normal.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 220:
-                        normal.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 230:
-                        normal.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 1001:
-                        string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        XData data = this.ReadXDataRecord(this.GetApplicationRegistry(appId));
-                        xData.Add(data);
-                        break;
-                    default:
-                        Debug.Assert(!(this.chunk.Code >= 1000 && this.chunk.Code <= 1071), "The extended data of an entity must start with the application registry code.");
-                        this.chunk.Next();
-                        break;
-                }
-            }
-
-            Polyline2D entity = new Polyline2D(polVertexes)
-            {
-                Elevation = elevation,
-                Thickness = thickness,
-                Flags = flags,
-                Normal = normal
-            };
-
-            if (constantWidth >= 0.0)
-            {
-                entity.SetConstantWidth(constantWidth);
-            }
-
-            entity.XData.AddRange(xData);
-
-            return entity;
-        }
-
         private Polyline2D ReadPolyline2D(Polyline polyline)
         {
             // Polyline2D, the vertexes are expressed in local coordinates
@@ -9290,6 +9003,7 @@ namespace netDxf.IO
             double lineSpacing = 1.0;
             double rotation = 0.0;
             bool isRotationDefined = false;
+            bool hasInsertion = false, hasDirection = false, hasWidth = false;
             MTextAttachmentPoint attachmentPoint = MTextAttachmentPoint.TopLeft;
             MTextLineSpacingStyle spacingStyle = MTextLineSpacingStyle.AtLeast;
             MTextDrawingDirection drawingDirection = MTextDrawingDirection.ByStyle;
@@ -9297,10 +9011,13 @@ namespace netDxf.IO
             string textString = string.Empty;
             List<XData> xData = new List<XData>();
             MTextBackgroundFill background = null;
+            MTextColumns columns = null;
+            double? definedHeight = null;
 
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                if (this.TryReadMTextColumnTag(ref columns, ref definedHeight)) continue;
                 if (this.TryReadMTextBackground(ref background))
                 {
                     this.chunk.Next();
@@ -9317,6 +9034,7 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 10:
+                        hasInsertion = true;
                         insertionPoint.X = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
@@ -9329,6 +9047,7 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 11:
+                        hasDirection = true;
                         direction.X = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
@@ -9349,6 +9068,7 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 41:
+                        hasWidth = true;
                         rectangleWidth = this.chunk.ReadDouble();
                         if (rectangleWidth < 0.0)
                         {
@@ -9408,15 +9128,8 @@ namespace netDxf.IO
                         xData.Add(data);
                         break;
                     case 101:
-                        // once again Autodesk not documenting its own stuff.
-                        // the code 101 was introduced in AutoCad 2018, as far as I know, it is not documented anywhere in the official DXF help.
-                        // after this value, it seems that appears the definition of who knows what, therefore everything after this 101 code will be skipped
-                        // until the end of the entity definition or the XData information
-                        //string unknown = this.chunk.ReadString();
-                        while (!(this.chunk.Code == 0 || this.chunk.Code == 1001))
-                        {
-                            this.chunk.Next();
-                        }                                         
+                        if (columns != null) throw new InvalidDataException("Mixed MTEXT column representations.");
+                        columns = this.ReadMTextEmbeddedColumns();
                         break;
                     default:
                         Debug.Assert(!(this.chunk.Code >= 1000 && this.chunk.Code <= 1071), "The extended data of an entity must start with the application registry code.");
@@ -9439,6 +9152,13 @@ namespace netDxf.IO
                 spacingStyle = MTextLineSpacingStyle.AtLeast;
             }
 
+            if (columns != null && columns.Storage == MTextColumnStorage.Embedded)
+            {
+                if (!hasInsertion && columns.EmbeddedInsertionPoint.HasValue) insertionPoint = columns.EmbeddedInsertionPoint.Value;
+                if (!hasDirection && !isRotationDefined && columns.EmbeddedTextDirection.HasValue) direction = columns.EmbeddedTextDirection.Value;
+                if (!hasWidth && columns.EmbeddedReferenceWidth.HasValue) rectangleWidth = columns.EmbeddedReferenceWidth.Value;
+                definedHeight = columns.DefinedHeight;
+            }
             Vector3 ocsDirection = MathHelper.Transform(direction, normal, CoordinateSystem.World, CoordinateSystem.Object);
 
             MText entity = new MText
@@ -9453,11 +9173,15 @@ namespace netDxf.IO
                 LineSpacingStyle = spacingStyle,
                 DrawingDirection = drawingDirection,
                 BackgroundFill = background,
+                Columns = columns,
+                DefinedHeight = definedHeight,
                 Rotation = isRotationDefined ? rotation : Vector2.Angle(new Vector2(ocsDirection.X, ocsDirection.Y))*MathHelper.RadToDeg,
                 Normal = normal,
             };
 
             entity.XData.AddRange(xData);
+            if (columns != null && columns.Storage == MTextColumnStorage.Direct) columns.DefinedHeight = definedHeight ?? 0;
+            this.ReadMTextColumnXData(entity);
 
             return entity;
         }
@@ -10261,94 +9985,6 @@ namespace netDxf.IO
             this.doc.UnderlayDgnDefinitions = new UnderlayDgnDefinitions(this.doc, underlayDgnDefsHandle);
             this.doc.UnderlayDwfDefinitions = new UnderlayDwfDefinitions(this.doc, underlayDwfDefsHandle);
             this.doc.UnderlayPdfDefinitions = new UnderlayPdfDefinitions(this.doc, underlayPdfDefsHandle);
-        }
-
-        private DictionaryObject ReadDictionary()
-        {
-            List<XData> xData = new List<XData>();
-            string handle = string.Empty;
-            //string handleOwner = null;
-            DictionaryCloningFlags cloning = DictionaryCloningFlags.KeepExisting;
-            bool isHardOwner = false;
-            int numEntries = 0;
-            List<string> names = new List<string>();
-            List<string> handlesToOwner = new List<string>();
-
-            this.chunk.Next();
-            while (this.chunk.Code != 0)
-            {
-                switch (this.chunk.Code)
-                {
-                    case 5:
-                        handle = this.chunk.ReadHex();
-                        this.chunk.Next();
-                        break;
-                    case 330:
-                        //handleOwner = this.chunk.ReadHandle();
-                        this.chunk.Next();
-                        break;
-                    case 280:
-                        isHardOwner = this.chunk.ReadShort() != 0;
-                        this.chunk.Next();
-                        break;
-                    case 281:
-                        cloning = (DictionaryCloningFlags) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 3:
-                        numEntries += 1;
-                        names.Add(this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()));
-                        this.chunk.Next();
-                        break;
-                    case 350: // Soft-owner ID/handle to entry object 
-                        handlesToOwner.Add(this.chunk.ReadHex());
-                        this.chunk.Next();
-                        break;
-                    case 360:
-                        // Hard-owner ID/handle to entry object
-                        handlesToOwner.Add(this.chunk.ReadHex());
-                        this.chunk.Next();
-                        break;
-                    case 1001:
-                        string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        XData data = this.ReadXDataRecord(this.GetApplicationRegistry(appId));
-                        xData.Add(data);
-                        break;
-                    default:
-                        if (this.chunk.Code >= 1000 && this.chunk.Code <= 1071)
-                        {
-                            throw new Exception("The extended data of an entity must start with the application registry code.");
-                        }
-
-                        this.chunk.Next();
-                        break;
-                }
-            }
-
-            //DxfObject owner = null;
-            //if (handleOwner != null)
-            //    owner = this.doc.AddedObjects[handleOwner];
-
-            DictionaryObject dictionary = new DictionaryObject(null)
-            {
-                Handle = handle,
-                IsHardOwner = isHardOwner,
-                Cloning = cloning
-            };
-
-            for (int i = 0; i < numEntries; i++)
-            {
-                string id = handlesToOwner[i];
-                if (id == null)
-                {
-                    throw new NullReferenceException("Null handle in dictionary.");
-                }
-                dictionary.Entries.Add(id, names[i]);
-            }
-
-            dictionary.XData.AddRange(xData);
-
-            return dictionary;
         }
 
         private RasterVariables ReadRasterVariables()
@@ -11328,67 +10964,6 @@ namespace netDxf.IO
             underlayDef.XData.AddRange(xData);
 
             return underlayDef;
-        }
-
-        private XRecord ReadXRecord()
-        {
-            string handle = null;
-            string ownerHandle = null;
-            DictionaryCloningFlags flags = DictionaryCloningFlags.KeepExisting;
-            List<XRecordEntry> entries = new List<XRecordEntry>();
-            this.chunk.Next();
-            while (this.chunk.Code != 0)
-            {
-                switch (this.chunk.Code)
-                {
-                    case 5:
-                        handle = this.chunk.ReadHex();
-                        this.chunk.Next();
-                        break;
-                    case 330:
-                        ownerHandle = this.chunk.ReadHex();
-                        this.chunk.Next();
-                        break;
-                    case 100:
-                        this.chunk.Next();
-                        flags = (DictionaryCloningFlags) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        entries = this.XRecordEntries();
-                        break;
-                    case 102:
-                        this.ReadExtensionDictionaryGroup();
-                        this.chunk.Next();
-                        break;
-                    default:
-                        this.chunk.Next();
-                        break;
-                }
-            }
-            XRecord xRecord = new XRecord
-            {
-                Handle = handle,
-                OwnerHandle = ownerHandle,
-                Flags = flags
-            };
-
-            xRecord.Entries.AddRange(entries);
-
-            return xRecord;
-        }
-
-        private List<XRecordEntry> XRecordEntries()
-        {
-            List<XRecordEntry> entries = new List<XRecordEntry>();
-            while (this.chunk.Code != 0)
-            {
-                //if (this.chunk.Code >= 1 && this.chunk.Code <= 369 && this.chunk.Code != 5 && this.chunk.Code != 105)
-                //{
-                    entries.Add(new XRecordEntry(this.chunk.Code, this.chunk.Value));
-                //}
-                this.chunk.Next();
-            }
-
-            return entries;
         }
 
         #endregion

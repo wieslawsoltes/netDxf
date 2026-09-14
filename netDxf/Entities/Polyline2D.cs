@@ -265,13 +265,21 @@ namespace netDxf.Entities
             this.vertexes.Reverse();
 
             double firstBulge = this.vertexes[0].Bulge;
-       
+            double firstStartWidth = this.vertexes[0].StartWidth;
+            double firstEndWidth = this.vertexes[0].EndWidth;
+
             for (int i = 0; i < this.vertexes.Count - 1; i++)
             {
+                // Segment data belongs to the outgoing edge, not the point.
+                // Reversing an edge also exchanges its start and end widths.
                 this.vertexes[i].Bulge = -this.vertexes[i + 1].Bulge;
+                this.vertexes[i].StartWidth = this.vertexes[i + 1].EndWidth;
+                this.vertexes[i].EndWidth = this.vertexes[i + 1].StartWidth;
             }
 
             this.vertexes[this.vertexes.Count - 1].Bulge = -firstBulge;
+            this.vertexes[this.vertexes.Count - 1].StartWidth = firstEndWidth;
+            this.vertexes[this.vertexes.Count - 1].EndWidth = firstStartWidth;
         }
 
         /// <summary>

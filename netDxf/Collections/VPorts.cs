@@ -24,79 +24,142 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using netDxf.Tables;
 
 namespace netDxf.Collections
 {
-    /// <summary>
-    /// Represents a collection of viewports.
-    /// </summary>
+    /// <summary>A table of named model-space viewport configurations.</summary>
     /// <remarks>
-    /// Multiple Model viewports are not supported, there can be only one called "*Active".
+    /// Inherited name lookup, Count, Items, and enumeration expose the first record of each
+    /// configuration. Records contains every tile in file order, including duplicate names.
+    /// The first record named *Active is the document's current viewport.
     /// </remarks>
-    public sealed class VPorts :
-        TableObjects<VPort>
+    public sealed class VPorts : TableObjects<VPort>
     {
-        #region constructor
+        private readonly List<VPort> records = new List<VPort>();
+        private readonly ReadOnlyCollection<VPort> readOnlyRecords;
 
-        internal VPorts(DxfDocument document)
-            : this(document, null)
-        {
-        }
-
-        internal VPorts(DxfDocument document, string handle)
+        internal VPorts(DxfDocument document) : this(document, null, true) { }
+        internal VPorts(DxfDocument document, string handle) : this(document, handle, true) { }
+        internal VPorts(DxfDocument document, string handle, bool createActive)
             : base(document, DxfObjectCode.VportTable, handle)
         {
-            // add the current document viewport, it is always present
-            VPort active = VPort.Active;
-            this.Owner.NumHandles = active.AssignHandle(this.Owner.NumHandles);
-
-            this.Owner.AddedObjects.Add(active.Handle, active);
-            this.List.Add(active.Name, active);
-            this.References.Add(active.Name, new DxfObjectReferences());
-            active.Owner = this;
+            this.readOnlyRecords = this.records.AsReadOnly();
+            if (createActive) this.EnsureActive();
         }
 
-        #endregion
+        /// <summary>Every physical viewport record in table order, including repeated configuration names.</summary>
+        public IReadOnlyList<VPort> Records { get { return this.readOnlyRecords; } }
 
-        #region override methods
-
-        /// <summary>
-        /// Adds an viewports to the list.
-        /// </summary>
-        /// <param name="vport"><see cref="VPort">VPort</see> to add to the list.</param>
-        /// <param name="assignHandle">Specifies if a handle needs to be generated for the viewport parameter.</param>
-        /// <returns>
-        /// If a viewports already exists with the same name as the instance that is being added the method returns the existing viewports,
-        /// if not it will return the new viewports.
-        /// </returns>
-        internal override VPort Add(VPort vport, bool assignHandle)
+        /// <summary>Returns a snapshot of all tiles in a named configuration, in table order.</summary>
+        public IReadOnlyList<VPort> GetConfiguration(string name)
         {
-            throw new ArgumentException("VPorts cannot be added to the collection. There is only one VPort in the list the \"*Active\".", nameof(vport));
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            List<VPort> result = new List<VPort>();
+            foreach (VPort record in this.records)
+                if (string.Equals(record.Name, name, StringComparison.OrdinalIgnoreCase)) result.Add(record);
+            return result.AsReadOnly();
         }
 
-        /// <summary>
-        /// Removes a viewports.
-        /// </summary>
-        /// <param name="name"><see cref="VPort">VPort</see> name to remove from the document.</param>
-        /// <returns>True if the viewports has been successfully removed, or false otherwise.</returns>
-        /// <remarks>Reserved viewports or any other referenced by objects cannot be removed.</remarks>
+        /// <summary>Adds a detached tile, retaining other records with the same configuration name.</summary>
+        /// <remarks>A record owned by another table must be cloned before adding it here.</remarks>
+        public VPort AddRecord(VPort record) { return this.AddRecord(record, true); }
+
+        internal VPort AddRecord(VPort record, bool assignHandle)
+        {
+            if (record == null) throw new ArgumentNullException(nameof(record));
+            if (ReferenceEquals(record.Owner, this)) return record;
+            if (record.Owner != null) throw new ArgumentException("Clone a viewport record before moving it between documents.", nameof(record));
+            if (string.IsNullOrWhiteSpace(record.Name) || (!VPort.IsActiveName(record.Name) && !TableObject.IsValidName(record.Name)))
+                throw new ArgumentException("Invalid viewport configuration name.", nameof(record));
+            foreach (XData data in record.XData.Values)
+            {
+                var registryOwner = data.ApplicationRegistry.Owner;
+                if (registryOwner != null && !ReferenceEquals(registryOwner.Owner, this.Owner))
+                    throw new ArgumentException("Clone XData whose application registry belongs to another document before adding this viewport.", nameof(record));
+            }
+            if (assignHandle || string.IsNullOrEmpty(record.Handle))
+            {
+                // A minimal imported document can omit HANDSEED. Do not reuse an indexed identity.
+                do { this.Owner.NumHandles = record.AssignHandle(this.Owner.NumHandles); }
+                while (this.Owner.GetObjectByHandle(record.Handle) != null);
+            }
+            else if (this.Owner.GetObjectByHandle(record.Handle) != null)
+                throw new ArgumentException("Duplicate viewport record handle: " + record.Handle, nameof(record));
+
+            this.Owner.AddedObjects.Add(record.Handle, record);
+            record.Owner = this;
+            this.records.Add(record);
+            if (!this.List.ContainsKey(record.Name))
+            {
+                this.List.Add(record.Name, record);
+                this.References.Add(record.Name, new DxfObjectReferences());
+            }
+            return record;
+        }
+
+        /// <summary>Adds one named configuration, or returns its existing first record.</summary>
+        internal override VPort Add(VPort record, bool assignHandle)
+        {
+            if (record == null) throw new ArgumentNullException(nameof(record));
+            VPort existing;
+            return this.List.TryGetValue(record.Name, out existing) ? existing : this.AddRecord(record, assignHandle);
+        }
+
+        internal void EnsureActive()
+        {
+            if (!this.Contains(VPort.DefaultName)) this.AddRecord(VPort.Active, true);
+        }
+
+        /// <summary>Removes all records of a named configuration. The active configuration is retained.</summary>
         public override bool Remove(string name)
         {
-            throw new ArgumentException("VPorts cannot be removed from the collection.", nameof(name));
+            if (name == null || VPort.IsActiveName(name) || !this.Contains(name) || this.HasReferences(name)) return false;
+            IReadOnlyList<VPort> entries = this.GetConfiguration(name);
+            foreach (VPort record in entries) this.Remove(record);
+            return entries.Count != 0;
         }
 
-        /// <summary>
-        /// Removes a viewports.
-        /// </summary>
-        /// <param name="item"><see cref="VPort">VPort</see> to remove from the document.</param>
-        /// <returns>True if the viewports has been successfully removed, or false otherwise.</returns>
-        /// <remarks>Reserved viewports or any other referenced by objects cannot be removed.</remarks>
-        public override bool Remove(VPort item)
+        /// <summary>Removes one physical record; the last active record cannot be removed.</summary>
+        public override bool Remove(VPort record)
         {
-            throw new ArgumentException("VPorts cannot be removed from the collection.", nameof(item));
+            if (record == null || !ReferenceEquals(record.Owner, this)) return false;
+            if (VPort.IsActiveName(record.Name) && this.GetConfiguration(VPort.DefaultName).Count == 1) return false;
+            if (this.HasReferences(record.Name)) return false;
+            this.Owner.AddedObjects.Remove(record.Handle);
+            this.records.Remove(record);
+            this.RebuildIndex(null, null);
+            record.Owner = null;
+            record.Handle = null;
+            return true;
         }
 
-        #endregion
+        internal void ValidateRecordRename(VPort record)
+        {
+            if (this.HasReferences(record.Name)) throw new ArgumentException("A referenced viewport configuration cannot be renamed.");
+        }
+
+        internal void CommitRecordRename(VPort record, string newName)
+        {
+            this.RebuildIndex(record, newName);
+        }
+
+        private void RebuildIndex(VPort renamed, string newName)
+        {
+            // The event runs before TableObject updates Name; use its pending name here.
+            var previousReferences = new Dictionary<string, DxfObjectReferences>(this.References, StringComparer.OrdinalIgnoreCase);
+            this.List.Clear();
+            this.References.Clear();
+            foreach (VPort record in this.records)
+            {
+                string name = ReferenceEquals(record, renamed) ? newName : record.Name;
+                if (this.List.ContainsKey(name)) continue;
+                this.List.Add(name, record);
+                DxfObjectReferences references;
+                this.References.Add(name, previousReferences.TryGetValue(name, out references) ? references : new DxfObjectReferences());
+            }
+        }
     }
 }

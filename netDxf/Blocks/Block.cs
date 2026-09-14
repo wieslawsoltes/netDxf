@@ -458,10 +458,13 @@ namespace netDxf.Blocks
 
             // copy the entities of the document,
             // only entities in the ModelSpace will be part of a block
+            var copies = new Dictionary<EntityObject, EntityObject>();
             foreach (EntityObject entity in doc.Layouts[Layout.ModelSpaceName].AssociatedBlock.Entities)
             {
-                block.Entities.Add((EntityObject) entity.Clone());
+                EntityObject copy = (EntityObject)entity.Clone();
+                copies.Add(entity, copy); block.Entities.Add(copy);
             }
+            MText.RelinkClonedColumns(copies);
 
             // copy the attribute definitions to the new block
             foreach (AttributeDefinition attdef in doc.Layouts[Layout.ModelSpaceName].AssociatedBlock.AttributeDefinitions.Values)
@@ -573,10 +576,13 @@ namespace netDxf.Blocks
                 }
             }
 
+            var copies = new Dictionary<EntityObject, EntityObject>();
             foreach (EntityObject entity in this.entities)
             {
-                dwg.Layouts[Layout.ModelSpaceName].AssociatedBlock.Entities.Add((EntityObject) entity.Clone());
+                EntityObject copy = (EntityObject)entity.Clone();
+                copies.Add(entity, copy); dwg.Layouts[Layout.ModelSpaceName].AssociatedBlock.Entities.Add(copy);
             }
+            MText.RelinkClonedColumns(copies);
 
             return dwg.Save(file, isBinary);
         }
@@ -654,10 +660,13 @@ namespace netDxf.Blocks
                 copy.Flags &= ~BlockTypeFlags.AnonymousBlock;
             }
 
+            var copies = new Dictionary<EntityObject, EntityObject>();
             foreach (EntityObject e in block.entities)
             {
-                copy.entities.Add((EntityObject)e.Clone());
+                EntityObject cloned = (EntityObject)e.Clone();
+                copies.Add(e, cloned); copy.entities.Add(cloned);
             }
+            MText.RelinkClonedColumns(copies);
 
             foreach (AttributeDefinition a in block.attributes.Values)
             {
