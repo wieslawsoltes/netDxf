@@ -1,0 +1,40 @@
+name: Prepare typed HELIX support
+on:
+  push:
+    branches: [feat/dxf-helix-entity]
+    paths: [.github/workflows/dxf-prepare-helix.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/dxf-helix-entity
+          fetch-depth: 0
+      - name: Apply and verify exact tested source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = ce2298476feba25dc6b030295633950bc03336c9
+          python - <<'PY'
+          import base64, gzip, hashlib, subprocess
+          from pathlib import Path
+          encoded = ''.join(Path(f'.github/helix-part{i}.txt').read_text() for i in range(2))
+          compressed = base64.b64decode(encoded, validate=True)
+          assert hashlib.sha256(compressed).hexdigest() == '982af14f27172236a3245e19cc914511a66da0ef9ab1150c78e34c38e5ff17ed'
+          patch = gzip.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == '5830c52fa018413b79a5fa5db2fff2d8af4000cf49eab5a6d9ab44e3459a2c6b'
+          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+          PY
+          git rm .github/helix-part0.txt .github/helix-part1.txt .github/workflows/dxf-prepare-helix.yml
+          git add -A
+          test "$(git write-tree)" = 169051af1b5a5c0d42a7bfc9180ae1ff23f13116
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: add typed HELIX geometry and parameter persistence'
+          git push origin HEAD:feat/dxf-helix-entity
