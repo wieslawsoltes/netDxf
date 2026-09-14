@@ -1,0 +1,44 @@
+name: Prepare combined persistence validation
+on:
+  push:
+    branches: [conformance/integration-20260914]
+    paths: [.github/workflows/dxf-prepare-integration.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: conformance/integration-20260914
+          fetch-depth: 0
+      - name: Restore exact tested patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENCODED_LENGTH: '2392'
+          PATCH_SHA256: '263d1242cde53e405ba9c6e170501bd3188d97a8a79a96a0df273452fdd6dab2'
+        run: |
+          set -euo pipefail
+          export BLOB_JSON="$RUNNER_TEMP/patch-blob.json"
+          gh api repos/wieslawsoltes/netDxf/git/blobs/b8bd78a724346a41d6426c53e4cddd5afa11313f > "$BLOB_JSON"
+          python .github/dxf-transfer.py
+      - name: Verify tree and publish isolated validation
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 7d0b4d3b362527a54d7aa12d30603019d7309b3b
+          git rm .github/dxf-transfer.py .github/workflows/dxf-prepare-integration.yml
+          test "$(git write-tree)" = 3efc84005abc0759c535677ea67912961bd65bda
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'test: cover combined persistence and correct prior Bezier clone oracle'
+          git push origin HEAD:conformance/integration-20260914
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: integration-transfer-diagnostic
+          path: ${{ runner.temp }}/staged-envelope.txt
+          retention-days: 2
