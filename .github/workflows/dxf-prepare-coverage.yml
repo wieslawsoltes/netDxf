@@ -1,0 +1,39 @@
+name: Prepare source-pinned DXF comparison
+on:
+  push:
+    branches: [docs/dxf-coverage-after-fit-and-counts]
+    paths: [.github/workflows/dxf-prepare-coverage.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/dxf-coverage-after-fit-and-counts
+          fetch-depth: 0
+      - name: Apply and verify exact documentation tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 82361078d1b84f2345d150fa4142ea315c04723f
+          python - <<'PY'
+          import gzip, hashlib, subprocess
+          from pathlib import Path
+          compressed = Path('.github/dxf-coverage-transfer.patch.gz').read_bytes()
+          assert hashlib.sha256(compressed).hexdigest() == 'b1bcc4168986b35cc15cd9b9cd595b21f9f363b868db0d2d0298cba2484ecfe1'
+          patch = gzip.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == '0c9feb1af4ec87a5073c118e0c482981fbfc850c22f2bd44b22fadd9d634859d'
+          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+          PY
+          git rm .github/workflows/dxf-prepare-coverage.yml .github/dxf-coverage-transfer.patch.gz
+          git add -A
+          test "$(git write-tree)" = a4168bbd3663e539e264c594d80bebd6903bed56
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'docs: refresh 173-row DXF comparison after fit and boundary fixes'
+          git push origin HEAD:docs/dxf-coverage-after-fit-and-counts
