@@ -1,0 +1,227 @@
+diff --git a/netDxf/Entities/Ole2Frame.cs b/netDxf/Entities/Ole2Frame.cs
+index ff94fa1..e365707 100644
+--- a/netDxf/Entities/Ole2Frame.cs
++++ b/netDxf/Entities/Ole2Frame.cs
+@@ -15,6 +15,28 @@ namespace netDxf.Entities
+         Static = 3
+     }
+ 
++    /// <summary>Presence of optional informational fields in an OLE2FRAME packet.</summary>
++    [Flags]
++    public enum Ole2FrameMetadataFields
++    {
++        /// <summary>No optional informational fields are emitted.</summary>
++        None = 0,
++        /// <summary>Group 70: stored OLE version.</summary>
++        OleVersion = 1,
++        /// <summary>Group 3: user-type description, including an explicitly empty string.</summary>
++        Description = 2,
++        /// <summary>Groups 10/20/30: complete upper-left WCS point.</summary>
++        UpperLeftCorner = 4,
++        /// <summary>Groups 11/21/31: complete lower-right WCS point.</summary>
++        LowerRightCorner = 8,
++        /// <summary>Group 71: link, embedded or static relationship.</summary>
++        ObjectType = 16,
++        /// <summary>Group 72: stored model/paper descriptor.</summary>
++        TileMode = 32,
++        /// <summary>All supported optional fields; the existing public constructor defaults to this.</summary>
++        All = OleVersion | Description | UpperLeftCorner | LowerRightCorner | ObjectType | TileMode
++    }
++
+     /// <summary>An inert OLE2FRAME containing its published metadata and uninterpreted binary payload.</summary>
+     /// <remarks>
+     /// These metadata fields are redundant with private OLE data. They are deliberately immutable:
+@@ -42,7 +64,8 @@ namespace netDxf.Entities
+         }
+ 
+         internal Ole2Frame(byte[] binaryData, Vector3 upperLeftCorner, Vector3 lowerRightCorner,
+-            string description, short oleVersion, OleObjectType objectType, short tileMode, bool copyData)
++            string description, short oleVersion, OleObjectType objectType, short tileMode, bool copyData,
++            Ole2FrameMetadataFields metadataFields = Ole2FrameMetadataFields.All)
+             : base(EntityType.Ole2Frame, DxfObjectCode.Ole2Frame)
+         {
+             if (binaryData == null) throw new ArgumentNullException(nameof(binaryData));
+@@ -55,6 +78,9 @@ namespace netDxf.Entities
+             if (objectType < OleObjectType.Link || objectType > OleObjectType.Static)
+                 throw new ArgumentOutOfRangeException(nameof(objectType));
+             if (tileMode != 0 && tileMode != 1) throw new ArgumentOutOfRangeException(nameof(tileMode));
++            if ((metadataFields & ~Ole2FrameMetadataFields.All) != 0)
++                throw new ArgumentOutOfRangeException(nameof(metadataFields));
++            this.MetadataFields = metadataFields;
+             this.binaryData = copyData ? (byte[])binaryData.Clone() : binaryData;
+             this.UpperLeftCorner = upperLeftCorner;
+             this.LowerRightCorner = lowerRightCorner;
+@@ -64,6 +90,23 @@ namespace netDxf.Entities
+             this.TileMode = tileMode;
+         }
+ 
++        /// <summary>Gets which optional fields were supplied or explicitly selected for output.</summary>
++        /// <remarks>Default-valued getters are not evidence that a field was present in the input.</remarks>
++        public Ole2FrameMetadataFields MetadataFields { get; }
++
++        /// <summary>Returns an independent snapshot with an explicit optional-field output selection.</summary>
++        /// <remarks>
++        /// Values and binary data are not changed. Omitted values are deliberately not serialized;
++        /// a later reload exposes the existing default-valued getters for absent fields. This operation
++        /// does not rewrite private OLE data. Use Clone to preserve the exact current field selection.
++        /// </remarks>
++        /// <param name="metadataFields">Supported field flags; unknown bits are rejected.</param>
++        /// <returns>An independent snapshot without database identity.</returns>
++        public Ole2Frame WithMetadataFields(Ole2FrameMetadataFields metadataFields)
++        {
++            return this.Copy(metadataFields);
++        }
++
+         /// <summary>Gets the stored finite upper-left WCS corner.</summary>
+         public Vector3 UpperLeftCorner { get; }
+         /// <summary>Gets the stored finite lower-right WCS corner.</summary>
+@@ -94,9 +137,14 @@ namespace netDxf.Entities
+ 
+         /// <summary>Creates an independent inert frame, without handle, owner or reactor identity.</summary>
+         public override object Clone()
++        {
++            return this.Copy(this.MetadataFields);
++        }
++
++        private Ole2Frame Copy(Ole2FrameMetadataFields metadataFields)
+         {
+             var copy = new Ole2Frame(this.binaryData, this.UpperLeftCorner, this.LowerRightCorner,
+-                this.Description, this.OleVersion, this.ObjectType, this.TileMode)
++                this.Description, this.OleVersion, this.ObjectType, this.TileMode, true, metadataFields)
+             {
+                 Layer = (Layer)this.Layer.Clone(), Linetype = (Linetype)this.Linetype.Clone(),
+                 Color = (AciColor)this.Color.Clone(), Lineweight = this.Lineweight,
+diff --git a/netDxf/Entities/OleFrame.cs b/netDxf/Entities/OleFrame.cs
+index 6cea3f8..622c248 100644
+--- a/netDxf/Entities/OleFrame.cs
++++ b/netDxf/Entities/OleFrame.cs
+@@ -21,17 +21,30 @@ namespace netDxf.Entities
+         {
+         }
+ 
+-        internal OleFrame(byte[] binaryData, short oleVersion, bool copyData)
++        internal OleFrame(byte[] binaryData, short oleVersion, bool copyData, bool hasOleVersion = true)
+             : base(EntityType.OleFrame, DxfObjectCode.OleFrame)
+         {
+             if (binaryData == null) throw new ArgumentNullException(nameof(binaryData));
+             if (oleVersion < 0) throw new ArgumentOutOfRangeException(nameof(oleVersion));
+             this.binaryData = copyData ? (byte[])binaryData.Clone() : binaryData;
+             this.OleVersion = oleVersion;
++            this.HasOleVersion = hasOleVersion;
+         }
+ 
+         /// <summary>Gets the stored OLE version, independent of the uninterpreted payload.</summary>
+         public short OleVersion { get; }
++        /// <summary>Gets whether the optional stored version tag is present.</summary>
++        /// <remarks>An absent tag leaves the existing OleVersion getter at its default of 1 after loading.</remarks>
++        public bool HasOleVersion { get; }
++
++        /// <summary>Returns an independent frame selecting whether its version tag is written.</summary>
++        /// <remarks>
++        /// This selects metadata presence only; it does not rewrite native OLE data. Omitted values
++        /// remain dormant in this instance but are not serialized. Reloading an omitted tag uses
++        /// the existing default version of 1. The returned frame has no handle, owner or reactors.
++        /// </remarks>
++        public OleFrame WithOleVersionPresence(bool present) { return this.Copy(present); }
++
+         /// <summary>Gets the number of stored binary bytes.</summary>
+         public int BinaryDataLength { get { return this.binaryData.Length; } }
+         /// <summary>Returns an independent copy of the stored bytes.</summary>
+@@ -49,9 +62,11 @@ namespace netDxf.Entities
+         }
+ 
+         /// <summary>Creates an independent frame without retaining handle, owner or reactor identity.</summary>
+-        public override object Clone()
++        public override object Clone() { return this.Copy(this.HasOleVersion); }
++
++        private OleFrame Copy(bool present)
+         {
+-            var copy = new OleFrame(this.binaryData, this.OleVersion)
++            var copy = new OleFrame(this.binaryData, this.OleVersion, true, present)
+             {
+                 Layer = (Layer)this.Layer.Clone(), Linetype = (Linetype)this.Linetype.Clone(),
+                 Color = (AciColor)this.Color.Clone(), Lineweight = this.Lineweight,
+diff --git a/netDxf/IO/DxfOle2Frame.cs b/netDxf/IO/DxfOle2Frame.cs
+index 7b3d57f..c3ce8e6 100644
+--- a/netDxf/IO/DxfOle2Frame.cs
++++ b/netDxf/IO/DxfOle2Frame.cs
+@@ -77,8 +77,15 @@ namespace netDxf.IO
+                 }
+                 try
+                 {
++                    Ole2FrameMetadataFields fields = Ole2FrameMetadataFields.None;
++                    if (seen.Contains(70)) fields |= Ole2FrameMetadataFields.OleVersion;
++                    if (seen.Contains(3)) fields |= Ole2FrameMetadataFields.Description;
++                    if (seen.Contains(10)) fields |= Ole2FrameMetadataFields.UpperLeftCorner;
++                    if (seen.Contains(11)) fields |= Ole2FrameMetadataFields.LowerRightCorner;
++                    if (seen.Contains(71)) fields |= Ole2FrameMetadataFields.ObjectType;
++                    if (seen.Contains(72)) fields |= Ole2FrameMetadataFields.TileMode;
+                     var frame = new Ole2Frame(payload.ToArray(), upper, lower, description, version,
+-                        (OleObjectType)type, tile, false);
++                        (OleObjectType)type, tile, false, fields);
+                     foreach (XData data in xdata) frame.XData.Add(data);
+                     return frame;
+                 }
+@@ -95,11 +102,20 @@ namespace netDxf.IO
+         private void WriteOle2Frame(Ole2Frame frame)
+         {
+             this.chunk.Write(100, SubclassMarker.Ole2Frame);
+-            this.chunk.Write(70, frame.OleVersion);
+-            this.chunk.Write(3, this.EncodeNonAsciiCharacters(frame.Description.Replace("\\", "\\U+005C")));
+-            this.chunk.Write(10, frame.UpperLeftCorner.X); this.chunk.Write(20, frame.UpperLeftCorner.Y); this.chunk.Write(30, frame.UpperLeftCorner.Z);
+-            this.chunk.Write(11, frame.LowerRightCorner.X); this.chunk.Write(21, frame.LowerRightCorner.Y); this.chunk.Write(31, frame.LowerRightCorner.Z);
+-            this.chunk.Write(71, (short)frame.ObjectType); this.chunk.Write(72, frame.TileMode);
++            Ole2FrameMetadataFields fields = frame.MetadataFields;
++            if ((fields & Ole2FrameMetadataFields.OleVersion) != 0) this.chunk.Write(70, frame.OleVersion);
++            if ((fields & Ole2FrameMetadataFields.Description) != 0)
++                this.chunk.Write(3, this.EncodeNonAsciiCharacters(frame.Description.Replace("\\", "\\U+005C")));
++            if ((fields & Ole2FrameMetadataFields.UpperLeftCorner) != 0)
++            {
++                this.chunk.Write(10, frame.UpperLeftCorner.X); this.chunk.Write(20, frame.UpperLeftCorner.Y); this.chunk.Write(30, frame.UpperLeftCorner.Z);
++            }
++            if ((fields & Ole2FrameMetadataFields.LowerRightCorner) != 0)
++            {
++                this.chunk.Write(11, frame.LowerRightCorner.X); this.chunk.Write(21, frame.LowerRightCorner.Y); this.chunk.Write(31, frame.LowerRightCorner.Z);
++            }
++            if ((fields & Ole2FrameMetadataFields.ObjectType) != 0) this.chunk.Write(71, (short)frame.ObjectType);
++            if ((fields & Ole2FrameMetadataFields.TileMode) != 0) this.chunk.Write(72, frame.TileMode);
+             this.chunk.Write(90, frame.BinaryDataLength);
+             byte[] data = frame.BinaryData;
+             for (int offset = 0; offset < data.Length;)
+diff --git a/netDxf/IO/DxfOleFrame.cs b/netDxf/IO/DxfOleFrame.cs
+index a8a50bf..52b5259 100644
+--- a/netDxf/IO/DxfOleFrame.cs
++++ b/netDxf/IO/DxfOleFrame.cs
+@@ -60,7 +60,7 @@ namespace netDxf.IO
+                 }
+                 if (!lengthSeen || !terminated || payload.Length != length)
+                     throw new InvalidDataException("Incomplete OLEFRAME packet or binary length mismatch.");
+-                var result = new OleFrame(payload.ToArray(), version, false);
++                var result = new OleFrame(payload.ToArray(), version, false, versionSeen);
+                 foreach (XData data in xdata) result.XData.Add(data);
+                 return result;
+             }
+@@ -72,7 +72,7 @@ namespace netDxf.IO
+         private void WriteOleFrame(OleFrame frame)
+         {
+             this.chunk.Write(100, SubclassMarker.OleFrame);
+-            this.chunk.Write(70, frame.OleVersion);
++            if (frame.HasOleVersion) this.chunk.Write(70, frame.OleVersion);
+             this.chunk.Write(90, frame.BinaryDataLength);
+             byte[] data = frame.BinaryData;
+             for (int offset = 0; offset < data.Length;)
+diff --git a/tests/netDxf.Conformance/RegressionTests.cs b/tests/netDxf.Conformance/RegressionTests.cs
+index fa37cc4..7f9faa3 100644
+--- a/tests/netDxf.Conformance/RegressionTests.cs
++++ b/tests/netDxf.Conformance/RegressionTests.cs
+@@ -66,6 +66,10 @@ internal static partial class Program
+         RegisterLightNameTests();
+         RegisterOle2FrameTests();
+         RegisterOleFrameTests();
++        RegisterOleVersionPresenceTests();
++        RegisterOleVersionPresenceApiTests();
++        RegisterOleMetadataTests();
++        RegisterOleMetadataApiTests();
+         RegisterHelixWireTests();
+         RegisterHelixApiTests();
+         RegisterHelixGeometryTests();

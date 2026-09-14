@@ -1,0 +1,30 @@
+name: Prepare recovered OLE preservation
+on:
+  push:
+    branches: [feat/ole-preservation-batch]
+    paths: [.github/workflows/prepare-ole-presence.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ole-preservation-batch
+          fetch-depth: 0
+      - name: Apply source-pinned integration and remove preparation files
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = a8fb9e3bbe57e304b0471b6fa64f8fb5da24a232
+          test "$(git hash-object .github/ole-presence-integration.patch)" = bc28132b170e4fd590d78486b0714d8e5869d761
+          git apply --index .github/ole-presence-integration.patch
+          git rm .github/ole-presence-integration.patch .github/workflows/prepare-ole-presence.yml
+          test "$(git write-tree)" = 6227b9019ce2abbbec2c04261ddefd6537523790
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: preserve optional OLE metadata across typed persistence and cloning'
+          git push origin HEAD:feat/ole-preservation-batch
