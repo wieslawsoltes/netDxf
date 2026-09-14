@@ -58,6 +58,10 @@ namespace netDxf.IO
         // The DIMSTYLE table's obsolete DIMBLK field is the sole raw group-5 name exception.
         public bool Code5IsString { get; set; }
 
+        // Opted into only by DxfReader after leading comments are captured.
+        // Standalone codecs, version probes and DxfRawDocument retain every tag.
+        internal bool SkipComments { get; set; }
+
         public short Code
         {
             get { return this.code; }
@@ -79,30 +83,34 @@ namespace netDxf.IO
 
         public void Next()
         {
-            string readCode = this.reader.ReadLine();
-            if (readCode == null)
+            do
             {
-                // Physical EOF is not a synthetic DXF 0/EOF record. Fabricating
-                // one can accept truncated documents or keep section readers looping.
-                throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
-                    "Missing DXF group code at line {0}.", this.currentPosition + 1));
-            }
+                string readCode = this.reader.ReadLine();
+                if (readCode == null)
+                {
+                    // Physical EOF is not a synthetic DXF 0/EOF record. Fabricating
+                    // one can accept truncated documents or keep section readers looping.
+                    throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                        "Missing DXF group code at line {0}.", this.currentPosition + 1));
+                }
 
-            this.currentPosition += 1;
-            if (!short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
-            {
-                throw new FormatException(string.Format(CultureInfo.InvariantCulture,
-                    "Invalid DXF group code at line {0}.", this.currentPosition));
-            }
+                this.currentPosition += 1;
+                if (!short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
+                {
+                    throw new FormatException(string.Format(CultureInfo.InvariantCulture,
+                        "Invalid DXF group code at line {0}.", this.currentPosition));
+                }
 
-            string valueString = this.reader.ReadLine();
-            if (valueString == null)
-            {
-                throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
-                    "Missing value for group code {0} at line {1}.", this.code, this.currentPosition + 1));
+                string valueString = this.reader.ReadLine();
+                if (valueString == null)
+                {
+                    throw new EndOfStreamException(string.Format(CultureInfo.InvariantCulture,
+                        "Missing value for group code {0} at line {1}.", this.code, this.currentPosition + 1));
+                }
+                this.value = this.ReadValue(valueString);
+                this.currentPosition += 1;
             }
-            this.value = this.ReadValue(valueString);
-            this.currentPosition += 1;
+            while (this.SkipComments && this.code == 999);
         }
 
         public byte ReadByte()
