@@ -59,6 +59,7 @@ internal static partial class Program
         RegisterSplineCloneStateTests();
         RegisterTypedCommentTests();
         RegisterBezierKnotTests();
+        RegisterSplineFlagTests();
         RegisterHatchSplineFitTests();
         RegisterHatchSplineFitApiTests();
         RegisterHatchPathCountTests();

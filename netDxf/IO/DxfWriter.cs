@@ -2592,14 +2592,15 @@ namespace netDxf.IO
         {
             this.chunk.Write(100, SubclassMarker.Spline);
 
-            short flags = (short) SplineTypeFlags.Rational;
-            if (spline.IsClosed) flags += (short) SplineTypeFlags.Closed;
-            if (spline.IsClosedPeriodic) flags = (short) SplineTypeFlags.ClosedPeriodicSpline + (short) SplineTypeFlags.Closed;
-            
-            flags += (short) spline.CreationMethod;
-            flags += (short) spline.KnotParameterization;
+            // CreationMethod is an ordinal API enum, not a DXF bit mask.
+            // Compose flags with OR so closure cannot carry into periodicity.
+            SplineTypeFlags flags = SplineTypeFlags.Rational;
+            if (spline.IsClosed || spline.IsClosedPeriodic) flags |= SplineTypeFlags.Closed;
+            if (spline.IsClosedPeriodic) flags |= SplineTypeFlags.Periodic | SplineTypeFlags.ClosedPeriodicSpline;
+            if (spline.CreationMethod == SplineCreationMethod.FitPoints) flags |= SplineTypeFlags.FitPointCreationMethod;
+            flags |= (SplineTypeFlags) spline.KnotParameterization;
 
-            this.chunk.Write(70, flags);
+            this.chunk.Write(70, (short) flags);
             this.chunk.Write(71, spline.Degree);
 
             // the next three codes are purely cosmetic and writing them causes more bad than good.
