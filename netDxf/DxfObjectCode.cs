@@ -323,6 +323,9 @@ namespace netDxf
         /// <summary>Helix entity.</summary>
         public const string Helix = "HELIX";
 
+        /// <summary>Light entity.</summary>
+        public const string Light = "LIGHT";
+
         /// <summary>
         /// Solid.
         /// </summary>

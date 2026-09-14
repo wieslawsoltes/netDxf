@@ -176,6 +176,9 @@ namespace netDxf.Entities
         XLine,
 
         /// <summary>HELIX entity with stored spline geometry and helix parameters.</summary>
-        Helix
+        Helix,
+
+        /// <summary>Distant, point or spot light.</summary>
+        Light
     }
 }

@@ -61,6 +61,9 @@ namespace netDxf
         public const string Spline = "AcDbSpline";
         public const string Face3D = "AcDbFace";
         public const string Helix = "AcDbHelix";
+
+        /// <summary>Light subclass.</summary>
+        public const string Light = "AcDbLight";
         public const string Insert = "AcDbBlockReference";
         public const string MInsert = "AcDbMInsertBlock";
         public const string Line = "AcDbLine";

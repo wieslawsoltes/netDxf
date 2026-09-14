@@ -92,6 +92,7 @@ namespace netDxf.IO
             this.ValidateMeshOutput();
             this.ValidateHatchSplineFitVersions();
             this.ValidateHelixVersions();
+            this.ValidateLightVersions();
             this.ValidateHatchBoundaryPresence();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
@@ -1993,6 +1994,9 @@ namespace netDxf.IO
                     break;
                 case EntityType.Solid:
                     this.WriteSolid((Solid) entity);
+                    break;
+                case EntityType.Light:
+                    this.WriteLight((Light) entity);
                     break;
                 case EntityType.Helix:
                     this.WriteHelix((Helix) entity);
