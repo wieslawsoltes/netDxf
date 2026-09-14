@@ -954,6 +954,7 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.Light:
                     break;
                 case EntityType.Trace:
                     break;
@@ -1116,6 +1117,7 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.Light:
                     break;
                 case EntityType.Hatch:
                     Hatch hatch = (Hatch)entity;

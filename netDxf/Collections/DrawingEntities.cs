@@ -283,6 +283,12 @@ namespace netDxf.Collections
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Helix>(); }
         }
 
+        /// <summary>Gets lights in the active layout.</summary>
+        public IEnumerable<Light> Lights
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Light>(); }
+        }
+
         /// <summary>Gets splines, including derived HELIX entities, in the active layout.</summary>
         public IEnumerable<Spline> Splines
         {
