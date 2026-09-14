@@ -548,9 +548,52 @@ namespace netDxf.Entities
         /// </summary>
         public void Reverse()
         {
+            // Reverse the parameterization, not just the control polygon:
+            // U'[i] = a + b - U[m-i], where [a,b] is the active knot domain.
+            // Prepare all values before changing any caller-visible arrays.
+            double[] reversedKnots = null;
+            if (this.knots != null)
+            {
+                double a = this.knots[this.degree];
+                double b = this.knots[this.knots.Length - this.degree - 1];
+                reversedKnots = new double[this.knots.Length];
+                for (int i = 0; i < this.knots.Length; i++)
+                {
+                    double knot = this.knots[i];
+                    if (double.IsNaN(knot) || double.IsInfinity(knot) ||
+                        (i != 0 && knot < this.knots[i - 1]))
+                        throw new InvalidOperationException("Spline reversal requires finite nondecreasing knots.");
+                    // Preserve the active endpoints exactly and avoid an
+                    // unnecessary overflow of a+b on large same-sign domains.
+                    double reflected = knot == a ? b : knot == b ? a :
+                        ((a >= 0.0) == (knot >= 0.0) ? (a - knot) + b :
+                         (b >= 0.0) == (knot >= 0.0) ? (b - knot) + a : (a + b) - knot);
+                    if (double.IsNaN(reflected) || double.IsInfinity(reflected))
+                        throw new InvalidOperationException("Reversed spline knots exceed the finite double range.");
+                    reversedKnots[this.knots.Length - 1 - i] = reflected;
+                }
+            }
+
             Array.Reverse(this.fitPoints);
             Array.Reverse(this.controlPoints);
-            Array.Reverse(this.weights);
+            if (this.weights != null) Array.Reverse(this.weights);
+            if (this.isClosedPeriodic)
+            {
+                // Serialized/evaluated periodic controls prepend the last p
+                // stored controls. Rotate the reversed stored polygon by p so
+                // that its expanded polygon is the exact reverse of the old one.
+                int p = this.degree;
+                Array.Reverse(this.controlPoints, 0, p);
+                Array.Reverse(this.controlPoints, p, this.controlPoints.Length - p);
+                Array.Reverse(this.controlPoints);
+                if (this.weights != null)
+                {
+                    Array.Reverse(this.weights, 0, p);
+                    Array.Reverse(this.weights, p, this.weights.Length - p);
+                    Array.Reverse(this.weights);
+                }
+            }
+            if (reversedKnots != null) Array.Copy(reversedKnots, this.knots, reversedKnots.Length);
             Vector3? tmp = this.startTangent;
             this.startTangent = -this.endTangent;
             this.endTangent = -tmp;
