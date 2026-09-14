@@ -1,0 +1,30 @@
+name: Prepare inert legacy OLEFRAME persistence
+on:
+  push:
+    branches: [feat/oleframe-20260914]
+    paths: [.github/workflows/prepare-oleframe.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/oleframe-20260914
+          fetch-depth: 0
+      - name: Integrate and verify entire tested tree
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 7245d90c5a39703d4c9e73d5fb40d61e01efddab
+          python .github/integrate-legacy-ole.py
+          git rm .github/integrate-legacy-ole.py .github/workflows/prepare-oleframe.yml
+          git add -A
+          test "$(git write-tree)" = 32180a951d6d14f3fcaf80f81345036de4fc05a2
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: persist inert legacy OLEFRAME packets'
+          git push origin HEAD:feat/oleframe-20260914
