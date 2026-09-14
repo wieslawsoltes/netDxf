@@ -1,0 +1,46 @@
+name: Prepare embedded-object handle isolation
+on:
+  push:
+    branches: [fix/raw-embedded-handles-20260914]
+    paths: [.github/workflows/dxf-prepare-embedded.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/raw-embedded-handles-20260914
+          fetch-depth: 0
+      - name: Restore exact tested patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENCODED_LENGTH: '9548'
+          PATCH_SHA256: '0e4c9e06f2e6f59c2b548c666a5fcadaf2c1bcb3afe3dbf36f4fbae7cdac9abe'
+          ROW_OVERRIDES: >-
+            {"45":"okX6v747OusPznvvBnqhLlrE08uTYbuz08lBfN877V8OBn39cAcegmtt6c+I+wCHHG2WAVyxNVMUWTGlf0JTehe/5eEafLs4ynykHrzN3rg/6rskuSAsL1y7U1i7/dTi"}
+        run: |
+          set -euo pipefail
+          export BLOB_JSON="$RUNNER_TEMP/patch-blob.json"
+          gh api repos/wieslawsoltes/netDxf/git/blobs/b281256e7c1a442ecc1e9a45bcbff42178d1f681 > "$BLOB_JSON"
+          python .github/dxf-transfer.py
+      - name: Verify tree and publish isolated fix
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = fab7bb8d3afbbfc467da6ba05563e00752b625a9
+          git rm .github/dxf-transfer.py .github/workflows/dxf-prepare-embedded.yml
+          test "$(git write-tree)" = 280e1b80946fc2e4133e69ead3bc8651825b13bd
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: keep embedded-object handle payloads opaque during raw remapping'
+          git push origin HEAD:fix/raw-embedded-handles-20260914
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: embedded-transfer-diagnostic
+          path: ${{ runner.temp }}/staged-envelope.txt
+          retention-days: 2
