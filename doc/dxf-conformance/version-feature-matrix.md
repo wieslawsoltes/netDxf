@@ -2,12 +2,12 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-14**. Production baseline after PR **#75**: [`6420dd213b018d6f8698167aca4473bc3d3a499f`](https://github.com/wieslawsoltes/netDxf/tree/6420dd213b018d6f8698167aca4473bc3d3a499f).
-Source tree: `280e1b80946fc2e4133e69ead3bc8651825b13bd`. Branch: `netstandard`.
+Audit date: **2026-09-14**. Implementation snapshot for PR **#83**: [`3a3dd9558b6d20e9bd22d37b6cb5cf3167e6a15a`](https://github.com/wieslawsoltes/netDxf/tree/3a3dd9558b6d20e9bd22d37b6cb5cf3167e6a15a).
+Source tree: `ecabd469ddd7b6158d4e4bee9e7e9ea4e9b8945b`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
-**189 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
+**211 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
 
 `DxfDocument` is the existing typed geometry/database API. `DxfRawDocument` is a separate immutable ordered-tag/record API. Raw preservation is now implemented; it is not an automatic preservation fallback inside typed `DxfDocument.Load/Save`. A raw file containing an unfamiliar entity can survive while that entity is still missing from the typed API.
 
@@ -71,7 +71,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Text binary-chunk decoding · typed | X | X | X | T | T | T | T | T | T | All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4. [B](version-feature-matrix-2026-09-12.md) |
 | Ordered unknown-record preservation · typed | X | X | X | M | M | M | M | M | M | Still absent from DxfDocument typed load/save. DxfRawDocument now retains ordered unfamiliar data; the two pipelines must not be conflated. [RAW](raw-document.md), [REC](raw-records.md) |
 | Strict numeric/handle/boolean parsing · typed | X | X | X | T | T | T | T | T | T | Strict text and binary primitive-value regressions; finite-number/Boolean/hex policies are library policies, not a universal recovery mode. [TXT](strict-text-values.md), [BIN](strict-binary-values.md) |
-| Target-version/downgrade diagnostics · typed | X | X | X | P | P | P | P | P | P | Selected guards for MESH, HELIX, HATCH, MTEXT and VIEW. No centralized complete schema legality or per-loss report. Explicit SaveAtomic is separately available; existing Save remains nontransactional. [MVER](mesh-version-export.md), [MTBG](mtext-background.md), [VIEW](named-views.md), [ATOMIC](atomic-file-save.md), [HELIX](helix.md), [HEMPTY](empty-hatch-retention.md) |
+| Target-version/downgrade diagnostics · typed | X | X | X | P | P | P | P | P | P | Selected guards for MESH, HELIX, HATCH, MTEXT and VIEW. No centralized complete schema legality or per-loss report. Explicit SaveAtomic is separately available; existing Save remains nontransactional. [MVER](mesh-version-export.md), [MTBG](mtext-background.md), [VIEW](named-views.md), [ATOMIC](atomic-file-save.md), [HELIX](helix.md), [HEMPTY](empty-hatch-retention.md), [MTCOL](mtext-columns.md) |
 
 ## 4. Sections
 
@@ -80,7 +80,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | HEADER: typed variables · typed | X | X | X | P | P | P | P | P | P | Modeled scalar/UCS subset; surface-density routing and comment handling fixed. Active DIMSTYLE fields still regenerate selected overrides. [SURF](surface-density-routing.md), [COMMENT](header-comments.md), [B](version-feature-matrix-2026-09-12.md) |
 | HEADER: custom scalars/vectors · typed | X | X | X | P | P | P | P | P | P | Custom scalars/vectors retained; Unicode and comment handling fixed. Arbitrary multi-tag values, duplicates and independent DIM overrides still require the raw API. [UNICODE](custom-header-unicode.md), [COMMENT](header-comments.md), [RAW](raw-document.md) |
 | CLASSES · typed | X | X | X | P | P | P | P | P | P | Ordered public DxfClass metadata, cloning and generated raster-class reconciliation. Group 91 omitted in AC1015; no preservation of unsupported entity instances through typed IO. [CLS](class-definitions.md) |
-| TABLES · typed | X | X | X | P | P | P | P | P | P | Named VIEW core is now implemented alongside other typed families. VPORT remains reduced; raw indexing is the preservation alternative. [VIEW](named-views.md), [REC](raw-records.md), [B](version-feature-matrix-2026-09-12.md) |
+| TABLES · typed | X | X | X | P | P | P | P | P | P | Named VIEW core and ordered VPORT configurations are implemented alongside existing symbol families; modern reference graphs and private extensions remain partial. [VIEW](named-views.md), [VPORT](vport-records.md), [REC](raw-records.md) |
 | BLOCKS / ENTITIES · typed | X | X | X | P | P | P | P | P | P | Supported models/relationships only, not unknown-content preservation. `ReadBlocks`, `ReadEntity`, `WriteBlock`, `WriteEntity`. [B](version-feature-matrix-2026-09-12.md) |
 | OBJECTS · typed | X | X | X | P | P | P | P | P | P | Eleven explicit dispatch cases; no generic ownership graph. `ReadObjects`. [B](version-feature-matrix-2026-09-12.md) |
 | THUMBNAILIMAGE · typed | X | X | X | O | O | O | O | O | O | Exact preview bytes retained; no generation. Empty preview normalizes to absent section. [THUMB](thumbnail-image.md) |
@@ -108,7 +108,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | XLINE · typed | X | X | X | P | P | P | P | P | P | Origin/direction; common fields partial. `ReadXLine/WriteXLine`. [B](version-feature-matrix-2026-09-12.md) |
 | SHAPE · typed | X | X | X | P | P | P | P | P | P | Number/SHX style resolution; SHX geometry is a separate resource concern. `ReadShape/WriteShape`. [B](version-feature-matrix-2026-09-12.md) |
 | TEXT · typed | X | X | X | P | P | P | P | P | P | Text/alignment/style; encoding/OCS corpus incomplete. `ReadText/WriteText`. [B](version-feature-matrix-2026-09-12.md) |
-| MTEXT · typed | X | X | X | P | P | P | P | P | P | Content/direction/spacing plus clone direction and editable background subset. Column contexts, fields and complete annotations remain incomplete. [MTCL](mtext-clone-direction.md), [MTBG](mtext-background.md) |
+| MTEXT · typed | X | X | X | P | P | P | P | P | P | Content/direction/spacing, editable background, and direct/legacy/embedded column storage. Font measurement, text layout, FIELD evaluation and complete annotation contexts remain outside the implemented subset. [MTCL](mtext-clone-direction.md), [MTBG](mtext-background.md), [MTCOL](mtext-columns.md) |
 | INSERT · typed | X | X | X | P | P | P | P | P | P | Block transforms/attributes plus column/row arrays and clone/explode handling; dynamic-block evaluation and complete referenced graphs remain absent. [INSERT](insert-arrays.md) |
 | ATTDEF / ATTRIB · typed | X | X | X | P | P | P | P | P | P | Definitions/instances; newer embedded-MTEXT/context variants need audit. `ReadAttributeDefinition/ReadAttribute/WriteAttribute`. [B](version-feature-matrix-2026-09-12.md) |
 | DIMENSION: aligned / linear · typed | X | X | X | P | P | P | P | P | P | Geometric models/picture blocks; full association/context graphs absent. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
@@ -127,11 +127,11 @@ Product release years and database-format families are separate: an AC1032 file 
 | VIEWPORT entity · typed | X | X | X | P | P | P | P | P | P | Paper-space viewport model, distinct from VPORT table. `ReadViewport/WriteViewport`. [B](version-feature-matrix-2026-09-12.md) |
 | ACAD_TABLE / TABLE · typed | X | X | X | L | L | L | L | L | L | Imported as INSERT; cells/formulas/formatting/table semantics lost. `ReadAcadTable`. [B](version-feature-matrix-2026-09-12.md) |
 | MULTILEADER · typed | X | X | X | M | M | M | M | M | M | Multi-context leader model; MLEADERSTYLE object also absent. [B](version-feature-matrix-2026-09-12.md) |
-| LIGHT · typed | X | X | X | M | M | M | M | M | M | Light entity; SUN is a separate missing object. [B](version-feature-matrix-2026-09-12.md) |
+| LIGHT · typed | X | X | X | V | V | P | P | P | P | Published AcDbLight parameters, editing, persistence, cloning and similarity transforms. Conservative 2007+ export; pre-2007 import permissive. Photometric/private schemas, SUN and LIGHTLIST remain separate. [LIGHT](light.md), [LNAME](light-name-transport.md) |
 | SECTION · typed | X | X | X | M | M | M | M | M | M | Section-plane entity and dependency graph. [B](version-feature-matrix-2026-09-12.md) |
 | REGION / BODY / 3DSOLID · typed | X | X | X | M | M | M | M | M | M | No typed ACIS entities. Generic raw tags can retain admitted opaque payloads; ACIS/ASM-specific evaluation and dependency-qualified editing remain unimplemented. [RAW](raw-document.md), [B](version-feature-matrix-2026-09-12.md) |
 | SURFACE: base / extruded / lofted / revolved / swept · typed | X | X | X | M | M | M | M | M | M | No typed surface-family schemas. Generic raw preservation is not a surface parameter editor or geometric evaluator. [RAW](raw-document.md), [B](version-feature-matrix-2026-09-12.md) |
-| OLEFRAME / OLE2FRAME · typed | X | X | X | M | M | M | M | M | M | Inert embedded OLE payload preservation. [B](version-feature-matrix-2026-09-12.md) |
+| OLEFRAME / OLE2FRAME · typed | X | X | X | O | O | O | O | O | O | Inert packet bytes, metadata, optional-field presence, cloning and exact identity transforms. Native embedded content is not activated, interpreted or rendered. Separate OLEFRAME and OLE2FRAME models. [OLE1](oleframe.md), [OLE2](ole2frame.md), [OLE1P](oleframe-version-presence.md), [OLE2P](ole2frame-optional-metadata.md) |
 | ACAD_PROXY_ENTITY · typed | X | X | X | M | M | M | M | M | M | Class/unknown subclass/proxy payload preservation. [B](version-feature-matrix-2026-09-12.md) |
 | COORDINATION_MODEL · typed | X | X | X | M | M | M | M | M | M | Coordination-model entity/definition dependencies. [B](version-feature-matrix-2026-09-12.md) |
 
@@ -172,6 +172,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Support-resource lookup isolation · typed | X | X | X | T | T | T | T | T | T | No process-CWD mutation; direct resource then ordered folder precedence. Not a sandbox or concurrently mutable collection. [LOOKUP](support-folder-lookup.md) |
 | HATCH authored seed points · typed | X | X | X | T | T | T | T | T | T | Group98 count and ordered OCS10/20 points; finite edits, independent clones, selected OCS/INSERT transforms and malformed-list validation. No flood-fill evaluation or arbitrary-affine repair. [HSEED](hatch-seed-points.md) |
 | HATCH pixel-size metadata · typed | X | X | X | T | T | T | T | T | T | Nullable group47 retains absence/zero/finite values; clone/INSERT and export. Sampling hint is stored, not evaluated. [HPIX](hatch-pixel-size.md) |
+| MTEXT column metadata and linked graph · typed | X | X | X | T | T | T | T | T | T | Static/dynamic auto/manual metadata; deferred legacy links; exact explicit text-partition conversion; clone/block link remapping and guarded transforms. Storage version gates below; no font layout or AutoCAD rendering equivalence. [MTCOL](mtext-columns.md) |
 | Explicit typed atomic file replacement (SaveAtomic) · typed | X | X | X | T | T | T | T | T | T | PR70: sibling staging, flush and single replacement/move, cancellation and failure cleanup. Opt-in destination-byte protection, not all-document rollback, power-loss durability or hostile-filesystem isolation. [ATOMIC](atomic-file-save.md) |
 | HATCH ACAD XData and pattern-origin projection · typed | X | X | X | T | T | T | T | T | T | Scoped origin update preserves unrelated ACAD records without mutating source XData; no general application-schema validation. [HXDATA](hatch-xdata-preservation.md) |
 | HATCH polyline closure · typed | X | X | X | T | T | T | T | T | T | Group73 retained through loading/cloning/INSERT; open paths stay open and conversion does not invent a closing segment. [HCLOSE](hatch-polyline-closure.md) |
@@ -199,6 +200,18 @@ Product release years and database-format families are separate: an AC1032 file 
 | SPLINE knot-aware reversal · typed | X | X | X | T | T | T | T | T | T | PR69: reflect full knot domain and reverse periodic control/weight phase plus fit/tangent state. Preflight before mutation; no refitting or automatic HELIX parameter reconciliation. [SREV](spline-knot-reversal.md) |
 | Empty HATCH typed input retention · typed | X | X | X | T | T | T | T | T | T | PR73: preserve identity, fill metadata, seeds, elevation and XData on zero/absent boundary lists; clones remain independent. Typed output rejection is a separate row. [HEMPTY](empty-hatch-retention.md) |
 | Existing Save file-path behavior · typed | X | X | X | L | L | L | L | L | L | The original Save overload still creates/truncates before serialization. Deterministic disposal is not a transaction; SaveAtomic is a separate explicit API. [FILE](file-stream-lifetime.md), [ATOMIC](atomic-file-save.md) |
+| HATCH unique scalar edge fields and list headers · typed | X | X | X | T | T | T | T | T | T | Unique LINE/ARC/ELLIPSE fields and pre-list POLYLINE/SPLINE headers dispatch by group code; counted/repeated packet framing still enforced. [HSCALAR](hatch-scalar-order.md) |
+| LIGHT name transport and validation · typed | X | X | X | V | V | T | T | T | T | Unicode, literal backslashes and escape-looking text retained; CR/LF/NUL and null reject before setter mutation. Conservative pre-2007 output guard remains. [LNAME](light-name-transport.md) |
+| OLE2FRAME optional metadata presence · typed | X | X | X | T | T | T | T | T | T | All 64 metadata selections retain absent versus explicit default values through text/binary persistence and cloning without replacing published getters. [OLE2P](ole2frame-optional-metadata.md) |
+| OLEFRAME optional version presence · typed | X | X | X | T | T | T | T | T | T | HasOleVersion and WithOleVersionPresence retain absent versus explicit group70 through text/binary persistence and cloning; required OLE terminator remains. [OLE1P](oleframe-version-presence.md) |
+| LWPOLYLINE counted vertex packets · typed | X | X | X | T | T | T | T | T | T | Declared counts and complete X/Y pairs validated without declaration-sized allocation; per-vertex widths and bulges stay associated when scalar fields surround group20. Existing constant-width policy and group91 omission remain. [LWP](lwpolyline-integrity.md) |
+| Polyline2D tapered segment reversal · typed | X | X | X | T | T | T | T | T | T | Outgoing bulge and taper data shift to the reversed edge, exchanging start/end widths; open/closed curves, double reversal, clones and persistence checked. [LWP](lwpolyline-integrity.md) |
+| VPORT physical records and configuration lifecycle · typed | X | X | X | T | T | T | T | T | T | First Active record restored; duplicate-name tiles retain distinct identities, handles and XData. Add/remove/promote/rename/clone, observer failure behavior and foreign-registry rejection tested. [VPORT](vport-records.md) |
+| VPORT stored rectangle/camera/snap/render/UCS bundle · typed | X | X | X | T | T | T | T | T | T | Stored scalar flags, points, direction magnitude, camera/clipping values, snap/grid options and unnamed UCS fields persist across all admitted typed profiles and transports; broad modern reference graphs remain partial. [VPORT](vport-records.md) |
+| MTEXT legacy linked column storage · typed | X | X | X | T | T | T | T | T | V | ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000–2013 writer profile. [MTCOL](mtext-columns.md) |
+| MTEXT embedded column storage · typed | X | X | X | V | V | V | V | V | T | 2018 embedded definition, saved duplicate placement/direction/width and explicit precedence; inconsistent source directions are retained, without renderer-equivalence claims. [MTCOL](mtext-columns.md) |
+| MTEXT direct column tags · typed | X | X | X | V | V | T | T | T | T | Documented counted column packet with context-sensitive code50; authored wire checks. No independent ezdxf interpretation claim for direct tags. [MTCOL](mtext-columns.md) |
+| MTEXT column copy and explicit conversion · typed | X | X | X | T | T | T | T | T | T | Block.Create/Clone/Save and Insert.Clone remap links to actual siblings. Conversion requires exact text partitions and compatible formatting. Unsupported linked transforms fail before mutation. [MTCOL](mtext-columns.md) |
 
 ## 7. Symbol tables
 
@@ -212,13 +225,13 @@ Product release years and database-format families are separate: an AC1032 file 
 | STYLE · typed | X | X | X | P | P | P | P | P | P | Text/shape styles; defaults/obsolete fields need review. `ReadTextStyle/WriteTextStyle/WriteShapeStyle`. [B](version-feature-matrix-2026-09-12.md) |
 | UCS · typed | X | X | X | P | P | P | P | P | P | Origin/axes, elevation 146, orthographic origin pairs and table XData now retained. Base-UCS references and complete VIEW/VPORT contexts remain open. [UCS](ucs-elevation.md), [ORTHO](ucs-orthographic-origins.md), [UCSX](ucs-table-xdata.md) |
 | VIEW · typed | X | X | X | P | P | P | P | P | P | Public named collection and core camera/target/clip/mode/XData IO. Camera plottability requires 2007+ writer profile; extended UCS/render/background references remain open. [VIEW](named-views.md) |
-| VPORT · typed | X | X | X | L | L | L | L | L | L | Only first *Active configuration retained; other records/many fields discarded. `ReadTableEntry/ReadVPort/WriteVPort`. [B](version-feature-matrix-2026-09-12.md) |
+| VPORT · typed | X | X | X | P | P | P | P | P | P | Active and named tiled configurations now retain ordered physical records, handles, XData, core rectangle/camera/snap/render fields and stored UCS coordinates. Linked UCS, frozen layers and rendering object graphs remain partial. [VPORT](vport-records.md) |
 
 ## 8. Objects
 
 | Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
 |---|---|---|---|---|---|---|---|---|---|---|
-| DICTIONARY · typed | X | X | X | P | P | P | P | P | P | Known named collections, not arbitrary nested extension dictionaries. `ReadDictionary/WriteDictionary`. [B](version-feature-matrix-2026-09-12.md) |
+| DICTIONARY · typed | X | X | X | P | P | P | P | P | P | Editable application dictionaries, aliases, defaults, extension ownership and explicit graph cloning through DxfDocument.Objects. Existing reserved collections retain their own APIs; arbitrary private object semantics and cascade erasure remain outside this typed subset. [NODO](named-object-database.md) |
 | GROUP · typed | X | X | X | P | P | P | P | P | P | Named groups/entity references. `ReadGroup/WriteGroup`. [B](version-feature-matrix-2026-09-12.md) |
 | LAYOUT · typed | X | X | X | P | P | P | P | P | P | Model/paper layouts and embedded plot settings subset. `ReadLayout/WriteLayout`. [B](version-feature-matrix-2026-09-12.md) |
 | MLINESTYLE · typed | X | X | X | P | P | P | P | P | P | Multiline styles, not multileader styles. `ReadMLineStyle/WriteMLineStyle`. [B](version-feature-matrix-2026-09-12.md) |
@@ -226,10 +239,10 @@ Product release years and database-format families are separate: an AC1032 file 
 | IMAGEDEF_REACTOR · typed | X | X | X | L | L | L | L | L | L | Independent authored object not retained; regenerated. `ReadImageDefReactor/WriteImageDefReactor`. [B](version-feature-matrix-2026-09-12.md) |
 | RASTERVARIABLES · typed | X | X | X | P | P | P | P | P | P | Raster display values/XData; owner 330 now points to the actual named dictionary containing ACAD_IMAGE_VARS. Broader object-graph validation remains open. [RASTER](raster-ownership.md) |
 | DGNDEFINITION / DWFDEFINITION / PDFDEFINITION · typed | X | X | X | P | P | P | P | P | P | Three explicit underlay object cases. `ReadUnderlayDefinition/WriteUnderlayDefinition`. [B](version-feature-matrix-2026-09-12.md) |
-| XRECORD · typed | X | X | X | L | L | L | L | L | L | Private cache/layer states, not generic public ownership graph. `ReadXRecord/ReadLayerState/WriteLayerState`. [B](version-feature-matrix-2026-09-12.md) |
+| XRECORD · typed | X | X | X | T | T | T | T | T | T | Editable ordered typed payload codes1–369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation. [NODO](named-object-database.md) |
 | PLOTSETTINGS standalone · typed | X | X | X | M | M | M | M | M | M | Type exists in LAYOUT; standalone OBJECTS dispatch absent. `ReadObjects/ReadPlotSettings`. [B](version-feature-matrix-2026-09-12.md) |
-| ACAD_PROXY_OBJECT / ACDBPLACEHOLDER · typed | X | X | X | M | M | M | M | M | M | Proxy/class/payload fidelity. [B](version-feature-matrix-2026-09-12.md) |
-| ACDBDICTIONARYWDFLT / DICTIONARYVAR · typed | X | X | X | M | M | M | M | M | M | Default dictionaries and typed dictionary variables. [B](version-feature-matrix-2026-09-12.md) |
+| ACAD_PROXY_OBJECT / ACDBPLACEHOLDER · typed | X | X | X | P | P | P | P | P | P | ACDBPLACEHOLDER is typed with common metadata and CLASSES. ACAD_PROXY_OBJECT retains only the generic opaque OBJECTS payload subset; class-specific proxy semantics remain unimplemented. [NODO](named-object-database.md), [CLS](class-definitions.md) |
+| ACDBDICTIONARYWDFLT / DICTIONARYVAR · typed | X | X | X | T | T | T | T | T | T | Typed default dictionary identity/lookup and dictionary variable schema/value; generated CLASSES metadata; six profile text/binary regression fixtures. [NODO](named-object-database.md) |
 | ACDBNAVISWORKSMODELDEF · typed | X | X | X | M | M | M | M | M | M | Coordination-model definition. [B](version-feature-matrix-2026-09-12.md) |
 | DATATABLE · typed | X | X | X | M | M | M | M | M | M | Object data table schema. [B](version-feature-matrix-2026-09-12.md) |
 | DIMASSOC · typed | X | X | X | M | M | M | M | M | M | Associative dimension records/links. [B](version-feature-matrix-2026-09-12.md) |
@@ -293,26 +306,45 @@ Product release years and database-format families are separate: an AC1032 file 
 | Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
 |---|---|---|---|---|---|---|---|---|---|---|
 | MESH subentity overrides · typed | X | X | X | V | V | V | M | M | M | Repeated90/91/92 need a distinct override context; current core topology checks do not implement this grammar. [MREAD](mesh-read-validation.md) |
-| MTEXT column contexts · typed | X | X | X | M | M | M | M | M | M | Column type/count/flow/autoheight/width/gutter/heights, legacy linked records and context-sensitive code50 remain open. [MTBG](mtext-background.md), [B](version-feature-matrix-2026-09-12.md) |
 
-## 12. Remaining implementation sequence
+## 12. Raw object database operations
+
+| Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OBJECTS schema views and record editing · raw | V | V | V | T | T | T | T | T | T | Explicit raw-object API recognizes dictionaries/default dictionaries, XRECORD, DICTIONARYVAR, placeholders, IDBUFFER and draw order. Unsupported/malformed bodies remain opaque; authoring uses conservative admitted profiles. [RAWOBJ](raw-object-transactions.md) |
+| OBJECTS immutable commit, rollback and resource bounds · raw | V | V | V | T | T | T | T | T | T | Atomic staged operations restore allocations, parent links and records after failures/cancellation/reentrant iterators; commit produces an immutable snapshot; budgets and transaction lifecycle enforced. [RAWOBJ](raw-object-transactions.md) |
+| OBJECTS ownership, extension dictionaries, clone/delete · raw | V | V | V | T | T | T | T | T | T | Aliases, defaults, owned-tree cloning/deletion, extension dictionaries, exposed handles and XData1005 remap; unresolved capture avoided. Same-document graph operations; arbitrary/private values not reinterpreted and cloned reactors omitted. [RAWOBJ](raw-object-transactions.md) |
+| SORTENTSTABLE draw-order editing · raw | V | V | V | V | T | T | T | T | T | Block/entity order, arbitrary sort keys, extension dictionary and optional SORTENTS regeneration settings. Conservative 2004+ authoring; storage/graph validation without native redraw evaluation. [RAWOBJ](raw-object-transactions.md) |
+
+## 13. Typed application object database
+
+| Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Application dictionary aliases and defaults · typed | X | X | X | T | T | T | T | T | T | Ordered350/360entries, hard-owner flag, shared identity, default targets, case-insensitive lookup and required class metadata. Reserved system collection memberships retain existing APIs. [NODO](named-object-database.md) |
+| Extension dictionaries and persistent reactors · typed | X | X | X | T | T | T | T | T | T | Resolved common metadata on supported entities, table records and typed objects; ownership validation; combined deduplicated managed/application reactor groups. Existing LAYER table extension remains reserved. [NODO](named-object-database.md) |
+| Explicit same/cross-document ownership graph copy · typed | X | X | X | T | T | T | T | T | T | Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320–329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies. [NODO](named-object-database.md) |
+| Typed object validation and handle reservation · typed | X | X | X | T | T | T | T | T | T | Registration/ownership/pointer/default/extension checks before output. Exposed XRECORD/opaque references reserve allocator identities; foreign registries retain owners and handles. Legacy mutable XData lists have save-time validation. [NODO](named-object-database.md) |
+| Typed placeholder and common metadata · typed | X | X | X | T | T | T | T | T | T | ACDBPLACEHOLDER object with required class declaration, owner, extension, reactor and XData preservation; no application-service semantics. [NODO](named-object-database.md) |
+| Opaque OBJECTS subclass payload preservation · typed | X | X | X | O | O | O | O | O | O | Loaded unsupported OBJECTS records retain ordered subclass payload and recognized common metadata. Private semantics and opaque-subtree clone are unsupported; arbitrary unknown entities and common application groups require the separate raw pipeline. [NODO](named-object-database.md) |
+
+## 14. Remaining implementation sequence
 
 | Workstream | Required scope |
 |---|---|
-| Class-specific dependencies and typed integration | Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, cross-document clone/import and typed unknown-record preservation. Selected raw traversal/remapping is implemented, not complete semantic closure. |
-| Finish partial typed records | MTEXT columns and linked legacy contexts; HATCH inner scalar ordering, spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships. Existing Save remains nontransactional; SaveAtomic is opt-in. |
-| Missing typed entity families | MULTILEADER, structured TABLE, LIGHT/SECTION and inert OLE/proxy/ACIS/surface payloads. HELIX is already implemented with scoped limitations, not a missing family. |
-| Missing object families | Generic XRECORD/dictionary variants, draw order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. |
+| Class-specific dependencies and typed integration | Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented. |
+| Finish partial typed records | HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships; LWPOLYLINE vertex identifiers and constant-width representation; common color-name/shadow/proxy-graphics fields. MTEXT column storage is implemented; rendering, layout and annotation contexts remain open. Existing Save remains nontransactional; SaveAtomic is opt-in. |
+| Missing typed entity families | MULTILEADER, structured TABLE, SECTION and proxy/ACIS/surface payload families. HELIX, published LIGHT parameters and inert OLEFRAME/OLE2FRAME are implemented with scoped limitations. |
+| Missing object families | Typed draw-order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. Generic dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders are implemented; draw-order editing exists in the separate raw transaction API. |
 | Historical typed dialects and schema-aware down-save | R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit per-property downgrade reports. Marker safety on raw profiles is not proof of historical feature legality. |
 | Native interoperability and robustness | Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Expand independent corpora, resource accounting, fuzzing and actual older-runtime execution; netstandard2.0 compilation is not execution on every consumer runtime. |
 
-Every feature/fix requires an isolated PR, independently authored positive and malformed fixtures, applicable version/transport tests, explicit normalization/downgrade semantics, and green final-head CI before merge. Shared reader/writer/graph edits are sequenced; nonconflicting work can proceed independently. Do not substitute raw preservation, static appearance or synthesized values for tested semantic support.
+Feature changes require reviewable PRs, independently authored positive and malformed fixtures, applicable version/transport tests, explicit normalization/downgrade semantics, and green final-head CI before merge. Shared reader/writer/graph edits are sequenced; nonconflicting work can proceed independently. Do not substitute raw preservation, static appearance or synthesized values for tested semantic support.
 
-## 13. Evidence and qualification
+## 15. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **16,765 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **19,948 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
-Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
+Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 
 The Roslyn `tools/netDxf.FieldAudit` inventory records group-code branches, output expressions, declared properties, source locations and hashes. Literal code coverage is not semantic conformance: a consumed code may be ignored, derived or context-dependent. The detailed feature notes link the applicable Autodesk definitions and independent evidence.
 

@@ -200,3 +200,6 @@ FakesAssemblies/
 # Python audit-tool caches
 __pycache__/
 *.pyc
+
+# Generated conformance fixtures, reports, and source audit output
+/artifacts/

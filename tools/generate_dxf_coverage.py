@@ -97,7 +97,7 @@ def render(data: dict[str, Any]) -> str:
         "",
         "> Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.",
         "",
-        f"Audit date: **{data['audit_date']}**. Production baseline after PR **#{qualification['last_implementation_pr']}**: "
+        f"Audit date: **{data['audit_date']}**. Implementation snapshot for PR **#{qualification['last_implementation_pr']}**: "
         f"[`{source['commit']}`](https://github.com/{source['repository']}/tree/{source['commit']}).",
         f"Source tree: `{source['tree']}`. Branch: `{source['branch']}`.",
         "",
@@ -158,7 +158,7 @@ def render(data: dict[str, Any]) -> str:
               "| Workstream | Required scope |", "|---|---|"]
     for row in data["next_work"]:
         lines.append(f"| {cell(row['title'])} | {cell(row['scope'])} |")
-    lines += ["", "Every feature/fix requires an isolated PR, independently authored positive and malformed fixtures, applicable version/transport tests, "
+    lines += ["", "Feature changes require reviewable PRs, independently authored positive and malformed fixtures, applicable version/transport tests, "
               "explicit normalization/downgrade semantics, and green final-head CI before merge. Shared reader/writer/graph edits are sequenced; "
               "nonconflicting work can proceed independently. Do not substitute raw preservation, static appearance or synthesized values for tested semantic support.",
               "", f"## {number+1}. Evidence and qualification", "",
@@ -168,7 +168,7 @@ def render(data: dict[str, Any]) -> str:
               "These counts are regression evidence, not a percentage of DXF completeness.",
               "",
               f"Selected retained fixtures are also checked with **{qualification['independent_reader']}** using the development-only `tools/verify_*.py` scripts. "
-              "Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. "
+              "Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. "
               + ("AutoCAD execution evidence is recorded separately." if qualification["autocad_executed"] else "**No AutoCAD process was executed for this qualification.**"),
               "",
               "The Roslyn `tools/netDxf.FieldAudit` inventory records group-code branches, output expressions, declared properties, source locations and hashes. "

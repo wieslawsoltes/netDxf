@@ -88,12 +88,17 @@ namespace netDxf.IO
             }
 
             this.ValidateMTextBackgroundVersions();
+            this.ValidateMTextColumns();
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
             this.ValidateHatchSplineFitVersions();
             this.ValidateHelixVersions();
             this.ValidateLightVersions();
             this.ValidateHatchBoundaryPresence();
+            IReadOnlyList<string> databaseErrors = this.doc.Objects.Validate();
+            if (databaseErrors.Count > 0) throw new InvalidOperationException("Invalid OBJECTS database: " + string.Join("; ", databaseErrors));
+
+            this.ValidateDatabaseTransport();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
             this.encodedStrings = new Dictionary<string, string>();
@@ -128,8 +133,7 @@ namespace netDxf.IO
             List<DictionaryObject> dictionaries = new List<DictionaryObject>();
 
             // Named dictionary it is always the first to appear in the object section
-            DictionaryObject namedObjectDictionary = new DictionaryObject(this.doc);
-            this.doc.NumHandles = namedObjectDictionary.AssignHandle(this.doc.NumHandles);
+            DictionaryObject namedObjectDictionary = new DictionaryObject(this.doc) { Handle = this.doc.NamedObjects.Handle };
             dictionaries.Add(namedObjectDictionary);
 
             // create the Group dictionary
@@ -218,6 +222,9 @@ namespace netDxf.IO
             }
             dictionaries.Add(layerStates);
             layerStatesDictionary.Entries.Add(layerStates.Handle, DxfObjectCode.LayerStates);
+
+            databaseErrors = this.doc.Objects.Validate();
+            if (databaseErrors.Count > 0) throw new InvalidOperationException("Invalid OBJECTS database: " + string.Join("; ", databaseErrors));
 
             this.doc.DrawingVariables.HandleSeed = this.doc.NumHandles.ToString("X");
 
@@ -324,8 +331,8 @@ namespace netDxf.IO
             this.EndTable();
 
             //viewport tables
-            this.BeginTable(this.doc.VPorts.CodeName, this.doc.VPorts.Handle, (short) this.doc.VPorts.Count, this.doc.VPorts.XData);
-            foreach (VPort vport in this.doc.VPorts)
+            this.BeginTable(this.doc.VPorts.CodeName, this.doc.VPorts.Handle, (short)Math.Min(this.doc.VPorts.Records.Count, short.MaxValue), this.doc.VPorts.XData);
+            foreach (VPort vport in this.doc.VPorts.Records)
             {
                 this.WriteVPort(vport);
             }
@@ -453,7 +460,12 @@ namespace netDxf.IO
 
             foreach (DictionaryObject dictionary in dictionaries)
             {
-                this.WriteDictionary(dictionary);
+                if (dictionary == namedObjectDictionary) this.WriteDatabaseObject(this.doc.NamedObjects, namedObjectDictionary);
+                else this.WriteDictionary(dictionary);
+            }
+            foreach (DxfDatabaseObject databaseObject in this.doc.Objects.Items)
+            {
+                if (databaseObject != this.doc.NamedObjects) this.WriteDatabaseObject(databaseObject);
             }
 
             foreach (Group group in this.doc.Groups.Items)
@@ -560,6 +572,8 @@ namespace netDxf.IO
             this.chunk.Write(0, DxfObjectCode.Table);
             this.chunk.Write(2, table);
             this.chunk.Write(5, handle);
+            DxfObject tableObject = this.doc.GetObjectByHandle(handle);
+            if (tableObject != null) this.WriteDatabaseMetadata(tableObject);
             if (table == DxfObjectCode.Layer)
             {
                 this.chunk.Write(102, "{ACAD_XDICTIONARY");
@@ -1133,6 +1147,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, DxfObjectCode.ApplicationIdTable);
             this.chunk.Write(5, appReg.Handle);
+            this.WriteDatabaseMetadata(appReg);
             this.chunk.Write(330, appReg.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1146,61 +1161,6 @@ namespace netDxf.IO
         }
 
         /// <summary>
-        /// Writes a new viewport to the table section.
-        /// </summary>
-        /// <param name="vp">viewport.</param>
-        private void WriteVPort(VPort vp)
-        {
-            Debug.Assert(this.activeTable == DxfObjectCode.VportTable);
-
-            this.chunk.Write(0, vp.CodeName);
-            this.chunk.Write(5, vp.Handle);
-            this.chunk.Write(330, vp.Owner.Handle);
-
-            this.chunk.Write(100, SubclassMarker.TableRecord);
-
-            this.chunk.Write(100, SubclassMarker.VPort);
-
-            this.chunk.Write(2, this.EncodeNonAsciiCharacters(vp.Name));
-
-            this.chunk.Write(70, (short) 0);
-
-            this.chunk.Write(10, 0.0);
-            this.chunk.Write(20, 0.0);
-
-            this.chunk.Write(11, 1.0);
-            this.chunk.Write(21, 1.0);
-
-            this.chunk.Write(12, vp.ViewCenter.X);
-            this.chunk.Write(22, vp.ViewCenter.Y);
-
-            this.chunk.Write(13, vp.SnapBasePoint.X);
-            this.chunk.Write(23, vp.SnapBasePoint.Y);
-
-            this.chunk.Write(14, vp.SnapSpacing.X);
-            this.chunk.Write(24, vp.SnapSpacing.Y);
-
-            this.chunk.Write(15, vp.GridSpacing.X);
-            this.chunk.Write(25, vp.GridSpacing.Y);
-
-            this.chunk.Write(16, vp.ViewDirection.X);
-            this.chunk.Write(26, vp.ViewDirection.Y);
-            this.chunk.Write(36, vp.ViewDirection.Z);
-
-            this.chunk.Write(17, vp.ViewTarget.X);
-            this.chunk.Write(27, vp.ViewTarget.Y);
-            this.chunk.Write(37, vp.ViewTarget.Z);
-
-            this.chunk.Write(40, vp.ViewHeight);
-            this.chunk.Write(41, vp.ViewAspectRatio);
-
-            this.chunk.Write(75, vp.SnapMode ? (short) 1 : (short) 0);
-            this.chunk.Write(76, vp.ShowGrid ? (short) 1 : (short) 0);
-
-            this.WriteXData(vp.XData);
-        }
-
-        /// <summary>
         /// Writes a new dimension style to the table section.
         /// </summary>
         /// <param name="style">DimensionStyle.</param>
@@ -1210,6 +1170,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, style.CodeName);
             this.chunk.Write(105, style.Handle);
+            this.WriteDatabaseMetadata(style);
             this.chunk.Write(330, style.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1424,6 +1385,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, blockRecord.CodeName);
             this.chunk.Write(5, blockRecord.Handle);
+            this.WriteDatabaseMetadata(blockRecord);
             this.chunk.Write(330, blockRecord.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1483,6 +1445,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, linetype.CodeName);
             this.chunk.Write(5, linetype.Handle);
+            this.WriteDatabaseMetadata(linetype);
             this.chunk.Write(330, linetype.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1563,6 +1526,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, layer.CodeName);
             this.chunk.Write(5, layer.Handle);
+            this.WriteDatabaseMetadata(layer);
             this.chunk.Write(330, layer.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1667,6 +1631,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, style.CodeName);
             this.chunk.Write(5, style.Handle);
+            this.WriteDatabaseMetadata(style);
             this.chunk.Write(330, style.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1744,6 +1709,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, style.CodeName);
             this.chunk.Write(5, style.Handle);
+            this.WriteDatabaseMetadata(style);
             this.chunk.Write(330, style.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1772,6 +1738,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, ucs.CodeName);
             this.chunk.Write(5, ucs.Handle);
+            this.WriteDatabaseMetadata(ucs);
             this.chunk.Write(330, ucs.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.TableRecord);
@@ -1826,6 +1793,7 @@ namespace netDxf.IO
 
             this.chunk.Write(0, block.CodeName);
             this.chunk.Write(5, block.Handle);
+            this.WriteDatabaseMetadata(block);
             this.chunk.Write(330, block.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.Entity);
@@ -1882,6 +1850,7 @@ namespace netDxf.IO
             // EndBlock entity
             this.chunk.Write(0, block.End.CodeName);
             this.chunk.Write(5, block.End.Handle);
+            this.WriteDatabaseMetadata(block.End);
             this.chunk.Write(330, block.Owner.Handle);
             this.chunk.Write(100, SubclassMarker.Entity);
             this.chunk.Write(8, blockLayer);
@@ -2041,17 +2010,7 @@ namespace netDxf.IO
             this.chunk.Write(0, entity.CodeName);
 
             this.chunk.Write(5, entity.Handle);
-
-            if (entity.Reactors.Count > 0)
-            {
-                this.chunk.Write(102, "{ACAD_REACTORS");
-                foreach (DxfObject o in entity.Reactors)
-                {
-                    Debug.Assert(!string.IsNullOrEmpty(o.Handle), "The handle cannot be null or empty.");
-                    this.chunk.Write(330, o.Handle);
-                }
-                this.chunk.Write(102, "}");
-            }
+            this.WriteDatabaseMetadata(entity);
 
             this.chunk.Write(330, entity.Owner.Record.Handle);
 
@@ -2723,6 +2682,7 @@ namespace netDxf.IO
                 EndSequence endSequence = this.insertEndSequences[insert.Handle];
                 this.chunk.Write(0, endSequence.CodeName);
                 this.chunk.Write(5, endSequence.Handle);
+            this.WriteDatabaseMetadata(endSequence);
                 this.chunk.Write(100, SubclassMarker.Entity);
                 this.chunk.Write(8, this.EncodeNonAsciiCharacters(insert.Layer.Name));
             }
@@ -2842,6 +2802,7 @@ namespace netDxf.IO
             {
                 this.chunk.Write(0, v.CodeName);
                 this.chunk.Write(5, v.Handle);
+            this.WriteDatabaseMetadata(v);
                 this.chunk.Write(330, v.Owner.Handle);
                 this.chunk.Write(100, SubclassMarker.Entity);
 
@@ -2893,6 +2854,7 @@ namespace netDxf.IO
             // More DXF weirdness, why polyline end sequence are considered as an entity, or why it even exists? Legacy code?
             this.chunk.Write(0, polyline.EndSequence.CodeName);
             this.chunk.Write(5, polyline.EndSequence.Handle);
+            this.WriteDatabaseMetadata(polyline.EndSequence);
             this.chunk.Write(330, polyline.EndSequence.Owner.Handle);
             this.chunk.Write(100, SubclassMarker.Entity);
             this.chunk.Write(8, layerName); // the polyline EndSequence layer should be the same as the polyline layer
@@ -3097,7 +3059,8 @@ namespace netDxf.IO
             this.chunk.Write(7, this.EncodeNonAsciiCharacters(mText.Style.Name));
 
             this.WriteMTextBackground(mText.BackgroundFill);
-            this.WriteXData(mText.XData);
+            this.WriteMTextColumnDefinition(mText, ocsDirection);
+            this.WriteMTextColumnXData(mText);
         }
 
         private void WriteMTextChunks(string text)
@@ -4303,6 +4266,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, def.CodeName);
             this.chunk.Write(5, def.Handle);
+            this.WriteDatabaseMetadata(def);
 
             //if (def.Reactors.Count > 0)
             //{
@@ -4481,6 +4445,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, attrib.CodeName);
             this.chunk.Write(5, attrib.Handle);
+            this.WriteDatabaseMetadata(attrib);
 
             this.chunk.Write(330, attrib.Owner.Handle);
 
@@ -4718,6 +4683,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, DxfObjectCode.Dictionary);
             this.chunk.Write(5, dictionary.Handle);
+            this.WriteDatabaseMetadata(dictionary);
             this.chunk.Write(330, dictionary.Owner.Handle);
 
             this.chunk.Write(100, SubclassMarker.Dictionary);
@@ -4743,7 +4709,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, underlayDef.CodeName);
             this.chunk.Write(5, underlayDef.Handle);
-            this.chunk.Write(102, "{ACAD_REACTORS");
+
             List<DxfObjectReference> objects = null;
             switch (underlayDef.Type)
             {
@@ -4762,15 +4728,10 @@ namespace netDxf.IO
             {
                 throw new NullReferenceException("Underlay references list cannot be null");
             }
+            List<string> automaticReactors = new List<string>();
             foreach (DxfObjectReference o in objects)
-            {
-                if (o.Reference is Underlay underlay)
-                {
-                    this.chunk.Write(330, underlay.Handle);
-                }
-            }
-
-            this.chunk.Write(102, "}");
+                if (o.Reference is Underlay underlay) automaticReactors.Add(underlay.Handle);
+            this.WriteDatabaseMetadata(underlayDef, automaticReactors);
             this.chunk.Write(330, ownerHandle);
 
             this.chunk.Write(100, SubclassMarker.UnderlayDefinition);
@@ -4795,6 +4756,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, reactor.CodeName);
             this.chunk.Write(5, reactor.Handle);
+            this.WriteDatabaseMetadata(reactor);
             this.chunk.Write(330, reactor.ImageHandle);
 
             this.chunk.Write(100, SubclassMarker.RasterImageDefReactor);
@@ -4806,14 +4768,12 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, imageDefinition.CodeName);
             this.chunk.Write(5, imageDefinition.Handle);
-
-            this.chunk.Write(102, "{ACAD_REACTORS");
-            this.chunk.Write(330, ownerHandle);
+            List<string> automaticReactors = new List<string> { ownerHandle };
             foreach (ImageDefinitionReactor reactor in this.imageDefReactors[imageDefinition.Handle].Values)
             {
-                this.chunk.Write(330, reactor.Handle);
+                automaticReactors.Add(reactor.Handle);
             }
-            this.chunk.Write(102, "}");
+            this.WriteDatabaseMetadata(imageDefinition, automaticReactors);
 
             this.chunk.Write(330, ownerHandle);
 
@@ -4839,6 +4799,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, variables.CodeName);
             this.chunk.Write(5, variables.Handle);
+            this.WriteDatabaseMetadata(variables);
             this.chunk.Write(330, ownerHandle);
 
             this.chunk.Write(100, SubclassMarker.RasterVariables);
@@ -4854,6 +4815,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, style.CodeName);
             this.chunk.Write(5, style.Handle);
+            this.WriteDatabaseMetadata(style);
             this.chunk.Write(330, ownerHandle);
 
             this.chunk.Write(100, SubclassMarker.MLineStyle);
@@ -4891,6 +4853,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, group.CodeName);
             this.chunk.Write(5, group.Handle);
+            this.WriteDatabaseMetadata(group);
             this.chunk.Write(330, ownerHandle);
 
             this.chunk.Write(100, SubclassMarker.Group);
@@ -4911,6 +4874,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, layout.CodeName);
             this.chunk.Write(5, layout.Handle);
+            this.WriteDatabaseMetadata(layout);
             this.chunk.Write(330, ownerHandle);
 
             this.WritePlotSettings(layout.PlotSettings);
@@ -5003,14 +4967,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(0, DxfObjectCode.XRecord);
             this.chunk.Write(5, layerState.Handle);
-
-            // for who-knows-why reason the ACAD_REACTORS thing is necessary, it will not work without it
-            // even though there is already a separated 330 code that stores the same information
-            // and most of the time it is not necessary in similar cases
-            // since Autodesk doesn't know how to document its own crap consider everything I say about the DXF format as a guess
-            this.chunk.Write(102, "{ACAD_REACTORS");
-            this.chunk.Write(330, ownerHandle);
-            this.chunk.Write(102, "}");
+            this.WriteDatabaseMetadata(layerState, new[] { ownerHandle });
             this.chunk.Write(330, ownerHandle);
 
             this.chunk.Write(100, SubclassMarker.XRecord);

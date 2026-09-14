@@ -1,0 +1,2 @@
+# DXF fixtures are byte-pinned wire data, including their original line endings.
+*.dxf -text

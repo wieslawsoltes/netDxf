@@ -1,0 +1,492 @@
+{
+  "generator": "ezdxf 1.4.4",
+  "fixtures": [
+    {
+      "file": "independent-mtext-static-R2000.dxf",
+      "dxfversion": "AC1015",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "FIRST \\P alpha\\N",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 1,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "SECOND \\P beta\\N",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "THIRD \\P gamma",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "80f56b71dca0828f3c170cbd7cbc2e73014732c187d991309c098148840dd4f8"
+    },
+    {
+      "file": "independent-mtext-dynamic_auto-R2000.dxf",
+      "dxfversion": "AC1015",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "Auto-height content\\PAuto-height content\\PAuto-height content\\PAuto-height content\\PAuto-height content\\P",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 2,
+            "count": 3,
+            "auto_height": true,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "e50d1d0c2afb92546aeb83bc08ecea594ece01d755e80e5f5679272fa6ef08f5"
+    },
+    {
+      "file": "independent-mtext-dynamic_manual-R2000.dxf",
+      "dxfversion": "AC1015",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "Manual-height content\\PManual-height content\\PManual-height content\\PManual-height content\\PManual-height content\\P",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 2,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 0.0,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 28.75,
+            "heights": [
+              20.25,
+              28.75,
+              0.0
+            ]
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "dd17a5cf0de5df0695501549ef0a55b1f06f2f8fb13479d028addc08aa2b10e6"
+    },
+    {
+      "file": "independent-mtext-static-R2013.dxf",
+      "dxfversion": "AC1027",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "FIRST \\P alpha\\N",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 1,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "SECOND \\P beta\\N",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "THIRD \\P gamma",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "82f563edf1c7dbcb3b5f8e90ef0ba60fde40c734a54342a1fe6e1731976e8389"
+    },
+    {
+      "file": "independent-mtext-dynamic_auto-R2013.dxf",
+      "dxfversion": "AC1027",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "Auto-height content\\PAuto-height content\\PAuto-height content\\PAuto-height content\\PAuto-height content\\P",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 2,
+            "count": 3,
+            "auto_height": true,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "9ce220643b3c82d235c777bca2787bbc18e1e8878f8d015975a17d32d9157be6"
+    },
+    {
+      "file": "independent-mtext-dynamic_manual-R2013.dxf",
+      "dxfversion": "AC1027",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "Manual-height content\\PManual-height content\\PManual-height content\\PManual-height content\\PManual-height content\\P",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 2,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 0.0,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 28.75,
+            "heights": [
+              20.25,
+              28.75,
+              0.0
+            ]
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "e7033abb5a6fabf7c7d238cf1313ef49f30ef78d537473a8f4230ee466fdd118"
+    },
+    {
+      "file": "independent-mtext-static-R2018.dxf",
+      "dxfversion": "AC1032",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "FIRST \\P alpha\\NSECOND \\P beta\\NTHIRD \\P gamma",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 1,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": []
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "c0cc69229846dfdf57d2b352b85c47f09857d9c1145db9f3b89a45b614afd2de"
+    },
+    {
+      "file": "independent-mtext-dynamic_auto-R2018.dxf",
+      "dxfversion": "AC1032",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "Auto-height content\\PAuto-height content\\PAuto-height content\\PAuto-height content\\PAuto-height content\\P",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 2,
+            "count": 3,
+            "auto_height": true,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": []
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "4e52b04d25b48c927c6e3796a7bb9d87fb6ab5af1b71573891b0f3a959d36a96"
+    },
+    {
+      "file": "independent-mtext-dynamic_manual-R2018.dxf",
+      "dxfversion": "AC1032",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "Manual-height content\\PManual-height content\\PManual-height content\\PManual-height content\\PManual-height content\\P",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 2,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 0.0,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 28.75,
+            "heights": [
+              20.25,
+              28.75,
+              0.0
+            ]
+          },
+          "linked": []
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "be681369e45190ef26ac01ea3b191a88b7150a5ad5ebc8c0d63c852191023dfe"
+    },
+    {
+      "file": "independent-mtext-static_reordered-R2013.dxf",
+      "dxfversion": "AC1027",
+      "mtext": [
+        {
+          "handle": "30",
+          "text": "FIRST \\P alpha\\N",
+          "insert": [
+            17.0,
+            -11.0,
+            3.0
+          ],
+          "width": 12.5,
+          "rotation": null,
+          "columns": {
+            "column_type": 1,
+            "count": 3,
+            "auto_height": false,
+            "reversed_column_flow": true,
+            "defined_height": 20.25,
+            "width": 12.5,
+            "gutter_width": 1.75,
+            "total_width": 41.0,
+            "total_height": 20.25,
+            "heights": []
+          },
+          "linked": [
+            {
+              "handle": "31",
+              "text": "SECOND \\P beta\\N",
+              "insert": [
+                30.117194161697277,
+                -5.432081419027849,
+                3.0
+              ]
+            },
+            {
+              "handle": "32",
+              "text": "THIRD \\P gamma",
+              "insert": [
+                43.234388323394555,
+                0.13583716194430195,
+                3.0
+              ]
+            }
+          ]
+        }
+      ],
+      "audit_errors": [],
+      "audit_fixes": [],
+      "sha256": "ca392e1b016e9310d30ff00757e84b599a7e6c03a47772670aae55dfaf0bdd06"
+    }
+  ],
+  "provenance": "Independently authored with Python ezdxf 1.4.4, without the netDxf reader/writer. Static, dynamic auto, dynamic manual and reordered legacy links. Input dimensions and text listed below; headers and handles are intentionally frozen.",
+  "conflicting_duplicate_case": {
+    "file": "conflicting/independent-mtext-static-R2018.dxf",
+    "sha256": "c32cd080274b701c7778fa79c14d4e4b30be8fef482c448ccafc72278e311bb2",
+    "common_rotation": 23,
+    "embedded_direction": [
+      1,
+      0,
+      0
+    ],
+    "contract": "Common explicit rotation has priority; embedded duplicate remains independently stored. No cross-reader semantic-equivalence claim for inconsistent duplicates."
+  }
+}

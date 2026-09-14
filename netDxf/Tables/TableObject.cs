@@ -210,6 +210,9 @@ namespace netDxf.Tables
 
         #endregion
 
+        /// <summary>Allows table types with repeated names to opt into physical record identity.</summary>
+        protected virtual bool UsesReferenceIdentity { get { return false; } }
+
         #region implements IComparable
 
         /// <summary>
@@ -329,7 +332,7 @@ namespace netDxf.Tables
         /// <returns>True if two TableObject are equal or false in any other case.</returns>
         /// <remarks>
         /// Two TableObjects are considered equals if their names are the same, regardless of their internal values.
-        /// This is done this way because in a DXF two TableObjects cannot have the same name.
+        /// VPORT records override this behavior because a viewport configuration can contain repeated names.
         /// </remarks>
         public override bool Equals(object other)
         {
@@ -353,7 +356,7 @@ namespace netDxf.Tables
         /// <returns>True if two TableObject are equal or false in any other case.</returns>
         /// <remarks>
         /// Two TableObjects are considered equals if their names are the same, regardless of their internal values.
-        /// This is done this way because in a DXF two TableObjects cannot have the same name.
+        /// VPORT records override this behavior because a viewport configuration can contain repeated names.
         /// </remarks>
         public bool Equals(TableObject other)
         {
@@ -362,6 +365,7 @@ namespace netDxf.Tables
                 return false;
             }
 
+            if (this.UsesReferenceIdentity || other.UsesReferenceIdentity) return ReferenceEquals(this, other);
             return string.Equals(this.Name, other.Name, StringComparison.OrdinalIgnoreCase);
         }
 

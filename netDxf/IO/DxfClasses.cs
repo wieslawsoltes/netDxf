@@ -116,6 +116,7 @@ namespace netDxf.IO
                     if (definitions.Contains(name)) definitions[name].InstanceCount = 0;
             }
             this.PrepareHelixClass(definitions);
+            this.PrepareDatabaseClasses(definitions);
             return definitions;
         }
 

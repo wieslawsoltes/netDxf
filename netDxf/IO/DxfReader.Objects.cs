@@ -1,0 +1,254 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using netDxf.Objects;
+
+namespace netDxf.IO
+{
+    internal sealed partial class DxfReader
+    {
+        private readonly HashSet<string> managedReactorHandles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly List<DatabaseRecord> databaseRecords = new List<DatabaseRecord>();
+        private readonly Dictionary<string, DatabaseMetadata> entityDatabaseMetadata = new Dictionary<string, DatabaseMetadata>(StringComparer.OrdinalIgnoreCase);
+        private sealed class DatabaseMetadata
+        {
+            internal string Owner;
+            internal string Extension;
+            internal readonly List<string> Reactors = new List<string>();
+        }
+        private sealed class DatabaseRecord
+        {
+            internal DxfDatabaseObject Object;
+            internal DatabaseMetadata Metadata = new DatabaseMetadata();
+            internal readonly List<Tuple<string, string, bool>> Entries = new List<Tuple<string, string, bool>>();
+            internal string Default;
+        }
+        private DatabaseRecord ReadDatabaseRecord()
+        {
+            string codeName = this.chunk.ReadString();
+            List<DxfTag> tags = new List<DxfTag>();
+            this.chunk.Next();
+            while (this.chunk.Code != 0)
+            {
+                if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
+                this.chunk.Next();
+            }
+            DatabaseRecord result = new DatabaseRecord();
+            string handle = null;
+            int payload = 0;
+            for (; payload < tags.Count; payload++)
+            {
+                DxfTag tag = tags[payload];
+                if (tag.Code == 100 || tag.Code == 1001) break;
+                if (tag.Code == 5) handle = (string)tag.Value;
+                else if (tag.Code == 330) result.Metadata.Owner = (string)tag.Value;
+                else if (tag.Code == 102)
+                {
+                    string group = (string)tag.Value;
+                    bool closed = false;
+                    while (++payload < tags.Count)
+                    {
+                        tag = tags[payload];
+                        if (tag.Code == 102 && (string)tag.Value == "}") { closed = true; break; }
+                        if (group == "{ACAD_XDICTIONARY" && tag.Code == 360) result.Metadata.Extension = (string)tag.Value;
+                        if (group == "{ACAD_REACTORS" && tag.Code == 330) result.Metadata.Reactors.Add((string)tag.Value);
+                    }
+                    if (!closed) throw new FormatException("Unterminated database control group.");
+                }
+            }
+            if (codeName == "DICTIONARY" || codeName == "ACDBDICTIONARYWDFLT")
+            {
+                DxfDictionary dictionary = codeName == "DICTIONARY" ? new DxfDictionary() : new DxfDictionaryWithDefault();
+                result.Object = dictionary;
+                dictionary.IsHardOwner = false;
+                string pendingName = null;
+                for (int i = payload; i < tags.Count; i++)
+                {
+                    DxfTag tag = tags[i];
+                    if (tag.Code == 1001) { this.ReadDatabaseXData(dictionary, tags, i); break; }
+                    switch (tag.Code)
+                    {
+                        case 280: dictionary.IsHardOwner = (short)tag.Value != 0; break;
+                        case 281: dictionary.Cloning = (DictionaryCloningFlags)(short)tag.Value; break;
+                        case 3:
+                            if (pendingName != null) throw new FormatException("Dictionary name has no associated object handle.");
+                            pendingName = this.DecodeEncodedNonAsciiCharacters((string)tag.Value); break;
+                        case 350: case 360:
+                            if (pendingName == null) throw new FormatException("Dictionary handle has no associated name.");
+                            result.Entries.Add(Tuple.Create(pendingName, (string)tag.Value, tag.Code == 360)); pendingName = null; break;
+                        case 340: result.Default = (string)tag.Value; break;
+                    }
+                }
+                if (pendingName != null) throw new FormatException("Dictionary name has no associated object handle.");
+            }
+            else if (codeName == "XRECORD")
+            {
+                DxfXRecord record = new DxfXRecord(); result.Object = record;
+                if (payload < tags.Count && tags[payload].Code == 100 && (string)tags[payload].Value == "AcDbXrecord") payload++;
+                else throw new FormatException("XRECORD requires AcDbXrecord subclass data.");
+                if (payload < tags.Count && tags[payload].Code == 280) record.Cloning = (DictionaryCloningFlags)(short)tags[payload++].Value;
+                for (; payload < tags.Count; payload++)
+                {
+                    DxfTag tag = tags[payload];
+                    if (tag.Code == 1001) { this.ReadDatabaseXData(record, tags, payload); break; }
+                    if (tag.ValueType == DxfTagValueType.String) tag = new DxfTag(tag.Code, this.DecodeEncodedNonAsciiCharacters((string)tag.Value));
+                    record.AddLoadedData(tag);
+                }
+            }
+            else if (codeName == "DICTIONARYVAR")
+            {
+                DxfDictionaryVariable variable = new DxfDictionaryVariable(); result.Object = variable;
+                for (int i = payload; i < tags.Count; i++)
+                {
+                    if (tags[i].Code == 280) variable.Schema = (short)tags[i].Value;
+                    else if (tags[i].Code == 1) variable.Value = this.DecodeEncodedNonAsciiCharacters((string)tags[i].Value);
+                    else if (tags[i].Code == 1001) { this.ReadDatabaseXData(variable, tags, i); break; }
+                }
+            }
+            else if (codeName == "ACDBPLACEHOLDER")
+            {
+                result.Object = new DxfPlaceholder();
+                for (int i = payload; i < tags.Count; i++)
+                    if (tags[i].Code == 1001) { this.ReadDatabaseXData(result.Object, tags, i); break; }
+            }
+            else result.Object = new DxfOpaqueObject(codeName, tags.Skip(payload).ToList());
+            result.Object.Handle = handle;
+            this.databaseRecords.Add(result);
+            return result;
+        }
+        private void ReadDatabaseXData(DxfObject target, List<DxfTag> tags, int start)
+        {
+            XData data = null;
+            for (int i = start; i < tags.Count; i++)
+            {
+                DxfTag tag = tags[i];
+                if (tag.Code == 1001)
+                {
+                    data = new XData(this.GetApplicationRegistry(this.DecodeEncodedNonAsciiCharacters((string)tag.Value)));
+                    target.XData.Add(data);
+                }
+                else
+                {
+                    if (data == null || tag.Code < 1000 || tag.Code > 1071) throw new FormatException("Invalid object XData.");
+                    object value = tag.Value;
+                    if (value is string text && tag.Code != 1005) value = this.DecodeEncodedNonAsciiCharacters(text);
+                    data.XDataRecord.Add(new XDataRecord((XDataCode)tag.Code, value));
+                }
+            }
+        }
+        private DictionaryObject ReadDictionaryDatabaseRecord()
+        {
+            DatabaseRecord record = this.ReadDatabaseRecord();
+            DxfDictionary typed = (DxfDictionary)record.Object;
+            DictionaryObject legacy = new DictionaryObject(null) { Handle = typed.Handle, IsHardOwner = typed.IsHardOwner, Cloning = typed.Cloning };
+            foreach (Tuple<string, string, bool> entry in record.Entries)
+                if (!legacy.Entries.ContainsKey(entry.Item2)) legacy.Entries.Add(entry.Item2, entry.Item1);
+            legacy.XData.AddRange(typed.XData.Values);
+            return legacy;
+        }
+        private XRecord ReadXRecordDatabaseRecord()
+        {
+            DatabaseRecord record = this.ReadDatabaseRecord(); DxfXRecord typed = (DxfXRecord)record.Object;
+            XRecord legacy = new XRecord { Handle = typed.Handle, OwnerHandle = record.Metadata.Owner, Flags = typed.Cloning };
+            foreach (DxfTag tag in typed.Data) legacy.Entries.Add(new XRecordEntry(tag.Code, tag.Value));
+            return legacy;
+        }
+        private void ImportDatabaseObjects()
+        {
+            if (this.databaseRecords.Count == 0) return;
+            // Reserve source identities before lazily creating the document's temporary root.
+            foreach (DatabaseRecord record in this.databaseRecords)
+                if (long.TryParse(record.Object.Handle, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture, out long sourceHandle) && sourceHandle >= this.doc.NumHandles && sourceHandle < long.MaxValue)
+                    this.doc.NumHandles = sourceHandle + 1;
+            DxfObjectDatabase database = this.doc.Objects;
+            foreach (DatabaseRecord record in this.databaseRecords)
+            {
+                if (record.Object is DxfXRecord xrecord) foreach (DxfTag tag in xrecord.Data) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) database.ReserveUnresolvedReference(tag);
+                foreach (XData data in record.Object.XData.Values)
+                    foreach (XDataRecord tag in data.XDataRecord)
+                        if (tag.Code == XDataCode.DatabaseHandle) database.ReserveUnresolvedReference(new DxfTag(1005, tag.Value));
+            }
+            DatabaseRecord root = this.databaseRecords.FirstOrDefault(r => r.Object.Handle == this.namedDictionary?.Handle);
+            HashSet<string> managed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (this.layerStateManagerDictionaryHandle != null && this.dictionaries.TryGetValue(this.layerStateManagerDictionaryHandle, out DictionaryObject layerManager))
+            {
+                managed.Add(layerManager.Handle);
+                foreach (string child in layerManager.Entries.Keys)
+                {
+                    managed.Add(child);
+                    if (this.dictionaries.TryGetValue(child, out DictionaryObject states))
+                        foreach (string stateHandle in states.Entries.Keys) managed.Add(stateHandle);
+                }
+            }
+            if (root != null) database.ReplaceRoot((DxfDictionary)root.Object);
+            foreach (DatabaseRecord record in this.databaseRecords)
+            {
+                if (record == root || managed.Contains(record.Object.Handle)) continue;
+                DxfObject existing = this.doc.GetObjectByHandle(record.Object.Handle);
+                if (existing != null)
+                {
+                    bool collection = record.Object is DxfDictionary && (existing == this.doc.Groups || existing == this.doc.Layouts || existing == this.doc.MlineStyles || existing == this.doc.ImageDefinitions || existing == this.doc.UnderlayDgnDefinitions || existing == this.doc.UnderlayDwfDefinitions || existing == this.doc.UnderlayPdfDefinitions);
+                    if (!collection && !(record.Object is DxfXRecord && existing is LayerState)) throw new FormatException("Duplicate database identity: " + record.Object.Handle);
+                    managed.Add(record.Object.Handle); continue;
+                }
+                database.Register(record.Object, true);
+            }
+            foreach (DatabaseRecord record in this.databaseRecords)
+            {
+                if (managed.Contains(record.Object.Handle)) continue;
+                DxfDatabaseObject item = record.Object;
+                if (record != root && record.Metadata.Owner != null && record.Metadata.Owner != "0")
+                {
+                    item.Owner = this.doc.GetObjectByHandle(record.Metadata.Owner);
+                    if (item.Owner == null) throw new FormatException("Unresolved database owner: " + record.Metadata.Owner);
+                }
+            }
+            foreach (DatabaseRecord record in this.databaseRecords)
+            {
+                if (managed.Contains(record.Object.Handle)) continue;
+                DxfDatabaseObject item = record.Object;
+                if (item is DxfDictionary dictionary)
+                    foreach (Tuple<string, string, bool> entry in record.Entries)
+                    {
+                        if (record == root && DxfObjectDatabase.IsReservedName(entry.Item1)) continue;
+                        DxfObject target = this.doc.GetObjectByHandle(entry.Item2);
+                        if (target == null) throw new FormatException("Unresolved dictionary entry: " + entry.Item1 + " -> " + entry.Item2);
+                        dictionary.AddLoaded(entry.Item1, target, entry.Item3);
+                    }
+                if (item is DxfDictionaryWithDefault fallback && record.Default != null && record.Default != "0")
+                {
+                    fallback.Default = this.doc.GetObjectByHandle(record.Default);
+                    if (fallback.Default == null) throw new FormatException("Unresolved dictionary default: " + record.Default);
+                }
+                this.ApplyDatabaseMetadata(item, record.Metadata);
+            }
+            foreach (KeyValuePair<string, DatabaseMetadata> pair in this.entityDatabaseMetadata)
+            {
+                DxfObject target = this.doc.GetObjectByHandle(pair.Key);
+                if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
+            }
+        }
+        private void ApplyDatabaseMetadata(DxfObject item, DatabaseMetadata metadata)
+        {
+            if (!string.IsNullOrEmpty(metadata.Extension) && metadata.Extension != "0")
+            {
+                item.ExtensionDictionary = this.doc.GetObjectByHandle(metadata.Extension) as DxfDictionary;
+                if (item.ExtensionDictionary == null)
+                {
+                    // Existing layer-state collections have their own extension-dictionary writer.
+                    if (metadata.Extension == this.layerStateManagerDictionaryHandle || this.doc.GetObjectByHandle(metadata.Extension) == this.doc.Layers.StateManager) return;
+                    throw new FormatException("Unresolved extension dictionary: " + metadata.Extension);
+                }
+                if (item.ExtensionDictionary.Owner != item) throw new FormatException("Extension dictionary owner mismatch: " + metadata.Extension);
+            }
+            foreach (string handle in metadata.Reactors)
+            {
+                DxfObject target = this.doc.GetObjectByHandle(handle);
+                if (target != null && !item.PersistentReactors.Contains(target)) item.PersistentReactors.Add(target);
+                else if (target == null && handle != "0" && !this.managedReactorHandles.Contains(handle))
+                    throw new FormatException("Unresolved persistent reactor: " + handle);
+            }
+        }
+    }
+}

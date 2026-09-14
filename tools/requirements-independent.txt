@@ -1,0 +1,2 @@
+# Development-only independent reader used by the retained conformance fixtures.
+ezdxf==1.4.4
