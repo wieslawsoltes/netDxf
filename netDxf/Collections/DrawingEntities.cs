@@ -283,6 +283,12 @@ namespace netDxf.Collections
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Helix>(); }
         }
 
+        /// <summary>Gets the inert OLE2FRAME entities in the active layout.</summary>
+        public IEnumerable<Ole2Frame> Ole2Frames
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Ole2Frame>(); }
+        }
+
         /// <summary>Gets lights in the active layout.</summary>
         public IEnumerable<Light> Lights
         {

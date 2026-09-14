@@ -3947,6 +3947,9 @@ namespace netDxf.IO
                 case DxfObjectCode.Solid:
                     dxfObject = this.ReadSolid();
                     break;
+                case DxfObjectCode.Ole2Frame:
+                    dxfObject = this.ReadOle2Frame();
+                    break;
                 case DxfObjectCode.Light:
                     dxfObject = this.ReadLight();
                     break;
