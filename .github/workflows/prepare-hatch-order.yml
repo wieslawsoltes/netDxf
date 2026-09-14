@@ -1,0 +1,31 @@
+name: Prepare HATCH scalar ordering
+on:
+  push:
+    branches: [fix/hatch-scalar-order-20260914]
+    paths: [.github/workflows/prepare-hatch-order.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/hatch-scalar-order-20260914
+          fetch-depth: 0
+      - name: Apply pinned integration edits and verify complete tree
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = c18a345ea6025babb884f50fbbf356c7cb91277b
+          python .github/prepare_hatch_order.py
+          git rm .github/prepare_hatch_order.py .github/workflows/prepare-hatch-order.yml
+          git add -A
+          test "$(git write-tree)" = 71c13305c78f417fb9fa64610c0c757c056a7d61
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: accept unordered HATCH scalar edges and pre-list headers'
+          git push origin HEAD:fix/hatch-scalar-order-20260914
