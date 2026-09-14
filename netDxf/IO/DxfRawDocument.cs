@@ -41,7 +41,7 @@ namespace netDxf.IO
     /// Unchanged same-transport saves reproduce the original bytes. Edited or cross-transport saves
     /// normalize lexical formatting while retaining tag order and values. R11/R12 and later profiles only.
     /// </remarks>
-    public sealed class DxfRawDocument
+    public sealed partial class DxfRawDocument
     {
         private readonly byte[] originalBytes;
         private readonly Encoding encoding;
