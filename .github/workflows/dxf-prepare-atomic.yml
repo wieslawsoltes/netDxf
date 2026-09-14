@@ -1,0 +1,46 @@
+name: Prepare verified atomic saves
+on:
+  push:
+    branches: [conformance/atomic-20260914]
+    paths: [.github/workflows/dxf-prepare-atomic.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: conformance/atomic-20260914
+          fetch-depth: 0
+      - name: Restore exact tested patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENCODED_LENGTH: '11636'
+          PATCH_SHA256: '3941bcc6043df9cffc55910ae0f19788a316b1f268298f866abe24fb4f44963d'
+          ROW_OVERRIDES: >-
+            {"5":"hO8QU7YM4d8EU1gwNxjXdYfW6BNgWgC4oWPb0jNxY9owa+fnmXTvhWdNAEuXh4G0Inkqby8FoGrqB7AxjFroPKKPQMYydIAqc4MBxIEMHMt1/syDw6SBQCIZZneWIF3L","7":"cP0pAqJNDVfWYQ+vZQCzhGFteRVYNo5LBEibI+uwCODG6b0pBkCR+HUE9OTNprgewGgk5Bh2J0K6W1n3JNChmFjhp5CWPg2cCW6FvBvJqcL2ynonXqATyFHkBw4iG5Bk","19":"8cvNF9K2NkbDS4DR5r0dHP2h8W7weua4YPt9hOmBaWyg/gRC9GwrsFvmhjhkDwJ5AObbnkX+YfuIBASuBeZGc7q8vByhZpyurNslvkVF4dkEFFYSJ2MPreFQlvgaeyIi","50":"HI1TQYZzhefTAvWZvtxiBw7cKXbQNl8Md0bNXdPcHW1v7zZ3tfuGftpC6E/5bsph22oau2Kd/obHMutkWakDTBP49mzEIiDJ9mS50wFTnYOxJRWfMkxG8fB+BTpqckH0"}
+        run: |
+          set -euo pipefail
+          export BLOB_JSON="$RUNNER_TEMP/patch-blob.json"
+          gh api repos/wieslawsoltes/netDxf/git/blobs/9a882fcede69092e90b34c66ddc854c147cc98d0 > "$BLOB_JSON"
+          python .github/dxf-transfer.py
+      - name: Verify tree and publish isolated feature
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 095843520c22c4154fecb4300a2fb42b7cd3f7c5
+          git rm .github/dxf-transfer.py .github/workflows/dxf-prepare-atomic.yml
+          test "$(git write-tree)" = c06289913f34733ce0bfa767c7e1b76e5fa32ae8
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: add explicit staged atomic DXF file saving'
+          git push origin HEAD:conformance/atomic-20260914
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: atomic-transfer-diagnostic
+          path: ${{ runner.temp }}/staged-envelope.txt
+          retention-days: 2
