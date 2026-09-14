@@ -32,7 +32,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represents a named view in the DXF VIEW symbol table.
     /// </summary>
-    public class View :
+    public partial class View :
         TableObject
     {
         private Vector3 target;
@@ -319,7 +319,8 @@ namespace netDxf.Tables
                 BackClippingPlane = this.backClippingPlane,
                 Flags = this.flags,
                 RenderMode = this.renderMode,
-                IsCameraPlottable = this.cameraPlottable
+                IsCameraPlottable = this.cameraPlottable,
+                Ucs = this.Ucs == null ? null : (ViewUcs)this.Ucs.Clone()
             };
             foreach (XData data in this.XData.Values)
             {

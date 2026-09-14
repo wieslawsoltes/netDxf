@@ -407,6 +407,7 @@ namespace netDxf.Entities
                 entity.XData.Add((XData) data.Clone());
             }
 
+            this.CopyCommonDataTo(entity);
             return entity;
         }
 

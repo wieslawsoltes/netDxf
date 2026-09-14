@@ -35,7 +35,7 @@ namespace netDxf.Entities
     /// <remarks>
     /// Two dimensional polylines can hold information about the width of the lines and arcs that compose them.
     /// </remarks>
-    public class Polyline2D :
+    public partial class Polyline2D :
         EntityObject
     {
         #region private fields
@@ -265,21 +265,21 @@ namespace netDxf.Entities
             this.vertexes.Reverse();
 
             double firstBulge = this.vertexes[0].Bulge;
-            double firstStartWidth = this.vertexes[0].StartWidth;
-            double firstEndWidth = this.vertexes[0].EndWidth;
+            double? firstStartWidth = this.vertexes[0].StartWidthOverride;
+            double? firstEndWidth = this.vertexes[0].EndWidthOverride;
 
             for (int i = 0; i < this.vertexes.Count - 1; i++)
             {
                 // Segment data belongs to the outgoing edge, not the point.
                 // Reversing an edge also exchanges its start and end widths.
                 this.vertexes[i].Bulge = -this.vertexes[i + 1].Bulge;
-                this.vertexes[i].StartWidth = this.vertexes[i + 1].EndWidth;
-                this.vertexes[i].EndWidth = this.vertexes[i + 1].StartWidth;
+                this.vertexes[i].StartWidthOverride = this.vertexes[i + 1].EndWidthOverride;
+                this.vertexes[i].EndWidthOverride = this.vertexes[i + 1].StartWidthOverride;
             }
 
             this.vertexes[this.vertexes.Count - 1].Bulge = -firstBulge;
-            this.vertexes[this.vertexes.Count - 1].StartWidth = firstEndWidth;
-            this.vertexes[this.vertexes.Count - 1].EndWidth = firstStartWidth;
+            this.vertexes[this.vertexes.Count - 1].StartWidthOverride = firstEndWidth;
+            this.vertexes[this.vertexes.Count - 1].EndWidthOverride = firstStartWidth;
         }
 
         /// <summary>
@@ -287,10 +287,17 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="width">Polyline width.</param>
         /// <remarks>
+        /// Sets each raw start/end width and clears the optional ConstantWidth field so it cannot mask the edit.
+        /// To store group 43 without changing raw vertex widths, use the ConstantWidth property instead.
         /// Smoothed polylines can only have a constant width, the start width of the first vertex will be used.
         /// </remarks>
         public void SetConstantWidth(double width)
         {
+            ValidateWidth(width, nameof(width));
+            this.ValidateVertexFidelity();
+            // Preserve this method's established per-vertex editing behavior.
+            // Clear an explicit group 43 so it cannot mask the requested widths.
+            this.ConstantWidth = null;
             foreach (Polyline2DVertex v in this.vertexes)
             {
                 v.StartWidth = width;
@@ -302,6 +309,7 @@ namespace netDxf.Entities
         /// Decompose the actual polyline in its internal entities, <see cref="Line">lines</see> and <see cref="Arc">arcs</see>.
         /// </summary>
         /// <returns>A list of <see cref="Line">lines</see> and <see cref="Arc">arcs</see> that made up the polyline.</returns>
+        /// <remarks>This is a centerline decomposition. Constant and per-vertex stroke widths are not represented by the returned lines/arcs.</remarks>
         public List<EntityObject> Explode()
         {
             List<EntityObject> entities = new List<EntityObject>();
@@ -620,10 +628,13 @@ namespace netDxf.Entities
         /// <remarks>
         /// Non-uniform scaling is not supported if a bulge different than zero is applied to any of the Polyline2D vertexes,
         /// a non-uniform scaling cannot be applied to the arc segments. Explode the entity and convert the arcs into ellipse arcs and transform them instead.<br />
+        /// Nonzero stroke widths require a nonsingular uniform scale in the polyline plane and a perpendicular transformed normal.
+        /// Widths are scaled with that plane; unsupported transforms and reflections of wide arc segments are rejected before mutation.<br />
         /// Matrix3 adopts the convention of using column vectors to represent a transformation matrix.
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
+            double widthScale = this.GetWidthTransformScale(transformation);
             double newElevation = this.Elevation;
             Vector3 newNormal = transformation * this.Normal;
             if (Vector3.Equals(Vector3.Zero, newNormal))
@@ -644,6 +655,12 @@ namespace netDxf.Entities
             }
             this.Elevation = newElevation;
             this.Normal = newNormal;
+            if (this.ConstantWidth.HasValue) this.ConstantWidth *= widthScale;
+            foreach (Polyline2DVertex vertex in this.Vertexes)
+            {
+                if (vertex.StartWidthOverride.HasValue) vertex.StartWidthOverride *= widthScale;
+                if (vertex.EndWidthOverride.HasValue) vertex.EndWidthOverride *= widthScale;
+            }
         }
 
         /// <summary>
@@ -666,6 +683,8 @@ namespace netDxf.Entities
                 //LwPolyline properties
                 Elevation = this.elevation,
                 Thickness = this.thickness,
+                ConstantWidth = this.ConstantWidth,
+                SmoothType = this.smoothType,
                 Flags = this.flags
             };
 
@@ -679,6 +698,7 @@ namespace netDxf.Entities
                 entity.XData.Add((XData) data.Clone());
             }
 
+            this.CopyCommonDataTo(entity);
             return entity;
         }
 

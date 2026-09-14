@@ -63,7 +63,7 @@ namespace netDxf.IO
             this.chunk.Write(50, view.Rotation);
             this.chunk.Write(71, (short)view.ViewMode);
             this.chunk.Write(281, (short)view.RenderMode);
-            this.chunk.Write(72, (short)0);
+            this.WriteViewUcs(view.Ucs);
             if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2007)
             {
                 this.chunk.Write(73, view.IsCameraPlottable ? (short)1 : (short)0);

@@ -72,6 +72,10 @@ namespace netDxf.Collections
                 return add;
             }
 
+            if (view.Owner != null && view.Owner != this) throw new ArgumentException("Clone the table record before moving it between documents.", nameof(view));
+            UcsReferences.ValidateXData(view, this.Owner);
+            UcsReferences.Validate(view, this.Owner);
+
             if (assignHandle || string.IsNullOrEmpty(view.Handle))
             {
                 this.Owner.NumHandles = view.AssignHandle(this.Owner.NumHandles);
@@ -81,8 +85,8 @@ namespace netDxf.Collections
             this.References.Add(view.Name, new DxfObjectReferences());
 
             view.Owner = this;
+            UcsReferences.Register(view);
 
-            view.NameChanged += this.Item_NameChanged;
 
             this.Owner.AddedObjects.Add(view.Handle, view);
 
@@ -113,7 +117,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!ReferenceEquals(item.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }
@@ -128,6 +132,7 @@ namespace netDxf.Collections
                 return false;
             }
 
+            UcsReferences.Unregister(item);
             this.Owner.AddedObjects.Remove(item.Handle);
             this.References.Remove(item.Name);
             this.List.Remove(item.Name);
@@ -135,7 +140,6 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
 
             return true;
         }
@@ -144,20 +148,17 @@ namespace netDxf.Collections
 
         #region UCS events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateRecordRename(View record, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
+            if (this.List.TryGetValue(newName, out View existing) && !ReferenceEquals(existing, record))
                 throw new ArgumentException("There is already another View with the same name.");
-            }
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (View) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitRecordRename(View record, string newName)
+        {
+            DxfObjectReferences references = this.References[record.Name];
+            this.List.Remove(record.Name); this.References.Remove(record.Name);
+            this.List.Add(newName, record); this.References.Add(newName, references);
         }
 
         #endregion

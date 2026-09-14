@@ -33,7 +33,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represents a User Coordinate System.
     /// </summary>
-    public class UCS :
+    public partial class UCS :
         TableObject
     {
         #region private fields
@@ -441,6 +441,7 @@ namespace netDxf.Tables
             {
                 Origin = this.origin,
                 Elevation = this.elevation,
+                Flags = this.Flags,
                 xAxis = this.xAxis,
                 yAxis = this.yAxis,
                 zAxis = this.zAxis,

@@ -39,7 +39,7 @@ namespace netDxf.Entities
     /// This behavior is to allow imported <see cref="Insert">Insert</see> entities to have attributes without definition in the block, 
     /// although this might sound not totally correct it is allowed by AutoCad.
     /// </remarks>
-    public class Attribute :
+    public partial class Attribute :
         DxfObject,
         ICloneable
     {
@@ -151,6 +151,7 @@ namespace netDxf.Entities
             this.transparency = definition.Transparency;
             this.isVisible = definition.IsVisible;
             this.normal = definition.Normal;
+            definition.CommonData.CopyTo(this.CommonData);
 
             this.definition = definition;
             this.tag = definition.Tag;
@@ -702,6 +703,7 @@ namespace netDxf.Entities
                 entity.XData.Add((XData)data.Clone());
             }
 
+            this.CopyCommonDataTo(entity);
             return entity;
         }
 

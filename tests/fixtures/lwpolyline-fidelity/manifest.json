@@ -1,0 +1,269 @@
+{
+  "producer": "ezdxf 1.4.4 with explicit field-presence patch",
+  "fixtures": [
+    {
+      "file": "independent-lw-fidelity-R2000-absent.dxf",
+      "sha256": "b979185f0ef6d0bf484c9c5ac08be3fcaa0c95e143ac95dbc4ec2af6ef6a31ec",
+      "version": "AC1015",
+      "polyline": "30",
+      "constant_width": null,
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "start": null,
+          "end": -0.0,
+          "bulge": 0.5,
+          "id": null
+        },
+        {
+          "x": 6.0,
+          "y": 0.0,
+          "start": 2.0,
+          "end": null,
+          "bulge": 0.0,
+          "id": null
+        },
+        {
+          "x": 7.0,
+          "y": 5.0,
+          "start": 0.0,
+          "end": 3.0,
+          "bulge": -0.25,
+          "id": null
+        },
+        {
+          "x": -2.0,
+          "y": 4.0,
+          "start": null,
+          "end": null,
+          "bulge": 0.0,
+          "id": null
+        }
+      ],
+      "closed": true,
+      "elevation": 2.75,
+      "thickness": 0.5
+    },
+    {
+      "file": "independent-lw-fidelity-R2000-zero.dxf",
+      "sha256": "fa9cdc69c318b47d3f739d63288c0deef423af88b1979598ea4c22518834623b",
+      "version": "AC1015",
+      "polyline": "30",
+      "constant_width": 0.0,
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "start": null,
+          "end": -0.0,
+          "bulge": 0.5,
+          "id": null
+        },
+        {
+          "x": 6.0,
+          "y": 0.0,
+          "start": 2.0,
+          "end": null,
+          "bulge": 0.0,
+          "id": null
+        },
+        {
+          "x": 7.0,
+          "y": 5.0,
+          "start": 0.0,
+          "end": 3.0,
+          "bulge": -0.25,
+          "id": null
+        },
+        {
+          "x": -2.0,
+          "y": 4.0,
+          "start": null,
+          "end": null,
+          "bulge": 0.0,
+          "id": null
+        }
+      ],
+      "closed": true,
+      "elevation": 2.75,
+      "thickness": 0.5
+    },
+    {
+      "file": "independent-lw-fidelity-R2000-positive.dxf",
+      "sha256": "a982d3f966498b5d164ed9c51c12bf6ccc24dff453eb62f53fc3fbcfa7c42771",
+      "version": "AC1015",
+      "polyline": "30",
+      "constant_width": 3.25,
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "start": null,
+          "end": -0.0,
+          "bulge": 0.5,
+          "id": null
+        },
+        {
+          "x": 6.0,
+          "y": 0.0,
+          "start": 2.0,
+          "end": null,
+          "bulge": 0.0,
+          "id": null
+        },
+        {
+          "x": 7.0,
+          "y": 5.0,
+          "start": 0.0,
+          "end": 3.0,
+          "bulge": -0.25,
+          "id": null
+        },
+        {
+          "x": -2.0,
+          "y": 4.0,
+          "start": null,
+          "end": null,
+          "bulge": 0.0,
+          "id": null
+        }
+      ],
+      "closed": true,
+      "elevation": 2.75,
+      "thickness": 0.5
+    },
+    {
+      "file": "independent-lw-fidelity-R2018-absent.dxf",
+      "sha256": "e959e64724cb8bad54573fc459505026fbdd2d6a22ee3fa4d590b49f4f325edc",
+      "version": "AC1032",
+      "polyline": "30",
+      "constant_width": null,
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "start": null,
+          "end": -0.0,
+          "bulge": 0.5,
+          "id": 0
+        },
+        {
+          "x": 6.0,
+          "y": 0.0,
+          "start": 2.0,
+          "end": null,
+          "bulge": 0.0,
+          "id": -17
+        },
+        {
+          "x": 7.0,
+          "y": 5.0,
+          "start": 0.0,
+          "end": 3.0,
+          "bulge": -0.25,
+          "id": 2147483647
+        },
+        {
+          "x": -2.0,
+          "y": 4.0,
+          "start": null,
+          "end": null,
+          "bulge": 0.0,
+          "id": 42
+        }
+      ],
+      "closed": true,
+      "elevation": 2.75,
+      "thickness": 0.5
+    },
+    {
+      "file": "independent-lw-fidelity-R2018-zero.dxf",
+      "sha256": "119b0f92ae6fb1a4ae2d378555595aeda0f0c6608c6ac323793175098000c1ed",
+      "version": "AC1032",
+      "polyline": "30",
+      "constant_width": 0.0,
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "start": null,
+          "end": -0.0,
+          "bulge": 0.5,
+          "id": 0
+        },
+        {
+          "x": 6.0,
+          "y": 0.0,
+          "start": 2.0,
+          "end": null,
+          "bulge": 0.0,
+          "id": -17
+        },
+        {
+          "x": 7.0,
+          "y": 5.0,
+          "start": 0.0,
+          "end": 3.0,
+          "bulge": -0.25,
+          "id": 2147483647
+        },
+        {
+          "x": -2.0,
+          "y": 4.0,
+          "start": null,
+          "end": null,
+          "bulge": 0.0,
+          "id": 42
+        }
+      ],
+      "closed": true,
+      "elevation": 2.75,
+      "thickness": 0.5
+    },
+    {
+      "file": "independent-lw-fidelity-R2018-positive.dxf",
+      "sha256": "ce092d17fddb68c86d53dca6f285b74c2cd8073a1585aa940bbd1b4d84e6b689",
+      "version": "AC1032",
+      "polyline": "30",
+      "constant_width": 3.25,
+      "vertices": [
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "start": null,
+          "end": -0.0,
+          "bulge": 0.5,
+          "id": 0
+        },
+        {
+          "x": 6.0,
+          "y": 0.0,
+          "start": 2.0,
+          "end": null,
+          "bulge": 0.0,
+          "id": -17
+        },
+        {
+          "x": 7.0,
+          "y": 5.0,
+          "start": 0.0,
+          "end": 3.0,
+          "bulge": -0.25,
+          "id": 2147483647
+        },
+        {
+          "x": -2.0,
+          "y": 4.0,
+          "start": null,
+          "end": null,
+          "bulge": 0.0,
+          "id": 42
+        }
+      ],
+      "closed": true,
+      "elevation": 2.75,
+      "thickness": 0.5
+    }
+  ]
+}

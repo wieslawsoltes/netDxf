@@ -2,12 +2,12 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-14**. Implementation snapshot for PR **#83**: [`3a3dd9558b6d20e9bd22d37b6cb5cf3167e6a15a`](https://github.com/wieslawsoltes/netDxf/tree/3a3dd9558b6d20e9bd22d37b6cb5cf3167e6a15a).
-Source tree: `ecabd469ddd7b6158d4e4bee9e7e9ea4e9b8945b`. Branch: `netstandard`.
+Audit date: **2026-09-14**. Implementation snapshot for PR **#84**: [`1c199e95133725d07a5573c76422edd57184065a`](https://github.com/wieslawsoltes/netDxf/tree/1c199e95133725d07a5573c76422edd57184065a).
+Source tree: `e54d79fe70e9326efe1ec66bc4d519edd416cca3`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
-**211 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
+**222 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
 
 `DxfDocument` is the existing typed geometry/database API. `DxfRawDocument` is a separate immutable ordered-tag/record API. Raw preservation is now implemented; it is not an automatic preservation fallback inside typed `DxfDocument.Load/Save`. A raw file containing an unfamiliar entity can survive while that entity is still missing from the typed API.
 
@@ -99,7 +99,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | SOLID · typed | X | X | X | P | P | P | P | P | P | Planar corners/thickness/normal, not a 3DSOLID. `ReadSolid/WriteSolid`. [B](version-feature-matrix-2026-09-12.md) |
 | TRACE · typed | X | X | X | P | P | P | P | P | P | Geometry implemented; full OCS/default behavior unverified. `ReadTrace/WriteTrace`. [B](version-feature-matrix-2026-09-12.md) |
 | ELLIPSE · typed | X | X | X | P | P | P | P | P | P | Axis/ratio/parameter model and conversion paths. `ReadEllipse/WriteEllipse`. [B](version-feature-matrix-2026-09-12.md) |
-| LWPOLYLINE · typed | X | X | X | P | P | P | P | P | P | Bulges/widths/flags/elevation; per-vertex IDs/optional codes need review. `ReadLwPolyline/WriteLwPolyline`. [B](version-feature-matrix-2026-09-12.md) |
+| LWPOLYLINE · typed | X | X | X | P | P | P | P | P | P | Typed vertex packets, optional constant/per-vertex widths and vertex identifiers, taper-preserving reversal and guarded wide transforms. Centerline explosion retains its existing width-loss contract; native rendering is not evaluated. [LWPFID](lwpolyline-fidelity.md) |
 | POLYLINE: 2D / VERTEX / SEQEND · typed | X | X | X | P | P | P | P | P | P | Legacy entity representation in modern files, not a legacy file dialect. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
 | POLYLINE: 3D · typed | X | X | X | P | P | P | P | P | P | Polyline3D topology/flags; transform fixtures needed. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
 | POLYLINE: polyface mesh · typed | X | X | X | P | P | P | P | P | P | Topology modeled; index/invisible-edge validation needs fixtures. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
@@ -204,7 +204,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | LIGHT name transport and validation · typed | X | X | X | V | V | T | T | T | T | Unicode, literal backslashes and escape-looking text retained; CR/LF/NUL and null reject before setter mutation. Conservative pre-2007 output guard remains. [LNAME](light-name-transport.md) |
 | OLE2FRAME optional metadata presence · typed | X | X | X | T | T | T | T | T | T | All 64 metadata selections retain absent versus explicit default values through text/binary persistence and cloning without replacing published getters. [OLE2P](ole2frame-optional-metadata.md) |
 | OLEFRAME optional version presence · typed | X | X | X | T | T | T | T | T | T | HasOleVersion and WithOleVersionPresence retain absent versus explicit group70 through text/binary persistence and cloning; required OLE terminator remains. [OLE1P](oleframe-version-presence.md) |
-| LWPOLYLINE counted vertex packets · typed | X | X | X | T | T | T | T | T | T | Declared counts and complete X/Y pairs validated without declaration-sized allocation; per-vertex widths and bulges stay associated when scalar fields surround group20. Existing constant-width policy and group91 omission remain. [LWP](lwpolyline-integrity.md) |
+| LWPOLYLINE counted vertex packets · typed | X | X | X | T | T | T | T | T | T | Declared counts and complete X/Y pairs validated without declaration-sized allocation; per-vertex widths and bulges stay associated when scalar fields surround group 20. Optional width and group 91 retention are qualified by the later fidelity module. [LWP](lwpolyline-integrity.md), [LWPFID](lwpolyline-fidelity.md) |
 | Polyline2D tapered segment reversal · typed | X | X | X | T | T | T | T | T | T | Outgoing bulge and taper data shift to the reversed edge, exchanging start/end widths; open/closed curves, double reversal, clones and persistence checked. [LWP](lwpolyline-integrity.md) |
 | VPORT physical records and configuration lifecycle · typed | X | X | X | T | T | T | T | T | T | First Active record restored; duplicate-name tiles retain distinct identities, handles and XData. Add/remove/promote/rename/clone, observer failure behavior and foreign-registry rejection tested. [VPORT](vport-records.md) |
 | VPORT stored rectangle/camera/snap/render/UCS bundle · typed | X | X | X | T | T | T | T | T | T | Stored scalar flags, points, direction magnitude, camera/clipping values, snap/grid options and unnamed UCS fields persist across all admitted typed profiles and transports; broad modern reference graphs remain partial. [VPORT](vport-records.md) |
@@ -212,6 +212,17 @@ Product release years and database-format families are separate: an AC1032 file 
 | MTEXT embedded column storage · typed | X | X | X | V | V | V | V | V | T | 2018 embedded definition, saved duplicate placement/direction/width and explicit precedence; inconsistent source directions are retained, without renderer-equivalence claims. [MTCOL](mtext-columns.md) |
 | MTEXT direct column tags · typed | X | X | X | V | V | T | T | T | T | Documented counted column packet with context-sensitive code50; authored wire checks. No independent ezdxf interpretation claim for direct tags. [MTCOL](mtext-columns.md) |
 | MTEXT column copy and explicit conversion · typed | X | X | X | T | T | T | T | T | T | Block.Create/Clone/Save and Insert.Clone remap links to actual siblings. Conversion requires exact text partitions and compatible formatting. Unsupported linked transforms fail before mutation. [MTCOL](mtext-columns.md) |
+| LWPOLYLINE optional width representation · typed | X | X | X | T | T | T | T | T | T | Nullable groups 43, 40 and 41 retain absence, explicit zero and conflicting width values. Effective getters follow the qualified ezdxf trace interpretation; existing vertex width properties expose raw values. SetConstantWidth edits vertices and clears group 43. [LWPFID](lwpolyline-fidelity.md) |
+| LWPOLYLINE vertex identifiers · typed | X | X | X | V | V | V | V | T | T | Group 91 signed identifiers follow vertices through clone and reversal. Conservative AC1027/2013 and 2018 export, supported by Autodesk 2015 documentation; no first-product-release assertion. [LWPFID](lwpolyline-fidelity.md) |
+| LWPOLYLINE width transform validation · typed | X | X | X | T | T | T | T | T | T | Supported transforms scale stored widths and preserve presence; unrepresentable wide nonuniform or shear transforms reject before mutation. Reversed geometry is independently compared at 2,448 arc/taper cross-sections. [LWPFID](lwpolyline-fidelity.md) |
+| IDBUFFER ordered reference payload · typed | X | X | X | T | T | T | T | T | T | Null handles, duplicate identities, ordered references and common object metadata; explicit external mappings for cross-document graph clones. [CONT](typed-containers.md) |
+| SPATIAL_FILTER public clipping metadata · typed | X | X | X | T | T | T | T | T | T | Finite rectangle/polygon boundary, nonunit normal/origin, enabled state, optional front/back planes and two affine matrices. Stores public data; does not evaluate clipping or private inverted-XCLIP. [CONT](typed-containers.md) |
+| Typed extension dictionary graph cloning · typed | X | X | X | T | T | T | T | T | T | Automatic source-owner to destination-owner mapping, explicit external reference mappings, destination-slot revalidation after caller enumeration and failure-before-registration guarantees for qualified typed graphs. [CONT](typed-containers.md) |
+| VIEW/VPORT named and base UCS references · typed | X | X | X | T | T | T | T | T | T | Deferred read resolution, optional VIEW UCS bundle, same-document registered targets, exact identity counts and safe removal/rename callbacks. Cross-document clones retain references until explicitly replaced. [VIEWUCS](view-ucs-relationships.md) |
+| UCS table flags · typed | X | X | X | T | T | T | T | T | T | Preserves the full signed group-70 bit field, including known external/dependent/referenced flags and unknown bits. [VIEWUCS](view-ucs-relationships.md) |
+| Common entity color names · typed | X | X | X | V | T | T | T | T | T | Optional group 430, including explicit empty values, literal Unicode escape text and framing controls; cloned by public entities, ATTRIB and ATTDEF. [COMMON](common-entity-data.md) |
+| Common entity shadow mode · typed | X | X | X | V | V | T | T | T | T | Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output. [COMMON](common-entity-data.md) |
+| Common entity opaque proxy cache · typed | X | X | X | T | T | T | T | T | T | Defensive byte copies, absent/empty distinction, ordered chunks, exact counts and a 16 MiB limit; rejects duplicate or invalid common subclasses. Geometry operations preserve the opaque cache; callers clear or regenerate stale data. [COMMON](common-entity-data.md) |
 
 ## 7. Symbol tables
 
@@ -223,9 +234,9 @@ Product release years and database-format families are separate: an AC1032 file 
 | LAYER · typed | X | X | X | P | P | P | P | P | P | Layer/style/color subset; material/plot-style graphs missing. `ReadLayer/WriteLayer`. [B](version-feature-matrix-2026-09-12.md) |
 | LTYPE · typed | X | X | X | P | P | P | P | P | P | Simple/complex text/shape segments; resources/missing-style cases need fixtures. `ReadLinetype/WriteLinetype`. [B](version-feature-matrix-2026-09-12.md) |
 | STYLE · typed | X | X | X | P | P | P | P | P | P | Text/shape styles; defaults/obsolete fields need review. `ReadTextStyle/WriteTextStyle/WriteShapeStyle`. [B](version-feature-matrix-2026-09-12.md) |
-| UCS · typed | X | X | X | P | P | P | P | P | P | Origin/axes, elevation 146, orthographic origin pairs and table XData now retained. Base-UCS references and complete VIEW/VPORT contexts remain open. [UCS](ucs-elevation.md), [ORTHO](ucs-orthographic-origins.md), [UCSX](ucs-table-xdata.md) |
-| VIEW · typed | X | X | X | P | P | P | P | P | P | Public named collection and core camera/target/clip/mode/XData IO. Camera plottability requires 2007+ writer profile; extended UCS/render/background references remain open. [VIEW](named-views.md) |
-| VPORT · typed | X | X | X | P | P | P | P | P | P | Active and named tiled configurations now retain ordered physical records, handles, XData, core rectangle/camera/snap/render fields and stored UCS coordinates. Linked UCS, frozen layers and rendering object graphs remain partial. [VPORT](vport-records.md) |
+| UCS · typed | X | X | X | P | P | P | P | P | P | Origin/axes, elevation, orthographic origin pairs, XData and raw table flags retained. UCS records referenced by VIEW/VPORT have identity-aware lifecycle tracking. The ambiguous UCS-record group 346/79 schema remains unqualified. [UCS](ucs-elevation.md), [ORTHO](ucs-orthographic-origins.md), [UCSX](ucs-table-xdata.md), [VIEWUCS](view-ucs-relationships.md) |
+| VIEW · typed | X | X | X | P | P | P | P | P | P | Named collection, camera/target/clip/mode/XData and optional UCS bundle with named/base-UCS references. Camera plottability requires 2007+ writer profile; rendering/background/visual-style graphs remain open. [VIEW](named-views.md), [VIEWUCS](view-ucs-relationships.md) |
+| VPORT · typed | X | X | X | P | P | P | P | P | P | Ordered physical configurations, handles, XData and stored rectangle/camera/snap/render/UCS fields plus named/base-UCS references. Frozen layers and rendering object graphs remain partial. [VPORT](vport-records.md), [VIEWUCS](view-ucs-relationships.md) |
 
 ## 8. Objects
 
@@ -247,8 +258,8 @@ Product release years and database-format families are separate: an AC1032 file 
 | DATATABLE · typed | X | X | X | M | M | M | M | M | M | Object data table schema. [B](version-feature-matrix-2026-09-12.md) |
 | DIMASSOC · typed | X | X | X | M | M | M | M | M | M | Associative dimension records/links. [B](version-feature-matrix-2026-09-12.md) |
 | FIELD · typed | X | X | X | M | M | M | M | M | M | Field expression/evaluation records. [B](version-feature-matrix-2026-09-12.md) |
-| GEODATA · typed | X | X | X | M | M | M | M | M | M | Georeferencing object. [B](version-feature-matrix-2026-09-12.md) |
-| IDBUFFER / OBJECT_PTR · typed | X | X | X | M | M | M | M | M | M | Pointer-container records. [B](version-feature-matrix-2026-09-12.md) |
+| GEODATA · typed | X | X | X | V | V | V | T | T | T | Public version-2 schema: host ownership, coordinate metadata, chunked coordinate-system XML, observation strings and mesh point/face data. Explicit clone mappings and atomic attachment. Version 1/3 and private schemas remain opaque; no CRS evaluation or geographic transformation service. [GEODATA](geodata.md) |
+| IDBUFFER / OBJECT_PTR · typed | X | X | X | P | P | P | P | P | P | IDBUFFER has typed ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR remains missing. [CONT](typed-containers.md) |
 | LAYER_FILTER / LAYER_INDEX · typed | X | X | X | M | M | M | M | M | M | Layer filters/indexes. [B](version-feature-matrix-2026-09-12.md) |
 | LIGHTLIST · typed | X | X | X | M | M | M | M | M | M | Light-object lists. [B](version-feature-matrix-2026-09-12.md) |
 | MATERIAL · typed | X | X | X | M | M | M | M | M | M | Materials/textures/mappers and references. [B](version-feature-matrix-2026-09-12.md) |
@@ -256,8 +267,8 @@ Product release years and database-format families are separate: an AC1032 file 
 | RENDERENVIRONMENT / RENDERGLOBAL · typed | X | X | X | M | M | M | M | M | M | Environment/global records. [B](version-feature-matrix-2026-09-12.md) |
 | RAPIDRTRENDERENVIRONMENT / RAPIDRTRENDERSETTINGS · typed | X | X | X | M | M | M | M | M | M | RapidRT families. [B](version-feature-matrix-2026-09-12.md) |
 | SECTION manager/settings/type/geometry objects · typed | X | X | X | M | M | M | M | M | M | Section-settings graph. [B](version-feature-matrix-2026-09-12.md) |
-| SORTENTSTABLE · typed | X | X | X | M | M | M | M | M | M | Draw-order records. [B](version-feature-matrix-2026-09-12.md) |
-| SPATIAL_FILTER / SPATIAL_INDEX · typed | X | X | X | M | M | M | M | M | M | Spatial clipping/filter/index graph. [B](version-feature-matrix-2026-09-12.md) |
+| SORTENTSTABLE · typed | X | X | X | V | T | T | T | T | T | Typed block draw order, exact opaque sort keys and association order; extension ownership and entity uniqueness enforced. Opaque keys never reserve document handles. Conservative 2004+ export; no native redraw qualification. [CONT](typed-containers.md) |
+| SPATIAL_FILTER / SPATIAL_INDEX · typed | X | X | X | P | P | P | P | P | P | Typed SPATIAL_FILTER rectangle/polygon boundary, normal/origin, optional planes and two affine matrices with extension ownership. SPATIAL_INDEX and private inverted-XCLIP records remain missing; no clipping evaluation. [CONT](typed-containers.md) |
 | SUN / SUNSTUDY · typed | X | X | X | M | M | M | M | M | M | Sun configuration/study objects. [B](version-feature-matrix-2026-09-12.md) |
 | TABLESTYLE · typed | X | X | X | M | M | M | M | M | M | Table style schema. [B](version-feature-matrix-2026-09-12.md) |
 | VBA_PROJECT · typed | X | X | X | M | M | M | M | M | M | Inert VBA payload preservation, not execution. [B](version-feature-matrix-2026-09-12.md) |
@@ -272,7 +283,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | RGB true color · typed | X | X | X | P | P | P | P | P | P | 420 emitted without complete version policy; TrueColor appears in 2004 API history. [B](version-feature-matrix-2026-09-12.md) |
 | Transparency · typed | X | X | X | P | P | P | P | P | P | 440 path exists; version eligibility/all flags unverified. [B](version-feature-matrix-2026-09-12.md) |
 | Material / plot-style references · typed | X | X | X | M | M | M | M | M | M | Common 347/390 graph relationships incomplete. [B](version-feature-matrix-2026-09-12.md) |
-| Color names / shadow mode / proxy graphics · typed | X | X | X | M | M | M | M | M | M | Common 430,284,92/310 paths absent. [B](version-feature-matrix-2026-09-12.md) |
+| Color names / shadow mode / proxy graphics · typed | X | X | X | P | P | P | P | P | P | EntityObject, ATTRIB and ATTDEF retain optional 430 (2004+), 284 (2007+) and bounded opaque proxy bytes (all admitted profiles; canonical count code 160 from 2013). Internal VERTEX metadata and proxy evaluation remain outside this subset. [COMMON](common-entity-data.md) |
 | XData basic typed records · typed | X | X | X | P | P | P | P | P | P | Basic records/APPID registration; binary clone storage is now isolated. Full type-dependent transforms, quotas and handle-closure remapping remain open. [XDCL](xdata-clone.md), [B](version-feature-matrix-2026-09-12.md) |
 | XData binary round trips · typed | X | X | X | T | T | T | T | T | T | Exact bytes/chunk counts across all formats and transports, #4. [B](version-feature-matrix-2026-09-12.md) |
 | Extension dictionaries / persistent reactors · typed | X | X | X | P | P | P | P | P | P | Selected relationships; arbitrary dependency closure absent. [B](version-feature-matrix-2026-09-12.md) |
@@ -332,9 +343,9 @@ Product release years and database-format families are separate: an AC1032 file 
 | Workstream | Required scope |
 |---|---|
 | Class-specific dependencies and typed integration | Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented. |
-| Finish partial typed records | HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships; LWPOLYLINE vertex identifiers and constant-width representation; common color-name/shadow/proxy-graphics fields. MTEXT column storage is implemented; rendering, layout and annotation contexts remain open. Existing Save remains nontransactional; SaveAtomic is opt-in. |
+| Finish partial typed records | HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in. |
 | Missing typed entity families | MULTILEADER, structured TABLE, SECTION and proxy/ACIS/surface payload families. HELIX, published LIGHT parameters and inert OLEFRAME/OLE2FRAME are implemented with scoped limitations. |
-| Missing object families | Typed draw-order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. Generic dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders are implemented; draw-order editing exists in the separate raw transaction API. |
+| Missing object families | MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC, OBJECT_PTR/SPATIAL_INDEX, MATERIAL/VISUALSTYLE/rendering and sun families. Typed IDBUFFER, SORTENTSTABLE, SPATIAL_FILTER and public GEODATA version 2 now join dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders. Other GEODATA versions and private payloads remain unqualified. |
 | Historical typed dialects and schema-aware down-save | R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit per-property downgrade reports. Marker safety on raw profiles is not proof of historical feature legality. |
 | Native interoperability and robustness | Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Expand independent corpora, resource accounting, fuzzing and actual older-runtime execution; netstandard2.0 compilation is not execution on every consumer runtime. |
 
@@ -342,7 +353,7 @@ Feature changes require reviewable PRs, independently authored positive and malf
 
 ## 15. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **19,948 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **21,097 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 

@@ -32,7 +32,7 @@ namespace netDxf.Collections
     /// <summary>
     /// Represents a collection of user coordinate systems.
     /// </summary>
-    /// <remarks>The UCSs collection method GetReferences will always return an empty list since there are no DxfObjects that references them.</remarks>
+    /// <remarks>Named VIEWs and VPORT records retain references to registered UCS entries.</remarks>
     public sealed class UCSs :
         TableObjects<UCS>
     {
@@ -73,17 +73,21 @@ namespace netDxf.Collections
                 return add;
             }
 
+            if (ucs.Owner != null && ucs.Owner != this) throw new ArgumentException("Clone the table record before moving it between documents.", nameof(ucs));
+            UcsReferences.ValidateXData(ucs, this.Owner);
+            UcsReferences.Validate(ucs, this.Owner);
+
             if (assignHandle || string.IsNullOrEmpty(ucs.Handle))
             {
                 this.Owner.NumHandles = ucs.AssignHandle(this.Owner.NumHandles);
             }
 
             this.List.Add(ucs.Name, ucs);
-            this.References.Add(ucs.Name, new DxfObjectReferences());
+            this.References.Add(ucs.Name, new DxfObjectReferences(true));
 
             ucs.Owner = this;
+            UcsReferences.Register(ucs);
 
-            ucs.NameChanged += this.Item_NameChanged;
 
             this.Owner.AddedObjects.Add(ucs.Handle, ucs);
 
@@ -114,7 +118,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!ReferenceEquals(item.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }
@@ -129,6 +133,7 @@ namespace netDxf.Collections
                 return false;
             }
 
+            UcsReferences.Unregister(item);
             this.Owner.AddedObjects.Remove(item.Handle);
             this.References.Remove(item.Name);
             this.List.Remove(item.Name);
@@ -136,7 +141,6 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
 
             return true;
         }
@@ -145,20 +149,17 @@ namespace netDxf.Collections
 
         #region UCS events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateRecordRename(UCS record, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
+            if (this.List.TryGetValue(newName, out UCS existing) && !ReferenceEquals(existing, record))
                 throw new ArgumentException("There is already another UCS with the same name.");
-            }
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (UCS) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitRecordRename(UCS record, string newName)
+        {
+            DxfObjectReferences references = this.References[record.Name];
+            this.List.Remove(record.Name); this.References.Remove(record.Name);
+            this.List.Add(newName, record); this.References.Add(newName, references);
         }
 
         #endregion

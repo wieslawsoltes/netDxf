@@ -43,7 +43,7 @@ namespace netDxf.IO
                     code == 130 || code == 111 || code == 121 || code == 131 || code == 112 || code == 122 || code == 132 ||
                     code == 40 || code == 41 || code == 42 || code == 43 || code == 44 || code == 50 || code == 51 ||
                     code == 70 || code == 71 || code == 72 || code == 73 || code == 74 || code == 75 || code == 76 ||
-                    code == 77 || code == 78 || code == 281 || code == 65 || code == 79 || code == 146;
+                    code == 77 || code == 78 || code == 281 || code == 65 || code == 79 || code == 146 || code == 345 || code == 346;
                 if (known && !seen.Add(code)) throw new InvalidDataException("Duplicate VPORT group " + code + ".");
                 try
                 {
@@ -97,6 +97,8 @@ namespace netDxf.IO
                         case 65: vport.UcsPerViewport = this.ReadVPortBoolean(); break;
                         case 79: vport.UcsOrthographicType = this.chunk.ReadShort(); break;
                         case 146: vport.UcsElevation = this.chunk.ReadDouble(); break;
+                        case 345:
+                        case 346: this.AddUcsReference(vport, code, this.chunk.ReadHex()); break;
                         default:
                             if (code >= 1000 && code <= 1071)
                                 throw new InvalidDataException("VPORT XData must start with an application registry.");
@@ -207,6 +209,8 @@ namespace netDxf.IO
             this.chunk.Write(65, vp.UcsPerViewport ? (short)1 : (short)0);
             this.chunk.Write(79, vp.UcsOrthographicType);
             this.chunk.Write(146, vp.UcsElevation);
+            if (vp.NamedUcs != null) this.chunk.Write(345, vp.NamedUcs.Handle);
+            if (vp.BaseUcs != null) this.chunk.Write(346, vp.BaseUcs.Handle);
             this.WriteXData(vp.XData);
         }
     }

@@ -327,6 +327,7 @@ namespace netDxf.IO
             // perform all necessary post processes
             this.PostProcesses();
             this.ResolveMTextColumnLinks();
+            this.ResolveUcsReferences();
             this.ImportDatabaseObjects();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
@@ -2782,6 +2783,8 @@ namespace netDxf.IO
             Vector3 xDir = Vector3.UnitX;
             Vector3 yDir = Vector3.UnitY;
             double elevation = 0.0;
+            UcsFlags flags = UcsFlags.None;
+            var relationshipCodes = new HashSet<short>();
             Dictionary<UcsOrthographicType, Vector3> orthographicOrigins = new Dictionary<UcsOrthographicType, Vector3>();
             UcsOrthographicType orthographicType = 0;
             Vector3 orthographicOrigin = Vector3.Zero;
@@ -2834,6 +2837,12 @@ namespace netDxf.IO
                         yDir.Z = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
+                    case 70:
+                        if (!relationshipCodes.Add(70)) throw new InvalidDataException("Duplicate UCS flags.");
+                        flags = (UcsFlags)this.chunk.ReadShort(); this.chunk.Next(); break;
+                    case 79:
+                        if (!relationshipCodes.Add(79) || this.chunk.ReadShort() != 0) throw new InvalidDataException("UCS table group 79 is reserved and must be zero.");
+                        this.chunk.Next(); break;
                     case 71:
                         CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
                         orthographicType = (UcsOrthographicType) this.chunk.ReadShort();
@@ -2884,7 +2893,7 @@ namespace netDxf.IO
                 return null;
             }
 
-            UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation };
+            UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation, Flags = flags };
             foreach (KeyValuePair<UcsOrthographicType, Vector3> pair in orthographicOrigins)
             {
                 ucs.SetOrthographicOrigin(pair.Key, pair.Value);
@@ -3317,6 +3326,7 @@ namespace netDxf.IO
             double linetypeScale = 1.0;
             bool isVisible = true;
             Transparency transparency = Transparency.ByLayer;
+            var commonData = new EntityCommonDataReader();
 
             AttributeFlags flags = AttributeFlags.None;
             Vector3 firstAlignmentPoint = Vector3.Zero;
@@ -3353,6 +3363,8 @@ namespace netDxf.IO
             }
 
             // AcDbEntity common codes
+            if (this.chunk.ReadString() != SubclassMarker.Entity)
+                throw new InvalidDataException("Expected AcDbEntity common subclass for ATTRIB.");
             this.chunk.Next();
             while (this.chunk.Code != 100)
             {
@@ -3374,6 +3386,14 @@ namespace netDxf.IO
                         break;
                     case 440: //transparency
                         transparency = Transparency.FromAlphaValue(this.chunk.ReadInt());
+                        this.chunk.Next();
+                        break;
+                    case 430:
+                    case 284:
+                    case 92:
+                    case 160:
+                    case 310:
+                        this.ReadEntityCommonData(commonData);
                         this.chunk.Next();
                         break;
                     case 420: // the entity uses true color
@@ -3402,6 +3422,10 @@ namespace netDxf.IO
                         break;
                 }
             }
+
+            commonData.Complete();
+            if (this.chunk.ReadString() == SubclassMarker.Entity)
+                throw new InvalidDataException("Duplicate AcDbEntity common subclass.");
 
             AttributeDefinition attDef = null;
             string attTag = string.Empty;
@@ -3587,6 +3611,9 @@ namespace netDxf.IO
                 IsUpsideDown = isUpsideDown
             };
 
+            attribute.ColorName = commonData.ColorName;
+            attribute.ShadowMode = commonData.ShadowMode;
+            attribute.ProxyGraphics = commonData.ProxyGraphics;
             attribute.XData.AddRange(xData);
 
             return attribute;
@@ -3607,6 +3634,7 @@ namespace netDxf.IO
             double linetypeScale = 1.0;
             bool isVisible = true;
             Transparency transparency = Transparency.ByLayer;
+            var commonData = new EntityCommonDataReader();
 
             DxfObject dxfObject;
 
@@ -3643,7 +3671,8 @@ namespace netDxf.IO
             }
 
             // AcDbEntity common codes
-            Debug.Assert(this.chunk.ReadString() == SubclassMarker.Entity);
+            if (this.chunk.ReadString() != SubclassMarker.Entity)
+                throw new InvalidDataException("Expected AcDbEntity common subclass.");
             this.chunk.Next();
             while (this.chunk.Code != 100)
             {
@@ -3661,6 +3690,14 @@ namespace netDxf.IO
                         {
                             color = AciColor.FromCadIndex(this.chunk.ReadShort());
                         }
+                        this.chunk.Next();
+                        break;
+                    case 430:
+                    case 284:
+                    case 92:
+                    case 160:
+                    case 310:
+                        this.ReadEntityCommonData(commonData);
                         this.chunk.Next();
                         break;
                     case 420: //the entity uses true color
@@ -3697,6 +3734,10 @@ namespace netDxf.IO
                         break;
                 }
             }
+
+            commonData.Complete();
+            if (this.chunk.ReadString() == SubclassMarker.Entity)
+                throw new InvalidDataException("Duplicate AcDbEntity common subclass.");
 
             switch (dxfCode)
             {
@@ -3845,6 +3886,9 @@ namespace netDxf.IO
                 entity.LinetypeScale = linetypeScale;
                 entity.IsVisible = isVisible;
                 entity.Transparency = transparency;
+                entity.ColorName = commonData.ColorName;
+                entity.ShadowMode = commonData.ShadowMode;
+                entity.ProxyGraphics = commonData.ProxyGraphics;
             }
 
             if (dxfObject is AttributeDefinition attDef)
@@ -3856,6 +3900,9 @@ namespace netDxf.IO
                 attDef.LinetypeScale = linetypeScale;
                 attDef.IsVisible = isVisible;
                 attDef.Transparency = transparency;
+                attDef.ColorName = commonData.ColorName;
+                attDef.ShadowMode = commonData.ShadowMode;
+                attDef.ProxyGraphics = commonData.ProxyGraphics;
             }
 
             // the entities list will be processed at the end

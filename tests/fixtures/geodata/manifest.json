@@ -1,0 +1,350 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "fixtures": [
+    {
+      "file": "independent-geodata-R2010.dxf",
+      "sha256": "13dc5c813acb7ad7e899cae726a19fd750f7d0cfa8e045843009eca639363d77",
+      "version": "AC1024",
+      "geodata": "32",
+      "owner": "31",
+      "block_record": "17",
+      "attributes": {
+        "version": 2,
+        "block_record_handle": "17",
+        "coordinate_type": 1,
+        "design_point": [
+          1000000.0000000002,
+          -123.75,
+          50.5
+        ],
+        "reference_point": [
+          11.576124,
+          48.137154,
+          500.25
+        ],
+        "horizontal_unit_scale": 0.3048,
+        "horizontal_units": 2,
+        "vertical_unit_scale": 0.0254,
+        "vertical_units": 1,
+        "up_direction": [
+          2,
+          3,
+          4
+        ],
+        "north_direction": [
+          3,
+          4
+        ],
+        "scale_estimation_method": 2,
+        "user_scale_factor": 0.9996,
+        "sea_level_correction": 0,
+        "sea_level_elevation": -17.25,
+        "coordinate_projection_radius": 6378137.0,
+        "geo_rss_tag": "<georss:point>48.137154 11.576124</georss:point>",
+        "observation_from_tag": "survey origin \u017b\u00f3\u0142\u0107",
+        "observation_to_tag": "survey target \u6771\u4eac",
+        "observation_coverage_tag": "five anchors; four triangles",
+        "owner": "31"
+      },
+      "coordinate_system_definition": "<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\" ?>\n<!-- independent QA: \u017b\u00f3\u0142\u0107 \u6771\u4eac; coordinate definition spans many255-character chunks -->\n<Dictionary version=\"1.0\" xmlns=\"http://www.osgeo.org/mapguide/coordinatesystem\">\n\n<ProjectedCoordinateSystem id=\"WORLD-MERCATOR\">\n<Name>WORLD-MERCATOR</Name>\n<AdditionalInformation>\n<ParameterItem type=\"CsMap\">\n<Key>CSQuadrantSimplified</Key>\n<IntegerValue>1</IntegerValue>\n</ParameterItem>\n</AdditionalInformation>\n<DomainOfValidity>\n<Extent>\n<GeographicElement>\n<GeographicBoundingBox>\n<WestBoundLongitude>-180.75</WestBoundLongitude>\n<EastBoundLongitude>180.75</EastBoundLongitude>\n<SouthBoundLatitude>-80.75</SouthBoundLatitude>\n<NorthBoundLatitude>84.75</NorthBoundLatitude>\n</GeographicBoundingBox>\n</GeographicElement>\n</Extent>\n</DomainOfValidity>\n<DatumId>WGS84</DatumId>\n<Axis uom=\"Meter\">\n<CoordinateSystemAxis>\n<AxisOrder>1</AxisOrder>\n<AxisName>Easting</AxisName>\n<AxisAbbreviation>E</AxisAbbreviation>\n<AxisDirection>East</AxisDirection>\n</CoordinateSystemAxis>\n<CoordinateSystemAxis>\n<AxisOrder>2</AxisOrder>\n<AxisName>Northing</AxisName>\n<AxisAbbreviation>N</AxisAbbreviation>\n<AxisDirection>North</AxisDirection>\n</CoordinateSystemAxis>\n</Axis>\n<Conversion>\n<Projection>\n<OperationMethodId>Mercator (variant B)</OperationMethodId>\n<ParameterValue><OperationParameterId>Longitude of natural origin</OperationParameterId><Value uom=\"degree\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>Standard Parallel</OperationParameterId><Value uom=\"degree\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>Scaling factor for coord differences</OperationParameterId><Value uom=\"unity\">1</Value></ParameterValue>\n<ParameterValue><OperationParameterId>False easting</OperationParameterId><Value uom=\"Meter\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>False northing</OperationParameterId><Value uom=\"Meter\">0</Value></ParameterValue>\n</Projection>\n</Conversion>\n</ProjectedCoordinateSystem>\n<Alias id=\"3395\" type=\"CoordinateSystem\">\n<ObjectId>WORLD-MERCATOR</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n<GeodeticDatum id=\"WGS84\">\n<Name>WGS84</Name>\n<PrimeMeridianId>Greenwich</PrimeMeridianId>\n<EllipsoidId>WGS84</EllipsoidId>\n</GeodeticDatum>\n<Alias id=\"6326\" type=\"Datum\">\n<ObjectId>WGS84</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n<Ellipsoid id=\"WGS84\">\n<Name>WGS84</Name>\n<SemiMajorAxis uom=\"meter\">6.37814e+06</SemiMajorAxis>\n<SecondDefiningParameter>\n<SemiMinorAxis uom=\"meter\">6.35675e+06</SemiMinorAxis>\n</SecondDefiningParameter>\n</Ellipsoid>\n<Alias id=\"7030\" type=\"Ellipsoid\">\n<ObjectId>WGS84</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n</Dictionary>\n",
+      "source_vertices": [
+        [
+          -10.5,
+          -20.25
+        ],
+        [
+          30.125,
+          -20.25
+        ],
+        [
+          30.125,
+          40.5
+        ],
+        [
+          -10.5,
+          40.5
+        ],
+        [
+          1.25,
+          2.75
+        ]
+      ],
+      "target_vertices": [
+        [
+          11.4,
+          48.1
+        ],
+        [
+          11.6,
+          48.1
+        ],
+        [
+          11.6,
+          48.3
+        ],
+        [
+          11.4,
+          48.3
+        ],
+        [
+          11.5,
+          48.2
+        ]
+      ],
+      "faces": [
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          1,
+          2,
+          4
+        ],
+        [
+          2,
+          3,
+          4
+        ],
+        [
+          3,
+          0,
+          4
+        ]
+      ],
+      "line": "30",
+      "reference_record": "34"
+    },
+    {
+      "file": "independent-geodata-R2013.dxf",
+      "sha256": "11bb02f9d0a4f02550057adcdc647a6a79db758059242bcd857da7d197d970a5",
+      "version": "AC1027",
+      "geodata": "32",
+      "owner": "31",
+      "block_record": "17",
+      "attributes": {
+        "version": 2,
+        "block_record_handle": "17",
+        "coordinate_type": 1,
+        "design_point": [
+          1000000.0000000002,
+          -123.75,
+          50.5
+        ],
+        "reference_point": [
+          11.576124,
+          48.137154,
+          500.25
+        ],
+        "horizontal_unit_scale": 0.3048,
+        "horizontal_units": 2,
+        "vertical_unit_scale": 0.0254,
+        "vertical_units": 1,
+        "up_direction": [
+          2,
+          3,
+          4
+        ],
+        "north_direction": [
+          3,
+          4
+        ],
+        "scale_estimation_method": 3,
+        "user_scale_factor": 0.9996,
+        "sea_level_correction": 1,
+        "sea_level_elevation": -17.25,
+        "coordinate_projection_radius": 6378137.0,
+        "geo_rss_tag": "<georss:point>48.137154 11.576124</georss:point>",
+        "observation_from_tag": "survey origin \u017b\u00f3\u0142\u0107",
+        "observation_to_tag": "survey target \u6771\u4eac",
+        "observation_coverage_tag": "five anchors; four triangles",
+        "owner": "31"
+      },
+      "coordinate_system_definition": "<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\" ?>\n<!-- independent QA: \u017b\u00f3\u0142\u0107 \u6771\u4eac; coordinate definition spans many255-character chunks -->\n<Dictionary version=\"1.0\" xmlns=\"http://www.osgeo.org/mapguide/coordinatesystem\">\n\n<ProjectedCoordinateSystem id=\"WORLD-MERCATOR\">\n<Name>WORLD-MERCATOR</Name>\n<AdditionalInformation>\n<ParameterItem type=\"CsMap\">\n<Key>CSQuadrantSimplified</Key>\n<IntegerValue>1</IntegerValue>\n</ParameterItem>\n</AdditionalInformation>\n<DomainOfValidity>\n<Extent>\n<GeographicElement>\n<GeographicBoundingBox>\n<WestBoundLongitude>-180.75</WestBoundLongitude>\n<EastBoundLongitude>180.75</EastBoundLongitude>\n<SouthBoundLatitude>-80.75</SouthBoundLatitude>\n<NorthBoundLatitude>84.75</NorthBoundLatitude>\n</GeographicBoundingBox>\n</GeographicElement>\n</Extent>\n</DomainOfValidity>\n<DatumId>WGS84</DatumId>\n<Axis uom=\"Meter\">\n<CoordinateSystemAxis>\n<AxisOrder>1</AxisOrder>\n<AxisName>Easting</AxisName>\n<AxisAbbreviation>E</AxisAbbreviation>\n<AxisDirection>East</AxisDirection>\n</CoordinateSystemAxis>\n<CoordinateSystemAxis>\n<AxisOrder>2</AxisOrder>\n<AxisName>Northing</AxisName>\n<AxisAbbreviation>N</AxisAbbreviation>\n<AxisDirection>North</AxisDirection>\n</CoordinateSystemAxis>\n</Axis>\n<Conversion>\n<Projection>\n<OperationMethodId>Mercator (variant B)</OperationMethodId>\n<ParameterValue><OperationParameterId>Longitude of natural origin</OperationParameterId><Value uom=\"degree\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>Standard Parallel</OperationParameterId><Value uom=\"degree\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>Scaling factor for coord differences</OperationParameterId><Value uom=\"unity\">1</Value></ParameterValue>\n<ParameterValue><OperationParameterId>False easting</OperationParameterId><Value uom=\"Meter\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>False northing</OperationParameterId><Value uom=\"Meter\">0</Value></ParameterValue>\n</Projection>\n</Conversion>\n</ProjectedCoordinateSystem>\n<Alias id=\"3395\" type=\"CoordinateSystem\">\n<ObjectId>WORLD-MERCATOR</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n<GeodeticDatum id=\"WGS84\">\n<Name>WGS84</Name>\n<PrimeMeridianId>Greenwich</PrimeMeridianId>\n<EllipsoidId>WGS84</EllipsoidId>\n</GeodeticDatum>\n<Alias id=\"6326\" type=\"Datum\">\n<ObjectId>WGS84</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n<Ellipsoid id=\"WGS84\">\n<Name>WGS84</Name>\n<SemiMajorAxis uom=\"meter\">6.37814e+06</SemiMajorAxis>\n<SecondDefiningParameter>\n<SemiMinorAxis uom=\"meter\">6.35675e+06</SemiMinorAxis>\n</SecondDefiningParameter>\n</Ellipsoid>\n<Alias id=\"7030\" type=\"Ellipsoid\">\n<ObjectId>WGS84</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n</Dictionary>\n",
+      "source_vertices": [
+        [
+          -10.5,
+          -20.25
+        ],
+        [
+          30.125,
+          -20.25
+        ],
+        [
+          30.125,
+          40.5
+        ],
+        [
+          -10.5,
+          40.5
+        ],
+        [
+          1.25,
+          2.75
+        ]
+      ],
+      "target_vertices": [
+        [
+          11.4,
+          48.1
+        ],
+        [
+          11.6,
+          48.1
+        ],
+        [
+          11.6,
+          48.3
+        ],
+        [
+          11.4,
+          48.3
+        ],
+        [
+          11.5,
+          48.2
+        ]
+      ],
+      "faces": [
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          1,
+          2,
+          4
+        ],
+        [
+          2,
+          3,
+          4
+        ],
+        [
+          3,
+          0,
+          4
+        ]
+      ],
+      "line": "30",
+      "reference_record": "34"
+    },
+    {
+      "file": "independent-geodata-R2018.dxf",
+      "sha256": "eaf905dcb1c6177cb91c80d9f6d5cc53b45dd2b3b5f3eb7b976402064492cf69",
+      "version": "AC1032",
+      "geodata": "32",
+      "owner": "31",
+      "block_record": "17",
+      "attributes": {
+        "version": 2,
+        "block_record_handle": "17",
+        "coordinate_type": 1,
+        "design_point": [
+          1000000.0000000002,
+          -123.75,
+          50.5
+        ],
+        "reference_point": [
+          11.576124,
+          48.137154,
+          500.25
+        ],
+        "horizontal_unit_scale": 0.3048,
+        "horizontal_units": 2,
+        "vertical_unit_scale": 0.0254,
+        "vertical_units": 1,
+        "up_direction": [
+          2,
+          3,
+          4
+        ],
+        "north_direction": [
+          3,
+          4
+        ],
+        "scale_estimation_method": 4,
+        "user_scale_factor": 0.9996,
+        "sea_level_correction": 1,
+        "sea_level_elevation": -17.25,
+        "coordinate_projection_radius": 6378137.0,
+        "geo_rss_tag": "<georss:point>48.137154 11.576124</georss:point>",
+        "observation_from_tag": "survey origin \u017b\u00f3\u0142\u0107",
+        "observation_to_tag": "survey target \u6771\u4eac",
+        "observation_coverage_tag": "five anchors; four triangles",
+        "owner": "31"
+      },
+      "coordinate_system_definition": "<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\" ?>\n<!-- independent QA: \u017b\u00f3\u0142\u0107 \u6771\u4eac; coordinate definition spans many255-character chunks -->\n<Dictionary version=\"1.0\" xmlns=\"http://www.osgeo.org/mapguide/coordinatesystem\">\n\n<ProjectedCoordinateSystem id=\"WORLD-MERCATOR\">\n<Name>WORLD-MERCATOR</Name>\n<AdditionalInformation>\n<ParameterItem type=\"CsMap\">\n<Key>CSQuadrantSimplified</Key>\n<IntegerValue>1</IntegerValue>\n</ParameterItem>\n</AdditionalInformation>\n<DomainOfValidity>\n<Extent>\n<GeographicElement>\n<GeographicBoundingBox>\n<WestBoundLongitude>-180.75</WestBoundLongitude>\n<EastBoundLongitude>180.75</EastBoundLongitude>\n<SouthBoundLatitude>-80.75</SouthBoundLatitude>\n<NorthBoundLatitude>84.75</NorthBoundLatitude>\n</GeographicBoundingBox>\n</GeographicElement>\n</Extent>\n</DomainOfValidity>\n<DatumId>WGS84</DatumId>\n<Axis uom=\"Meter\">\n<CoordinateSystemAxis>\n<AxisOrder>1</AxisOrder>\n<AxisName>Easting</AxisName>\n<AxisAbbreviation>E</AxisAbbreviation>\n<AxisDirection>East</AxisDirection>\n</CoordinateSystemAxis>\n<CoordinateSystemAxis>\n<AxisOrder>2</AxisOrder>\n<AxisName>Northing</AxisName>\n<AxisAbbreviation>N</AxisAbbreviation>\n<AxisDirection>North</AxisDirection>\n</CoordinateSystemAxis>\n</Axis>\n<Conversion>\n<Projection>\n<OperationMethodId>Mercator (variant B)</OperationMethodId>\n<ParameterValue><OperationParameterId>Longitude of natural origin</OperationParameterId><Value uom=\"degree\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>Standard Parallel</OperationParameterId><Value uom=\"degree\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>Scaling factor for coord differences</OperationParameterId><Value uom=\"unity\">1</Value></ParameterValue>\n<ParameterValue><OperationParameterId>False easting</OperationParameterId><Value uom=\"Meter\">0</Value></ParameterValue>\n<ParameterValue><OperationParameterId>False northing</OperationParameterId><Value uom=\"Meter\">0</Value></ParameterValue>\n</Projection>\n</Conversion>\n</ProjectedCoordinateSystem>\n<Alias id=\"3395\" type=\"CoordinateSystem\">\n<ObjectId>WORLD-MERCATOR</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n<GeodeticDatum id=\"WGS84\">\n<Name>WGS84</Name>\n<PrimeMeridianId>Greenwich</PrimeMeridianId>\n<EllipsoidId>WGS84</EllipsoidId>\n</GeodeticDatum>\n<Alias id=\"6326\" type=\"Datum\">\n<ObjectId>WGS84</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n<Ellipsoid id=\"WGS84\">\n<Name>WGS84</Name>\n<SemiMajorAxis uom=\"meter\">6.37814e+06</SemiMajorAxis>\n<SecondDefiningParameter>\n<SemiMinorAxis uom=\"meter\">6.35675e+06</SemiMinorAxis>\n</SecondDefiningParameter>\n</Ellipsoid>\n<Alias id=\"7030\" type=\"Ellipsoid\">\n<ObjectId>WGS84</ObjectId>\n<Namespace>EPSG Code</Namespace>\n</Alias>\n\n</Dictionary>\n",
+      "source_vertices": [
+        [
+          -10.5,
+          -20.25
+        ],
+        [
+          30.125,
+          -20.25
+        ],
+        [
+          30.125,
+          40.5
+        ],
+        [
+          -10.5,
+          40.5
+        ],
+        [
+          1.25,
+          2.75
+        ]
+      ],
+      "target_vertices": [
+        [
+          11.4,
+          48.1
+        ],
+        [
+          11.6,
+          48.1
+        ],
+        [
+          11.6,
+          48.3
+        ],
+        [
+          11.4,
+          48.3
+        ],
+        [
+          11.5,
+          48.2
+        ]
+      ],
+      "faces": [
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          1,
+          2,
+          4
+        ],
+        [
+          2,
+          3,
+          4
+        ],
+        [
+          3,
+          0,
+          4
+        ]
+      ],
+      "line": "30",
+      "reference_record": "34"
+    }
+  ]
+}

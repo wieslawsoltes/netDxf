@@ -4,15 +4,18 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterCommonEntityDataTests();
         RegisterIntegratedDatabaseTests();
         RegisterBinarySentinelTests();
         RegisterLwPolylineIntegrityTests();
+        RegisterLwPolylineFidelityTests();
         RegisterBinaryChunkTests();
         RegisterXDataCloneTests();
         RegisterUcsElevationTests();
         RegisterNamedViewTests();
         RegisterVPortWireTests();
         RegisterVPortApiTests();
+        RegisterViewUcsTests();
         RegisterTextFramingTests();
         RegisterMinimalDocumentTests();
         RegisterHeaderProbeTests();

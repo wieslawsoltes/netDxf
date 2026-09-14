@@ -39,6 +39,8 @@ namespace netDxf.Entities
         private double startWidth;
         private double endWidth;
         private double bulge;
+        private bool hasStartWidth;
+        private bool hasEndWidth;
 
         #endregion
 
@@ -105,6 +107,9 @@ namespace netDxf.Entities
             this.bulge = vertex.Bulge;
             this.startWidth = vertex.startWidth;
             this.endWidth = vertex.EndWidth;
+            this.hasStartWidth = vertex.hasStartWidth;
+            this.hasEndWidth = vertex.hasEndWidth;
+            this.VertexIdentifier = vertex.VertexIdentifier;
         }
 
         #endregion
@@ -129,11 +134,9 @@ namespace netDxf.Entities
             get { return this.startWidth; }
             set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "The vertex start width must be equals or greater than zero.");
-                }
+                Polyline2D.ValidateWidth(value, nameof(value));
                 this.startWidth = value;
+                this.hasStartWidth = true;
             }
         }
 
@@ -146,11 +149,40 @@ namespace netDxf.Entities
             get { return this.endWidth; }
             set
             {
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "The vertex end width must be equals or greater than zero.");
+                Polyline2D.ValidateWidth(value, nameof(value));
                 this.endWidth = value;
+                this.hasEndWidth = true;
             }
         }
+
+        /// <summary>Gets or sets the optional group 40 value. Null is absent; zero is explicitly present.</summary>
+        /// <remarks>StartWidth returns zero when this property is absent. This raw value does not apply the polyline's ConstantWidth.</remarks>
+        public double? StartWidthOverride
+        {
+            get { return this.hasStartWidth ? (double?)this.startWidth : null; }
+            set
+            {
+                if (value.HasValue) this.StartWidth = value.Value;
+                else { this.startWidth = 0; this.hasStartWidth = false; }
+            }
+        }
+
+        /// <summary>Gets or sets the optional group 41 value. Null is absent; zero is explicitly present.</summary>
+        /// <remarks>EndWidth returns zero when this property is absent. This raw value does not apply the polyline's ConstantWidth.</remarks>
+        public double? EndWidthOverride
+        {
+            get { return this.hasEndWidth ? (double?)this.endWidth : null; }
+            set
+            {
+                if (value.HasValue) this.EndWidth = value.Value;
+                else { this.endWidth = 0; this.hasEndWidth = false; }
+            }
+        }
+
+        /// <summary>Gets or sets the optional signed group 91 vertex identifier.</summary>
+        /// <remarks>The identifier belongs to the vertex position, not its outgoing segment.
+        /// Values are preserved as opaque identifiers; netDxf does not allocate IDs or interpret their application semantics.</remarks>
+        public int? VertexIdentifier { get; set; }
 
         /// <summary>
         /// Gets or set the polyline 2D vertex bulge.

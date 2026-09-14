@@ -80,6 +80,7 @@ namespace netDxf.Collections
                 if (registryOwner != null && !ReferenceEquals(registryOwner.Owner, this.Owner))
                     throw new ArgumentException("Clone XData whose application registry belongs to another document before adding this viewport.", nameof(record));
             }
+            UcsReferences.Validate(record, this.Owner);
             if (assignHandle || string.IsNullOrEmpty(record.Handle))
             {
                 // A minimal imported document can omit HANDSEED. Do not reuse an indexed identity.
@@ -91,6 +92,7 @@ namespace netDxf.Collections
 
             this.Owner.AddedObjects.Add(record.Handle, record);
             record.Owner = this;
+            UcsReferences.Register(record);
             this.records.Add(record);
             if (!this.List.ContainsKey(record.Name))
             {
@@ -128,6 +130,7 @@ namespace netDxf.Collections
             if (record == null || !ReferenceEquals(record.Owner, this)) return false;
             if (VPort.IsActiveName(record.Name) && this.GetConfiguration(VPort.DefaultName).Count == 1) return false;
             if (this.HasReferences(record.Name)) return false;
+            UcsReferences.Unregister(record);
             this.Owner.AddedObjects.Remove(record.Handle);
             this.records.Remove(record);
             this.RebuildIndex(null, null);

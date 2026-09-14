@@ -209,6 +209,7 @@ namespace netDxf.Entities
                 ShadowMapSize = this.shadowMapSize, ShadowMapSoftness = this.shadowMapSoftness
             };
             foreach (XData data in this.XData.Values) copy.XData.Add((XData)data.Clone());
+            this.CopyCommonDataTo(copy);
             return copy;
         }
 

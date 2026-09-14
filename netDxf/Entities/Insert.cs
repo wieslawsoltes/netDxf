@@ -715,6 +715,7 @@ namespace netDxf.Entities
             foreach (XData data in this.XData.Values)
                 entity.XData.Add((XData) data.Clone());
 
+            this.CopyCommonDataTo(entity);
             return entity;
         }
 

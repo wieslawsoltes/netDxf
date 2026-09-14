@@ -57,8 +57,8 @@ namespace netDxf.IO
         }
         private void PrepareDatabaseClasses(DxfClassCollection definitions)
         {
-            string[] names = { "DICTIONARYVAR", "ACDBDICTIONARYWDFLT", "ACDBPLACEHOLDER" };
-            string[] cppNames = { "AcDbDictionaryVar", "AcDbDictionaryWithDefault", "AcDbPlaceHolder" };
+            string[] names = { "DICTIONARYVAR", "ACDBDICTIONARYWDFLT", "ACDBPLACEHOLDER", "IDBUFFER", "SORTENTSTABLE", "SPATIAL_FILTER" };
+            string[] cppNames = { "AcDbDictionaryVar", "AcDbDictionaryWithDefault", "AcDbPlaceHolder", "AcDbIdBuffer", "AcDbSortentsTable", "AcDbSpatialFilter" };
             for (int i = 0; i < names.Length; i++)
             {
                 int count = this.doc.Objects.Items.Count(o => o.CodeName == names[i]);
@@ -70,6 +70,7 @@ namespace netDxf.IO
                 }
                 else if (count > 0) definitions.Add(new DxfClass(names[i], cppNames[i], "ObjectDBX Classes") { ProxyFlags = 0, IsEntity = false, InstanceCount = count });
             }
+            this.PrepareGeoDataClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -112,6 +113,8 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteContainerPayload(item)) { }
+            else if (this.WriteGeoDataPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

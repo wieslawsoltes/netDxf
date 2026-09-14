@@ -31,9 +31,15 @@ namespace netDxf.Collections
     {
         private readonly Dictionary<DxfObject, int> references;
 
-        public DxfObjectReferences()
+        private sealed class IdentityComparer : IEqualityComparer<DxfObject>
         {
-            this.references = new Dictionary<DxfObject, int>();
+            public bool Equals(DxfObject a, DxfObject b) { return ReferenceEquals(a, b); }
+            public int GetHashCode(DxfObject value) { return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(value); }
+        }
+
+        public DxfObjectReferences(bool useReferenceIdentity = false)
+        {
+            this.references = new Dictionary<DxfObject, int>(useReferenceIdentity ? (IEqualityComparer<DxfObject>)new IdentityComparer() : EqualityComparer<DxfObject>.Default);
         }
 
         public bool IsEmpty()
