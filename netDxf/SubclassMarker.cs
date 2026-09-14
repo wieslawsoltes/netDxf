@@ -67,6 +67,9 @@ namespace netDxf
 
         /// <summary>OLE2FRAME subclass.</summary>
         public const string Ole2Frame = "AcDbOle2Frame";
+
+        /// <summary>Legacy OLEFRAME subclass.</summary>
+        public const string OleFrame = "AcDbOleFrame";
         public const string Insert = "AcDbBlockReference";
         public const string MInsert = "AcDbMInsertBlock";
         public const string Line = "AcDbLine";

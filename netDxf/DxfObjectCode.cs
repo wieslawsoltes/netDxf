@@ -329,6 +329,9 @@ namespace netDxf
         /// <summary>Inert OLE2FRAME entity.</summary>
         public const string Ole2Frame = "OLE2FRAME";
 
+        /// <summary>Legacy OLEFRAME entity.</summary>
+        public const string OleFrame = "OLEFRAME";
+
         /// <summary>
         /// Solid.
         /// </summary>

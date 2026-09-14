@@ -956,6 +956,7 @@ namespace netDxf
                 case EntityType.Helix:
                 case EntityType.Light:
                 case EntityType.Ole2Frame:
+                case EntityType.OleFrame:
                     break;
                 case EntityType.Trace:
                     break;
@@ -1120,6 +1121,7 @@ namespace netDxf
                 case EntityType.Helix:
                 case EntityType.Light:
                 case EntityType.Ole2Frame:
+                case EntityType.OleFrame:
                     break;
                 case EntityType.Hatch:
                     Hatch hatch = (Hatch)entity;

@@ -65,6 +65,7 @@ internal static partial class Program
         RegisterLightTests();
         RegisterLightNameTests();
         RegisterOle2FrameTests();
+        RegisterOleFrameTests();
         RegisterHelixWireTests();
         RegisterHelixApiTests();
         RegisterHelixGeometryTests();
