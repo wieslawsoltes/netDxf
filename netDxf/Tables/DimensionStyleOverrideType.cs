@@ -437,6 +437,15 @@ namespace netDxf.Tables
         /// <summary>
         /// Suppresses zero inches in architectural alternate tolerance units.
         /// </summary>
-        TolerancesAltSuppressZeroInches
+        TolerancesAltSuppressZeroInches,
+
+        /// <summary>Stored oblique stroke size (DIMTSZ), as a finite nonnegative double.</summary>
+        TickSize,
+
+        /// <summary>Stored vertical text offset in text height units (DIMTVP), as a finite double.</summary>
+        TextVerticalPosition,
+
+        /// <summary>Stored interactive user positioned text flag (DIMUPT), as a bool.</summary>
+        UserPositionedText
     }
 }

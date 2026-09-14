@@ -332,6 +332,13 @@ namespace netDxf
         /// <summary>Legacy OLEFRAME entity.</summary>
         public const string OleFrame = "OLEFRAME";
 
+        /// <summary>ACIS BODY entity.</summary>
+        public const string Body = "BODY";
+        /// <summary>ACIS REGION entity.</summary>
+        public const string Region = "REGION";
+        /// <summary>ACIS 3DSOLID entity.</summary>
+        public const string Solid3D = "3DSOLID";
+
         /// <summary>
         /// Solid.
         /// </summary>

@@ -267,7 +267,7 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="transformation">Transformation matrix.</param>
         /// <remarks>Matrix4 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
-        public void TransformBy(Matrix4 transformation)
+        public virtual void TransformBy(Matrix4 transformation)
         {
             Matrix3 m = new Matrix3(transformation.M11, transformation.M12, transformation.M13,
                                     transformation.M21, transformation.M22, transformation.M23,

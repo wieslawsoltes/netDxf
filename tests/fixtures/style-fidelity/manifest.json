@@ -1,0 +1,17 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "files": {
+    "ezdxf-style-R2000-False.dxf": "209bffda1c8419700f517e86dad064f88ad926d6464094b619b227ff035d65ff",
+    "ezdxf-style-R2000-True.dxf": "0cb29889524a1f5e9918ee1384df89d66f52de8780fad5047f52ce35c0d4124f",
+    "ezdxf-style-R2004-False.dxf": "6fad3b47f19a49ab127a948ba14a82a83f3d5c0db8951b5ffcba7794c8a6b1a8",
+    "ezdxf-style-R2004-True.dxf": "b0038313976940cc0b8566c93b62d2e4cc68525d78d4006c611eea6f5c60b144",
+    "ezdxf-style-R2007-False.dxf": "3bc53d3a8c3ec6d76c5aceaa061182e5bcf1c25dacd6fb967859370d502a7fdd",
+    "ezdxf-style-R2007-True.dxf": "eb7256f697476bb8b3c704cefd3a307b9ff91415c98c6136f9a9129405882c55",
+    "ezdxf-style-R2010-False.dxf": "47022c1717844fadd7f7bc24aada9e3cc4437f17dd706f6b8a56f6ac3ea0a0e9",
+    "ezdxf-style-R2010-True.dxf": "ff7285528a4497eff19dc80736d007848b29f0734868952de5fcf9ee36c265cd",
+    "ezdxf-style-R2013-False.dxf": "777434cbe3a8391698b202a866bdc2d6e14b95fd63b21e8e2fc61f3384ffa1f3",
+    "ezdxf-style-R2013-True.dxf": "2a054fd5b33879a013d1c21af2b22de1943543fabc15267f043e8fa79cb7c0ba",
+    "ezdxf-style-R2018-False.dxf": "f51d7b992bb7a72f89c582027dd61502c75ac0594c71c83afba496f9847addb3",
+    "ezdxf-style-R2018-True.dxf": "a9e72c45c9f3221db3907dfd7dee749b9cc0784209ed0b21e50265d04643e17b"
+  }
+}

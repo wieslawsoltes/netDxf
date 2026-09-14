@@ -37,7 +37,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represents a line type. Simple and complex line types are supported.
     /// </summary>
-    public class Linetype :
+    public partial class Linetype :
         TableObject
     {
         #region delegates and events

@@ -34,7 +34,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represent a shape style.
     /// </summary>
-    public class ShapeStyle :
+    public partial class ShapeStyle :
         TableObject
     {
         #region private fields
@@ -788,7 +788,12 @@ namespace netDxf.Tables
         /// <returns>A new TextStyle that is a copy of this instance.</returns>
         public override TableObject Clone(string newName)
         {
-            ShapeStyle copy = new ShapeStyle(newName, this.shapeFile, this.size, this.widthFactor, this.obliqueAngle);
+            ShapeStyle copy = new ShapeStyle(newName, this.shapeFile, this.size, this.widthFactor, this.obliqueAngle)
+            {
+                Flags = this.Flags,
+                TextGenerationFlags = this.TextGenerationFlags,
+                LastHeight = this.LastHeight
+            };
 
             foreach (XData data in this.XData.Values)
             {

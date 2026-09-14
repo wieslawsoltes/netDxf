@@ -820,6 +820,8 @@ namespace netDxf
                 throw new ArgumentNullException(nameof(entity));
             }
 
+            if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this);
+
             // assign a handle
             if (assignHandle || string.IsNullOrEmpty(entity.Handle))
             {
@@ -954,8 +956,12 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.MultiLeader:
                 case EntityType.Light:
                 case EntityType.Ole2Frame:
+                case EntityType.Body:
+                case EntityType.Region:
+                case EntityType.Solid3D:
                 case EntityType.OleFrame:
                     break;
                 case EntityType.Trace:
@@ -1119,8 +1125,12 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.MultiLeader:
                 case EntityType.Light:
                 case EntityType.Ole2Frame:
+                case EntityType.Body:
+                case EntityType.Region:
+                case EntityType.Solid3D:
                 case EntityType.OleFrame:
                     break;
                 case EntityType.Hatch:

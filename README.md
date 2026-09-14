@@ -43,6 +43,8 @@ The typed database exposes editable named dictionaries, XRECORD values, default 
 
 [MTEXT columns](doc/dxf-conformance/mtext-columns.md) support legacy linked entities, modern embedded definitions, and documented direct column tags, with explicit storage/version gates and caller-supplied text partitions for conversion. [VPORT configurations](doc/dxf-conformance/vport-records.md) retain physical repeated-name tile records and the current view. [Lightweight polyline integrity](doc/dxf-conformance/lwpolyline-integrity.md) covers vertex packet validation and tapered-segment reversal.
 
+[MULTILEADER contexts and styles](doc/dxf-conformance/multileader-contexts.md) expose nested stored text/block content and exact resource references in the qualified 2007+ profiles. [BODY, REGION and 3DSOLID SAT](doc/dxf-conformance/acis-sat.md) retain inert modeler envelopes through 2010. [STYLE font metadata](doc/dxf-conformance/text-style-fidelity.md), [DIMSTYLE stored settings](doc/dxf-conformance/dimstyle-stored-settings.md), and [standalone and embedded output settings](doc/dxf-conformance/output-settings.md) preserve their documented fields and reference relationships. The [parallel module checkpoint](doc/dxf-conformance/checkpoint-modules-2026-09-14.md) records source pins, combined verification and remaining scope.
+
 Both pipelines now offer an explicit [SaveAtomic API](doc/dxf-conformance/atomic-file-save.md) for destination-byte protection through sibling-file staging and replacement. Existing `Save` overloads remain nontransactional. [Handle operations](doc/dxf-conformance/raw-handle-operations.md) reject ambiguous/colliding changes and affected opaque slots, including [embedded-object tails](doc/dxf-conformance/raw-embedded-handle-context.md); this does not infer references hidden in private strings or binary data.
 
 Full AutoCAD DXF capability is not yet achieved. Passing regression tests and preserving opaque records are not a native AutoCAD interoperability certificate. The [conformance guide](doc/dxf-conformance/README.md) records scope, verification commands and remaining work.
@@ -73,8 +75,10 @@ Set `DXF_TEST_ARTIFACTS` to separate directories when running configurations con
 ## Development Status 
 See [changelog.txt](https://github.com/haplokuon/netDxf/blob/master/doc/Changelog.txt) or the [wiki page](https://github.com/haplokuon/netDxf/wiki) for information on the latest changes.
 ## Supported DXF entities
+
 * 3dFace
 * Arc
+* Body, Region and Solid3D (inert SAT envelopes; DXF 2000–2010)
 * Circle
 * Dimensions (aligned, linear, radial, diametric, 3 point angular, 2 line angular, arc length, and ordinate)
 * Ellipse
@@ -89,6 +93,7 @@ See [changelog.txt](https://github.com/haplokuon/netDxf/blob/master/doc/Changelo
 * Mesh
 * MLine
 * MText
+* MultiLeader (one stored context; DXF 2007+)
 * OleFrame and Ole2Frame (inert byte and metadata storage)
 * Point
 * Polyline (Polyline2D, Polyline3D, PolyfaceMesh, and PolygonMesh)
@@ -107,4 +112,4 @@ All entities can be grouped.
 All DXF objects may contain extended data information. 
 AutoCad Table entities will be imported as Inserts (block references).
 Both simple and complex line types are supported.
-Typed REGION, SURFACE, and 3DSOLID geometry/modeler evaluation is not implemented. Their raw records can be retained through the separate raw-document API; retaining private payloads does not interpret or validate their geometry.
+Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families remain unimplemented. SAT and raw payload retention do not interpret or validate proprietary geometry.

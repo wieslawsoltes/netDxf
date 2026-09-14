@@ -1,0 +1,93 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "style": {
+    "dimtsz": 1.375,
+    "dimtvp": -0.625,
+    "dimupt": 1,
+    "dimrnd": 0.125,
+    "dimalt": 0
+  },
+  "header": {
+    "$DIMTSZ": 0.0,
+    "$DIMTVP": 0.875,
+    "$DIMUPT": 0
+  },
+  "overrides": [
+    {
+      "dimtsz": 2.75,
+      "dimtvp": -1.125,
+      "dimupt": 0,
+      "dimrnd": 0.25,
+      "dimalt": 1
+    },
+    {
+      "dimtsz": 0.0,
+      "dimtvp": 0.0,
+      "dimupt": 1,
+      "dimrnd": 0.5,
+      "dimalt": 0
+    }
+  ],
+  "fixtures": [
+    {
+      "file": "independent-dimstyle-R2000.dxf",
+      "sha256": "a666edfe32f4ef3dd9f03335d7f2be1242ed3f895f30e3b9748535a3c1745f49",
+      "year": 2000,
+      "dimension_handles": [
+        "30",
+        "44"
+      ],
+      "line_handle": "54"
+    },
+    {
+      "file": "independent-dimstyle-R2004.dxf",
+      "sha256": "3358eec5e0fca86e69de306988665982994aeba580c2e79c0655bfe9cfcd4004",
+      "year": 2004,
+      "dimension_handles": [
+        "30",
+        "44"
+      ],
+      "line_handle": "54"
+    },
+    {
+      "file": "independent-dimstyle-R2007.dxf",
+      "sha256": "9051fc61f6d4fcf1d16e8c40dfedf647a9458f1a10f411f0b94b507e50f3245f",
+      "year": 2007,
+      "dimension_handles": [
+        "30",
+        "44"
+      ],
+      "line_handle": "54"
+    },
+    {
+      "file": "independent-dimstyle-R2010.dxf",
+      "sha256": "257d0bef069e06b36c9e4840d8e0f19ff4ed2f25fcca55f9e54f8aa8b1ba0ddf",
+      "year": 2010,
+      "dimension_handles": [
+        "30",
+        "44"
+      ],
+      "line_handle": "54"
+    },
+    {
+      "file": "independent-dimstyle-R2013.dxf",
+      "sha256": "1c5773ac732d837a60d4a058b6776facb431bd744effbb9ad62f2d68336e6cd2",
+      "year": 2013,
+      "dimension_handles": [
+        "30",
+        "44"
+      ],
+      "line_handle": "54"
+    },
+    {
+      "file": "independent-dimstyle-R2018.dxf",
+      "sha256": "f518b21acb7db6a0cd10f31a0f1c438082191e1d9673338afd749cfa041204de",
+      "year": 2018,
+      "dimension_handles": [
+        "30",
+        "44"
+      ],
+      "line_handle": "54"
+    }
+  ]
+}

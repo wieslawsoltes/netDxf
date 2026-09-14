@@ -329,6 +329,7 @@ namespace netDxf.IO
             this.ResolveMTextColumnLinks();
             this.ResolveUcsReferences();
             this.ImportDatabaseObjects();
+            this.ResolveMultiLeaderReferences();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -376,7 +377,7 @@ namespace netDxf.IO
                 double julian;
                 this.ReadNextHeaderTag();
 
-                switch (varName)
+                switch (DxfWriter.IsStoredDimensionHeader(varName) ? varName.ToUpperInvariant() : varName)
                 {
                     case HeaderVariableCode.AcadVer:
                         string version = this.chunk.ReadString();
@@ -630,6 +631,15 @@ namespace netDxf.IO
                         break;
                     case HeaderVariableCode.UcsYDir:
                         ucsYDir = this.ReadHeaderVector();
+                        break;
+                    case "$DIMTSZ":
+                    case "$DIMTVP":
+                    case "$DIMUPT":
+                        var storedDimensionVariable = new HeaderVariable(varName, this.chunk.Code, this.chunk.Value);
+                        DxfWriter.ValidateStoredDimensionHeader(storedDimensionVariable);
+                        this.doc.DrawingVariables.RemoveCustomVariable(varName);
+                        this.doc.DrawingVariables.AddCustomVariable(storedDimensionVariable);
+                        this.ReadNextHeaderTag();
                         break;
                     default:
 
@@ -1571,6 +1581,9 @@ namespace netDxf.IO
             // symbols and arrows
             double dimasz = defaultDim.ArrowSize;
             double dimcen = defaultDim.CenterMarkSize;
+            double dimtsz = defaultDim.TickSize;
+            double dimtvp = defaultDim.TextVerticalPosition;
+            bool dimupt = defaultDim.UserPositionedText;
             bool dimsah = false;
             string dimblk = string.Empty; // handle for post processing
             string dimblk1 = string.Empty; // handle for post processing
@@ -1765,6 +1778,20 @@ namespace netDxf.IO
                         break;
                     case 141:
                         dimcen = this.chunk.ReadDouble();
+                        this.chunk.Next();
+                        break;
+                    case 142:
+                        dimtsz = this.chunk.ReadDouble();
+                        this.chunk.Next();
+                        break;
+                    case 145:
+                        dimtvp = this.chunk.ReadDouble();
+                        this.chunk.Next();
+                        break;
+                    case 288:
+                        short userPositioned = this.chunk.ReadShort();
+                        if (userPositioned != 0 && userPositioned != 1) throw new FormatException("DIMUPT must be zero or one.");
+                        dimupt = userPositioned != 0;
                         this.chunk.Next();
                         break;
                     case 143:
@@ -2060,6 +2087,9 @@ namespace netDxf.IO
                 // symbols and arrows
                 ArrowSize = dimasz,
                 CenterMarkSize = dimcen,
+                TickSize = dimtsz,
+                TextVerticalPosition = dimtvp,
+                UserPositionedText = dimupt,
 
                 // text
                 TextHeight = dimtxt,
@@ -2545,233 +2575,80 @@ namespace netDxf.IO
 
         private DxfObject ReadTextStyle()
         {
-            // this method will read both text and shape styles their definitions appear in the same table list
-            Debug.Assert(this.chunk.ReadString() == SubclassMarker.TextStyle);
+            if (this.chunk.Code != 100 || this.chunk.ReadString() != SubclassMarker.TextStyle)
+                throw new InvalidDataException("STYLE requires AcDbTextStyleTableRecord.");
 
-            string name = string.Empty;
-            string file = string.Empty;
-            string bigFont = string.Empty;
-            bool isVertical = false;
-            bool isBackward = false;
-            bool isUpsideDown = false;
-            double height = 0.0f;
-            double widthFactor = 0.0f;
-            double obliqueAngle = 0.0f;
-            bool isShapeStyle = false;
-            XData xDataFont = null;
-            List<XData> xData = new List<XData>();
-
+            string name = string.Empty, file = string.Empty, bigFont = string.Empty;
+            TextStyleFlags flags = TextStyleFlags.None;
+            short generationFlags = 0;
+            double height = 0.0, widthFactor = 1.0, obliqueAngle = 0.0;
+            double? lastHeight = null;
+            var seen = new HashSet<short>();
+            var xData = new List<XData>();
             this.chunk.Next();
-
             while (this.chunk.Code != 0)
             {
-                switch (this.chunk.Code)
+                short code = this.chunk.Code;
+                if ((code == 2 || code == 3 || code == 4 || code == 70 || code == 71 ||
+                     code == 40 || code == 41 || code == 42 || code == 50) && !seen.Add(code))
+                    throw new InvalidDataException("Duplicate STYLE group " + code + ".");
+                switch (code)
                 {
-                    case 2:
-                        name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 3:
-                        file = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 4:
-                        bigFont = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 70:
-                        int flag = this.chunk.ReadShort();
-                        if ((flag & 1) == 1)
-                        {
-                            isShapeStyle = true;
-                        }
-
-                        if ((flag & 4) == 4)
-                        {
-                            isVertical = true;
-                        }
-                        this.chunk.Next();
-                        break;
-                    case 71:
-                        int upDownBack = this.chunk.ReadShort();
-                        if (upDownBack == 6)
-                        {
-                            isBackward = true;
-                            isUpsideDown = true;
-                        }
-                        else if (upDownBack == 2)
-                        {
-                            isBackward = true;
-                        }
-                        else if (upDownBack == 4)
-                        {
-                            isUpsideDown = true;
-                        }
-                        this.chunk.Next();
-                        break;
+                    case 2: name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
+                    case 3: file = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
+                    case 4: bigFont = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
+                    case 70: flags = (TextStyleFlags)this.chunk.ReadShort(); break;
+                    case 71: generationFlags = this.chunk.ReadShort(); break;
                     case 40:
                         height = this.chunk.ReadDouble();
-                        if (height < 0.0)
-                        {
-                            height = 0.0;
-                        }
-                        this.chunk.Next();
+                        if (height < 0.0) height = 0.0;
                         break;
                     case 41:
                         widthFactor = this.chunk.ReadDouble();
-                        if (widthFactor < 0.01 || widthFactor > 100.0)
-                        {
-                            widthFactor = 1.0;
-                        }
-                        this.chunk.Next();
+                        if (widthFactor < 0.01 || widthFactor > 100.0) widthFactor = 1.0;
                         break;
-                    case 42:
-                        //last text height used (not applicable)
-                        this.chunk.Next();
-                        break;
+                    case 42: lastHeight = this.chunk.ReadDouble(); break;
                     case 50:
                         obliqueAngle = this.chunk.ReadDouble();
-                        if (obliqueAngle < -85.0 || obliqueAngle > 85.0)
-                        {
-                            obliqueAngle = 0.0;
-                        }
-                        this.chunk.Next();
+                        if (obliqueAngle < -85.0 || obliqueAngle > 85.0) obliqueAngle = 0.0;
                         break;
+                    case 100: throw new InvalidDataException("Unexpected subclass inside STYLE.");
                     case 1001:
                         string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        XData data = this.ReadXDataRecord(new ApplicationRegistry(appId));
-                        if (string.Equals(appId, ApplicationRegistry.DefaultName))
-                        {
-                            xDataFont = data;
-                        }
-                        xData.Add(data);
-                        break;
+                        xData.Add(this.ReadXDataRecord(new ApplicationRegistry(appId)));
+                        continue;
                     default:
-                        Debug.Assert(!(this.chunk.Code >= 1000 && this.chunk.Code <= 1071), "The extended data of an entity must start with the application registry code.");
-                        this.chunk.Next();
+                        if (code >= 1000 && code <= 1071)
+                            throw new InvalidDataException("STYLE XData requires an application registry.");
                         break;
                 }
+                this.chunk.Next();
             }
 
-            // shape styles are handle in a separate list
-            if (isShapeStyle)
+            DxfObject result;
+            if ((flags & TextStyleFlags.Shape) != 0)
             {
-                // file cannot be null or empty
-                Debug.Assert(!string.IsNullOrEmpty(file), "File path is null or empty.");
-                if (string.IsNullOrEmpty(file))
+                if (string.IsNullOrEmpty(file)) file = FileNotValid + ".SHX";
+                result = new ShapeStyle("ShapeStyle - " + ++this.shapeStyleCounter, file, height, widthFactor, obliqueAngle)
                 {
-                    file = FileNotValid + ".SHX";
-                }
-
-                // basic check if file is a file path
-                Debug.Assert(file.IndexOfAny(Path.GetInvalidPathChars()) == -1, "File path contains invalid characters: " + file);
-                if (file.IndexOfAny(Path.GetInvalidPathChars()) != -1)
-                {
-                    file = FileNotValid + ".SHX";
-                }
-
-                //ShapeStyle shapeStyle = new ShapeStyle(Path.GetFileNameWithoutExtension(file), file, height, widthFactor, obliqueAngle);
-                ShapeStyle shapeStyle = new ShapeStyle("ShapeStyle - " + ++this.shapeStyleCounter, file, height, widthFactor, obliqueAngle);
-                if (xData.Count > 0)
-                {
-                    this.tableEntryXData.Add(shapeStyle, xData);
-                }
-                return shapeStyle;
-            }
-
-            // text styles
-            Debug.Assert(TableObject.IsValidName(name), "Table object name is not valid.");
-            if (!TableObject.IsValidName(name))
-            {
-                return null;
-            }
-
-            // if it exists read the information stored in the extended data about the font family and font style, only applicable to true type fonts
-            string fontFamily = string.Empty;
-            FontStyle fontStyle = FontStyle.Regular;
-            if (xDataFont != null)
-            {
-                foreach (XDataRecord record in xDataFont.XDataRecord)
-                {
-                    if (record.Code == XDataCode.String)
-                    {
-                        fontFamily = (string)record.Value;
-                    }
-                    else if (record.Code == XDataCode.Int32)
-                    {
-                        byte[] data = BitConverter.GetBytes((int) record.Value);
-                        fontStyle = (FontStyle) data[3];
-                    }
-                }
-            }
-
-            TextStyle style;
-
-            // basic check if file is a file path
-            Debug.Assert(file.IndexOfAny(Path.GetInvalidPathChars()) == -1, "File path contains invalid characters.");
-            if (file.IndexOfAny(Path.GetInvalidPathChars()) != -1)
-            {
-                file = FileNotValid + ".SHX";
-            }
-
-            // the information stored in the extended data takes precedence before the font file (this is only applicable for true type fonts)
-            if (string.IsNullOrEmpty(fontFamily))
-            {
-                Debug.Assert(!string.IsNullOrEmpty(file), "File path is null or empty.");
-                if (string.IsNullOrEmpty(file))
-                {
-                    file = "simplex.SHX";
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(Path.GetExtension(file)))
-                    {
-                        // if there is no extension the default SHX will be used instead
-                        file += ".SHX";
-                    }
-                    else if (!Path.GetExtension(file).Equals(".TTF", StringComparison.InvariantCultureIgnoreCase) &&
-                             !Path.GetExtension(file).Equals(".SHX", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // only true type TTF fonts or compiled shape SHX fonts are allowed, the default "simplex.shx" font will be used in this case
-                        file = "simplex.SHX";
-                    }
-                }
-
-                style = new TextStyle(name, file, false)
-                {
-                    Height = height,
-                    IsBackward = isBackward,
-                    IsUpsideDown = isUpsideDown,
-                    IsVertical = isVertical,
-                    ObliqueAngle = obliqueAngle,
-                    WidthFactor = widthFactor,
+                    Flags = flags, TextGenerationFlags = generationFlags, LastHeight = lastHeight
                 };
-
-                if (Path.GetExtension(file).Equals(".SHX", StringComparison.InvariantCultureIgnoreCase) &&
-                    Path.GetExtension(bigFont).Equals(".SHX", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    style.BigFont = bigFont;
-                }
             }
             else
             {
-                style = new TextStyle(name, fontFamily, fontStyle, false)
+                if (!TableObject.IsValidName(name)) return null;
+                var style = new TextStyle(name, TextStyle.DefaultFont, false)
                 {
-                    Height = height,
-                    IsBackward = isBackward,
-                    IsUpsideDown = isUpsideDown,
-                    IsVertical = isVertical,
-                    ObliqueAngle = obliqueAngle,
-                    WidthFactor = widthFactor
+                    Flags = flags, TextGenerationFlags = generationFlags, LastHeight = lastHeight,
+                    Height = height, WidthFactor = widthFactor, ObliqueAngle = obliqueAngle
                 };
+                // Group 3/4 and the ACAD font prefix are independent stored data.
+                // Preserve empty and extensionless file names as well as valid paths.
+                style.SetStoredFontFiles(file, bigFont);
+                result = style;
             }
-
-            if (xData.Count > 0)
-            {
-                this.tableEntryXData.Add(style, xData);
-            }
-
-            return style;
+            if (xData.Count > 0) this.tableEntryXData.Add(result, xData);
+            return result;
         }
 
         private UCS ReadUCS()
@@ -3813,11 +3690,20 @@ namespace netDxf.IO
                 case DxfObjectCode.Solid:
                     dxfObject = this.ReadSolid();
                     break;
+                case DxfObjectCode.Body:
+                case DxfObjectCode.Region:
+                case DxfObjectCode.Solid3D:
+                    dxfObject = this.ReadAcisEntity(dxfCode);
+                    break;
                 case DxfObjectCode.OleFrame:
                     dxfObject = this.ReadOleFrame();
                     break;
                 case DxfObjectCode.Ole2Frame:
                     dxfObject = this.ReadOle2Frame();
+                    break;
+                case "MULTILEADER":
+                case "MLEADER":
+                    dxfObject = this.ReadMultiLeader();
                     break;
                 case DxfObjectCode.Light:
                     dxfObject = this.ReadLight();
@@ -5715,12 +5601,12 @@ namespace netDxf.IO
                                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.ExtLineExtend, (double) data.Value));
                                     break;
                                 case 45: // DIMRND
-                                    if (data.Code != XDataCode.Int16)
+                                    if (data.Code != XDataCode.Real)
                                     {
                                         return overrides; // premature end
                                     }
 
-                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimRoundoff, (short) data.Value));
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimRoundoff, (double) data.Value));
                                     break;
                                 case 46: // DIMDLE
                                     if (data.Code != XDataCode.Real)
@@ -5857,6 +5743,10 @@ namespace netDxf.IO
 
                                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.CenterMarkSize, (double) data.Value));
                                     break;
+                                case 142: // DIMTSZ
+                                    if (data.Code != XDataCode.Real) return overrides;
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TickSize, (double) data.Value));
+                                    break;
                                 case 143: // DIMALTF
                                     if (data.Code != XDataCode.Real)
                                         return overrides; // premature end
@@ -5871,7 +5761,8 @@ namespace netDxf.IO
                                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimScaleLinear, (double) data.Value));
                                     break;
                                 case 145: // DIMTVP
-                                    // not used
+                                    if (data.Code != XDataCode.Real) return overrides;
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TextVerticalPosition, (double) data.Value));
                                     break;
                                 case 146: // DIMTFAC
                                     if (data.Code != XDataCode.Real)
@@ -6102,7 +5993,10 @@ namespace netDxf.IO
                                     dimalttz = (short) data.Value;
                                     break;
                                 case 288: // DIMUPT
-                                    // not used
+                                    if (data.Code != XDataCode.Int16) return overrides;
+                                    short userPositioned = (short) data.Value;
+                                    if (userPositioned != 0 && userPositioned != 1) throw new FormatException("DIMUPT must be zero or one.");
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.UserPositionedText, userPositioned != 0));
                                     break;
                                 case 289: // AIMATFIT
                                     if (data.Code != XDataCode.Int16)
@@ -10697,189 +10591,18 @@ namespace netDxf.IO
 
         private PlotSettings ReadPlotSettings()
         {
-            string pageName = string.Empty;
-            string plotterName = "none_device";
-            string paperSizeName = "ISO_A4_(210.00_x_297.00_MM)";
-            string viewName = string.Empty;
-            string styleSheet = string.Empty;
-            double leftMargin = 7.5;
-            double bottomMargin = 20.0;
-            double rightMargin = 7.5;
-            double topMargin = 20.0;
-
-            Vector2 paperSize = new Vector2(210.0, 297.0);            
-            Vector2 origin = Vector2.Zero;
-            Vector2 windowUpRight = Vector2.Zero;
-            Vector2 windowBottomLeft = Vector2.Zero;
-
-            bool scaleToFit = true;
-            double scaleNumerator = 1.0;
-            double scaleDenominator = 1.0;
-            PlotFlags flags = PlotFlags.DrawViewportsFirst | PlotFlags.PrintLineweights | PlotFlags.PlotPlotStyles | PlotFlags.UseStandardScale;
-            PlotType plotType = PlotType.DrawingExtents;
-
-            PlotPaperUnits paperUnits = PlotPaperUnits.Milimeters;
-            PlotRotation paperRotation = PlotRotation.Degrees90;
-
-            ShadePlotMode shadePlotMode = ShadePlotMode.AsDisplayed;
-            ShadePlotResolutionMode shadePlotResolutionMode = ShadePlotResolutionMode.Normal;
-            short shadePlotDPI = 300;
-            Vector2 paperImageOrigin = Vector2.Zero;
-
+            var tags = new List<DxfTag> { new DxfTag(100, SubclassMarker.PlotSettings) };
             this.chunk.Next();
-            while (this.chunk.Code != 100)
+            while (this.chunk.Code != 100 && this.chunk.Code != 0)
             {
-                switch (this.chunk.Code)
-                {
-                    case 1:
-                        pageName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 2:
-                        plotterName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 4:
-                        paperSizeName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 6:
-                        viewName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 7:
-                        styleSheet = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        this.chunk.Next();
-                        break;
-                    case 40:
-                        leftMargin = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 41:
-                        bottomMargin = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 42:
-                        rightMargin = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 43:
-                        topMargin = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 44:
-                        paperSize.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 45:
-                        paperSize.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 46:
-                        origin.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 47:
-                        origin.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 48:
-                        windowBottomLeft.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 49:
-                        windowUpRight.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 140:
-                        windowBottomLeft.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 141:
-                        windowUpRight.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 142:
-                        scaleNumerator = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 143:
-                        scaleDenominator = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 70:
-                        flags = (PlotFlags) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 72:
-                        paperUnits = (PlotPaperUnits) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 73:
-                        paperRotation = (PlotRotation) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 74:
-                        plotType = (PlotType) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 75:
-                        short plotScale = this.chunk.ReadShort();
-                        scaleToFit = plotScale == 0;
-                        this.chunk.Next();
-                        break;
-                    case 76:
-                        shadePlotMode = (ShadePlotMode) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 77:
-                        shadePlotResolutionMode = (ShadePlotResolutionMode) this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 78:
-                        shadePlotDPI = this.chunk.ReadShort();
-                        this.chunk.Next();
-                        break;
-                    case 148:
-                        paperImageOrigin.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 149:
-                        paperImageOrigin.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    default:
-                        this.chunk.Next();
-                        break;
-                }
+                if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
+                this.chunk.Next();
             }
-
-            PlotSettings plot = new PlotSettings
-            {
-                PageSetupName = pageName,
-                PlotterName = plotterName,
-                PaperSizeName = paperSizeName,
-                ViewName = viewName,
-                CurrentStyleSheet = styleSheet,
-                Origin = origin,
-                PaperMargin = new PaperMargin(leftMargin, bottomMargin, rightMargin, topMargin),
-                PaperSize = paperSize,
-                WindowUpRight = windowUpRight,
-                WindowBottomLeft = windowBottomLeft,
-                ScaleToFit = scaleToFit,
-                PrintScaleNumerator = scaleNumerator,
-                PrintScaleDenominator = scaleDenominator,
-                Flags = flags,
-                PlotType = plotType,
-                PaperUnits = paperUnits,
-                PaperRotation = paperRotation,
-                ShadePlotMode = shadePlotMode,
-                ShadePlotResolutionMode = shadePlotResolutionMode,
-                ShadePlotDPI = shadePlotDPI,
-                PaperImageOrigin = paperImageOrigin
-            };
-
-            return plot;
+            if (this.chunk.Code != 100 || this.chunk.ReadString() != SubclassMarker.Layout)
+                throw new FormatException("Embedded plot settings must be followed by the AcDbLayout subclass.");
+            PlotSettings settings = this.ParsePlotSettings(tags, out string shadeHandle);
+            this.outputShadeReferences.Add(Tuple.Create(settings, shadeHandle));
+            return settings;
         }
 
         private UnderlayDefinition ReadUnderlayDefinition(UnderlayType type)

@@ -185,6 +185,16 @@ namespace netDxf.Entities
         Ole2Frame,
 
         /// <summary>Inert legacy OLEFRAME object.</summary>
-        OleFrame
+        OleFrame,
+
+        /// <summary>Inert ACIS BODY SAT payload.</summary>
+        Body,
+        /// <summary>Inert ACIS REGION SAT payload.</summary>
+        Region,
+        /// <summary>Inert ACIS 3DSOLID SAT payload.</summary>
+        Solid3D,
+
+        /// <summary>A MULTILEADER with stored context data.</summary>
+        MultiLeader
     }
 }
