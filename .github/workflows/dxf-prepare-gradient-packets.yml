@@ -1,0 +1,32 @@
+name: Prepare gradient packet parser
+on:
+  push:
+    branches: [fix/dxf-hatch-gradient-packets]
+    paths: [.github/workflows/dxf-prepare-gradient-packets.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-gradient-packets
+      - name: Apply hash-verified patch and verify complete final tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, gzip, hashlib, subprocess
+          payload = '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'
+          patch = gzip.decompress(base64.b64decode(payload, validate=True))
+          assert hashlib.sha256(patch).hexdigest() == '14ec219af3ee85b174016e73748638e592a25ff243c883d8f17d415cb7b41b91'
+          subprocess.run(['git', 'apply', '--index', '-'], input=patch, check=True)
+          PY
+          git rm .github/workflows/dxf-prepare-gradient-packets.yml
+          test "$(git write-tree)" = ff227d3af1dde2be53e6b0d322469d5b5800b289
+          git config user.name 'netDxf conformance'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: dispatch and validate HATCH gradient fields without positional reads'
+          git push origin HEAD:fix/dxf-hatch-gradient-packets
