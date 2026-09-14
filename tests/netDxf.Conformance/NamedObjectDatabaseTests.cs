@@ -197,7 +197,7 @@ internal static partial class Program
     {
         var doc = new DxfDocument(); var graph = new DxfDictionary(); graph.Add("DATA", new DxfXRecord()); doc.NamedObjects.Add("EXTENDED", graph);
         using var source = new MemoryStream(); Check(doc.Save(source), "extended fixture save");
-        var text = System.Text.Encoding.UTF8.GetString(source.ToArray());
+        var text = System.Text.Encoding.UTF8.GetString(source.ToArray()).Replace("\r\n", "\n");
         string marker = "AcDbXrecord\n";
         int start = text.IndexOf(marker, StringComparison.Ordinal);
         Check(start >= 0, "Fixture XRECORD not found.");
