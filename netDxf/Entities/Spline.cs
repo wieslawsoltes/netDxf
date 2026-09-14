@@ -364,6 +364,7 @@ namespace netDxf.Entities
             this.LinetypeScale = source.LinetypeScale;
             this.Normal = source.Normal;
             this.IsVisible = source.IsVisible;
+            source.CopyCommonDataTo(this);
             foreach (XData data in source.XData.Values)
                 this.XData.Add((XData) data.Clone());
         }

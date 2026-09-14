@@ -1,0 +1,69 @@
+{
+  "generator": "generate_view_ucs_fixtures.py",
+  "generator_library": "ezdxf",
+  "generator_version": "1.4.4",
+  "native_cad_authored": false,
+  "transport": "ASCII",
+  "provenance": "Generated independently through ezdxf 1.4.4 APIs. Named UCS and orthographic UCS references are separate cases, matching ObjectARX setUcs overload semantics. Axis magnitudes are intentionally nonunit. No netDxf code is imported or invoked.",
+  "schema_sources": [
+    "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-CF3094AB-ECA9-43C1-8075-7791AC84F97C.htm",
+    "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-8CE7CC87-27BD-4490-89DA-C21F516415A9.htm",
+    "https://help.autodesk.com/cloudhelp/2018/ENU/OARX-RefGuide/files/OREF-__OVERLOADED_setUcs_AcDbAbstractViewTableRecord.html"
+  ],
+  "fixtures": [
+    {
+      "path": "independent-view-ucs-R2000.dxf",
+      "profile": "R2000",
+      "acadver": "AC1015",
+      "sha256": "a6eb5841244161feabc11645728ab35ca375795852ef72ec07cd6de94a0f736b",
+      "bytes": 15842,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "path": "independent-view-ucs-R2004.dxf",
+      "profile": "R2004",
+      "acadver": "AC1018",
+      "sha256": "a6cb597606df88b9a01b655fdf8c7d1734baaf77f58ae1529c6dfb7f70b0ed98",
+      "bytes": 16208,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "path": "independent-view-ucs-R2007.dxf",
+      "profile": "R2007",
+      "acadver": "AC1021",
+      "sha256": "e4a7055e76121f96bed5c26fccd90b919bd690493bd2726b870a3fb78c7f845a",
+      "bytes": 17208,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "path": "independent-view-ucs-R2010.dxf",
+      "profile": "R2010",
+      "acadver": "AC1024",
+      "sha256": "4a8ff22c36f3f79a864914e99fa92bf5fe8babd1d58d50ea1467eb4a469f376a",
+      "bytes": 17234,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "path": "independent-view-ucs-R2013.dxf",
+      "profile": "R2013",
+      "acadver": "AC1027",
+      "sha256": "09e8939702b577e3fa233c3b77612eb0ad9cce4b06f503e8a66fffda4bcb009f",
+      "bytes": 17264,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "path": "independent-view-ucs-R2018.dxf",
+      "profile": "R2018",
+      "acadver": "AC1032",
+      "sha256": "640b5b2809ac094b5eff0ab8783bf31425a7727686d1b4e6e4080333bd0e188d",
+      "bytes": 17262,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    }
+  ]
+}

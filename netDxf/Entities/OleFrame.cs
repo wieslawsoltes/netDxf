@@ -74,6 +74,7 @@ namespace netDxf.Entities
                 IsVisible = this.IsVisible, Normal = this.Normal
             };
             foreach (XData data in this.XData.Values) copy.XData.Add((XData)data.Clone());
+            this.CopyCommonDataTo(copy);
             return copy;
         }
     }

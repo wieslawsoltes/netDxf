@@ -87,8 +87,11 @@ namespace netDxf.IO
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
             }
 
+            this.ValidateEntityCommonDataVersions();
+            this.ValidateUcsReferences();
             this.ValidateMTextBackgroundVersions();
             this.ValidateMTextColumns();
+            this.ValidateLwPolylineFidelity();
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
             this.ValidateHatchSplineFitVersions();
@@ -1747,7 +1750,7 @@ namespace netDxf.IO
 
             this.chunk.Write(2, this.EncodeNonAsciiCharacters(ucs.Name));
 
-            this.chunk.Write(70, (short) 0);
+            this.chunk.Write(70, (short)ucs.Flags);
 
             this.chunk.Write(10, ucs.Origin.X);
             this.chunk.Write(20, ucs.Origin.Y);
@@ -2039,6 +2042,7 @@ namespace netDxf.IO
             this.chunk.Write(370, (short) entity.Lineweight);
             this.chunk.Write(48, entity.LinetypeScale);
             this.chunk.Write(60, entity.IsVisible ? (short) 0 : (short) 1);
+            this.WriteEntityCommonData(entity.CommonData);
         }
 
         private void WriteWipeout(Wipeout wipeout)
@@ -2751,14 +2755,16 @@ namespace netDxf.IO
 
             this.chunk.Write(38, polyline2D.Elevation);
             this.chunk.Write(39, polyline2D.Thickness);
+            if (polyline2D.ConstantWidth.HasValue) this.chunk.Write(43, polyline2D.ConstantWidth.Value);
 
 
             foreach (Polyline2DVertex v in polyline2D.Vertexes)
             {
                 this.chunk.Write(10, v.Position.X);
                 this.chunk.Write(20, v.Position.Y);
-                this.chunk.Write(40, v.StartWidth);
-                this.chunk.Write(41, v.EndWidth);
+                if (v.VertexIdentifier.HasValue) this.chunk.Write(91, v.VertexIdentifier.Value);
+                if (v.StartWidthOverride.HasValue) this.chunk.Write(40, v.StartWidthOverride.Value);
+                if (v.EndWidthOverride.HasValue) this.chunk.Write(41, v.EndWidthOverride.Value);
                 this.chunk.Write(42, v.Bulge);
             }
 
@@ -4305,6 +4311,7 @@ namespace netDxf.IO
             this.chunk.Write(370, (short)def.Lineweight);
             this.chunk.Write(48, def.LinetypeScale);
             this.chunk.Write(60, def.IsVisible ? (short)0 : (short)1);
+            this.WriteEntityCommonData(def.CommonData);
 
             this.chunk.Write(100, SubclassMarker.Text);
 
@@ -4469,6 +4476,7 @@ namespace netDxf.IO
             this.chunk.Write(370, (short) attrib.Lineweight);
             this.chunk.Write(48, attrib.LinetypeScale);
             this.chunk.Write(60, attrib.IsVisible ? (short) 0 : (short) 1);
+            this.WriteEntityCommonData(attrib.CommonData);
 
             this.chunk.Write(100, SubclassMarker.Text);
 

@@ -44,10 +44,12 @@ namespace netDxf.IO
             ViewModeFlags mode = ViewModeFlags.Off;
             ViewRenderMode renderMode = ViewRenderMode.TwoDimensionalOptimized;
             bool cameraPlottable = false;
+            var associatedUcs = new ViewUcsInput();
             List<XData> xData = new List<XData>();
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                if (this.TryReadViewUcs(associatedUcs)) continue;
                 switch (this.chunk.Code)
                 {
                     case 2: name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
@@ -107,6 +109,7 @@ namespace netDxf.IO
                 RenderMode = renderMode,
                 IsCameraPlottable = cameraPlottable
             };
+            this.CompleteViewUcs(view, associatedUcs);
             if (xData.Count > 0) this.tableEntryXData.Add(view, xData);
             return view;
         }

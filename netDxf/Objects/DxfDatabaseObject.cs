@@ -13,6 +13,10 @@ namespace netDxf.Objects
         /// <summary>Gets the database containing this object, or null while detached.</summary>
         public DxfObjectDatabase Database { get; internal set; }
         internal abstract DxfDatabaseObject CloneShell();
+        internal virtual IEnumerable<DxfObject> DatabaseReferences { get { yield break; } }
+        internal virtual IEnumerable<DxfTag> AllocationReservations { get { yield break; } }
+        internal virtual void CopyDatabaseReferencesTo(DxfDatabaseObject clone, Func<DxfObject, DxfObject> resolve) { }
+        internal virtual void ValidateDatabaseSchema(DxfObjectDatabase database, List<string> errors) { }
         /// <summary>Rebinds added XData to a private copy before document registration can mutate an external registry.</summary>
         protected override void OnXDataAddAppRegEvent(ApplicationRegistry item)
         {

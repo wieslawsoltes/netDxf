@@ -577,6 +577,7 @@ namespace netDxf.Entities
             foreach (XData data in this.XData.Values)
                 viewport.XData.Add((XData) data.Clone());
 
+            this.CopyCommonDataTo(viewport);
             return viewport;
         }
 

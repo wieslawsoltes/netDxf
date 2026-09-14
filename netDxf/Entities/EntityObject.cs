@@ -33,7 +33,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a generic entity.
     /// </summary>
-    public abstract class EntityObject :
+    public abstract partial class EntityObject :
         DxfObject,
         ICloneable
     {

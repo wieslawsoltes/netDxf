@@ -8,7 +8,7 @@ using netDxf.IO;
 namespace netDxf.Objects
 {
     /// <summary>Manages document registration, ownership, extension dictionaries, validation and graph cloning.</summary>
-    public sealed class DxfObjectDatabase
+    public sealed partial class DxfObjectDatabase
     {
         private readonly Dictionary<string, DxfDatabaseObject> objects = new Dictionary<string, DxfDatabaseObject>(StringComparer.OrdinalIgnoreCase);
         internal DxfObjectDatabase(DxfDocument document)
@@ -45,6 +45,9 @@ namespace netDxf.Objects
             List<string> errors = new List<string>();
             foreach (DxfDatabaseObject item in this.objects.Values)
             {
+                item.ValidateDatabaseSchema(this, errors);
+                foreach (DxfObject reference in item.DatabaseReferences)
+                    if (reference != null && !this.IsRegistered(reference)) errors.Add("Unregistered " + item.CodeName + " reference: " + item.Handle);
                 if (item.Database != this || this.Document.GetObjectByHandle(item.Handle) != item) errors.Add("Object registration mismatch: " + item.Handle);
                 if (item != this.Root && item.Owner == null) errors.Add("Object has no owner: " + item.Handle);
                 if (item.Owner != null && !this.IsRegistered(item.Owner)) errors.Add("Owner is outside the document: " + item.Handle);
@@ -96,12 +99,28 @@ namespace netDxf.Objects
             if (destination.Database != this) throw new ArgumentException("The destination belongs to another database.", nameof(destination));
             DxfDictionary.ValidateName(name);
             if (destination.Contains(name) || destination == this.Root && IsReservedName(name)) throw new ArgumentException("The destination name already exists or is reserved.", nameof(name));
-            IReadOnlyList<string> sourceErrors = source.Database.Validate();
-            if (sourceErrors.Count > 0) throw new InvalidOperationException("Cannot clone an invalid source graph: " + string.Join("; ", sourceErrors));
-            List<DxfDatabaseObject> originals = source.Database.objects.Values.Where(o => o == source || IsAncestor(source, o)).ToList();
+            return this.CloneDictionaryGraph(source, destination, name, false, externalReferences);
+        }
+        private DxfDictionary CloneDictionaryGraph(DxfDictionary source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences)
+        {
+            // Enumerating caller mappings can run application code. Snapshot it before reading
+            // graph state and recheck the destination slot after the final external callback.
             var externalMap = new Dictionary<DxfObject, DxfObject>();
             if (externalReferences != null)
                 foreach (KeyValuePair<DxfObject, DxfObject> pair in externalReferences) externalMap.Add(pair.Key, pair.Value);
+            this.CheckRegistered(destination);
+            if (extension)
+            {
+                if (destination == this.Document.Layers || destination.ExtensionDictionary != null) throw new InvalidOperationException("The destination extension-dictionary slot is occupied or reserved.");
+            }
+            else
+            {
+                DxfDictionary dictionary = (DxfDictionary)destination;
+                if (dictionary.Database != this || dictionary.Contains(name) || dictionary == this.Root && IsReservedName(name)) throw new ArgumentException("The destination name already exists or is reserved.", nameof(name));
+            }
+            IReadOnlyList<string> sourceErrors = source.Database.Validate();
+            if (sourceErrors.Count > 0) throw new InvalidOperationException("Cannot clone an invalid source graph: " + string.Join("; ", sourceErrors));
+            List<DxfDatabaseObject> originals = source.Database.objects.Values.Where(o => o == source || IsAncestor(source, o)).ToList();
             Dictionary<DxfObject, DxfObject> map = new Dictionary<DxfObject, DxfObject>();
             foreach (DxfDatabaseObject original in originals) map.Add(original, original.CloneShell());
             Func<DxfObject, DxfObject> resolve = value =>
@@ -122,6 +141,7 @@ namespace netDxf.Objects
                 if (original is DxfDictionaryWithDefault fallback) ((DxfDictionaryWithDefault)clone).Default = resolve(fallback.Default);
                 clone.ExtensionDictionary = (DxfDictionary)resolve(original.ExtensionDictionary);
                 foreach (DxfObject reactor in original.PersistentReactors) clone.PersistentReactors.Add(resolve(reactor));
+                original.CopyDatabaseReferencesTo(clone, resolve);
                 foreach (XData data in original.XData.Values)
                 {
                     clone.XData.Add((XData)data.Clone());
@@ -142,6 +162,9 @@ namespace netDxf.Objects
                             resolve(target);
                         }
             }
+            List<string> cloneErrors = new List<string>();
+            foreach (DxfDatabaseObject original in originals) ((DxfDatabaseObject)map[original]).ValidateDatabaseSchema(this, cloneErrors);
+            if (cloneErrors.Count > 0) throw new InvalidOperationException("Invalid cloned object schema: " + string.Join("; ", cloneErrors));
             this.PlanHandleAllocation(originals.Select(o => (DxfDatabaseObject)map[o]));
             foreach (DxfDatabaseObject original in originals) this.Register((DxfDatabaseObject)map[original], false);
             foreach (DxfXRecord original in originals.OfType<DxfXRecord>())
@@ -165,7 +188,8 @@ namespace netDxf.Objects
                     }
             }
             DxfDictionary result = (DxfDictionary)map[source];
-            destination.AddLoaded(name, result, true);
+            if (extension) destination.ExtensionDictionary = result;
+            else ((DxfDictionary)destination).AddLoaded(name, result, true);
             return result;
         }
         internal static bool IsReference(DxfTag tag) { return tag.HandleKind == DxfHandleKind.SoftPointer || tag.HandleKind == DxfHandleKind.HardPointer || tag.HandleKind == DxfHandleKind.SoftOwner || tag.HandleKind == DxfHandleKind.HardOwner; }
@@ -201,6 +225,8 @@ namespace netDxf.Objects
             {
                 if (item.Owner is DxfDatabaseObject owner && owner.Database == null && !found.Contains(owner)) throw new ArgumentException("The detached target is owned outside the adopted graph.", nameof(target));
                 if (item is DxfDictionaryWithDefault fallback && fallback.Default != null && !this.IsRegistered(fallback.Default) && !(fallback.Default is DxfDatabaseObject f && found.Contains(f))) throw new ArgumentException("The default is outside the adopted graph.", nameof(target));
+                foreach (DxfObject reference in item.DatabaseReferences)
+                    if (reference != null && !this.IsRegistered(reference) && !(reference is DxfDatabaseObject owned && found.Contains(owned))) throw new ArgumentException("An object reference is outside the adopted graph.", nameof(target));
                 foreach (DxfObject reactor in item.PersistentReactors)
                     if (!this.IsRegistered(reactor) && !(reactor is DxfDatabaseObject r && found.Contains(r))) throw new ArgumentException("A reactor is outside the adopted graph.", nameof(target));
             }
@@ -215,6 +241,7 @@ namespace netDxf.Objects
             foreach (DxfDatabaseObject item in incoming)
             {
                 if (item is DxfXRecord record) foreach (DxfTag tag in record.Data) candidate = this.GetReservedSeed(tag, candidate);
+                foreach (DxfTag tag in item.AllocationReservations) candidate = this.GetReservedSeed(tag, candidate);
                 foreach (XData data in item.XData.Values)
                 {
                     if (!this.Document.ApplicationRegistries.Contains(data.ApplicationRegistry.Name)) registrations.Add(data.ApplicationRegistry.Name);

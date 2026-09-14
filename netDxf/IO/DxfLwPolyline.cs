@@ -1,5 +1,8 @@
 // netDxf is distributed under the MIT license; see LICENSE in the repository root.
+using System;
 using System.Collections.Generic;
+using netDxf.Blocks;
+using netDxf.Header;
 using System.Diagnostics;
 using System.IO;
 using netDxf.Entities;
@@ -10,7 +13,8 @@ namespace netDxf.IO
     {
         private Polyline2D ReadLwPolyline()
         {
-            double elevation = 0.0, thickness = 0.0, constantWidth = -1.0;
+            double elevation = 0.0, thickness = 0.0;
+            double? constantWidth = null;
             PolylineTypeFlags flags = PolylineTypeFlags.OpenPolyline;
             List<Polyline2DVertex> vertexes = new List<Polyline2DVertex>();
             Polyline2DVertex vertex = null;
@@ -32,8 +36,10 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 43:
-                        // Retain the existing constant-width interpretation.
+                        if (constantWidth.HasValue) throw new InvalidDataException("LWPOLYLINE has duplicate group 43 constant widths.");
                         constantWidth = this.chunk.ReadDouble();
+                        if (double.IsNaN(constantWidth.Value) || double.IsInfinity(constantWidth.Value) || constantWidth.Value < 0)
+                            throw new InvalidDataException("LWPOLYLINE group 43 must be finite and nonnegative.");
                         this.chunk.Next();
                         break;
                     case 70:
@@ -65,6 +71,12 @@ namespace netDxf.IO
                         hasY = true;
                         this.chunk.Next();
                         break;
+                    case 91:
+                        if (vertex == null) throw new InvalidDataException("LWPOLYLINE group 91 precedes its group 10 vertex.");
+                        if (vertex.VertexIdentifier.HasValue) throw new InvalidDataException("LWPOLYLINE vertex has duplicate group 91 identifiers.");
+                        vertex.VertexIdentifier = this.chunk.ReadInt();
+                        this.chunk.Next();
+                        break;
                     case 40:
                     case 41:
                     case 42:
@@ -73,10 +85,20 @@ namespace netDxf.IO
                         short code = this.chunk.Code;
                         double value = this.chunk.ReadDouble();
                         if (code == 42) vertex.Bulge = value;
-                        else if (value >= 0.0)
+                        else
                         {
-                            if (code == 40) vertex.StartWidth = value;
-                            else vertex.EndWidth = value;
+                            if (double.IsNaN(value) || double.IsInfinity(value) || value < 0)
+                                throw new InvalidDataException("LWPOLYLINE vertex width must be finite and nonnegative.");
+                            if (code == 40)
+                            {
+                                if (vertex.StartWidthOverride.HasValue) throw new InvalidDataException("LWPOLYLINE vertex has duplicate group 40 widths.");
+                                vertex.StartWidth = value;
+                            }
+                            else
+                            {
+                                if (vertex.EndWidthOverride.HasValue) throw new InvalidDataException("LWPOLYLINE vertex has duplicate group 41 widths.");
+                                vertex.EndWidth = value;
+                            }
                         }
                         this.chunk.Next();
                         break;
@@ -109,11 +131,29 @@ namespace netDxf.IO
                 throw new InvalidDataException("LWPOLYLINE group 90 does not match its actual vertex count.");
             Polyline2D entity = new Polyline2D(vertexes)
             {
-                Elevation = elevation, Thickness = thickness, Flags = flags, Normal = normal
+                Elevation = elevation, Thickness = thickness, Flags = flags, Normal = normal, ConstantWidth = constantWidth
             };
-            if (constantWidth >= 0.0) entity.SetConstantWidth(constantWidth);
             entity.XData.AddRange(xData);
             return entity;
+        }
+    }
+    internal partial class DxfWriter
+    {
+        private void ValidateLwPolylineFidelity()
+        {
+            foreach (Block block in this.doc.Blocks)
+                foreach (EntityObject entity in block.Entities)
+                {
+                    Polyline2D polyline = entity as Polyline2D;
+                    if (polyline == null) continue;
+                    polyline.ValidateVertexFidelity();
+                    bool hasIdentifiers = false;
+                    foreach (Polyline2DVertex vertex in polyline.Vertexes) hasIdentifiers |= vertex.VertexIdentifier.HasValue;
+                    if (hasIdentifiers && this.doc.DrawingVariables.AcadVer < DxfVersion.AutoCad2013)
+                        throw new NotSupportedException("LWPOLYLINE group 91 vertex identifiers require the qualified DXF 2013 or later writer profile. Remove identifiers explicitly before down-saving.");
+                    if (polyline.SmoothType != PolylineSmoothType.NoSmooth && (polyline.ConstantWidth.HasValue || hasIdentifiers))
+                        throw new NotSupportedException("Smoothed POLYLINE output cannot retain LWPOLYLINE constant-width presence or vertex identifiers. Convert these fields explicitly before enabling smoothing.");
+                }
         }
     }
 }

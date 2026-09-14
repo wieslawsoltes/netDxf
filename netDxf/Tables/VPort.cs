@@ -32,7 +32,7 @@ namespace netDxf.Tables
 {
     /// <summary>A model-space viewport record belonging to a named viewport configuration.</summary>
     /// <remarks>Multiple records may share a configuration name. Record equality is object identity.</remarks>
-    public class VPort : TableObject
+    public partial class VPort : TableObject
     {
         /// <summary>The current viewport configuration name.</summary>
         public const string DefaultName = "*Active";
@@ -376,7 +376,9 @@ namespace netDxf.Tables
                 UcsXAxis = this.UcsXAxis,
                 UcsYAxis = this.UcsYAxis,
                 UcsOrthographicType = this.UcsOrthographicType,
-                UcsElevation = this.UcsElevation
+                UcsElevation = this.UcsElevation,
+                NamedUcs = this.NamedUcs,
+                BaseUcs = this.BaseUcs
             };
             foreach (XData data in this.XData.Values) copy.XData.Add((XData)data.Clone());
             return copy;

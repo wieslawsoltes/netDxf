@@ -37,7 +37,7 @@ namespace netDxf.Entities
     /// AutoCad allows to have duplicate tags in the attribute definitions list, but this library does not.
     /// To have duplicate tags is not recommended in any way, since there will be now way to know which is the definition associated to the insert attribute.
     /// </remarks>
-    public class AttributeDefinition :
+    public partial class AttributeDefinition :
         DxfObject,
         ICloneable
     {
@@ -705,6 +705,7 @@ namespace netDxf.Entities
                 entity.XData.Add((XData) data.Clone());
             }
 
+            this.CopyCommonDataTo(entity);
             return entity;
         }
 
