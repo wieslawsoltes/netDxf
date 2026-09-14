@@ -334,8 +334,15 @@ namespace netDxf.Entities
         // carry authored/edited controls, weights and knots; invoking the public
         // fit-point constructor would silently replace that geometry.
         private Spline(Spline source)
-            : base(EntityType.Spline, DxfObjectCode.Spline)
+            : this(source, EntityType.Spline, DxfObjectCode.Spline)
         {
+        }
+
+        // Derived DXF entities retain the stored spline payload, not a refit.
+        internal Spline(Spline source, EntityType type, string codeName)
+            : base(type, codeName)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
             this.controlPoints = (Vector3[]) source.controlPoints.Clone();
             this.weights = source.weights == null ? null : (double[]) source.weights.Clone();
             this.knots = source.knots == null ? null : (double[]) source.knots.Clone();

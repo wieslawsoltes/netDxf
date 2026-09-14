@@ -3947,6 +3947,9 @@ namespace netDxf.IO
                 case DxfObjectCode.Solid:
                     dxfObject = this.ReadSolid();
                     break;
+                case DxfObjectCode.Helix:
+                    dxfObject = this.ReadHelix();
+                    break;
                 case DxfObjectCode.Spline:
                     dxfObject = this.ReadSpline();
                     break;
@@ -7722,7 +7725,7 @@ namespace netDxf.IO
             return entity;
         }
 
-        private Spline ReadSpline()
+        private Spline ReadSpline(bool stopAtHelix = false)
         {
             SplineTypeFlags flags = SplineTypeFlags.Open;
             Vector3 normal = Vector3.UnitZ;
@@ -7759,7 +7762,7 @@ namespace netDxf.IO
             List<XData> xData = new List<XData>();
 
             this.chunk.Next();
-            while (this.chunk.Code != 0)
+            while (this.chunk.Code != 0 && !(stopAtHelix && this.chunk.Code == 100 && this.chunk.ReadString() == SubclassMarker.Helix))
             {
                 switch (this.chunk.Code)
                 {
@@ -7892,6 +7895,9 @@ namespace netDxf.IO
                 }
             }
 
+            if (stopAtHelix && this.chunk.Code == 0)
+                throw new InvalidDataException("HELIX is missing its AcDbHelix subclass.");
+
             if (weights.Count == 0 || weights.Count != ctrlPoints.Count)
             {
                 // if the weights are not present the default 1.0 will be used
@@ -7958,6 +7964,7 @@ namespace netDxf.IO
                 entity.KnotParameterization = SplineKnotParameterization.FitCustom;
             }
 
+            if (stopAtHelix) entity.Normal = normal;
             entity.XData.AddRange(xData);
 
             return entity;

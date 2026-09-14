@@ -91,6 +91,7 @@ namespace netDxf.IO
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
             this.ValidateHatchSplineFitVersions();
+            this.ValidateHelixVersions();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
             this.encodedStrings = new Dictionary<string, string>();
@@ -1995,6 +1996,9 @@ namespace netDxf.IO
                 case EntityType.Solid:
                     this.WriteSolid((Solid) entity);
                     break;
+                case EntityType.Helix:
+                    this.WriteHelix((Helix) entity);
+                    break;
                 case EntityType.Spline:
                     this.WriteSpline((Spline) entity);
                     break;
@@ -2588,7 +2592,7 @@ namespace netDxf.IO
             this.WriteXData(face.XData);
         }
 
-        private void WriteSpline(Spline spline)
+        private void WriteSpline(Spline spline, bool writeXData = true)
         {
             this.chunk.Write(100, SubclassMarker.Spline);
 
@@ -2659,7 +2663,7 @@ namespace netDxf.IO
                 this.chunk.Write(31, point.Z);
             }
 
-            this.WriteXData(spline.XData);
+            if (writeXData) this.WriteXData(spline.XData);
         }
 
         private void WriteInsert(Insert insert)
