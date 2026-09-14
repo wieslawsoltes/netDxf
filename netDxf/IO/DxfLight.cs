@@ -99,7 +99,7 @@ namespace netDxf.IO
         {
             this.chunk.Write(100, SubclassMarker.Light);
             this.chunk.Write(90, light.VersionNumber);
-            this.chunk.Write(1, this.EncodeNonAsciiCharacters(light.Name));
+            this.chunk.Write(1, this.EncodeNonAsciiCharacters(light.Name.Replace("\\", "\\U+005C")));
             this.chunk.Write(70, (short)light.LightType);
             this.chunk.Write(290, light.IsOn); this.chunk.Write(291, light.PlotGlyph);
             this.chunk.Write(40, light.Intensity);
