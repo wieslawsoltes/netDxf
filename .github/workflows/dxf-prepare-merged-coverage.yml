@@ -1,0 +1,36 @@
+name: Prepare verified merged DXF comparison
+on:
+  push:
+    branches: [docs/merged-conformance-20260914]
+    paths: [.github/workflows/dxf-prepare-merged-coverage.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/merged-conformance-20260914
+          fetch-depth: 0
+      - name: Regenerate source-pinned comparison and publication notes
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 6420dd213b018d6f8698167aca4473bc3d3a499f
+          python .github/refresh_coverage.py 6420dd213b018d6f8698167aca4473bc3d3a499f 280e1b80946fc2e4133e69ead3bc8651825b13bd 34867250706
+          python .github/update_publication_docs.py
+          python tools/generate_dxf_coverage.py
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+      - name: Verify entire documentation tree and remove helpers
+        run: |
+          set -euo pipefail
+          git rm .github/refresh_coverage.py .github/update_publication_docs.py .github/workflows/dxf-prepare-merged-coverage.yml
+          git add README.md doc/dxf-conformance
+          test "$(git write-tree)" = 87de583558aa61d0f5c1154e052706ef858866c9
+          git diff --cached --check
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'docs: publish verified189-row comparison and merged conformance checkpoint'
+          git push origin HEAD:docs/merged-conformance-20260914
