@@ -78,7 +78,9 @@ def main():
                     if not math.isclose(actual, expected, rel_tol=1e-14, abs_tol=1e-14):
                         raise ValueError(f'{path}: clone refitted edited control point')
                 weights = [1., .875] + [1.] * 10
-                knots = [2.] * 4 + [2.75] * 4 + [3.5] * 4 + [5.] * 4
+                # Merged PR64 authors three equal spans. The fixture maps
+                # normalized parameter u to 2 + 3*u; boundaries are 2,3,4,5.
+                knots = [2.] * 4 + [3.] * 4 + [4.] * 4 + [5.] * 4
             else:
                 expected_cp = controls if kind == 1 else controls[-2:] + controls
                 if cp != expected_cp or len(spline.fit_points):
