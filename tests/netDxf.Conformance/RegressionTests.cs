@@ -63,6 +63,7 @@ internal static partial class Program
         RegisterSplinePeriodicInputTests();
         RegisterHelixWireTests();
         RegisterHelixApiTests();
+        RegisterHelixGeometryTests();
         RegisterSplinePeriodicOverlapTests();
         RegisterHatchSplineFitTests();
         RegisterHatchSplineFitApiTests();

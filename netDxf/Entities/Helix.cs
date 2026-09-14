@@ -211,7 +211,9 @@ namespace netDxf.Entities
         {
             double max = Math.Max(Math.Abs(vector.X), Math.Max(Math.Abs(vector.Y), Math.Abs(vector.Z)));
             if (max == 0.0) return 0.0;
-            Vector3 v = vector / max;
+            // Divide components directly: reciprocal multiplication overflows
+            // for subnormal scales and loses the dominant 1 for very large ones.
+            Vector3 v = new Vector3(vector.X / max, vector.Y / max, vector.Z / max);
             return max * Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
         }
 
