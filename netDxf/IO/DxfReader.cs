@@ -7909,19 +7909,27 @@ namespace netDxf.IO
                 method = flags.HasFlag(SplineTypeFlags.FitPointCreationMethod) ? SplineCreationMethod.FitPoints : SplineCreationMethod.ControlPoints;
             }
 
-            bool isPeriodic;
-            if (ctrlPoints[0].Equals(ctrlPoints[ctrlPoints.Count - 1]))
+            // Bit 2 is the documented periodic flag. The higher marker is an
+            // existing compatibility convention, not a prerequisite for it.
+            bool isPeriodic = flags.HasFlag(SplineTypeFlags.Periodic) ||
+                              flags.HasFlag(SplineTypeFlags.ClosedPeriodicSpline);
+            if (isPeriodic)
             {
-                isPeriodic = false;
-            }
-            else
-            {
-                isPeriodic = flags.HasFlag(SplineTypeFlags.ClosedPeriodicSpline);
-                if (isPeriodic)
+                // The public model stores the compact cyclic control polygon;
+                // DXF stores degree repeated controls around the knot domain.
+                // Only strip an exact overlap: guessing here changes geometry.
+                if (ctrlPoints.Count < 2 * degree + 1)
+                    throw new NotSupportedException("Periodic SPLINE requires a degree-fold cyclic control overlap in this typed model.");
+                for (int i = 0; i < degree; i++)
                 {
-                    ctrlPoints.RemoveRange(0, degree);
-                    weights?.RemoveRange(0, degree);
+                    int tail = ctrlPoints.Count - degree + i;
+                    Vector3 a = ctrlPoints[i], b = ctrlPoints[tail];
+                    if (a.X != b.X || a.Y != b.Y || a.Z != b.Z ||
+                        (weights != null && weights[i] != weights[tail]))
+                        throw new NotSupportedException("Periodic SPLINE control points and weights must have an exact degree-fold cyclic overlap; refusing a lossy import.");
                 }
+                ctrlPoints.RemoveRange(0, degree);
+                weights?.RemoveRange(0, degree);
             }
 
             Spline entity = new Spline(ctrlPoints, weights, knots, degree, fitPoints, method, isPeriodic)
