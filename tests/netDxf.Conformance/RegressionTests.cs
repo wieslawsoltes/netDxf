@@ -55,5 +55,7 @@ internal static partial class Program
         RegisterHatchGradientColorStateTests();
         RegisterHatchGradientPacketTests();
         RegisterSplineTangentTransformTests();
+        RegisterHatchSplineFitTests();
+        RegisterHatchSplineFitApiTests();
     }
 }

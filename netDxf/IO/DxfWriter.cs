@@ -89,6 +89,7 @@ namespace netDxf.IO
 
             this.ValidateMTextBackgroundVersions();
             this.ValidateMeshVersions();
+            this.ValidateHatchSplineFitVersions();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
             this.encodedStrings = new Dictionary<string, string>();
@@ -3277,13 +3278,25 @@ namespace netDxf.IO
                     }
                 }
 
-                // this information is only required for AutoCAD version 2010
-                // stores information about spline fit points (the spline entity has no fit points and no tangent info)
-                // another DXF inconsistency!; while the number of fit points of Spline entity is written as a short (code 74)
-                // the number of fit points of a hatch boundary path spline is written as an int (code 97)
+                // The fit-data count is an Int32 (unlike standalone SPLINE group 74).
                 if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2010)
                 {
-                    this.chunk.Write(97, 0);
+                    this.chunk.Write(97, spline.FitPoints.Count);
+                    foreach (Vector2 point in spline.FitPoints)
+                    {
+                        this.chunk.Write(11, point.X);
+                        this.chunk.Write(21, point.Y);
+                    }
+                    if (spline.StartTangent.HasValue)
+                    {
+                        this.chunk.Write(12, spline.StartTangent.Value.X);
+                        this.chunk.Write(22, spline.StartTangent.Value.Y);
+                    }
+                    if (spline.EndTangent.HasValue)
+                    {
+                        this.chunk.Write(13, spline.EndTangent.Value.X);
+                        this.chunk.Write(23, spline.EndTangent.Value.Y);
+                    }
                 }
             }
         }

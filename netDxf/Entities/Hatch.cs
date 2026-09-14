@@ -353,11 +353,9 @@ namespace netDxf.Entities
 
         private static Spline ProcessSpline(Spline spline, Matrix3 trans, Vector3 pos)
         {
-            for (int i = 0; i < spline.ControlPoints.Length; i++)
-            {
-                spline.ControlPoints[i] = trans * spline.ControlPoints[i] + pos;
-            }
-            spline.Normal = trans * spline.Normal;
+            // Transform authored fit points as positions and tangents as vectors,
+            // alongside the controls and normal, without refitting the curve.
+            spline.TransformBy(trans, pos);
             return spline;
         }
 
