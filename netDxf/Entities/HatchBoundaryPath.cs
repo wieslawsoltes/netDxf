@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace netDxf.Entities
@@ -643,6 +644,74 @@ namespace netDxf.Entities
             /// </remarks>
             public Vector3[] ControlPoints; // location: (x, y) weight: z
 
+            private readonly FitPointCollection fitPoints = new FitPointCollection();
+            private Vector2? startTangent;
+            private Vector2? endTangent;
+
+            /// <summary>
+            /// Gets the ordered spline fit points in hatch object coordinates.
+            /// </summary>
+            /// <remarks>
+            /// These are authored metadata, independent of the control polygon. Editing
+            /// the list does not refit the curve. DXF output requires AutoCAD 2010 or later
+            /// when this list or either tangent is populated. Points must be finite.
+            /// </remarks>
+            public IList<Vector2> FitPoints
+            {
+                get { return this.fitPoints; }
+            }
+
+            /// <summary>
+            /// Gets or sets the optional start tangent in hatch object coordinates.
+            /// Null omits the tangent; an explicit zero vector is retained.
+            /// </summary>
+            public Vector2? StartTangent
+            {
+                get { return this.startTangent; }
+                set
+                {
+                    if (value.HasValue) ValidateFitVector(value.Value);
+                    this.startTangent = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the optional end tangent in hatch object coordinates.
+            /// Tangent magnitudes are retained, not normalized.
+            /// </summary>
+            public Vector2? EndTangent
+            {
+                get { return this.endTangent; }
+                set
+                {
+                    if (value.HasValue) ValidateFitVector(value.Value);
+                    this.endTangent = value;
+                }
+            }
+
+            private static void ValidateFitVector(Vector2 value)
+            {
+                if (double.IsNaN(value.X) || double.IsInfinity(value.X) ||
+                    double.IsNaN(value.Y) || double.IsInfinity(value.Y))
+                    throw new ArgumentOutOfRangeException(nameof(value), value,
+                        "Spline fit points and tangents must have finite components.");
+            }
+
+            private sealed class FitPointCollection : Collection<Vector2>
+            {
+                protected override void InsertItem(int index, Vector2 item)
+                {
+                    ValidateFitVector(item);
+                    base.InsertItem(index, item);
+                }
+
+                protected override void SetItem(int index, Vector2 item)
+                {
+                    ValidateFitVector(item);
+                    base.SetItem(index, item);
+                }
+            }
+
             /// <summary>
             /// Initializes a new instance of the <c>HatchBoundaryPath.Spline</c> class.
             /// </summary>
@@ -686,6 +755,22 @@ namespace netDxf.Entities
                     this.ControlPoints[i] = new Vector3(point.X, point.Y, spline.Weights[i]);
                 }
 
+                foreach (Vector3 fitPoint in spline.FitPoints)
+                {
+                    Vector3 point = trans * fitPoint;
+                    this.fitPoints.Add(new Vector2(point.X, point.Y));
+                }
+                if (spline.StartTangent.HasValue)
+                {
+                    Vector3 tangent = trans * spline.StartTangent.Value;
+                    this.StartTangent = new Vector2(tangent.X, tangent.Y);
+                }
+                if (spline.EndTangent.HasValue)
+                {
+                    Vector3 tangent = trans * spline.EndTangent.Value;
+                    this.EndTangent = new Vector2(tangent.X, tangent.Y);
+                }
+
                 this.Knots = new double[spline.Knots.Length];
                 for (int i = 0; i < spline.Knots.Length; i++)
                 {
@@ -717,7 +802,17 @@ namespace netDxf.Entities
                     ctrl.Add(new Vector3(point.X, point.Y, 0.0));
                     weights.Add(point.Z);
                 }
-                return new Entities.Spline(ctrl, weights, knots, this.Degree, this.IsPeriodic);
+                // Preserve the authored control geometry and fit metadata together;
+                // the fit-point authoring constructor would regenerate the controls.
+                return new Entities.Spline(ctrl, weights, knots, this.Degree,
+                    this.fitPoints.Select(point => new Vector3(point.X, point.Y, 0.0)),
+                    SplineCreationMethod.ControlPoints, this.IsPeriodic)
+                {
+                    StartTangent = this.startTangent.HasValue
+                        ? new Vector3(this.startTangent.Value.X, this.startTangent.Value.Y, 0.0) : (Vector3?) null,
+                    EndTangent = this.endTangent.HasValue
+                        ? new Vector3(this.endTangent.Value.X, this.endTangent.Value.Y, 0.0) : (Vector3?) null
+                };
             }
 
             /// <summary>
@@ -733,6 +828,8 @@ namespace netDxf.Entities
                     IsPeriodic = this.IsPeriodic,
                     Knots = new double[this.Knots.Length],
                     ControlPoints = new Vector3[this.ControlPoints.Length],
+                    StartTangent = this.startTangent,
+                    EndTangent = this.endTangent,
                 };
                 for (int i = 0; i < this.Knots.Length; i++)
                 {
@@ -742,6 +839,7 @@ namespace netDxf.Entities
                 {
                     copy.ControlPoints[i] = this.ControlPoints[i];
                 }
+                foreach (Vector2 point in this.fitPoints) copy.fitPoints.Add(point);
                 return copy;
             }
         }

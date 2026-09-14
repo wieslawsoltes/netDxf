@@ -9834,16 +9834,7 @@ namespace netDxf.IO
                 controls.Add(new Vector3(point.X, point.Y, weight));
             }
 
-            // Retain the existing version/representation contract: fit data and tangents are
-            // validated and consumed here, but are not modeled by HatchBoundaryPath.Spline.
-            if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2010)
-            {
-                int fitCount = this.ReadHatchEdgeCount(97);
-                for (int i = 0; i < fitCount; i++) this.ReadHatchEdgePoint(11, 21);
-                if (this.chunk.Code == 12) this.ReadHatchEdgePoint(12, 22);
-                if (this.chunk.Code == 13) this.ReadHatchEdgePoint(13, 23);
-            }
-            return new HatchBoundaryPath.Spline
+            HatchBoundaryPath.Spline spline = new HatchBoundaryPath.Spline
             {
                 Degree = (short) degree,
                 IsRational = rational,
@@ -9851,6 +9842,27 @@ namespace netDxf.IO
                 Knots = knots.ToArray(),
                 ControlPoints = controls.ToArray()
             };
+            // This fit-packet boundary is the existing typed 2010+ export profile;
+            // the following group 97 belongs to source-boundary references.
+            if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2010)
+            {
+                int fitCount = this.ReadHatchEdgeCount(97);
+                for (int i = 0; i < fitCount; i++) spline.FitPoints.Add(this.ReadHatchEdgePoint(11, 21));
+                while (this.chunk.Code == 12 || this.chunk.Code == 13)
+                {
+                    if (this.chunk.Code == 12)
+                    {
+                        if (spline.StartTangent.HasValue) throw this.InvalidHatchEdgeData("duplicate spline start tangent");
+                        spline.StartTangent = this.ReadHatchEdgePoint(12, 22);
+                    }
+                    else
+                    {
+                        if (spline.EndTangent.HasValue) throw this.InvalidHatchEdgeData("duplicate spline end tangent");
+                        spline.EndTangent = this.ReadHatchEdgePoint(13, 23);
+                    }
+                }
+            }
+            return spline;
         }
 
         private void ReadNextHatchEdgeTag()
