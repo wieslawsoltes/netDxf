@@ -266,6 +266,10 @@ namespace netDxf.IO
                 this.chunk.Next();
             }
 
+            // All typed record parsers see the same non-comment tag sequence.
+            // Raw documents continue to expose every original comment/tag.
+            if (!this.isBinary) ((TextCodeValueReader)this.chunk).SkipComments = true;
+
             while (this.chunk.ReadString() != DxfObjectCode.EndOfFile)
             {
                 if (this.chunk.ReadString() == DxfObjectCode.BeginSection)
