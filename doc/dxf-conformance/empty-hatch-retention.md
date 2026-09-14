@@ -1,4 +1,6 @@
-# Empty HATCH input retention and safe typed export — unmerged
+# Empty HATCH input retention and safe typed export
+
+> Merged as [PR #73](https://github.com/wieslawsoltes/netDxf/pull/73). Final-head [CI 34865164429](https://github.com/wieslawsoltes/netDxf/actions/runs/34865164429) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,507 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
 
 ## No silent entity loss
 
@@ -41,7 +43,7 @@ A raw load/save still retains the original empty HATCH bytes exactly. No clean
 independent-reader AUDIT for an intentionally empty HATCH is claimed.
 
 Base: merged PR #68, `cf533ba32d6c732e475192ee021b78f938eda0cb`.
-Native AutoCAD, actual Windows, SDK/MSBuild and netstandard2.0 CI are not executed.
+The original local experiment did not execute Windows/SDK/netstandard CI. The merged PR subsequently passed those gates as recorded above. Native AutoCAD remains unexecuted.
 Geometric closure/containment, associative dependencies and arbitrary affine plane
 handling remain separate. Autodesk HATCH group91 is the path-count field; this
 increment does not infer extra historical legality from accepting its absence/zero.

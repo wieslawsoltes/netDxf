@@ -1,4 +1,6 @@
-# Explicit atomic file saves — unmerged implementation
+# Explicit atomic file saves
+
+> Merged as [PR #70](https://github.com/wieslawsoltes/netDxf/pull/70). Final-head [CI 34861184112](https://github.com/wieslawsoltes/netDxf/actions/runs/34861184112) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,075 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
 
 ## API and contract
 
@@ -48,7 +50,7 @@ LINE coordinates and zero ezdxf audit errors/repairs in each configuration. This
 not independently prove filesystem atomicity on other operating systems.
 
 Base: merged PR #68, `cf533ba32d6c732e475192ee021b78f938eda0cb`.
-Actual SDK/MSBuild, Windows, netstandard2.0 CI and native AutoCAD are pending.
+This original local experiment did not execute SDK/MSBuild or Windows; the merged PR subsequently passed those CI gates as recorded above. Native AutoCAD remains unexecuted.
 
 ```csharp
 document.SaveAtomic("drawing.dxf", isBinary: false, cancellationToken: token);

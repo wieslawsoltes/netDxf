@@ -1,4 +1,6 @@
-# Raw reference traversal and simultaneous handle remapping — unmerged
+# Raw reference traversal and simultaneous handle remapping
+
+> Merged as [PR #72](https://github.com/wieslawsoltes/netDxf/pull/72). Final-head [CI 34863629586](https://github.com/wieslawsoltes/netDxf/actions/runs/34863629586) passed Linux/Windows Debug/Release, actual netstandard2.0 builds, ledger checks and the Linux source audit; the retained Linux Debug report has **16,315 passed / zero failed**. The evidence section below retains the original standalone local experiment, not the later accumulated suite count. See the [merged execution checkpoint](checkpoint-merged-2026-09-14.md) for source hashes and qualification limits.
 
 This feature depends on `DxfRawHandleIndex`, not on typed-model handle allocation.
 Both APIs work on one immutable raw snapshot and never rewrite it in place.
@@ -55,8 +57,7 @@ not ezdxf's augmented object database: that loader creates optional defaults sta
 at the original seed without immediately rewriting the HEADER value. This observed
 loader behavior is not reported as a production remapping error or hidden by AUDIT.
 
-This is new API validation, not a fabricated baseline red run. Windows/SDK/netstandard
-CI and native AutoCAD are not executed. The synthetic raw test records do not assert
+This is new API validation, not a fabricated baseline red run. Windows/SDK/netstandard CI was not executed in that original experiment. The merged PR subsequently passed those gates; native AutoCAD remains unexecuted. The synthetic raw test records do not assert
 historical legality in every profile.
 
 ```csharp
@@ -72,3 +73,7 @@ var changed = index.RemapHandles(new Dictionary<string, string>
 Primary source: Autodesk's numerical group-code reference and common entity control
 group table; linked in `raw-handle-index.md`. These sources distinguish arbitrary,
 soft/hard pointer, ownership, reactor and extended-data handles.
+
+## Embedded-object follow-up
+
+Merged [PR #75](raw-embedded-handle-context.md) keeps the recognized group-101 embedded-object tail opaque through the record boundary. Its private fields, including 100/102/1001-looking values, must not become enclosing identities or references. This is conservative exposure/remapping safety, not a private class schema.
