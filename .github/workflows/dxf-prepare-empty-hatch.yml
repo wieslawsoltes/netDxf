@@ -1,0 +1,46 @@
+name: Prepare verified empty HATCH retention
+on:
+  push:
+    branches: [conformance/empty-hatch-20260914]
+    paths: [.github/workflows/dxf-prepare-empty-hatch.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: conformance/empty-hatch-20260914
+          fetch-depth: 0
+      - name: Restore exact tested patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENCODED_LENGTH: '7544'
+          PATCH_SHA256: '31a22afbab8f140d4116744e9fc99780cffb138ed9e0fbad10e384e6365c3930'
+          ROW_OVERRIDES: >-
+            {"16":"h0fj470j6VgNe/Q7cNxwWpBEDwrO8QLH+AYSg3sE68H5H+vXg9OFC2XihE7GyHaIa86u2RBnXc6lsmoCpJ9lMJOIFDaIDSKIoK51bsbZGuQY2K7aOGGE7WrfYYUjN2Y1","22":"TizWjm1maLnsiEHvYvit3e+I7gDetfe1e945F+X2AJ/LhvjWHV72vgwFVvTbN8NfBMq09s0v4o/dGzjSzp9u+53BQPT6jK57fXvV7eB59+bsCr7+5rM4BSzVAVddGBAQ","48":"b7MfU1Uu9/6VF/KUEreyCs1vgOytOxbnndMvn1d44aV+rPto7aJPXpHLK++tbhPSHawHVSxDlBlB2OwEioZrQlZ/qHghzWsZRdZEUneHL4zpwVu5+u5d0cskPJXTzG51"}
+        run: |
+          set -euo pipefail
+          export BLOB_JSON="$RUNNER_TEMP/patch-blob.json"
+          gh api repos/wieslawsoltes/netDxf/git/blobs/5c0dfa78174d38cc7684a03525826f4885fcf1e8 > "$BLOB_JSON"
+          python .github/dxf-transfer.py
+      - name: Verify tree and publish isolated feature
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = ba60aca65bb92b796d300560ce2878e52423013f
+          git rm .github/dxf-transfer.py .github/workflows/dxf-prepare-empty-hatch.yml
+          test "$(git write-tree)" = 30f1f35f9f79674b9754bdaf5ed90c4041f1c2de
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: retain empty HATCH input and reject lossy typed exports'
+          git push origin HEAD:conformance/empty-hatch-20260914
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: empty-hatch-transfer-diagnostic
+          path: ${{ runner.temp }}/staged-envelope.txt
+          retention-days: 2
