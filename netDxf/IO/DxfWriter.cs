@@ -89,6 +89,7 @@ namespace netDxf.IO
 
             this.ValidateMTextBackgroundVersions();
             this.ValidateMeshVersions();
+            this.ValidateMeshOutput();
             this.ValidateHatchSplineFitVersions();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
