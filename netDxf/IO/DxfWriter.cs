@@ -92,6 +92,7 @@ namespace netDxf.IO
             this.ValidateMeshOutput();
             this.ValidateHatchSplineFitVersions();
             this.ValidateHelixVersions();
+            this.ValidateHatchBoundaryPresence();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
 
             this.encodedStrings = new Dictionary<string, string>();
@@ -1897,11 +1898,8 @@ namespace netDxf.IO
             Debug.Assert(this.activeSection == DxfObjectCode.EntitiesSection || this.activeSection == DxfObjectCode.BlocksSection);
             Debug.Assert(entity != null);
 
-            if (entity.Type == EntityType.Hatch && ((Hatch)entity).BoundaryPaths.Count == 0)
-            {
-                Debug.Assert(false, "Hatches with zero boundaries are not allowed." + "Entity handle: " + entity.Handle);
-                return;
-            }
+            if (entity.Type == EntityType.Hatch)
+                RequireHatchBoundary((Hatch)entity);
 
             if (entity.Type == EntityType.Leader && ((Leader)entity).Vertexes.Count < 2)
             {
