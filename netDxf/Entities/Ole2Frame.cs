@@ -15,6 +15,28 @@ namespace netDxf.Entities
         Static = 3
     }
 
+    /// <summary>Presence of optional informational fields in an OLE2FRAME packet.</summary>
+    [Flags]
+    public enum Ole2FrameMetadataFields
+    {
+        /// <summary>No optional informational fields are emitted.</summary>
+        None = 0,
+        /// <summary>Group 70: stored OLE version.</summary>
+        OleVersion = 1,
+        /// <summary>Group 3: user-type description, including an explicitly empty string.</summary>
+        Description = 2,
+        /// <summary>Groups 10/20/30: complete upper-left WCS point.</summary>
+        UpperLeftCorner = 4,
+        /// <summary>Groups 11/21/31: complete lower-right WCS point.</summary>
+        LowerRightCorner = 8,
+        /// <summary>Group 71: link, embedded or static relationship.</summary>
+        ObjectType = 16,
+        /// <summary>Group 72: stored model/paper descriptor.</summary>
+        TileMode = 32,
+        /// <summary>All supported optional fields; the existing public constructor defaults to this.</summary>
+        All = OleVersion | Description | UpperLeftCorner | LowerRightCorner | ObjectType | TileMode
+    }
+
     /// <summary>An inert OLE2FRAME containing its published metadata and uninterpreted binary payload.</summary>
     /// <remarks>
     /// These metadata fields are redundant with private OLE data. They are deliberately immutable:
@@ -42,7 +64,8 @@ namespace netDxf.Entities
         }
 
         internal Ole2Frame(byte[] binaryData, Vector3 upperLeftCorner, Vector3 lowerRightCorner,
-            string description, short oleVersion, OleObjectType objectType, short tileMode, bool copyData)
+            string description, short oleVersion, OleObjectType objectType, short tileMode, bool copyData,
+            Ole2FrameMetadataFields metadataFields = Ole2FrameMetadataFields.All)
             : base(EntityType.Ole2Frame, DxfObjectCode.Ole2Frame)
         {
             if (binaryData == null) throw new ArgumentNullException(nameof(binaryData));
@@ -55,6 +78,9 @@ namespace netDxf.Entities
             if (objectType < OleObjectType.Link || objectType > OleObjectType.Static)
                 throw new ArgumentOutOfRangeException(nameof(objectType));
             if (tileMode != 0 && tileMode != 1) throw new ArgumentOutOfRangeException(nameof(tileMode));
+            if ((metadataFields & ~Ole2FrameMetadataFields.All) != 0)
+                throw new ArgumentOutOfRangeException(nameof(metadataFields));
+            this.MetadataFields = metadataFields;
             this.binaryData = copyData ? (byte[])binaryData.Clone() : binaryData;
             this.UpperLeftCorner = upperLeftCorner;
             this.LowerRightCorner = lowerRightCorner;
@@ -62,6 +88,23 @@ namespace netDxf.Entities
             this.OleVersion = oleVersion;
             this.ObjectType = objectType;
             this.TileMode = tileMode;
+        }
+
+        /// <summary>Gets which optional fields were supplied or explicitly selected for output.</summary>
+        /// <remarks>Default-valued getters are not evidence that a field was present in the input.</remarks>
+        public Ole2FrameMetadataFields MetadataFields { get; }
+
+        /// <summary>Returns an independent snapshot with an explicit optional-field output selection.</summary>
+        /// <remarks>
+        /// Values and binary data are not changed. Omitted values are deliberately not serialized;
+        /// a later reload exposes the existing default-valued getters for absent fields. This operation
+        /// does not rewrite private OLE data. Use Clone to preserve the exact current field selection.
+        /// </remarks>
+        /// <param name="metadataFields">Supported field flags; unknown bits are rejected.</param>
+        /// <returns>An independent snapshot without database identity.</returns>
+        public Ole2Frame WithMetadataFields(Ole2FrameMetadataFields metadataFields)
+        {
+            return this.Copy(metadataFields);
         }
 
         /// <summary>Gets the stored finite upper-left WCS corner.</summary>
@@ -95,8 +138,13 @@ namespace netDxf.Entities
         /// <summary>Creates an independent inert frame, without handle, owner or reactor identity.</summary>
         public override object Clone()
         {
+            return this.Copy(this.MetadataFields);
+        }
+
+        private Ole2Frame Copy(Ole2FrameMetadataFields metadataFields)
+        {
             var copy = new Ole2Frame(this.binaryData, this.UpperLeftCorner, this.LowerRightCorner,
-                this.Description, this.OleVersion, this.ObjectType, this.TileMode)
+                this.Description, this.OleVersion, this.ObjectType, this.TileMode, true, metadataFields)
             {
                 Layer = (Layer)this.Layer.Clone(), Linetype = (Linetype)this.Linetype.Clone(),
                 Color = (AciColor)this.Color.Clone(), Lineweight = this.Lineweight,

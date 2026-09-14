@@ -21,17 +21,30 @@ namespace netDxf.Entities
         {
         }
 
-        internal OleFrame(byte[] binaryData, short oleVersion, bool copyData)
+        internal OleFrame(byte[] binaryData, short oleVersion, bool copyData, bool hasOleVersion = true)
             : base(EntityType.OleFrame, DxfObjectCode.OleFrame)
         {
             if (binaryData == null) throw new ArgumentNullException(nameof(binaryData));
             if (oleVersion < 0) throw new ArgumentOutOfRangeException(nameof(oleVersion));
             this.binaryData = copyData ? (byte[])binaryData.Clone() : binaryData;
             this.OleVersion = oleVersion;
+            this.HasOleVersion = hasOleVersion;
         }
 
         /// <summary>Gets the stored OLE version, independent of the uninterpreted payload.</summary>
         public short OleVersion { get; }
+        /// <summary>Gets whether the optional stored version tag is present.</summary>
+        /// <remarks>An absent tag leaves the existing OleVersion getter at its default of 1 after loading.</remarks>
+        public bool HasOleVersion { get; }
+
+        /// <summary>Returns an independent frame selecting whether its version tag is written.</summary>
+        /// <remarks>
+        /// This selects metadata presence only; it does not rewrite native OLE data. Omitted values
+        /// remain dormant in this instance but are not serialized. Reloading an omitted tag uses
+        /// the existing default version of 1. The returned frame has no handle, owner or reactors.
+        /// </remarks>
+        public OleFrame WithOleVersionPresence(bool present) { return this.Copy(present); }
+
         /// <summary>Gets the number of stored binary bytes.</summary>
         public int BinaryDataLength { get { return this.binaryData.Length; } }
         /// <summary>Returns an independent copy of the stored bytes.</summary>
@@ -49,9 +62,11 @@ namespace netDxf.Entities
         }
 
         /// <summary>Creates an independent frame without retaining handle, owner or reactor identity.</summary>
-        public override object Clone()
+        public override object Clone() { return this.Copy(this.HasOleVersion); }
+
+        private OleFrame Copy(bool present)
         {
-            var copy = new OleFrame(this.binaryData, this.OleVersion)
+            var copy = new OleFrame(this.binaryData, this.OleVersion, true, present)
             {
                 Layer = (Layer)this.Layer.Clone(), Linetype = (Linetype)this.Linetype.Clone(),
                 Color = (AciColor)this.Color.Clone(), Lineweight = this.Lineweight,

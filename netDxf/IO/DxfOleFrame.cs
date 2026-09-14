@@ -60,7 +60,7 @@ namespace netDxf.IO
                 }
                 if (!lengthSeen || !terminated || payload.Length != length)
                     throw new InvalidDataException("Incomplete OLEFRAME packet or binary length mismatch.");
-                var result = new OleFrame(payload.ToArray(), version, false);
+                var result = new OleFrame(payload.ToArray(), version, false, versionSeen);
                 foreach (XData data in xdata) result.XData.Add(data);
                 return result;
             }
@@ -72,7 +72,7 @@ namespace netDxf.IO
         private void WriteOleFrame(OleFrame frame)
         {
             this.chunk.Write(100, SubclassMarker.OleFrame);
-            this.chunk.Write(70, frame.OleVersion);
+            if (frame.HasOleVersion) this.chunk.Write(70, frame.OleVersion);
             this.chunk.Write(90, frame.BinaryDataLength);
             byte[] data = frame.BinaryData;
             for (int offset = 0; offset < data.Length;)

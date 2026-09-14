@@ -77,8 +77,15 @@ namespace netDxf.IO
                 }
                 try
                 {
+                    Ole2FrameMetadataFields fields = Ole2FrameMetadataFields.None;
+                    if (seen.Contains(70)) fields |= Ole2FrameMetadataFields.OleVersion;
+                    if (seen.Contains(3)) fields |= Ole2FrameMetadataFields.Description;
+                    if (seen.Contains(10)) fields |= Ole2FrameMetadataFields.UpperLeftCorner;
+                    if (seen.Contains(11)) fields |= Ole2FrameMetadataFields.LowerRightCorner;
+                    if (seen.Contains(71)) fields |= Ole2FrameMetadataFields.ObjectType;
+                    if (seen.Contains(72)) fields |= Ole2FrameMetadataFields.TileMode;
                     var frame = new Ole2Frame(payload.ToArray(), upper, lower, description, version,
-                        (OleObjectType)type, tile, false);
+                        (OleObjectType)type, tile, false, fields);
                     foreach (XData data in xdata) frame.XData.Add(data);
                     return frame;
                 }
@@ -95,11 +102,20 @@ namespace netDxf.IO
         private void WriteOle2Frame(Ole2Frame frame)
         {
             this.chunk.Write(100, SubclassMarker.Ole2Frame);
-            this.chunk.Write(70, frame.OleVersion);
-            this.chunk.Write(3, this.EncodeNonAsciiCharacters(frame.Description.Replace("\\", "\\U+005C")));
-            this.chunk.Write(10, frame.UpperLeftCorner.X); this.chunk.Write(20, frame.UpperLeftCorner.Y); this.chunk.Write(30, frame.UpperLeftCorner.Z);
-            this.chunk.Write(11, frame.LowerRightCorner.X); this.chunk.Write(21, frame.LowerRightCorner.Y); this.chunk.Write(31, frame.LowerRightCorner.Z);
-            this.chunk.Write(71, (short)frame.ObjectType); this.chunk.Write(72, frame.TileMode);
+            Ole2FrameMetadataFields fields = frame.MetadataFields;
+            if ((fields & Ole2FrameMetadataFields.OleVersion) != 0) this.chunk.Write(70, frame.OleVersion);
+            if ((fields & Ole2FrameMetadataFields.Description) != 0)
+                this.chunk.Write(3, this.EncodeNonAsciiCharacters(frame.Description.Replace("\\", "\\U+005C")));
+            if ((fields & Ole2FrameMetadataFields.UpperLeftCorner) != 0)
+            {
+                this.chunk.Write(10, frame.UpperLeftCorner.X); this.chunk.Write(20, frame.UpperLeftCorner.Y); this.chunk.Write(30, frame.UpperLeftCorner.Z);
+            }
+            if ((fields & Ole2FrameMetadataFields.LowerRightCorner) != 0)
+            {
+                this.chunk.Write(11, frame.LowerRightCorner.X); this.chunk.Write(21, frame.LowerRightCorner.Y); this.chunk.Write(31, frame.LowerRightCorner.Z);
+            }
+            if ((fields & Ole2FrameMetadataFields.ObjectType) != 0) this.chunk.Write(71, (short)frame.ObjectType);
+            if ((fields & Ole2FrameMetadataFields.TileMode) != 0) this.chunk.Write(72, frame.TileMode);
             this.chunk.Write(90, frame.BinaryDataLength);
             byte[] data = frame.BinaryData;
             for (int offset = 0; offset < data.Length;)
