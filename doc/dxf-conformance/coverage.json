@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
-  "audit_date": "2026-09-13",
+  "audit_date": "2026-09-14",
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "f4c8234494a3088677a366f9575feb05b1a88a0b",
-    "tree": "365eec7a7c69da87838a2f8e7cfc286b7dc84a27"
+    "commit": "82361078d1b84f2345d150fa4142ea315c04723f",
+    "tree": "7e6507c4fa27b8db7a09f4a51352b961f6c8daac"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 9140,
+    "test_cases": 12907,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 50,
-    "ci_run": 34780590182
+    "last_implementation_pr": 58,
+    "ci_run": 34817070669
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -331,6 +331,38 @@
     "HGAPS": {
       "label": "remaining hatch source audit",
       "path": "doc/dxf-conformance/hatch-remaining-audit.md"
+    },
+    "HANGLE": {
+      "label": "hatch gradient rotation",
+      "path": "doc/dxf-conformance/hatch-gradient-angle.md"
+    },
+    "HSHIFT": {
+      "label": "hatch fractional gradient shift",
+      "path": "doc/dxf-conformance/hatch-gradient-shift.md"
+    },
+    "HCOLOR": {
+      "label": "hatch authored gradient color state",
+      "path": "doc/dxf-conformance/hatch-gradient-color-state.md"
+    },
+    "HGRAD": {
+      "label": "hatch gradient packet validation",
+      "path": "doc/dxf-conformance/hatch-gradient-packets.md"
+    },
+    "STANGENT": {
+      "label": "spline tangent vector transforms",
+      "path": "doc/dxf-conformance/spline-tangent-transforms.md"
+    },
+    "HFIT": {
+      "label": "hatch spline fit points and tangents",
+      "path": "doc/dxf-conformance/hatch-spline-fit-data.md"
+    },
+    "HPATH": {
+      "label": "hatch outer boundary count validation",
+      "path": "doc/dxf-conformance/hatch-path-count-validation.md"
+    },
+    "CHECK14": {
+      "label": "14 September verified checkpoint",
+      "path": "doc/dxf-conformance/checkpoint-2026-09-14.md"
     }
   },
   "features": [
@@ -867,9 +899,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Control/fit data, knots, weights; all periodic/degenerate cases unverified. `ReadSpline/WriteSpline`.",
+      "scope": "Control/fit data, knots and weights; tangent vectors now exclude translation. Periodic/degenerate geometry and complete NURBS semantics remain unverified. ReadSpline/WriteSpline.",
       "evidence": [
-        "B"
+        "B",
+        "STANGENT"
       ]
     },
     {
@@ -1248,7 +1281,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Double flag, seeds, pixel size, ACAD XData, closure, classification, sparse bulges, counted edge/pattern packets and final metadata conversion tested separately. Outer grammar, geometry, fit metadata and dependencies remain partial.",
+      "scope": "Tested field subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata and outer path framing. General geometric/affine validity, associations and empty-HATCH preservation remain incomplete.",
       "evidence": [
         "HDOUBLE",
         "HSEED",
@@ -1259,7 +1292,9 @@
         "HPAT",
         "HFLAGS",
         "HORDER",
-        "HEDGE"
+        "HEDGE",
+        "HFIT",
+        "HPATH"
       ]
     },
     {
@@ -1278,10 +1313,12 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "2000 output drops gradient payload. Later typed payload is partial: fractional shift becomes a Boolean endpoint; gradient rotation is overwritten by pattern angle. Color-stop/tint and packet fidelity remain open.",
+      "scope": "2000 output still drops gradient payload. Later profiles retain rotation, fractional shift, authored RGB/tint/mode and checked two-stop packets. Optional ACI identity/presence, reserved future forms and full appearance/evaluation remain incomplete.",
       "evidence": [
-        "HGAPS",
-        "B"
+        "HANGLE",
+        "HSHIFT",
+        "HCOLOR",
+        "HGRAD"
       ]
     },
     {
@@ -1293,17 +1330,17 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Typed spline has no fit/tangent storage. Existing 2010+ packet is validated then discarded; writer emits zero fit count. Earlier typed profiles do not consume that packet. Historical availability is not inferred.",
+      "scope": "Editable ordered OCS fits and nullable tangent vectors; independent clones, controls-plus-fit conversion and selected transforms. Existing 2010+ packet profile retained; earlier populated exports reject before caller-stream writes. Not a historical-introduction or fitting/evaluation claim.",
       "evidence": [
-        "HEDGE",
-        "HGAPS"
+        "HFIT",
+        "STANGENT"
       ]
     },
     {
@@ -3845,14 +3882,16 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Rejects non-progressing unknown kinds; checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Fit/tangent framing is not retention or geometric validation.",
+      "scope": "Checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Separate fit retention and outer-count validation are now implemented; knot/degree/periodicity relations and geometry remain incomplete.",
       "evidence": [
-        "HEDGE"
+        "HEDGE",
+        "HFIT",
+        "HPATH"
       ]
     },
     {
       "id": "hatch-gradient-shift",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH fractional gradient shift",
       "status": {
@@ -3860,22 +3899,127 @@
         "AC1012": "X",
         "AC1014": "X",
         "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Source audit: group461 is reduced to bool Centered and export emits only0/1. Fractional values are not retained; 2000 omits the gradient payload.",
+      "scope": "Finite group461 numeric Shift retained through import/edit/clone/export in modern profiles; legacy Centered endpoint convenience retained. AC1015 export remains a solid downgrade.",
       "evidence": [
-        "HGAPS"
+        "HSHIFT"
       ]
     },
     {
       "id": "hatch-gradient-rotation",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH gradient rotation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group460 rotation retained independently of pattern-only group52, with normalized public degrees, clone and repeated transport changes. AC1015 output still omits gradients.",
+      "evidence": [
+        "HANGLE"
+      ]
+    },
+    {
+      "id": "hatch-gradient-color-state",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH authored gradient RGB, tint and mode",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Retains authored two-color and single-color RGB endpoints plus dormant tint; finite tint validation, independent clones and explicit authoring setter behavior. Optional ACI is a separate lossy row.",
+      "evidence": [
+        "HCOLOR"
+      ]
+    },
+    {
+      "id": "hatch-gradient-packets",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH gradient scalar and two-stop packet grammar",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Singleton fields dispatch by group code; two bounded stops, optional per-stop ACI input, comments and malformed-packet diagnostics. Canonical writer ordering and AC1015 downgrade unchanged; raw-only future schemas are not interpreted.",
+      "evidence": [
+        "HGRAD"
+      ]
+    },
+    {
+      "id": "spline-tangent-transforms",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "SPLINE tangent vector transformations",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Nullable tangent vectors receive the linear part only; translation changes control/fit positions, not tangent vectors. Clone/INSERT and six-profile transport coverage; not all spline geometric semantics.",
+      "evidence": [
+        "STANGENT"
+      ]
+    },
+    {
+      "id": "hatch-path-count",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH outer path-count grammar",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Nonnegative group91, per-path group92 and edge count93; complete packet boundaries, incremental growth, comments, duplicates/orphans and record/section boundary rejection. Empty/absent boundary discard remains unchanged.",
+      "evidence": [
+        "HPATH"
+      ]
+    },
+    {
+      "id": "hatch-gradient-aci-preservation",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "HATCH gradient optional ACI metadata",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
@@ -3887,9 +4031,30 @@
         "AC1027": "L",
         "AC1032": "L"
       },
-      "scope": "Source audit: group460 is read into gradient Angle, then overwritten by group52 patternAngle/default zero in ReadHatch. Not fixed by pattern-order support.",
+      "scope": "The RGB model accepts optional group63 input but derives exported indices instead of preserving exact index identity/absence. AC1015 additionally omits the entire gradient payload.",
       "evidence": [
-        "HGAPS"
+        "HGRAD"
+      ]
+    },
+    {
+      "id": "hatch-empty-boundary-preservation",
+      "area": "Confirmed next field-level work",
+      "pipeline": "typed",
+      "feature": "HATCH with no boundary payload",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "L",
+        "AC1018": "L",
+        "AC1021": "L",
+        "AC1024": "L",
+        "AC1027": "L",
+        "AC1032": "L"
+      },
+      "scope": "Typed loading retains the existing discard policy when boundary count is zero or absent and no paths occur; the raw pipeline remains separate. Checked counts do not make empty-HATCH round trips lossless.",
+      "evidence": [
+        "HPATH"
       ]
     }
   ],
@@ -3902,7 +4067,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial supported records",
-      "scope": "HATCH fit/tangent retention, gradient shift/rotation/color metadata, outer path grammar and geometric/affine validity; MESH overrides/writer checks; MTEXT columns; complete UCS/VIEW/VPORT contexts. Each is an isolated PR."
+      "scope": "HATCH optional ACI identity/presence, empty-HATCH preservation, inner scalar dispatch, geometric/affine validity and source dependencies; MESH overrides/writer checks; MTEXT columns; complete UCS/VIEW/VPORT contexts. Completed gradient/fit/outer-count increments remain separately evidenced."
     },
     {
       "id": "new-entities",

@@ -1,6 +1,6 @@
 # Remaining HATCH losses — source audit after PR #50
 
-This note describes **unfixed source-observed gaps**, not new implementation or native CAD testing. It is scoped to the production commit/tree in the generated version comparison. The newly validated edge packets are not a claim that every field is retained or evaluated.
+This is a **historical source audit after PR #50**, fixed at commit `f4c8234494a3088677a366f9575feb05b1a88a0b`, tree `365eec7a7c69da87838a2f8e7cfc286b7dc84a27`. The source-observed gaps below describe that revision, not the current branch. Gradient, fit-data and outer-count corrections are now recorded in the [14 September checkpoint](checkpoint-2026-09-14.md) and [current comparison](version-feature-matrix.md). The original findings are retained below as historical evidence; native AutoCAD was not executed.
 
 ## Spline fit points and tangents are not retained
 
@@ -24,7 +24,7 @@ The outer group-91 boundary list, general geometric validity, arbitrary scalar r
 
 ## Primary references and method of verification
 
-These findings come from inspecting the named source methods and their model assignments at the pinned repository revision. No before/after runtime result is invented for these unimplemented fixes. The edge-packet regression note separately records tests that consume valid fit/tangent packets but does not assert storage.
+These findings come from inspecting the named source methods and their model assignments at the immutable PR #50 revision above. No before/after runtime result is invented for these unimplemented fixes. The edge-packet regression note separately records tests that consume valid fit/tangent packets but does not assert storage.
 
 Autodesk Boundary Path Data (spline groups 94–97, 40, 10/20, 42, 11/21, 12/22 and 13/23):
 https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-DXF/files/GUID-DC5215D6-E73F-4DFF-8BE9-01CA9610FAEE.htm

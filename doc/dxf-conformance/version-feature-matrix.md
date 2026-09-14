@@ -2,12 +2,12 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-13**. Production baseline after PR **#50**: [`f4c8234494a3088677a366f9575feb05b1a88a0b`](https://github.com/wieslawsoltes/netDxf/tree/f4c8234494a3088677a366f9575feb05b1a88a0b).
-Source tree: `365eec7a7c69da87838a2f8e7cfc286b7dc84a27`. Branch: `netstandard`.
+Audit date: **2026-09-14**. Production baseline after PR **#58**: [`82361078d1b84f2345d150fa4142ea315c04723f`](https://github.com/wieslawsoltes/netDxf/tree/82361078d1b84f2345d150fa4142ea315c04723f).
+Source tree: `7e6507c4fa27b8db7a09f4a51352b961f6c8daac`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
-**167 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
+**173 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
 
 `DxfDocument` is the existing typed geometry/database API. `DxfRawDocument` is a separate immutable ordered-tag/record API. Raw preservation is now implemented; it is not an automatic preservation fallback inside typed `DxfDocument.Load/Save`. A raw file containing an unfamiliar entity can survive while that entity is still missing from the typed API.
 
@@ -99,7 +99,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | SOLID · typed | X | X | X | P | P | P | P | P | P | Planar corners/thickness/normal, not a 3DSOLID. `ReadSolid/WriteSolid`. [B](version-feature-matrix-2026-09-12.md) |
 | TRACE · typed | X | X | X | P | P | P | P | P | P | Geometry implemented; full OCS/default behavior unverified. `ReadTrace/WriteTrace`. [B](version-feature-matrix-2026-09-12.md) |
 | ELLIPSE · typed | X | X | X | P | P | P | P | P | P | Axis/ratio/parameter model and conversion paths. `ReadEllipse/WriteEllipse`. [B](version-feature-matrix-2026-09-12.md) |
-| SPLINE · typed | X | X | X | P | P | P | P | P | P | Control/fit data, knots, weights; all periodic/degenerate cases unverified. `ReadSpline/WriteSpline`. [B](version-feature-matrix-2026-09-12.md) |
+| SPLINE · typed | X | X | X | P | P | P | P | P | P | Control/fit data, knots and weights; tangent vectors now exclude translation. Periodic/degenerate geometry and complete NURBS semantics remain unverified. ReadSpline/WriteSpline. [B](version-feature-matrix-2026-09-12.md), [STANGENT](spline-tangent-transforms.md) |
 | LWPOLYLINE · typed | X | X | X | P | P | P | P | P | P | Bulges/widths/flags/elevation; per-vertex IDs/optional codes need review. `ReadLwPolyline/WriteLwPolyline`. [B](version-feature-matrix-2026-09-12.md) |
 | POLYLINE: 2D / VERTEX / SEQEND · typed | X | X | X | P | P | P | P | P | P | Legacy entity representation in modern files, not a legacy file dialect. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
 | POLYLINE: 3D · typed | X | X | X | P | P | P | P | P | P | Polyline3D topology/flags; transform fixtures needed. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
@@ -117,9 +117,9 @@ Product release years and database-format families are separate: an AC1032 file 
 | DIMENSION: angular 2-line / 3-point · typed | X | X | X | P | P | P | P | P | P | Typed geometry; all styles/overrides/edge cases unverified. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
 | DIMENSION: diameter / radius / ordinate · typed | X | X | X | P | P | P | P | P | P | Typed geometry; dependency graph incomplete. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
 | ARC_DIMENSION: arc length · typed | X | X | X | P | P | P | P | P | P | Model present; historical eligibility still needs release fixtures. `ReadDimension/WriteDimension`. [B](version-feature-matrix-2026-09-12.md) |
-| HATCH: solid / patterned · typed | X | X | X | P | P | P | P | P | P | Double flag, seeds, pixel size, ACAD XData, closure, classification, sparse bulges, counted edge/pattern packets and final metadata conversion tested separately. Outer grammar, geometry, fit metadata and dependencies remain partial. [HDOUBLE](hatch-double-pattern.md), [HSEED](hatch-seed-points.md), [HPIX](hatch-pixel-size.md), [HXDATA](hatch-xdata-preservation.md), [HCLOSE](hatch-polyline-closure.md), [HPOLY](hatch-polyline-input.md), [HPAT](hatch-pattern-lists.md), [HFLAGS](hatch-boundary-flags.md), [HORDER](hatch-pattern-order.md), [HEDGE](hatch-edge-packets.md) |
-| HATCH: gradients · typed | X | X | X | L | P | P | P | P | P | 2000 output drops gradient payload. Later typed payload is partial: fractional shift becomes a Boolean endpoint; gradient rotation is overwritten by pattern angle. Color-stop/tint and packet fidelity remain open. [HGAPS](hatch-remaining-audit.md), [B](version-feature-matrix-2026-09-12.md) |
-| HATCH: spline fit boundary data · typed | X | X | X | L | L | L | L | L | L | Typed spline has no fit/tangent storage. Existing 2010+ packet is validated then discarded; writer emits zero fit count. Earlier typed profiles do not consume that packet. Historical availability is not inferred. [HEDGE](hatch-edge-packets.md), [HGAPS](hatch-remaining-audit.md) |
+| HATCH: solid / patterned · typed | X | X | X | P | P | P | P | P | P | Tested field subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata and outer path framing. General geometric/affine validity, associations and empty-HATCH preservation remain incomplete. [HDOUBLE](hatch-double-pattern.md), [HSEED](hatch-seed-points.md), [HPIX](hatch-pixel-size.md), [HXDATA](hatch-xdata-preservation.md), [HCLOSE](hatch-polyline-closure.md), [HPOLY](hatch-polyline-input.md), [HPAT](hatch-pattern-lists.md), [HFLAGS](hatch-boundary-flags.md), [HORDER](hatch-pattern-order.md), [HEDGE](hatch-edge-packets.md), [HFIT](hatch-spline-fit-data.md), [HPATH](hatch-path-count-validation.md) |
+| HATCH: gradients · typed | X | X | X | L | P | P | P | P | P | 2000 output still drops gradient payload. Later profiles retain rotation, fractional shift, authored RGB/tint/mode and checked two-stop packets. Optional ACI identity/presence, reserved future forms and full appearance/evaluation remain incomplete. [HANGLE](hatch-gradient-angle.md), [HSHIFT](hatch-gradient-shift.md), [HCOLOR](hatch-gradient-color-state.md), [HGRAD](hatch-gradient-packets.md) |
+| HATCH: spline fit boundary data · typed | X | X | X | V | V | V | T | T | T | Editable ordered OCS fits and nullable tangent vectors; independent clones, controls-plus-fit conversion and selected transforms. Existing 2010+ packet profile retained; earlier populated exports reject before caller-stream writes. Not a historical-introduction or fitting/evaluation claim. [HFIT](hatch-spline-fit-data.md), [STANGENT](spline-tangent-transforms.md) |
 | MLINE · typed | X | X | X | P | P | P | P | P | P | Vertices/segments/styles; full break/fill/joint semantics not certified. `ReadMLine/WriteMLine`. [B](version-feature-matrix-2026-09-12.md) |
 | LEADER · typed | X | X | X | P | P | P | P | P | P | Path/annotation relationships; not MULTILEADER. `ReadLeader/WriteLeader`. [B](version-feature-matrix-2026-09-12.md) |
 | TOLERANCE · typed | X | X | X | P | P | P | P | P | P | Geometric tolerance text; all formatting/rendering separate. `ReadTolerance/WriteTolerance`. [B](version-feature-matrix-2026-09-12.md) |
@@ -244,7 +244,13 @@ Product release years and database-format families are separate: an AC1032 file 
 | HATCH counted pattern lines and dashes · typed | X | X | X | T | T | T | T | T | T | Group78/53 lines, keyed43-46 fields and counted79/49 dash packets; rejects negative/duplicate/surplus data; local comments allowed. [HPAT](hatch-pattern-lists.md) |
 | HATCH boundary classification · typed | X | X | X | T | T | T | T | T | T | Exact group92 bits through read/clone/transform; only structural Polyline bit follows representation changes; constructor defaults unchanged. [HFLAGS](hatch-boundary-flags.md) |
 | HATCH pattern metadata ordering · typed | X | X | X | T | T | T | T | T | T | Intact pattern packets and scalar metadata can reorder; PAT-local conversion happens once final angle/scale are known. Gradient packet remains separate. [HORDER](hatch-pattern-order.md) |
-| HATCH edge dispatch and counted packets · typed | X | X | X | T | T | T | T | T | T | Rejects non-progressing unknown kinds; checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Fit/tangent framing is not retention or geometric validation. [HEDGE](hatch-edge-packets.md) |
+| HATCH edge dispatch and counted packets · typed | X | X | X | T | T | T | T | T | T | Checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Separate fit retention and outer-count validation are now implemented; knot/degree/periodicity relations and geometry remain incomplete. [HEDGE](hatch-edge-packets.md), [HFIT](hatch-spline-fit-data.md), [HPATH](hatch-path-count-validation.md) |
+| HATCH fractional gradient shift · typed | X | X | X | L | T | T | T | T | T | Finite group461 numeric Shift retained through import/edit/clone/export in modern profiles; legacy Centered endpoint convenience retained. AC1015 export remains a solid downgrade. [HSHIFT](hatch-gradient-shift.md) |
+| HATCH gradient rotation · typed | X | X | X | L | T | T | T | T | T | Group460 rotation retained independently of pattern-only group52, with normalized public degrees, clone and repeated transport changes. AC1015 output still omits gradients. [HANGLE](hatch-gradient-angle.md) |
+| HATCH authored gradient RGB, tint and mode · typed | X | X | X | L | T | T | T | T | T | Retains authored two-color and single-color RGB endpoints plus dormant tint; finite tint validation, independent clones and explicit authoring setter behavior. Optional ACI is a separate lossy row. [HCOLOR](hatch-gradient-color-state.md) |
+| HATCH gradient scalar and two-stop packet grammar · typed | X | X | X | L | T | T | T | T | T | Singleton fields dispatch by group code; two bounded stops, optional per-stop ACI input, comments and malformed-packet diagnostics. Canonical writer ordering and AC1015 downgrade unchanged; raw-only future schemas are not interpreted. [HGRAD](hatch-gradient-packets.md) |
+| SPLINE tangent vector transformations · typed | X | X | X | T | T | T | T | T | T | Nullable tangent vectors receive the linear part only; translation changes control/fit positions, not tangent vectors. Clone/INSERT and six-profile transport coverage; not all spline geometric semantics. [STANGENT](spline-tangent-transforms.md) |
+| HATCH outer path-count grammar · typed | X | X | X | T | T | T | T | T | T | Nonnegative group91, per-path group92 and edge count93; complete packet boundaries, incremental growth, comments, duplicates/orphans and record/section boundary rejection. Empty/absent boundary discard remains unchanged. [HPATH](hatch-path-count-validation.md) |
 
 ## 10. Raw preservation pipeline
 
@@ -270,15 +276,15 @@ Product release years and database-format families are separate: an AC1032 file 
 | MESH subentity overrides · typed | X | X | X | V | V | V | M | M | M | Repeated90/91/92 need a distinct override context; current core topology checks do not implement this grammar. [MREAD](mesh-read-validation.md) |
 | MTEXT column contexts · typed | X | X | X | M | M | M | M | M | M | Column type/count/flow/autoheight/width/gutter/heights, legacy linked records and context-sensitive code50 remain open. [MTBG](mtext-background.md), [B](version-feature-matrix-2026-09-12.md) |
 | Transactional typed file replacement · typed | X | X | X | M | M | M | M | M | M | File-path Save creates/truncates the destination before serialization. Deterministic disposal is not a transaction. [FILE](file-stream-lifetime.md) |
-| HATCH fractional gradient shift · typed | X | X | X | L | L | L | L | L | L | Source audit: group461 is reduced to bool Centered and export emits only0/1. Fractional values are not retained; 2000 omits the gradient payload. [HGAPS](hatch-remaining-audit.md) |
-| HATCH gradient rotation · typed | X | X | X | L | L | L | L | L | L | Source audit: group460 is read into gradient Angle, then overwritten by group52 patternAngle/default zero in ReadHatch. Not fixed by pattern-order support. [HGAPS](hatch-remaining-audit.md) |
+| HATCH gradient optional ACI metadata · typed | X | X | X | L | L | L | L | L | L | The RGB model accepts optional group63 input but derives exported indices instead of preserving exact index identity/absence. AC1015 additionally omits the entire gradient payload. [HGRAD](hatch-gradient-packets.md) |
+| HATCH with no boundary payload · typed | X | X | X | L | L | L | L | L | L | Typed loading retains the existing discard policy when boundary count is zero or absent and no paths occur; the raw pipeline remains separate. Checked counts do not make empty-HATCH round trips lossless. [HPATH](hatch-path-count-validation.md) |
 
 ## 12. Remaining implementation sequence
 
 | Workstream | Required scope |
 |---|---|
 | Context-aware handle graph and dependency-safe editing | Identity/pointer/owner/reactor contexts, graph diagnostics, clone/import closure and handle reservation; preserve opaque data without pretending to evaluate it. |
-| Finish partial supported records | HATCH fit/tangent retention, gradient shift/rotation/color metadata, outer path grammar and geometric/affine validity; MESH overrides/writer checks; MTEXT columns; complete UCS/VIEW/VPORT contexts. Each is an isolated PR. |
+| Finish partial supported records | HATCH optional ACI identity/presence, empty-HATCH preservation, inner scalar dispatch, geometric/affine validity and source dependencies; MESH overrides/writer checks; MTEXT columns; complete UCS/VIEW/VPORT contexts. Completed gradient/fit/outer-count increments remain separately evidenced. |
 | Missing typed entity families | HELIX; MULTILEADER; structured TABLE; LIGHT/SECTION; inert OLE/proxy/ACIS/surface payload records. Keep metadata/serialization separate from rendering or geometric evaluation. |
 | Missing object families | Generic XRECORD/dictionary variants, draw order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. |
 | Typed historical dialects and schema-aware down-save | R12/R13/R14 typed grammar plus earlier raw profiles with pinned files; explicit per-property downgrade diagnostics instead of enum-only admission. |
@@ -288,7 +294,7 @@ Every feature/fix requires an isolated PR, independently authored positive and m
 
 ## 13. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **9,140 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **12,907 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 
