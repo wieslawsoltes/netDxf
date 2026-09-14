@@ -65,6 +65,7 @@ internal static partial class Program
         RegisterHelixApiTests();
         RegisterHelixGeometryTests();
         RegisterCrossFeaturePersistenceTests();
+        RegisterRawEmbeddedHandleTests();
         RegisterEmptyHatchExportTests();
         RegisterEmptyHatchReadTests();
         RegisterRawHandleOperationsTests();

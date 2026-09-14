@@ -37,7 +37,7 @@ namespace netDxf.IO
     /// Build explicitly when needed. Indexing never changes tags, resolves external files, executes
     /// application data or infers handles embedded in strings/binary payloads. Numeric aliases share
     /// a lookup key, while original tag spelling is retained. Duplicate definitions are never overwritten.
-    /// Unknown group-102 data and XRECORD payloads are opaque. This is structural evidence, not a
+    /// Unknown group-102 data, XRECORD payloads and embedded-object tails are opaque. This is structural evidence, not a
     /// complete class schema, drawing validator or proof of dependency-closed editing.
     /// </remarks>
     public sealed partial class DxfRawHandleIndex
@@ -155,7 +155,7 @@ namespace netDxf.IO
                 Eq(record.SectionName, "TABLES") || Eq(record.SectionName, "OBJECTS");
             bool dimstyle = Eq(record.SectionName, "TABLES") && Eq(table, "DIMSTYLE") && Eq(record.Name, "DIMSTYLE");
             bool xrecord = Eq(record.SectionName, "OBJECTS") && Eq(record.Name, "XRECORD");
-            bool payload = false, uncertain = false;
+            bool payload = false, embedded = false, uncertain = false;
             string subclass = null, application = null;
             List<string> groups = new List<string>();
             for (int i = record.StartTagIndex + 1; i < record.EndTagIndex; i++)
@@ -163,6 +163,17 @@ namespace netDxf.IO
                 if ((i & 255) == 0) token.ThrowIfCancellationRequested();
                 DxfTag tag = this.document.Tags[i];
                 if (tag.Code == 999) continue;
+                // An embedded object's private grammar can reuse all nonzero codes.
+                // Without that grammar, even 100/102/1001-looking fields in its tail
+                // cannot be promoted to the enclosing object's structural links.
+                if (database && !payload && groups.Count == 0 && tag.Code == 101 &&
+                    Eq((string)tag.RawValue, "Embedded Object"))
+                {
+                    payload = true;
+                    embedded = true;
+                    application = null;
+                    continue;
+                }
                 // XRECORD's normal-code payload is application data, including code 102.
                 // Once reached, do not reinterpret its scalar values as common control structure.
                 if (!payload && tag.Code == 102)
@@ -177,7 +188,7 @@ namespace netDxf.IO
                     }
                     continue;
                 }
-                if (groups.Count == 0)
+                if (!embedded && groups.Count == 0)
                 {
                     if (!payload && tag.Code == 100)
                     {
@@ -189,8 +200,8 @@ namespace netDxf.IO
                 }
                 if (tag.ValueType != DxfTagValueType.Handle) continue;
                 DxfRawHandleRole role = DxfRawHandleRole.Opaque;
-                string context = groups.Count != 0 ? groups[groups.Count - 1] : application;
-                if (!uncertain)
+                string context = embedded ? "Embedded Object" : groups.Count != 0 ? groups[groups.Count - 1] : application;
+                if (!uncertain && !embedded)
                 {
                     if (groups.Count != 0)
                     {
