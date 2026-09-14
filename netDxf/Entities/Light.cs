@@ -70,11 +70,17 @@ namespace netDxf.Entities
             set { if (value < 0) throw new ArgumentOutOfRangeException(nameof(value)); this.versionNumber = value; }
         }
 
-        /// <summary>Gets or sets the light name. Empty names are retained; null is invalid.</summary>
+        /// <summary>Gets or sets the light name. Empty names are retained; null and CR/LF/NUL transport delimiters are invalid.</summary>
         public string Name
         {
             get { return this.name; }
-            set { this.name = value ?? throw new ArgumentNullException(nameof(value)); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (value.IndexOf('\r') >= 0 || value.IndexOf('\n') >= 0 || value.IndexOf('\0') >= 0)
+                    throw new ArgumentException("A LIGHT name cannot contain CR, LF or NUL transport delimiters.", nameof(value));
+                this.name = value;
+            }
         }
 
         /// <summary>Gets or sets the distant, point or spot source type.</summary>
