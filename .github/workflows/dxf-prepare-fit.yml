@@ -1,0 +1,37 @@
+name: Prepare HATCH spline fit support
+on:
+  push:
+    branches: [feat/dxf-hatch-spline-fit-data]
+    paths: [.github/workflows/dxf-prepare-fit.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/dxf-hatch-spline-fit-data
+          fetch-depth: 0
+      - name: Apply tested source patch and verify whole tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 3c704331145c61fe6b6f6817f9ef8ba186005b91
+          python - <<'PY'
+          import gzip, hashlib, subprocess
+          from pathlib import Path
+          patch = gzip.decompress(Path('.github/dxf-fit-transfer.patch.gz').read_bytes())
+          assert hashlib.sha256(patch).hexdigest() == 'e426843b78d8aec80c536cbd168ec8d105ca191b135731d1f7596c4be1b6d8c6'
+          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+          PY
+          git rm .github/workflows/dxf-prepare-fit.yml .github/dxf-fit-transfer.patch.gz
+          git add -A
+          test "$(git write-tree)" = 739f3d7cffec64b26f5a3a83964b5a8b29d8fc5f
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: retain HATCH spline fit metadata through typed operations'
+          git push origin HEAD:feat/dxf-hatch-spline-fit-data
