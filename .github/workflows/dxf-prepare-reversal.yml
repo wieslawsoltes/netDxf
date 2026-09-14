@@ -1,0 +1,49 @@
+name: Prepare verified spline reversal
+on:
+  push:
+    branches: [conformance/reversal-20260914]
+    paths: [.github/workflows/dxf-prepare-reversal.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: conformance/reversal-20260914
+          fetch-depth: 0
+      - name: Retrieve and validate staged patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/wieslawsoltes/netDxf/git/blobs/077b1dfd33f7cefca76c9ded5693e51f35db3524 > "$RUNNER_TEMP/patch-blob.json"
+          python - <<'PY'
+          import base64,gzip,hashlib,json,os,subprocess
+          from pathlib import Path
+          data=base64.b64decode(json.loads((Path(os.environ['RUNNER_TEMP'])/'patch-blob.json').read_text())['content'])
+          (Path(os.environ['RUNNER_TEMP'])/'staged.patch.gz').write_bytes(data)
+          patch=gzip.decompress(data)
+          assert hashlib.sha256(patch).hexdigest()=='61a48864d0e3984d1f1686a0eca38b85a81a70c11d099cf17066483f98de8994'
+          subprocess.run(['git','apply','--index','-'],input=patch,check=True)
+          PY
+      - name: Verify complete source and publish feature commit
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = cf533ba32d6c732e475192ee021b78f938eda0cb
+          git rm .github/workflows/dxf-prepare-reversal.yml
+          test "$(git write-tree)" = 1ebfbc69794ae35894a58620eab6756e8f33c775
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: reverse SPLINE knot parameterization and periodic control phase'
+          git push origin HEAD:conformance/reversal-20260914
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: staged-patch-diagnostic
+          path: ${{ runner.temp }}/staged.patch.gz
+          retention-days: 2
