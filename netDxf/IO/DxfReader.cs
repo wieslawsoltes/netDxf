@@ -9990,7 +9990,7 @@ namespace netDxf.IO
         private sealed class HatchGradientColorData
         {
             public double Position;
-            public bool HasIndex;
+            public short? Index;
             public bool HasRgb;
             public AciColor Color;
         }
@@ -10037,10 +10037,9 @@ namespace netDxf.IO
                     HatchGradientColorData color = data.Colors[data.Colors.Count - 1];
                     if (this.chunk.Code == 63)
                     {
-                        if (color.HasIndex)
+                        if (color.Index.HasValue)
                             throw this.InvalidHatchGradientData("duplicate ACI component in a color stop");
-                        this.chunk.ReadShort(); // optional fallback; RGB remains authoritative
-                        color.HasIndex = true;
+                        color.Index = this.chunk.ReadShort(); // retain presence/value independently of RGB
                     }
                     else
                     {
@@ -10084,7 +10083,9 @@ namespace netDxf.IO
             return new HatchGradientPattern(data.Colors[0].Color, data.Colors[1].Color, data.Mode == 1, data.Tint, type)
             {
                 Shift = data.Shift,
-                Angle = data.Angle*MathHelper.RadToDeg
+                Angle = data.Angle*MathHelper.RadToDeg,
+                Color1AciIndex = data.Colors[0].Index,
+                Color2AciIndex = data.Colors[1].Index
             };
         }
 

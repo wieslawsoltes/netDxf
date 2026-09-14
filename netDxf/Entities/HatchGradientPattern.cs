@@ -44,6 +44,10 @@ namespace netDxf.Entities
         private bool singleColor;
         private double tint;
         private double shift;
+        private short? color1AciIndex;
+        private short? color2AciIndex;
+        private bool color1AciIndexAutomatic = true;
+        private bool color2AciIndexAutomatic = true;
 
         #endregion
 
@@ -184,6 +188,62 @@ namespace netDxf.Entities
         }
 
         /// <summary>
+        /// Gets or sets the optional group-63 ACI metadata for the first RGB stop.
+        /// </summary>
+        /// <remarks>
+        /// New patterns derive this value from Color1.Index until this property is
+        /// assigned. Assigning a value retains that exact Int16 metadata; assigning
+        /// null omits the tag. Loaded patterns retain the value or absence from the
+        /// file. Explicit metadata is independent of RGB edits and is not palette
+        /// validation. Call ResetColor1AciIndex to resume automatic derivation.
+        /// </remarks>
+        public short? Color1AciIndex
+        {
+            get { return this.color1AciIndexAutomatic ? this.color1.Index : this.color1AciIndex; }
+            set
+            {
+                this.color1AciIndex = value;
+                this.color1AciIndexAutomatic = false;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the optional group-63 ACI metadata for the second RGB stop.
+        /// </summary>
+        /// <remarks>
+        /// New patterns derive this value from Color2.Index until this property is
+        /// assigned. Null explicitly omits the tag; an assigned Int16 is retained
+        /// independently of RGB or tint edits. Loaded patterns retain the authored
+        /// value or absence. Call ResetColor2AciIndex to resume automatic derivation.
+        /// This property does not select a color mode or validate palette semantics.
+        /// </remarks>
+        public short? Color2AciIndex
+        {
+            get { return this.color2AciIndexAutomatic ? this.color2.Index : this.color2AciIndex; }
+            set
+            {
+                this.color2AciIndex = value;
+                this.color2AciIndexAutomatic = false;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the first optional ACI value follows Color1.Index.
+        /// </summary>
+        public bool IsColor1AciIndexAutomatic
+        {
+            get { return this.color1AciIndexAutomatic; }
+        }
+
+        /// <summary>
+        /// Gets whether the second optional ACI value follows Color2.Index.
+        /// </summary>
+        public bool IsColor2AciIndexAutomatic
+        {
+            get { return this.color2AciIndexAutomatic; }
+        }
+
+        /// <summary>
         /// Gets or sets the gradient pattern color type.
         /// </summary>
         public bool SingleColor
@@ -254,6 +314,28 @@ namespace netDxf.Entities
 
         #endregion
 
+        #region public methods
+
+        /// <summary>
+        /// Restores automatic first-stop ACI output from the current Color1.Index.
+        /// </summary>
+        public void ResetColor1AciIndex()
+        {
+            this.color1AciIndex = null;
+            this.color1AciIndexAutomatic = true;
+        }
+
+        /// <summary>
+        /// Restores automatic second-stop ACI output from the current Color2.Index.
+        /// </summary>
+        public void ResetColor2AciIndex()
+        {
+            this.color2AciIndex = null;
+            this.color2AciIndexAutomatic = true;
+        }
+
+        #endregion
+
         #region private methods
 
         private static void ValidateTint(double value, string parameterName)
@@ -290,7 +372,13 @@ namespace netDxf.Entities
                 Style = this.Style,
                 // Gradient metadata; colors and dialog state were copied without
                 // running editing setters or regenerating the authored second stop.
-                Shift = this.shift
+                Shift = this.shift,
+                // Copy all three ACI states: automatic, explicit value and absent.
+                // Copying through the public getters would freeze automatic values.
+                color1AciIndex = this.color1AciIndex,
+                color2AciIndex = this.color2AciIndex,
+                color1AciIndexAutomatic = this.color1AciIndexAutomatic,
+                color2AciIndexAutomatic = this.color2AciIndexAutomatic
             };
 
             foreach (HatchPatternLineDefinition line in this.LineDefinitions)

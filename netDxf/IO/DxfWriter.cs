@@ -3347,10 +3347,14 @@ namespace netDxf.IO
             this.chunk.Write(462, pattern.Tint);
             this.chunk.Write(453, 2);
             this.chunk.Write(463, 0.0);
-            this.chunk.Write(63, pattern.Color1.Index);
+            short? index1 = pattern.Color1AciIndex;
+            if (index1.HasValue)
+                this.chunk.Write(63, index1.Value);
             this.chunk.Write(421, AciColor.ToTrueColor(pattern.Color1));
             this.chunk.Write(463, 1.0);
-            this.chunk.Write(63, pattern.Color2.Index);
+            short? index2 = pattern.Color2AciIndex;
+            if (index2.HasValue)
+                this.chunk.Write(63, index2.Value);
             this.chunk.Write(421, AciColor.ToTrueColor(pattern.Color2));
             this.chunk.Write(470, StringEnum<HatchGradientPatternType>.GetStringValue(pattern.GradientType));
         }
