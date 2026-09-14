@@ -24,7 +24,13 @@ jobs:
           import base64,gzip,hashlib,json,os,subprocess
           from pathlib import Path
           data=base64.b64decode(json.loads((Path(os.environ['RUNNER_TEMP'])/'patch-blob.json').read_text())['content'])
-          (Path(os.environ['RUNNER_TEMP'])/'staged.patch.gz').write_bytes(data)
+          # Repair only the diagnosed transport insertions, never source semantics.
+          text=base64.b64encode(data).decode()
+          assert len(text)==8544
+          for start,end in [(8543,8544),(376,377),(302,304)]:
+              text=text[:start]+text[end:]
+          data=base64.b64decode(text,validate=True)
+          assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()=='074e4055545027f6ec2cbf10adae6e5471c1c675'
           patch=gzip.decompress(data)
           assert hashlib.sha256(patch).hexdigest()=='61a48864d0e3984d1f1686a0eca38b85a81a70c11d099cf17066483f98de8994'
           subprocess.run(['git','apply','--index','-'],input=patch,check=True)
@@ -41,9 +47,3 @@ jobs:
           git config user.email 'wieslawsoltes@users.noreply.github.com'
           git commit -m 'fix: reverse SPLINE knot parameterization and periodic control phase'
           git push origin HEAD:conformance/reversal-20260914
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: staged-patch-diagnostic
-          path: ${{ runner.temp }}/staged.patch.gz
-          retention-days: 2
