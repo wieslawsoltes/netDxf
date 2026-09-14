@@ -35,7 +35,7 @@ public static void Main()
 
 ## DXF version and feature coverage
 
-See the [current version-by-feature comparison](doc/dxf-conformance/version-feature-matrix.md) and its [machine-readable coverage ledger](doc/dxf-conformance/coverage.json). Each entry distinguishes tested field-level support, partial typed models, known losses, rejected writer profiles and opaque preservation. The comparison is generated and checked in CI; its production commit and evidence are pinned.
+See the [current version-by-feature comparison](doc/dxf-conformance/version-feature-matrix.md) and its [machine-readable coverage ledger](doc/dxf-conformance/coverage.json). Each entry distinguishes tested field-level support, partial typed models, known losses, rejected writer profiles and opaque preservation. The comparison is generated and checked in CI; its production commit and evidence are pinned. The [14 September checkpoint](doc/dxf-conformance/checkpoint-2026-09-14.md) records the 173-row/nine-profile comparison and verified 12,907-case production snapshot after PR #58.
 
 `netDxf.IO.DxfRawDocument` is a separate immutable ordered-tag/record API for R11/R12, R13, R14 and the six modern families above. It supports exact unedited same-transport saves and scoped raw edits. It does not add those historical versions to typed `DxfDocument`, evaluate unknown entities, repair handle dependencies, or provide an automatic fallback inside typed load/save. See [raw preservation](doc/dxf-conformance/raw-document.md), [record editing](doc/dxf-conformance/raw-records.md), [R12 framing](doc/dxf-conformance/raw-r12.md), and [R13/R14 profiles](doc/dxf-conformance/raw-r13-r14.md).
 
