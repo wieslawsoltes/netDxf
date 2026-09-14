@@ -1,0 +1,30 @@
+name: Prepare inert OLE2FRAME persistence
+on:
+  push:
+    branches: [feat/ole2frame-20260914]
+    paths: [.github/workflows/prepare-ole2frame.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ole2frame-20260914
+          fetch-depth: 0
+      - name: Integrate and verify exact tested source tree
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 7667f1b014b5b33729bf18a3addb8faaaabe1a77
+          python .github/integrate-ole.py
+          git rm .github/integrate-ole.py .github/workflows/prepare-ole2frame.yml
+          git add -A
+          test "$(git write-tree)" = a919d8864705287c50be3f728c5bec9baae59ba1
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'feat: persist inert OLE2FRAME metadata and binary payloads'
+          git push origin HEAD:feat/ole2frame-20260914
