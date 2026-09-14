@@ -1,0 +1,39 @@
+name: Prepare standard periodic SPLINE input
+on:
+  push:
+    branches: [fix/dxf-standard-periodic-input]
+    paths: [.github/workflows/dxf-prepare-periodic.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-standard-periodic-input
+          fetch-depth: 0
+      - name: Apply and verify tested tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 7c0dca2c512b9774ff513b5b1cfa5f03021e4de5
+          python - <<'PY'
+          import gzip, hashlib, subprocess
+          from pathlib import Path
+          compressed = Path('.github/periodic-transfer.patch.gz').read_bytes()
+          assert hashlib.sha256(compressed).hexdigest() == '7965040e679a4860227189a501402f5ede780770e1e8291defef711ba89de7c8'
+          patch = gzip.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == 'b8675a2ba5593c706c8522d9ed489434d93524194e95f2ebdf0bda27e707dc98'
+          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+          PY
+          git rm .github/periodic-transfer.patch.gz .github/workflows/dxf-prepare-periodic.yml
+          git add -A
+          test "$(git write-tree)" = 852eaa288ab068ce8b7760c75d395349a8f14eb9
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: read standard periodic SPLINE flags without lossy overlap removal'
+          git push origin HEAD:fix/dxf-standard-periodic-input
