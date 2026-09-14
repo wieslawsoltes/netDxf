@@ -1,0 +1,42 @@
+name: Prepare LIGHT name correction
+on:
+  push:
+    branches: [fix/light-name-transport-20260914]
+    paths: [.github/workflows/prepare-light-name.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/light-name-transport-20260914
+          fetch-depth: 0
+      - name: Apply pinned edits and validate complete tree
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 9a11080cff4e33b2260e52c3c18fe60ad03d44b2
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('netDxf/Entities/Light.cs'); s=p.read_text()
+          old='            set { this.name = value ?? throw new ArgumentNullException(nameof(value)); }'
+          assert s.count(old)==1
+          lines=['set','{','    if (value == null) throw new ArgumentNullException(nameof(value));',r"    if (value.IndexOf('\r') >= 0 || value.IndexOf('\n') >= 0 || value.IndexOf('\0') >= 0)",'        throw new ArgumentException("A LIGHT name cannot contain CR, LF or NUL transport delimiters.", nameof(value));','    this.name = value;','}']
+          new='\n'.join('            '+line for line in lines)
+          p.write_text(s.replace(old,new).replace('Empty names are retained; null is invalid.','Empty names are retained; null and CR/LF/NUL transport delimiters are invalid.'))
+          p=Path('netDxf/IO/DxfLight.cs'); s=p.read_text(); old='this.EncodeNonAsciiCharacters(light.Name)'; assert s.count(old)==1
+          p.write_text(s.replace(old,r'this.EncodeNonAsciiCharacters(light.Name.Replace("\\", "\\U+005C"))'))
+          p=Path('tests/netDxf.Conformance/RegressionTests.cs'); s=p.read_text(); old='        RegisterLightTests();'; assert s.count(old)==1
+          p.write_text(s.replace(old,old+'\n        RegisterLightNameTests();'))
+          PY
+          git rm .github/workflows/prepare-light-name.yml
+          git add -A
+          test "$(git write-tree)" = e9f42f726612341c6bba58fadac58aea9364d5ee
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: preserve LIGHT name transport and literal escape semantics'
+          git push origin HEAD:fix/light-name-transport-20260914
