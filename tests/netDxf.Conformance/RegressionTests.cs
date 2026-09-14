@@ -57,5 +57,6 @@ internal static partial class Program
         RegisterSplineTangentTransformTests();
         RegisterHatchSplineFitTests();
         RegisterHatchSplineFitApiTests();
+        RegisterHatchPathCountTests();
     }
 }

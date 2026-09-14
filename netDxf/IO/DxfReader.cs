@@ -9450,6 +9450,7 @@ namespace netDxf.IO
             List<HatchPatternLineData> patternLines = null;
             bool associative = false;
             List<HatchBoundaryPath> paths = new List<HatchBoundaryPath>();
+            bool hasBoundaryCount = false;
             List<XData> xData = new List<XData>();
             List<Vector2> seedPoints = null;
             double? pixelSize = null;
@@ -9481,10 +9482,14 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 91:
-                        // the next lines hold the information about the hatch boundary paths
-                        int numPaths = this.chunk.ReadInt();
-                        paths = this.ReadHatchBoundaryPaths(numPaths);
+                        if (hasBoundaryCount)
+                            throw this.InvalidHatchPathData("duplicate group-91 boundary list");
+                        hasBoundaryCount = true;
+                        paths = this.ReadHatchBoundaryPaths(this.chunk.ReadInt());
                         break;
+                    case 92:
+                    case 93:
+                        throw this.InvalidHatchPathData("path data outside the declared group-91 boundary list");
                     case 70:
                         // Solid fill flag
                         fill = (HatchFillType) this.chunk.ReadShort();
@@ -9622,38 +9627,37 @@ namespace netDxf.IO
 
         private List<HatchBoundaryPath> ReadHatchBoundaryPaths(int numPaths)
         {
+            if (numPaths < 0) throw this.InvalidHatchPathData("negative group-91 path count");
+            // Grow only after complete packets are consumed. A declared count is
+            // never an allocation size or a license to scan subsequent entities.
             List<HatchBoundaryPath> paths = new List<HatchBoundaryPath>();
-            HatchBoundaryPathTypeFlags pathType = HatchBoundaryPathTypeFlags.Derived | HatchBoundaryPathTypeFlags.External;
-
-            this.chunk.Next();
-            while (paths.Count < numPaths)
+            this.ReadNextHatchEdgeTag();
+            for (int i = 0; i < numPaths; i++)
             {
+                if (this.chunk.Code != 92)
+                    throw this.InvalidHatchPathData("expected group code 92 for path " + i);
+                HatchBoundaryPathTypeFlags pathType = (HatchBoundaryPathTypeFlags) this.chunk.ReadInt();
                 HatchBoundaryPath path;
-                switch (this.chunk.Code)
+                if (pathType.HasFlag(HatchBoundaryPathTypeFlags.Polyline))
+                    path = this.ReadEdgePolylineBoundaryPath();
+                else
                 {
-                    case 92:
-                        pathType = (HatchBoundaryPathTypeFlags) this.chunk.ReadInt();
-                        if (pathType.HasFlag(HatchBoundaryPathTypeFlags.Polyline))
-                        {
-                            path = this.ReadEdgePolylineBoundaryPath();
-                            path.PathType = pathType;
-                            paths.Add(path);
-                        }
-                        else
-                            this.chunk.Next();
-                        break;
-                    case 93:
-                        int numEdges = this.chunk.ReadInt();
-                        path = this.ReadEdgeBoundaryPath(numEdges);
-                        path.PathType = pathType;
-                        paths.Add(path);
-                        break;
-                    default:
-                        this.chunk.Next();
-                        break;
+                    this.ReadNextHatchEdgeTag();
+                    if (this.chunk.Code != 93)
+                        throw this.InvalidHatchPathData("expected group code 93 after non-polyline path flags");
+                    path = this.ReadEdgeBoundaryPath(this.chunk.ReadInt());
                 }
+                path.PathType = pathType;
+                paths.Add(path);
             }
             return paths;
+        }
+
+        private InvalidDataException InvalidHatchPathData(string detail)
+        {
+            return new InvalidDataException(string.Format(
+                "Invalid HATCH boundary path list at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, detail));
         }
 
         private HatchBoundaryPath ReadEdgePolylineBoundaryPath()
