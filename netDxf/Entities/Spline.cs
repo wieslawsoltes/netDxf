@@ -95,11 +95,13 @@ namespace netDxf.Entities
             : base(EntityType.Spline, DxfObjectCode.Spline)
         {
             // control points and fit points
+            if (curves == null) throw new ArgumentNullException(nameof(curves));
             List<Vector3> ctrList = new List<Vector3>();
             List<double> wList = new List<double>();
 
             foreach (BezierCurve curve in curves)
             {
+                if (curve == null) throw new ArgumentException("Curve sequences cannot contain null elements.", nameof(curves));
                 foreach (Vector3 point in curve.ControlPoints)
                 {
                     ctrList.Add(point);
@@ -107,6 +109,7 @@ namespace netDxf.Entities
                 }
             }
 
+            if (ctrList.Count == 0) throw new ArgumentException("At least one Bezier curve is required.", nameof(curves));
             this.controlPoints = ctrList.ToArray();
             this.weights = wList.ToArray();
             this.degree = degree;
@@ -805,7 +808,9 @@ namespace netDxf.Entities
 
             int np = degree + 1;
             int nc =  numKnots / np;
-            double fact = 1.0 / nc;
+            // There is one knot group at each span boundary: N spans have
+            // N + 1 groups. Dividing by the group count stretches the last span.
+            double fact = 1.0 / (nc - 1);
             int index = 1;
 
             for (int i = 0; i < numKnots;)

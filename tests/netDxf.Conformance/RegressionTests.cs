@@ -58,6 +58,7 @@ internal static partial class Program
         RegisterSplineTangentTransformTests();
         RegisterSplineCloneStateTests();
         RegisterTypedCommentTests();
+        RegisterBezierKnotTests();
         RegisterHatchSplineFitTests();
         RegisterHatchSplineFitApiTests();
         RegisterHatchPathCountTests();
