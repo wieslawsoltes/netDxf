@@ -179,6 +179,9 @@ namespace netDxf.Entities
         Helix,
 
         /// <summary>Distant, point or spot light.</summary>
-        Light
+        Light,
+
+        /// <summary>Inert OLE2FRAME binary object.</summary>
+        Ole2Frame
     }
 }

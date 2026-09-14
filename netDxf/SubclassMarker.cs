@@ -64,6 +64,9 @@ namespace netDxf
 
         /// <summary>Light subclass.</summary>
         public const string Light = "AcDbLight";
+
+        /// <summary>OLE2FRAME subclass.</summary>
+        public const string Ole2Frame = "AcDbOle2Frame";
         public const string Insert = "AcDbBlockReference";
         public const string MInsert = "AcDbMInsertBlock";
         public const string Line = "AcDbLine";
