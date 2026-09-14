@@ -1,0 +1,39 @@
+name: Prepare HATCH boundary count validation
+on:
+  push:
+    branches: [fix/dxf-hatch-path-count]
+    paths: [.github/workflows/dxf-prepare-path-count.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/dxf-hatch-path-count
+          fetch-depth: 0
+      - name: Apply and verify the entire tested tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse origin/netstandard)" = 0f932121f911817aae1220ee95a8944f06f6ffba
+          python - <<'PY'
+          import gzip, hashlib, subprocess
+          from pathlib import Path
+          compressed = Path('.github/dxf-path-transfer.patch.gz').read_bytes()
+          assert hashlib.sha256(compressed).hexdigest() == '59666d129601f714f39242bfbfbde56ec8b8d99fb3d5cea44ea4560e7841d217'
+          patch = gzip.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == '7eb1b7cc6f0d616ca22f6c7bcfcb90704f3001a1cf5a097ef23beaea9024d3fd'
+          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+          PY
+          git rm .github/workflows/dxf-prepare-path-count.yml .github/dxf-path-transfer.patch.gz
+          git add -A
+          test "$(git write-tree)" = 7e6507c4fa27b8db7a09f4a51352b961f6c8daac
+          python tools/generate_dxf_coverage.py --check
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'fix: validate HATCH boundary counts without scanning later records'
+          git push origin HEAD:fix/dxf-hatch-path-count
