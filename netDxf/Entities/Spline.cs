@@ -327,6 +327,37 @@ namespace netDxf.Entities
             this.isClosedPeriodic = closedPeriodic;
         }
 
+        // Copy stored representations directly. A fit-created spline may also
+        // carry authored/edited controls, weights and knots; invoking the public
+        // fit-point constructor would silently replace that geometry.
+        private Spline(Spline source)
+            : base(EntityType.Spline, DxfObjectCode.Spline)
+        {
+            this.controlPoints = (Vector3[]) source.controlPoints.Clone();
+            this.weights = source.weights == null ? null : (double[]) source.weights.Clone();
+            this.knots = source.knots == null ? null : (double[]) source.knots.Clone();
+            this.fitPoints = (Vector3[]) source.fitPoints.Clone();
+            this.degree = source.degree;
+            this.creationMethod = source.creationMethod;
+            this.isClosedPeriodic = source.isClosedPeriodic;
+            this.knotParameterization = source.knotParameterization;
+            this.knotTolerance = source.knotTolerance;
+            this.ctrlPointTolerance = source.ctrlPointTolerance;
+            this.fitTolerance = source.fitTolerance;
+            this.startTangent = source.startTangent;
+            this.endTangent = source.endTangent;
+            this.Layer = (Layer) source.Layer.Clone();
+            this.Linetype = (Linetype) source.Linetype.Clone();
+            this.Color = (AciColor) source.Color.Clone();
+            this.Lineweight = source.Lineweight;
+            this.Transparency = (Transparency) source.Transparency.Clone();
+            this.LinetypeScale = source.LinetypeScale;
+            this.Normal = source.Normal;
+            this.IsVisible = source.IsVisible;
+            foreach (XData data in source.XData.Values)
+                this.XData.Add((XData) data.Clone());
+        }
+
         #endregion
 
         #region public properties
@@ -901,51 +932,7 @@ namespace netDxf.Entities
         /// <returns>A new Spline that is a copy of this instance.</returns>
         public override object Clone()
         {
-            Spline entity;
-            if (this.creationMethod == SplineCreationMethod.FitPoints)
-            {
-                entity = new Spline(new List<Vector3>(this.fitPoints))
-                {
-                    //EntityObject properties
-                    Layer = (Layer) this.Layer.Clone(),
-                    Linetype = (Linetype) this.Linetype.Clone(),
-                    Color = (AciColor) this.Color.Clone(),
-                    Lineweight = this.Lineweight,
-                    Transparency = (Transparency) this.Transparency.Clone(),
-                    LinetypeScale = this.LinetypeScale,
-                    Normal = this.Normal,
-                    IsVisible = this.IsVisible,
-                    //Spline properties
-                    KnotParameterization = this.KnotParameterization,
-                    StartTangent = this.startTangent,
-                    EndTangent = this.endTangent
-                };
-            }
-            else
-            {
-                entity = new Spline(this.controlPoints, this.weights, this.knots, this.degree, this.fitPoints, this.creationMethod, this.isClosedPeriodic)
-                {
-                    //EntityObject properties
-                    Layer = (Layer) this.Layer.Clone(),
-                    Linetype = (Linetype) this.Linetype.Clone(),
-                    Color = (AciColor) this.Color.Clone(),
-                    Lineweight = this.Lineweight,
-                    Transparency = (Transparency) this.Transparency.Clone(),
-                    LinetypeScale = this.LinetypeScale,
-                    Normal = this.Normal,
-                    //Spline properties
-                    KnotParameterization = this.KnotParameterization,
-                    StartTangent = this.startTangent,
-                    EndTangent = this.endTangent
-                };
-            }
-
-            foreach (XData data in this.XData.Values)
-            {
-                entity.XData.Add((XData) data.Clone());
-            }
-
-            return entity;
+            return new Spline(this);
         }
 
         #endregion
