@@ -9441,6 +9441,7 @@ namespace netDxf.IO
             double elevation = 0.0;
             Vector3 normal = Vector3.UnitZ;
             HatchPattern pattern = null;
+            HatchGradientData gradient = null;
             double patternAngle = 0.0;
             double patternScale = 1.0;
             HatchType patternType = HatchType.UserDefined;
@@ -9539,10 +9540,17 @@ namespace netDxf.IO
                     case 49:
                         throw this.InvalidHatchPatternData("pattern field outside its declared line or dash count");
                     case 450:
-                        if (this.chunk.ReadInt() == 1)
-                            pattern = this.ReadHatchGradientPattern();
-                        else
-                            this.chunk.Next();
+                    case 451:
+                    case 452:
+                    case 453:
+                    case 460:
+                    case 461:
+                    case 462:
+                    case 470:
+                    case 463:
+                    case 63:
+                    case 421:
+                        this.ReadHatchGradientTag(ref gradient);
                         break;
                     case 47:
                         this.ReadHatchPixelSize(ref pixelSize);
@@ -9561,6 +9569,9 @@ namespace netDxf.IO
                         break;
                 }
             }
+
+            if (gradient != null)
+                pattern = this.CreateHatchGradientPattern(gradient);
 
             if (paths.Count == 0)
                 return null;
@@ -9942,49 +9953,130 @@ namespace netDxf.IO
             this.chunk.Next();
         }
 
-        private HatchGradientPattern ReadHatchGradientPattern()
+        // Gradient scalar fields belong to the complete HATCH record. Only the
+        // repeated color stops are ordered: each group 463 begins one stop. This
+        // bounded accumulator permits late counts/markers without allocating from
+        // untrusted group 453 or consuming a following entity/XData record.
+        private sealed class HatchGradientData
         {
-            // the information for gradient pattern must follow an strict order
-            //dxfPairInfo = this.ReadCodePair();  // code 450 not needed
-            this.chunk.Next(); // code 451 not needed
-            this.chunk.Next();
-            double angle = this.chunk.ReadDouble(); // code 460
-            this.chunk.Next();
-            double shift = this.chunk.ReadDouble(); // code 461
-            if (shift < 0.0 || shift > 1.0)
-                throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
-                    "Invalid HATCH gradient shift for group code 461 at position {0}: expected a value between zero and one.",
-                    this.chunk.CurrentPosition));
-            this.chunk.Next();
-            bool singleColor = this.chunk.ReadInt() != 0; // code 452
-            this.chunk.Next();
-            double tint = this.chunk.ReadDouble(); // code 462
-            if (tint < 0.0 || tint > 1.0)
-                throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
-                    "Invalid HATCH gradient tint for group code 462 at position {0}: expected a value between zero and one.",
-                    this.chunk.CurrentPosition));
-            this.chunk.Next(); // code 453 not needed
+            public int Fields;
+            public int Kind;
+            public int Reserved;
+            public int Mode;
+            public int ColorCount;
+            public double Angle;
+            public double Shift;
+            public double Tint;
+            public string Name;
+            public readonly List<HatchGradientColorData> Colors = new List<HatchGradientColorData>();
+        }
 
-            this.chunk.Next(); // code 463 not needed (0.0)
-            this.chunk.Next(); // code 63
-            this.chunk.Next(); // code 421
-            AciColor color1 = AciColor.FromTrueColor(this.chunk.ReadInt());
+        private sealed class HatchGradientColorData
+        {
+            public double Position;
+            public bool HasIndex;
+            public bool HasRgb;
+            public AciColor Color;
+        }
 
-            this.chunk.Next(); // code 463 not needed (1.0)
-            this.chunk.Next(); // code 63
-            this.chunk.Next(); // code 421
-            AciColor color2 = AciColor.FromTrueColor(this.chunk.ReadInt());
-
-            this.chunk.Next(); // code 470
-            string typeName = this.chunk.ReadString();
-            
-            HatchGradientPatternType type = StringEnum<HatchGradientPatternType>.Parse(typeName, StringComparison.OrdinalIgnoreCase);
-
-            return new HatchGradientPattern(color1, color2, singleColor, tint, type)
+        private void ReadHatchGradientTag(ref HatchGradientData data)
+        {
+            if (data == null)
+                data = new HatchGradientData();
+            int field;
+            switch (this.chunk.Code)
             {
-                Shift = shift,
-                Angle = angle*MathHelper.RadToDeg
+                case 450: field = 1; break;
+                case 451: field = 2; break;
+                case 452: field = 4; break;
+                case 453: field = 8; break;
+                case 460: field = 16; break;
+                case 461: field = 32; break;
+                case 462: field = 64; break;
+                case 470: field = 128; break;
+                default: field = 0; break;
+            }
+            if ((data.Fields & field) != 0)
+                throw this.InvalidHatchGradientData("duplicate scalar field");
+            data.Fields |= field;
+            switch (this.chunk.Code)
+            {
+                case 450: data.Kind = this.chunk.ReadInt(); break;
+                case 451: data.Reserved = this.chunk.ReadInt(); break;
+                case 452: data.Mode = this.chunk.ReadInt(); break;
+                case 453: data.ColorCount = this.chunk.ReadInt(); break;
+                case 460: data.Angle = this.chunk.ReadDouble(); break;
+                case 461: data.Shift = this.chunk.ReadDouble(); break;
+                case 462: data.Tint = this.chunk.ReadDouble(); break;
+                case 470: data.Name = this.chunk.ReadString(); break;
+                case 463:
+                    if (data.Colors.Count == 2)
+                        throw this.InvalidHatchGradientData("more than two group-463 color stops");
+                    data.Colors.Add(new HatchGradientColorData { Position = this.chunk.ReadDouble() });
+                    break;
+                case 63:
+                case 421:
+                    if (data.Colors.Count == 0)
+                        throw this.InvalidHatchGradientData("color component without a preceding group-463 stop");
+                    HatchGradientColorData color = data.Colors[data.Colors.Count - 1];
+                    if (this.chunk.Code == 63)
+                    {
+                        if (color.HasIndex)
+                            throw this.InvalidHatchGradientData("duplicate ACI component in a color stop");
+                        this.chunk.ReadShort(); // optional fallback; RGB remains authoritative
+                        color.HasIndex = true;
+                    }
+                    else
+                    {
+                        if (color.HasRgb)
+                            throw this.InvalidHatchGradientData("duplicate RGB component in a color stop");
+                        color.Color = AciColor.FromTrueColor(this.chunk.ReadInt());
+                        color.HasRgb = true;
+                    }
+                    break;
+            }
+            this.chunk.Next();
+        }
+
+        private HatchGradientPattern CreateHatchGradientPattern(HatchGradientData data)
+        {
+            if (data.Fields != 255)
+                throw this.InvalidHatchGradientData("expected exactly one of each group 450, 451, 452, 453, 460, 461, 462 and 470");
+            if (data.Kind != 0 && data.Kind != 1)
+                throw this.InvalidHatchGradientData("group code 450 must be zero or one");
+            if (data.ColorCount != (data.Kind == 0 ? 0 : 2) || data.Colors.Count != data.ColorCount)
+                throw this.InvalidHatchGradientData("group code 453 must declare zero colors for solid or exactly two gradient stops");
+            // A solid marker requires the fields to exist, but their values are
+            // ignored by the format. Do not impose gradient dialog constraints.
+            if (data.Kind == 0)
+                return null;
+            if (data.Reserved != 0)
+                throw this.InvalidHatchGradientData("unsupported reserved value for group code 451");
+            if (data.Mode != 0 && data.Mode != 1)
+                throw this.InvalidHatchGradientData("group code 452 must be zero or one");
+            if (data.Shift < 0.0 || data.Shift > 1.0)
+                throw this.InvalidHatchGradientData("group code 461 shift must be between zero and one", "shift");
+            if (data.Tint < 0.0 || data.Tint > 1.0)
+                throw this.InvalidHatchGradientData("group code 462 tint must be between zero and one", "tint");
+            for (int i = 0; i < data.Colors.Count; i++)
+                if (!data.Colors[i].HasRgb || data.Colors[i].Position != i)
+                    throw this.InvalidHatchGradientData("expected group-463 values zero then one, each with one group-421 RGB value");
+
+            if (!StringEnum<HatchGradientPatternType>.IsStringDefined(data.Name, StringComparison.OrdinalIgnoreCase))
+                throw this.InvalidHatchGradientData("unsupported gradient name for group code 470");
+            HatchGradientPatternType type = StringEnum<HatchGradientPatternType>.Parse(data.Name, StringComparison.OrdinalIgnoreCase);
+            return new HatchGradientPattern(data.Colors[0].Color, data.Colors[1].Color, data.Mode == 1, data.Tint, type)
+            {
+                Shift = data.Shift,
+                Angle = data.Angle*MathHelper.RadToDeg
             };
+        }
+
+        private InvalidDataException InvalidHatchGradientData(string reason, string context = "data")
+        {
+            return new InvalidDataException(string.Format(CultureInfo.InvariantCulture,
+                "Invalid HATCH gradient {3} at group code {0}, position {1}: {2}.",
+                this.chunk.Code, this.chunk.CurrentPosition, reason, context));
         }
 
         private List<HatchPatternLineData> ReadHatchPatternDefinitionLine(short numLines)
