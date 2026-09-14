@@ -37,6 +37,7 @@ internal static partial class Program
         RegisterMeshVersionTests();
         RegisterMeshBlendCreaseTests();
         RegisterMeshReadValidationTests();
+        RegisterMeshWriteValidationTests();
         RegisterHatchDoublePatternTests();
         RegisterHatchSeedPointTests();
         RegisterHatchSeedPointApiTests();
