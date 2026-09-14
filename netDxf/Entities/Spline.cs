@@ -876,6 +876,17 @@ namespace netDxf.Entities
                 this.fitPoints[i] = transformation * this.fitPoints[i] + translation;
             }
 
+            // Tangents are WCS direction vectors: transform their magnitude and
+            // direction with the linear part only, never with the translation.
+            if (this.startTangent.HasValue)
+            {
+                this.startTangent = transformation * this.startTangent.Value;
+            }
+            if (this.endTangent.HasValue)
+            {
+                this.endTangent = transformation * this.endTangent.Value;
+            }
+
             Vector3 newNormal = transformation * this.Normal;
             if (Vector3.Equals(Vector3.Zero, newNormal))
             {
