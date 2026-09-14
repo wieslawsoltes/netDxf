@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "3a3dd9558b6d20e9bd22d37b6cb5cf3167e6a15a",
-    "tree": "ecabd469ddd7b6158d4e4bee9e7e9ea4e9b8945b"
+    "commit": "1c199e95133725d07a5573c76422edd57184065a",
+    "tree": "e54d79fe70e9326efe1ec66bc4d519edd416cca3"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 19948,
+    "test_cases": 21097,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 83,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/83/checks"
+    "last_implementation_pr": 84,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/84/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -471,6 +471,26 @@
     "NODO": {
       "label": "typed named-object database and graph copying",
       "path": "doc/dxf-conformance/named-object-database.md"
+    },
+    "LWPFID": {
+      "label": "LWPOLYLINE optional widths, identifiers and wide transforms",
+      "path": "doc/dxf-conformance/lwpolyline-fidelity.md"
+    },
+    "CONT": {
+      "label": "typed pointer containers, draw order and spatial filters",
+      "path": "doc/dxf-conformance/typed-containers.md"
+    },
+    "COMMON": {
+      "label": "common entity metadata and proxy cache",
+      "path": "doc/dxf-conformance/common-entity-data.md"
+    },
+    "VIEWUCS": {
+      "label": "VIEW/VPORT UCS references and UCS flags",
+      "path": "doc/dxf-conformance/view-ucs-relationships.md"
+    },
+    "GEODATA": {
+      "label": "public GEODATA version 2",
+      "path": "doc/dxf-conformance/geodata.md"
     }
   },
   "features": [
@@ -1038,9 +1058,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Bulges/widths/flags/elevation; per-vertex IDs/optional codes need review. `ReadLwPolyline/WriteLwPolyline`.",
+      "scope": "Typed vertex packets, optional constant/per-vertex widths and vertex identifiers, taper-preserving reversal and guarded wide transforms. Centerline explosion retains its existing width-loss contract; native rendering is not evaluated.",
       "evidence": [
-        "B"
+        "LWPFID"
       ]
     },
     {
@@ -1970,11 +1990,12 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Origin/axes, elevation 146, orthographic origin pairs and table XData now retained. Base-UCS references and complete VIEW/VPORT contexts remain open.",
+      "scope": "Origin/axes, elevation, orthographic origin pairs, XData and raw table flags retained. UCS records referenced by VIEW/VPORT have identity-aware lifecycle tracking. The ambiguous UCS-record group 346/79 schema remains unqualified.",
       "evidence": [
         "UCS",
         "ORTHO",
-        "UCSX"
+        "UCSX",
+        "VIEWUCS"
       ]
     },
     {
@@ -1993,9 +2014,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Public named collection and core camera/target/clip/mode/XData IO. Camera plottability requires 2007+ writer profile; extended UCS/render/background references remain open.",
+      "scope": "Named collection, camera/target/clip/mode/XData and optional UCS bundle with named/base-UCS references. Camera plottability requires 2007+ writer profile; rendering/background/visual-style graphs remain open.",
       "evidence": [
-        "VIEW"
+        "VIEW",
+        "VIEWUCS"
       ]
     },
     {
@@ -2014,9 +2036,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Active and named tiled configurations now retain ordered physical records, handles, XData, core rectangle/camera/snap/render fields and stored UCS coordinates. Linked UCS, frozen layers and rendering object graphs remain partial.",
+      "scope": "Ordered physical configurations, handles, XData and stored rectangle/camera/snap/render/UCS fields plus named/base-UCS references. Frozen layers and rendering object graphs remain partial.",
       "evidence": [
-        "VPORT"
+        "VPORT",
+        "VIEWUCS"
       ]
     },
     {
@@ -2365,16 +2388,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Georeferencing object.",
+      "scope": "Public version-2 schema: host ownership, coordinate metadata, chunked coordinate-system XML, observation strings and mesh point/face data. Explicit clone mappings and atomic attachment. Version 1/3 and private schemas remain opaque; no CRS evaluation or geographic transformation service.",
       "evidence": [
-        "B"
+        "GEODATA"
       ]
     },
     {
@@ -2386,16 +2409,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Pointer-container records.",
+      "scope": "IDBUFFER has typed ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR remains missing.",
       "evidence": [
-        "B"
+        "CONT"
       ]
     },
     {
@@ -2554,16 +2577,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Draw-order records.",
+      "scope": "Typed block draw order, exact opaque sort keys and association order; extension ownership and entity uniqueness enforced. Opaque keys never reserve document handles. Conservative 2004+ export; no native redraw qualification.",
       "evidence": [
-        "B"
+        "CONT"
       ]
     },
     {
@@ -2575,16 +2598,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Spatial clipping/filter/index graph.",
+      "scope": "Typed SPATIAL_FILTER rectangle/polygon boundary, normal/origin, optional planes and two affine matrices with extension ownership. SPATIAL_INDEX and private inverted-XCLIP records remain missing; no clipping evaluation.",
       "evidence": [
-        "B"
+        "CONT"
       ]
     },
     {
@@ -2785,16 +2808,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Common 430,284,92/310 paths absent.",
+      "scope": "EntityObject, ATTRIB and ATTDEF retain optional 430 (2004+), 284 (2007+) and bounded opaque proxy bytes (all admitted profiles; canonical count code 160 from 2013). Internal VERTEX metadata and proxy evaluation remain outside this subset.",
       "evidence": [
-        "B"
+        "COMMON"
       ]
     },
     {
@@ -4625,9 +4648,10 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Declared counts and complete X/Y pairs validated without declaration-sized allocation; per-vertex widths and bulges stay associated when scalar fields surround group20. Existing constant-width policy and group91 omission remain.",
+      "scope": "Declared counts and complete X/Y pairs validated without declaration-sized allocation; per-vertex widths and bulges stay associated when scalar fields surround group 20. Optional width and group 91 retention are qualified by the later fidelity module.",
       "evidence": [
-        "LWP"
+        "LWP",
+        "LWPFID"
       ]
     },
     {
@@ -4986,6 +5010,237 @@
       "evidence": [
         "NODO"
       ]
+    },
+    {
+      "id": "lwpolyline-width-presence",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "LWPOLYLINE optional width representation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Nullable groups 43, 40 and 41 retain absence, explicit zero and conflicting width values. Effective getters follow the qualified ezdxf trace interpretation; existing vertex width properties expose raw values. SetConstantWidth edits vertices and clears group 43.",
+      "evidence": [
+        "LWPFID"
+      ]
+    },
+    {
+      "id": "lwpolyline-vertex-identifiers",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "LWPOLYLINE vertex identifiers",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "V",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Group 91 signed identifiers follow vertices through clone and reversal. Conservative AC1027/2013 and 2018 export, supported by Autodesk 2015 documentation; no first-product-release assertion.",
+      "evidence": [
+        "LWPFID"
+      ]
+    },
+    {
+      "id": "lwpolyline-wide-transforms",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "LWPOLYLINE width transform validation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Supported transforms scale stored widths and preserve presence; unrepresentable wide nonuniform or shear transforms reject before mutation. Reversed geometry is independently compared at 2,448 arc/taper cross-sections.",
+      "evidence": [
+        "LWPFID"
+      ]
+    },
+    {
+      "id": "typed-idbuffer-references",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "IDBUFFER ordered reference payload",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Null handles, duplicate identities, ordered references and common object metadata; explicit external mappings for cross-document graph clones.",
+      "evidence": [
+        "CONT"
+      ]
+    },
+    {
+      "id": "typed-spatial-filter-payload",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "SPATIAL_FILTER public clipping metadata",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Finite rectangle/polygon boundary, nonunit normal/origin, enabled state, optional front/back planes and two affine matrices. Stores public data; does not evaluate clipping or private inverted-XCLIP.",
+      "evidence": [
+        "CONT"
+      ]
+    },
+    {
+      "id": "typed-extension-graph-clone",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Typed extension dictionary graph cloning",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Automatic source-owner to destination-owner mapping, explicit external reference mappings, destination-slot revalidation after caller enumeration and failure-before-registration guarantees for qualified typed graphs.",
+      "evidence": [
+        "CONT"
+      ]
+    },
+    {
+      "id": "view-vport-ucs-references",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "VIEW/VPORT named and base UCS references",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Deferred read resolution, optional VIEW UCS bundle, same-document registered targets, exact identity counts and safe removal/rename callbacks. Cross-document clones retain references until explicitly replaced.",
+      "evidence": [
+        "VIEWUCS"
+      ]
+    },
+    {
+      "id": "ucs-table-flags",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "UCS table flags",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Preserves the full signed group-70 bit field, including known external/dependent/referenced flags and unknown bits.",
+      "evidence": [
+        "VIEWUCS"
+      ]
+    },
+    {
+      "id": "common-color-name",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Common entity color names",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Optional group 430, including explicit empty values, literal Unicode escape text and framing controls; cloned by public entities, ATTRIB and ATTDEF.",
+      "evidence": [
+        "COMMON"
+      ]
+    },
+    {
+      "id": "common-shadow-mode",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Common entity shadow mode",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Optional group 284 values 0\u20133, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
+      "evidence": [
+        "COMMON"
+      ]
+    },
+    {
+      "id": "common-proxy-graphics",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Common entity opaque proxy cache",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Defensive byte copies, absent/empty distinction, ordered chunks, exact counts and a 16 MiB limit; rejects duplicate or invalid common subclasses. Geometry operations preserve the opaque cache; callers clear or regenerate stale data.",
+      "evidence": [
+        "COMMON"
+      ]
     }
   ],
   "next_work": [
@@ -4997,7 +5252,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships; LWPOLYLINE vertex identifiers and constant-width representation; common color-name/shadow/proxy-graphics fields. MTEXT column storage is implemented; rendering, layout and annotation contexts remain open. Existing Save remains nontransactional; SaveAtomic is opt-in."
+      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in."
     },
     {
       "id": "new-entities",
@@ -5007,7 +5262,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Typed draw-order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. Generic dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders are implemented; draw-order editing exists in the separate raw transaction API."
+      "scope": "MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC, OBJECT_PTR/SPATIAL_INDEX, MATERIAL/VISUALSTYLE/rendering and sun families. Typed IDBUFFER, SORTENTSTABLE, SPATIAL_FILTER and public GEODATA version 2 now join dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders. Other GEODATA versions and private payloads remain unqualified."
     },
     {
       "id": "historical-typed",
