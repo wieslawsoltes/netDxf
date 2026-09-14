@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "6420dd213b018d6f8698167aca4473bc3d3a499f",
-    "tree": "280e1b80946fc2e4133e69ead3bc8651825b13bd"
+    "commit": "3a3dd9558b6d20e9bd22d37b6cb5cf3167e6a15a",
+    "tree": "ecabd469ddd7b6158d4e4bee9e7e9ea4e9b8945b"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 16765,
+    "test_cases": 19948,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 75,
-    "ci_run": 34867250706
+    "last_implementation_pr": 83,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/83/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -423,6 +423,54 @@
     "EMBED": {
       "label": "opaque embedded-object handle context",
       "path": "doc/dxf-conformance/raw-embedded-handle-context.md"
+    },
+    "LIGHT": {
+      "path": "doc/dxf-conformance/light.md",
+      "label": "Typed LIGHT parameter storage"
+    },
+    "LNAME": {
+      "path": "doc/dxf-conformance/light-name-transport.md",
+      "label": "LIGHT name transport"
+    },
+    "OLE2": {
+      "path": "doc/dxf-conformance/ole2frame.md",
+      "label": "Inert OLE2FRAME packet"
+    },
+    "OLE1": {
+      "path": "doc/dxf-conformance/oleframe.md",
+      "label": "Inert legacy OLEFRAME packet"
+    },
+    "OLE2P": {
+      "path": "doc/dxf-conformance/ole2frame-optional-metadata.md",
+      "label": "Optional OLE2FRAME metadata"
+    },
+    "OLE1P": {
+      "path": "doc/dxf-conformance/oleframe-version-presence.md",
+      "label": "Legacy OLE version presence"
+    },
+    "HSCALAR": {
+      "path": "doc/dxf-conformance/hatch-scalar-order.md",
+      "label": "HATCH scalar packet ordering"
+    },
+    "RAWOBJ": {
+      "path": "doc/dxf-conformance/raw-object-transactions.md",
+      "label": "Raw OBJECTS transactions and graph editing"
+    },
+    "LWP": {
+      "path": "doc/dxf-conformance/lwpolyline-integrity.md",
+      "label": "Lightweight polyline packet and taper integrity"
+    },
+    "VPORT": {
+      "path": "doc/dxf-conformance/vport-records.md",
+      "label": "VPORT configurations and lifecycle"
+    },
+    "MTCOL": {
+      "label": "MTEXT column storage, links and conversion",
+      "path": "doc/dxf-conformance/mtext-columns.md"
+    },
+    "NODO": {
+      "label": "typed named-object database and graph copying",
+      "path": "doc/dxf-conformance/named-object-database.md"
     }
   },
   "features": [
@@ -507,7 +555,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "scope": "All 310\u2013319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
       "evidence": [
         "B"
       ]
@@ -579,7 +627,8 @@
         "VIEW",
         "ATOMIC",
         "HELIX",
-        "HEMPTY"
+        "HEMPTY",
+        "MTCOL"
       ]
     },
     {
@@ -665,11 +714,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Named VIEW core is now implemented alongside other typed families. VPORT remains reduced; raw indexing is the preservation alternative.",
+      "scope": "Named VIEW core and ordered VPORT configurations are implemented alongside existing symbol families; modern reference graphs and private extensions remain partial.",
       "evidence": [
         "VIEW",
-        "REC",
-        "B"
+        "VPORT",
+        "REC"
       ]
     },
     {
@@ -1202,10 +1251,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Content/direction/spacing plus clone direction and editable background subset. Column contexts, fields and complete annotations remain incomplete.",
+      "scope": "Content/direction/spacing, editable background, and direct/legacy/embedded column storage. Font measurement, text layout, FIELD evaluation and complete annotation contexts remain outside the implemented subset.",
       "evidence": [
         "MTCL",
-        "MTBG"
+        "MTBG",
+        "MTCOL"
       ]
     },
     {
@@ -1634,16 +1684,17 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Light entity; SUN is a separate missing object.",
+      "scope": "Published AcDbLight parameters, editing, persistence, cloning and similarity transforms. Conservative 2007+ export; pre-2007 import permissive. Photometric/private schemas, SUN and LIGHTLIST remain separate.",
       "evidence": [
-        "B"
+        "LIGHT",
+        "LNAME"
       ]
     },
     {
@@ -1720,16 +1771,19 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "O",
+        "AC1032": "O"
       },
-      "scope": "Inert embedded OLE payload preservation.",
+      "scope": "Inert packet bytes, metadata, optional-field presence, cloning and exact identity transforms. Native embedded content is not activated, interpreted or rendered. Separate OLEFRAME and OLE2FRAME models.",
       "evidence": [
-        "B"
+        "OLE1",
+        "OLE2",
+        "OLE1P",
+        "OLE2P"
       ]
     },
     {
@@ -1953,16 +2007,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Only first *Active configuration retained; other records/many fields discarded. `ReadTableEntry/ReadVPort/WriteVPort`.",
+      "scope": "Active and named tiled configurations now retain ordered physical records, handles, XData, core rectangle/camera/snap/render fields and stored UCS coordinates. Linked UCS, frozen layers and rendering object graphs remain partial.",
       "evidence": [
-        "B"
+        "VPORT"
       ]
     },
     {
@@ -1981,9 +2035,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Known named collections, not arbitrary nested extension dictionaries. `ReadDictionary/WriteDictionary`.",
+      "scope": "Editable application dictionaries, aliases, defaults, extension ownership and explicit graph cloning through DxfDocument.Objects. Existing reserved collections retain their own APIs; arbitrary private object semantics and cascade erasure remain outside this typed subset.",
       "evidence": [
-        "B"
+        "NODO"
       ]
     },
     {
@@ -2142,16 +2196,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Private cache/layer states, not generic public ownership graph. `ReadXRecord/ReadLayerState/WriteLayerState`.",
+      "scope": "Editable ordered typed payload codes1\u2013369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
       "evidence": [
-        "B"
+        "NODO"
       ]
     },
     {
@@ -2184,16 +2238,17 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Proxy/class/payload fidelity.",
+      "scope": "ACDBPLACEHOLDER is typed with common metadata and CLASSES. ACAD_PROXY_OBJECT retains only the generic opaque OBJECTS payload subset; class-specific proxy semantics remain unimplemented.",
       "evidence": [
-        "B"
+        "NODO",
+        "CLS"
       ]
     },
     {
@@ -2205,16 +2260,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Default dictionaries and typed dictionary variables.",
+      "scope": "Typed default dictionary identity/lookup and dictionary variable schema/value; generated CLASSES metadata; six profile text/binary regression fixtures.",
       "evidence": [
-        "B"
+        "NODO"
       ]
     },
     {
@@ -3773,24 +3828,23 @@
     },
     {
       "id": "mtext-columns",
-      "area": "Confirmed next field-level work",
+      "area": "Implemented field-level increments",
       "pipeline": "typed",
-      "feature": "MTEXT column contexts",
+      "feature": "MTEXT column metadata and linked graph",
       "status": {
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Column type/count/flow/autoheight/width/gutter/heights, legacy linked records and context-sensitive code50 remain open.",
+      "scope": "Static/dynamic auto/manual metadata; deferred legacy links; exact explicit text-partition conversion; clone/block link remapping and guarded transforms. Storage version gates below; no font layout or AutoCAD rendering equivalence.",
       "evidence": [
-        "MTBG",
-        "B"
+        "MTCOL"
       ]
     },
     {
@@ -4470,28 +4524,490 @@
       "evidence": [
         "EMBED"
       ]
+    },
+    {
+      "id": "hatch-scalar-order",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH unique scalar edge fields and list headers",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Unique LINE/ARC/ELLIPSE fields and pre-list POLYLINE/SPLINE headers dispatch by group code; counted/repeated packet framing still enforced.",
+      "evidence": [
+        "HSCALAR"
+      ]
+    },
+    {
+      "id": "light-name-transport",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "LIGHT name transport and validation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Unicode, literal backslashes and escape-looking text retained; CR/LF/NUL and null reject before setter mutation. Conservative pre-2007 output guard remains.",
+      "evidence": [
+        "LNAME"
+      ]
+    },
+    {
+      "id": "ole2frame-metadata-presence",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "OLE2FRAME optional metadata presence",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "All 64 metadata selections retain absent versus explicit default values through text/binary persistence and cloning without replacing published getters.",
+      "evidence": [
+        "OLE2P"
+      ]
+    },
+    {
+      "id": "oleframe-version-presence",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "OLEFRAME optional version presence",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "HasOleVersion and WithOleVersionPresence retain absent versus explicit group70 through text/binary persistence and cloning; required OLE terminator remains.",
+      "evidence": [
+        "OLE1P"
+      ]
+    },
+    {
+      "id": "lwpolyline-packet-integrity",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "LWPOLYLINE counted vertex packets",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Declared counts and complete X/Y pairs validated without declaration-sized allocation; per-vertex widths and bulges stay associated when scalar fields surround group20. Existing constant-width policy and group91 omission remain.",
+      "evidence": [
+        "LWP"
+      ]
+    },
+    {
+      "id": "lwpolyline-taper-reversal",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Polyline2D tapered segment reversal",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Outgoing bulge and taper data shift to the reversed edge, exchanging start/end widths; open/closed curves, double reversal, clones and persistence checked.",
+      "evidence": [
+        "LWP"
+      ]
+    },
+    {
+      "id": "raw-objects-schema-editing",
+      "area": "Raw object database operations",
+      "pipeline": "raw",
+      "feature": "OBJECTS schema views and record editing",
+      "status": {
+        "AC1009": "V",
+        "AC1012": "V",
+        "AC1014": "V",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Explicit raw-object API recognizes dictionaries/default dictionaries, XRECORD, DICTIONARYVAR, placeholders, IDBUFFER and draw order. Unsupported/malformed bodies remain opaque; authoring uses conservative admitted profiles.",
+      "evidence": [
+        "RAWOBJ"
+      ]
+    },
+    {
+      "id": "raw-objects-transactions",
+      "area": "Raw object database operations",
+      "pipeline": "raw",
+      "feature": "OBJECTS immutable commit, rollback and resource bounds",
+      "status": {
+        "AC1009": "V",
+        "AC1012": "V",
+        "AC1014": "V",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Atomic staged operations restore allocations, parent links and records after failures/cancellation/reentrant iterators; commit produces an immutable snapshot; budgets and transaction lifecycle enforced.",
+      "evidence": [
+        "RAWOBJ"
+      ]
+    },
+    {
+      "id": "raw-objects-owned-graphs",
+      "area": "Raw object database operations",
+      "pipeline": "raw",
+      "feature": "OBJECTS ownership, extension dictionaries, clone/delete",
+      "status": {
+        "AC1009": "V",
+        "AC1012": "V",
+        "AC1014": "V",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Aliases, defaults, owned-tree cloning/deletion, extension dictionaries, exposed handles and XData1005 remap; unresolved capture avoided. Same-document graph operations; arbitrary/private values not reinterpreted and cloned reactors omitted.",
+      "evidence": [
+        "RAWOBJ"
+      ]
+    },
+    {
+      "id": "raw-sortents-editing",
+      "area": "Raw object database operations",
+      "pipeline": "raw",
+      "feature": "SORTENTSTABLE draw-order editing",
+      "status": {
+        "AC1009": "V",
+        "AC1012": "V",
+        "AC1014": "V",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Block/entity order, arbitrary sort keys, extension dictionary and optional SORTENTS regeneration settings. Conservative 2004+ authoring; storage/graph validation without native redraw evaluation.",
+      "evidence": [
+        "RAWOBJ"
+      ]
+    },
+    {
+      "id": "vport-configurations",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "VPORT physical records and configuration lifecycle",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "First Active record restored; duplicate-name tiles retain distinct identities, handles and XData. Add/remove/promote/rename/clone, observer failure behavior and foreign-registry rejection tested.",
+      "evidence": [
+        "VPORT"
+      ]
+    },
+    {
+      "id": "vport-stored-view-fields",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "VPORT stored rectangle/camera/snap/render/UCS bundle",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Stored scalar flags, points, direction magnitude, camera/clipping values, snap/grid options and unnamed UCS fields persist across all admitted typed profiles and transports; broad modern reference graphs remain partial.",
+      "evidence": [
+        "VPORT"
+      ]
+    },
+    {
+      "id": "mtext-columns-legacy",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT legacy linked column storage",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "V"
+      },
+      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000\u20132013 writer profile.",
+      "evidence": [
+        "MTCOL"
+      ]
+    },
+    {
+      "id": "mtext-columns-embedded",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT embedded column storage",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "V",
+        "AC1027": "V",
+        "AC1032": "T"
+      },
+      "scope": "2018 embedded definition, saved duplicate placement/direction/width and explicit precedence; inconsistent source directions are retained, without renderer-equivalence claims.",
+      "evidence": [
+        "MTCOL"
+      ]
+    },
+    {
+      "id": "mtext-columns-direct",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT direct column tags",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Documented counted column packet with context-sensitive code50; authored wire checks. No independent ezdxf interpretation claim for direct tags.",
+      "evidence": [
+        "MTCOL"
+      ]
+    },
+    {
+      "id": "mtext-columns-copy-conversion",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MTEXT column copy and explicit conversion",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Block.Create/Clone/Save and Insert.Clone remap links to actual siblings. Conversion requires exact text partitions and compatible formatting. Unsupported linked transforms fail before mutation.",
+      "evidence": [
+        "MTCOL"
+      ]
+    },
+    {
+      "id": "typed-named-object-aliases",
+      "area": "Typed application object database",
+      "pipeline": "typed",
+      "feature": "Application dictionary aliases and defaults",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Ordered350/360entries, hard-owner flag, shared identity, default targets, case-insensitive lookup and required class metadata. Reserved system collection memberships retain existing APIs.",
+      "evidence": [
+        "NODO"
+      ]
+    },
+    {
+      "id": "typed-extension-reactor-graphs",
+      "area": "Typed application object database",
+      "pipeline": "typed",
+      "feature": "Extension dictionaries and persistent reactors",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Resolved common metadata on supported entities, table records and typed objects; ownership validation; combined deduplicated managed/application reactor groups. Existing LAYER table extension remains reserved.",
+      "evidence": [
+        "NODO"
+      ]
+    },
+    {
+      "id": "typed-object-graph-copy",
+      "area": "Typed application object database",
+      "pipeline": "typed",
+      "feature": "Explicit same/cross-document ownership graph copy",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320\u2013329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
+      "evidence": [
+        "NODO"
+      ]
+    },
+    {
+      "id": "typed-object-handle-reservation",
+      "area": "Typed application object database",
+      "pipeline": "typed",
+      "feature": "Typed object validation and handle reservation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Registration/ownership/pointer/default/extension checks before output. Exposed XRECORD/opaque references reserve allocator identities; foreign registries retain owners and handles. Legacy mutable XData lists have save-time validation.",
+      "evidence": [
+        "NODO"
+      ]
+    },
+    {
+      "id": "typed-placeholder-metadata",
+      "area": "Typed application object database",
+      "pipeline": "typed",
+      "feature": "Typed placeholder and common metadata",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "ACDBPLACEHOLDER object with required class declaration, owner, extension, reactor and XData preservation; no application-service semantics.",
+      "evidence": [
+        "NODO"
+      ]
+    },
+    {
+      "id": "typed-opaque-object-preservation",
+      "area": "Typed application object database",
+      "pipeline": "typed",
+      "feature": "Opaque OBJECTS subclass payload preservation",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "O",
+        "AC1032": "O"
+      },
+      "scope": "Loaded unsupported OBJECTS records retain ordered subclass payload and recognized common metadata. Private semantics and opaque-subtree clone are unsupported; arbitrary unknown entities and common application groups require the separate raw pipeline.",
+      "evidence": [
+        "NODO"
+      ]
     }
   ],
   "next_work": [
     {
       "id": "opaque-graph",
       "title": "Class-specific dependencies and typed integration",
-      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, cross-document clone/import and typed unknown-record preservation. Selected raw traversal/remapping is implemented, not complete semantic closure."
+      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented."
     },
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "MTEXT columns and linked legacy contexts; HATCH inner scalar ordering, spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships. Existing Save remains nontransactional; SaveAtomic is opt-in."
+      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; extended UCS/VIEW/VPORT relationships; LWPOLYLINE vertex identifiers and constant-width representation; common color-name/shadow/proxy-graphics fields. MTEXT column storage is implemented; rendering, layout and annotation contexts remain open. Existing Save remains nontransactional; SaveAtomic is opt-in."
     },
     {
       "id": "new-entities",
       "title": "Missing typed entity families",
-      "scope": "MULTILEADER, structured TABLE, LIGHT/SECTION and inert OLE/proxy/ACIS/surface payloads. HELIX is already implemented with scoped limitations, not a missing family."
+      "scope": "MULTILEADER, structured TABLE, SECTION and proxy/ACIS/surface payload families. HELIX, published LIGHT parameters and inert OLEFRAME/OLE2FRAME are implemented with scoped limitations."
     },
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Generic XRECORD/dictionary variants, draw order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families."
+      "scope": "Typed draw-order/spatial filters, MLEADERSTYLE/TABLESTYLE, FIELD/DIMASSOC/GEODATA, MATERIAL/VISUALSTYLE/rendering and sun families. Generic dictionaries/defaults/XRECORD/DICTIONARYVAR/placeholders are implemented; draw-order editing exists in the separate raw transaction API."
     },
     {
       "id": "historical-typed",
