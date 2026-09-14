@@ -60,6 +60,8 @@ internal static partial class Program
         RegisterTypedCommentTests();
         RegisterBezierKnotTests();
         RegisterSplineFlagTests();
+        RegisterSplinePeriodicInputTests();
+        RegisterSplinePeriodicOverlapTests();
         RegisterHatchSplineFitTests();
         RegisterHatchSplineFitApiTests();
         RegisterHatchPathCountTests();
