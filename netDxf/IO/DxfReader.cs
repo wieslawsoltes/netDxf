@@ -9597,8 +9597,8 @@ namespace netDxf.IO
             if (gradient != null)
                 pattern = this.CreateHatchGradientPattern(gradient);
 
-            if (paths.Count == 0)
-                return null;
+            // Retain metadata and identity even when a producer supplies no boundaries.
+            // Export validity is checked separately, before destination writes.
 
             if (pattern == null)
                 pattern = new HatchPattern(name);

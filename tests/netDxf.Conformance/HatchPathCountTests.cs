@@ -67,13 +67,16 @@ internal static partial class Program
         var doc = DxfDocument.Load(input) ?? throw new InvalidOperationException("Valid boundary packet rejected.");
         for (int cycle = 0; cycle < 3; ++cycle)
         {
-            Equal(count == 0 ? 0 : 1, doc.Entities.Hatches.Count(), "Existing empty-boundary discard policy changed");
+            Equal(1, doc.Entities.Hatches.Count(), "Boundary metadata entity was discarded");
             Equal(new Vector3(20, 30, 40), doc.Entities.Lines.Single().StartPoint, "Following entity consumed by boundary list");
             foreach (var hatch in doc.Entities.Hatches)
             {
                 Equal(count, hatch.BoundaryPaths.Count, "Boundary path count");
-                Equal((HatchBoundaryPathTypeFlags)3, hatch.BoundaryPaths[0].PathType, "External polyline flag");
-                Equal(4, ((HatchBoundaryPath.Polyline)hatch.BoundaryPaths[0].Edges.Single()).Vertexes.Length, "Outer vertices lost");
+                if (count != 0)
+                {
+                    Equal((HatchBoundaryPathTypeFlags)3, hatch.BoundaryPaths[0].PathType, "External polyline flag");
+                    Equal(4, ((HatchBoundaryPath.Polyline)hatch.BoundaryPaths[0].Edges.Single()).Vertexes.Length, "Outer vertices lost");
+                }
                 foreach (var path in hatch.BoundaryPaths.Skip(1))
                 {
                     Equal((HatchBoundaryPathTypeFlags)0, path.PathType, "Flags inherited from preceding path");
@@ -85,6 +88,8 @@ internal static partial class Program
                 Equal("after pattern", (string)hatch.XData["DOUBLE_TEST"].XDataRecord.Single().Value, "Boundary parser changed XData");
                 Equal(count, ((Hatch)hatch.Clone()).BoundaryPaths.Count, "Boundary clone count");
             }
+            // Empty metadata is retained on input; its export guard is tested separately.
+            if (count == 0) break;
             using var output = new MemoryStream(); bool format = cycle % 2 == 0 ? !binary : binary;
             Check(doc.Save(output, format), "Boundary packet save failed.");
             if (count == 2 && cycle == 1 && !late && !comments)
@@ -158,7 +163,8 @@ internal static partial class Program
         var tags = HatchPathCountTags(version, 0); tags.RemoveAll(t => t.Code == 91);
         using var input = new MemoryStream(RawFixtureBytes(tags, binary));
         var doc = DxfDocument.Load(input) ?? throw new InvalidOperationException("Existing absent-boundary policy changed.");
-        Equal(0, doc.Entities.Hatches.Count(), "Absent boundary invented a HATCH");
+        Equal(1, doc.Entities.Hatches.Count(), "Absent boundary discarded HATCH metadata");
+        Equal(0, doc.Entities.Hatches.Single().BoundaryPaths.Count, "Absent boundary invented geometry");
         Equal(1, doc.Entities.Lines.Count(), "Absent boundary consumed following LINE");
     }
 }
