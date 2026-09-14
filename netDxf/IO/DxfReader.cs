@@ -9687,12 +9687,9 @@ namespace netDxf.IO
             this.ReadNextHatchPolylineTag();
             // Validate the advertised flag, but use each actual optional group 42 to retain
             // producer data even when a zero has-bulge flag disagrees with the payload.
-            this.ReadHatchPolylineFlag(72);
-            this.ReadNextHatchPolylineTag();
-            bool closed = this.ReadHatchPolylineFlag(73);
-            this.ReadNextHatchPolylineTag();
-            int vertexCount = this.ReadHatchPolylineCount(93);
-            this.ReadNextHatchPolylineTag();
+            bool closed;
+            int vertexCount;
+            this.ReadHatchPolylineHeader(out closed, out vertexCount);
 
             // Counts describe the input, not trusted allocation sizes. Grow only as complete
             // vertices are consumed so truncated or forged counts cannot preallocate arrays.
@@ -9789,32 +9786,9 @@ namespace netDxf.IO
                 switch ((HatchBoundaryPath.EdgeType) kind)
                 {
                     case HatchBoundaryPath.EdgeType.Line:
-                        edges.Add(new HatchBoundaryPath.Line
-                        {
-                            Start = this.ReadHatchEdgePoint(10, 20),
-                            End = this.ReadHatchEdgePoint(11, 21)
-                        });
-                        break;
                     case HatchBoundaryPath.EdgeType.Arc:
-                        edges.Add(new HatchBoundaryPath.Arc
-                        {
-                            Center = this.ReadHatchEdgePoint(10, 20),
-                            Radius = this.ReadHatchEdgeDouble(40),
-                            StartAngle = this.ReadHatchEdgeDouble(50),
-                            EndAngle = this.ReadHatchEdgeDouble(51),
-                            IsCounterclockwise = this.ReadHatchEdgeFlag(73)
-                        });
-                        break;
                     case HatchBoundaryPath.EdgeType.Ellipse:
-                        edges.Add(new HatchBoundaryPath.Ellipse
-                        {
-                            Center = this.ReadHatchEdgePoint(10, 20),
-                            EndMajorAxis = this.ReadHatchEdgePoint(11, 21),
-                            MinorRatio = this.ReadHatchEdgeDouble(40),
-                            StartAngle = this.ReadHatchEdgeDouble(50),
-                            EndAngle = this.ReadHatchEdgeDouble(51),
-                            IsCounterclockwise = this.ReadHatchEdgeFlag(73)
-                        });
+                        edges.Add(this.ReadHatchScalarEdge((HatchBoundaryPath.EdgeType) kind));
                         break;
                     case HatchBoundaryPath.EdgeType.Spline:
                         edges.Add(this.ReadHatchSplineEdge());
@@ -9839,16 +9813,9 @@ namespace netDxf.IO
 
         private HatchBoundaryPath.Spline ReadHatchSplineEdge()
         {
-            this.RequireHatchEdgeCode(94);
-            int degree = this.chunk.ReadInt();
-            // The typed edge model stores a short; never silently truncate the DXF integer.
-            if (degree < 1 || degree > short.MaxValue)
-                throw this.InvalidHatchEdgeData("spline degree cannot be represented by the positive Int16 typed model");
-            this.ReadNextHatchEdgeTag();
-            bool rational = this.ReadHatchEdgeFlag(73);
-            bool periodic = this.ReadHatchEdgeFlag(74);
-            int knotCount = this.ReadHatchEdgeCount(95);
-            int controlCount = this.ReadHatchEdgeCount(96);
+            int degree, knotCount, controlCount;
+            bool rational, periodic;
+            this.ReadHatchSplineHeader(out degree, out rational, out periodic, out knotCount, out controlCount);
             // Only consumed data grows these collections, never a producer-controlled capacity.
             List<double> knots = new List<double>();
             for (int i = 0; i < knotCount; i++) knots.Add(this.ReadHatchEdgeDouble(40));
