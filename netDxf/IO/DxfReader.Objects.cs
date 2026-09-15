@@ -45,6 +45,13 @@ namespace netDxf.IO
                 this.databaseRecords.Add(style);
                 return style;
             }
+            if (codeName == "DIMASSOC")
+            {
+                DatabaseRecord association = this.ReadStoredDimAssocRecord(tags);
+                association.SourceIdentity = source;
+                this.databaseRecords.Add(association);
+                return association;
+            }
             if (codeName == "DATATABLE")
             {
                 DatabaseRecord table = this.ReadDataTableRecord(tags);
@@ -284,6 +291,7 @@ namespace netDxf.IO
                 DxfObject target = this.GetObjectBySourceHandle(pair.Key);
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
+            this.ResolveStoredDimAssocReferences();
             this.ResolveTableStyleReferences();
             this.ResolveDataTableReferences();
             this.ResolveLayerIndexReferences();

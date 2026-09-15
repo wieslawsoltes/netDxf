@@ -49,6 +49,7 @@ namespace netDxf.Objects
                     throw new NotSupportedException("An ownership subtree containing a managed legacy object cannot be erased.");
                 if (value.IsErased || value.Database != this || !this.IsRegistered(value))
                     throw new InvalidOperationException("The erased ownership subtree has inconsistent registration.");
+                if (value is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (value is DxfOpaqueObject) throw new NotSupportedException("An opaque object requires its application schema before erasure: " + value.CodeName);
                 tree.Add(value);
                 if (children.TryGetValue(item, out List<DxfObject> next)) foreach (DxfObject child in next) pending.Enqueue(child);

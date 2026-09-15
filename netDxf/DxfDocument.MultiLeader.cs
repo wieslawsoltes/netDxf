@@ -23,6 +23,7 @@ namespace netDxf
                 else if(item is MultiLeader leader)references=leader.Data.SelectMany(d=>d.References);
                 else if(item is DxfMLeaderStyle style)references=style.DatabaseReferences;
                 else if(item is DxfTableStyle tableStyle)references=tableStyle.References;
+                else if(item is DxfStoredDimAssoc association)references=association.References;
                 else continue;
                 int count=references.Count(r=>ReferenceEquals(r,target));
                 if(count>0)result.Add(new DxfObjectReference(item,count));

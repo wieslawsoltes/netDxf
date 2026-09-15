@@ -158,6 +158,7 @@ namespace netDxf.Objects
             var tree = this.objects.Values.Where(o => IsAncestor(section, o)).ToList();
             foreach (DxfDatabaseObject item in tree)
             {
+                if (item is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (item is DxfOpaqueObject) throw new NotSupportedException("An opaque section-owned object requires its application schema before erasure.");
                 this.CheckRegistered(item); deleted.Add(item);
             }

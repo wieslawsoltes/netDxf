@@ -80,6 +80,7 @@ namespace netDxf.IO
             this.PrepareStoredTableClasses(definitions);
             this.PrepareSectionClasses(definitions);
             this.PrepareTableStyleClass(definitions);
+            this.PrepareStoredDimAssocClass(definitions);
             this.PrepareLightListClass(definitions);
             this.PrepareDataTableClass(definitions);
         }
@@ -135,6 +136,7 @@ namespace netDxf.IO
             else if (this.WriteLightListPayload(item)) { }
             else if (this.WriteDataTablePayload(item)) { }
             else if (this.WriteTableStylePayload(item)) { }
+            else if (this.WriteStoredDimAssocPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);
