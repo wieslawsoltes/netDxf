@@ -1,0 +1,602 @@
+[
+  {
+    "name": "independent-lw-fidelity-R2000-absent-ascii.dxf",
+    "sha256": "e3a7695a52fd690997c7657479325a29fe4d23260926693ee8052d16db3e2280",
+    "bytes": 13490
+  },
+  {
+    "name": "independent-lw-fidelity-R2000-absent-binary.dxf",
+    "sha256": "9103efab18fd69890f5ce3964395845bb2331f4989f97ca4abd394931667eb6f",
+    "bytes": 13224
+  },
+  {
+    "name": "independent-lw-fidelity-R2000-positive-ascii.dxf",
+    "sha256": "ef190ee97081c3ad7854c31ee35cc0af1a94e2e0e630d771b1eaec806fa1077c",
+    "bytes": 13500
+  },
+  {
+    "name": "independent-lw-fidelity-R2000-positive-binary.dxf",
+    "sha256": "6e412dad22e763dacf6ef7d0ca279acda94d126c6fb985d170aaac931c7d623f",
+    "bytes": 13236
+  },
+  {
+    "name": "independent-lw-fidelity-R2000-zero-ascii.dxf",
+    "sha256": "8aaba5a0fd7e008651982ce585469b5263310df6532e7e39b939c93084a9f19b",
+    "bytes": 13495
+  },
+  {
+    "name": "independent-lw-fidelity-R2000-zero-binary.dxf",
+    "sha256": "47a82b02efcc583ed9a76d2213d65a1e4e38d6066e564b4180c739aa35d4212b",
+    "bytes": 13232
+  },
+  {
+    "name": "independent-lw-fidelity-R2018-absent-ascii.dxf",
+    "sha256": "e51338b451910171ab06518cc026da51b339859bc6a61d2dda81260874d418b8",
+    "bytes": 14556
+  },
+  {
+    "name": "independent-lw-fidelity-R2018-absent-binary.dxf",
+    "sha256": "c9d2f22f0b9b5f59887e769c85f15157f031d519475b6dc0b2a2e62b91323ba0",
+    "bytes": 14199
+  },
+  {
+    "name": "independent-lw-fidelity-R2018-positive-ascii.dxf",
+    "sha256": "b9b1bd410d3caa3ca5bd4a87ba5c5a190a6843999370611e28a451c0b98c503a",
+    "bytes": 14566
+  },
+  {
+    "name": "independent-lw-fidelity-R2018-positive-binary.dxf",
+    "sha256": "bb9488ffdf9bd94de50ad7d30eff28f2aeee0482768a6de606b03deee394b64d",
+    "bytes": 14211
+  },
+  {
+    "name": "independent-lw-fidelity-R2018-zero-ascii.dxf",
+    "sha256": "0f5786988fe539fe58a790115782ae1455fbe57623eb89781f391d2b3a9d862c",
+    "bytes": 14561
+  },
+  {
+    "name": "independent-lw-fidelity-R2018-zero-binary.dxf",
+    "sha256": "239494fb014b3087b967af48f35624eb0c55fb2a47b08586daddf100de74cb29",
+    "bytes": 14207
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-absent-original.dxf",
+    "sha256": "8c6f0d7c254622be66a7638d3a646813268d72195b36bcb3e75f4a8bbc3a4179",
+    "bytes": 8415
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-absent-restored.dxf",
+    "sha256": "787e0428f6fac34f5985d4ccb1174900442d6eb5d5f7558f6c540ecae6fcc3ad",
+    "bytes": 8415
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-absent-reversed.dxf",
+    "sha256": "8612987f59332a0c08e23e99a64577974450da7bd356a8d07f6eb98d0463f141",
+    "bytes": 8417
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-positive-original.dxf",
+    "sha256": "15f555c2b8141f75e875b5200a7052669c9612ce54c39c0578dcd166e047a160",
+    "bytes": 8421
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-positive-restored.dxf",
+    "sha256": "3cdb9b42c3237622ab8f040a8c8e06fbd2dc3acaaefdf80ce9839a9678fbf683",
+    "bytes": 8423
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-positive-reversed.dxf",
+    "sha256": "7a2bc6a0519f4857dd2b16d647a45cbf73777b0b7e62d7ca976bfe6a0095a18c",
+    "bytes": 8425
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-zero-original.dxf",
+    "sha256": "49150ae664b9ed8571f8b72930dcd9f4367757c3d113cb073cac52ef6301e3c8",
+    "bytes": 8420
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-zero-restored.dxf",
+    "sha256": "98006c516e36f16e889fae97fc557c8da23016f4ee601e837ae9c02fcbd64f36",
+    "bytes": 8422
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-False-zero-reversed.dxf",
+    "sha256": "3ed01d5870c376db8de54e7939f653bce949b885a858dac18c3ca6a6d7a39de9",
+    "bytes": 8424
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-absent-original.dxf",
+    "sha256": "0d8dbf2ad682b98af654c8ca9efb866143cfedddea47a4e803b1562b4aa46134",
+    "bytes": 8048
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-absent-restored.dxf",
+    "sha256": "33edb605d09a7814209e5bcd98f9d7b21f7fbab2dc6c1465555408d57874763b",
+    "bytes": 8048
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-absent-reversed.dxf",
+    "sha256": "e7d2b5124b84ebd2a07da4ae58b1848541addad46a7929c6d51694bb73f40fea",
+    "bytes": 8048
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-positive-original.dxf",
+    "sha256": "b3ea0a8c388024853c5e2de9b2310b2fa14e693c3b4e2537537bdb33787b78b1",
+    "bytes": 8058
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-positive-restored.dxf",
+    "sha256": "8f47d201ff28fb2e639655fd491fe0e62c24e2fee143b1074cf941d0121d76f5",
+    "bytes": 8058
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-positive-reversed.dxf",
+    "sha256": "63b497aa4a7c5c934d6542e8b2cc7a2b3ecd1bef8de0e17521446b6790a3c12a",
+    "bytes": 8058
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-zero-original.dxf",
+    "sha256": "0e34740c31ce9f2c60d8b9115455354dd51be10016f8ced75cfefa35d51f8b06",
+    "bytes": 8058
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-zero-restored.dxf",
+    "sha256": "8803ec076641f77905856d441c9dec3075859d3c78a0813a9d6aec0ad1bf633f",
+    "bytes": 8058
+  },
+  {
+    "name": "lw-fidelity-AutoCad2000-True-zero-reversed.dxf",
+    "sha256": "0db74a142e92f274ba90a20a8c8cb500ba9ace159caae1e0e4554b98d55d8bc2",
+    "bytes": 8058
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-absent-original.dxf",
+    "sha256": "1071760e6be221c9d432ae62402c2c3dbe59f6309bf2395104461d97d82ab944",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-absent-restored.dxf",
+    "sha256": "da8fb6aa814347a85ec0c7f861bab34070bcab451556884956be3471a40fac6c",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-absent-reversed.dxf",
+    "sha256": "c9145841460e9408f98ae5566a53a97c9242d12c071c5ef1ef01d8133c701ecb",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-positive-original.dxf",
+    "sha256": "3c1437b96dd8cdae25eab99c9ee64e2e1d10e9a7af639f39c32e252e0b890da6",
+    "bytes": 8450
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-positive-restored.dxf",
+    "sha256": "dc8459fa0f3e725ab4db2193a805399f814e92d0544160249088fb5c42c769af",
+    "bytes": 8450
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-positive-reversed.dxf",
+    "sha256": "9167dd0059ce568694110fd0c4f52a023a8c4ca05b78a4c612be5179b168b7f1",
+    "bytes": 8452
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-zero-original.dxf",
+    "sha256": "18294702a6d73ed30153e8566285d83a0625cd38f06574b155501432624219e7",
+    "bytes": 8449
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-zero-restored.dxf",
+    "sha256": "fa953133f1b9f7127a1174d9f2d84e8277ea79e3d6a779c23f7644d6dbb36322",
+    "bytes": 8449
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-False-zero-reversed.dxf",
+    "sha256": "be717f69c10779970ebc1a78a7410fb80148375bdd32dfa7ab0d8bf5df13698a",
+    "bytes": 8451
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-absent-original.dxf",
+    "sha256": "3be0637299783788d05ab7c78950200a2a2deedc4a52dbb9bbd9fc88d7a30a37",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-absent-restored.dxf",
+    "sha256": "79a9d51f553607ba259a9133c5e934083333867fac1907a637d20e5369680911",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-absent-reversed.dxf",
+    "sha256": "633901163ea5766c6ac5857c0848e8c3e19b9dbb9494a3774b144cd5c15b0767",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-positive-original.dxf",
+    "sha256": "1cd9bf2f7c498a3d3e0a36f8bb9c5fd6f13da0fb7c9f124ba6a404d0917e84a5",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-positive-restored.dxf",
+    "sha256": "26c5c50a77e74bf413922b9adec2038f9b154dd1d8fd6cb2e6f13dc7a3368e46",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-positive-reversed.dxf",
+    "sha256": "45a8bfa250315fb91d4f1502171fb086b3f68faea79e288401585d45675482f7",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-zero-original.dxf",
+    "sha256": "8a7714eec6618c9370c0d79ef3e29329131547ba2749a2ee68a80dd265ff49cb",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-zero-restored.dxf",
+    "sha256": "35b3d710cccdcc4bc25e61c3cd84234919f92b78755651739f5a247fd89336ec",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2004-True-zero-reversed.dxf",
+    "sha256": "61869fe2b2ba639f310b836dddc0c2946fc76af63e29b816802ce561bb17d6a0",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-absent-original.dxf",
+    "sha256": "ad5cfb98d0a1e5412ed30a8703dae06a367bf479d841b8c38bc0bedec28435b9",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-absent-restored.dxf",
+    "sha256": "dc2f5edd0181453f3783db38aba75c326d67b13a7e0ab3f257837d6fe1d0c6c8",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-absent-reversed.dxf",
+    "sha256": "4529f90b1c9021f7b3ece355ee55cc5b630cf3fa4d013495174cc72f433b3729",
+    "bytes": 8444
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-positive-original.dxf",
+    "sha256": "034e1ead9f181ee50da8fb57f35668ed5fab97b1e14430d7b830b6a97a8c791d",
+    "bytes": 8450
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-positive-restored.dxf",
+    "sha256": "3d53dac550abc2d3893991ed0a39b531ca8878f9aa821b437e64d4abdd9bff56",
+    "bytes": 8450
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-positive-reversed.dxf",
+    "sha256": "22f253e55f0684341f1190634b0aec1b0df8cb7e73d9424147c0a3a2b7f8665f",
+    "bytes": 8452
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-zero-original.dxf",
+    "sha256": "cc1709a62da8d3bdf6631da2ed7814549f1b0ab0b28a7e38f676ae8ee0d641fd",
+    "bytes": 8449
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-zero-restored.dxf",
+    "sha256": "6124d712f41bdff8f058e25987308da1c7ae15577430ced36e74c06eb257f91d",
+    "bytes": 8449
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-False-zero-reversed.dxf",
+    "sha256": "c1cd408fdc6c4cf9ea2a866e104752218769105dd292596880c1920bd5ed4b41",
+    "bytes": 8451
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-absent-original.dxf",
+    "sha256": "43a7b77c9e4bed0cdaf70a15a7ae0fdf14cb6136fb09f44cfb095c8848b276c7",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-absent-restored.dxf",
+    "sha256": "4fa3bec3367218501e2437fed2c5e00cebb66ba50285e4ac6540ccc7b6b99a0a",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-absent-reversed.dxf",
+    "sha256": "c23e4904b5841ef1a10504173fce8c0fd0279ecc9108eb208ef3fd6a05a35586",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-positive-original.dxf",
+    "sha256": "99ae2422bf47e2fae2d0afde41934bebbe7d3098adc88972c45991e519e050c4",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-positive-restored.dxf",
+    "sha256": "5998c200b5d5b39caf02f9ec14a1e52f29a15e6bb83d8058c72d0f4898aa14cb",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-positive-reversed.dxf",
+    "sha256": "be0f724ffbb492182fd2d75fcb46a876df89791111a12ab12baf561bed8a56bf",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-zero-original.dxf",
+    "sha256": "7acfbff9d9e002fd24ec67cd7682529e0d1ee9cab37c037d443342b836f89c2b",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-zero-restored.dxf",
+    "sha256": "76a48bcd02175e9839670bd73ea1cf42c7f5edf9078296cd6bd7b456e6908746",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2007-True-zero-reversed.dxf",
+    "sha256": "c98901a16ed3eb907272b1a382ab47f80d8d8d6a592fcebde866cdbc3c288c29",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-absent-original.dxf",
+    "sha256": "2ed27d315bd895bfb5ba3de4d70f3a3b3e72b27c6c208fc61c4b6effe5cbf56d",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-absent-restored.dxf",
+    "sha256": "dad735d6ce9dc2759a819699dc439c392ecd9eb97ec7c4d1b30ce760ab43f575",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-absent-reversed.dxf",
+    "sha256": "926e75ca95fcf17c9fd82f56207e8595da7aed68ed1448e3acf7b6a728b5ea1e",
+    "bytes": 8442
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-positive-original.dxf",
+    "sha256": "d22a6f5bb1400b928363813f3f829b6934015694d9fd7e8b2ed9b53e6f214e27",
+    "bytes": 8450
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-positive-restored.dxf",
+    "sha256": "31f6a10e8dd2dc014d894b54d3c78e9f9b9f03fd2fd7a38946f9a8aba3803807",
+    "bytes": 8450
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-positive-reversed.dxf",
+    "sha256": "eee579588510789dadf75b24666b1d329b37eb2f4b6b252bd059c8133b993e5e",
+    "bytes": 8452
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-zero-original.dxf",
+    "sha256": "fe10d2b25954c6707c1238629fe51614cf3fc57cd8c94c614b145921009c2977",
+    "bytes": 8449
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-zero-restored.dxf",
+    "sha256": "1b5732eef5b4d540669579300856cea0504027a4bc86e51f50b5dd9e6d61958c",
+    "bytes": 8449
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-False-zero-reversed.dxf",
+    "sha256": "54e4263cfc301b0cbdb78c3eab628aa5f09f8e5eebc3fa30b672a84c1e255e56",
+    "bytes": 8451
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-absent-original.dxf",
+    "sha256": "d3b8485d75acb56db1382a224918993ff2d28c1e1410dddd70ae403752ada371",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-absent-restored.dxf",
+    "sha256": "998373cda89b0868ac1ea3f18b043391ed74199d62032cf9a547b1527acfb612",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-absent-reversed.dxf",
+    "sha256": "2997224acaa589bcaf42cf6947d8729fadcf8bd18a89e72e21954a79a946f8ed",
+    "bytes": 8076
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-positive-original.dxf",
+    "sha256": "2b6a085c0ddf98334eae7e538440707290633c5a12fcd358d40bdda4ac04fe68",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-positive-restored.dxf",
+    "sha256": "5d52346b848bcf22cfb8cd41e9b9f415d3708c52bbff55bccd38785e48efa2b5",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-positive-reversed.dxf",
+    "sha256": "639a43b98e7347342fff56fbf4533ee92d624076b2917ea37d33ebad34106c10",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-zero-original.dxf",
+    "sha256": "fa2abd1ac4fc348c1e1eee2dfeae15aca5657f613a4f06beba83442edd98801b",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-zero-restored.dxf",
+    "sha256": "5d47ced6f14718093ac43989c6e37eddddfaaacf0f27682044f8099cb09dbde0",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2010-True-zero-reversed.dxf",
+    "sha256": "372e30f50109a7db980ea66eabfc0b7b60ccbf8c015b55641de27ce909f54628",
+    "bytes": 8086
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-absent-original.dxf",
+    "sha256": "59f849bc0648a1358b3fe86e50ba0beb0705bef046b296764f8a85018c38b89b",
+    "bytes": 8474
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-absent-restored.dxf",
+    "sha256": "d07d87adc30c5bf8865a6e649a3c2367f75d923b2c94166abd31b9d9f1a2d3b5",
+    "bytes": 8474
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-absent-reversed.dxf",
+    "sha256": "dfe4692581d151653cfe261ac69a670d31ed82ae728d062ef8abfecb300322b1",
+    "bytes": 8476
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-positive-original.dxf",
+    "sha256": "eddf82bdcbfad4b481483bd20a0ea8d3adc434119d08e4bc076f72d817e2e291",
+    "bytes": 8482
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-positive-restored.dxf",
+    "sha256": "a8c8cd84e18b89880f668bd5d18f660d177424987cfcc679f702925c0bd26c8d",
+    "bytes": 8482
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-positive-reversed.dxf",
+    "sha256": "d8d25b74035d86e2f5462549a953a032b9d3724e4b27c828687f18ffa2c9ea73",
+    "bytes": 8484
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-zero-original.dxf",
+    "sha256": "17e5a8a80b5bc4a258071da74e5e521beeb3e7da17cd20158fb87ea5d0c87e3c",
+    "bytes": 8481
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-zero-restored.dxf",
+    "sha256": "cede23d89bc133ab782766af01b8778832bc9639213b0aeec7b060210efd3cbe",
+    "bytes": 8481
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-False-zero-reversed.dxf",
+    "sha256": "9b25afc9783c65ca64520ca675b8fd5c90e9db89be77cac23379fa497f7d2420",
+    "bytes": 8483
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-absent-original.dxf",
+    "sha256": "63b480ea6e06a5827b3e909b44b97b5197428ac3bd82d4df0339442a5a400bb8",
+    "bytes": 8100
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-absent-restored.dxf",
+    "sha256": "88ab24a7aa04a7ae45ebc6bc60ab3e0b95849eb865450009a9eaacf17edd5dbc",
+    "bytes": 8100
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-absent-reversed.dxf",
+    "sha256": "ecca8f754249fefed2d1195c41e847ecb99e5eea98431fb4330d45bd07e84749",
+    "bytes": 8100
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-positive-original.dxf",
+    "sha256": "212b734d5cf43b91b2540fd9d3ba69477fb989e0fd2460b0f2be767d6bd6ccd6",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-positive-restored.dxf",
+    "sha256": "4e8671ad0a3fe57a5a6d817dcf84cc2b3842c45a4f5e52c587597cb05a393636",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-positive-reversed.dxf",
+    "sha256": "b91dc86ee5864530e31dccabccedbc2d23709ebc881137314e63c676e2ed3cbf",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-zero-original.dxf",
+    "sha256": "d84907317d2fd1bf3948691b5ef97c195143a6ac417440cf37d8d64671f038ec",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-zero-restored.dxf",
+    "sha256": "c264ecf63629aeb5fade5463dd8dfaccf09ecbcf7317f379e061cb06b455dffb",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2013-True-zero-reversed.dxf",
+    "sha256": "04fdcc02119db6854580e4cf1a395ddcbdcf4d33aaa9665c0c68e0ff46be082c",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-absent-original.dxf",
+    "sha256": "ac5dd008aa0a29db335f881cc54f6bf03633b9f3884649662b23e8058f102e9e",
+    "bytes": 8474
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-absent-restored.dxf",
+    "sha256": "7452b2cd7ce21bae6c7abc0bc68eb68a9b7da47a2a3b7732eaafa39a44637739",
+    "bytes": 8474
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-absent-reversed.dxf",
+    "sha256": "bca545132761f3ef3edafcfff7e57a657642f642f8079c3c059e5ceeb4e639e2",
+    "bytes": 8476
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-positive-original.dxf",
+    "sha256": "aa1d3c79edbb96259aa02d59711c653af059149774c41b4cb8a2bc598b6d0d40",
+    "bytes": 8482
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-positive-restored.dxf",
+    "sha256": "754b4a3b5aef8c20bdaae514dc3a2f0eb18a0af6ead92c8e0875e07ab01f1fcc",
+    "bytes": 8482
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-positive-reversed.dxf",
+    "sha256": "1189edfc671de18d71286019d66f6909afcafe5c6a59e86baabcec41f739d70d",
+    "bytes": 8482
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-zero-original.dxf",
+    "sha256": "1801dc095cde2480414e58c66cfcc790ce17aa2aa4d245978451b370814594fe",
+    "bytes": 8481
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-zero-restored.dxf",
+    "sha256": "9c67f32e6dd3cbf2c33986d29ddfa0a2e2ca5eb700477ff25e89a1221ab8dca0",
+    "bytes": 8479
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-False-zero-reversed.dxf",
+    "sha256": "65f525bb9079e66cc0ec44c58e27440bf23e20183ba36631d34dc39b2708226c",
+    "bytes": 8481
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-absent-original.dxf",
+    "sha256": "b718b05357005c373086cf9685cba36c51c4e7d80808bd68d142459acbe1ae9d",
+    "bytes": 8100
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-absent-restored.dxf",
+    "sha256": "22f4bece6cb1f92f4468ea84bc293701a19d9905b1b9d253e6db53a9f9cc3e79",
+    "bytes": 8100
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-absent-reversed.dxf",
+    "sha256": "1c25d7483ce6dc3b47382c9e0807f697872d0bf60ca6f2db8cfe5d1b93c5d881",
+    "bytes": 8100
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-positive-original.dxf",
+    "sha256": "3121a9b0e12c0e4fbd446660d6decc5b7b6bce6c2925e177c1552ef4f3e531bd",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-positive-restored.dxf",
+    "sha256": "cb17d5f3453c5785f8bf2c85a2fa048bf8368909189de1e8d1ff7eae34c54f40",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-positive-reversed.dxf",
+    "sha256": "c94f1b287e7420faf33f04a19697412d6195690c769a9ee1fd8a528d27aa6070",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-zero-original.dxf",
+    "sha256": "11d0e562a3d9f74baa4233252c4ee3fb9cb54868acd615d8d4c0895058199fbd",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-zero-restored.dxf",
+    "sha256": "6c9661755c1c91dadd0ed1a28a43621f0435a43743b713bde7c5aa9d0a3d42f1",
+    "bytes": 8110
+  },
+  {
+    "name": "lw-fidelity-AutoCad2018-True-zero-reversed.dxf",
+    "sha256": "3ec26ce5620ba6bcd7bc71b7fef073ba7db29f71f9d02339ea76c62e30e4cb43",
+    "bytes": 8110
+  }
+]

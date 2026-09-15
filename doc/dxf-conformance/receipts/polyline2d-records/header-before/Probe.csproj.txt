@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net8.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings></PropertyGroup><ItemGroup><Reference Include="netDxf.netstandard"><HintPath>/workspace/scratch/2ec4aa26f01f/legacy2d-records-review-binaries/Debug/netDxf.netstandard.dll</HintPath></Reference></ItemGroup></Project>

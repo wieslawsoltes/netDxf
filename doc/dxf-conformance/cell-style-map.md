@@ -5,7 +5,7 @@ and exposes immutable ordered entries. Each entry provides its stored `Id`, raw
 `StoredType`, decoded `Name`, and complete immutable `FormatPayload`. The object
 remains in its source document and DXF profile. Formatting packets are retained
 without evaluating their fields or assigning fixed title, header or data roles.
-There is no public construction, editing or style regeneration API.
+Explicit [entry-name replacement](cell-style-map-editing.md) edits names while retaining every other packet field. Public construction, formatting edits and style regeneration remain outside this API.
 
 ## Evidence and admitted grammar
 

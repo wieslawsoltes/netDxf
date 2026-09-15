@@ -103,7 +103,7 @@ namespace netDxf
                 if (entity is Viewport viewport) this.SunSlot(viewport);
                 if (entity is DxfOpaqueEntity opaque) this.SourceProfile(opaque, opaque.SourceVersion);
                 if (entity is StoredTable table) this.SourceProfile(table, table.SourceVersion);
-                if (entity is Polyline2D polyline)
+                if (entity is Polyline2D polyline && !polyline.HasStoredRecords)
                     for (int i = 0; i < polyline.Vertexes.Count; i++)
                         if (polyline.Vertexes[i].VertexIdentifier.HasValue)
                             this.Minimum(DxfVersion.AutoCad2013, "LWPOLYLINE_VERTEX_ID_PROFILE", entity, "Vertexes[" + i + "].VertexIdentifier", "LWPOLYLINE vertex identifiers");
@@ -172,6 +172,7 @@ namespace netDxf
                 if (item is Polyline3DRecord vertex) this.SourceProfile(vertex, vertex.SourceVersion);
                 else if (item is PolygonMeshRecord meshVertex) this.SourceProfile(meshVertex, meshVertex.SourceVersion);
                 else if (item is PolyfaceMeshRecord faceVertex) this.SourceProfile(faceVertex, faceVertex.SourceVersion);
+                else if (item is Polyline2DRecord legacyVertex) this.SourceProfile(legacyVertex, legacyVertex.SourceVersion);
                 else if (item is DxfTableStyle tableStyle) this.SourceProfile(tableStyle, tableStyle.SourceVersion);
                 else if (item is DxfStoredTableContent content) this.SourceProfile(content, content.SourceVersion);
                 else if (item is DxfStoredTableGeometry geometry) this.SourceProfile(geometry, geometry.SourceVersion);

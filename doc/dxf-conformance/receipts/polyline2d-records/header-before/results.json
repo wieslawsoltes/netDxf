@@ -1,0 +1,12 @@
+{
+  "production_commit": "88fe8f7",
+  "library_sha256": "9e1bba6ee8bc3a5dab842a25e5d83accaa836f62abcd126035fb72526453f6c5",
+  "saved": true,
+  "parent_handle": "3D",
+  "typed_elevation": 7.0,
+  "independent_reader": "ezdxf1.4.4",
+  "independent_elevation": 0.0,
+  "input_change": "Remove all10/20/30 from ordinary plain POLYLINE parent in unchanged R2018 producer file; assign Elevation7",
+  "output_sha256": "0fe39b0d4b6f54c5191d4141ace5c6140d22137eff0e8a7fbd6d1e9edc2e7c39",
+  "harness_sha256": "2e928bf7a72816a8a0b8a142d5734c7de7c6da872b4866b1094b56884d6825d6"
+}

@@ -1,0 +1,307 @@
+[
+  {
+    "path": "README.md",
+    "sha256": "ff54d7b004668d2678d8ba2eba85cc4b624e7fafb05091bf9a04e92b99d2eae1",
+    "bytes": 4089
+  },
+  {
+    "path": "debug/build.txt",
+    "sha256": "48b3b36158f156c63f3e8a1b598235134975f2a221ce8ac7b56c4dc0fde676eb",
+    "bytes": 176138
+  },
+  {
+    "path": "debug/legacy-outputs.json",
+    "sha256": "8eb0b358bf7d86540e71b63697ee6cc9eb28bb600d3451f27bde71da93501b85",
+    "bytes": 17173
+  },
+  {
+    "path": "debug/legacy-results.json",
+    "sha256": "caa255d6ccfaf3ec47919fe685bdda6c64762d4bf55e5616c7b20bbc2ca8b261",
+    "bytes": 30682
+  },
+  {
+    "path": "debug/legacy-tests.txt",
+    "sha256": "46dd497d5fd8e7bb2d76f5c2bd3a0ee9706749a29485c7c7ea3d7f182bb38fd8",
+    "bytes": 14755
+  },
+  {
+    "path": "debug/lw-outputs.json",
+    "sha256": "af2501734e2cc65fc6aae27486687cfd75bc5539f17710fb00a067a92093471f",
+    "bytes": 20811
+  },
+  {
+    "path": "debug/lw-results.json",
+    "sha256": "6861d00bd252a6e2803dcba5d0a004465d3ab6365fcb08d12a69076f2f068aef",
+    "bytes": 35245
+  },
+  {
+    "path": "debug/lw-tests.txt",
+    "sha256": "f5d1e7645f97eff12cb93b61ac4f8645aea27a08610e229d025f80f463654760",
+    "bytes": 16582
+  },
+  {
+    "path": "debug/siblings-outputs.json",
+    "sha256": "6b63f752639fd649872fc42a84ff6c716a8760c71fd7e8f388b6d70907d687fa",
+    "bytes": 105397
+  },
+  {
+    "path": "debug/siblings-results.json",
+    "sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+    "bytes": 278984
+  },
+  {
+    "path": "debug/siblings-tests.txt",
+    "sha256": "f5b1f17852b3448b922a1d3f0ae386db12bed428ae65d8b1efc2aa759fda7ec1",
+    "bytes": 132072
+  },
+  {
+    "path": "debug/verify_lwpolyline_fidelity.txt",
+    "sha256": "092578438fae96a628969cf748e5fdd6f034fbb1da8277e82e3fa5551291c374",
+    "bytes": 6729
+  },
+  {
+    "path": "debug/verify_polyface_grammar.txt",
+    "sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+    "bytes": 4456
+  },
+  {
+    "path": "debug/verify_polyface_records.txt",
+    "sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac",
+    "bytes": 7202
+  },
+  {
+    "path": "debug/verify_polygonmesh_cardinality.txt",
+    "sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba",
+    "bytes": 103
+  },
+  {
+    "path": "debug/verify_polygonmesh_records.txt",
+    "sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3",
+    "bytes": 356
+  },
+  {
+    "path": "debug/verify_polyline2d_records.txt",
+    "sha256": "ae39893e3ee8a8bba22708ad56d211858864aba11b30e5aa5867e20b8efbe307",
+    "bytes": 95
+  },
+  {
+    "path": "debug/verify_polyline3d_records.txt",
+    "sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+    "bytes": 342
+  },
+  {
+    "path": "debug/verify_polyline_topology.txt",
+    "sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+    "bytes": 272
+  },
+  {
+    "path": "header-after/edited.dxf",
+    "sha256": "231726451bb60ee09edf662858478e5a13b08cbe9afe66620518f9621dead199",
+    "bytes": 16374
+  },
+  {
+    "path": "header-after/results.json",
+    "sha256": "e9acf1bf05a46d731cf149b9b7c255dc5cf9bb493ed68ca35261bbab45b18048",
+    "bytes": 538
+  },
+  {
+    "path": "header-before/Probe.csproj.txt",
+    "sha256": "499505345f75fc21ce58eb6e72fd00e2ff2c3077ed23c808d70ce962747a4d79",
+    "bytes": 372
+  },
+  {
+    "path": "header-before/Program.cs.txt",
+    "sha256": "2e928bf7a72816a8a0b8a142d5734c7de7c6da872b4866b1094b56884d6825d6",
+    "bytes": 902
+  },
+  {
+    "path": "header-before/build.txt",
+    "sha256": "98981faeedebfe00e1ecf70e507841ae864be69ff6321b2f1fecb445585d4def",
+    "bytes": 264
+  },
+  {
+    "path": "header-before/edited.dxf",
+    "sha256": "0fe39b0d4b6f54c5191d4141ace5c6140d22137eff0e8a7fbd6d1e9edc2e7c39",
+    "bytes": 16360
+  },
+  {
+    "path": "header-before/results.json",
+    "sha256": "3d86aed9d4350b7d3d5435064738e42493d6de3a001244cef6b1859274108cd2",
+    "bytes": 566
+  },
+  {
+    "path": "independent/README.md",
+    "sha256": "c4ac5aa820784d4954f2c54d3fb3deddd8fca3f568c17ac58e8aab1d74b0e50f",
+    "bytes": 1614
+  },
+  {
+    "path": "independent/audit_outputs.py",
+    "sha256": "bf2026ac08a67057a8306fac00f5b660ebf2875b95bdabe22d0daa0a37fa7592",
+    "bytes": 3966
+  },
+  {
+    "path": "independent/before/audit.json",
+    "sha256": "a008446a351db8a09d7a1c3c68f367e3a043ecfe57aba61ab1a7d3979acf5b2f",
+    "bytes": 64574
+  },
+  {
+    "path": "independent/before/results.json",
+    "sha256": "3a398b2108c1e00ad46624b1ee45d9f3f920e8197bb71ff7470646a1c4549b9d",
+    "bytes": 104866
+  },
+  {
+    "path": "independent/debug/audit.json",
+    "sha256": "07f41083659e35b9a7141c343d2b7b3cfe6d7285c347741206bf8601e51b64b6",
+    "bytes": 114051
+  },
+  {
+    "path": "independent/debug/results.json",
+    "sha256": "981ae675525f047bf8a2b7c804c213f5124f7fee396fbe5c7f88a5bb6f65ed64",
+    "bytes": 20518
+  },
+  {
+    "path": "independent/output-packets-manifest.json",
+    "sha256": "d5210d6c25a248781c7ae87c055885b0158590ba70d9338705b1e6135e2b9323",
+    "bytes": 170853
+  },
+  {
+    "path": "independent/output-packets.tar.gz",
+    "sha256": "abaa78803408898e94624219de8581a5c0bcd0854459ab7b1ea7f9df5966b7f0",
+    "bytes": 1652968
+  },
+  {
+    "path": "independent/probe/Boundaries.cs",
+    "sha256": "3753368e400ff9555918f99d6be454af098adf7519987af6d3eabbcff3e390c4",
+    "bytes": 4849
+  },
+  {
+    "path": "independent/probe/Degenerates.cs",
+    "sha256": "05db6bc5f8c2296229b5701df45b965b3aace21eb226b1c9b30af4f9d58b7d05",
+    "bytes": 6624
+  },
+  {
+    "path": "independent/probe/Probe.csproj",
+    "sha256": "50dd62d55b04516fd69ea1c2cad2cd4696e19bee5455a848d23e3c60ebec2361",
+    "bytes": 376
+  },
+  {
+    "path": "independent/probe/Program.cs",
+    "sha256": "88630c39b3d47ab45b2f2398e1210ab89995ff216ef8521294f7f7d68d07737c",
+    "bytes": 16990
+  },
+  {
+    "path": "independent/release/audit.json",
+    "sha256": "07f41083659e35b9a7141c343d2b7b3cfe6d7285c347741206bf8601e51b64b6",
+    "bytes": 114051
+  },
+  {
+    "path": "independent/release/results.json",
+    "sha256": "981ae675525f047bf8a2b7c804c213f5124f7fee396fbe5c7f88a5bb6f65ed64",
+    "bytes": 20518
+  },
+  {
+    "path": "independent/review.json",
+    "sha256": "64cb372d5f73e82e6ccff9f7fa5d911c57ed53db1479d5336cb539bf614a24d0",
+    "bytes": 19096
+  },
+  {
+    "path": "production-source-hashes.json",
+    "sha256": "aba3992e2693cee5043108661b22e47f59750e3b4483577635c857c9298882ca",
+    "bytes": 3502
+  },
+  {
+    "path": "qualification.json",
+    "sha256": "0037ad4e552eda3e817a71759bf08fd4c65d053d39d8ce8807a16bb7b70e997e",
+    "bytes": 8108
+  },
+  {
+    "path": "release/build.txt",
+    "sha256": "0f9d9a7da9043ba7164908aa530f0725897b8ce45382f1c12845240beaab0f21",
+    "bytes": 176142
+  },
+  {
+    "path": "release/legacy-outputs.json",
+    "sha256": "e56db6af14ad48332b89c9888023b41a6903876a40e6abe9c6f9fcb4934538e2",
+    "bytes": 17173
+  },
+  {
+    "path": "release/legacy-results.json",
+    "sha256": "caa255d6ccfaf3ec47919fe685bdda6c64762d4bf55e5616c7b20bbc2ca8b261",
+    "bytes": 30682
+  },
+  {
+    "path": "release/legacy-tests.txt",
+    "sha256": "46dd497d5fd8e7bb2d76f5c2bd3a0ee9706749a29485c7c7ea3d7f182bb38fd8",
+    "bytes": 14755
+  },
+  {
+    "path": "release/lw-outputs.json",
+    "sha256": "f9750587103d20ddd4b9da8ae3f59b5e89d23348b3a6248ca5176847c6727bd7",
+    "bytes": 20811
+  },
+  {
+    "path": "release/lw-results.json",
+    "sha256": "6861d00bd252a6e2803dcba5d0a004465d3ab6365fcb08d12a69076f2f068aef",
+    "bytes": 35245
+  },
+  {
+    "path": "release/lw-tests.txt",
+    "sha256": "f5d1e7645f97eff12cb93b61ac4f8645aea27a08610e229d025f80f463654760",
+    "bytes": 16582
+  },
+  {
+    "path": "release/siblings-outputs.json",
+    "sha256": "95f24f7f45cbc906b30f40401aeb6691c885da544246c650f8278729997ddddd",
+    "bytes": 105397
+  },
+  {
+    "path": "release/siblings-results.json",
+    "sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+    "bytes": 278984
+  },
+  {
+    "path": "release/siblings-tests.txt",
+    "sha256": "f5b1f17852b3448b922a1d3f0ae386db12bed428ae65d8b1efc2aa759fda7ec1",
+    "bytes": 132072
+  },
+  {
+    "path": "release/verify_lwpolyline_fidelity.txt",
+    "sha256": "092578438fae96a628969cf748e5fdd6f034fbb1da8277e82e3fa5551291c374",
+    "bytes": 6729
+  },
+  {
+    "path": "release/verify_polyface_grammar.txt",
+    "sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+    "bytes": 4456
+  },
+  {
+    "path": "release/verify_polyface_records.txt",
+    "sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac",
+    "bytes": 7202
+  },
+  {
+    "path": "release/verify_polygonmesh_cardinality.txt",
+    "sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba",
+    "bytes": 103
+  },
+  {
+    "path": "release/verify_polygonmesh_records.txt",
+    "sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3",
+    "bytes": 356
+  },
+  {
+    "path": "release/verify_polyline2d_records.txt",
+    "sha256": "ae39893e3ee8a8bba22708ad56d211858864aba11b30e5aa5867e20b8efbe307",
+    "bytes": 95
+  },
+  {
+    "path": "release/verify_polyline3d_records.txt",
+    "sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+    "bytes": 342
+  },
+  {
+    "path": "release/verify_polyline_topology.txt",
+    "sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+    "bytes": 272
+  }
+]

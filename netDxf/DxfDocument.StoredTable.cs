@@ -18,6 +18,7 @@ namespace netDxf
             if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
             if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
             if (entity is PolyfaceMesh polyface) polyface.ValidateStoredRecords(this, false);
+                    if (entity is Polyline2D legacy) legacy.ValidateStoredRecords(this, false);
             if (entity is StoredTable table) table.ValidateIncoming(this);
             else if (entity is Insert insert) this.ValidateStoredTableBlockAdoption(insert.Block);
             else if (entity is Dimension dimension && dimension.Block != null) this.ValidateStoredTableBlockAdoption(dimension.Block);
@@ -36,6 +37,7 @@ namespace netDxf
                     if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
                     if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
                     if (entity is PolyfaceMesh polyface) polyface.ValidateStoredRecords(this, false);
+                    if (entity is Polyline2D legacy) legacy.ValidateStoredRecords(this, false);
                     if (entity is Section section) section.Validate(this);
                     else if (entity is StoredTable table) table.ValidateIncoming(this);
                     else if (entity is Insert insert) visit(insert.Block);

@@ -77,6 +77,7 @@ namespace netDxf.Entities
                     if (entity is Polyline3D polyline) polyline.RejectStoredRecordClone();
                     if (entity is PolygonMesh mesh) mesh.RejectStoredRecordClone();
                     if (entity is PolyfaceMesh polyface) polyface.RejectStoredRecordClone();
+                    if (entity is Polyline2D legacy) legacy.RejectStoredRecordClone();
                     if (entity is Insert insert) visit(insert.Block);
                     if (entity is Dimension dimension) visit(dimension.Block);
                 }
@@ -90,7 +91,7 @@ namespace netDxf.Entities
             {
                 if (!visited.Add(current)) throw new InvalidOperationException("The clone source has cyclic ownership.");
                 if (current is DxfOpaqueEntity) throw new NotSupportedException("Cloning unknown entity metadata requires its complete application schema.");
-                if (current is Polyline3DRecord || current is PolygonMeshRecord || current is PolyfaceMeshRecord)
+                if (current is Polyline3DRecord || current is PolygonMeshRecord || current is PolyfaceMeshRecord || current is Polyline2DRecord)
                     throw new NotSupportedException("Cloning a retained polyline record's owned metadata requires its complete source graph.");
             }
         }

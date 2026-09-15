@@ -50,6 +50,7 @@ internal static partial class Program
         RegisterPolygonMeshRecordTests();
         RegisterPolyfaceRecordTests();
         RegisterRetainedRecordTargetRemovalTests();
+        RegisterPolyline2DRecordTests();
         RegisterPolylineTopologyTests();
         RegisterPolyfaceGrammarTests();
         RunTypedObjectErasureTests();
@@ -59,6 +60,7 @@ internal static partial class Program
         RegisterStoredSunStudyTests();
         RegisterVersionCompatibilityTests();
         RegisterPolyfaceVersionCompatibilityTests();
+        RegisterPolyline2DVersionCompatibilityTests();
         RegisterOpaqueEntityTests();
         RegisterOpaqueEntityBoundaryTests();
         RunUcsBaseTests();
@@ -69,6 +71,7 @@ internal static partial class Program
         RegisterEditableTableGeometryTests();
         RegisterEditableTableContentTests();
         RegisterStoredCellStyleMapTests();
+        RegisterCellStyleMapEditingTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
         RegisterStoredTableNameSpellingTests();

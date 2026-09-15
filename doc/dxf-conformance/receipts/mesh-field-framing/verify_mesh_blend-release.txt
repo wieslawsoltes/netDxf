@@ -1,0 +1,1 @@
+PASS: ezdxf 1.4.4, 6 files, original/clone blend flags preserved, no errors/repairs
