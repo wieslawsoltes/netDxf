@@ -4,6 +4,8 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterStoredEnvelopeTests();
+        RegisterDeclaredOwnershipTests();
         RegisterTextStyleFidelityTests();
         RegisterAttributeDefaultValueTests();
         RegisterThirdMixedModuleTests();

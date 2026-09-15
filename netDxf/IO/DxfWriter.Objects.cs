@@ -70,6 +70,7 @@ namespace netDxf.IO
                 }
                 else if (count > 0) definitions.Add(new DxfClass(names[i], cppNames[i], "ObjectDBX Classes") { ProxyFlags = 0, IsEntity = false, InstanceCount = count });
             }
+            this.PrepareStoredEnvelopeClasses(definitions);
             this.PrepareGeoDataClass(definitions);
             this.PrepareLayerFilterPointerClasses(definitions);
             this.PrepareMultiLeaderClasses(definitions);
@@ -115,6 +116,7 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }
             else if (this.WriteOutputSettingsPayload(item)) { }

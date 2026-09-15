@@ -52,6 +52,7 @@ namespace netDxf.Objects
             foreach (DxfDatabaseObject item in this.objects.Values)
             {
                 item.ValidateDatabaseSchema(this, errors);
+                this.ValidateDeclaredOwnership(item, this.objects.Values, errors, true);
                 foreach (DxfObject reference in item.DatabaseReferences)
                     if (reference != null && !this.IsRegistered(reference)) errors.Add("Unregistered " + item.CodeName + " reference: " + item.Handle);
                 if (item.Database != this || this.Document.GetObjectByHandle(item.Handle) != item) errors.Add("Object registration mismatch: " + item.Handle);
@@ -177,6 +178,7 @@ namespace netDxf.Objects
             if (cloneErrors.Count > 0) throw new InvalidOperationException("Invalid cloned object schema: " + string.Join("; ", cloneErrors));
             this.PlanHandleAllocation(originals.Select(o => (DxfDatabaseObject)map[o]));
             foreach (DxfDatabaseObject original in originals) this.Register((DxfDatabaseObject)map[original], false);
+            foreach (DxfDatabaseObject original in originals) ((DxfDatabaseObject)map[original]).MaterializeOwnedObjectReferences();
             foreach (DxfXRecord original in originals.OfType<DxfXRecord>())
             {
                 DxfXRecord clone = (DxfXRecord)map[original];
@@ -230,6 +232,11 @@ namespace netDxf.Objects
                         if (entry.Target is DxfDatabaseObject child) pending.Push(child);
                         else this.CheckRegistered(entry.Target);
                     }
+                foreach (DxfDatabaseObject child in item.DeclaredOwnedObjects)
+                {
+                    if (child == null) throw new ArgumentException("A declared ownership slot cannot be null.", nameof(target));
+                    pending.Push(child);
+                }
                 if (item.ExtensionDictionary != null) pending.Push(item.ExtensionDictionary);
             }
             foreach (DxfDatabaseObject item in found)
@@ -241,8 +248,12 @@ namespace netDxf.Objects
                 foreach (DxfObject reactor in item.PersistentReactors)
                     if (!this.IsRegistered(reactor) && !(reactor is DxfDatabaseObject r && found.Contains(r))) throw new ArgumentException("A reactor is outside the adopted graph.", nameof(target));
             }
+            List<string> ownershipErrors = new List<string>();
+            foreach (DxfDatabaseObject item in found) this.ValidateDeclaredOwnership(item, found, ownershipErrors, false);
+            if (ownershipErrors.Count != 0) throw new ArgumentException("Invalid declared ownership: " + string.Join("; ", ownershipErrors), nameof(target));
             this.PlanHandleAllocation(found.Where(o => o.Database == null));
             foreach (DxfDatabaseObject item in found) if (item.Database == null) this.Register(item, false);
+            foreach (DxfDatabaseObject item in found) item.MaterializeOwnedObjectReferences();
         }
         private void PlanHandleAllocation(IEnumerable<DxfDatabaseObject> objectsToAdd)
         {
