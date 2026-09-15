@@ -1,0 +1,141 @@
+{
+  "build_and_audit": {
+    "evidence": "build-audit-evidence.tar.gz",
+    "path_note": "Log, inventory and manifest filenames in build-audit-qualification.json resolve within build-audit-evidence.tar.gz after extraction. Absolute binary paths identify the original build workspace and are not portable. The qualification JSON is copied byte-for-byte from the independent clean-source run.",
+    "qualification": "build-audit-qualification.json"
+  },
+  "checkpoint": "PR95 recovered geometry and explicit stored-style editing",
+  "ci": {
+    "artifact_summary_note": "The job summary records all four completed jobs and the artifact metadata available when collected. Only the two Linux archives were downloaded and independently verified; Windows counts were confirmed from job logs.",
+    "conclusion": "success",
+    "debug_artifact_verification": "ci-implementation-debug-verification.json",
+    "job_summary": "ci-implementation-summary.json",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "configuration": "Debug",
+        "count_evidence": "Downloaded artifact; results verified by unique case name against the local run.",
+        "failed": 0,
+        "job_id": 104583005607,
+        "passed": 34836,
+        "platform": "ubuntu-latest"
+      },
+      {
+        "conclusion": "success",
+        "configuration": "Release",
+        "count_evidence": "Downloaded artifact; results and independent verifier inventory verified against the local run.",
+        "failed": 0,
+        "independent_verifiers_failed": 0,
+        "independent_verifiers_passed": 127,
+        "job_id": 104583005784,
+        "passed": 34836,
+        "platform": "ubuntu-latest"
+      },
+      {
+        "conclusion": "success",
+        "configuration": "Debug",
+        "count_evidence": "Completed job log explicitly reports 34836 passed and 0 failed.",
+        "failed": 0,
+        "job_id": 104583005328,
+        "passed": 34836,
+        "platform": "windows-latest"
+      },
+      {
+        "conclusion": "success",
+        "configuration": "Release",
+        "count_evidence": "Completed job log explicitly reports 34836 passed and 0 failed.",
+        "failed": 0,
+        "job_id": 104583005578,
+        "passed": 34836,
+        "platform": "windows-latest"
+      }
+    ],
+    "release_artifact_verification": "ci-implementation-release-verification.json",
+    "result_comparison_note": "The Linux CI result inventories and outcomes match local by unique case name. Case execution order differs, so byte-identical result JSON is claimed only for the two local runs.",
+    "run_id": 35029062734,
+    "source_archive": {
+      "all_git_blob_hashes_match_implementation_tree": true,
+      "artifact_id": 10420349401,
+      "source_files": 2986,
+      "verification": "ci-implementation-debug-verification.json"
+    },
+    "status": "completed",
+    "url": "https://github.com/wieslawsoltes/netDxf/actions/runs/35029062734"
+  },
+  "coverage": {
+    "autocad_executed": false,
+    "full_standard_complete": false,
+    "ledger_unit_tests": 18,
+    "profiles": 9,
+    "rows": 297
+  },
+  "implementation": {
+    "branch": "netstandard",
+    "commit": "ec085f403eb56f361f8ba05574b2bb2f94a24e1f",
+    "equivalence_note": "The locally tested implementation was published with a different commit identity and an identical complete Git tree. Later commits add documentation and receipts only.",
+    "local_remote_trees_equal": true,
+    "repository": "wieslawsoltes/netDxf",
+    "tested_local_commit": "71b082eaa218f3db0742176d1fa97b0a14339900",
+    "tree": "cde35e08b2dbce2d4f7ff0c665e20301f9c9a52a"
+  },
+  "local": {
+    "configurations": {
+      "debug": {
+        "build_log": "debug-build.log.gz",
+        "conformance_log": "debug-conformance.log.gz",
+        "failed": 0,
+        "generated_dxf_files": 7363,
+        "generated_files": 7796,
+        "independent_verifiers": {
+          "failed": 0,
+          "independent_reader": "ezdxf 1.4.4",
+          "inventory": "tools/verify_*.py (nonrecursive)",
+          "logs": "debug-independent-logs.tar.gz",
+          "passed": 127,
+          "python": "3.12.14",
+          "results": "debug-independent-results.json.gz"
+        },
+        "output_manifest": "debug-output-manifest.json.gz",
+        "passed": 34836,
+        "results": "debug-results.json.gz",
+        "results_sha256": "0c579f92755e5c7f359e1e000089aa128e3ec4ecce80a8c7b86985ac4365bf21",
+        "unique_case_names": 34836
+      },
+      "release": {
+        "build_log": "release-build.log.gz",
+        "conformance_log": "release-conformance.log.gz",
+        "failed": 0,
+        "generated_dxf_files": 7363,
+        "generated_files": 7796,
+        "independent_verifiers": {
+          "failed": 0,
+          "independent_reader": "ezdxf 1.4.4",
+          "inventory": "tools/verify_*.py (nonrecursive)",
+          "logs": "release-independent-logs.tar.gz",
+          "passed": 127,
+          "python": "3.12.14",
+          "results": "release-independent-results.json.gz"
+        },
+        "output_manifest": "release-output-manifest.json.gz",
+        "passed": 34836,
+        "results": "release-results.json.gz",
+        "results_sha256": "0c579f92755e5c7f359e1e000089aa128e3ec4ecce80a8c7b86985ac4365bf21",
+        "unique_case_names": 34836
+      }
+    },
+    "debug_release_results_byte_identical": true,
+    "independent_verifier_source_hashes": "independent-verifier-source-hashes.json",
+    "runtime": "8.0.15",
+    "sdk": "8.0.408"
+  },
+  "receipt_files": "receipts/pr95-integration/archives.json",
+  "receipt_path_note": "Local configuration and build/audit evidence filenames are relative to receipt_root unless their containing object explains archive-internal paths.",
+  "receipt_root": "receipts/pr95-integration",
+  "scope_limits": [
+    "Generated file inventories contain valid outputs, intentional malformed rejection inputs and intermediate artifacts; counts do not establish universal validity.",
+    "Independent verifier scripts have their own producer/packet/semantic scope and are not all native application execution.",
+    "Older-framework compilation does not qualify execution on those older runtimes.",
+    "Native AutoCAD open/AUDIT/save/reopen has not been executed.",
+    "DXF standard completeness remains false."
+  ]
+}

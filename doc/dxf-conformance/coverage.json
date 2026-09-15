@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "1631547bfae37dccbea900970ceaaad61c868020",
-    "tree": "aacbe71c64d3a2fc1998396aaae4877b617d7589"
+    "commit": "ec085f403eb56f361f8ba05574b2bb2f94a24e1f",
+    "tree": "cde35e08b2dbce2d4f7ff0c665e20301f9c9a52a"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 33296,
+    "test_cases": 34836,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 94,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/35001265150"
+    "last_implementation_pr": 95,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/35029062734"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -751,6 +751,34 @@
     "COLLECTIONINSERT": {
       "label": "Collection insertion callbacks and actual HATCH source occurrences",
       "path": "doc/dxf-conformance/observable-insert.md"
+    },
+    "POLYLINE2DRECORDS": {
+      "label": "Retained ordinary legacy 2D POLYLINE parent, VERTEX and SEQEND packets",
+      "path": "doc/dxf-conformance/polyline2d-records.md"
+    },
+    "POLYLINE2DRECOVERY": {
+      "label": "Legacy 2D source-profile diagnostics and retained reference removal qualification",
+      "path": "doc/dxf-conformance/receipts/polyline2d-integration-20260915/README.md"
+    },
+    "MESHFRAMING": {
+      "label": "MESH public singleton/count uniqueness and scoped packet framing",
+      "path": "doc/dxf-conformance/mesh-field-framing.md"
+    },
+    "HATCHPERIODIC": {
+      "label": "Qualified periodic HATCH conversion and local-support curve evaluation",
+      "path": "doc/dxf-conformance/hatch-periodic-conversion.md"
+    },
+    "HATCHPERIODICRECOVERY": {
+      "label": "Periodic HATCH recovery, rational numerical probes and regression qualification",
+      "path": "doc/dxf-conformance/receipts/hatch-periodic-recovery/qualification.json"
+    },
+    "CELLSTYLEMAPEDIT": {
+      "label": "Loaded CELLSTYLEMAP atomic ordered entry-name replacement",
+      "path": "doc/dxf-conformance/cell-style-map-editing.md"
+    },
+    "TABLESTYLEEDIT": {
+      "label": "Loaded TABLESTYLE atomic classic header and row scalar replacement",
+      "path": "doc/dxf-conformance/table-style-editing.md"
     }
   },
   "features": [
@@ -1301,7 +1329,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Partial typed family. Stored clone state, Bezier domains, flag composition, supported periodic input, tangent transforms and knot-aware reversal are tested separately; full NURBS/degenerate schemas remain incomplete.",
+      "scope": "Partial typed family. Stored clone state, Bezier domains, flag composition, supported periodic input, tangent transforms and knot-aware reversal are tested separately. Qualified periodic local-support evaluation and HATCH adapters have bounded numerical/shape contracts; arbitrary NURBS and degenerate schemas remain incomplete.",
       "evidence": [
         "B",
         "STANGENT",
@@ -1309,7 +1337,8 @@
         "BEZK",
         "SFLAG",
         "SPER",
-        "SREV"
+        "SREV",
+        "HATCHPERIODIC"
       ]
     },
     {
@@ -1349,9 +1378,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Legacy entity representation in modern files, not a legacy file dialect. `ReadPolyline/WritePolyline`.",
+      "scope": "Loaded ordinary legacy 2D chains now retain parent packets and actual VERTEX/SEQEND identities, optional width presence, common metadata and guarded geometry/lifecycle edits. Authored and lightweight polylines retain their separate representation. Fitted/smoothed variants, general topology edits and historical typed file dialects remain outside this retained subset.",
       "evidence": [
-        "B"
+        "B",
+        "POLYLINE2DRECORDS",
+        "POLYLINE2DRECOVERY"
       ]
     },
     {
@@ -1437,12 +1468,13 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Partial typed family. Core topology, creases, blend flags, counted input and mutable writer preflight are tested; subentity overrides and subdivision evaluation remain incomplete.",
+      "scope": "Partial typed family. Core topology, creases, blend flags, counted input, scoped public declaration uniqueness and mutable writer preflight are tested. A zero override count does not end the public subclass. Subentity override values and subdivision evaluation remain incomplete.",
       "evidence": [
         "MVER",
         "MBLEND",
         "MREAD",
-        "MWRITE"
+        "MWRITE",
+        "MESHFRAMING"
       ]
     },
     {
@@ -1695,7 +1727,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer framing, empty-input retention and ordered source relations. Explicit predefined/custom non-doubled pattern families now have qualified affine mapping. Empty output rejects; gradients, user-defined/doubled nonsimilarity, periodic evaluation and automatic associative regeneration remain partial.",
+      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer framing, empty-input retention and ordered source relations. Explicit non-doubled pattern families have qualified affine mapping; supported periodic spline layouts have bounded conversion and evaluation. Empty output rejects. General periodic forms, gradients, user-defined/doubled nonsimilarity and automatic associative regeneration remain partial.",
       "evidence": [
         "HDOUBLE",
         "HSEED",
@@ -1711,7 +1743,8 @@
         "HPATH",
         "HEMPTY",
         "HATCHSOURCE",
-        "HATCHPATTERNAFFINE"
+        "HATCHPATTERNAFFINE",
+        "HATCHPERIODIC"
       ]
     },
     {
@@ -2318,10 +2351,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Ordered physical configurations, handles, XData and stored rectangle/camera/snap/render/UCS fields plus named/base-UCS references. Frozen layers and rendering object graphs remain partial.",
+      "scope": "Ordered physical configurations, handles, XData and stored rectangle/camera/snap/render/UCS fields plus named/base-UCS references. Frozen-layer encoding remains unresolved after the primary-source/corpus assessment; no guessed group-code interpretation is added. Rendering object graphs remain partial.",
       "evidence": [
         "VPORT",
-        "VIEWUCS"
+        "VIEWUCS",
+        "VPORTFROZEN"
       ]
     },
     {
@@ -2938,10 +2972,12 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Loaded TABLESTYLE retains complete packets with conservative classic header/ordered-row projections, exact named STYLE dependencies and typed or opaque owned CELLSTYLEMAP identity. The map exposes ordered immutable entry envelopes and format payloads. Style/map editing, nested format evaluation and TABLE regeneration remain open.",
+      "scope": "Loaded TABLESTYLE retains complete packets, classic projections, exact STYLE dependencies and typed or opaque CELLSTYLEMAP ownership. Qualified classic header/row scalar and map entry-name replacements publish immutable snapshots. Nested format interpretation, broader style/map editing, TABLE synchronization and regeneration remain open.",
       "evidence": [
         "TABLESTYLE",
-        "CELLSTYLEMAP"
+        "CELLSTYLEMAP",
+        "TABLESTYLEEDIT",
+        "CELLSTYLEMAPEDIT"
       ]
     },
     {
@@ -3703,9 +3739,10 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Type/count/index/crease validation; incremental allocation from consumed data, not a universal memory quota.",
+      "scope": "Type/count/index/crease validation and incremental allocation from consumed data. Separate public framing checks reject repeated declarations and orphan coordinate/crease items before replacement or allocation from a duplicate count; this is not a universal memory quota.",
       "evidence": [
-        "MREAD"
+        "MREAD",
+        "MESHFRAMING"
       ]
     },
     {
@@ -4142,11 +4179,12 @@
         "AC1027": "M",
         "AC1032": "M"
       },
-      "scope": "Primary schema describes subentity/property counts and property kinds, but the value-packet grammar remains unqualified. The checked native MESH packets have zero overrides; no positive override packet was found in the bounded additional corpus. Nonzero public override declarations now reject before core topology fields can be reused; qualified absent and zero declarations retain their existing behavior. Typed override retention and semantics remain open.",
+      "scope": "Primary schema describes subentity/property counts and property kinds, but the value-packet grammar remains unqualified. Checked native packets have zero overrides; no positive override packet was found in the bounded additional corpus. Negative or nonzero public declarations reject even before core packets. Zero is not a terminator: later unique core declarations remain legal while duplicates reject. Typed override values and semantics remain open.",
       "evidence": [
         "MREAD",
         "MESHOVERRIDE",
-        "MESHDECL"
+        "MESHDECL",
+        "MESHFRAMING"
       ]
     },
     {
@@ -4333,12 +4371,13 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Separate fit retention, outer-count validation and nonperiodic knot/control/degree relations are implemented. Periodic semantics and geometry evaluation remain incomplete.",
+      "scope": "Checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Fit retention, outer-count validation and nonperiodic knot/control/degree relations are implemented. Supported periodic compact/expanded adapters and sampled evaluation are covered separately; arbitrary periodic layouts and complete geometry semantics remain unqualified.",
       "evidence": [
         "HEDGE",
         "HFIT",
         "HPATH",
-        "HATCHREL"
+        "HATCHREL",
+        "HATCHPERIODIC"
       ]
     },
     {
@@ -6205,10 +6244,11 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "TABLESTYLE immutable stored payload",
-      "scope": "Complete source-bound packets, exact STYLE identity/name spelling, conservative projections and guarded typed or opaque CELLSTYLEMAP ownership. Native full drawings and scoped object-graph carriers are qualified separately; style and format editing remain open.",
+      "scope": "Complete source-bound packets, exact STYLE identity/name spelling, conservative projections and guarded typed or opaque CELLSTYLEMAP ownership. Native full drawings and scoped carriers are qualified separately. Explicit classic header/row scalar edits are covered separately; complete style/format editing and regeneration remain open.",
       "evidence": [
         "TABLESTYLE",
-        "CELLSTYLEMAP"
+        "CELLSTYLEMAP",
+        "TABLESTYLEEDIT"
       ],
       "status": {
         "AC1009": "X",
@@ -6459,9 +6499,10 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH nonperiodic spline relations",
-      "scope": "Positive degree, finite supplied arrays, nondecreasing knots and nonperiodic knot/control/degree relationships are validated on read and before export mutation. Model/paper-space and all registered blocks are checked. Periodic count/shape evaluation remains unqualified; ordered source relation storage and lifecycle are covered separately.",
+      "scope": "Positive degree, finite supplied arrays, nondecreasing knots and nonperiodic knot/control/degree relationships are validated on read and before export mutation. All registered spaces/blocks are checked. Periodic storage admission remains distinct from the separately qualified strict cyclic conversion/evaluation subset; ordered source relations are covered separately.",
       "evidence": [
-        "HATCHREL"
+        "HATCHREL",
+        "HATCHPERIODIC"
       ],
       "status": {
         "AC1009": "X",
@@ -6501,9 +6542,10 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "MESH unsupported override declaration rejection",
-      "scope": "After counted topology, a negative override count rejects as malformed and a positive count rejects as unsupported before following fields can overwrite core topology. Qualified absent/zero suffixes, private framing boundaries and exact native zero-count bodies are tested in both transports. Override value grammar and editing remain open.",
+      "scope": "Negative public override counts reject as malformed and positive counts as unsupported before following fields can overwrite topology, including declarations before core packets. Absent/zero declarations retain existing behavior; zero does not terminate the subclass. Separate uniqueness and scoped grammar tests preserve reordered unique fields. Override value grammar and editing remain open.",
       "evidence": [
-        "MESHDECL"
+        "MESHDECL",
+        "MESHFRAMING"
       ],
       "status": {
         "AC1009": "X",
@@ -6738,9 +6780,10 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "CELLSTYLEMAP immutable ordered entry storage",
-      "scope": "Qualified R2004+ native packets preserve ordered raw entry IDs/types, decoded names, complete format payloads and exact source STYLE/LTYPE references. Unknown/private framing remains opaque. The CellStyleMap getter now returns DxfDatabaseObject; consumers must rebuild. No formatting evaluation or entry editing.",
+      "scope": "Qualified R2004+ native packets preserve ordered raw entry IDs/types, decoded names, complete format payloads and exact source STYLE/LTYPE references. Unknown/private framing remains opaque. CellStyleMap returns DxfDatabaseObject; consumers must rebuild. Explicit ordered name replacement is covered separately; formatting evaluation and structural entry editing remain open.",
       "evidence": [
-        "CELLSTYLEMAP"
+        "CELLSTYLEMAP",
+        "CELLSTYLEMAPEDIT"
       ],
       "status": {
         "AC1009": "X",
@@ -6824,11 +6867,12 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "Read-only known target-version writer diagnostics",
-      "scope": "AnalyzeVersionCompatibility reports qualified current writer rejections and omissions with immutable captured fields and actual live SourceObject references. Covered source-profile guards now include retained Polyface records and qualified standalone opaque entities. Analysis does not change headers, handles, collections, callbacks or lazy database state; an empty report does not guarantee Save success or complete DXF legality.",
+      "scope": "AnalyzeVersionCompatibility reports qualified current writer rejections/omissions with immutable fields and actual SourceObject references. Source-profile guards include retained legacy 2D VERTEX/SEQEND, Polyface and standalone opaque entities; the lightweight vertex-ID rule excludes retained legacy chains. Analysis does not mutate headers, handles, collections or callbacks; an empty report does not guarantee Save or complete DXF legality.",
       "evidence": [
         "VERSIONREPORT",
         "POLYFACERECORDS",
-        "OPAQUEENTITY"
+        "OPAQUEENTITY",
+        "POLYLINE2DRECOVERY"
       ],
       "status": {
         "AC1009": "X",
@@ -7012,6 +7056,139 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "legacy-polyline2d-retained-records",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Ordinary legacy 2D POLYLINE parent and child retention",
+      "scope": "Loaded ordinary AcDb2dPolyline chains retain parent public/private packets, physical VERTEX/SEQEND identities, optional widths and identifiers, owner variants and exact dependencies. Qualified point/bulge/width edits, reversal, transforms, empty/singleton chains and clean clone/adoption preserve the retained contract. Private/owned/external metadata limits lifecycle operations. Nonzero child Z, fitted variants and unqualified topology reject; source-profile and shared metadata limits apply.",
+      "evidence": [
+        "POLYLINE2DRECORDS",
+        "POLYLINE2DRECOVERY"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "legacy-polyline2d-profile-and-removal",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Legacy 2D source-profile diagnostics and target removal guards",
+      "scope": "Retained legacy VERTEX/SEQEND are actual STORED_SOURCE_PROFILE diagnostic targets, with a six-source/six-target save comparison across both transports. Current child persistent reactors and XData1005 protect actual entity and containing-block targets until explicit release or qualified parent detachment. Lightweight identifier rules remain separate. Source-pinned replay preserves sibling retained-record and profile behavior.",
+      "evidence": [
+        "POLYLINE2DRECOVERY",
+        "POLYLINE2DRECORDS",
+        "VERSIONREPORT"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "mesh-public-field-framing",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MESH scoped declaration uniqueness and counted packet framing",
+      "scope": "Public version, blend, subdivision and vertex/face/edge/crease/override counts are unique, including empty packets. Repeated declarations and orphan public coordinates/crease items reject before allocation or packet replacement. Private groups and unrelated subclasses do not supply declarations. A zero override count is not a terminator; unique reordered fields remain accepted. Nonzero override values, private payload retention and subdivision evaluation remain unimplemented.",
+      "evidence": [
+        "MESHFRAMING",
+        "MESHDECL"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-periodic-conversion-evaluation",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Qualified periodic HATCH boundary conversion and evaluation",
+      "scope": "Supported expanded and legacy compact periodic HATCH forms convert to/from standalone SPLINE without refitting or regenerating knots. Exact overlap, degree 1–10, strict cyclic knots, positive finite weights with a nonzero minimum/maximum ratio, and resolvable active-domain grids bound the contract. Local-support evaluation uses exponent-scaled arithmetic and bounded exact-rational fallback for cancellation or underflowed basis. Costly exact samples may reject; boundary prevalidation preserves source arrays/relationships on rejection. Arbitrary periodic forms, repeated knots, adaptive error bounds and native rendering remain outside qualification.",
+      "evidence": [
+        "HATCHPERIODIC",
+        "HATCHPERIODICRECOVERY"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "cell-style-map-entry-name-editing",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "CELLSTYLEMAP explicit atomic entry-name replacement",
+      "scope": "Loaded ReplaceEntryNames accepts exactly one decoded name per ordered entry and publishes immutable snapshots after bounded enumeration/disposal and exact source graph checks. IDs/types/counts/order, format packets, dependencies and owners stay fixed. Empty/duplicate/marker-like names and literal Unicode escapes retain documented semantics. Invalid strings/counts, reentry and source changes reject atomically. Map authoring, structural edits, formatting evaluation and automatic name synchronization remain open.",
+      "evidence": [
+        "CELLSTYLEMAPEDIT",
+        "CELLSTYLEMAP"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "table-style-classic-scalar-editing",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLESTYLE explicit classic header and row scalar replacement",
+      "scope": "Loaded ReplaceStyle edits only the recognized seven-field classic header and five unique row scalar fields. Null preserves unknown headers; row edits require distinct current snapshot identities. Immutable snapshots, equivalent no-ops, exact STYLE binding/rename behavior and untouched private/map/TABLE packets are qualified. Invalid source graphs, stale/foreign edits and reentry reject before mutation. Broader style/format editing, layout and cross-object synchronization remain unimplemented.",
+      "evidence": [
+        "TABLESTYLEEDIT",
+        "TABLESTYLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -7023,7 +7200,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH periodic spline evaluation, gradient/user-defined/doubled-pattern nonsimilarity and automatic associative regeneration; MESH subentity override values, frozen VPORT symbol-table layers, extended rendering relationships and remaining POLYLINE variants. Direct spline/conic/bulge and explicit pattern-family transforms, retained Polyline3D topology, PolygonMesh/Polyface record subsets and VIEW live-section references now have scoped qualification. Tiny unrepresentable bulges still reject under the numeric contract. MTEXT rendering/layout and annotation contexts remain open."
+      "scope": "General periodic spline layouts outside the qualified HATCH adapter/evaluator, gradient/user-defined/doubled-pattern nonsimilarity and automatic associative regeneration; MESH subentity override values, frozen VPORT encoding, extended rendering relationships and remaining fitted/smoothed POLYLINE variants. Ordinary legacy 2D child retention, source-profile/removal guards and MESH public framing now have scoped qualification. Tiny unrepresentable bulges, MTEXT rendering/layout and annotation contexts remain open."
     },
     {
       "id": "new-entities",
@@ -7033,7 +7210,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "TABLESTYLE/CELLSTYLEMAP editing, broader TABLECONTENT/TABLEGEOMETRY authoring, complete FIELD and DIMASSOC graphs, material/rendering and broader SUNSTUDY schemas. Loaded table-content scalar/header and table-geometry packet replacement, immutable CELLSTYLEMAP entry storage, explicit SECTION_MANAGER membership and database creation/erasure now have bounded contracts. Table layout, automatic section generation, private format interpretation and solar evaluation remain separate work."
+      "scope": "Broader TABLESTYLE/CELLSTYLEMAP structural and formatting edits, TABLECONTENT/TABLEGEOMETRY authoring, complete FIELD/DIMASSOC graphs, material/rendering and wider SUNSTUDY schemas. Loaded TABLESTYLE classic scalars and CELLSTYLEMAP ordered entry names now have bounded atomic edit contracts alongside existing content/geometry replacements and SECTION_MANAGER lifecycle. Table layout, cross-object synchronization, automatic section generation, private formats and solar evaluation remain separate work."
     },
     {
       "id": "historical-typed",

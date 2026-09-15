@@ -1,0 +1,1102 @@
+[
+  {
+    "name": "producer-R2000-ascii/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-ascii/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2000-binary/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-ascii/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2004-binary/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-ascii/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2007-binary/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-ascii/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2010-binary/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-ascii/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2013-binary/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-ascii/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/source-packets",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/width-presence",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/reverse",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/transform",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/lifecycle",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/common-child-guard",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/nonzero-child-z",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/degenerate/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/degenerate/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-R2018-binary/dummy-point/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native/1EF/False",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native/1FF/False",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native/1EF/True",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native/1FF/True",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/False/7",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "owned-clone/False",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "incoming-reference/False",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "child-budget/False",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "normal-plane/False",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/0",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/1",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/2",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/3",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/4",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/5",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/6",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "fixed-topology/True/7",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "owned-clone/True",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "incoming-reference/True",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "child-budget/True",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "normal-plane/True",
+    "passed": true,
+    "error": ""
+  }
+]

@@ -1,0 +1,3122 @@
+[
+  {
+    "name": "polyface-grammar-AutoCad2000-False-0.dxf",
+    "sha256": "9f6827c9c303418633e03b39e73c9359f2751325baf2d57ac7bd628c0ea0c159",
+    "bytes": 9083
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-1.dxf",
+    "sha256": "0ea2990689505d290aadf3d8a3b245e5013f739f08481962674e0f64d9622fe1",
+    "bytes": 9074
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-2.dxf",
+    "sha256": "50184a502150bedd109514556e3901de269e0ea125405d948537361c35f5f774",
+    "bytes": 9074
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-3.dxf",
+    "sha256": "1706b03440872de9db5e3fe202a3208b3ad6b5db780399d7de3c1840511ae799",
+    "bytes": 9075
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-4.dxf",
+    "sha256": "1920c072fb83ea6bd700a1435909fe0a3a0acda1f9e5b40621629a572e4379ec",
+    "bytes": 9062
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-5.dxf",
+    "sha256": "4c33a8229d6c01c8190a79bfa385e074d85e6525ccae75f8d3b7bc704dcce13c",
+    "bytes": 9075
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-6.dxf",
+    "sha256": "248357b58ebc4eb59da7adb317ae93616fade69356ff314a7cdf833b44fa3f7b",
+    "bytes": 9071
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-False-7.dxf",
+    "sha256": "b242f25ed7d1ba9fe6d58c7ea37499d0c8baf79d2051828ed92922d0dffaaf66",
+    "bytes": 9068
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-0.dxf",
+    "sha256": "e42c32f07eb2d752693080302c8e0108c7f424d1f55b1a09d183b2ad89e1adff",
+    "bytes": 8773
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-1.dxf",
+    "sha256": "0c32b6667bedae5fba79df06cef8b9ad1d872fc67e68c11589c3d161e92c86b7",
+    "bytes": 8773
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-2.dxf",
+    "sha256": "209eb9cbd5a4c865574c5d40b035c4743309def2c082d8a383a606a50b868194",
+    "bytes": 8773
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-3.dxf",
+    "sha256": "45e2a8d12858e183630169841dd66b0c55aa57a93e4d2a92c959405f6ab09f79",
+    "bytes": 8773
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-4.dxf",
+    "sha256": "4d4deb9a04357ad1d802c77e7c87fb95cd123f71c8de4e7d3e8fd358e5bcc927",
+    "bytes": 8765
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-5.dxf",
+    "sha256": "f1681f9a54b77784fe4c9ea3a7af2a6adcd0a8a488ebe24cd4a21efe81d13a86",
+    "bytes": 8773
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-6.dxf",
+    "sha256": "b0ebe1ff360e81bc7cf84dbc667a3465792b21c2891ea27e685edb00ae88691c",
+    "bytes": 8773
+  },
+  {
+    "name": "polyface-grammar-AutoCad2000-True-7.dxf",
+    "sha256": "74563ce045e30681421c2610a2250f20f9c06160445a206ae7dfb8f506e9935c",
+    "bytes": 8769
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-0.dxf",
+    "sha256": "04b95b07e7edd2c4b3431aa66b1c57b5e1c0d605f198bb597c706a560f97dc05",
+    "bytes": 9108
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-1.dxf",
+    "sha256": "f5f2d70b07b65c6941dc00b89e63afae53a9d85b153484750cb444b91b39f51f",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-2.dxf",
+    "sha256": "6ef5ee30353363a01175d90fadd011da101c94a91dc306517f35cc76babe656f",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-3.dxf",
+    "sha256": "3bd909bada80c0bbf4da3e66a26d07c8c8217631f24cfd3deb99e345fa9dcf38",
+    "bytes": 9102
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-4.dxf",
+    "sha256": "7dca9edc48541b30098f00da04a5538ce1768a9224f96950156fc9ce748007b6",
+    "bytes": 9091
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-5.dxf",
+    "sha256": "75afa5939b6598709fc397d5ca3a68d97783b8c9a21bbfb614bfb9a25cecfed7",
+    "bytes": 9102
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-6.dxf",
+    "sha256": "c0cd6c2c8c7a863be07f8ef39957acfb8b73e048954f165ce5a13154ddb8d412",
+    "bytes": 9098
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-False-7.dxf",
+    "sha256": "4b3ae7298651787f3a2444bec9d56b99de74f62cc1234000380b2e86e69630de",
+    "bytes": 9095
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-0.dxf",
+    "sha256": "d97e14c8d5063ecb1a3ee5a103598c8ae2673aa51e2bbd963258ea1cf6264d3c",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-1.dxf",
+    "sha256": "54d09265e8ea0b59eeeeaa3b0079363f7c0595907cde377c605762fe1599ca08",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-2.dxf",
+    "sha256": "75e79e12466052ee15a5b1280f9b802a203a39ee2dcc8bc5501e85f26799b834",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-3.dxf",
+    "sha256": "f76c330e48d8b356a376c19aaa7b84d7b78d7b7272abe0533a03c22e2dbc8fc7",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-4.dxf",
+    "sha256": "c1c21fb3358c6002af5fa332677a10a1eec6c14abf7aa66301b1b6391eb3be82",
+    "bytes": 8793
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-5.dxf",
+    "sha256": "2e2ae3a54d0e0ae4659b48f7cc1d42014c7828e1ba8edd24f3ca2f77b3dbd68c",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-6.dxf",
+    "sha256": "b62a2ad3aa19cf7dc57bbfc443a1394b25eb3ff388c8cdda352efbb1a3825498",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2004-True-7.dxf",
+    "sha256": "6c103a13b1b4d3af96e0eb6235fd5ebd77446d309d64d169d970865e41bfaa45",
+    "bytes": 8797
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-0.dxf",
+    "sha256": "7078fcd8d118abd1ce34c8083171d50edb7b902afc5e1f4f929ff295d7a6729c",
+    "bytes": 9110
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-1.dxf",
+    "sha256": "296e44b020cb838e191a8a8134104a81e5e3136f57d9e957f46ba53008d2b888",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-2.dxf",
+    "sha256": "a6278203dabd6ae824334d3498b6b39a43eb18c839cfa8a8c7a7a9687c93da2a",
+    "bytes": 9097
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-3.dxf",
+    "sha256": "c7e0f5d615b1d98652f6edc0b81b1e9dae02c44b5feb06dd4b601032767fe4d4",
+    "bytes": 9102
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-4.dxf",
+    "sha256": "b4a6e11808512c61cd5ddbe45e9033416d7658956342b3c877da2b93d63570d4",
+    "bytes": 9091
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-5.dxf",
+    "sha256": "cc82cbda0e9284086ae55f23046e5e58924179ba8d557f3d4afa77ec31a644ce",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-6.dxf",
+    "sha256": "5b6b915592753cc25f04382d9ad7922bc10f8d3d75763604d235cc328541b201",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-False-7.dxf",
+    "sha256": "38b4c840b743aa1ee47a431e8ed175134a2769c0fb2d0047a1fe65297dc79f94",
+    "bytes": 9095
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-0.dxf",
+    "sha256": "d1f180aca8091a9981c6cbba22b5e66b2b1cee176f9fb4e44c32835d678d8bfc",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-1.dxf",
+    "sha256": "a0a1ad61127baac612eadb2e0d209d96863370c0e1c409bdbc1a6fc84309851f",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-2.dxf",
+    "sha256": "a3b1680f3c3eb3bf412a9b15fb3778d245556efead1523608ce6b5ed1501c697",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-3.dxf",
+    "sha256": "28fb0d242b84fa508587210cf96fdd3e964a7b39ea0c7aeb17db48045594c79a",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-4.dxf",
+    "sha256": "d09f83012f3d9d43648cb3e35936004a3da198930938451c49994309a5daa6d3",
+    "bytes": 8793
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-5.dxf",
+    "sha256": "538292fa5d0c91325914a0bcf7829f0d384b1a64973c5860e037153abb586a70",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-6.dxf",
+    "sha256": "7cdb26fcd49396433f579bf4e0553cc5cab688bb00e68f5f9adcd109a960a868",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2007-True-7.dxf",
+    "sha256": "44e4e78c782ff64bdb900aa1f8139b50c0d66afa6d465e77221b0a2030c2ca4b",
+    "bytes": 8797
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-0.dxf",
+    "sha256": "236f042a313639febc928a22ca1aba917cfe77ff05801d24d80d45442881c4c6",
+    "bytes": 9110
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-1.dxf",
+    "sha256": "95d573732bda07671f0925f3cd94e1862f201d3c351f189469bf413fb23c4a1a",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-2.dxf",
+    "sha256": "0c20e35a732f0847e00f991235f252ba253f04b495cf1e61809ea0758ba90539",
+    "bytes": 9099
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-3.dxf",
+    "sha256": "ebbe5782df60656ffc72ee311239fe3f239ac068262777c567faf8e3696d00dd",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-4.dxf",
+    "sha256": "ae07b41c3ed44045a91afddc675c9832f3e4c9e7b1ff59154d71a7a04a6d4e15",
+    "bytes": 9089
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-5.dxf",
+    "sha256": "914052f8e89419ca5a8489e0778ded4254d4748c6dbed93bef806acb2366321b",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-6.dxf",
+    "sha256": "0afc814fdb18838925f940b4ee05cf9931fae0ee75c30be5f8e55b537f5c7de8",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-False-7.dxf",
+    "sha256": "0cada487e6a994b7576d09b95c404ec28481cfc8fd6ae2145a91331ef8d7011e",
+    "bytes": 9095
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-0.dxf",
+    "sha256": "d6205a8d071b488de0df4d08c87d3f351052b917fd70420c7f29b54d109d194f",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-1.dxf",
+    "sha256": "0a8629b920df52c5ceeef2ce3c76c8b06a839c4edd0f8ea236b810d73a76be20",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-2.dxf",
+    "sha256": "dc76f6418488fbff9bcb7a0d6e1b884e49218fc6c38802e35d22a174cfb54bc8",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-3.dxf",
+    "sha256": "ae4a04e3a04d9c01cd776523b7c74c225bce70e36e497a4239372ceb6de66f87",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-4.dxf",
+    "sha256": "7d81322747a0892d7f8dd61cb7a25a9dab7df43ee975ee81b1fae385ae14902f",
+    "bytes": 8793
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-5.dxf",
+    "sha256": "f2d2d6d79441a4c549b2746b3366f3799f82439fedfa6e0433012596344bfe4b",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-6.dxf",
+    "sha256": "781b0440d3a58449eed092610aa752a05fd078058c26c81b7a29e4e80979a8b1",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2010-True-7.dxf",
+    "sha256": "071d588571c069a2479bf634238eb4e36c2cc8e91fbb1c662417022af75b5764",
+    "bytes": 8797
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-0.dxf",
+    "sha256": "a384c3bc7e8b00dfa796cb3aea54c0d2ae1ce29f99facc9f0b65f1407e395a29",
+    "bytes": 9110
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-1.dxf",
+    "sha256": "882e40486615befba574622cded395819ba02726aa50927f38491e868e64d855",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-2.dxf",
+    "sha256": "e1554efdfb105002195692e3038b702d65e321a67085e245bad7cfb4fa20b544",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-3.dxf",
+    "sha256": "2fc2b7f8b6ccdf029e27b31ba61ad49a843c2003e8dbe92e1040ca47660c7191",
+    "bytes": 9102
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-4.dxf",
+    "sha256": "390d338ecff212e98011779f578946857e417fd1348004a4a993e75e1dc1056c",
+    "bytes": 9091
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-5.dxf",
+    "sha256": "4de440253c1b1ac1d2ca578d06ecbbbcab6bbcedb73ea3e007024adbcb920d5b",
+    "bytes": 9102
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-6.dxf",
+    "sha256": "b352bf09631d87afe54e8d0ca417084a86ad4570d167c1ce78fd4774d81c63b2",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-False-7.dxf",
+    "sha256": "7c35955b36c787c01d9b301d971194310b12329318608af55d981f5cd38085b9",
+    "bytes": 9095
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-0.dxf",
+    "sha256": "8e25319e15999c4318fc5a82865a2c2ccfbff60964430c8ed355866f2cba07c5",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-1.dxf",
+    "sha256": "8ca37a8d44b4a7249636636a3dfbf233d097628cc4ca8b95cccc545de91cd800",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-2.dxf",
+    "sha256": "1f9c6344003268998c3d0d162549e3ca4cee835b663e1ecc5096b50e963173a2",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-3.dxf",
+    "sha256": "fd7a3bf9b2f915b5a89b518be436e76ab318fa9d1eddae4d2669030da2ac1d80",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-4.dxf",
+    "sha256": "f48f3cfca0b08a487323efdd878c5a1a7af3cd1a36ebb1ef4c62aaa80c39b5d7",
+    "bytes": 8793
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-5.dxf",
+    "sha256": "4809ae7ddb157e0e3b77d5b80526ae15547a73467583a56170ec0e5ada8742d0",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-6.dxf",
+    "sha256": "1876213ed61cf5a2b49bb97e6ec5911802dfd90d0ed1d8cd7cc910ba9514d921",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2013-True-7.dxf",
+    "sha256": "37dc9c154bf7e007b49120adcc79bcdc2b7eb08cb8bb1f776b639609245d20d0",
+    "bytes": 8797
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-0.dxf",
+    "sha256": "9dd4acda8d4a62c1e536e9ca3f66b54ad48ae05e9f1765a95cbc4ec58adf3f54",
+    "bytes": 9110
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-1.dxf",
+    "sha256": "0a48848478f75e249d718c005d726c9e073cea4711c5bc6fea6caad9953923ff",
+    "bytes": 9099
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-2.dxf",
+    "sha256": "5e1f56b11d0d20fa40285e959fa4088a26a97c1b693a9ad9673077ff018a4dd5",
+    "bytes": 9101
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-3.dxf",
+    "sha256": "f381d0939cd273920fba8e9c7bdb4bc408f7e846b4f433cfea97faa7cd61d722",
+    "bytes": 9102
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-4.dxf",
+    "sha256": "6516ff42367995aedc88742d7feaff14c4c652dbb99a932c5ff1ed26afa6194d",
+    "bytes": 9091
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-5.dxf",
+    "sha256": "7082277edce4dd26b7597991ddc453f0efe8b3f70f2c04ac78d381dd96561e89",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-6.dxf",
+    "sha256": "44b5a71496ed759ed196b6ef8ca9f4c6a47deeb6da7c913038ff1477cf1c8e3d",
+    "bytes": 9100
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-False-7.dxf",
+    "sha256": "6cd8fb1772204ebfd8a3d9cf8e06f5509bab6f38a21fda281388129dbc94e341",
+    "bytes": 9095
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-0.dxf",
+    "sha256": "f934b1e619fcecf4eb61cffd195f31fecac1847a6894754c489ae92057d4ba8d",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-1.dxf",
+    "sha256": "7c8e45efd33297225930446bb078eaf05eaa5806db7a39dda1bd191adbbe3b77",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-2.dxf",
+    "sha256": "8eedceddde4fa40bf438356f1863b0a3b58b46b65a4e8103af7fc6f9938c1f07",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-3.dxf",
+    "sha256": "ee635d17365d49d5a93d3bbbabbea76bfb8e998b0cbd28b6a6db5741cf50af36",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-4.dxf",
+    "sha256": "abadd0821690436cd23c7f8269907db1000201e8117593dd8a5986840a22f524",
+    "bytes": 8793
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-5.dxf",
+    "sha256": "5042e4e3701e10f6bb1cee53707bf6c62e8dc057b94c60e205fa8586ff25d108",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-6.dxf",
+    "sha256": "c80ef5cb5e952dc052b96149a4d24605eed1ee51494f77e9269d223e3a13c281",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-grammar-AutoCad2018-True-7.dxf",
+    "sha256": "01f399ad60aca3828ba7feb748046c14dbc58babe6f8d1112225351e9777fc20",
+    "bytes": 8797
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2000-False.dxf",
+    "sha256": "797277d406c20f16702b306595abe51cba13690d134318543f784221a42c98bc",
+    "bytes": 11086
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2000-True.dxf",
+    "sha256": "53f97dc82a51676ce8ec442eeeb36366970de1cd7cc6d420bac10f753043a5f2",
+    "bytes": 8795
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2004-False.dxf",
+    "sha256": "750949ca8e3f8195787a48c4556b7c5c3221fba2cc3044fd561dd75730c1421b",
+    "bytes": 11119
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2004-True.dxf",
+    "sha256": "3f1fc5734ccd9250390556dd868d173c1d7e6d94da79987501f417eb42b343b9",
+    "bytes": 8823
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2007-False.dxf",
+    "sha256": "78d0634e59086db7dabbffa7e04d84cc791a27910072f8eae85b23a8bb00547b",
+    "bytes": 11119
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2007-True.dxf",
+    "sha256": "6d13db9824359c3d88e0c0d18e907314f371c12aa2c2af5de2815ab2b9653419",
+    "bytes": 8823
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2010-False.dxf",
+    "sha256": "d5bcb47ee63378cd385208590de54839878052261346ce4610201cd8f4fbddfa",
+    "bytes": 11119
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2010-True.dxf",
+    "sha256": "6d8f1dd8bb441fe5769cd3d71892bb57603bf027d2ca548edf1726c8d57e25ea",
+    "bytes": 8823
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2013-False.dxf",
+    "sha256": "90150e2f7d245f991664e2ca4af14f94a66c274aeeb99f1726a7cde21965a205",
+    "bytes": 11119
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2013-True.dxf",
+    "sha256": "637d30ab0b7c695ebd4561db9cd7a3ac1dd1207c4e61dc60a68c112c69200d94",
+    "bytes": 8823
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2018-False.dxf",
+    "sha256": "8b945204bd911e7cadb1e49d20cd5ab74ce7f49ead49af2ce4e2f27bda7b30e0",
+    "bytes": 11119
+  },
+  {
+    "name": "polyface-invalid-xdata-AutoCad2018-True.dxf",
+    "sha256": "441974b1185a5b8167c4fc6b007ae2ccf3d08a244303d0cbf6ba9baebfff5eb6",
+    "bytes": 8823
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2000-False.dxf",
+    "sha256": "2babf80bc40dda63285db50699dc14f990bf944bb4a1173d665b58ce5589e9e6",
+    "bytes": 9173
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2000-True.dxf",
+    "sha256": "7d2fdc12c6a9a864cf07c97c8f3f095a28a468c72a819b33cc098e69d67caf08",
+    "bytes": 9672
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2004-False.dxf",
+    "sha256": "1ed20f18aba9ba194803468d49910a6ea1b02b1edb86fddb2523418297c4bbe1",
+    "bytes": 9201
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2004-True.dxf",
+    "sha256": "d84ad34f1509d52974641bf7b9587c11e7049b84b5830badf6bab2a165fe29ac",
+    "bytes": 9699
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2007-False.dxf",
+    "sha256": "85aa8be6cdf0603d5983259e5372d0dff00bd875f06197e145c4e198bba4b443",
+    "bytes": 9201
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2007-True.dxf",
+    "sha256": "4f89f6d9a03e78238a4a7b65bfad7b77d2f060cf002bd29bacaae833c6178869",
+    "bytes": 9695
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2010-False.dxf",
+    "sha256": "c93a365674068829702acf6067632d37c3165602dcc8533a68486aeec8c34aa2",
+    "bytes": 9201
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2010-True.dxf",
+    "sha256": "4d8e9b0eb434ce3dca14cc2a419b65cf81e5e43f77ae697b569b8c9694c8833f",
+    "bytes": 9699
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2013-False.dxf",
+    "sha256": "704d81c169df3b8fa09cee6ea9b33139d50a544603991dccae926db0f2e01c3a",
+    "bytes": 9201
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2013-True.dxf",
+    "sha256": "4da6baca2c0f2290fce1568f25bcbbd8e099121b9ab15b650de2e30576314085",
+    "bytes": 9699
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2018-False.dxf",
+    "sha256": "b9e321bbf0e20afd757f3b718f5c77f057264ad5ca2371081e6bb511a57a6d58",
+    "bytes": 9201
+  },
+  {
+    "name": "polyface-records-clone-AutoCad2018-True.dxf",
+    "sha256": "bc51be7bd368881e68529b226f761d047d6b5ad80e6a87023bf81d6f34fa6406",
+    "bytes": 9695
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2000-False.dxf",
+    "sha256": "ae59176381d81b70b7969a330e89afa581810e4287ef1a2c2acc2c7ce271a6dc",
+    "bytes": 15339
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2000-True.dxf",
+    "sha256": "f390fe932248592cc8adb3812d684b092e53e9833e090f9cf76c5d0b83253c2c",
+    "bytes": 14847
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2004-False.dxf",
+    "sha256": "c64ec157fd1dd7e76be7e92126773195018aadcba9eed3f6c82589f36d912a8c",
+    "bytes": 15655
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2004-True.dxf",
+    "sha256": "b3a79dbc8dd9b909d0904c9fdd2935ff4e836a56ff383cdc5bd39688d350c0cb",
+    "bytes": 15148
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2007-False.dxf",
+    "sha256": "db50a0f6f7c3e497fa1585e8c019f964e330e7a663ecd0256c49a0087d6744ec",
+    "bytes": 16360
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2007-True.dxf",
+    "sha256": "a8644f1bc4a9683d25448aa675e1cef254f49f98739de7d7bef1344b7e13de88",
+    "bytes": 15773
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2010-False.dxf",
+    "sha256": "3a73c6c4cf25e3f0113f9c16b2e230ec8263781cd7185efa476eb2bc5fc9dc7a",
+    "bytes": 16360
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2010-True.dxf",
+    "sha256": "d8872ee4322761151b3a7dbfb4e01a465a0ef77b1617f3c0cd74346ca4579897",
+    "bytes": 15774
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2013-False.dxf",
+    "sha256": "4dfe1ec14216f157d0c3b2cae96d773849388dbaa2a7ed98a2eba4af082ccbae",
+    "bytes": 16386
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2013-True.dxf",
+    "sha256": "34d254fb6fe334c8ffc1cd3201d9d225b81fa9e673d7618c423d42b740e4e5dc",
+    "bytes": 15804
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2018-False.dxf",
+    "sha256": "b926a96064e476e5e71ea84b3ae50af5debcb76a0b1a1dc850a0c4ab4f744167",
+    "bytes": 16386
+  },
+  {
+    "name": "polyface-records-edited-AutoCad2018-True.dxf",
+    "sha256": "41357ffb8eaab8f1ca43523b015d3a1c53fabd484ba11a98e0c829d7fb16dc4b",
+    "bytes": 15804
+  },
+  {
+    "name": "polyface-records-edited-False.dxf",
+    "sha256": "88fe0dcb25e1626b6e2f2d4036f3d01d3eaf436e91b4ec4a353ce9e834e884d9",
+    "bytes": 17268
+  },
+  {
+    "name": "polyface-records-edited-True.dxf",
+    "sha256": "e2b5e0450a5cf093ac9ab8be7c71aa158c59ba96a92722cfafb46c694f93b79b",
+    "bytes": 16615
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2000-False.dxf",
+    "sha256": "b262e7da2a2e04e1dc1674fa3be4cc511e0f5de00e605bd1151c0db3604b3ddc",
+    "bytes": 15320
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2000-True.dxf",
+    "sha256": "54dc9fc71b6a5022b91773554fde234f3fca201049a528e4fe4084198f259873",
+    "bytes": 14829
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2004-False.dxf",
+    "sha256": "f1798eaeda1c132765b93db2b8515a4bb50bee5a57eaa7147928384f1416232b",
+    "bytes": 15636
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2004-True.dxf",
+    "sha256": "fe894edde01c02d9a5dc6cf672c49e46d8912fe762e5137ad9d1138ca42c9e6b",
+    "bytes": 15130
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2007-False.dxf",
+    "sha256": "72fc1dbb426480b0f60138484b4a2fe5f0e3f35d1c46eafbc9cb3d908c044be6",
+    "bytes": 16341
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2007-True.dxf",
+    "sha256": "3a776013ef511a7ca3ab82fa035264e66ab218bb4e295774ffcf699df804bef6",
+    "bytes": 15755
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2010-False.dxf",
+    "sha256": "53fc997c4ad52943632458c2753c876ce9f0cf1763dc2dab2af82e271c04f39e",
+    "bytes": 16341
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2010-True.dxf",
+    "sha256": "71542c1a712e02f55a16e36b08084b70d1e9e54dac60f051cb7f42fa4c017f0b",
+    "bytes": 15756
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2013-False.dxf",
+    "sha256": "8ecd6f088ababca0f36a54965017347627548f3d2f469b00f8cbb6cc4e4cbd90",
+    "bytes": 16367
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2013-True.dxf",
+    "sha256": "efbf68a41fadb966ebb2e9c96b3f5081a5911f5f7afb0b0d6da6c07fcef2ad26",
+    "bytes": 15786
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2018-False.dxf",
+    "sha256": "bd08e3e52e026e6526cd1ec9d3f80811895833f07fddf62702442472d7b5d1fd",
+    "bytes": 16367
+  },
+  {
+    "name": "polyface-records-inherited-AutoCad2018-True.dxf",
+    "sha256": "22b505033d22be919d514db12c2e0768e458beee33415621f0d6d050b59b5e6a",
+    "bytes": 15786
+  },
+  {
+    "name": "polyface-records-metadata-edited-False.dxf",
+    "sha256": "1d6d33a5e205c86a0ce6cb00d9c4932d93e0e839c23f2e3541733096bb722aaa",
+    "bytes": 17450
+  },
+  {
+    "name": "polyface-records-metadata-edited-True.dxf",
+    "sha256": "8f8e078eaf395edce5ef37bf45387da09c8599e99b909bbcacf944ffb325a151",
+    "bytes": 16778
+  },
+  {
+    "name": "polyface-records-move-AutoCad2000-False.dxf",
+    "sha256": "a4487028dcadde2718b372d3883b0b65813778a0eb2814e413d24eb912d6c579",
+    "bytes": 16557
+  },
+  {
+    "name": "polyface-records-move-AutoCad2000-True.dxf",
+    "sha256": "14f40737ab2516467d9cb9373c35ff9c75b2a48440a45625ce7faf0c9e016525",
+    "bytes": 15971
+  },
+  {
+    "name": "polyface-records-move-AutoCad2004-False.dxf",
+    "sha256": "6f38635a6c7bc7e8d2babaf58d3d1a17324954eeb17123cf2852ea80e9f0ce7a",
+    "bytes": 16900
+  },
+  {
+    "name": "polyface-records-move-AutoCad2004-True.dxf",
+    "sha256": "4f9bedb4151d6d214c059a7c971b8500d3398bb658e16ac951191e7fb3cd3fa8",
+    "bytes": 16291
+  },
+  {
+    "name": "polyface-records-move-AutoCad2007-False.dxf",
+    "sha256": "716f2ccf7d88bd4b9699922cab77c1ef300bf77f53f0dd0a9ea8b1b1afaecd32",
+    "bytes": 17605
+  },
+  {
+    "name": "polyface-records-move-AutoCad2007-True.dxf",
+    "sha256": "25ddb6c0ac242121bc3053d740cca019e999a044fb5d56b872d6b14c3c98b271",
+    "bytes": 16916
+  },
+  {
+    "name": "polyface-records-move-AutoCad2010-False.dxf",
+    "sha256": "38287956ef498f9da43aada9b9cf0201477a31720711049aa86f668a167224e0",
+    "bytes": 17605
+  },
+  {
+    "name": "polyface-records-move-AutoCad2010-True.dxf",
+    "sha256": "4a0601d38bb9fab669f603e751d60031d6c9194a2bf2c6377ec4aac9992385fb",
+    "bytes": 16917
+  },
+  {
+    "name": "polyface-records-move-AutoCad2013-False.dxf",
+    "sha256": "c53bc606116fd08f97b71ec20e51615e3f854237c2661a14434f41aeb55b65ea",
+    "bytes": 17631
+  },
+  {
+    "name": "polyface-records-move-AutoCad2013-True.dxf",
+    "sha256": "0a46c03a8c04800cf28a3407d457ce53a39ba15a782f3c23b27fa1358e5b0e27",
+    "bytes": 16947
+  },
+  {
+    "name": "polyface-records-move-AutoCad2018-False.dxf",
+    "sha256": "f5f6defd4a4cabd6324e8b43ab570730b0c4aaebeae2c9dc8b9c36fd5a0c914e",
+    "bytes": 17631
+  },
+  {
+    "name": "polyface-records-move-AutoCad2018-True.dxf",
+    "sha256": "4a4b7bac9057f949609cc897dcb3132d8a06da3f3b5bec3570f36ef120172403",
+    "bytes": 16947
+  },
+  {
+    "name": "polyface-records-native-AutoCad2000-False.dxf",
+    "sha256": "d1899b1bdeb222f0924374c8e81b2a18d9a49817723317d1d1aa71a9b6738048",
+    "bytes": 14458
+  },
+  {
+    "name": "polyface-records-native-AutoCad2000-True.dxf",
+    "sha256": "766f0be179e1ad88614ad34d0674015b1e745c3073a8f253cc4106c149e73556",
+    "bytes": 13969
+  },
+  {
+    "name": "polyface-records-native-AutoCad2004-False.dxf",
+    "sha256": "ff33fe570a7ad7576dabb7e7728049d0c33beb1639e9e381841e434693eda8d5",
+    "bytes": 14761
+  },
+  {
+    "name": "polyface-records-native-AutoCad2004-True.dxf",
+    "sha256": "45c4514d53ea7d1220b55ad6ee76cc5a8bc3b9d3802e360912d78c3845f88424",
+    "bytes": 14264
+  },
+  {
+    "name": "polyface-records-native-AutoCad2007-False.dxf",
+    "sha256": "9ebe2a1f33bb04866409c1523878965ec2d70371b75f1879ee79f44c6f3fac20",
+    "bytes": 15466
+  },
+  {
+    "name": "polyface-records-native-AutoCad2007-True.dxf",
+    "sha256": "d22ec5bd4cbc89a8dbf0a0cebe3c753d432266479f832fa8851f42283a78a054",
+    "bytes": 14889
+  },
+  {
+    "name": "polyface-records-native-AutoCad2010-False.dxf",
+    "sha256": "a8d5bdf7e4151fa82bf0275f0a0838fcb1fdbf29f51ca071e151c440ef82dfdc",
+    "bytes": 15466
+  },
+  {
+    "name": "polyface-records-native-AutoCad2010-True.dxf",
+    "sha256": "b3271edc20fc0829c606ec33eaed6c58a9f0d3f21f56a4526fbf39006a57d538",
+    "bytes": 14890
+  },
+  {
+    "name": "polyface-records-native-AutoCad2013-False.dxf",
+    "sha256": "c745dfc570893eb09f4fd60fc7d677c6b8915025641a3680cee9fceb239a66c6",
+    "bytes": 15492
+  },
+  {
+    "name": "polyface-records-native-AutoCad2013-True.dxf",
+    "sha256": "577b1b10c1a0963feebc5bde46f01a83b1fb80f22e8b26c116cd8b845437e6ee",
+    "bytes": 14920
+  },
+  {
+    "name": "polyface-records-native-AutoCad2018-False.dxf",
+    "sha256": "dc0116b8a6547d352defd4cea60718384e637e2cceea419e9a6b01b824c28c8d",
+    "bytes": 15492
+  },
+  {
+    "name": "polyface-records-native-AutoCad2018-True.dxf",
+    "sha256": "da0a1b9a328f72b28b53fe8977fb0959f9cc74ae4b596c73a5d5f0d17e363b87",
+    "bytes": 14920
+  },
+  {
+    "name": "polyface-records-parent-reactor-move-False.dxf",
+    "sha256": "44b0ba40363848248446913252e4444eabeedac54c9baca1cff94044f74f3162",
+    "bytes": 17666
+  },
+  {
+    "name": "polyface-records-parent-reactor-move-True.dxf",
+    "sha256": "f5c76db5eced2ae1cb46fe54ceea4d8c06a153dafbcbab38d1f7cf7017d46822",
+    "bytes": 16976
+  },
+  {
+    "name": "polyface-records-private-False-0.dxf",
+    "sha256": "95b162a38825a9aeaf518dcec85ce0b5987daf727e00d29fa2da5ac8782ff983",
+    "bytes": 17304
+  },
+  {
+    "name": "polyface-records-private-False-1.dxf",
+    "sha256": "f208d09e4029cbee88a5a328ca4f88d3fbf539aa2ae331128142794d3b196576",
+    "bytes": 17323
+  },
+  {
+    "name": "polyface-records-private-False-2.dxf",
+    "sha256": "363a18f096c72e858e0eeab0fae0fa8732d2fb155ea901c627b9341102098bf2",
+    "bytes": 17338
+  },
+  {
+    "name": "polyface-records-private-False-3.dxf",
+    "sha256": "48e7867693176f4253e0480ea062219de88e7cab4661099bedff470f9ecd7a14",
+    "bytes": 17296
+  },
+  {
+    "name": "polyface-records-private-False-4.dxf",
+    "sha256": "635fa94252ba34b630321722a26f53b450eebea48e26602c08b4150918f061c4",
+    "bytes": 17299
+  },
+  {
+    "name": "polyface-records-private-False-5.dxf",
+    "sha256": "8a219e2981efa0d3507f64454f76a95d6099914d27e16c19306fd70248af227b",
+    "bytes": 17290
+  },
+  {
+    "name": "polyface-records-private-True-0.dxf",
+    "sha256": "280aa36906486dfa5455467c7202a5fb67cd9d07f1a249bc5f95fd2a50c61e7c",
+    "bytes": 16648
+  },
+  {
+    "name": "polyface-records-private-True-1.dxf",
+    "sha256": "0958cecd371d93fa2e9f09c11a5d668db964aaebbe8e7b6321ee1b3af2791f12",
+    "bytes": 16673
+  },
+  {
+    "name": "polyface-records-private-True-2.dxf",
+    "sha256": "564f3197e1befea09f74b12e4bc5ee1614e062d32de0bd1963cc167d28ed2928",
+    "bytes": 16688
+  },
+  {
+    "name": "polyface-records-private-True-3.dxf",
+    "sha256": "3834b1c3a7a55e7f201f739e9a5ea6467cdc4c785edb7979e5cd16dd3003d03c",
+    "bytes": 16640
+  },
+  {
+    "name": "polyface-records-private-True-4.dxf",
+    "sha256": "c1b4fc76337eaac68883ace2239bf1f38ebde76fbea0447f21010bcc509356db",
+    "bytes": 16643
+  },
+  {
+    "name": "polyface-records-private-True-5.dxf",
+    "sha256": "a63359bf08d3ef18a74db304617a6288f5c3c80bd82b821639ea9244cb7d730f",
+    "bytes": 16636
+  },
+  {
+    "name": "polyface-records-private-header-False-0.dxf",
+    "sha256": "6887f2b6de2c4902a943f6300f73cbbf0d49bc3644c5526193e337f076fce90c",
+    "bytes": 17366
+  },
+  {
+    "name": "polyface-records-private-header-False-1.dxf",
+    "sha256": "b1d9b131f88de02e76a0a30a0e87b167d2e092508da8115c76c70013db9f1af7",
+    "bytes": 17357
+  },
+  {
+    "name": "polyface-records-private-header-False-2.dxf",
+    "sha256": "3b073decf445c9e824054fdece3183c6ccbef709a478bd4f1693caceb6df1d43",
+    "bytes": 17356
+  },
+  {
+    "name": "polyface-records-private-header-False-3.dxf",
+    "sha256": "b1eccdb6b61d7decee0efff4e5b8eec724e3e026133b58102379310ccb388ffe",
+    "bytes": 17423
+  },
+  {
+    "name": "polyface-records-private-header-False-4.dxf",
+    "sha256": "019d2941e6e196236f9806e023afcb57b687b6d88c2f67cd7681377081b96149",
+    "bytes": 17349
+  },
+  {
+    "name": "polyface-records-private-header-False-5.dxf",
+    "sha256": "a60a66125f398f43dd5192e3af0408286993d2f5dbbed4cfe5e1c838729913eb",
+    "bytes": 16491
+  },
+  {
+    "name": "polyface-records-private-header-True-0.dxf",
+    "sha256": "89a27d723833c732ee9d44661a7612be6a504a8a3338f6a93ee9000ad05dbbe2",
+    "bytes": 16718
+  },
+  {
+    "name": "polyface-records-private-header-True-1.dxf",
+    "sha256": "3e9bf2eaceda0efaef5b02406d3734372201eea8191a14c0676721528e8ac5b4",
+    "bytes": 16711
+  },
+  {
+    "name": "polyface-records-private-header-True-2.dxf",
+    "sha256": "c5c7f9cbd4ba0e91844c4e5927d08777622b957ae045eef67b4ebd9721c44e23",
+    "bytes": 16710
+  },
+  {
+    "name": "polyface-records-private-header-True-3.dxf",
+    "sha256": "1088ab8f857f6aecb172e129fef69a5618159310c92411e2f336b43a7c4e9ac3",
+    "bytes": 16756
+  },
+  {
+    "name": "polyface-records-private-header-True-4.dxf",
+    "sha256": "d8f0022bf64e8986cd6ff2609625ff1beb02ac99b3f11bf9bae5af6db53ec728",
+    "bytes": 16693
+  },
+  {
+    "name": "polyface-records-private-header-True-5.dxf",
+    "sha256": "75281164442716a63cfd83156db415f0432251b913062535ef228948df95cb4c",
+    "bytes": 15897
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2000-False-False.dxf",
+    "sha256": "ebcc4861ba99a48696b05a55093a4b5bbb2bd5753cb7af9c3d61849441bcd885",
+    "bytes": 16191
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2000-False-True.dxf",
+    "sha256": "1520d36e78cd7e3c92b607cf0499eff75dc6340b13a198436c78fc89fd0c04ca",
+    "bytes": 15639
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2000-True-False.dxf",
+    "sha256": "ebcc4861ba99a48696b05a55093a4b5bbb2bd5753cb7af9c3d61849441bcd885",
+    "bytes": 16191
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2000-True-True.dxf",
+    "sha256": "1520d36e78cd7e3c92b607cf0499eff75dc6340b13a198436c78fc89fd0c04ca",
+    "bytes": 15639
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2004-False-False.dxf",
+    "sha256": "5493037a1b26cd73b2775c88988a0a7a92d17058cc15376f4a10b8a53b573743",
+    "bytes": 16534
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2004-False-True.dxf",
+    "sha256": "39c4e803fc81ff35fec6662a32cf9044a4712b688b4557290cf40c61d7f3e57b",
+    "bytes": 15959
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2004-True-False.dxf",
+    "sha256": "5493037a1b26cd73b2775c88988a0a7a92d17058cc15376f4a10b8a53b573743",
+    "bytes": 16534
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2004-True-True.dxf",
+    "sha256": "39c4e803fc81ff35fec6662a32cf9044a4712b688b4557290cf40c61d7f3e57b",
+    "bytes": 15959
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2007-False-False.dxf",
+    "sha256": "e90f1a1541a8e2cbd1eadd4390a6b8a2523da81c919fdb6148a23c97e4ccfc54",
+    "bytes": 17239
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2007-False-True.dxf",
+    "sha256": "7a19642e31297a7e227ba7d173a578474412b1dc8b020c0c87f1dcc16d39ff3a",
+    "bytes": 16584
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2007-True-False.dxf",
+    "sha256": "e90f1a1541a8e2cbd1eadd4390a6b8a2523da81c919fdb6148a23c97e4ccfc54",
+    "bytes": 17239
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2007-True-True.dxf",
+    "sha256": "7a19642e31297a7e227ba7d173a578474412b1dc8b020c0c87f1dcc16d39ff3a",
+    "bytes": 16584
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2010-False-False.dxf",
+    "sha256": "e8a4f8b71a10eb9a8fa2a679facfffac3679089dcd1ba97d96137a63e983c440",
+    "bytes": 17239
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2010-False-True.dxf",
+    "sha256": "58ee16c5084a46eaf19861706b09aedeb3004bbe75c18f19ac97addf4321ce68",
+    "bytes": 16585
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2010-True-False.dxf",
+    "sha256": "e8a4f8b71a10eb9a8fa2a679facfffac3679089dcd1ba97d96137a63e983c440",
+    "bytes": 17239
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2010-True-True.dxf",
+    "sha256": "58ee16c5084a46eaf19861706b09aedeb3004bbe75c18f19ac97addf4321ce68",
+    "bytes": 16585
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2013-False-False.dxf",
+    "sha256": "e8ccda3b700ced2642093e55bf2576f8bf76a5f0510dee186c1c5bc52aa4258c",
+    "bytes": 17265
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2013-False-True.dxf",
+    "sha256": "79aaf2a00b22a2abcf1eb062b81d2955bfd30d0bdb21aafefc50ea76cfa8525a",
+    "bytes": 16615
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2013-True-False.dxf",
+    "sha256": "e8ccda3b700ced2642093e55bf2576f8bf76a5f0510dee186c1c5bc52aa4258c",
+    "bytes": 17265
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2013-True-True.dxf",
+    "sha256": "79aaf2a00b22a2abcf1eb062b81d2955bfd30d0bdb21aafefc50ea76cfa8525a",
+    "bytes": 16615
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2018-False-False.dxf",
+    "sha256": "f88eb4b5e1b60cd4c04468248f795fa58d2551d670f7904a95e7d3810e10d55f",
+    "bytes": 17265
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2018-False-True.dxf",
+    "sha256": "6a0a20bb07a08ea9a50688b560b327c9c0f6ed982d657c538c25e70f7fc84cf5",
+    "bytes": 16615
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2018-True-False.dxf",
+    "sha256": "f88eb4b5e1b60cd4c04468248f795fa58d2551d670f7904a95e7d3810e10d55f",
+    "bytes": 17265
+  },
+  {
+    "name": "polyface-records-producer-AutoCad2018-True-True.dxf",
+    "sha256": "6a0a20bb07a08ea9a50688b560b327c9c0f6ed982d657c538c25e70f7fc84cf5",
+    "bytes": 16615
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2000-False.dxf",
+    "sha256": "fb4844c01c63345f4c118bc2babc8ad6e9f288d4016a0006716327bf3a73968b",
+    "bytes": 16174
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2000-True.dxf",
+    "sha256": "862171edc0b38aced507d1319133905c2e8bf3ca65d87a156e92d5ff53200aa4",
+    "bytes": 15623
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2004-False.dxf",
+    "sha256": "88fcb12383baf5f8a27d13b67501dd35391d6fd6da09dad7b52e48a24eb791a6",
+    "bytes": 16517
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2004-True.dxf",
+    "sha256": "05af0be7afce4d9a30d533a1ee7aa98d268be137bab7076e86c487644064c245",
+    "bytes": 15943
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2007-False.dxf",
+    "sha256": "3df61bea230ad10399353fa70588b471ef148cc581669ed7605be0ee22f76d19",
+    "bytes": 17222
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2007-True.dxf",
+    "sha256": "998455b20eddaeac90445a1ef80716dd73f6cc9ec6c1ead7ff653fedf80ad79e",
+    "bytes": 16568
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2010-False.dxf",
+    "sha256": "d638a5859ab3b948a40dbdbbdf8bc079a7072c7c34370d28adf7a1b4c4439b06",
+    "bytes": 17222
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2010-True.dxf",
+    "sha256": "44e8dfab69516e5ba7f6f2e62a09f70e046af5cbf69832b6d5ff84f41330d7ba",
+    "bytes": 16569
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2013-False.dxf",
+    "sha256": "42394dba17abd8d66574ce008b39458c6de281964b2f503812f7e60ae6e7007c",
+    "bytes": 17248
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2013-True.dxf",
+    "sha256": "93d2b0393970f8bee0f4123bd2937f5c6a31e555281008971723b19a132016f0",
+    "bytes": 16599
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2018-False.dxf",
+    "sha256": "2658eef4c02bb4f55557b5be31b9dc2eff4b201931f888c23d2d4ca7194119b2",
+    "bytes": 17248
+  },
+  {
+    "name": "polyface-records-readopt-AutoCad2018-True.dxf",
+    "sha256": "235a49fdd9284a19c17121741725b9f7489bd5205fef7155762ee01829940764",
+    "bytes": 16599
+  },
+  {
+    "name": "polyface-records-slot-edited-False-0.dxf",
+    "sha256": "c946164623ec2e6ffe937c668132cd3ce3587f5cd6796059a45f19258747b4e4",
+    "bytes": 9112
+  },
+  {
+    "name": "polyface-records-slot-edited-False-1.dxf",
+    "sha256": "8f2e73ad3a96779e121b1d7faaaddac2edae50d1d7f59d1a9a3db7b08fec7bdf",
+    "bytes": 9103
+  },
+  {
+    "name": "polyface-records-slot-edited-False-2.dxf",
+    "sha256": "23038f9108399996cfc8246c3943f47e7f0c26c8e5149a1594fcb2e9f152cb4a",
+    "bytes": 9105
+  },
+  {
+    "name": "polyface-records-slot-edited-False-3.dxf",
+    "sha256": "4f45b297dac80afab72d1e0d73593e81b89e423dd704c8833732863aaeaf3dd1",
+    "bytes": 9104
+  },
+  {
+    "name": "polyface-records-slot-edited-False-4.dxf",
+    "sha256": "f750896008abf0560ba21a34ecb224405dc054278a7005f0852b031586b9d873",
+    "bytes": 9095
+  },
+  {
+    "name": "polyface-records-slot-edited-False-5.dxf",
+    "sha256": "c953960a3ce812a8b25b1f6c430a1db43ce366d85c2f9d09c7ec74bd1d3d5f0b",
+    "bytes": 9104
+  },
+  {
+    "name": "polyface-records-slot-edited-False-6.dxf",
+    "sha256": "28717f442af504867e7a392e6ff99f910bb4e4df7bfb9da3b1d1601c7973402d",
+    "bytes": 9104
+  },
+  {
+    "name": "polyface-records-slot-edited-False-7.dxf",
+    "sha256": "c33286009b45c98ff7b8d4f28688d0039d303f1cab291a3e4df7e242535f0e61",
+    "bytes": 9099
+  },
+  {
+    "name": "polyface-records-slot-edited-True-0.dxf",
+    "sha256": "4d330fbfd49f380de96475f6b843a463a80b371312634673f0d7d848c088d3e7",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-records-slot-edited-True-1.dxf",
+    "sha256": "57b388c26c47f448dcd593bcc3d2e850250af39272be1406a90418943719da92",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-records-slot-edited-True-2.dxf",
+    "sha256": "7e058b11575dc6ff574b8821c970a2d00a9b19cae3c585961cce2f9eaadad88d",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-records-slot-edited-True-3.dxf",
+    "sha256": "49c36a419dffd61f0ec4336361e6a2b24228d65501ce5f27f9bb0f8a47d28d5d",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-records-slot-edited-True-4.dxf",
+    "sha256": "aa9f4ef4ccaa1f31f4d33032aced4d0e97d01ff87fd1a5e7bcde3ee2e3a2ebc4",
+    "bytes": 8793
+  },
+  {
+    "name": "polyface-records-slot-edited-True-5.dxf",
+    "sha256": "276f59118e6a84fe700c24e9c04bbea09d09a4267a98a921d839e2e5d7fae18b",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-records-slot-edited-True-6.dxf",
+    "sha256": "cd6da80b9609b16ac78d3e1ca8abc9637f817f261c9db3b7a2bfc34f93ec6257",
+    "bytes": 8801
+  },
+  {
+    "name": "polyface-records-slot-edited-True-7.dxf",
+    "sha256": "549244855d97312f9181d7efe2c48221599be1755132882f8b6504ae10bd0e30",
+    "bytes": 8797
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-False-0-0.dxf",
+    "sha256": "f07799390b84659c8edf14f9a23c3c7bec2349bdda47da0470dab24d57edb74e",
+    "bytes": 10467
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-False-0-1.dxf",
+    "sha256": "0638b0326e4ac6e38a8df863c3dd84d1dbd984fd23e41c5585468f4500bb6c49",
+    "bytes": 10065
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-False-5-0.dxf",
+    "sha256": "dae4cdc901848e362868b3e42b804636a3c8bb613a08cfae4561b98160b9dce8",
+    "bytes": 13821
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-False-5-1.dxf",
+    "sha256": "9a70fdeaf82f650a4f691f8c5dba9645810a6f4266b3e76a7b7b292f5ac18d6d",
+    "bytes": 13001
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-False-6-0.dxf",
+    "sha256": "3a6c0e913f77930dd1e59bf0358d80d81bef0bb6bbea4317df81cf9585feca3a",
+    "bytes": 13556
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-False-6-1.dxf",
+    "sha256": "33502ab6cb05103e1805bdfc7498bedc1c4f56f274777bef9e797fbda806e0b9",
+    "bytes": 13001
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-True-0-0.dxf",
+    "sha256": "63d23f712d045b65d5d80a44749359a4607a2f16c1390692cca911df38bef111",
+    "bytes": 10059
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-True-0-1.dxf",
+    "sha256": "acae0373e86aec34d21dd842054e226d2a33b59f3c4925338fc87d48b9cc4a5c",
+    "bytes": 10473
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-True-5-0.dxf",
+    "sha256": "0ecaa6ddb4ac6f7d69ab13d9543bd8f976eb44c74b235a20adb6753cc5364e55",
+    "bytes": 12998
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-True-5-1.dxf",
+    "sha256": "f0059f780c17417fa38805353bbc8c3e78caca43b0f0a7171d218412fc796474",
+    "bytes": 13824
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-True-6-0.dxf",
+    "sha256": "7554bf729d6a10d956bee1a148500a509882ed8efeadfe30b9f7a2441d660a3e",
+    "bytes": 12998
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2000-True-6-1.dxf",
+    "sha256": "131b848658af34431f65319e8c27286e4521dd450dff946ec4486c91a63966fb",
+    "bytes": 13559
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-False-0-0.dxf",
+    "sha256": "b97608e79fdcd2752bbf3273612823b7d58177c116fa9a0094f67416bfcb5ae9",
+    "bytes": 10492
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-False-0-1.dxf",
+    "sha256": "fa6b4013dfa1558b75e43a0f91344165b283576d2697aff9cc883144a2c299a1",
+    "bytes": 10093
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-False-5-0.dxf",
+    "sha256": "56020c5cb4496e7168b731d812c54117f994ef53a71018a5451bc7117beca40c",
+    "bytes": 13846
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-False-5-1.dxf",
+    "sha256": "86b94db8f887b76d844fd9124d43584bb54a378a609c6f95a99e5eff792a8486",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-False-6-0.dxf",
+    "sha256": "629895c8f0e78b2cc54f6a0b9e9b0eac9654b3a4557c1cab809d1ff52567c01d",
+    "bytes": 13579
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-False-6-1.dxf",
+    "sha256": "2ffc4e834f9531a455a75f6e925f0cf46626b56c518cc07cb66029d53adca323",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-True-0-0.dxf",
+    "sha256": "77cdb9cdc5ef61868da56af4a938d7d4b9aeea320d0c2da6d4aa8d7d5e631ff4",
+    "bytes": 10087
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-True-0-1.dxf",
+    "sha256": "093e7ee26c3db50ba8ccb1f168227715fa37a536fe05acce844de735cdb7ad71",
+    "bytes": 10498
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-True-5-0.dxf",
+    "sha256": "84ff9b1c2ea82c45fd349409d0c3b86905f6f5b85391e9acde0549ba87daf114",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-True-5-1.dxf",
+    "sha256": "ab768408b4aeecd1ac6de01d228bab27355c5cd63d7fe5ecb1dc03d4cf08c1a0",
+    "bytes": 13851
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-True-6-0.dxf",
+    "sha256": "ed7463cd98023647ef97bf82dfcd59c44396cdc6d320108e80459c2ae6d9a69d",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2004-True-6-1.dxf",
+    "sha256": "f3161cc28f8f1aab4595b239033fd33194dd8d14f527794ca47de6bff2a5d0e6",
+    "bytes": 13586
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-False-0-0.dxf",
+    "sha256": "47192797a8a80466263ef79dce21eea4255ed7e003ee2d564515eec16dd57f46",
+    "bytes": 10494
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-False-0-1.dxf",
+    "sha256": "1723e64b05336817b3b3b7f17bb793a9564e9a4be57891a2c4bd108ea1944183",
+    "bytes": 10093
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-False-5-0.dxf",
+    "sha256": "4fc198378e059283d5fc0e850a8b129af4610c2d1ec90fb20f89306188b4dede",
+    "bytes": 13848
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-False-5-1.dxf",
+    "sha256": "7cdc45bc0caeb2b54a6c77d0d0e855e015f2dbca47ac58b633391566c8d9f5d9",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-False-6-0.dxf",
+    "sha256": "18ab7564773545e8c4799a98b8a3000757031376a756823cfc71354581103431",
+    "bytes": 13583
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-False-6-1.dxf",
+    "sha256": "ddb19f7a02219ac97355148c2c67fbe7117bbfa0b6f3a9845f4dc6a34c35b510",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-True-0-0.dxf",
+    "sha256": "6168c6c97d5971be315923967992c5a5734280011a4aa53fc7cdee10713ee332",
+    "bytes": 10087
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-True-0-1.dxf",
+    "sha256": "3cd3cf9c65ad21a435b9dc6a20f335c7b7e5ae83156b326233d5e0eb58df728c",
+    "bytes": 10500
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-True-5-0.dxf",
+    "sha256": "d39cf5732bbdfe22b49c92c36021df28273bb4252389fdb26b7e10ce08fb81c0",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-True-5-1.dxf",
+    "sha256": "20aa857f1dc603141fd7a89266e93a3eb1eff38817456b74b7d8a385bd39d66a",
+    "bytes": 13851
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-True-6-0.dxf",
+    "sha256": "5c4e82530fb1d0e6d7a707921e0e85200fd03b0c91dcac490096cc0206342625",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2007-True-6-1.dxf",
+    "sha256": "58c593d19d157c9561f4668dfc3e15b386e5eb9ec436f93f0ae6c5068e09ed2d",
+    "bytes": 13584
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-False-0-0.dxf",
+    "sha256": "3b49fe019346290fd50fb2e3ee037296cdcd49d2715f34d610015c066958ad04",
+    "bytes": 10494
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-False-0-1.dxf",
+    "sha256": "4850e2208acd65ce948e6b573cad08771f6b72fbe498d206bf16c18a674b7131",
+    "bytes": 10093
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-False-5-0.dxf",
+    "sha256": "e756790e62f2ff32c8f2accf2f569aec9f7e3122b73225bfae2b4ebacc34bd74",
+    "bytes": 13848
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-False-5-1.dxf",
+    "sha256": "b2603c9764f014fbf1846bf71732b8d7d4c940debc6a78678ba3f7984351733a",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-False-6-0.dxf",
+    "sha256": "2c796590b4343f9ac9038ee3a1ea92a56aefb64b07f0a17e99c2449ed80d728f",
+    "bytes": 13581
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-False-6-1.dxf",
+    "sha256": "53d409f20bfc3ccaad9b89551d1841ab79677dd0276320779a57c32b4916888e",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-True-0-0.dxf",
+    "sha256": "463ef4a3bd8df168721ba1fe95fafb093b70b22f34a1fd09e638a3a47fa37b9c",
+    "bytes": 10087
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-True-0-1.dxf",
+    "sha256": "115f475d5aefc114b18be22694431b25da21b3a161286258664b23820b3a5187",
+    "bytes": 10500
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-True-5-0.dxf",
+    "sha256": "2d015303371b92b462508c2d0942003378b68fb1cbe51844ab46607db17459b7",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-True-5-1.dxf",
+    "sha256": "a547aa3d756904f340e2a6cb7d43d6e3343da11398090c44f451550edd37e8aa",
+    "bytes": 13851
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-True-6-0.dxf",
+    "sha256": "44ac9603582eb6062b718d1b4fa4c162c22c46a7fa04e68b9403a72d959aacfe",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2010-True-6-1.dxf",
+    "sha256": "3ef32deab43d56597c8d3d2f98e7fef06413dad679838d46242fe5e9a989e432",
+    "bytes": 13584
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-False-0-0.dxf",
+    "sha256": "b0e63f7cc1201e7d538626901874f6ab65e87f0396bd3d861e8713d982cda781",
+    "bytes": 10494
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-False-0-1.dxf",
+    "sha256": "75a3e2622e892f749550021afe4af42a0b7b4531900f2e8d2f5fe5f68d2d11fe",
+    "bytes": 10093
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-False-5-0.dxf",
+    "sha256": "5b203504c79f6806e7f9b8442ab314bf6880d418c3581a42b8284bde03c71321",
+    "bytes": 13848
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-False-5-1.dxf",
+    "sha256": "c794e32ac315de7cafe80e33ef15067bbb1de29e3d9681adc231eafe7fce4f13",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-False-6-0.dxf",
+    "sha256": "9f75df8d9c67fc7ffa464ce28b3e629244ba158f1b7bdfb36c814d3307cb869e",
+    "bytes": 13583
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-False-6-1.dxf",
+    "sha256": "3d79fea34358211fba6d502146900bdc993909e13a07061176aac3ba1d0562f7",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-True-0-0.dxf",
+    "sha256": "c65024d9b8a1e1966eca3658c46280b13cc252e02d50322ba3b3d90898b2139e",
+    "bytes": 10087
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-True-0-1.dxf",
+    "sha256": "be1be1491d4bd7a949516a758cd0f40c392106272e3fd3c1a83ab7c6901d26c5",
+    "bytes": 10498
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-True-5-0.dxf",
+    "sha256": "93b9a544392e93c8379304289ff039bea4c3d7a53cf8e0642666fe471e92b1ce",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-True-5-1.dxf",
+    "sha256": "0ff30bd4d92094e3615d522e0dfcc02a781f8972b6d25de5bd3fa5b3656a73a5",
+    "bytes": 13849
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-True-6-0.dxf",
+    "sha256": "06085b65145d0248dab46e1bf2ceff8976bd98ee50c78ed38dbf02f82390e683",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2013-True-6-1.dxf",
+    "sha256": "ce49e68b26dbfa38d44e78e44c0a784236051184d41f20a6eb06b7e53a5d32f8",
+    "bytes": 13586
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-False-0-0.dxf",
+    "sha256": "f1538c6290cf9fec3d6aff2513e0ff1bce3f1ba4b36c2b9f82e68c8f59066f35",
+    "bytes": 10492
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-False-0-1.dxf",
+    "sha256": "9f76b189acdc825345fa5ceda38ba8a0077bfc1d0e203486e91edef222557fac",
+    "bytes": 10093
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-False-5-0.dxf",
+    "sha256": "11084f7649a1309bfac20fd3e48aecce0ffc5f627462dc0096a7a06674dd0bb7",
+    "bytes": 13846
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-False-5-1.dxf",
+    "sha256": "f55bc9d6d431605861cfa920e5996a38ba3ff812c8cb714bef44c17c1d78818c",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-False-6-0.dxf",
+    "sha256": "8fae5e5bc2225bf02a11b6dbdbb5673aa2f4e2ee447ff600ec7cbbdfc0308fa2",
+    "bytes": 13583
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-False-6-1.dxf",
+    "sha256": "04a59e5e672f9d93a9dde46334812a2b7386af35a10eae8988cbf63f5f3d1d7f",
+    "bytes": 13029
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-True-0-0.dxf",
+    "sha256": "6e8a01f88a3cbf47540f6148c6e3ea79370a50b8a204f45cfc4b0af0054e5915",
+    "bytes": 10087
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-True-0-1.dxf",
+    "sha256": "8c04df59c1ae29dec4c380d556b4b4376cd4566dde25fff8ae0df853e55f2505",
+    "bytes": 10498
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-True-5-0.dxf",
+    "sha256": "0a459d305ab0a271ae708813939c2091c30cee2af79750502b5680c0a6840582",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-True-5-1.dxf",
+    "sha256": "f397c9de51e58d081ce21be22a00b2879d07a30242b50591f89c2a35a0c8a463",
+    "bytes": 13851
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-True-6-0.dxf",
+    "sha256": "e621d20d48cc05301508b3c146728ef78bef4ab75a1e3f06237e8323109408ff",
+    "bytes": 13026
+  },
+  {
+    "name": "polygonmesh-grid-AutoCad2018-True-6-1.dxf",
+    "sha256": "716a976022cd653786879f7178e784b36f305c882d80cab558546e1be52aec2f",
+    "bytes": 13586
+  },
+  {
+    "name": "polygonmesh-native-R2000-native-20F.dxf-False-0.dxf",
+    "sha256": "22c9ff43f45233abb44650193451a638d2642a4de4474131fe1eb5ebaa1c0d98",
+    "bytes": 15030
+  },
+  {
+    "name": "polygonmesh-native-R2000-native-20F.dxf-False-1.dxf",
+    "sha256": "bc60dcbc31a806e83e639e05d870f21474719f46501e6fa5053848756b4c0ac0",
+    "bytes": 14360
+  },
+  {
+    "name": "polygonmesh-native-R2000-native-20F.dxf-True-0.dxf",
+    "sha256": "a1dcdff7cfe9f51d1a1742859774cef133f58e3f196323286802d91a5a74c473",
+    "bytes": 14360
+  },
+  {
+    "name": "polygonmesh-native-R2000-native-20F.dxf-True-1.dxf",
+    "sha256": "9611ea2fefd773d43af83af7de6d7b742c644caf2c511bfddc9a4971dfbb9abf",
+    "bytes": 15030
+  },
+  {
+    "name": "polygonmesh-native-R2018-native-20F.dxf-False-0.dxf",
+    "sha256": "fd0621a21e5f491e4182a5a5d1faec922dd832c1f80cd8655dff4a6a1f820938",
+    "bytes": 16064
+  },
+  {
+    "name": "polygonmesh-native-R2018-native-20F.dxf-False-1.dxf",
+    "sha256": "42d9d7863b179c465c0669c56cffc75a6b1450643b37b7bf28a5621e12e92cc5",
+    "bytes": 15311
+  },
+  {
+    "name": "polygonmesh-native-R2018-native-20F.dxf-True-0.dxf",
+    "sha256": "6c2ee2cd788976d04a9d57905f4c169d2327d211e24d3e9bd8479b172275faec",
+    "bytes": 15311
+  },
+  {
+    "name": "polygonmesh-native-R2018-native-20F.dxf-True-1.dxf",
+    "sha256": "c1d8a172e871b43754e22497ab79ce8feb1fa2f81e8143ccc1e0309c06a2114e",
+    "bytes": 16064
+  },
+  {
+    "name": "polygonmesh-producer-AC1015-ascii-cubic.dxf",
+    "sha256": "6845b2f17870e5dad1b8932fbe9e365480c0dc9b3f4ccbdcd3aacfe21732575a",
+    "bytes": 17723
+  },
+  {
+    "name": "polygonmesh-producer-AC1015-ascii-plain.dxf",
+    "sha256": "4ab854f7fdcad8696140c1244d5a2804c9f52eaf469792a4e35b1aad4504cfa9",
+    "bytes": 14719
+  },
+  {
+    "name": "polygonmesh-producer-AC1015-ascii-quadratic.dxf",
+    "sha256": "9973cae76ffdcd73404b84cdd0444980c3b0dab98d70e932af5cff40d16f7e33",
+    "bytes": 17723
+  },
+  {
+    "name": "polygonmesh-producer-AC1015-binary-cubic.dxf",
+    "sha256": "8d2e6053ac933cd483c88ceffbd5a9b71bd4f9666f9db91d47c87ec57f57209b",
+    "bytes": 18127
+  },
+  {
+    "name": "polygonmesh-producer-AC1015-binary-plain.dxf",
+    "sha256": "2dc60aa659f9286912611a9e1cae8b5729587616d170ebfcc08caa1354cbefb6",
+    "bytes": 15042
+  },
+  {
+    "name": "polygonmesh-producer-AC1015-binary-quadratic.dxf",
+    "sha256": "ba8006b39ef99544c7ce9a3fe714efc7fee8ff15ddea9aa27751a94751551fcb",
+    "bytes": 18322
+  },
+  {
+    "name": "polygonmesh-producer-AC1018-ascii-cubic.dxf",
+    "sha256": "3fc6b08a74c6816cb54d49f047e3eff040a4135e1834e277963c02bbc507ede0",
+    "bytes": 18018
+  },
+  {
+    "name": "polygonmesh-producer-AC1018-ascii-plain.dxf",
+    "sha256": "7c11f395489846b18502aabeb95932d75d7fd6bcead412dd85f6776d92e6bc67",
+    "bytes": 15014
+  },
+  {
+    "name": "polygonmesh-producer-AC1018-ascii-quadratic.dxf",
+    "sha256": "62695109fc69c82245bc76cc18c6d1c5ad31cb37332b0c3b8b193b484c9da56b",
+    "bytes": 18018
+  },
+  {
+    "name": "polygonmesh-producer-AC1018-binary-cubic.dxf",
+    "sha256": "c91fe85dc82834260c1369f0a4123e0ba82462b4ba16b9e489b68147664aa22e",
+    "bytes": 18430
+  },
+  {
+    "name": "polygonmesh-producer-AC1018-binary-plain.dxf",
+    "sha256": "67f70786667f1bab2078fa1de67c6de49c7a7a86f55fd0c25586b24cc225d2ea",
+    "bytes": 15345
+  },
+  {
+    "name": "polygonmesh-producer-AC1018-binary-quadratic.dxf",
+    "sha256": "62b87f2f7865c4f1b9abec18dc78d346554382a7d55fa80400dc9c445b87ef5c",
+    "bytes": 18625
+  },
+  {
+    "name": "polygonmesh-producer-AC1021-ascii-cubic.dxf",
+    "sha256": "a6fae06393caa618c5dd9f0632fbeb66415410dd87e0628939fb93ce4d9453e5",
+    "bytes": 18643
+  },
+  {
+    "name": "polygonmesh-producer-AC1021-ascii-plain.dxf",
+    "sha256": "1ab8fa0569f3f521c705b54c1652cde07b3899ede761f51dc65c9eb6eb99e467",
+    "bytes": 15639
+  },
+  {
+    "name": "polygonmesh-producer-AC1021-ascii-quadratic.dxf",
+    "sha256": "a338fe1af692e3c95e84536e424d50ae229e27fbf82591ba1d36c50ff18c1c15",
+    "bytes": 18643
+  },
+  {
+    "name": "polygonmesh-producer-AC1021-binary-cubic.dxf",
+    "sha256": "a446525bdd45952803a3a6b6eb15616aaa16a7434703631e517bb743e1ad8c1f",
+    "bytes": 19135
+  },
+  {
+    "name": "polygonmesh-producer-AC1021-binary-plain.dxf",
+    "sha256": "2af38f2dfdfdda2865c7bb74350561496fe238e4b1af7d0bea601f166185e6dc",
+    "bytes": 16050
+  },
+  {
+    "name": "polygonmesh-producer-AC1021-binary-quadratic.dxf",
+    "sha256": "a8ce9041cf7f7051d27e93cbea9d565fecb291524905d3b868a4d485dec07960",
+    "bytes": 19330
+  },
+  {
+    "name": "polygonmesh-producer-AC1024-ascii-cubic.dxf",
+    "sha256": "2704f95b7009537cb138291abf91d5c0f823250476edc8d11cd40b9f228044ce",
+    "bytes": 18644
+  },
+  {
+    "name": "polygonmesh-producer-AC1024-ascii-plain.dxf",
+    "sha256": "507ca1b367956076f1763f1a514a79ca4e15aebaecee5758539d4c915e833bad",
+    "bytes": 15640
+  },
+  {
+    "name": "polygonmesh-producer-AC1024-ascii-quadratic.dxf",
+    "sha256": "5bfaad6f362866e8bb0f3154405a28ccc5194aad59fbd4289f35eabec4859a5d",
+    "bytes": 18644
+  },
+  {
+    "name": "polygonmesh-producer-AC1024-binary-cubic.dxf",
+    "sha256": "330a80345785721c5a05f93ececd55c18bf2c23bf80b741bb055d43050f43dc0",
+    "bytes": 19135
+  },
+  {
+    "name": "polygonmesh-producer-AC1024-binary-plain.dxf",
+    "sha256": "2ea4a951537609c044662b78821e50346f19991546ca20c2a8041165e17cf27e",
+    "bytes": 16050
+  },
+  {
+    "name": "polygonmesh-producer-AC1024-binary-quadratic.dxf",
+    "sha256": "3bdaff5fc1e2a79affc2e98dc996d69eee87ae51145cb4733b230e7a7479b48b",
+    "bytes": 19330
+  },
+  {
+    "name": "polygonmesh-producer-AC1027-ascii-cubic.dxf",
+    "sha256": "9d53a80e0bef981760cf6c05af68004ec25defef50d7adc469b4ac4a30720ede",
+    "bytes": 18674
+  },
+  {
+    "name": "polygonmesh-producer-AC1027-ascii-plain.dxf",
+    "sha256": "efa40d6e6f3feb97f2597f2b9e0fa53a6a4fd2e979e28afe0356d20dbf0a7226",
+    "bytes": 15670
+  },
+  {
+    "name": "polygonmesh-producer-AC1027-ascii-quadratic.dxf",
+    "sha256": "9595d7ae215b95bc303a68365eed8e0df158e94c48d235015b2ecfd82953ee5f",
+    "bytes": 18674
+  },
+  {
+    "name": "polygonmesh-producer-AC1027-binary-cubic.dxf",
+    "sha256": "19d2ede5a4a561560cafe97cf98f9943ad3635ab7d194cba6eb7445ea78e3e63",
+    "bytes": 19161
+  },
+  {
+    "name": "polygonmesh-producer-AC1027-binary-plain.dxf",
+    "sha256": "13150a8c3aaf7963cb72960c148bab702bc0d4af0bf382a0cc8e8d81e529b655",
+    "bytes": 16076
+  },
+  {
+    "name": "polygonmesh-producer-AC1027-binary-quadratic.dxf",
+    "sha256": "31913b51a2551fdcaca199510a1af1a80ef980e33665030e3803008440b0858a",
+    "bytes": 19356
+  },
+  {
+    "name": "polygonmesh-producer-AC1032-ascii-cubic.dxf",
+    "sha256": "c79e459374eef6b67d7a8ea140e8defc9724582f72cb060629b87cbe8c3fe737",
+    "bytes": 18674
+  },
+  {
+    "name": "polygonmesh-producer-AC1032-ascii-plain.dxf",
+    "sha256": "3e0358bf083b46b7aa0aed857a20f9b297fa6a7e232772d3210b223f9a7572e1",
+    "bytes": 15670
+  },
+  {
+    "name": "polygonmesh-producer-AC1032-ascii-quadratic.dxf",
+    "sha256": "d6212091c841cdbdb868545d2c11435bb6531d949295ae359da7fd176209e8da",
+    "bytes": 18674
+  },
+  {
+    "name": "polygonmesh-producer-AC1032-binary-cubic.dxf",
+    "sha256": "6d050d4d38da6711b394d5995c3ffcd2783c76f5a8bc6007e44a3cccff86cb40",
+    "bytes": 19161
+  },
+  {
+    "name": "polygonmesh-producer-AC1032-binary-plain.dxf",
+    "sha256": "5a8f6ade0ace4e59ace45ebb7db105c0211af6f2f007345bada9c45306ce41aa",
+    "bytes": 16076
+  },
+  {
+    "name": "polygonmesh-producer-AC1032-binary-quadratic.dxf",
+    "sha256": "0c62e00a237eb6a65247fd67c44a9aee9450a05cde58c8bd3cd223102cf37b58",
+    "bytes": 19356
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2000-False.dxf",
+    "sha256": "b93d6f9a8efcefe74364ceb00a82fcb492655c16437261676ae752ea561920d4",
+    "bytes": 9219
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2000-True.dxf",
+    "sha256": "34df5f98495ee00f116c8728e5bb24214ec4de627638ca818e24411ecae82ea9",
+    "bytes": 9681
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2004-False.dxf",
+    "sha256": "8770bf0ea04c4e2885a03b287c9ff6b05caabe28862b4bf062b5c64553370e91",
+    "bytes": 9247
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2004-True.dxf",
+    "sha256": "ce66b9f6e5c63ca3df44fd373e469b951f8827e9a66b6554ba8d2474d9f0d0ac",
+    "bytes": 9708
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2007-False.dxf",
+    "sha256": "e0e564e872fffee9bffaaa5265a84ef4762f429b38c55a09e40b552b42a2322c",
+    "bytes": 9247
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2007-True.dxf",
+    "sha256": "f65422cae4087184bf65e1f7caf5dd6d3da4493ecf2974c70a2c9844c838b9a4",
+    "bytes": 9708
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2010-False.dxf",
+    "sha256": "54be66e166040985f76413c1912560e0940f9952c31d429111f2279424cbd540",
+    "bytes": 9247
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2010-True.dxf",
+    "sha256": "3c0e2236a088f61f549edb9184c21b5f502447a3825fc501265c74e33fa8b3e9",
+    "bytes": 9706
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2013-False.dxf",
+    "sha256": "3bb5211e496e1a2cf33d644a86408c44a3f687b2e6e20ce976f216beca5cdc36",
+    "bytes": 9247
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2013-True.dxf",
+    "sha256": "f4224ee0eb2c3c0db6effd7f5b9c8e22437141e2bf47f07a30262e979f696dc2",
+    "bytes": 9708
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2018-False.dxf",
+    "sha256": "96eab0fe5bcf04d710e16a79c10dc6f20bc01ae886e1f14e1a9ce52a2b3d5514",
+    "bytes": 9247
+  },
+  {
+    "name": "polygonmesh-records-clone-AutoCad2018-True.dxf",
+    "sha256": "f65ca36b922dbeb1c14101081e7cc88c5040b7aaf3b3e2e9713c90c004280b87",
+    "bytes": 9708
+  },
+  {
+    "name": "polygonmesh-records-edited-False.dxf",
+    "sha256": "81ee50462b4960d1404f48756329c5fce9f2a276913cb7af260f0ed611a4fa7a",
+    "bytes": 17584
+  },
+  {
+    "name": "polygonmesh-records-edited-True.dxf",
+    "sha256": "29ddeb8d168091928e4487abfe2b8aca35a4ade896b3abbe30982fd1e2dbefff",
+    "bytes": 16990
+  },
+  {
+    "name": "polygonmesh-records-metadata-edited-False.dxf",
+    "sha256": "baca9c13e08798c8f0724e39d413846dc1266ed7b2d9f8230cc71e42a0467984",
+    "bytes": 17766
+  },
+  {
+    "name": "polygonmesh-records-metadata-edited-True.dxf",
+    "sha256": "1e7c2a63faaaf9b09c6523885e1b4cba8e5cdf8809debbce24e5490d59299fe3",
+    "bytes": 17153
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2000-False.dxf",
+    "sha256": "400a910e0b9616310c215be731c30fa1120c8440a5adbc83e4aed6faafe155e2",
+    "bytes": 16872
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2000-True.dxf",
+    "sha256": "08611fdb2068eb3a316f22e9b98955c46aced57bac893d0cfc0b51c55fd04a1e",
+    "bytes": 16345
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2004-False.dxf",
+    "sha256": "5a32c44ea3be837a1d4d97fed51fd24b2cb62bfdfff555a7cb6b4d30dd98c562",
+    "bytes": 17216
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2004-True.dxf",
+    "sha256": "acff5571098311802aa440e7863ac5c940bd638ef256e4b6f47bca7c2354671b",
+    "bytes": 16666
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2007-False.dxf",
+    "sha256": "946e217fee336f11d8dd017aaf6876d516d30d76322669f1dab7d0432dd8edb7",
+    "bytes": 17921
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2007-True.dxf",
+    "sha256": "9d63cc9d87dfb516744623079fb0b3cf76d4e0453ee89ebb9616f7254abe17d2",
+    "bytes": 17291
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2010-False.dxf",
+    "sha256": "cfa38317ff31dfb8eff2bdebf3e290d87b662d3c9c501e7faad5ee1be0304030",
+    "bytes": 17921
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2010-True.dxf",
+    "sha256": "cbeeb1e6db21cffdc24f8c0b0b23de14c26fb255fe0a0d6b377972b0545837f2",
+    "bytes": 17292
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2013-False.dxf",
+    "sha256": "847cc12d21a6f199bd45d7af33695050c3a797c58afbfcb0dd4b0822d715cca2",
+    "bytes": 17947
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2013-True.dxf",
+    "sha256": "4adcbc9dc1d958ef94941626d17f656cf37e2adfe1baa624880533f23a2c47b7",
+    "bytes": 17322
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2018-False.dxf",
+    "sha256": "1223c463d3e492abca5ea99f9754fd53fd4a00796cb6972edd8d21a29e3abc03",
+    "bytes": 17947
+  },
+  {
+    "name": "polygonmesh-records-move-AutoCad2018-True.dxf",
+    "sha256": "a67ee80a200a8cb1192c09637798c059e01d99be9e39ba1de148a74b47308f71",
+    "bytes": 17322
+  },
+  {
+    "name": "polygonmesh-records-native-2000-False.dxf",
+    "sha256": "22c9ff43f45233abb44650193451a638d2642a4de4474131fe1eb5ebaa1c0d98",
+    "bytes": 15030
+  },
+  {
+    "name": "polygonmesh-records-native-2000-True.dxf",
+    "sha256": "a1dcdff7cfe9f51d1a1742859774cef133f58e3f196323286802d91a5a74c473",
+    "bytes": 14360
+  },
+  {
+    "name": "polygonmesh-records-native-2018-False.dxf",
+    "sha256": "fd0621a21e5f491e4182a5a5d1faec922dd832c1f80cd8655dff4a6a1f820938",
+    "bytes": 16064
+  },
+  {
+    "name": "polygonmesh-records-native-2018-True.dxf",
+    "sha256": "6c2ee2cd788976d04a9d57905f4c169d2327d211e24d3e9bd8479b172275faec",
+    "bytes": 15311
+  },
+  {
+    "name": "polygonmesh-records-parent-reactor-move-False.dxf",
+    "sha256": "07ea20d545617c1cca5789b656b4154c8c83d93acbf47395917c113b71dbaa9f",
+    "bytes": 17982
+  },
+  {
+    "name": "polygonmesh-records-parent-reactor-move-True.dxf",
+    "sha256": "20d426bbd22e94c95316238e5c6a60c0439d8a9787d8aa18c0ce37bd974c7cb5",
+    "bytes": 17351
+  },
+  {
+    "name": "polygonmesh-records-private-False-0.dxf",
+    "sha256": "a8cb11e0dbc966160e8f32969923d127ea13443a3c7c7b07c0963731a725f910",
+    "bytes": 17620
+  },
+  {
+    "name": "polygonmesh-records-private-False-1.dxf",
+    "sha256": "b15b6db6b352f693878239b67ee2044bed2983d38c9b71fe341ac6e60aa662ee",
+    "bytes": 17639
+  },
+  {
+    "name": "polygonmesh-records-private-False-2.dxf",
+    "sha256": "1351e4674905b6f90de07534220e30d369a8803b5625012bc4ed0b3d3708e64a",
+    "bytes": 17654
+  },
+  {
+    "name": "polygonmesh-records-private-False-3.dxf",
+    "sha256": "cc4a4722c7ba2cdafa2d9ea2f3ab12f7ccd6a28532ed045ed278a3c6770d51ba",
+    "bytes": 17612
+  },
+  {
+    "name": "polygonmesh-records-private-False-4.dxf",
+    "sha256": "a2648d5cc3296f0271f57b39885e7a124c1984df3387a526c778a0dd1f083045",
+    "bytes": 17615
+  },
+  {
+    "name": "polygonmesh-records-private-False-5.dxf",
+    "sha256": "bb126639555a8ee325a83e25cb2d8d615be3d6360867ed923dde49c2e2977cce",
+    "bytes": 17606
+  },
+  {
+    "name": "polygonmesh-records-private-True-0.dxf",
+    "sha256": "882d15a2e3ea808a9ae52a0d3ad92e2d7a1bb7c57d9cbb2c6525e00c0fbd6a1f",
+    "bytes": 17023
+  },
+  {
+    "name": "polygonmesh-records-private-True-1.dxf",
+    "sha256": "d9b3805d7961d1a6dc3059f20b0619e897ab099ca17e10b740a4a7ea632e3317",
+    "bytes": 17048
+  },
+  {
+    "name": "polygonmesh-records-private-True-2.dxf",
+    "sha256": "5e28ce1d82623c43a9b10bd944059ddd1655eef913284efe59675277e29c6126",
+    "bytes": 17063
+  },
+  {
+    "name": "polygonmesh-records-private-True-3.dxf",
+    "sha256": "ee93eaf002998d3515aaecfd0d0c640ba7f7cab45a4fd713eb8a5b4f2e861e27",
+    "bytes": 17015
+  },
+  {
+    "name": "polygonmesh-records-private-True-4.dxf",
+    "sha256": "5a5397662793ea4bdcf5a1744e9ecabb0e0c04169277331d5b98e0f9743d8b3d",
+    "bytes": 17018
+  },
+  {
+    "name": "polygonmesh-records-private-True-5.dxf",
+    "sha256": "4bccc60e90b8b1db9fb21e5184144adb13bb6dff9340f9e3ab2ec3f7a5c5e1ad",
+    "bytes": 17011
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2000-False-False.dxf",
+    "sha256": "60aa2175c130104eaff178aa22bc5d818cb02e6da63885df09a8db451dc765f6",
+    "bytes": 16506
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2000-False-True.dxf",
+    "sha256": "59ca419cf5a3320f5aba81c83b979129f7c794ffd10da181a4a535af298f4c6c",
+    "bytes": 16013
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2000-True-False.dxf",
+    "sha256": "60aa2175c130104eaff178aa22bc5d818cb02e6da63885df09a8db451dc765f6",
+    "bytes": 16506
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2000-True-True.dxf",
+    "sha256": "59ca419cf5a3320f5aba81c83b979129f7c794ffd10da181a4a535af298f4c6c",
+    "bytes": 16013
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2004-False-False.dxf",
+    "sha256": "0b25f142db061f53c417b1263716153a1126b294a800d56032352a2c51608e4b",
+    "bytes": 16850
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2004-False-True.dxf",
+    "sha256": "3b77d68800d7501e2ee84554a185e74edc3e25d799190066c65169d36fb82aea",
+    "bytes": 16334
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2004-True-False.dxf",
+    "sha256": "0b25f142db061f53c417b1263716153a1126b294a800d56032352a2c51608e4b",
+    "bytes": 16850
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2004-True-True.dxf",
+    "sha256": "3b77d68800d7501e2ee84554a185e74edc3e25d799190066c65169d36fb82aea",
+    "bytes": 16334
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2007-False-False.dxf",
+    "sha256": "9f0c29609d3f95ab368a4a632f940176868ba6cef34bf795ffc4ad09bd5cf98c",
+    "bytes": 17555
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2007-False-True.dxf",
+    "sha256": "b417b5a12bdf7d4ca3c34e8ae5706158fefca4fbd96954a40a9b02801e84293d",
+    "bytes": 16959
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2007-True-False.dxf",
+    "sha256": "9f0c29609d3f95ab368a4a632f940176868ba6cef34bf795ffc4ad09bd5cf98c",
+    "bytes": 17555
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2007-True-True.dxf",
+    "sha256": "b417b5a12bdf7d4ca3c34e8ae5706158fefca4fbd96954a40a9b02801e84293d",
+    "bytes": 16959
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2010-False-False.dxf",
+    "sha256": "e9effb5ef357a7f39b113691fa76297aa6715ad088b9b24fe7d5cd1012270a57",
+    "bytes": 17555
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2010-False-True.dxf",
+    "sha256": "daec090988637ddc15c44017794a3d697566957ce1df9c5ac5e051fa42350cf9",
+    "bytes": 16960
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2010-True-False.dxf",
+    "sha256": "e9effb5ef357a7f39b113691fa76297aa6715ad088b9b24fe7d5cd1012270a57",
+    "bytes": 17555
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2010-True-True.dxf",
+    "sha256": "daec090988637ddc15c44017794a3d697566957ce1df9c5ac5e051fa42350cf9",
+    "bytes": 16960
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2013-False-False.dxf",
+    "sha256": "12490e9fdb779d6a7efa92415a5e5676428346bdc76e926144f8eff3771ef004",
+    "bytes": 17581
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2013-False-True.dxf",
+    "sha256": "3dd2eb0bc67bbd292c997c080713d8a7e8577e4538a7173e3ab3400d227ab581",
+    "bytes": 16990
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2013-True-False.dxf",
+    "sha256": "12490e9fdb779d6a7efa92415a5e5676428346bdc76e926144f8eff3771ef004",
+    "bytes": 17581
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2013-True-True.dxf",
+    "sha256": "3dd2eb0bc67bbd292c997c080713d8a7e8577e4538a7173e3ab3400d227ab581",
+    "bytes": 16990
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2018-False-False.dxf",
+    "sha256": "47f8fc151f740c9d417e30d4468159f087d8a960aee5147632f57d91fc31605b",
+    "bytes": 17581
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2018-False-True.dxf",
+    "sha256": "535592e8af23b715c2781af75ca06920261e81a6cec921b0431ec5de540ccd76",
+    "bytes": 16990
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2018-True-False.dxf",
+    "sha256": "47f8fc151f740c9d417e30d4468159f087d8a960aee5147632f57d91fc31605b",
+    "bytes": 17581
+  },
+  {
+    "name": "polygonmesh-records-producer-AutoCad2018-True-True.dxf",
+    "sha256": "535592e8af23b715c2781af75ca06920261e81a6cec921b0431ec5de540ccd76",
+    "bytes": 16990
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2000-False.dxf",
+    "sha256": "74d636439381ca6364f16856f9f1e6568ed76ba6b8c98810c8026b292d864abf",
+    "bytes": 8834
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2000-True.dxf",
+    "sha256": "f26549541fea6b14c9763d63cccc3129a695b8b774f5bd22ffaba37e88380524",
+    "bytes": 8428
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2004-False.dxf",
+    "sha256": "ed8a2f5654ed6ce50c452f55cd9410848d3b3915b675bd22224576a9c9c0da54",
+    "bytes": 8863
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2004-True.dxf",
+    "sha256": "6fcea09dbdca2c8669ba95cc6f16e69e96d4789ca0cd447ace00779b1cfb55f2",
+    "bytes": 8456
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2007-False.dxf",
+    "sha256": "4439b0b8e6f0120adaea620f5907901ebf4bd66d67e9021df2a8257bed67b6bf",
+    "bytes": 8863
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2007-True.dxf",
+    "sha256": "875e405f59d68b5fc165cb7df65203478d5965bfa216de46aafb2cd2778c6f42",
+    "bytes": 8456
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2010-False.dxf",
+    "sha256": "6404056800ef1208be334d43a26d25a436757386e02fb0c40ac1f718d04400ec",
+    "bytes": 8863
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2010-True.dxf",
+    "sha256": "8478ee5a6f40a86d8aa9d23a96897d664b0b32fb3922895f616177a58c98629b",
+    "bytes": 8456
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2013-False.dxf",
+    "sha256": "1e4e4008a86c06855d3afc97ec49f02bf6e9b84438ab5fd1268d82f3db8af0e9",
+    "bytes": 8863
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2013-True.dxf",
+    "sha256": "59bf9a9e4fc584539a04d4ccaec11daae93eccb1342848898baed69412d8342f",
+    "bytes": 8456
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2018-False.dxf",
+    "sha256": "a0f9ae4d95ac55c2417b2f3e7726f19e7c2f343f5575e4e2a6441d26436d6ce3",
+    "bytes": 8863
+  },
+  {
+    "name": "polyline-topology-clone-AutoCad2018-True.dxf",
+    "sha256": "f57181d0e546941e98b223bd458a6670f16c022bb6bd52dcdeea9b03ea1c17ce",
+    "bytes": 8456
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2000-False-False.dxf",
+    "sha256": "4b73696ba5c1440f18dd47dbd06f6911439ff96f2b0f6a3c6f17251f4d5ed36c",
+    "bytes": 8839
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2000-False-True.dxf",
+    "sha256": "5ad770c9bf61e7f4a4a37ddf104ebf36c6842d5c4137c02467c6ec550ff54e1a",
+    "bytes": 8431
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2000-True-False.dxf",
+    "sha256": "3ee1c70421358dcc8c9b9793e18770d269ab800c6010f96a386610e43326881a",
+    "bytes": 8720
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2000-True-True.dxf",
+    "sha256": "e7597e1a4309a72038a749d928d3f9ff8305b06947c32b6d7b2d82478a592d67",
+    "bytes": 8431
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2004-False-False.dxf",
+    "sha256": "5d4887f586ae425a24996528a31bab26ad61457d03a6d4d7214db8bc117d3f6a",
+    "bytes": 8866
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2004-False-True.dxf",
+    "sha256": "9aa385427651c1ef4c103af0921c7fce4c17321a44b184390b22427139e60248",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2004-True-False.dxf",
+    "sha256": "c39c7d185c6f4d3adf254e73651e7ae339004a5b494b5f04fd43b83ae7ac8688",
+    "bytes": 8747
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2004-True-True.dxf",
+    "sha256": "9c3f9a7b6ac94da20430288fb199e3a290a739eeebd94d04940a27e99768ea2b",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2007-False-False.dxf",
+    "sha256": "858d587c46f8efc32949a08612d15c1a27df9955ca9c80789582193106da9d8b",
+    "bytes": 8864
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2007-False-True.dxf",
+    "sha256": "64e2e3e4c61d07a544910ffb2b0f95f0577be69d7ec5c66f8104ba972bb957bf",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2007-True-False.dxf",
+    "sha256": "cde5870133446af521bd4bc733fcbce285e0cd79354441431c205a18d07b1d80",
+    "bytes": 8747
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2007-True-True.dxf",
+    "sha256": "bffc4b5f95dd12cde5325612bc2a3d1d361486040e04ba1b3c692de2972eb2ca",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2010-False-False.dxf",
+    "sha256": "723ade90f6a1acdb1e3e73f8ceaa98c6992a5768a0709a47b8105f9aba1e9fc2",
+    "bytes": 8866
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2010-False-True.dxf",
+    "sha256": "8e7dac2ae1e57ad855e6df8cb376f3061b8e0a62b6acf8ca9ab4987ce461aa71",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2010-True-False.dxf",
+    "sha256": "783aa8ff82b0e08137c0a5ad2412853679e2d254c22b42d733801b02c8ff97a4",
+    "bytes": 8747
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2010-True-True.dxf",
+    "sha256": "3fa6fb2661002cc3377622a39d58429c1f06fb1c56feb537eff587c438fb4473",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2013-False-False.dxf",
+    "sha256": "87498d81ad8e3689032a6b9b945f0c477df22887aca813300d02f57b1c0ee732",
+    "bytes": 8866
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2013-False-True.dxf",
+    "sha256": "f22abef4782389481980f67a766a711d315d17970448ca8f10263e916daf23b0",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2013-True-False.dxf",
+    "sha256": "2271b763be8ac63dfa6efc64f658aaac76988380b5f24fd88035ec995f9ab728",
+    "bytes": 8747
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2013-True-True.dxf",
+    "sha256": "2b602eab77c442c91b1fc78d940125711a004d4836167167dca6235bdf959514",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2018-False-False.dxf",
+    "sha256": "b80b105af8e4f987a0c81940bf7ca8f7947c59b2c3601eb6183fe9ee9b44663a",
+    "bytes": 8866
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2018-False-True.dxf",
+    "sha256": "b92201da1688fc37f5eb0b728a3aa45cff2b87511049ef5dc128de6359c4ab11",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2018-True-False.dxf",
+    "sha256": "904eed49ef53b8c9688f2c231affa0ce8c2a0eb93a8a018df9f006601a0c98dc",
+    "bytes": 8747
+  },
+  {
+    "name": "polyline-topology-edit-AutoCad2018-True-True.dxf",
+    "sha256": "74eaf7f012ccdee94a65f293ba12bbd29cfba79b5c253d2a0984424b3d238c35",
+    "bytes": 8459
+  },
+  {
+    "name": "polyline-topology-minimum-False.dxf",
+    "sha256": "6f1ab709e9a51d82db7998fc306672eb4cf9c186ed021cebb1da5e771f8ac064",
+    "bytes": 8738
+  },
+  {
+    "name": "polyline-topology-minimum-True.dxf",
+    "sha256": "300a0d30d87a7ba7c143d8beae356cbc1f489daaa6be691e265987c17ffb5a78",
+    "bytes": 8329
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2000-False-False.dxf",
+    "sha256": "9f2d0a7702ac13a94f24a73a1014f3d01a137a06cb3468d9c81b63e9cf3e17bd",
+    "bytes": 29910
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2000-False-True.dxf",
+    "sha256": "06929964c5cf6a6d7b67be911ba9c41d5fe49b4d9515430dfb13b4b57d36a607",
+    "bytes": 25851
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2000-True-False.dxf",
+    "sha256": "9f2d0a7702ac13a94f24a73a1014f3d01a137a06cb3468d9c81b63e9cf3e17bd",
+    "bytes": 29910
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2000-True-True.dxf",
+    "sha256": "06929964c5cf6a6d7b67be911ba9c41d5fe49b4d9515430dfb13b4b57d36a607",
+    "bytes": 25851
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2004-False-False.dxf",
+    "sha256": "e9b43e5ae17d9528aa0c303f98eb5b5d55a1d5b37322a9515a7e98c101a3ed20",
+    "bytes": 30227
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2004-False-True.dxf",
+    "sha256": "b5c2f21c840dc295407737fef2edf62a1c0cc61306865a0dd6449b6d020b1631",
+    "bytes": 26162
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2004-True-False.dxf",
+    "sha256": "e9b43e5ae17d9528aa0c303f98eb5b5d55a1d5b37322a9515a7e98c101a3ed20",
+    "bytes": 30227
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2004-True-True.dxf",
+    "sha256": "b5c2f21c840dc295407737fef2edf62a1c0cc61306865a0dd6449b6d020b1631",
+    "bytes": 26162
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2007-False-False.dxf",
+    "sha256": "fe20ecb93b9fe4896659dbda9a198a0ba4287fff8b7877a073dba280961a6280",
+    "bytes": 31004
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2007-False-True.dxf",
+    "sha256": "f127cf80eca95b50f29b65aa0643baa4517dee1cc94930b0e7288826866c950c",
+    "bytes": 26823
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2007-True-False.dxf",
+    "sha256": "fe20ecb93b9fe4896659dbda9a198a0ba4287fff8b7877a073dba280961a6280",
+    "bytes": 31004
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2007-True-True.dxf",
+    "sha256": "f127cf80eca95b50f29b65aa0643baa4517dee1cc94930b0e7288826866c950c",
+    "bytes": 26823
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2010-False-False.dxf",
+    "sha256": "1a9897c806b9117e8d55a560c7c9b2e3228f5bb1bc111199b53709255574a1f1",
+    "bytes": 31004
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2010-False-True.dxf",
+    "sha256": "c1ad7972627bbfcb1f2d173429f6e668e6d7266d22c6d24625f4696530d9c7dd",
+    "bytes": 26824
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2010-True-False.dxf",
+    "sha256": "1a9897c806b9117e8d55a560c7c9b2e3228f5bb1bc111199b53709255574a1f1",
+    "bytes": 31004
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2010-True-True.dxf",
+    "sha256": "c1ad7972627bbfcb1f2d173429f6e668e6d7266d22c6d24625f4696530d9c7dd",
+    "bytes": 26824
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2013-False-False.dxf",
+    "sha256": "1c5792dfd0c63ce7959ffe1e97d2de4b9a085b2318e583e5c14b7de5f5a23e17",
+    "bytes": 31031
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2013-False-True.dxf",
+    "sha256": "68340da1ec8fbe05467ede6fea4a5698061fcd17dbc9ab67a6df9bb31928257e",
+    "bytes": 26858
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2013-True-False.dxf",
+    "sha256": "1c5792dfd0c63ce7959ffe1e97d2de4b9a085b2318e583e5c14b7de5f5a23e17",
+    "bytes": 31031
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2013-True-True.dxf",
+    "sha256": "68340da1ec8fbe05467ede6fea4a5698061fcd17dbc9ab67a6df9bb31928257e",
+    "bytes": 26858
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2018-False-False.dxf",
+    "sha256": "6279d1cc9bfdfac234be1148919f41fd243c817e663d5082d1c3d2039d28ec08",
+    "bytes": 31031
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2018-False-True.dxf",
+    "sha256": "9c06986e6b3a7139a3c1eaa064ebeb8d6a56176f84927696149a26466375c27a",
+    "bytes": 26858
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2018-True-False.dxf",
+    "sha256": "6279d1cc9bfdfac234be1148919f41fd243c817e663d5082d1c3d2039d28ec08",
+    "bytes": 31031
+  },
+  {
+    "name": "polyline-topology-native-AutoCad2018-True-True.dxf",
+    "sha256": "9c06986e6b3a7139a3c1eaa064ebeb8d6a56176f84927696149a26466375c27a",
+    "bytes": 26858
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2000-False-False.dxf",
+    "sha256": "28a230f6731817c742d926176fc50b2092a792a7390ebd0e27f413463f3cdf04",
+    "bytes": 15224
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2000-False-True.dxf",
+    "sha256": "01753c7913c0820c2de2c27ae6659c0afa4f2f353f27c393c172dc319664939b",
+    "bytes": 14795
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2000-True-False.dxf",
+    "sha256": "28a230f6731817c742d926176fc50b2092a792a7390ebd0e27f413463f3cdf04",
+    "bytes": 15224
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2000-True-True.dxf",
+    "sha256": "01753c7913c0820c2de2c27ae6659c0afa4f2f353f27c393c172dc319664939b",
+    "bytes": 14795
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2004-False-False.dxf",
+    "sha256": "ce3a8fe727bb59bf7f81e22de4e730ebd1bf6bbecd1d585eea25732265901f89",
+    "bytes": 15568
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2004-False-True.dxf",
+    "sha256": "51de13bcc1966e67f31faff0420317f7fee269134bca2630f31db16a26ed16a6",
+    "bytes": 15116
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2004-True-False.dxf",
+    "sha256": "ce3a8fe727bb59bf7f81e22de4e730ebd1bf6bbecd1d585eea25732265901f89",
+    "bytes": 15568
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2004-True-True.dxf",
+    "sha256": "51de13bcc1966e67f31faff0420317f7fee269134bca2630f31db16a26ed16a6",
+    "bytes": 15116
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2007-False-False.dxf",
+    "sha256": "f1e3df1ab207443a9f6ffa585780cf4a5697d3765490ecfb87f0df1f30ee2fd9",
+    "bytes": 16273
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2007-False-True.dxf",
+    "sha256": "63e5d465b6494009726ed090251e1e74e1ecc6313cbb2c99cb44de15c2dc80aa",
+    "bytes": 15741
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2007-True-False.dxf",
+    "sha256": "f1e3df1ab207443a9f6ffa585780cf4a5697d3765490ecfb87f0df1f30ee2fd9",
+    "bytes": 16273
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2007-True-True.dxf",
+    "sha256": "63e5d465b6494009726ed090251e1e74e1ecc6313cbb2c99cb44de15c2dc80aa",
+    "bytes": 15741
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2010-False-False.dxf",
+    "sha256": "501cfe05f44e8a55bf791af240f3f6c859ff43c06be2e86116bfdac8c3236786",
+    "bytes": 16273
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2010-False-True.dxf",
+    "sha256": "815fc8018bae4bcf1f5fcbc04fa6faa733ff0f703d8beda69e31d588394251e4",
+    "bytes": 15742
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2010-True-False.dxf",
+    "sha256": "501cfe05f44e8a55bf791af240f3f6c859ff43c06be2e86116bfdac8c3236786",
+    "bytes": 16273
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2010-True-True.dxf",
+    "sha256": "815fc8018bae4bcf1f5fcbc04fa6faa733ff0f703d8beda69e31d588394251e4",
+    "bytes": 15742
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2013-False-False.dxf",
+    "sha256": "97f83d9c3deddbafba512695e3fc5cf2b5976320fff964790289ffd7faab5b57",
+    "bytes": 16299
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2013-False-True.dxf",
+    "sha256": "419bd968f4f2c2304b9329805040cb184c03f06336a67e06902354250e26d813",
+    "bytes": 15772
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2013-True-False.dxf",
+    "sha256": "97f83d9c3deddbafba512695e3fc5cf2b5976320fff964790289ffd7faab5b57",
+    "bytes": 16299
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2013-True-True.dxf",
+    "sha256": "419bd968f4f2c2304b9329805040cb184c03f06336a67e06902354250e26d813",
+    "bytes": 15772
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2018-False-False.dxf",
+    "sha256": "188cb7cc533563f4ec259fe2ddff1515827419bcc8d5951caa01cab62537833a",
+    "bytes": 16299
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2018-False-True.dxf",
+    "sha256": "65bce7826a1c9d3d7b4a98e5ee37aa2b847c0772c7c9d8bb96a2ca4279052df0",
+    "bytes": 15772
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2018-True-False.dxf",
+    "sha256": "188cb7cc533563f4ec259fe2ddff1515827419bcc8d5951caa01cab62537833a",
+    "bytes": 16299
+  },
+  {
+    "name": "polyline-topology-producer-AutoCad2018-True-True.dxf",
+    "sha256": "65bce7826a1c9d3d7b4a98e5ee37aa2b847c0772c7c9d8bb96a2ca4279052df0",
+    "bytes": 15772
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2000-False.dxf",
+    "sha256": "ab394e389bbc2136eeb425c30e63b2293f7aaf086e6dffb9e61b25239c1552d4",
+    "bytes": 9167
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2000-True.dxf",
+    "sha256": "dd66d6be39f60dbc966cae511f2d7055cdf9e06a090a146da470e8029205a2cc",
+    "bytes": 8745
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2004-False.dxf",
+    "sha256": "d00e95eeee8d5833b89ead7c557e8b27c36eed8c6a3149616d01c681511f17e8",
+    "bytes": 9194
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2004-True.dxf",
+    "sha256": "a47336af10fb4daa20457c91b52eed456b3aceb9851d805a41f644fe5ae51674",
+    "bytes": 8773
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2007-False.dxf",
+    "sha256": "b5bd7c2652a3e3f9f8b8992397839d8f7bacaf2d64d91d2235c01c8c5b49c7d4",
+    "bytes": 9137
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2007-True.dxf",
+    "sha256": "49059cf5896f46af0a0ba4734735d3147ee36f337f410cbf3998f13a4fffd016",
+    "bytes": 8716
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2010-False.dxf",
+    "sha256": "6a56b07e8d6461fc293462d044f642ea2a937253e3f450f896fbfd0fcad43d03",
+    "bytes": 9137
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2010-True.dxf",
+    "sha256": "de655614622d5d6aaa25a439e8cc7f360cde87a5f0045d54567694deadccf8e6",
+    "bytes": 8716
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2013-False.dxf",
+    "sha256": "80acb6fd0603c5932a6a0d8eee3eb62f1dc3c43b9d9aae1c29a1f0f103ff10f0",
+    "bytes": 9137
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2013-True.dxf",
+    "sha256": "f06da7417d91d4a7c18a59530a1558a2a869390583c26e46f283b418f2c0251d",
+    "bytes": 8716
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2018-False.dxf",
+    "sha256": "c7dc5084371ecf4585a2df19b344e6f47fa8174679db7bfcf614ae6f0cb3dbc2",
+    "bytes": 9137
+  },
+  {
+    "name": "polyline-topology-unicode-AutoCad2018-True.dxf",
+    "sha256": "522580502a97bf1bb085d25605c3c2893e703910dfddcbd5d8bcaf8404606b14",
+    "bytes": 8716
+  },
+  {
+    "name": "vertex-clone-AutoCad2000-False.dxf",
+    "sha256": "6b69bf33b8b3c4f94402169562b149a1ed939711211718f98ba9b46d77330df5",
+    "bytes": 8878
+  },
+  {
+    "name": "vertex-clone-AutoCad2000-True.dxf",
+    "sha256": "443fe64a27463c4d97092fa645d1e109aa92cb59021be74cb71710878f9dfa06",
+    "bytes": 9323
+  },
+  {
+    "name": "vertex-clone-AutoCad2004-False.dxf",
+    "sha256": "f6202f38616e265cef38be35a555f71ae8ba88b26eb65d6e9ef7289db19949f9",
+    "bytes": 8906
+  },
+  {
+    "name": "vertex-clone-AutoCad2004-True.dxf",
+    "sha256": "7692b72cec5f0dce0213cd0c5925d7bd6e77349e2bed6964020c0b9e197f73e6",
+    "bytes": 9350
+  },
+  {
+    "name": "vertex-clone-AutoCad2007-False.dxf",
+    "sha256": "becaba99d8c2a7218094b00a7d57d922acaa1cfcb7263e5427bed9109cfc83f5",
+    "bytes": 8906
+  },
+  {
+    "name": "vertex-clone-AutoCad2007-True.dxf",
+    "sha256": "6acb6d9c796b23cd45b9f21f34c1ef1b8c06f50947fcc572bbc3c2615dacdf9e",
+    "bytes": 9348
+  },
+  {
+    "name": "vertex-clone-AutoCad2010-False.dxf",
+    "sha256": "b960f4e7483f297859740d6bbc0edc9979ce90a1f3700bf39037db3b0df3b6a4",
+    "bytes": 8906
+  },
+  {
+    "name": "vertex-clone-AutoCad2010-True.dxf",
+    "sha256": "bb6422fe30b516759f3e9d0f5a514ed3253d5ccbfa37529821caac09148fbf98",
+    "bytes": 9350
+  },
+  {
+    "name": "vertex-clone-AutoCad2013-False.dxf",
+    "sha256": "5fa51ce926a8819134404d276ffcecbdd5073344b3c5f8d00f11836453c9e4db",
+    "bytes": 8906
+  },
+  {
+    "name": "vertex-clone-AutoCad2013-True.dxf",
+    "sha256": "165c8c0ac43ca5f8be4812aa78e7b9e9e54e6e888171dd9aa250ec33c43be181",
+    "bytes": 9348
+  },
+  {
+    "name": "vertex-clone-AutoCad2018-False.dxf",
+    "sha256": "353e026373f5d3576aa83f8d04d28fdf29da5491dde2c9e9095813660aaaa029",
+    "bytes": 8906
+  },
+  {
+    "name": "vertex-clone-AutoCad2018-True.dxf",
+    "sha256": "beb4eca88424ed3f2be5b30f405290c1f1158c69b73b549db1d9de9162f326a0",
+    "bytes": 9350
+  },
+  {
+    "name": "vertex-edited-False.dxf",
+    "sha256": "d9f3dec37217807012f296c988563237f1e77d478528969318cd6fd0a0075c96",
+    "bytes": 16192
+  },
+  {
+    "name": "vertex-edited-True.dxf",
+    "sha256": "34bcbde2b94f91f19bfc587300b2cd3d473551c11a61d50de256af0b88403509",
+    "bytes": 15666
+  },
+  {
+    "name": "vertex-metadata-edited-False.dxf",
+    "sha256": "3a6afceffa290acde5b4ffb004a3329715f265b0698e68346178adc294e0575d",
+    "bytes": 16374
+  },
+  {
+    "name": "vertex-metadata-edited-True.dxf",
+    "sha256": "93f9f8b795311d2e06c1029e3eea84dc31f332d55ab3cabf7f761a5c66d5a7f4",
+    "bytes": 15829
+  },
+  {
+    "name": "vertex-move-AutoCad2000-False.dxf",
+    "sha256": "fd0f8c1e52f092d27acaa0ce71a0e6fc72f57bda6e5014a9029ece51999dabcd",
+    "bytes": 15480
+  },
+  {
+    "name": "vertex-move-AutoCad2000-True.dxf",
+    "sha256": "939d960b445c61f4737b88d0229ecca60e7ca6c927873bfe1c2aa2bbaf174cd4",
+    "bytes": 15021
+  },
+  {
+    "name": "vertex-move-AutoCad2004-False.dxf",
+    "sha256": "c3004a1fe1217c1afca4874c202e84be5a8436420ba57d88c60dfff9395f767d",
+    "bytes": 15824
+  },
+  {
+    "name": "vertex-move-AutoCad2004-True.dxf",
+    "sha256": "42b804b5b2388ab0262b8cf927f2834e6881e2f8c84226e1f4374f888dfeae0b",
+    "bytes": 15342
+  },
+  {
+    "name": "vertex-move-AutoCad2007-False.dxf",
+    "sha256": "8a5bb0660fd96ff522eaa03e24b171ee79285706b3c80605a81450aa0fa46b33",
+    "bytes": 16529
+  },
+  {
+    "name": "vertex-move-AutoCad2007-True.dxf",
+    "sha256": "62d358d5da18c0eeeeb48a26199ba30e24ebd4adb3b1074f3c4b70bc6cfd5697",
+    "bytes": 15967
+  },
+  {
+    "name": "vertex-move-AutoCad2010-False.dxf",
+    "sha256": "188aaff4409551095c32e64996d4f6c86b1db0c9e57c44f3d168136560412545",
+    "bytes": 16529
+  },
+  {
+    "name": "vertex-move-AutoCad2010-True.dxf",
+    "sha256": "c1daa6df31de2ad371c29ef0e53733a7485c66ae2565b454c8c96a670ec728f2",
+    "bytes": 15968
+  },
+  {
+    "name": "vertex-move-AutoCad2013-False.dxf",
+    "sha256": "0348d3a78af3ac4e9c1454e8c28a0b45d3c9cabb8c72ac26103d06abe720d3b3",
+    "bytes": 16555
+  },
+  {
+    "name": "vertex-move-AutoCad2013-True.dxf",
+    "sha256": "4c436c4ffcc47af9f5ac53555420fe1f7e074cebc3d22731cce2a30834a31df4",
+    "bytes": 15998
+  },
+  {
+    "name": "vertex-move-AutoCad2018-False.dxf",
+    "sha256": "7bdae3d1f5b59fcae7eda33880e160a7a0a79b31148febd0f7c00c07b20989a2",
+    "bytes": 16555
+  },
+  {
+    "name": "vertex-move-AutoCad2018-True.dxf",
+    "sha256": "b2ae7f829eaa110dc68382f5b8aef0df158c0aa2e6ef137c4ca441cf51caca06",
+    "bytes": 15998
+  },
+  {
+    "name": "vertex-native-AutoCad2000-False-False.dxf",
+    "sha256": "1385af1cf31fc8b9512ee69f21196d4092fe54fdbc48a57f7eeef94415873102",
+    "bytes": 29910
+  },
+  {
+    "name": "vertex-native-AutoCad2000-False-True.dxf",
+    "sha256": "4f0e5ba3d83a1f6c60c5b2c6275e24bee55a1949c2f1f40946a76dadca4476b4",
+    "bytes": 25851
+  },
+  {
+    "name": "vertex-native-AutoCad2000-True-False.dxf",
+    "sha256": "1385af1cf31fc8b9512ee69f21196d4092fe54fdbc48a57f7eeef94415873102",
+    "bytes": 29910
+  },
+  {
+    "name": "vertex-native-AutoCad2000-True-True.dxf",
+    "sha256": "4f0e5ba3d83a1f6c60c5b2c6275e24bee55a1949c2f1f40946a76dadca4476b4",
+    "bytes": 25851
+  },
+  {
+    "name": "vertex-native-AutoCad2004-False-False.dxf",
+    "sha256": "4bc6b12e92114c969323de0c0a9fd2b1f212290107b32b9eab28d9dee52b410a",
+    "bytes": 30227
+  },
+  {
+    "name": "vertex-native-AutoCad2004-False-True.dxf",
+    "sha256": "2f672ba85214098fa92d8079aaca46b326a839662ae408d14cd3c94b9eb06b89",
+    "bytes": 26162
+  },
+  {
+    "name": "vertex-native-AutoCad2004-True-False.dxf",
+    "sha256": "4bc6b12e92114c969323de0c0a9fd2b1f212290107b32b9eab28d9dee52b410a",
+    "bytes": 30227
+  },
+  {
+    "name": "vertex-native-AutoCad2004-True-True.dxf",
+    "sha256": "2f672ba85214098fa92d8079aaca46b326a839662ae408d14cd3c94b9eb06b89",
+    "bytes": 26162
+  },
+  {
+    "name": "vertex-native-AutoCad2007-False-False.dxf",
+    "sha256": "08587a820180710cc5de749ced03c553edb2d8c8fa1d21ad625c28874fe5c3d2",
+    "bytes": 31004
+  },
+  {
+    "name": "vertex-native-AutoCad2007-False-True.dxf",
+    "sha256": "e2f9d99148bbe3a20cb1cc1115479717d3ea2bcad3bda11976ae0a353d3f9338",
+    "bytes": 26823
+  },
+  {
+    "name": "vertex-native-AutoCad2007-True-False.dxf",
+    "sha256": "08587a820180710cc5de749ced03c553edb2d8c8fa1d21ad625c28874fe5c3d2",
+    "bytes": 31004
+  },
+  {
+    "name": "vertex-native-AutoCad2007-True-True.dxf",
+    "sha256": "e2f9d99148bbe3a20cb1cc1115479717d3ea2bcad3bda11976ae0a353d3f9338",
+    "bytes": 26823
+  },
+  {
+    "name": "vertex-native-AutoCad2010-False-False.dxf",
+    "sha256": "ef4ec2c0426103e57952e83ff381dbc375df5cd69b4ecc7b71a96f7db93eb06d",
+    "bytes": 31004
+  },
+  {
+    "name": "vertex-native-AutoCad2010-False-True.dxf",
+    "sha256": "295877d1c5f747e1f54ad623fde023c31ae775b7a9fa8021f596957b4c8274b2",
+    "bytes": 26824
+  },
+  {
+    "name": "vertex-native-AutoCad2010-True-False.dxf",
+    "sha256": "ef4ec2c0426103e57952e83ff381dbc375df5cd69b4ecc7b71a96f7db93eb06d",
+    "bytes": 31004
+  },
+  {
+    "name": "vertex-native-AutoCad2010-True-True.dxf",
+    "sha256": "295877d1c5f747e1f54ad623fde023c31ae775b7a9fa8021f596957b4c8274b2",
+    "bytes": 26824
+  },
+  {
+    "name": "vertex-native-AutoCad2013-False-False.dxf",
+    "sha256": "1b2fcb8cca2da636a517516ed4c30dd3764c6fffa71f240542ef3f9df89b0e1c",
+    "bytes": 31031
+  },
+  {
+    "name": "vertex-native-AutoCad2013-False-True.dxf",
+    "sha256": "39e928ae1baaec1a445b3c99e003104cd9c93c45bda39584346dd02872cb5403",
+    "bytes": 26858
+  },
+  {
+    "name": "vertex-native-AutoCad2013-True-False.dxf",
+    "sha256": "1b2fcb8cca2da636a517516ed4c30dd3764c6fffa71f240542ef3f9df89b0e1c",
+    "bytes": 31031
+  },
+  {
+    "name": "vertex-native-AutoCad2013-True-True.dxf",
+    "sha256": "39e928ae1baaec1a445b3c99e003104cd9c93c45bda39584346dd02872cb5403",
+    "bytes": 26858
+  },
+  {
+    "name": "vertex-native-AutoCad2018-False-False.dxf",
+    "sha256": "1aa396765c8875cdbda12e72d8bdc532493252caca64dfad119158b8c21b4e6d",
+    "bytes": 31031
+  },
+  {
+    "name": "vertex-native-AutoCad2018-False-True.dxf",
+    "sha256": "bc05587719ac8187eea96a1d2bed4a2e672de5f0d00e392026d784de46a69e5e",
+    "bytes": 26858
+  },
+  {
+    "name": "vertex-native-AutoCad2018-True-False.dxf",
+    "sha256": "1aa396765c8875cdbda12e72d8bdc532493252caca64dfad119158b8c21b4e6d",
+    "bytes": 31031
+  },
+  {
+    "name": "vertex-native-AutoCad2018-True-True.dxf",
+    "sha256": "bc05587719ac8187eea96a1d2bed4a2e672de5f0d00e392026d784de46a69e5e",
+    "bytes": 26858
+  },
+  {
+    "name": "vertex-parent-reactor-move-False.dxf",
+    "sha256": "4db0eb27368bb0c92fd78e4263066aa7bbe0d4831127f31295cf2bd3cc596527",
+    "bytes": 16590
+  },
+  {
+    "name": "vertex-parent-reactor-move-True.dxf",
+    "sha256": "49c31137a72065fa60d4b6b57273a641a7b02d9dae0f4ad85a522cb8242f7bcf",
+    "bytes": 16027
+  },
+  {
+    "name": "vertex-private-False-0.dxf",
+    "sha256": "b504cd14ae2e134f46b1ecc8751fb1638d79d5f4128556fda227118db87f0c06",
+    "bytes": 16228
+  },
+  {
+    "name": "vertex-private-False-1.dxf",
+    "sha256": "335e83b9be8ea6ad695606ea464709acf354c82fb61258d595736c2364f921bb",
+    "bytes": 16247
+  },
+  {
+    "name": "vertex-private-False-2.dxf",
+    "sha256": "a9ccee51eb9c1977cddc9b775531a77ef8a4489bacbd74e4439369883713cd2a",
+    "bytes": 16262
+  },
+  {
+    "name": "vertex-private-False-3.dxf",
+    "sha256": "00538a041f95359bd5b80937d6fe7fdbbe175534cba4f3aadcd64765a0ff8c6a",
+    "bytes": 16220
+  },
+  {
+    "name": "vertex-private-False-4.dxf",
+    "sha256": "32db45dde100568624eaa010e10cc22ae822c7d9162f392cc2c394955750df4a",
+    "bytes": 16223
+  },
+  {
+    "name": "vertex-private-False-5.dxf",
+    "sha256": "3e1ba0498464eff751f45b0a0c4184979cc1c90828da702b7e56d8bf787e3f93",
+    "bytes": 16214
+  },
+  {
+    "name": "vertex-private-True-0.dxf",
+    "sha256": "80d805a88ed430cf3528917a9b1af1650267b4627e8cd20292eb9d8a0b78c3f8",
+    "bytes": 15699
+  },
+  {
+    "name": "vertex-private-True-1.dxf",
+    "sha256": "b11f15aa346445d8c45ce964d39daec1ea139f3c4ab3b12cdd95399fd2f54ec5",
+    "bytes": 15724
+  },
+  {
+    "name": "vertex-private-True-2.dxf",
+    "sha256": "b64fc4622992aa61632e8f60ef45f90eabe8340cd9310d995eef7e16e5be0c7e",
+    "bytes": 15739
+  },
+  {
+    "name": "vertex-private-True-3.dxf",
+    "sha256": "6ce924e0457089f2a9de319dbd25bfb29ab3823997f9f576ac05e97944c155bf",
+    "bytes": 15691
+  },
+  {
+    "name": "vertex-private-True-4.dxf",
+    "sha256": "599f63d5e2f5c39ca804665ecf1b9b5031f06ff00f599c74193fa63ac3957eba",
+    "bytes": 15694
+  },
+  {
+    "name": "vertex-private-True-5.dxf",
+    "sha256": "9b5738abb25f5d6d3a827ea783a1b765e4555a96843a5efe98c0bcccf34a853a",
+    "bytes": 15687
+  },
+  {
+    "name": "vertex-producer-AutoCad2000-False-False.dxf",
+    "sha256": "d0512ab28bbc2de27464d2e5a73d4328bd1e22dc695a41549da9fb8d8d4410e8",
+    "bytes": 15114
+  },
+  {
+    "name": "vertex-producer-AutoCad2000-False-True.dxf",
+    "sha256": "713c88791620d6d88f73bfaf9d4a17f7f6cedab2f01db4d860a58f14e712b467",
+    "bytes": 14689
+  },
+  {
+    "name": "vertex-producer-AutoCad2000-True-False.dxf",
+    "sha256": "d0512ab28bbc2de27464d2e5a73d4328bd1e22dc695a41549da9fb8d8d4410e8",
+    "bytes": 15114
+  },
+  {
+    "name": "vertex-producer-AutoCad2000-True-True.dxf",
+    "sha256": "713c88791620d6d88f73bfaf9d4a17f7f6cedab2f01db4d860a58f14e712b467",
+    "bytes": 14689
+  },
+  {
+    "name": "vertex-producer-AutoCad2004-False-False.dxf",
+    "sha256": "3e308cb64e82ac72c206eab2fae75b3f482d73cecbecaeb69d03ebfc4ff2e882",
+    "bytes": 15458
+  },
+  {
+    "name": "vertex-producer-AutoCad2004-False-True.dxf",
+    "sha256": "ecb817018144e72b61daa8557458c59cf95be3617a0b97bc0f85a83b6c9f7193",
+    "bytes": 15010
+  },
+  {
+    "name": "vertex-producer-AutoCad2004-True-False.dxf",
+    "sha256": "3e308cb64e82ac72c206eab2fae75b3f482d73cecbecaeb69d03ebfc4ff2e882",
+    "bytes": 15458
+  },
+  {
+    "name": "vertex-producer-AutoCad2004-True-True.dxf",
+    "sha256": "ecb817018144e72b61daa8557458c59cf95be3617a0b97bc0f85a83b6c9f7193",
+    "bytes": 15010
+  },
+  {
+    "name": "vertex-producer-AutoCad2007-False-False.dxf",
+    "sha256": "e20a0450615677045c1b08a0c9bf0b9de36994c47cff7a0c524e04e874802c87",
+    "bytes": 16163
+  },
+  {
+    "name": "vertex-producer-AutoCad2007-False-True.dxf",
+    "sha256": "77646406bfe51922187e7a5cc436438b1af44681b22b3f8ba32a33728582d274",
+    "bytes": 15635
+  },
+  {
+    "name": "vertex-producer-AutoCad2007-True-False.dxf",
+    "sha256": "e20a0450615677045c1b08a0c9bf0b9de36994c47cff7a0c524e04e874802c87",
+    "bytes": 16163
+  },
+  {
+    "name": "vertex-producer-AutoCad2007-True-True.dxf",
+    "sha256": "77646406bfe51922187e7a5cc436438b1af44681b22b3f8ba32a33728582d274",
+    "bytes": 15635
+  },
+  {
+    "name": "vertex-producer-AutoCad2010-False-False.dxf",
+    "sha256": "2af8c36631a12833c5597423bc8cd6fe0ff4d7847b47a919a22fcfaa0c5af0c9",
+    "bytes": 16163
+  },
+  {
+    "name": "vertex-producer-AutoCad2010-False-True.dxf",
+    "sha256": "d919d89491450ffa52ae9e26a757567ab55d73f637fda12856929972e5f11c0b",
+    "bytes": 15636
+  },
+  {
+    "name": "vertex-producer-AutoCad2010-True-False.dxf",
+    "sha256": "2af8c36631a12833c5597423bc8cd6fe0ff4d7847b47a919a22fcfaa0c5af0c9",
+    "bytes": 16163
+  },
+  {
+    "name": "vertex-producer-AutoCad2010-True-True.dxf",
+    "sha256": "d919d89491450ffa52ae9e26a757567ab55d73f637fda12856929972e5f11c0b",
+    "bytes": 15636
+  },
+  {
+    "name": "vertex-producer-AutoCad2013-False-False.dxf",
+    "sha256": "ea48d92b916ef7fd91435cfafff637ee55de0a1672827510a95229a351c99b0d",
+    "bytes": 16189
+  },
+  {
+    "name": "vertex-producer-AutoCad2013-False-True.dxf",
+    "sha256": "5ec174fb26509bea3e4be2c372130244f71926a110435e7b11ca3f14f179cab6",
+    "bytes": 15666
+  },
+  {
+    "name": "vertex-producer-AutoCad2013-True-False.dxf",
+    "sha256": "ea48d92b916ef7fd91435cfafff637ee55de0a1672827510a95229a351c99b0d",
+    "bytes": 16189
+  },
+  {
+    "name": "vertex-producer-AutoCad2013-True-True.dxf",
+    "sha256": "5ec174fb26509bea3e4be2c372130244f71926a110435e7b11ca3f14f179cab6",
+    "bytes": 15666
+  },
+  {
+    "name": "vertex-producer-AutoCad2018-False-False.dxf",
+    "sha256": "697acb949f4956a9696e6cdd53ce96284621b0f41e1d52f84ac8d71bb27d13bf",
+    "bytes": 16189
+  },
+  {
+    "name": "vertex-producer-AutoCad2018-False-True.dxf",
+    "sha256": "049b9eb8bbff609180ff1bc5521ce7b0575c373e5a2a5b77bff44b40adce3279",
+    "bytes": 15666
+  },
+  {
+    "name": "vertex-producer-AutoCad2018-True-False.dxf",
+    "sha256": "697acb949f4956a9696e6cdd53ce96284621b0f41e1d52f84ac8d71bb27d13bf",
+    "bytes": 16189
+  },
+  {
+    "name": "vertex-producer-AutoCad2018-True-True.dxf",
+    "sha256": "049b9eb8bbff609180ff1bc5521ce7b0575c373e5a2a5b77bff44b40adce3279",
+    "bytes": 15666
+  }
+]

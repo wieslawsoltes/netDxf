@@ -11,7 +11,7 @@ internal static partial class Program
     {
         foreach (DxfVersion version in SupportedVersions)
         foreach (bool binary in new[] { false, true })
-        foreach (int role in Enumerable.Range(0, 7))
+        foreach (int role in Enumerable.Range(0, 9))
         foreach (bool xdata in new[] { false, true })
         foreach (bool containingBlock in new[] { false, true })
             Run($"retained-record-target/{version}/{binary}/{role}/{xdata}/{containingBlock}",
@@ -25,8 +25,10 @@ internal static partial class Program
             ? new Polyline3D(new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY })
             : role < 4
                 ? new PolygonMesh(2, 2, new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY, new Vector3(1, 1, 0) })
-                : new PolyfaceMesh(new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY },
-                    new[] { new PolyfaceMeshFace(new short[] { 1, -2, 3 }) });
+                : role < 7
+                    ? new PolyfaceMesh(new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY },
+                        new[] { new PolyfaceMeshFace(new short[] { 1, -2, 3 }) })
+                    : (Polyline2D)Legacy2DPolyline(StoredDimAssocLoad(Legacy2DInput(version, binary)), version, binary, true).Clone();
         doc.Entities.Add(parent);
         string parentHandle = parent.Handle;
         doc = StoredDimAssocLoad(StoredDimAssocSave(doc, binary));
@@ -36,6 +38,7 @@ internal static partial class Program
             Polyline3D p => role == 0 ? p.VertexRecords[0] : p.EndSequenceRecord,
             PolygonMesh p => role == 2 ? p.VertexRecords[0] : p.EndSequenceRecord,
             PolyfaceMesh p => role == 4 ? p.VertexRecords[0] : role == 5 ? p.FaceRecords[0] : p.EndSequenceRecord,
+            Polyline2D p => role == 7 ? p.VertexRecords[0] : p.EndSequenceRecord,
             _ => throw new InvalidOperationException()
         };
         string recordHandle = record.Handle;

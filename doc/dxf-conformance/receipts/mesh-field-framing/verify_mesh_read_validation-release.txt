@@ -1,0 +1,7 @@
+PASS mesh-validated-AutoCad2010-False.dxf: topology, values, metadata and audit
+PASS mesh-validated-AutoCad2010-True.dxf: topology, values, metadata and audit
+PASS mesh-validated-AutoCad2013-False.dxf: topology, values, metadata and audit
+PASS mesh-validated-AutoCad2013-True.dxf: topology, values, metadata and audit
+PASS mesh-validated-AutoCad2018-False.dxf: topology, values, metadata and audit
+PASS mesh-validated-AutoCad2018-True.dxf: topology, values, metadata and audit
+Independent reader: ezdxf 1.4.4; no AutoCAD execution claimed.

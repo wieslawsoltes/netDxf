@@ -567,6 +567,7 @@ namespace netDxf.Entities
                     // Preserve the active endpoints exactly and avoid an
                     // unnecessary overflow of a+b on large same-sign domains.
                     double reflected = knot == a ? b : knot == b ? a :
+                        (a >= 0.0) != (b >= 0.0) ? (a + b) - knot :
                         ((a >= 0.0) == (knot >= 0.0) ? (a - knot) + b :
                          (b >= 0.0) == (knot >= 0.0) ? (b - knot) + a : (a + b) - knot);
                     if (double.IsNaN(reflected) || double.IsInfinity(reflected))
@@ -617,6 +618,13 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="precision">Number of vertexes generated.</param>
         /// <returns>A list vertexes that represents the spline.</returns>
+        /// <remarks>
+        /// Periodic evaluation uses the stored active knot domain and requires
+        /// positive finite weights and cyclic strictly increasing knot spans.
+        /// Scaled arithmetic leaves stored arrays unchanged. Ill-conditioned local
+        /// samples use bounded exact-rational evaluation; unsupported or unrepresentable
+        /// samples throw instead of returning an artificial origin point.
+        /// </remarks>
         public List<Vector3> PolygonalVertexes(int precision)
         {
             return NurbsEvaluator(this.controlPoints.ToArray(), this.weights.ToArray(), this.knots, this.degree, this.IsClosed, this.isClosedPeriodic, precision);
@@ -746,6 +754,7 @@ namespace netDxf.Entities
                 }
             }
 
+            if (isClosedPeriodic) PeriodicSplineData.Validate(controls, weights, knots, degree);
             Vector3[] ctrl;
             double[] w;
             if (isClosedPeriodic)
@@ -772,15 +781,15 @@ namespace netDxf.Entities
             double uEnd;
             List<Vector3> vertexes = new List<Vector3>();
 
-            if (isClosed)
-            {
-                uStart = knots[0];
-                uEnd = knots[knots.Length - 1];
-            }
-            else if (isClosedPeriodic)
+            if (isClosedPeriodic)
             {
                 uStart = knots[degree];
                 uEnd = knots[knots.Length - degree - 1];
+            }
+            else if (isClosed)
+            {
+                uStart = knots[0];
+                uEnd = knots[knots.Length - 1];
             }
             else
             {
@@ -790,11 +799,16 @@ namespace netDxf.Entities
             }
 
             double uDelta = (uEnd - uStart) / precision;
-
+            if (isClosedPeriodic && (uDelta <= 0 || uStart + uDelta <= uStart || uEnd - uDelta >= uEnd))
+                throw new ArgumentException("The requested periodic SPLINE sampling parameters cannot be represented.");
+            double previous = uStart;
             for (int i = 0; i < precision; i++)
             {
                 double u = uStart + uDelta * i;
-                vertexes.Add(C(ctrl, w, knots, degree, u));
+                if (isClosedPeriodic && (i > 0 && u <= previous || u >= uEnd))
+                    throw new ArgumentException("The requested periodic SPLINE sampling parameters cannot be represented.");
+                previous = u;
+                vertexes.Add(C(ctrl, w, knots, degree, u, isClosedPeriodic));
             }
 
             if (!(isClosed || isClosedPeriodic))
@@ -892,8 +906,9 @@ namespace netDxf.Entities
             return knots;
         }
 
-        private static Vector3 C(Vector3[] ctrlPoints, double[] weights, double[] knots, int degree, double u)
+        private static Vector3 C(Vector3[] ctrlPoints, double[] weights, double[] knots, int degree, double u, bool strictPeriodic)
         {
+            if (strictPeriodic) return PeriodicPoint(ctrlPoints, weights, knots, degree, u);
             Vector3 vectorSum = Vector3.Zero;
             double denominatorSum = 0.0;
 
@@ -912,6 +927,145 @@ namespace netDxf.Entities
             }
 
             return (1.0 / denominatorSum) * vectorSum;
+        }
+
+        private static Vector3 PeriodicPoint(Vector3[] controls, double[] weights, double[] knots, int degree, double parameter)
+        {
+            // Only degree + 1 controls have support at a sample. Keep products
+            // as mantissa/exponent pairs until the final quotient: even a
+            // subnormal coefficient can make a finite coordinate contribution.
+            int low = degree, high = controls.Length;
+            while (low + 1 < high)
+            {
+                int middle = low + (high - low) / 2;
+                if (parameter < knots[middle]) high = middle;
+                else low = middle;
+            }
+            int first = low - degree;
+            double[] coefficients = new double[degree + 1];
+            int[] exponents = new int[degree + 1];
+            for (int i = 0; i <= degree; i++)
+            {
+                double value = N(knots, first + i, degree, parameter);
+                if (double.IsNaN(value) || double.IsInfinity(value) || value < 0 ||
+                    (value > 0 && value < 2.2250738585072014e-308) ||
+                    (value == 0 && (i < degree || parameter > knots[low])))
+                    return PeriodicSplineExactEvaluation.Evaluate(controls, weights, knots, degree, parameter, first);
+                if (value == 0) continue;
+                double basisMantissa = PeriodicMantissa(value, out int basisExponent);
+                double weightMantissa = PeriodicMantissa(weights[first + i], out int weightExponent);
+                coefficients[i] = basisMantissa * weightMantissa;
+                exponents[i] = basisExponent + weightExponent;
+            }
+            double[] terms = (double[])coefficients.Clone();
+            int[] powers = (int[])exponents.Clone();
+            double denominator = PeriodicScaledSum(terms, powers, out int denominatorExponent);
+            if (denominator <= 0) throw new ArgumentException("The periodic SPLINE evaluation denominator is not representable.");
+            Vector3? exactPoint = null;
+            return new Vector3(
+                PeriodicCoordinate(controls, first, 0, coefficients, exponents, terms, powers, denominator, denominatorExponent, weights, knots, degree, parameter, ref exactPoint),
+                PeriodicCoordinate(controls, first, 1, coefficients, exponents, terms, powers, denominator, denominatorExponent, weights, knots, degree, parameter, ref exactPoint),
+                PeriodicCoordinate(controls, first, 2, coefficients, exponents, terms, powers, denominator, denominatorExponent, weights, knots, degree, parameter, ref exactPoint));
+        }
+
+        private static double PeriodicCoordinate(Vector3[] controls, int first, int axis, double[] coefficients, int[] exponents,
+            double[] terms, int[] powers, double denominator, int denominatorExponent, double[] weights, double[] knots,
+            int degree, double parameter, ref Vector3? exactPoint)
+        {
+            if (exactPoint.HasValue) return axis == 0 ? exactPoint.Value.X : axis == 1 ? exactPoint.Value.Y : exactPoint.Value.Z;
+            double minimum = double.MaxValue, maximum = -double.MaxValue;
+            int largestPower = int.MinValue;
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+                terms[i] = 0; powers[i] = 0;
+                if (coefficients[i] == 0) continue;
+                Vector3 point = controls[first + i];
+                double coordinate = axis == 0 ? point.X : axis == 1 ? point.Y : point.Z;
+                minimum = Math.Min(minimum, coordinate); maximum = Math.Max(maximum, coordinate);
+                if (coordinate == 0) continue;
+                terms[i] = coefficients[i] * PeriodicMantissa(coordinate, out int coordinateExponent);
+                powers[i] = exponents[i] + coordinateExponent;
+                largestPower = Math.Max(largestPower, powers[i]);
+            }
+            // Positive rational weights form a convex combination. Preserve
+            // constant coordinates exactly, including the binary64 endpoints.
+            if (minimum == maximum) return minimum;
+            double numerator = PeriodicScaledSum(terms, powers, out int numeratorExponent);
+            if (minimum < 0 && maximum > 0)
+            {
+                int resultPower = int.MinValue;
+                if (numerator != 0)
+                {
+                    PeriodicMantissa(numerator, out int mantissaPower);
+                    resultPower = numeratorExponent + mantissaPower;
+                }
+                // When opposite terms cancel significantly, rounding either
+                // the products or the basis can dominate the answer. Evaluate
+                // the original binary64 packet exactly for this local sample.
+                if (numerator == 0 || largestPower - resultPower >= 4)
+                {
+                    exactPoint = PeriodicSplineExactEvaluation.Evaluate(controls, weights, knots, degree, parameter, first);
+                    return axis == 0 ? exactPoint.Value.X : axis == 1 ? exactPoint.Value.Y : exactPoint.Value.Z;
+                }
+            }
+            double result = PeriodicScale(numerator / denominator, numeratorExponent - denominatorExponent);
+            // Rounding at Double.MaxValue must not create an infinity outside
+            // the finite convex hull of the controls.
+            result = Math.Max(minimum, Math.Min(maximum, result));
+            PeriodicSplineData.Finite(result);
+            return result;
+        }
+
+        private static double PeriodicMantissa(double value, out int exponent)
+        {
+            long bits = BitConverter.DoubleToInt64Bits(value);
+            int field = (int)((bits >> 52) & 0x7ff);
+            int adjustment = 0;
+            if (field == 0)
+            {
+                // Multiplication by 2^54 normalizes every nonzero subnormal
+                // without rounding or changing its significand.
+                value *= 18014398509481984.0;
+                bits = BitConverter.DoubleToInt64Bits(value);
+                field = (int)((bits >> 52) & 0x7ff);
+                adjustment = -54;
+            }
+            exponent = field - 1023 + adjustment;
+            return BitConverter.Int64BitsToDouble((bits & unchecked((long)0x800fffffffffffffUL)) | 0x3ff0000000000000L);
+        }
+
+        private static double PeriodicScaledSum(double[] terms, int[] powers, out int exponent)
+        {
+            // Process large terms first so cancellation can expose small terms
+            // before their scale is chosen. Compensate each rounded addition.
+            Array.Sort(powers, terms);
+            double sum = 0, correction = 0;
+            exponent = 0;
+            for (int i = terms.Length - 1; i >= 0; i--)
+            {
+                if (terms[i] == 0) continue;
+                if (sum == 0 && correction == 0) exponent = powers[i];
+                double value = PeriodicScale(terms[i], powers[i] - exponent);
+                double next = sum + value;
+                correction += Math.Abs(sum) >= Math.Abs(value) ? (sum - next) + value : (value - next) + sum;
+                sum = next;
+            }
+            return sum + correction;
+        }
+
+        private static double PeriodicScale(double value, int exponent)
+        {
+            if (value == 0 || exponent == 0) return value;
+            double mantissa = PeriodicMantissa(value, out int valueExponent);
+            int combined = valueExponent + exponent;
+            long bits = BitConverter.DoubleToInt64Bits(mantissa);
+            if (combined > 1023) return value > 0 ? double.PositiveInfinity : double.NegativeInfinity;
+            if (combined < -1075) return BitConverter.Int64BitsToDouble(bits & long.MinValue);
+            if (combined >= -1022)
+                return BitConverter.Int64BitsToDouble((bits & unchecked((long)0x800fffffffffffffUL)) | ((long)(combined + 1023) << 52));
+            // This factor is only 2^-1 through 2^51. The final multiplication
+            // is the sole rounding into the subnormal range, including ties.
+            return (mantissa * Math.Pow(2.0, combined + 1074)) * double.Epsilon;
         }
 
         private static double N(double[] knots, int i, int p, double u)

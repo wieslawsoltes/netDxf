@@ -1,0 +1,47 @@
+[
+  {
+    "file": "before/core-outputs.json",
+    "sha256": "c9545d8c8f102d486c56f07bd50d63f4ed11a51dff1dfd6fd4bf4478cac31a81",
+    "bytes": 727592
+  },
+  {
+    "file": "before/weighted-cancel-outputs.json",
+    "sha256": "4f566b282eeb8121d84adcf5933c55333b5d7b1bd470c7229d80c724505a7517",
+    "bytes": 12690
+  },
+  {
+    "file": "before/basis-subnormal-outputs.json",
+    "sha256": "968ef1e5bdec0637a71a2ab28fb25c6b6b671eda1bf2ebd6cd9b43e74e046d59",
+    "bytes": 1122
+  },
+  {
+    "file": "after-debug/core-outputs.json",
+    "sha256": "1ae57611dd827ccdaac35949ee66357f5a45b7683f0debbd98655c6306226118",
+    "bytes": 736739
+  },
+  {
+    "file": "after-debug/weighted-cancel-outputs.json",
+    "sha256": "25e762f3115fd83c00c96a7f5a38d064245618e159cbbf2d64e6e8f461131e4e",
+    "bytes": 12832
+  },
+  {
+    "file": "after-debug/basis-subnormal-outputs.json",
+    "sha256": "ed726a8e0eaae43aae40378b36586857a9def414767ab826783e736b3134bd81",
+    "bytes": 1134
+  },
+  {
+    "file": "after-release/core-outputs.json",
+    "sha256": "1ae57611dd827ccdaac35949ee66357f5a45b7683f0debbd98655c6306226118",
+    "bytes": 736739
+  },
+  {
+    "file": "after-release/weighted-cancel-outputs.json",
+    "sha256": "25e762f3115fd83c00c96a7f5a38d064245618e159cbbf2d64e6e8f461131e4e",
+    "bytes": 12832
+  },
+  {
+    "file": "after-release/basis-subnormal-outputs.json",
+    "sha256": "ed726a8e0eaae43aae40378b36586857a9def414767ab826783e736b3134bd81",
+    "bytes": 1134
+  }
+]

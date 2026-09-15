@@ -1,0 +1,7 @@
+PASS mesh-write-validation-AutoCad2010-False.dxf
+PASS mesh-write-validation-AutoCad2010-True.dxf
+PASS mesh-write-validation-AutoCad2013-False.dxf
+PASS mesh-write-validation-AutoCad2013-True.dxf
+PASS mesh-write-validation-AutoCad2018-False.dxf
+PASS mesh-write-validation-AutoCad2018-True.dxf
+PASS ezdxf 1.4.4: 6 meshes / 12 faces; zero audit errors/repairs

@@ -1,0 +1,41 @@
+{
+  "contract": "Eight complete native packets; only the two ordinary parent owners map from native BLOCK_RECORDs into the declared carrier. Common tables and surrounding drawing are synthetic. Two R2000 chains are separate from six-profile producer evidence.",
+  "native_application_executed": false,
+  "source": {
+    "repository": "LibreDWG/libredwg",
+    "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+    "path": "test/test-data/2000/PolyLine2D.dxf",
+    "git_blob": "514f945a48e8a9854797b317764ce5781a9e20c7",
+    "source_sha256": "e74f03a383593ef96d5a349618390a393e8c5697e253014d4218fd40e3f37250",
+    "gzip_file": "native-Polyline2D-R2000.dxf.gz"
+  },
+  "file": "native-R2000.dxf",
+  "sha256": "7626c4405a3392b2e3898a0c772e1814d756103ce377b5355fe70206f5c1799f",
+  "carrier_owner": "17",
+  "chains": [
+    {
+      "parent": "1EF",
+      "vertices": [
+        "1F0",
+        "1F1"
+      ],
+      "seqend": "1F2",
+      "native_owner": "1EC",
+      "default_start_width": 0.15,
+      "default_end_width": 0.15,
+      "closed": false
+    },
+    {
+      "parent": "1FF",
+      "vertices": [
+        "201",
+        "202"
+      ],
+      "seqend": "203",
+      "native_owner": "1FC",
+      "default_start_width": 0.5,
+      "default_end_width": 0.5,
+      "closed": true
+    }
+  ]
+}

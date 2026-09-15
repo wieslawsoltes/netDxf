@@ -12,6 +12,20 @@ namespace netDxf.Objects
     public sealed class DxfTableStyleHeader
     {
         private DxfTableStyleHeader() { }
+        /// <summary>Creates replacement values for a recognized classic stored header.</summary>
+        /// <remarks>Description is decoded text of at most 255 UTF-16 code units. Stored flags are not interpreted.</remarks>
+        public DxfTableStyleHeader(string description, short flowDirection, short storedFlags,
+            double horizontalCellMargin, double verticalCellMargin, bool suppressTitle, bool suppressColumnHeading)
+        {
+            DxfStoredTableContent.CheckEditableText(description, nameof(description));
+            if (description.Length > 255) throw new ArgumentOutOfRangeException(nameof(description));
+            if (flowDirection < 0 || flowDirection > 1) throw new ArgumentOutOfRangeException(nameof(flowDirection));
+            if (!FiniteNonnegative(horizontalCellMargin)) throw new ArgumentOutOfRangeException(nameof(horizontalCellMargin));
+            if (!FiniteNonnegative(verticalCellMargin)) throw new ArgumentOutOfRangeException(nameof(verticalCellMargin));
+            this.Description = description; this.FlowDirection = flowDirection; this.StoredFlags = storedFlags;
+            this.HorizontalCellMargin = horizontalCellMargin; this.VerticalCellMargin = verticalCellMargin;
+            this.SuppressTitle = suppressTitle; this.SuppressColumnHeading = suppressColumnHeading;
+        }
         /// <summary>Gets the stored description, independently of the owning dictionary name.</summary>
         public string Description { get; private set; }
         /// <summary>Gets the stored flow direction: zero down, one up.</summary>
@@ -56,12 +70,38 @@ namespace netDxf.Objects
         public DxfTableStyleRowValues Values { get; }
         /// <summary>Gets the ordered public row packet; private application groups remain in the parent object's complete Tags.</summary>
         public IReadOnlyList<DxfTag> Tags { get; }
+        /// <summary>Creates a scalar edit bound to this row snapshot.</summary>
+        public DxfTableStyleRowEdit WithValues(DxfTableStyleRowValues values)
+        {
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            if (this.Values == null) throw new NotSupportedException("The stored row scalars are not qualified for editing.");
+            return new DxfTableStyleRowEdit(this, values);
+        }
         internal void BindTextStyle(TextStyle style) { this.TextStyle = style; }
+    }
+    /// <summary>An immutable scalar replacement tied to one current TABLESTYLE row snapshot.</summary>
+    public sealed class DxfTableStyleRowEdit
+    {
+        internal DxfTableStyleRowEdit(DxfTableStyleRow original, DxfTableStyleRowValues values)
+        { this.Original = original; this.Values = values; }
+        /// <summary>Gets the original row snapshot.</summary>
+        public DxfTableStyleRow Original { get; }
+        /// <summary>Gets the replacement scalar values.</summary>
+        public DxfTableStyleRowValues Values { get; }
     }
     /// <summary>Immutable public row scalars; raw data/unit and border fields are not interpreted.</summary>
     public sealed class DxfTableStyleRowValues
     {
         private DxfTableStyleRowValues() { }
+        /// <summary>Creates immutable row scalar values without evaluating layout, alignment or color semantics.</summary>
+        /// <remarks>The height must be finite and nonnegative. Alignment and color codes retain signed stored values.</remarks>
+        public DxfTableStyleRowValues(double textHeight, short cellAlignment, short storedTextColor,
+            short storedFillColor, bool backgroundColorEnabled)
+        {
+            if (!DxfTableStyleHeader.FiniteNonnegative(textHeight)) throw new ArgumentOutOfRangeException(nameof(textHeight));
+            this.TextHeight = textHeight; this.CellAlignment = cellAlignment; this.StoredTextColor = storedTextColor;
+            this.StoredFillColor = storedFillColor; this.BackgroundColorEnabled = backgroundColorEnabled;
+        }
         /// <summary>Gets the stored text height.</summary>
         public double TextHeight { get; private set; }
         /// <summary>Gets the stored cell alignment code without evaluating layout.</summary>

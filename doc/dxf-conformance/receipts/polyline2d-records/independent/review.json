@@ -1,0 +1,558 @@
+{
+  "review": "Independent retained legacy2D record, width, geometry and lifecycle qualification",
+  "source_commit": "3ded8912b17eaea2177a7db5020e2b9933c6a693",
+  "baseline_source_commit": "48919492bb3fbec4140251884208aa2fa56c68c0",
+  "harness_binary_sha256": "ce5a56de3dbd1f73f1a22a440b020c8e53a58f4eeb16a5e96871e6349048677a",
+  "harness_sources": {
+    "probe/Boundaries.cs": "3753368e400ff9555918f99d6be454af098adf7519987af6d3eabbcff3e390c4",
+    "probe/Degenerates.cs": "05db6bc5f8c2296229b5701df45b965b3aace21eb226b1c9b30af4f9d58b7d05",
+    "probe/Probe.csproj": "50dd62d55b04516fd69ea1c2cad2cd4696e19bee5455a848d23e3c60ebec2361",
+    "probe/Program.cs": "88630c39b3d47ab45b2f2398e1210ab89995ff216ef8521294f7f7d68d07737c"
+  },
+  "audit_source_sha256": "bf2026ac08a67057a8306fac00f5b660ebf2875b95bdabe22d0daa0a37fa7592",
+  "unchanged_harness_across_before_debug_release": true,
+  "fixture_factory_reuse": false,
+  "fixture_evidence": {
+    "manifest_sha256": "9e8e17a8d31a31ecb81dd4f320aa124076e0c069e998fe0d397fddafcb9b09b5",
+    "native_manifest_sha256": "d57006c23d6ad54f0781b38df3331f4a9f9c3d6815f1e05cb71a378efaecd5c2",
+    "native_carrier_sha256": "7626c4405a3392b2e3898a0c772e1814d756103ce377b5355fe70206f5c1799f",
+    "native_original_sha256": "e74f03a383593ef96d5a349618390a393e8c5697e253014d4218fd40e3f37250",
+    "producer_files": 12,
+    "producer": "ezdxf1.4.4",
+    "producer_profiles": [
+      2000,
+      2004,
+      2007,
+      2010,
+      2013,
+      2018
+    ],
+    "native_chains": [
+      "1EF",
+      "1FF"
+    ],
+    "native_profile": 2000,
+    "native_cad_execution": false
+  },
+  "cases": {
+    "producer_base": 84,
+    "native": 4,
+    "advanced": 24,
+    "empty_singleton": 24,
+    "dummy_point_presence": 84,
+    "total": 220
+  },
+  "base_assertions": [
+    "Entire retained parent AcDb2dPolyline subclass and complete VERTEX/SEQEND packets",
+    "Exact actual record/model identity alignment and qualified physical owner form",
+    "Native omitted70 plus header width inheritance",
+    "All absent/explicit0 width combinations before output and after Reverse plus uniform scaling",
+    "Closed and open Reverse outgoing edge mapping, swapped nullable widths/defaults, negative bulges and two-reverse identity",
+    "Uniform transforms, inherited widths/thickness, tilted OCS plane and rejected nonuniform/nonfinite/reflected bulged transforms before mutation",
+    "Fixed topology, model replacement, invalid geometry and representation constraints with repair and retry",
+    "Clean clone/owned clone refusal, actual incoming links, child metadata guards on ordinary targets, detach/readoption and source-profile output refusal",
+    "4096 child-tag budget boundary and nonzero childZ rejection"
+  ],
+  "new_assertions": [
+    "0/1 physical chains survive both output transports with no fabricated points and exact original subclass/child packets",
+    "Degenerate Reverse is a validated no-op; transformed plane/width/thickness and singleton coordinates are correct",
+    "Independent degenerate clone and SEQEND metadata guards, foreign refusal and same-document child identity readoption",
+    "Each of6 partial parent dummy XYZ presence masks rejects contextually",
+    "Whole parent XYZ omission remains exact until edit; editing elevation emits ordered10/20/30 with0,0,7",
+    "Independent ezdxf reads edited elevation7 and later translated elevation10"
+  ],
+  "configurations": {
+    "before": {
+      "library_sha256": "a9201845f8e4f9e572d62096040bf65511b2b208cb5818d312e35ebc01ab4459",
+      "passed": 112,
+      "failed": 108,
+      "results_sha256": "3a398b2108c1e00ad46624b1ee45d9f3f920e8197bb71ff7470646a1c4549b9d",
+      "audited_outputs": 228,
+      "audit_sha256": "a008446a351db8a09d7a1c3c68f367e3a043ecfe57aba61ab1a7d3979acf5b2f",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_removed_entities": 0,
+      "observed_elevations": [
+        {
+          "file": "producer-R2000-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 0.0
+        }
+      ]
+    },
+    "debug": {
+      "library_sha256": "19389d1b53964fbffd2fd9872dd33fb80bfe6783b0e496cfcbd0be5eae66d811",
+      "passed": 220,
+      "failed": 0,
+      "results_sha256": "981ae675525f047bf8a2b7c804c213f5124f7fee396fbe5c7f88a5bb6f65ed64",
+      "audited_outputs": 372,
+      "audit_sha256": "07f41083659e35b9a7141c343d2b7b3cfe6d7285c347741206bf8601e51b64b6",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_removed_entities": 0,
+      "observed_elevations": [
+        {
+          "file": "producer-R2000-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        }
+      ]
+    },
+    "release": {
+      "library_sha256": "47276bb19f744f04b9a6cf87a1effffb8e7e9b98d95a906b355cf865f812702e",
+      "passed": 220,
+      "failed": 0,
+      "results_sha256": "981ae675525f047bf8a2b7c804c213f5124f7fee396fbe5c7f88a5bb6f65ed64",
+      "audited_outputs": 372,
+      "audit_sha256": "07f41083659e35b9a7141c343d2b7b3cfe6d7285c347741206bf8601e51b64b6",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_removed_entities": 0,
+      "observed_elevations": [
+        {
+          "file": "producer-R2000-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2000-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2004-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2007-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2010-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2013-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-ascii-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-edit-False.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-edit-True.dxf",
+          "expected": 7,
+          "actual": 7.0
+        },
+        {
+          "file": "producer-R2018-binary-omitted-point-transform.dxf",
+          "expected": 10,
+          "actual": 10.0
+        }
+      ]
+    }
+  },
+  "scope_notes": [
+    "Native two-chain geometry is a disclosed carrier transplant; producer0/1 and sparse-coordinate variants are explicit raw edits",
+    "Parent common-header normalization is allowed only as documented by the implementation; private subclass and children compare exactly",
+    "After detach/readoption the parent may receive a new handle; child/SEQEND identities remain and the independent audit follows actualSEQEND3E",
+    "Multiple retained chains coexist in producer source-profile save controls; no claim that each rejection isolates a single chain",
+    "No native CAD execution, full application interpretation or exhaustive DXF legality claim"
+  ],
+  "setup_corrections": [
+    "The earlier112-case initial run had fixture assumptions corrected before its passing baseline; final220-case harness is unchanged across all three library runs",
+    "The audit initially accessed a nonexistent Auditor.trashcan property, then incorrectly looked up parent3D after readoption. Final audit measures live entity identities before/after and resolves the retained SEQEND identity; it was rerun unchanged for all three output sets. These were audit harness errors, not production defects."
+  ],
+  "primary_schema": [
+    "https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-ABF6B778-BE20-4B49-9B58-A94E64CEFFF3.htm",
+    "https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-0741E831-599E-4CBF-91E1-8ADBCFD6556D.htm"
+  ],
+  "output_archive": {
+    "file": "output-packets.tar.gz",
+    "sha256": "abaa78803408898e94624219de8581a5c0bcd0854459ab7b1ea7f9df5966b7f0",
+    "files": 972,
+    "manifest": "output-packets-manifest.json"
+  },
+  "production_defects_found_in_final": [],
+  "reproduction": [
+    "Build probe/Probe.csproj with DxfReviewLibrary set to the selected exact DLL",
+    "Copy the same Probe.dll/deps/runtimeconfig into each runner with the selected netDxf.netstandard.dll",
+    "Run Probe.dll <tests/fixtures/polyline2d-records> <output-directory>",
+    "Run audit_outputs.py <output-directory> (append before for the intentionally defective earlier output)"
+  ],
+  "baseline_failure_breakdown": {
+    "previously_unsupported_empty_singleton": 24,
+    "previously_accepted_partial_dummy_point": 72,
+    "incomplete_edited_omitted_point": 12
+  }
+}

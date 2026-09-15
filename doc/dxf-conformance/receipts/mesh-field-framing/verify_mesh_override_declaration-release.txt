@@ -1,0 +1,1 @@
+{"passed": true, "outputs": 64, "native_source_packets": 2, "exact_native_output_bodies": 4, "negative_controls": ["nonzero-count", "subdivision", "missing-vertex", "following-line", "missing-mesh", "native-override-count"], "audit_errors": 0, "audit_fixes": 0, "ezdxf": "1.4.4"}

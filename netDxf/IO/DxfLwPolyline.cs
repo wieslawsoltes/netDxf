@@ -145,7 +145,7 @@ namespace netDxf.IO
                 foreach (EntityObject entity in block.Entities)
                 {
                     Polyline2D polyline = entity as Polyline2D;
-                    if (polyline == null) continue;
+                    if (polyline == null || polyline.HasStoredRecords) continue;
                     polyline.ValidateVertexFidelity();
                     bool hasIdentifiers = false;
                     foreach (Polyline2DVertex vertex in polyline.Vertexes) hasIdentifiers |= vertex.VertexIdentifier.HasValue;

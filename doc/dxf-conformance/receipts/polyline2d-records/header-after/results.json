@@ -1,0 +1,12 @@
+{
+  "production_commit": "3ded891",
+  "library_sha256": "19389d1b53964fbffd2fd9872dd33fb80bfe6783b0e496cfcbd0be5eae66d811",
+  "saved": true,
+  "parent_handle": "3D",
+  "typed_elevation": 7.0,
+  "independent_reader": "ezdxf1.4.4",
+  "independent_elevation": 7.0,
+  "harness": "Exact previously compiled header-before/Program.cs.txt; replace only loaded library",
+  "output_sha256": "231726451bb60ee09edf662858478e5a13b08cbe9afe66620518f9621dead199",
+  "harness_sha256": "2e928bf7a72816a8a0b8a142d5734c7de7c6da872b4866b1094b56884d6825d6"
+}

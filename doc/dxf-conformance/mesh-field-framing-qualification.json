@@ -1,0 +1,125 @@
+{
+  "baseline_commit": "bb8c73c",
+  "recovered_commits": [
+    "14de3a231d84916e050f0edd57f9cb43e064b269",
+    "b38ac93589904ac39203c43e56b4dd81f47218f2"
+  ],
+  "recovery_policy": "Only the final declaration-uniqueness and counted-list-framing tree is recovered; the superseded terminal-order rejection is not retained.",
+  "scope": "Public MESH declaration uniqueness and orphan list rejection, while retaining valid field ordering and private/subclass/XData scoping. Nonzero override decoding remains unsupported.",
+  "new_test_cases": 534,
+  "configurations": {
+    "Debug": {
+      "unique_passed_cases": 1274,
+      "failed_cases": 0,
+      "framing_cases": 534,
+      "library_sha256": "83011abe07e40260d5911a1fcc33a709518c28c58695e22cc2fb6bed699a98ea",
+      "independent_gates_passed": [
+        "verify_mesh_field_framing",
+        "verify_mesh_override_declaration",
+        "verify_mesh_read_validation",
+        "verify_mesh_write_validation",
+        "verify_mesh_profiles",
+        "verify_mesh_blend"
+      ],
+      "framing_wire_outputs": 120,
+      "framing_corruption_controls": 12,
+      "override_wire_outputs": 64,
+      "native_mesh_packets": 2,
+      "exact_native_output_bodies": 4,
+      "override_corruption_controls": 6,
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    "Release": {
+      "unique_passed_cases": 1274,
+      "failed_cases": 0,
+      "framing_cases": 534,
+      "library_sha256": "7e6d40c295f4652c9df08d744586184d3d0ae29c6a285656b7be9d1d22b09167",
+      "independent_gates_passed": [
+        "verify_mesh_field_framing",
+        "verify_mesh_override_declaration",
+        "verify_mesh_read_validation",
+        "verify_mesh_write_validation",
+        "verify_mesh_profiles",
+        "verify_mesh_blend"
+      ],
+      "framing_wire_outputs": 120,
+      "framing_corruption_controls": 12,
+      "override_wire_outputs": 64,
+      "native_mesh_packets": 2,
+      "exact_native_output_bodies": 4,
+      "override_corruption_controls": 6,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "gate_receipts": {
+        "verify_mesh_field_framing": {
+          "exit_code": 0,
+          "result": {
+            "passed": true,
+            "outputs": 120,
+            "scoped_outputs": 72,
+            "unique_reordered_outputs": 48,
+            "negative_controls": [
+              71,
+              72,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              10,
+              20,
+              30,
+              140
+            ],
+            "exact_mesh_and_following_identities": 120,
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "audit_removed_entities": 0,
+            "ezdxf": "1.4.4"
+          }
+        },
+        "verify_mesh_override_declaration": {
+          "exit_code": 0,
+          "result": {
+            "passed": true,
+            "outputs": 64,
+            "native_source_packets": 2,
+            "exact_native_output_bodies": 4,
+            "negative_controls": [
+              "nonzero-count",
+              "subdivision",
+              "missing-vertex",
+              "following-line",
+              "missing-mesh",
+              "native-override-count"
+            ],
+            "audit_errors": 0,
+            "audit_fixes": 0,
+            "ezdxf": "1.4.4"
+          }
+        },
+        "verify_mesh_read_validation": {
+          "exit_code": 0
+        },
+        "verify_mesh_write_validation": {
+          "exit_code": 0
+        },
+        "verify_mesh_profiles": {
+          "exit_code": 0
+        },
+        "verify_mesh_blend": {
+          "exit_code": 0
+        }
+      }
+    }
+  },
+  "identical_complete_case_sets": true,
+  "source_sha256": {
+    "netDxf/IO/DxfReader.cs": "eed32ad359c89b14e3b98ae90b14400320efc819229106a9a87f4ba0330b672b",
+    "tests/netDxf.Conformance/MeshFieldFramingTests.cs": "04b4a86f8a0088f95e050a3264605c97fee933675306059e7b3902f99f30d0d8",
+    "tools/verify_mesh_field_framing.py": "c58705a0ec440892698efd42066a22ac108a7fd14cf99d8c0d251f0ced5b671f"
+  },
+  "ezdxf": "1.4.4"
+}
