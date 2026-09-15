@@ -1,0 +1,1010 @@
+{
+  "oracle": "ezdxf 1.4.4",
+  "outputs": 116,
+  "corruption_controls": [
+    {
+      "fault": "missing-grid",
+      "binary": false,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "surplus-grid",
+      "binary": false,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "wrong-dimension",
+      "binary": false,
+      "rejected": "Changed grid dimensions"
+    },
+    {
+      "fault": "wrong-coordinate",
+      "binary": false,
+      "rejected": "Changed grid coordinates or physical order"
+    },
+    {
+      "fault": "wrong-vertex-type",
+      "binary": false,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "missing-control",
+      "binary": false,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "missing-grid",
+      "binary": true,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "surplus-grid",
+      "binary": true,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "wrong-dimension",
+      "binary": true,
+      "rejected": "Changed grid dimensions"
+    },
+    {
+      "fault": "wrong-coordinate",
+      "binary": true,
+      "rejected": "Changed grid coordinates or physical order"
+    },
+    {
+      "fault": "wrong-vertex-type",
+      "binary": true,
+      "rejected": "Wrong selected grid coordinate count"
+    },
+    {
+      "fault": "missing-control",
+      "binary": true,
+      "rejected": "Wrong selected grid coordinate count"
+    }
+  ],
+  "native_provenance": [
+    {
+      "carrier": "R2000-native-20F.dxf",
+      "source": "tests/fixtures/field-oracle/TS1-AC1015.dxf.gz",
+      "physical_packets": 14,
+      "allowed_parent_owner_mapping": "1F->17"
+    },
+    {
+      "carrier": "R2018-native-20F.dxf",
+      "source": "tests/fixtures/field-oracle/TS1-AC1032.dxf.gz",
+      "physical_packets": 14,
+      "allowed_parent_owner_mapping": "1F->17"
+    }
+  ],
+  "files": [
+    {
+      "file": "polygonmesh-grid-AutoCad2000-False-0-0.dxf",
+      "sha256": "3ae50bfcf5f7fff198f5aa1b690b21a967d6178a9113aa8058d195ab677f2f18",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-False-0-1.dxf",
+      "sha256": "2b6ed8d3f6bf8c639a4cfb83fbcb567159bc1239ee2110f471880eeef03cab5b",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1015-ascii-plain.dxf",
+      "sha256": "0861c44edf46c38a43bf7c2f7a587e98a3c1d9c248effcc5272159929130db21",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-False-5-0.dxf",
+      "sha256": "bf98bafb179dab22d836b53b3eb2c78885043e388897eafcfaa0d66e1569d490",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-False-5-1.dxf",
+      "sha256": "f0593e3cf551d8bb51d9aca16821c36a15a7e2cd534f477c149174bf49122446",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1015-ascii-quadratic.dxf",
+      "sha256": "9973cae76ffdcd73404b84cdd0444980c3b0dab98d70e932af5cff40d16f7e33",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-False-6-0.dxf",
+      "sha256": "aceebc8fc48d676e34e57a26fa27d5614c33a663100c2ae9113e83f97e8e0722",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-False-6-1.dxf",
+      "sha256": "b8a90e5601566297d85b51978f163b09be2ca1c0a19175d22024ed8b14d6733f",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1015-ascii-cubic.dxf",
+      "sha256": "6845b2f17870e5dad1b8932fbe9e365480c0dc9b3f4ccbdcd3aacfe21732575a",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-True-0-0.dxf",
+      "sha256": "3d39b93bd89b8b3f4dd234243e4015306202836cf32e09176bbc57ea975a9c87",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-True-0-1.dxf",
+      "sha256": "a54fff76be4c0eceab1742e3d8d5792c1cf7a290da614e1ba3cda8c104ad5482",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1015-binary-plain.dxf",
+      "sha256": "fc6503d82dab0c03b2cfeb2bd0d7909f325460ed4bc1b1d114a95f09920207c5",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-True-5-0.dxf",
+      "sha256": "08bb78d4490e50ccad80377717c5c92d74afb5760d4656956b2142d242c2bc3c",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-True-5-1.dxf",
+      "sha256": "2e719c0bbc196cbd9c0e4f786bbfeea054c5203d1b3996553253491f5965f6be",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1015-binary-quadratic.dxf",
+      "sha256": "ba8006b39ef99544c7ce9a3fe714efc7fee8ff15ddea9aa27751a94751551fcb",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-True-6-0.dxf",
+      "sha256": "3124efc72939c9661ce7a07706c5254c1cb579de786fa0f0b7e2e8ae2da22d73",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2000-True-6-1.dxf",
+      "sha256": "5d7f883a0ecb1661c7c3033ea5f07516dfda8f4412b34b912ce9a4268a3fcdbb",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1015-binary-cubic.dxf",
+      "sha256": "8d2e6053ac933cd483c88ceffbd5a9b71bd4f9666f9db91d47c87ec57f57209b",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-False-0-0.dxf",
+      "sha256": "35f54c19514baa07ab7723aa815fa6b5780505ca6e471f195b50f0916edc288d",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-False-0-1.dxf",
+      "sha256": "5a844b25198a69bd0843a2a06d3247bd0ebc8e5363d0bd890ae95ff16c987409",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1018-ascii-plain.dxf",
+      "sha256": "7780b9564045046161ef6c170249bd9b0fb95fa9dfce037ee5ffc4945fe4217a",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-False-5-0.dxf",
+      "sha256": "9096832e6ed5f7572a54f5fba7e9152609730e192eed9bb5cb8f07057e779a56",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-False-5-1.dxf",
+      "sha256": "862de95a75c04920fa7c422e4c6f923cc601324ae86695aef1d303755cac56a6",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1018-ascii-quadratic.dxf",
+      "sha256": "62695109fc69c82245bc76cc18c6d1c5ad31cb37332b0c3b8b193b484c9da56b",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-False-6-0.dxf",
+      "sha256": "fc53548e312d99875023350c4324b39f8e7d00310d84466e46613628c7b47728",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-False-6-1.dxf",
+      "sha256": "e54aec72194664b81edcbb0f916a1ee0afd979cd5b0216b522f78e4fbd85a079",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1018-ascii-cubic.dxf",
+      "sha256": "3fc6b08a74c6816cb54d49f047e3eff040a4135e1834e277963c02bbc507ede0",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-True-0-0.dxf",
+      "sha256": "89ad59453e73bb588370f91f7c2f72a101229329630ecfea6374683f1ed59a38",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-True-0-1.dxf",
+      "sha256": "f9de2e4925750342b72d2fd8cb28190ceff3edd0ea0a2540906338c2af3a46cf",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1018-binary-plain.dxf",
+      "sha256": "d9b13acf0bac51cdd4fecb0c6a14830cfe20d82e5485027f12a157c51f7efb71",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-True-5-0.dxf",
+      "sha256": "7ccb25edb7198155eedc2559f7e634d1a558c3df67586aa30607312db6180816",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-True-5-1.dxf",
+      "sha256": "b843c05e81616440570d41d3fe78ba215c5f977bf29ff6c49b4352bd2c2520b3",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1018-binary-quadratic.dxf",
+      "sha256": "62b87f2f7865c4f1b9abec18dc78d346554382a7d55fa80400dc9c445b87ef5c",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-True-6-0.dxf",
+      "sha256": "7b2266f90010fc2993d3549dea64c00bad88ef54bec7d3bc4f646c2478a40a5c",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2004-True-6-1.dxf",
+      "sha256": "86dcb9374aaa7ab1de8666d9834626daedb149ef9f0166a6364896b21d8d2ccd",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1018-binary-cubic.dxf",
+      "sha256": "c91fe85dc82834260c1369f0a4123e0ba82462b4ba16b9e489b68147664aa22e",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-False-0-0.dxf",
+      "sha256": "34a29a0db5d167478c4bf4a5384f4eedac56b8d9811edd2f329b125c0ecd1d9f",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-False-0-1.dxf",
+      "sha256": "fa8d9c588ff9285f89c4a6d88aff3f91cddb8f53eae0a22ee24d162b9b3d3579",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1021-ascii-plain.dxf",
+      "sha256": "c1463c3b083e94c4d3c2295fe373628d6b0afc08d1c0f9c9eacfa5b6c8d604cd",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-False-5-0.dxf",
+      "sha256": "b7c2b938dc117f2b91e723adff37b5866f122b636841ab28d54a3a96c36c4881",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-False-5-1.dxf",
+      "sha256": "5219e9a17980559ca33466680981b917068556ee6d58297aba0dd6af599de2b4",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1021-ascii-quadratic.dxf",
+      "sha256": "a338fe1af692e3c95e84536e424d50ae229e27fbf82591ba1d36c50ff18c1c15",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-False-6-0.dxf",
+      "sha256": "7e4974d0b0cfb3a7cd918161c3630628700a941276f62be90a58bac685a9848a",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-False-6-1.dxf",
+      "sha256": "3e054354e1692094d8abcc7bc4a86b3706eb8ba2a6cc5bf52244066f99765c47",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1021-ascii-cubic.dxf",
+      "sha256": "a6fae06393caa618c5dd9f0632fbeb66415410dd87e0628939fb93ce4d9453e5",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-True-0-0.dxf",
+      "sha256": "1563d41569818731e32e68820c15d82c6a827b2e12fe9a800fbab6eac64b542f",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-True-0-1.dxf",
+      "sha256": "f29c427391d7830aed1daa16147a01791a736ff2069c471b2d745ecb5abac1aa",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1021-binary-plain.dxf",
+      "sha256": "35e42d64a6df91e99382579052c3721d9d2f643115e1e61b4a4efe230b7c4aa4",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-True-5-0.dxf",
+      "sha256": "94a55ed6ba6669cd5e3c34e0fbe6a09f492792f51b996f157970287ea2b24934",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-True-5-1.dxf",
+      "sha256": "176d8e5529b32ad533e63e42f8c69208acda56694174bcbf5438c847e37ffbcf",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1021-binary-quadratic.dxf",
+      "sha256": "a8ce9041cf7f7051d27e93cbea9d565fecb291524905d3b868a4d485dec07960",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-True-6-0.dxf",
+      "sha256": "67324d33c05ab8972b781fea81b563b5d12a3f94568aa02f6ac39a126c8890e2",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2007-True-6-1.dxf",
+      "sha256": "be650debf1575bf04b385cc692b60b28c1ec61309877679a956962b171d2a366",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1021-binary-cubic.dxf",
+      "sha256": "a446525bdd45952803a3a6b6eb15616aaa16a7434703631e517bb743e1ad8c1f",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-False-0-0.dxf",
+      "sha256": "0cec5e91fd12e257a5794771812a8f5abcd419838f445d7a56d0225764f3d1ac",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-False-0-1.dxf",
+      "sha256": "6020b110d58b8de529ca55116bfb80d1ada06cc400ef06a29b1dfa1b1e4e2059",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1024-ascii-plain.dxf",
+      "sha256": "f73b430767c9542a476a0b82cade414dac2026ca2029214ad8bdf73492996934",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-False-5-0.dxf",
+      "sha256": "7793910ce51d9da7275edb1dc6d0302b25addc97f7e796de10a8e4578c0a2078",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-False-5-1.dxf",
+      "sha256": "2374f1e1a805584c42cfa0369577d081372a9be9e679e071ff5c14c82972c173",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1024-ascii-quadratic.dxf",
+      "sha256": "5bfaad6f362866e8bb0f3154405a28ccc5194aad59fbd4289f35eabec4859a5d",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-False-6-0.dxf",
+      "sha256": "06563c57327947cd831eee9e33431152018bc8b766377c29a71ac8972d6591dd",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-False-6-1.dxf",
+      "sha256": "bb9b04695d4e94aca85a70685bedde3d76acd189681fc44f35a61873dcfc0628",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1024-ascii-cubic.dxf",
+      "sha256": "2704f95b7009537cb138291abf91d5c0f823250476edc8d11cd40b9f228044ce",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-True-0-0.dxf",
+      "sha256": "6d06336284a7fbe9187f99a0a2bfd1b0d0c44891b7f00f46e95727de7e20aeeb",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-True-0-1.dxf",
+      "sha256": "1233def36d2fd6a0f794984b1d40719cad15544b127d07276e984cfca8378dec",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1024-binary-plain.dxf",
+      "sha256": "59a667c4c55de18500461f827da74209d0c97521859a0db4ef05eb8983da4732",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-True-5-0.dxf",
+      "sha256": "07ea4e9d8286753d89a9463e37c708ea46ac50846e7be85dbc9c5dd272414025",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-True-5-1.dxf",
+      "sha256": "f90c1a6f8eb1b45772309a24632e0c6ef98bd35f611cc6e8c14ae0d50f6e63d8",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1024-binary-quadratic.dxf",
+      "sha256": "3bdaff5fc1e2a79affc2e98dc996d69eee87ae51145cb4733b230e7a7479b48b",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-True-6-0.dxf",
+      "sha256": "539004a274278995cedac09dc98944c940886c27b1e9687210c6b0e8cceca466",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2010-True-6-1.dxf",
+      "sha256": "118867f0e573d17fe26b1c6c9d43fe237515d3779f7f2a23eeb8f37b0f15a558",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1024-binary-cubic.dxf",
+      "sha256": "330a80345785721c5a05f93ececd55c18bf2c23bf80b741bb055d43050f43dc0",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-False-0-0.dxf",
+      "sha256": "007309872eeff2ed25a470be38897c2df3ba1757a390336d1eaa6c6911e7630c",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-False-0-1.dxf",
+      "sha256": "3b87b688824fdb0cb6986cae2b0d1853d605c08529c7f711057c82328d38cdf9",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1027-ascii-plain.dxf",
+      "sha256": "2b2cfab153464a1b9d32cd2cec6f8bf94b1315d32e5808b5fa7ebeb35f0f129c",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-False-5-0.dxf",
+      "sha256": "23d3d923d3fcbd449aeb8bd92e2b9a8b49c3a531469c456b3bdb1e8919bd5b33",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-False-5-1.dxf",
+      "sha256": "75d4b50b15f372b5a29841c3d237fb1159dd7db1a97ea309993f0fccd422f524",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1027-ascii-quadratic.dxf",
+      "sha256": "9595d7ae215b95bc303a68365eed8e0df158e94c48d235015b2ecfd82953ee5f",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-False-6-0.dxf",
+      "sha256": "5d62b38fc2276bb18e21dd0e84b272e21e77c1f471256deeae36fc36a78bd7fd",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-False-6-1.dxf",
+      "sha256": "47e7857a1c37a881b19b491fa66cb09f7ec241a21ce204e05ad62c4a8ec9b5db",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1027-ascii-cubic.dxf",
+      "sha256": "9d53a80e0bef981760cf6c05af68004ec25defef50d7adc469b4ac4a30720ede",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-True-0-0.dxf",
+      "sha256": "67b0c00ab071423467b7a48f049ccc3ec3ee7a8fb7573d0ad67b09002c951fe7",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-True-0-1.dxf",
+      "sha256": "242309ccb739a9e60c2ec3e83655fe7ed60f322bba4e410df769c7fbd94702dd",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1027-binary-plain.dxf",
+      "sha256": "f1cb8564b2dc187eb81e554ba7849d2a22edc21512b57d5e34448c9f01e51ce9",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-True-5-0.dxf",
+      "sha256": "fe2c49163c1498f619fe4473776adc41eb47b2e2c64c14f3b28cad680ae4390c",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-True-5-1.dxf",
+      "sha256": "f1ebac5746173365d166ec84768d9dab2abe7a09974457d00b62c86547db728d",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1027-binary-quadratic.dxf",
+      "sha256": "31913b51a2551fdcaca199510a1af1a80ef980e33665030e3803008440b0858a",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-True-6-0.dxf",
+      "sha256": "d86a06249d4593fb328c0d38db06466ec17ab7ed5d31e6f94d9285469697b5a9",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2013-True-6-1.dxf",
+      "sha256": "30ac9989bf18d89ec909c5bf3e21524a61b858f6491b3e160088a9865de93791",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1027-binary-cubic.dxf",
+      "sha256": "19d2ede5a4a561560cafe97cf98f9943ad3635ab7d194cba6eb7445ea78e3e63",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-False-0-0.dxf",
+      "sha256": "24f0f1b9cde0344f12dd7d01f201d1d61c35d6bacb3fdc6f15de9073bc3b8516",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-False-0-1.dxf",
+      "sha256": "2333371a9b693c1d2990c2992c84144ab60f693307433234d3d77b81466fd685",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1032-ascii-plain.dxf",
+      "sha256": "be8779c02e8a259738c3d0f65aba28c9b35c9c55a73fa79a2c340ab29b57a293",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-False-5-0.dxf",
+      "sha256": "a4a937ae00e98db843ee209c5435256c96efc728d5057efb5b56f17e08360641",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-False-5-1.dxf",
+      "sha256": "100f28251dbdc0c46a2556603af1c5c73c51735120f3e02e2ff5fb515a151425",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1032-ascii-quadratic.dxf",
+      "sha256": "d6212091c841cdbdb868545d2c11435bb6531d949295ae359da7fd176209e8da",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-False-6-0.dxf",
+      "sha256": "f1db68cb146563dc23a72a8753b317e13c9ff582271d8f91cdde854ae77cbc55",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-False-6-1.dxf",
+      "sha256": "79d375dbbbd8b0a82a2666b1a1d51431f632586ca5f477c1e7f5b6e34f09a773",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1032-ascii-cubic.dxf",
+      "sha256": "c79e459374eef6b67d7a8ea140e8defc9724582f72cb060629b87cbe8c3fe737",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-True-0-0.dxf",
+      "sha256": "05f3eed3eb5b24b4804b448852a27bcc92bd7cefdb1069be93f22b8c5858fb7a",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-True-0-1.dxf",
+      "sha256": "00a2992e89b8ed34ab68b6daa1c17c089ec66fd52ffa0f5b537f46246e4983a8",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1032-binary-plain.dxf",
+      "sha256": "febd7a8b6ff7aae19a3b6a2c8bea7a464ebe1b87dd3cb7a3cf76a9de4ff9479c",
+      "grid_vertices": 16,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-True-5-0.dxf",
+      "sha256": "3c8f9f48e5ed189063f32154a53ffce7631c1aa692f60ae1a6a8524c78051155",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-True-5-1.dxf",
+      "sha256": "06b93f4f019302aa8a385e55d068ce7e62bde12b1c2943f101c7e57a0b53963f",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1032-binary-quadratic.dxf",
+      "sha256": "0c62e00a237eb6a65247fd67c44a9aee9450a05cde58c8bd3cd223102cf37b58",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-True-6-0.dxf",
+      "sha256": "9d94c2f924eff4c5ac4e32a58d9f69fb835e0c6a86e8943d0805cc51f94b0df8",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-grid-AutoCad2018-True-6-1.dxf",
+      "sha256": "587e15454ad374916df17071b9ed6d66670099fdb79db7ecb02f9f30897d196d",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-producer-AC1032-binary-cubic.dxf",
+      "sha256": "6d050d4d38da6711b394d5995c3ffcd2783c76f5a8bc6007e44a3cccff86cb40",
+      "grid_vertices": 16,
+      "generated_vertices": 20,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2000-native-20F.dxf-False-0.dxf",
+      "sha256": "31950c120e682705feed6e2a3cac70cec177d94d105b261446bb0babe1e4f349",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2000-native-20F.dxf-False-1.dxf",
+      "sha256": "a64b8bf8604dea6d58afad7db59da60c03900711fed645e186f650b9f9fd3aae",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2000-native-20F.dxf-True-0.dxf",
+      "sha256": "21a117cb854f80668a3d0f040732c0bedd6f249007d04810a8cbe2968a06d88f",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2000-native-20F.dxf-True-1.dxf",
+      "sha256": "3217cde8d2327f33fa952729012d8b2f880e037f8798de67e8162743105a56ef",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2018-native-20F.dxf-False-0.dxf",
+      "sha256": "8d9fc6ec544e4d7b66d574bfb33d64fa117e994d28fe6cf8e6e739f004e2be93",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2018-native-20F.dxf-False-1.dxf",
+      "sha256": "9b4901ee9b17f5df04910d3be3ba085e5b8042740237d9a0ba40f44a9b342acb",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2018-native-20F.dxf-True-0.dxf",
+      "sha256": "3fad61a22996a8e63c138e5c1a06bb86a395d89715d90339c522c91e19764fbe",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "polygonmesh-native-R2018-native-20F.dxf-True-1.dxf",
+      "sha256": "79c56a76b6b78133e8d8c6401ef4451015817dad07bdb7263b87a34c4a65be91",
+      "grid_vertices": 12,
+      "generated_vertices": 0,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    }
+  ]
+}

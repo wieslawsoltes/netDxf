@@ -53,6 +53,7 @@ internal static partial class Program
         RegisterRawLegacyProfileTests();
         RegisterRawR12Tests();
         RegisterMeshVersionTests();
+        RegisterPolygonMeshCardinalityTests();
         RegisterMeshBlendCreaseTests();
         RegisterMeshReadValidationTests();
         RegisterMeshOverrideDeclarationTests();

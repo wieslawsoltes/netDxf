@@ -655,6 +655,14 @@
     "HATCHSOURCE": {
       "label": "HATCH source identity, ordered association references and atomic lifecycle",
       "path": "doc/dxf-conformance/hatch-source-relations.md"
+    },
+    "POLYFACEGRAMMAR": {
+      "label": "Signed POLYFACE face grammar and independent clone lifecycles",
+      "path": "doc/dxf-conformance/polyface-grammar.md"
+    },
+    "POLYGONCARDINALITY": {
+      "label": "PolygonMesh physical grid cardinality and export preflight",
+      "path": "doc/dxf-conformance/POLYGONMESH_CARDINALITY.md"
     }
   },
   "features": [
@@ -739,7 +747,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All 310\u2013319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
       "evidence": [
         "B"
       ]
@@ -1286,9 +1294,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Topology modeled; index/invisible-edge validation needs fixtures. `ReadPolyline/WritePolyline`.",
+      "scope": "Signed one-based face slots, first-zero termination, complete-coordinate range checks, advisory counts and unusual input order have explicit schema coverage. Face/mesh clones preserve null inheritance and isolate faces, arrays and events. Arbitrary child metadata and original child identities remain outside this typed geometry scope.",
       "evidence": [
-        "B"
+        "B",
+        "POLYFACEGRAMMAR"
       ]
     },
     {
@@ -1307,9 +1316,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "PolygonMesh and smoothing preprocessing. `ReadPolyline/WritePolyline`.",
+      "scope": "Declared M/N grids require exactly M x N ordinary or spline-control vertices with supported flags and surface types. Native ordinary grids and synthetic smooth grids have explicit evidence. Export checks finite coordinates and spline degree/closure bounds before mutation; generated samples and child identities are not preserved.",
       "evidence": [
-        "B"
+        "B",
+        "POLYGONCARDINALITY"
       ]
     },
     {
@@ -2398,7 +2408,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Editable ordered typed payload codes1\u2013369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
+      "scope": "Editable ordered typed payload codes1–369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
       "evidence": [
         "NODO"
       ]
@@ -4999,7 +5009,7 @@
         "AC1027": "T",
         "AC1032": "V"
       },
-      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000\u20132013 writer profile.",
+      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000–2013 writer profile.",
       "evidence": [
         "MTCOL"
       ]
@@ -5125,7 +5135,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320\u2013329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
+      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320–329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
       "evidence": [
         "NODO"
       ]
@@ -5398,7 +5408,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Optional group 284 values 0\u20133, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
+      "scope": "Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
       "evidence": [
         "COMMON"
       ]
@@ -5915,7 +5925,7 @@
       "area": "Typed object lifecycle",
       "pipeline": "typed",
       "feature": "Numeric handle identity and null references",
-      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320\u2013329 values preserve lexical data and do not become clone dependencies.",
+      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320–329 values preserve lexical data and do not become clone dependencies.",
       "evidence": [
         "SOURCEID",
         "MIX5"

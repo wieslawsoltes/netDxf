@@ -1,0 +1,12 @@
+{
+  "checkedOutputs": 120,
+  "negativeControls": [
+    "index",
+    "coordinate",
+    "missing-vertex",
+    "following-line",
+    "polyline-kind",
+    "missing-seqend"
+  ],
+  "nativeApplicationValidation": false
+}

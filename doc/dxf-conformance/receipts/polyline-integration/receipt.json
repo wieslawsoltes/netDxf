@@ -1,0 +1,129 @@
+{
+  "purpose": "Focused merged POLYFACE/PolygonMesh integration qualification preserving PR90 source identity and relationship behavior",
+  "base_commit": "5c937b5",
+  "compiled_source_commit": "93f37735db35aae25bec6fcaef15cc0406e8368d",
+  "assembly_informational_version": "3.0.1+93f37735db35aae25bec6fcaef15cc0406e8368d",
+  "reviewed_checkout_at_first_independent_runs": "65e7374f8f07c2f44cc03ef0f5563da016658218",
+  "source_trees": {
+    "netDxf": "87558db29ddadd92dbfe2ad96db2281c77427f08",
+    "tests": "4897c66e58bd372e5002b52a789b11884378ef53"
+  },
+  "configurations": {
+    "Debug": {
+      "library_sha256": "f85f25e948be658c012c2b3d7b22a84de3e180227c3e5f124168c1ca14622e25",
+      "test_assembly_sha256": "5e2637624306386c609db8d20fbc73fad4a99002cd06b69e908727e13011a55c",
+      "build_errors": 0,
+      "build_existing_documentation_warnings": 561,
+      "tests": {
+        "passed": 2239,
+        "failed": 0,
+        "by_prefix": {
+          "hatch-source": 405,
+          "mesh": 126,
+          "polyface": 345,
+          "polygonmesh": 727,
+          "polyline-records": 382,
+          "section-manager": 110,
+          "source-ambiguity": 20,
+          "source-entity": 30,
+          "source-identity-metadata": 10,
+          "source-reference": 84
+        }
+      },
+      "polyface_gate": {
+        "drawings": 96,
+        "corruption_controls": 576,
+        "audit_errors": 0,
+        "audit_repairs": 0
+      },
+      "polygonmesh_gate": {
+        "outputs": 116,
+        "physical_corruption_controls": 12,
+        "native_packet_chains": 2
+      },
+      "unchanged_manager_probe": {
+        "passed": 8,
+        "failed": 0
+      },
+      "artifacts_sha256": {
+        "Debug/manager-source-results.json": "ab2acf2360bc2d4fbd08a52688b8f6a544a48f17011b0abcf82c5e5c3a353e9c",
+        "Debug/polygonmesh-output-gate.json": "44a6b4964c92901408ca90aeef7d936d59fe39895cec1fd001590f8bbe130ef2",
+        "Debug/results.json": "9e9c39dd0e2858b86761b0911acc8ae47080826e91a9ab71d5173d5f7359752f",
+        "Debug/build.log.gz": "7f342332f0e7756dee86ae9341764af15a39afda9ccdabebd3e8ea65443fc85a",
+        "Debug/polyface-gate.log": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+        "Debug/polygonmesh-gate.log": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba"
+      }
+    },
+    "Release": {
+      "library_sha256": "2747a0db34d160003fd5f7e232cb3f58ba957aae4cbc194f75eec0db0c007e22",
+      "test_assembly_sha256": "d3f9ebe29d731863fed7609db8949c93db9b1ff3810d41f12d9fe2efd69d82c2",
+      "build_errors": 0,
+      "build_existing_documentation_warnings": 561,
+      "tests": {
+        "passed": 2239,
+        "failed": 0,
+        "by_prefix": {
+          "hatch-source": 405,
+          "mesh": 126,
+          "polyface": 345,
+          "polygonmesh": 727,
+          "polyline-records": 382,
+          "section-manager": 110,
+          "source-ambiguity": 20,
+          "source-entity": 30,
+          "source-identity-metadata": 10,
+          "source-reference": 84
+        }
+      },
+      "polyface_gate": {
+        "drawings": 96,
+        "corruption_controls": 576,
+        "audit_errors": 0,
+        "audit_repairs": 0
+      },
+      "polygonmesh_gate": {
+        "outputs": 116,
+        "physical_corruption_controls": 12,
+        "native_packet_chains": 2
+      },
+      "unchanged_manager_probe": {
+        "passed": 8,
+        "failed": 0
+      },
+      "artifacts_sha256": {
+        "Release/manager-source-results.json": "db00bb0a106bcf7262a10389c2baa9c71c2d699eba6f0e72b563059d33b23130",
+        "Release/polygonmesh-output-gate.json": "c8acb384fe948d727a1c9dc65019eac222bb5433eefdcadb0485d72ca5944869",
+        "Release/results.json": "9e9c39dd0e2858b86761b0911acc8ae47080826e91a9ab71d5173d5f7359752f",
+        "Release/build.log.gz": "fb73d3b00f977e6baf90365f6253b7867a515b3ff37984dfc0999e372f69712e",
+        "Release/polyface-gate.log": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+        "Release/polygonmesh-gate.log": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba"
+      }
+    }
+  },
+  "registration_methods": [
+    "RegisterPolyfaceGrammarTests",
+    "RegisterPolygonMeshCardinalityTests",
+    "RegisterMeshVersionTests",
+    "RegisterPolyline3DRecordTests",
+    "RunSourceReferenceIdentityTests",
+    "RunSourceIdentityMetadataTests",
+    "RegisterSectionManagerTests",
+    "RegisterHatchSourceRelationTests"
+  ],
+  "independent_reviews": {
+    "polyface": "../polyface-independent/merged-65e7374/review-receipt.json",
+    "polygonmesh": "../polygonmesh-cardinality/merged-evidence/receipt.json",
+    "prior_hatch_and_metadata": "pr90-compatibility/review-result.json"
+  },
+  "gate_sources_sha256": {
+    "tools/verify_polyface_grammar.py": "2581437838bf9992f11959b430a385cb3163a3b9f0de9b50039272a7582cb58c",
+    "tools/verify_polygonmesh_cardinality.py": "f5fd7fdeff13bc10ccdb4c41833b04236d22b4d6dc8875c7746eb49a50749fed"
+  },
+  "manager_probe_source_sha256": "3147e9ba22980966d0f67fb18101258451165dd51eb9a99510fd1f7eb49be960",
+  "notes": [
+    "Both production builds began at 93f3773. Later owner documentation, receipts, ledger edits and gate checks do not change the compiled netDxf or test trees.",
+    "The newer PolygonMesh gate explicitly checks DXF version; both merged output gates were run with that final verifier.",
+    "These are focused integration checks. Full target-framework builds and the complete repository conformance suite remain part of root PR91 qualification.",
+    "Both existing mesh feature rows remain partial; no native smooth-surface or complete child-metadata preservation claim is added."
+  ]
+}

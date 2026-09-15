@@ -1,0 +1,6 @@
+{
+  "files": 732,
+  "sha256": "894f111bcec3eb4e460cf02083df90fcf28d335b3ec182cf40718033ea338dc6",
+  "contents": "Original frozen input packets and all preserved before/after output DXF packets, at their receipt-relative paths. Extract alongside this file to replay the frozen probes.",
+  "complete_external_archive_sha256": "c68791aa6557817dc1d4333059f258fb45ec7d9734d48d06f942f55d475ff554"
+}

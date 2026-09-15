@@ -98,6 +98,7 @@ namespace netDxf.IO
             this.ValidateLwPolylineFidelity();
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
+            this.ValidatePolyfaceMeshOutput();
             this.ValidateHatchSourceRelations();
             this.ValidateHatchSplineData();
             this.ValidateHatchSplineFitVersions();
@@ -5186,7 +5187,7 @@ namespace netDxf.IO
                     Owner = pMesh,
                     Layer = face.Layer,
                     Color = face.Color,
-                    VertexIndexes = face.VertexIndexes,
+                    VertexIndexes = face.VertexIndexes.Take(face.ValidateVertexIndexes(pMesh.Vertexes.Length)).ToArray(),
                     Flags = VertexTypeFlags.PolyfaceMeshVertex,
                     SubclassMarker = SubclassMarker.PolyfaceMeshFace
                 };

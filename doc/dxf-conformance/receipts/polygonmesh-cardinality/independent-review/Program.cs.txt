@@ -1,0 +1,52 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.IO;
+if(args[0]=="--batch") {
+ using var batch=JsonDocument.Parse(File.ReadAllText(args[1]));int failed=0;
+ foreach(var entry in batch.RootElement.EnumerateArray())foreach(string mode in new[]{"ascii","binary"})failed+=Run(new[]{entry.GetString()!,mode});
+ return failed==0?0:1;
+}
+return Run(args);
+static int Run(string[] caseArgs)
+{
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+using var desc=JsonDocument.Parse(File.ReadAllText(caseArgs[0]));
+var c=desc.RootElement;
+string name=c.GetProperty("name").GetString()!;
+bool shouldReject=c.GetProperty("reject").GetBoolean(),binary=caseArgs[1]=="binary";
+bool published=false;
+try {
+ byte[] input=File.ReadAllBytes(c.GetProperty("input").GetString()!);
+ using var source=new MemoryStream(input);
+ var raw=DxfRawDocument.Load(source);
+ using var stream=new MemoryStream();raw.Save(stream,binary);
+ if(stream.ToArray().AsSpan().StartsWith("AutoCAD Binary DXF"u8)!=binary)throw new Exception("input transport differs");
+ stream.Position=0;
+ DxfDocument? doc=null;string? rejection=null;
+ try {doc=DxfDocument.Load(stream);if(doc==null)rejection="Load returned null";}catch(Exception ex) when(ex is FormatException || ex is InvalidDataException){rejection=ex.GetType().Name+": "+ex.Message;}
+ if(!stream.CanRead)throw new Exception("caller stream closed");
+ published=doc!=null;
+ if(shouldReject){if(doc!=null)throw new Exception("malformed mesh published");}
+ else {
+  if(doc==null)throw new Exception("valid mesh rejected: "+rejection);
+  void CheckDoc(DxfDocument d) {
+   if(d.Entities.Lines.Count()!=1)throw new Exception("following LINE lost");
+   if(c.GetProperty("kind").GetString()=="polyface") {if(d.Entities.PolyfaceMeshes.Count()!=1)throw new Exception("polyface control lost");return;}
+   var m=d.Entities.PolygonMeshes.Single();
+   if(m.U!=c.GetProperty("m").GetInt32()||m.V!=c.GetProperty("n").GetInt32())throw new Exception("grid shape changed");
+   var points=c.GetProperty("points").EnumerateArray().Select(p=>new Vector3(p[0].GetDouble(),p[1].GetDouble(),p[2].GetDouble())).ToArray();
+   if(m.Vertexes.Length!=points.Length||!m.Vertexes.OrderBy(p=>p.X).ThenBy(p=>p.Y).ThenBy(p=>p.Z).SequenceEqual(points.OrderBy(p=>p.X).ThenBy(p=>p.Y).ThenBy(p=>p.Z)))throw new Exception("coordinate grid changed");
+   if(c.TryGetProperty("densityM",out var dm)&&(m.DensityU!=dm.GetInt32()||m.DensityV!=c.GetProperty("densityN").GetInt32()))throw new Exception("smooth density conflated with control grid");
+  }
+  CheckDoc(doc);
+  foreach(bool outputBinary in new[]{false,true}){using var output=new MemoryStream();if(!doc.Save(output,outputBinary))throw new Exception("valid output false");output.Position=0;CheckDoc(DxfDocument.Load(output)??throw new Exception("valid output reload null"));}
+ }
+ Console.WriteLine(JsonSerializer.Serialize(new{name,binary,passed=true,published,rejection}));return 0;
+} catch(Exception e){if(shouldReject && !published && e is FormatException){Console.WriteLine(JsonSerializer.Serialize(new{name,binary,passed=true,published,rejection="raw transport validation: "+e.Message}));return 0;}Console.WriteLine(JsonSerializer.Serialize(new{name,binary,passed=false,published,error=e.GetType().Name+": "+e.Message}));return 1;}
+
+}

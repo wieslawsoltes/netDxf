@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,copy,hashlib,gzip
+root=Path(__file__).parent;out=root/'fixtures';cases=[c for c in json.loads((root/'cases.json').read_text()) if 'native-20F' not in c];native=[]
+def tags(path):
+ l=path.read_text(encoding='cp1252').splitlines();return [[int(l[i]),l[i+1]] for i in range(0,len(l),2)]
+def records(t):
+ s=[i for i,r in enumerate(t) if r[0]==0];return [(i,s[j+1] if j+1<len(s) else len(t)) for j,i in enumerate(s)]
+for year,profile in [(2000,'AC1015'),(2018,'AC1032')]:
+ original=Path(f'/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/field-oracle/TS1-{profile}.dxf.gz');b=gzip.decompress(original.read_bytes());unpacked=root/'native-scan'/f'TS1-{year}.dxf';unpacked.write_bytes(b);src=tags(unpacked);ranges=records(src)
+ idx=next(i for i,(a,z) in enumerate(ranges) if src[a][1]=='POLYLINE' and [5,'20F'] in src[a:z]);a=ranges[idx][0];end=next(z for x,z in ranges[idx:] if src[x][1]=='SEQEND');packet=copy.deepcopy(src[a:end]);points=[]
+ for x,z in records(packet):
+  row=packet[x:z]
+  if row[0][1]=='VERTEX':points.append([float(next(t[1] for t in row if t[0]==code)) for code in [10,20,30]])
+ carrier=tags(out/f'producer-R{year}.dxf');rr=records(carrier);ca,cz=next((x,z) for x,z in rr if carrier[x][1]=='POLYLINE');owner=next(t[1] for t in carrier[ca:cz] if t[0]==330);ce=next(z for x,z in rr if carrier[x][1]=='SEQEND');modified=copy.deepcopy(packet)
+ for t in modified:
+  if t==[330,'1F']:t[1]=owner
+ carrier[ca:ce]=modified
+ for i,t in enumerate(carrier):
+  if t==[9,'$HANDSEED']:carrier[i+1]=[5,'F000']
+ name=f'R{year}-native-20F';path=out/(name+'.dxf');path.write_text(''.join(f'{c:3d}\n{v}\n' for c,v in carrier));meta={'name':name,'input':str(path),'reject':False,'kind':'polygon','m':3,'n':4,'points':points,'provenance':'exact native POLYLINE and all child packets, common parent owner only mapped to generated carrier model BLOCK_RECORD'};p=out/(name+'.json');p.write_text(json.dumps(meta));cases.append(str(p));native.append({'source':str(original),'sourceSha256':hashlib.sha256(b).hexdigest(),'sourceHandle':'20F','packetCount':14,'nativeOwner':'1F','carrierOwner':owner,'carrier':str(path),'carrierSha256':hashlib.sha256(path.read_bytes()).hexdigest(),'points':points})
+(root/'cases.json').write_text(json.dumps(cases,indent=2));(root/'native-scan/carrier-manifest.json').write_text(json.dumps(native,indent=2));print('cases',len(cases))

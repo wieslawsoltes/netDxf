@@ -46,3 +46,7 @@ The [immutable section manager](section-manager.md) retains the stored update fl
 ordered section pointers and exact source identities with root-anchor and lifecycle
 guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
 storage; live sectioning and automatic membership maintenance remain separate.
+
+[POLYFACE face grammar and clone isolation](polyface-grammar.md) qualify signed indices,
+zero termination, advisory counts and independent face lifecycles across both
+transports. Arbitrary POLYFACE child metadata remains outside that geometry scope.

@@ -1,0 +1,2221 @@
+{
+  "librarySha256": "2747a0db34d160003fd5f7e232cb3f58ba957aae4cbc194f75eec0db0c007e22",
+  "passed": 193,
+  "failed": 0,
+  "results": [
+    {
+      "name": "wire/polyface-2000-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-triangle-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-triangle-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-line-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-line-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-point-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-point-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-out-of-range-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-out-of-range-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-signed-minimum-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-signed-minimum-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-bad-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-bad-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-trailing-after-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-trailing-after-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-missing-middle-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-missing-middle-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-reordered-slots-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-reordered-slots-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-duplicate-slot-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-duplicate-slot-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-zero-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-zero-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-triangle-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-triangle-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-line-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-line-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-point-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-point-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-out-of-range-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-out-of-range-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-signed-minimum-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-signed-minimum-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-bad-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-bad-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-trailing-after-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-trailing-after-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-missing-middle-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-missing-middle-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-reordered-slots-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-reordered-slots-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-duplicate-slot-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-duplicate-slot-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-zero-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-zero-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-triangle-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-triangle-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-line-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-line-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-point-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-point-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-out-of-range-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-out-of-range-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-signed-minimum-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-signed-minimum-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-bad-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-bad-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-trailing-after-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-trailing-after-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-missing-middle-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-missing-middle-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-reordered-slots-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-reordered-slots-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-duplicate-slot-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-duplicate-slot-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-zero-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-zero-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-triangle-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-triangle-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-line-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-line-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-point-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-point-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-out-of-range-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-out-of-range-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-signed-minimum-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-signed-minimum-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-bad-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-bad-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-trailing-after-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-trailing-after-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-missing-middle-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-missing-middle-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-reordered-slots-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-reordered-slots-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-duplicate-slot-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-duplicate-slot-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-zero-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-zero-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-triangle-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-triangle-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-line-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-line-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-point-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-point-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-out-of-range-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-out-of-range-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-signed-minimum-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-signed-minimum-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-bad-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-bad-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-trailing-after-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-trailing-after-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-missing-middle-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-missing-middle-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-reordered-slots-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-reordered-slots-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-duplicate-slot-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-duplicate-slot-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-zero-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-zero-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-triangle-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-triangle-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-line-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-line-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-point-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-point-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-out-of-range-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-out-of-range-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-signed-minimum-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-signed-minimum-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-bad-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-bad-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-trailing-after-zero-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-trailing-after-zero-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-missing-middle-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-missing-middle-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-reordered-slots-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-reordered-slots-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-duplicate-slot-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-duplicate-slot-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-zero-first-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-zero-first-binary.dxf",
+      "passed": true,
+      "detail": {
+        "rejection": "null result"
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "clone/face-null-inheritance",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/mesh-face-identity",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/mesh-face-indices",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/clone-layer-events",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/source-layer-events",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/assigned-resources",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/coordinates-control",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/zero-placeholder-rejection",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/trailing-zero-semantics",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/mutable-preflight/5",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/mutable-preflight/-32768",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/mutable-preflight/32767",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/mutable-preflight/0",
+      "passed": true,
+      "detail": null,
+      "error": null
+    }
+  ]
+}

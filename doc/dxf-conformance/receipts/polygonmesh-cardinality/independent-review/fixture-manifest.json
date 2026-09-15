@@ -1,0 +1,642 @@
+[
+  {
+    "name": "R2000-ordinary",
+    "caseSha256": "1333c0badc370c2275d020d198d69e48650f3a3bec12af064d4768817ab6db73",
+    "inputSha256": "1f73d54fae343a597d3be9277308c26c4aed21d9ef35b16e88f538a3fbb3a807",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-ordinary.dxf",
+    "provenance": "ezdxf 1.4.4 original producer"
+  },
+  {
+    "name": "R2000-missing",
+    "caseSha256": "c6844101c4dc80a58b2cb2d1a0ab52602a088074e71b310b58f3ec843881d45e",
+    "inputSha256": "28bc4cfae3537ce4ea2567cd4a00fed2d37ff1ab6a920d19e96433025fcd2620",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-missing.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-surplus",
+    "caseSha256": "eddc621e2827fc7ee54802fa95dff13fb1678fa55671b6bb639f124e2a42734a",
+    "inputSha256": "525ce96789d88542410380d2d72dd8209202d967b572eed47d2bbf515f7b7d29",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-surplus.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-m-negative",
+    "caseSha256": "6a7ed36ecfdb9a9be58327fe642cec1c348b9ae432672acef19f8bf3dd92a6cb",
+    "inputSha256": "f5cab2d35d61ebdef6378f5e4bd5da593dae063d9f5a03deda691a1dfb3e88fc",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-m-negative.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-n-zero",
+    "caseSha256": "91d240b11360b65f7c52baacaffe4ca1a0fff8cfc4521ae691b61400d770259f",
+    "inputSha256": "77ddb0a974e97d246a44ea392541face4ba4043d7aa77ecd75b71b55aa9cccda",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-n-zero.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-m-too-large",
+    "caseSha256": "ed38c700ba8dada5c6642e4b4d949c4fc2ba13da19a40bb350b81ac4beacf0bd",
+    "inputSha256": "359749e8fadcf53ba5e45846652ee6349ce905d7279de8e2e383c907ca0df030",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-m-too-large.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-max-short-product",
+    "caseSha256": "86e412e8159da934b7c9b0780145289079d1c285a1f31a9dd71ff8bde3eb77ac",
+    "inputSha256": "5a7d7ccf81440a9e90b2e2249e6fe09ffce1192334a3dd2dfdb1beefc4979eb3",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-max-short-product.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-short-overflow",
+    "caseSha256": "09335c5c55354795f3e6ef8cd7b5eb85b2918b2f387fb5ce3f7ca48e91456691",
+    "inputSha256": "ecaeb5b3233dbf3d2cf1f8df4096a5963e7820fc592c519d5da7a0ddc0f7d246",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-short-overflow.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2000-smooth-density-distinct",
+    "caseSha256": "8240d2599c3034771dbd8af8b34d2f4d6dd50f6accdb09e72b9ea5d53806234f",
+    "inputSha256": "52983da2abf268617dff7d56df321bbd3d8c90db70cf7c6a564f9abf5a5455a5",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-smooth-density-distinct.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2000-smooth-missing-control",
+    "caseSha256": "dcfffc1384aaa1d13dc870eb431423f46781e5a143abbcfeee09f63fbf33f1dd",
+    "inputSha256": "9ba98ee73265d9f4f6aab3dc9fc90028926a52c279c933c4e5dfa2acb968de87",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-smooth-missing-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2000-smooth-surplus-control",
+    "caseSha256": "a13f8341517c98e786ee76fbf5b980ad1225ba65fc4d6f100f8f2a0efc06f828",
+    "inputSha256": "fd2ac12d9dbda088959cdc0905e1069f4fd8df1e3a3ced9b3ac587093073802f",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-smooth-surplus-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2000-polyface-advisory-0",
+    "caseSha256": "2a6abf9901f9ce334f73c0b6b8433326023ee571448ea2c88c49c83856617198",
+    "inputSha256": "abae5ebc6a45eb8071becff8d7cf1e2b3fa2920989536856ad8b355160df84b3",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-polyface-advisory-0.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2000-polyface-advisory-32767",
+    "caseSha256": "23b837c5064952d68c9bd4bdb6ada2b8ab4f0829f26d564ee750df321a1bb44a",
+    "inputSha256": "fa7b1e9062cb4ed560e1f621e81c2917d8ab6475d2b0f949da22dff2fc214118",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-polyface-advisory-32767.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2004-ordinary",
+    "caseSha256": "4a117a9813234abded40f007f20e07a4cf7af27f3191f7d4b457563fee1e6856",
+    "inputSha256": "5e17d6ca3e0d20967eab895ad49fed397874ab0d2226cbe71c264bde8043f8f9",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-ordinary.dxf",
+    "provenance": "ezdxf 1.4.4 original producer"
+  },
+  {
+    "name": "R2004-missing",
+    "caseSha256": "c67b27147c16c5edf910bd0c0a4b52fef151cae0afb1ec5d510a730e52bf7649",
+    "inputSha256": "1aed6630cc45a91ef121016bc478d6b1da48cfe9bccb71f339935e67bedcb23b",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-missing.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-surplus",
+    "caseSha256": "15d91163fde7adfe2004eb493042d991dc8e50469cdd7a5d092eaeb63e1e30c8",
+    "inputSha256": "f34a9108ac1c4f53db4acf4804c8b4daea018e3974ebc306f120d2d16b559b48",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-surplus.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-m-negative",
+    "caseSha256": "c1d34e982137cf7747b3bc6e46c249d59568b60987d3bbaea39e3b7d179ddc8c",
+    "inputSha256": "da17a837d0d593fdc22d00984db4cbfde0733c9b2b3820e02fe53c8520c14a81",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-m-negative.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-n-zero",
+    "caseSha256": "eb575a09da8fd276a4a2bbd164a8ab95fb12eba3ef31f4fd8e603b7d25b8dbe3",
+    "inputSha256": "6df8e1ae4478c357e5041568aa452d870827e2576c8511831d27ddb744889acd",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-n-zero.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-m-too-large",
+    "caseSha256": "d66358defd1536c5b89f88378d54f4c0e2870b04f4b53b96b0ebd6267be86578",
+    "inputSha256": "fbc94439ab2957fd31e231bf8c105a0823695b8f680aa0abeccdaa6c1f1ec94d",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-m-too-large.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-max-short-product",
+    "caseSha256": "aec6124597198e19bb87078224b9acae760d4d445cf2f9bce9d0e21ffa3911b5",
+    "inputSha256": "d1637d5172e3f88cf95973ed7eef7ea7be79b19e52be88f5dee6362dc9bca0af",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-max-short-product.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-short-overflow",
+    "caseSha256": "3cca8e0ea73cc8d7563e3442f639be8330d0f3c537f0b0411acf8b509c8a6fce",
+    "inputSha256": "93474bd06de9aae7e1463d892e345ab8e734702bae8091f9b74efe049f29cb03",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-short-overflow.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2004-smooth-density-distinct",
+    "caseSha256": "ae50af3f6a1a8fe2dec80f0dc5fc53a61fb599e3f26408c3696ac2b33f3e3497",
+    "inputSha256": "26f624da2cb9a0f5a737ba1b723731743f1842947c42de96408d1ffb73b34a93",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-smooth-density-distinct.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2004-smooth-missing-control",
+    "caseSha256": "4767bedfe2b40931ff975490607505f21c7311a55b4ff3b01d56cd468331cae6",
+    "inputSha256": "372057c43e4ca797c72d0cd25317a38ad638d91c1564e053d57ddb84e3d72e95",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-smooth-missing-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2004-smooth-surplus-control",
+    "caseSha256": "1e3f4bc918687f3616204521267dd618ea25af3d484baa066002798ad8665331",
+    "inputSha256": "c26d1e536d4958b2454f43aa209d7b2770d8eac403554a54a8722fcbda23a5d2",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-smooth-surplus-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2004-polyface-advisory-0",
+    "caseSha256": "f76c8f95e4fac6ff4868ae1b7a5881bfc773690af3c3f697dc441e9c9fbf1546",
+    "inputSha256": "a0ff93db39588c09b523e0c65fdd90102ab378670429ab644be6ffab88000325",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-polyface-advisory-0.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2004-polyface-advisory-32767",
+    "caseSha256": "a7f56a821fede1309d56ef15e37751ecb2732d9f6cedfbcefef096755eef44cf",
+    "inputSha256": "2b52f1cd31602ce7cfb15d9a34d2e265d6d2fcf841ad957da725ed960494cc99",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2004-polyface-advisory-32767.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2007-ordinary",
+    "caseSha256": "cd423a575b3e613d011e5aadcecc5f8f918fe3d0e40963197f31f309131a9866",
+    "inputSha256": "5bad7f5be75d6612a3e522ed1899af40139356f7969960ddc92888eb9b60dfda",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-ordinary.dxf",
+    "provenance": "ezdxf 1.4.4 original producer"
+  },
+  {
+    "name": "R2007-missing",
+    "caseSha256": "88385eb72bd02652ab14b656894a771b363d1d7a642a731647885f7f34de4b7e",
+    "inputSha256": "20283d04dc15fdb516b96cc48544da15e3b0f76b1b7df6e03c7ed936c2160f4e",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-missing.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-surplus",
+    "caseSha256": "89b35502d80d0587c7ae4113335eeb8c929f700ac7cf28ed5522a65aa709cd92",
+    "inputSha256": "2713874322bdb0a664161d82bb4f4daacd18447a9fd07f630745057b35537208",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-surplus.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-m-negative",
+    "caseSha256": "40b07ab1bdc41251e5c76e356dc3362f0bf4acc284e90cc8bc5c3a4bcee9fae2",
+    "inputSha256": "468a788a59fe80310a5e3703d16603d2c798ae0f3504dd930694e7ed03be0370",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-m-negative.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-n-zero",
+    "caseSha256": "873b7dff136268ea75dae24ee56c778f0cc963eb14aa4454dd7ce6a013ac8042",
+    "inputSha256": "9613a8de607659f3ec60727c27d0a014e242dbe0b27f2312a57eb4cfa751cd8a",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-n-zero.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-m-too-large",
+    "caseSha256": "d41d8f5490541ad9da612ef98e0f217c18c5b260dcb65ddb2cef0ca6042f2ad9",
+    "inputSha256": "aaf478d709af163d2f3c2238c67c5661e771fc6fe8669c818e810f698d756b09",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-m-too-large.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-max-short-product",
+    "caseSha256": "1044c7e6c35e9474160794539ab625df752b9650e2bc17e35b8225be84392c6b",
+    "inputSha256": "c6f91266703d8a1849fe26263ad5d68fb5b1e1364b2ad2279b6f152f2e2b96ac",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-max-short-product.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-short-overflow",
+    "caseSha256": "1d76c702c839ac575b2bfa25fd4d47e75e037f2195f64af9ef72d3af386c84e7",
+    "inputSha256": "9ae971cf2e5ef3c61391bad64e817a283a10e7b49967a4b018ae8a294c27286b",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-short-overflow.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2007-smooth-density-distinct",
+    "caseSha256": "6ddfd0d6855074ca0f5961b90871887425ee98668848a8b5984fc9fd85f8b064",
+    "inputSha256": "5ccb8ed8b8fa0b541975e57c67896e1da7811c3037a5b489af7b4c12d3e9fd0d",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-smooth-density-distinct.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2007-smooth-missing-control",
+    "caseSha256": "f23d00b4d869ac93eb715a908a3e73c78c6bcbbd5c99f979d2cf846ac814be68",
+    "inputSha256": "6b1a424503e50572880a1c53379250003992892d0e36966c618db58f563f592d",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-smooth-missing-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2007-smooth-surplus-control",
+    "caseSha256": "320ca31943bffbf4b0f8e715a35f6773e4fca6384e495785227d4e55f22d49de",
+    "inputSha256": "01b6644fd3b1212cc2c4e4966b14dc86b752d6aa734427787c24cec479205f76",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-smooth-surplus-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2007-polyface-advisory-0",
+    "caseSha256": "38ea8668f500bc03691308fa06dfed6a0f29745506a85c12c36c528eabade3eb",
+    "inputSha256": "b55fd5ca3dfb2d31287208fcd9be293fe864d8b0ddd164cf010489789451b1f8",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-polyface-advisory-0.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2007-polyface-advisory-32767",
+    "caseSha256": "0d8f251a498f3efa8f3f31c4ca57270ed7a4727d42b62e0b362336caf05faf03",
+    "inputSha256": "00de2e079291e6d643c4d84b528bdb773b0164cf038da335a0fdd45374204f99",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2007-polyface-advisory-32767.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2010-ordinary",
+    "caseSha256": "08a1bdb821accb574ac5679e94646b19e4c44c512dd40876309d501998e6da5f",
+    "inputSha256": "fccbfdf6ce9075c5360845b8345aec9818a540fb92dd0e4f63ba00dd590d1ac2",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-ordinary.dxf",
+    "provenance": "ezdxf 1.4.4 original producer"
+  },
+  {
+    "name": "R2010-missing",
+    "caseSha256": "d25b0ef37935ab4cf9dd58ee279ddb7317192a9db5e0c132dd5ab751001db38e",
+    "inputSha256": "9bb3645952fdd32608a7732b402bab9f2d16397f7e6a8f9c143b0e1523abd394",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-missing.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-surplus",
+    "caseSha256": "38849420391d0eb421340789694539da3b50ecde0a601a3ef30a8f409bad7e9f",
+    "inputSha256": "f355c583f44a71bba4c4dd2c1b1c6e292eb89325e4912b21d6157f6ffb9aa770",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-surplus.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-m-negative",
+    "caseSha256": "b8e5d9464a5da9344d78e00ed727b79fa128292ac46dce28a9dd23136ea87426",
+    "inputSha256": "9f0deee0543de45d34e713b9871a844852356e220defac9246cdec888e230268",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-m-negative.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-n-zero",
+    "caseSha256": "1709719ba525b6e3c705419e38849113998bc4ef56e054af03f7d0fc7953958d",
+    "inputSha256": "c5708a80600e16c0a53c52592d8747aee272ddc233d041a9706711e331b6a114",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-n-zero.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-m-too-large",
+    "caseSha256": "9fc72e387cc63b7e4c003dbfbcb43134b8612b542d63b26a87458a7114225c2e",
+    "inputSha256": "e3b38d1533f692c8e1d4bfc588257751b3e25c7bf93059ab2b808c5e811ee96e",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-m-too-large.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-max-short-product",
+    "caseSha256": "cd769ff9d417d3c5ef5cab1d62b53c42101be07a718496a5f865af6fddfdcf69",
+    "inputSha256": "d5eb898fa5e822f0baa7260074850997dc5f22dc3d26f4844fafafe8aaf54445",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-max-short-product.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-short-overflow",
+    "caseSha256": "794c905a0d696e0a6e975789d08501f8d77a52d742395d9d99365fa29a1d3aa1",
+    "inputSha256": "00d66bab02083ba3cee07b1b9ba19a569602653d2b3ba3b62e3eb955352444e1",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-short-overflow.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2010-smooth-density-distinct",
+    "caseSha256": "59a4fae0011d95349ee41cd369081e70844ee69020c5b321b5375746b66a2106",
+    "inputSha256": "f037eb597375bfe8c9cdf16ced285070c6cea151c3db59405777337fad22e97e",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-smooth-density-distinct.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2010-smooth-missing-control",
+    "caseSha256": "0404b7ed0ef42c129e601090126cbe15a15d7f736a465dd1d72849417decf6cc",
+    "inputSha256": "972422c4bb9de15429384893d34626545bd21f605b50696998ada8ea203e5a31",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-smooth-missing-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2010-smooth-surplus-control",
+    "caseSha256": "c5e04b9a9ff4a398ece7fa61e7f1079f5f36327ccc6ddfc0f4c23533f5c937f3",
+    "inputSha256": "14a420a227a8365bb247aee3f87dd1ee22e0fc46a156248b85853c3459a9fbf9",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-smooth-surplus-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2010-polyface-advisory-0",
+    "caseSha256": "4d04d60177f469937a9cfd6adbba75b726d2747efc290e7653dab0bcec68c9d1",
+    "inputSha256": "ec98926d6400b4ddf1b6bd27db9bcb31c90dd8eb422a03467ce92d5461cf68f6",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-polyface-advisory-0.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2010-polyface-advisory-32767",
+    "caseSha256": "f0414ad342b06e347841424d840fdd6aef73405ae64ec6746fde490f5bde72ee",
+    "inputSha256": "82e753e0d707d2c3f6b6a5c27938cf329b91bcca1b1debcbfee3e6fe30450841",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2010-polyface-advisory-32767.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2013-ordinary",
+    "caseSha256": "4d1ec3b3dd632cdbd3434521e77c6b1c85da186c0551ad4228b8858315793d5e",
+    "inputSha256": "ba27b98032105dd6069a9b4b330501fb4f47c1231d912727d0ae5ec65b4c4298",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-ordinary.dxf",
+    "provenance": "ezdxf 1.4.4 original producer"
+  },
+  {
+    "name": "R2013-missing",
+    "caseSha256": "3bf225fb8a793190263e4367856db7d22d83304a3c2d22e71ba93f12e214d32b",
+    "inputSha256": "7c24b88c65a2dcbbc3524cfcd8b8f7523d7603fd55a6a0aae203c6d9329d8d9f",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-missing.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-surplus",
+    "caseSha256": "992510ff5d3a3d2fb10940d6b0974470180cf8ebd7316ca7357777eded5c2a67",
+    "inputSha256": "42ca141f494b8a1b364ddfc52420f02bc6b3753615acded63243ec773d81485b",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-surplus.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-m-negative",
+    "caseSha256": "277667ffc66d66cd3430627365e7ac7d96f0b20134c6fb2ff3fcaeb6a7a6106e",
+    "inputSha256": "474621bd865fed8a6b5df12095ead4f39b70f84f38289e4ae762b8717286457a",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-m-negative.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-n-zero",
+    "caseSha256": "7896521cd27b02438c8e527a8fc611950068d635e76c6c051e273cd37afa0111",
+    "inputSha256": "7b975b76b9085393a6fd01627f23966f091d6fb938059e9a4ca2b05642e7ce17",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-n-zero.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-m-too-large",
+    "caseSha256": "0d1e22c677e4cc3a8ada6e29959934665bddf80f9d4f5a52d588f51483299381",
+    "inputSha256": "d79a65989db59e97e64b55111ad76adb641f3f41a061bfeba623c891e23e7531",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-m-too-large.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-max-short-product",
+    "caseSha256": "b7fd23d75dfb0a303cf66af993b9e2cb9f84f6a0e16e84639f6bf7834cc48662",
+    "inputSha256": "393a1c26cddcc0371543432c383c9f8b993f7d52d46f8453007018bf38fc8149",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-max-short-product.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-short-overflow",
+    "caseSha256": "f3d16813be5d06116eb090d2780a2cbda1792f279fd1e554366c4c3fa0a3bf28",
+    "inputSha256": "54fd34d4fd055e6d2b332e894814194543357b90de493d059d275efbfa06c446",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-short-overflow.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2013-smooth-density-distinct",
+    "caseSha256": "467685480a621d7da5e2f75178f92b0cc6676eb278c72ad660160b79fc5c567e",
+    "inputSha256": "0bef03941c7d6431c8d5c45dc42452534783606edf2ee4a41f4f7faaa742e94e",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-smooth-density-distinct.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2013-smooth-missing-control",
+    "caseSha256": "a4b9b8f438f6eb783002812fe6a6adbefbe4bd7b2aeb97135ded1a064f15c9bf",
+    "inputSha256": "b0ad8e7f93e01e47febea5448ce4a95d357e22f45c9e23b7c15abc1bf01ff032",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-smooth-missing-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2013-smooth-surplus-control",
+    "caseSha256": "fe9c6e005a8b660ad351ca05fdd22e84614679d1b979a01ab00844ed863fb91c",
+    "inputSha256": "0c18a47e9413ae5bcc4a58263158cb36ae6e83657246d6792582f4ec4d931ecd",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-smooth-surplus-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2013-polyface-advisory-0",
+    "caseSha256": "63fc8dfdd9d3cff8233e8f2a417ebd2e596d744b1e9f885d7a5729ae450b0a4a",
+    "inputSha256": "25a1d2237bcd35831d2d87d92e716f4b6487dabf3f55a3b4e2bc7bdfcfba3e38",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-polyface-advisory-0.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2013-polyface-advisory-32767",
+    "caseSha256": "fe5ea29ac326a3e4bdaba3c88dc71b343ba6e139c9b046d871e985ba492932a5",
+    "inputSha256": "13ec8f2eff70d35b643490ffd5ac1994247eeb55a03c46b916fd8f9f4a67780e",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2013-polyface-advisory-32767.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2018-ordinary",
+    "caseSha256": "0affe250bfa2990731ca34e94a4ccc88b3d792efeeb642344b2510e7e1090273",
+    "inputSha256": "05ded167b698cb7f20f7a5a60c45dcecb6b0d7478245b0f2c6249a554e6a6c53",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-ordinary.dxf",
+    "provenance": "ezdxf 1.4.4 original producer"
+  },
+  {
+    "name": "R2018-missing",
+    "caseSha256": "16f86f68252a5d1153a13b04b20245c4fff0a2a2d17dc2500f643f922955f76d",
+    "inputSha256": "c7168a8995a7eaae231a3a9c0129095b505030e5eab42d9d4fcfca29fd71bb87",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-missing.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-surplus",
+    "caseSha256": "4e188ff6638e2bf6b7a1cb5d1c6891a86709d89752c81baeef13cf48f4a78d80",
+    "inputSha256": "3d0baad3b1418d516f99c40b20970ef360e569dedc7d20073399a816af9f4118",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-surplus.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-m-negative",
+    "caseSha256": "e2161507d2fb320ae14bd3644c6b0b5f93e720029f0e2d14451457e3a58dee1b",
+    "inputSha256": "ed8b5b291200a2cd85d2e9edf2c01f43fdc8ad0bf5ea13c10f856836a720b96a",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-m-negative.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-n-zero",
+    "caseSha256": "e51fac2e7d7bbe348cf130187ba2ca0b544a13fa794d160345814aa665a6fbb9",
+    "inputSha256": "5676fc0f36627c3a6293802f84fb357fab8f6f034f0ce63f5ac6b95f0da567d4",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-n-zero.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-m-too-large",
+    "caseSha256": "b7a0f8fa1d39d6873d986c20cb5f21571b2988e2d4986556dae5020d5e631478",
+    "inputSha256": "ba9638782f0bbc5d8eb7fbd5c02ba2e390f597bca89e7421a826b1362888a754",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-m-too-large.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-max-short-product",
+    "caseSha256": "d29bf544e5d6ea1b4b3fae491abd3ce8bd853eac6736ceefe97ec920de0dd82e",
+    "inputSha256": "98a0d6f0791e2f19ccb35c414b37b4c1ff1fd7732f4face2122ea23ad34d2eb4",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-max-short-product.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-short-overflow",
+    "caseSha256": "eb17aab7e365a413e1ddaa6b6eac72b0a9ec1ebe1185ef94aae57d6b37de9a4e",
+    "inputSha256": "aed9207ccb7634720d6e2fcc195345b49b75c7bb5a676826acdea9df8c7919a2",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-short-overflow.dxf",
+    "provenance": "explicit malformed producer mutation"
+  },
+  {
+    "name": "R2018-smooth-density-distinct",
+    "caseSha256": "be8a934d49fedf400ec97c02c189b02db1f0305a081b176d0068cbb400451724",
+    "inputSha256": "b7dd720885cd82b006f874e86cb6b1d83010f025d69cc114e051329d6627ec67",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-smooth-density-distinct.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2018-smooth-missing-control",
+    "caseSha256": "3e928b749acff7d2602c1d5a21486405395fde7038020bf1a07d23916cfeb928",
+    "inputSha256": "0ce7ee35bbde8c15551f9be2890c292de36520bcb8bacd8100f94bfd03dcb79d",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-smooth-missing-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2018-smooth-surplus-control",
+    "caseSha256": "f8a1927566892aa5f34000b2facef1a12084cf95a239464e56f3b1e44ba27e98",
+    "inputSha256": "10a75e080482e0d9000516ec737d0ed10ef2ca0fb95eaf1cf92b6d929077033c",
+    "reject": true,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-smooth-surplus-control.dxf",
+    "provenance": "explicit schema fixture with separate control and fitted vertices"
+  },
+  {
+    "name": "R2018-polyface-advisory-0",
+    "caseSha256": "2d14a06d9076696f154e246bab463b25ad47a30b94b66f50743ed8a948e968ae",
+    "inputSha256": "f14be2568f66645a18469679c7cff2e6170c1768cbebebdc611e38dfc5775183",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-polyface-advisory-0.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2018-polyface-advisory-32767",
+    "caseSha256": "b080e5b842693e320fa6bfd4a2c41c82e0c49480d621b1050aa9046d9a18929d",
+    "inputSha256": "6986c8303a157964cb89df1ba3846506b4fb604e5ed88b0216beada45014ce0c",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-polyface-advisory-32767.dxf",
+    "provenance": "advisory count mutation, real face indices untouched"
+  },
+  {
+    "name": "R2000-native-20F",
+    "caseSha256": "2a196a79f0a50ad50a2860475468b291512f7dd49b2664497a93ca60b7315196",
+    "inputSha256": "ae05717a5c809348a71e7dada4858e1290709079f8664b684c9f3fd988937f02",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2000-native-20F.dxf",
+    "provenance": "exact native POLYLINE and all child packets, common parent owner only mapped to generated carrier model BLOCK_RECORD"
+  },
+  {
+    "name": "R2018-native-20F",
+    "caseSha256": "f1f6d5a5e1d18709c3b565fe13eed940f680c4236d2cdd518c3b793e65dd6f18",
+    "inputSha256": "5513a00cf85f292a4da39900e6aee34e4baac4db47285ea3d4e015b6643d7e96",
+    "reject": false,
+    "input": "/workspace/scratch/c6901be8789f/polygonmesh-independent-review/fixtures/R2018-native-20F.dxf",
+    "provenance": "exact native POLYLINE and all child packets, common parent owner only mapped to generated carrier model BLOCK_RECORD"
+  }
+]

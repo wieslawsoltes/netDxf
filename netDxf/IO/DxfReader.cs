@@ -8380,24 +8380,40 @@ namespace netDxf.IO
                 }
                 else if (v.Flags.HasFlag(VertexTypeFlags.PolyfaceMeshVertex))
                 {
-                    polyfaceFaces.Add(new PolyfaceMeshFace(v.VertexIndexes)
+                    try
                     {
-                        Layer = v.Layer,
-                        Color = v.Color
-                    });
+                        polyfaceFaces.Add(new PolyfaceMeshFace(v.VertexIndexes)
+                        {
+                            Layer = v.Layer,
+                            Color = v.Color
+                        });
+                    }
+                    catch (ArgumentException exception)
+                    {
+                        throw new FormatException("Invalid POLYFACE face vertex indices.", exception);
+                    }
                 }
             }
             
             if (polyfaceVertexes.Count < 3)
             {
-                Debug.Assert(false, "The polyface must contain at least three vertexes.");
-                return null;
+                throw new FormatException("The polyface must contain at least three vertexes.");
             }
 
             if (polyfaceFaces.Count == 0)
             {
-                Debug.Assert(false, "The polyface must contain at least one face.");
-                return null;
+                throw new FormatException("The polyface must contain at least one face.");
+            }
+
+            // Header counts are advisory, and face records may precede coordinates.
+            // Resolve signed indices against the complete coordinate sequence.
+            foreach (PolyfaceMeshFace face in polyfaceFaces)
+            {
+                try { face.ValidateVertexIndexes(polyfaceVertexes.Count); }
+                catch (ArgumentException exception)
+                {
+                    throw new FormatException("POLYFACE face references a missing vertex.", exception);
+                }
             }
 
             PolyfaceMesh pMesh = new PolyfaceMesh(polyfaceVertexes, polyfaceFaces)
@@ -8413,83 +8429,58 @@ namespace netDxf.IO
 
         private PolygonMesh ReadPolygonMesh(Polyline polyline)
         {
-            // the number of vertexes along the M direction must be between 2 and 256
-            if(polyline.M < 2 || polyline.M > 256)
-            {
-                Debug.Assert(false, "The number of vertexes along the M direction must be between 2 and 256.");
-                return null;
-            }
+            // Groups 71/72 describe the ordinary grid, or the spline control grid.
+            // Groups 73/74 describe generated surface samples and are not grid counts.
+            if (polyline.M < 2 || polyline.M > 256 || polyline.N < 2 || polyline.N > 256)
+                throw new InvalidDataException("POLYGONMESH groups 71/72 require M and N between 2 and 256.");
 
-            // the number of vertexes along the N direction must be between 2 and 256
-            if(polyline.N < 2 || polyline.N > 256)
-            {
-                Debug.Assert(false, "The number of vertexes along the M direction must be between 2 and 256.");
-                return null;
-            }
+            bool fitted = polyline.Flags.HasFlag(PolylineTypeFlags.SplineFit);
+            if (polyline.SmoothType != PolylineSmoothType.NoSmooth &&
+                polyline.SmoothType != PolylineSmoothType.Quadratic &&
+                polyline.SmoothType != PolylineSmoothType.Cubic)
+                throw new InvalidDataException("POLYGONMESH group 75 has an unsupported surface type.");
+            if (fitted != (polyline.SmoothType != PolylineSmoothType.NoSmooth))
+                throw new InvalidDataException("POLYGONMESH groups 70/75 disagree about spline fitting.");
 
-
-            Vector3[] polygonMeshVertexes = new Vector3[polyline.M * polyline.N];
-
-            PolygonMesh pMesh;
-            int i;
-            int j;
-
-            if (polyline.Flags.HasFlag(PolylineTypeFlags.SplineFit))
-            {
-                i = 0;
-                j = 0;
-                foreach (Vertex vertex in polyline.Vertexes)
-                {
-                    if (vertex.Flags.HasFlag(VertexTypeFlags.SplineFrameControlPoint))
-                    {
-                        polygonMeshVertexes[i + j * polyline.M] = vertex.Position;
-                        if (++j < polyline.N) continue;
-                        j = 0;
-                        i += 1;
-                    }
-                }
-
-                if (polygonMeshVertexes.Length != polyline.M * polyline.N)
-                {
-                    Debug.Assert(false, "The number of vertexes must be equal to MxN.");
-                    return null;
-                }
-
-                pMesh = new PolygonMesh(polyline.M, polyline.N, polygonMeshVertexes)
-                {
-                    SmoothType = polyline.SmoothType,
-                    DensityU = polyline.DensityM,
-                    DensityV = polyline.DensityN,
-                    Normal = polyline.Normal,
-                    Flags = polyline.Flags
-                };
-
-                pMesh.XData.AddRange(polyline.XData.Values);
-
-                return pMesh;
-            }
-
-            i = 0;
-            j = 0;
+            int expected = checked((int) polyline.M * polyline.N);
+            int count = 0;
+            VertexTypeFlags gridFlags = fitted
+                ? VertexTypeFlags.Polygon3DMeshVertex | VertexTypeFlags.SplineFrameControlPoint
+                : VertexTypeFlags.Polygon3DMeshVertex;
+            VertexTypeFlags sampleFlags = VertexTypeFlags.Polygon3DMeshVertex | VertexTypeFlags.SplineVertexFromSplineFitting;
             foreach (Vertex vertex in polyline.Vertexes)
             {
-                if (vertex.Flags.HasFlag(VertexTypeFlags.Polygon3DMeshVertex))
+                if (vertex.Flags == gridFlags)
                 {
-                    polygonMeshVertexes[i + j * polyline.M] = vertex.Position;
-                    if (++j < polyline.N) continue;
-                    j = 0;
-                    i += 1;
+                    if (++count > expected)
+                        throw new InvalidDataException("POLYGONMESH groups 71/72 contain more grid VERTEX coordinates than M x N.");
                 }
+                else if (!fitted || vertex.Flags != sampleFlags)
+                    throw new InvalidDataException("POLYGONMESH VERTEX group 70 does not describe the expected grid or fitted sample.");
             }
-            pMesh = new PolygonMesh(polyline.M, polyline.N, polygonMeshVertexes)
+            if (count != expected)
+                throw new InvalidDataException("POLYGONMESH groups 71/72 require exactly M x N grid VERTEX coordinates.");
+
+            // Allocate only after the bounded declaration and actual selected count agree.
+            Vector3[] polygonMeshVertexes = new Vector3[expected];
+            int ordinal = 0;
+            foreach (Vertex vertex in polyline.Vertexes)
+            {
+                if (vertex.Flags != gridFlags) continue;
+                polygonMeshVertexes[ordinal / polyline.N + (ordinal % polyline.N) * polyline.M] = vertex.Position;
+                ordinal++;
+            }
+            PolygonMesh pMesh = new PolygonMesh(polyline.M, polyline.N, polygonMeshVertexes)
             {
                 SmoothType = polyline.SmoothType,
                 Normal = polyline.Normal,
                 Flags = polyline.Flags
             };
-
+            // Omitted density groups retain the model's default. Explicit recovered
+            // values follow the existing minimum of three generated samples.
+            if (fitted && polyline.DensityM != 0) pMesh.DensityU = Math.Max((short) 3, polyline.DensityM);
+            if (fitted && polyline.DensityN != 0) pMesh.DensityV = Math.Max((short) 3, polyline.DensityN);
             pMesh.XData.AddRange(polyline.XData.Values);
-
             return pMesh;
         }
 
@@ -8504,6 +8495,7 @@ namespace netDxf.IO
             //    SplineFit and CurveFit 2D polylines are always saved as a 2D polyline
             PolylineTypeFlags flags = PolylineTypeFlags.OpenPolyline;
             PolylineSmoothType smoothType = PolylineSmoothType.NoSmooth;
+            short surfaceType = 0;
             double elevation = 0.0;
             double thickness = 0.0;
             Vector3 normal = Vector3.UnitZ;
@@ -8558,6 +8550,7 @@ namespace netDxf.IO
                         break;
                     case 75:
                         short smooth = this.chunk.ReadShort();
+                        surfaceType = smooth;
                         // SmoothType BezierSurface not implemented, reset to default
                         smoothType = smooth == 8 ? PolylineSmoothType.NoSmooth : (PolylineSmoothType) smooth;
                         this.chunk.Next();
@@ -8594,7 +8587,7 @@ namespace netDxf.IO
             {
                 if (this.chunk.ReadString() == DxfObjectCode.Vertex)
                 {
-                    Vertex vertex = this.ReadVertex();
+                    Vertex vertex = this.ReadVertex(flags.HasFlag(PolylineTypeFlags.PolyfaceMesh));
                     vertexes.Add(vertex);
                 }
                 else throw new FormatException("A POLYLINE vertex sequence requires SEQEND.");
@@ -8646,13 +8639,14 @@ namespace netDxf.IO
             }
             if (flags.HasFlag(PolylineTypeFlags.PolygonMesh))
             {
+                polyline.SmoothType = (PolylineSmoothType) surfaceType;
                 return this.ReadPolygonMesh(polyline);
             }
                
             return this.ReadPolyline2D(polyline); 
         }
 
-        private Vertex ReadVertex()
+        private Vertex ReadVertex(bool polyface)
         {
             string handle = string.Empty;
             Layer layer = null;
@@ -8662,13 +8656,41 @@ namespace netDxf.IO
             double startWidth = 0.0;
             double endWidth = 0.0;
             double bulge = 0.0;
-            List<short> vertexIndexes = new List<short>();
+            short[] vertexIndexes = new short[4];
+            int indexSlots = 0;
+            bool duplicateIndex = false;
+            int privateGroupDepth = 0;
+            bool publicSubclass = true;
+            bool extendedData = false;
             VertexTypeFlags flags = VertexTypeFlags.Polyline2DVertex;
 
             this.chunk.Next();
 
             while (this.chunk.Code != 0)
             {
+                // Private POLYFACE child metadata is not part of the public face grammar.
+                // Keep private 70/71-74 values from becoming flags or geometry indices.
+                if (polyface)
+                {
+                    if (extendedData) { this.chunk.Next(); continue; }
+                    if (this.chunk.Code == 102)
+                    {
+                        string control = this.chunk.ReadString();
+                        if (control.StartsWith("{", StringComparison.Ordinal)) privateGroupDepth++;
+                        else if (control == "}" && privateGroupDepth > 0) privateGroupDepth--;
+                        this.chunk.Next(); continue;
+                    }
+                    if (privateGroupDepth > 0) { this.chunk.Next(); continue; }
+                    if (this.chunk.Code == 1001) { extendedData = true; this.chunk.Next(); continue; }
+                    if (this.chunk.Code == 100)
+                    {
+                        string subclass = this.chunk.ReadString();
+                        publicSubclass = subclass == SubclassMarker.Entity || subclass == SubclassMarker.Vertex ||
+                            subclass == SubclassMarker.PolyfaceMeshVertex || subclass == SubclassMarker.PolyfaceMeshFace;
+                        this.chunk.Next(); continue;
+                    }
+                    if (!publicSubclass) { this.chunk.Next(); continue; }
+                }
                 switch (this.chunk.Code)
                 {
                     case 5:
@@ -8730,19 +8752,13 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 71:
-                        vertexIndexes.Add(this.chunk.ReadShort());
-                        this.chunk.Next();
-                        break;
                     case 72:
-                        vertexIndexes.Add(this.chunk.ReadShort());
-                        this.chunk.Next();
-                        break;
                     case 73:
-                        vertexIndexes.Add(this.chunk.ReadShort());
-                        this.chunk.Next();
-                        break;
                     case 74:
-                        vertexIndexes.Add(this.chunk.ReadShort());
+                        int slot = this.chunk.Code - 71;
+                        duplicateIndex |= (indexSlots & (1 << slot)) != 0;
+                        indexSlots |= 1 << slot;
+                        vertexIndexes[slot] = this.chunk.ReadShort();
                         this.chunk.Next();
                         break;
                     default:
@@ -8750,6 +8766,15 @@ namespace netDxf.IO
                         break;
                 }
             }
+
+            if (polyface && privateGroupDepth != 0)
+                throw new FormatException("Unclosed private POLYFACE vertex control group.");
+            bool isFace = polyface && flags.HasFlag(VertexTypeFlags.PolyfaceMeshVertex) && !flags.HasFlag(VertexTypeFlags.Polygon3DMeshVertex);
+            if (isFace && duplicateIndex)
+                throw new FormatException("A POLYFACE face contains a duplicate vertex-index group.");
+            int activeIndexes = 0;
+            while (activeIndexes < vertexIndexes.Length && vertexIndexes[activeIndexes] != 0) activeIndexes++;
+            if (isFace) Array.Resize(ref vertexIndexes, activeIndexes);
 
             return new Vertex
             {
@@ -8761,7 +8786,7 @@ namespace netDxf.IO
                 EndWidth = endWidth,
                 Layer = layer,
                 Linetype = linetype,
-                VertexIndexes = vertexIndexes.ToArray(),
+                VertexIndexes = vertexIndexes,
                 Handle = handle
             };
         }

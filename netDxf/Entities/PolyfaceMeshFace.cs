@@ -76,11 +76,12 @@ namespace netDxf.Entities
         /// Initializes a new instance of the <c>PolyfaceMeshFace</c> class.
         /// </summary>
         /// <remarks>
-        /// By default the face is made up of four vertexes.
+        /// The default face has four mutable index slots. Populate at least the first slot
+        /// before adding it to a mesh; zero terminates the active face indices.
         /// </remarks>
         public PolyfaceMeshFace()
-            : this(new short[4])
         {
+            this.vertexIndexes = new short[4];
         }
 
         /// <summary>
@@ -99,6 +100,7 @@ namespace netDxf.Entities
                 throw new ArgumentOutOfRangeException(nameof(vertexIndexes), "The number of indexes per faces must be greater than 0, and a maximum of 4.");
             }
 
+            this.ValidateVertexIndexes(int.MaxValue);
             this.color = null;
             this.layer = null;
         }
@@ -108,7 +110,8 @@ namespace netDxf.Entities
         #region public properties
 
         /// <summary>
-        /// Gets the list of indexes to the vertex list of a polyface mesh that makes up the face.
+        /// Gets the list of signed, one-based indexes to the vertex list of a polyface mesh that makes up the face.
+        /// The first zero terminates the face; subsequent slots are ignored.
         /// </summary>
         public short[] VertexIndexes
         {
@@ -135,6 +138,22 @@ namespace netDxf.Entities
 
         #endregion
 
+        internal int ValidateVertexIndexes(int vertexCount)
+        {
+            int count = 0;
+            foreach (short index in this.vertexIndexes)
+            {
+                if (index == 0) break;
+                if (Math.Abs((int) index) > vertexCount)
+                    throw new ArgumentOutOfRangeException(nameof(this.VertexIndexes), index,
+                        "An active polyface index must identify an existing vertex by signed one-based index.");
+                count++;
+            }
+            if (count == 0)
+                throw new ArgumentException("A polyface face must contain at least one active vertex index.", nameof(this.VertexIndexes));
+            return count;
+        }
+
         #region overrides
 
         /// <summary>
@@ -154,8 +173,8 @@ namespace netDxf.Entities
         {
             return new PolyfaceMeshFace(this.vertexIndexes)
             {
-                Layer = (Layer) this.layer.Clone(),
-                Color = (AciColor) this.color.Clone()
+                Layer = this.layer == null ? null : (Layer) this.layer.Clone(),
+                Color = this.color == null ? null : (AciColor) this.color.Clone()
                 
             };
         }

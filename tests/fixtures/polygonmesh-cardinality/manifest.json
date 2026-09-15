@@ -1,0 +1,475 @@
+{
+  "producer": "ezdxf",
+  "producer_version": "1.4.4",
+  "native_cad": false,
+  "fixtures": [
+    {
+      "file": "AC1015-ascii-plain.dxf",
+      "sha256": "c5398ee331b3d7fed43cad83cfbd2432e94be60a2ed6fa5111a46d694b088903",
+      "version": "AC1015",
+      "binary": false,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1015-binary-plain.dxf",
+      "sha256": "0927221d5c56d56f898e8630ef3bbff43638f14aaae97139eca03e5021439c78",
+      "version": "AC1015",
+      "binary": true,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1015-ascii-quadratic.dxf",
+      "sha256": "71ec3daadb66c2227c6d5855b417322ca3c4df5fdbdbb811446b98a7cf598e82",
+      "version": "AC1015",
+      "binary": false,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1015-binary-quadratic.dxf",
+      "sha256": "161f81d39bad2974e61d3002b001b7d0f7f53f61195dce086a9fe6c19ac29d6e",
+      "version": "AC1015",
+      "binary": true,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1015-ascii-cubic.dxf",
+      "sha256": "ce181fe99b0d47225bef8c46161343ffeb48443c76cb5dcb2a9ce8216adb859d",
+      "version": "AC1015",
+      "binary": false,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1015-binary-cubic.dxf",
+      "sha256": "2656cc6f1469635d3e6db740bba629c2b58155e02394ff2e5c310735db4e22f4",
+      "version": "AC1015",
+      "binary": true,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1018-ascii-plain.dxf",
+      "sha256": "21f92799d0100d04010cb0e47883d5c0b11f286ee06a4c3f3d6a2405f7617a8e",
+      "version": "AC1018",
+      "binary": false,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1018-binary-plain.dxf",
+      "sha256": "ae206e02c5ca78049730c9eef50cd30bebade1e0f01ffcc0a8efcaf21b0e7354",
+      "version": "AC1018",
+      "binary": true,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1018-ascii-quadratic.dxf",
+      "sha256": "be11d6c559cbede02c03575a8ee66b30c35f07da949f5013fe8b07af02f898e5",
+      "version": "AC1018",
+      "binary": false,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1018-binary-quadratic.dxf",
+      "sha256": "ac018cdea4c6cd2bd7dbea464c818911047a2ab1d6e7f2a5ebdd4b3b76d8155d",
+      "version": "AC1018",
+      "binary": true,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1018-ascii-cubic.dxf",
+      "sha256": "d31dbee02004f5b22e674f6b079d8198e91677cb2d4fab8d7597abb6837581c4",
+      "version": "AC1018",
+      "binary": false,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1018-binary-cubic.dxf",
+      "sha256": "3d9b7662aeb1d64011e7db8f3da7d765f281a76a2181094aea9ed1305ea6e996",
+      "version": "AC1018",
+      "binary": true,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1021-ascii-plain.dxf",
+      "sha256": "f2112c760e41f988c1b8fd374549b600b23a43f1b86921e0c98cfa50c10fb2d4",
+      "version": "AC1021",
+      "binary": false,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1021-binary-plain.dxf",
+      "sha256": "a013e41e04d1d117cc6edc99a5b4d87094b4f5c0db312647943f0e517ad7c6c7",
+      "version": "AC1021",
+      "binary": true,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1021-ascii-quadratic.dxf",
+      "sha256": "c48ad46d5d5b88a76eab2cdb794eff0f3a175e54b01c042815b0b11b260fd29b",
+      "version": "AC1021",
+      "binary": false,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1021-binary-quadratic.dxf",
+      "sha256": "286d00c5a88aa5a3af5452d6768c788d05d206f8a9ef0c69e26de888eeea1fd7",
+      "version": "AC1021",
+      "binary": true,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1021-ascii-cubic.dxf",
+      "sha256": "a65ab74390931e8b20c6a56b7ac5b88eca77b90e92073ad288dd5876b7423bc1",
+      "version": "AC1021",
+      "binary": false,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1021-binary-cubic.dxf",
+      "sha256": "1977959c17755b10bc33d85d2ac7e1f3bf13772b4a2b26e39eeb23bd3915c76e",
+      "version": "AC1021",
+      "binary": true,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1024-ascii-plain.dxf",
+      "sha256": "62ffbca560947eb7c3ffdb7a3dd5dd95c04fedb87c156654b87119de690a434a",
+      "version": "AC1024",
+      "binary": false,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1024-binary-plain.dxf",
+      "sha256": "93be50c962cd5c3c381953f880cba674acffcb1e5143e2c9daaa36369ec597bf",
+      "version": "AC1024",
+      "binary": true,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1024-ascii-quadratic.dxf",
+      "sha256": "ef42f7420e7f86a8e6e2a14ef787898703c47576c3e094326be4286073ec1d80",
+      "version": "AC1024",
+      "binary": false,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1024-binary-quadratic.dxf",
+      "sha256": "173ae73b5c57495839fcdfd08bb74398edab909c89e1a81c20621c25f1e9ff1b",
+      "version": "AC1024",
+      "binary": true,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1024-ascii-cubic.dxf",
+      "sha256": "2f9f684da0be9969c95707741aa87fb71f910da1f6c1f9c84119ed17219767b9",
+      "version": "AC1024",
+      "binary": false,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1024-binary-cubic.dxf",
+      "sha256": "b80218235fcb4a1737ea17355ad8a1f4e61def96585e184d70c49a49a6c26a16",
+      "version": "AC1024",
+      "binary": true,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1027-ascii-plain.dxf",
+      "sha256": "fe398b44248227952a16b6fd4ff9c38d742103ba1f07d1904b942631455f28ac",
+      "version": "AC1027",
+      "binary": false,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1027-binary-plain.dxf",
+      "sha256": "3f7bd83530cdfcf94ec97c2542b4b36379bbea11414bb9a3a2b3480e7ff586c0",
+      "version": "AC1027",
+      "binary": true,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1027-ascii-quadratic.dxf",
+      "sha256": "11ad10377762079c5f08939a598da349a3f4ad86e3a193b25a83d5acbd00b24c",
+      "version": "AC1027",
+      "binary": false,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1027-binary-quadratic.dxf",
+      "sha256": "293f3dd767ee0a586017ac2174f7389ec39dcb645f078640a2e164f202b5f846",
+      "version": "AC1027",
+      "binary": true,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1027-ascii-cubic.dxf",
+      "sha256": "81c116e5ffe89bc95a3386577d38ae032d7b3f5613f80e34a0e7739211850591",
+      "version": "AC1027",
+      "binary": false,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1027-binary-cubic.dxf",
+      "sha256": "e791e842034d5a84a55252730e8e1e846f2a372e7cf5286f96c00a626e6ec316",
+      "version": "AC1027",
+      "binary": true,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1032-ascii-plain.dxf",
+      "sha256": "5b85e38824f120a2b79f04b3cefd1ed569451d15f48f0f237385558a31e3fe56",
+      "version": "AC1032",
+      "binary": false,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1032-binary-plain.dxf",
+      "sha256": "711e5a8fb259a1770e57718727bc81c75dc01c9a5c2c0f357b4fd3fbc80a549e",
+      "version": "AC1032",
+      "binary": true,
+      "mode": "plain",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 0
+    },
+    {
+      "file": "AC1032-ascii-quadratic.dxf",
+      "sha256": "bbced6fb5863a0a09701e432bb777dca5968ee1853386662cf99529aa8907dd0",
+      "version": "AC1032",
+      "binary": false,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1032-binary-quadratic.dxf",
+      "sha256": "e1b7cefce51c3cfc6cb0c51c74aec6bbf02ee19a9ac043d9e0a2fcfe905ffb1d",
+      "version": "AC1032",
+      "binary": true,
+      "mode": "quadratic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1032-ascii-cubic.dxf",
+      "sha256": "81d641aa030a9261cc9a84b254d875cb5d816636ca0f6b2aa3996efb9d547c2a",
+      "version": "AC1032",
+      "binary": false,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    },
+    {
+      "file": "AC1032-binary-cubic.dxf",
+      "sha256": "4418abc61f3d34896398f67c91be2596d879722cff2fcb794542743596441fde",
+      "version": "AC1032",
+      "binary": true,
+      "mode": "cubic",
+      "grid": [
+        4,
+        4
+      ],
+      "controls": 16,
+      "samples": 20
+    }
+  ]
+}

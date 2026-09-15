@@ -1,0 +1,1181 @@
+{
+  "scope": "Synthetic private/public boundary probes; private payload preservation remains outside the assertion",
+  "cases": [
+    {
+      "name": "polyface-boundary-2000-private-before-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "7f3c9d361d8af4e48c723ad19c61dc3dd55c678cd8fb980b5d21c74005471d33"
+    },
+    {
+      "name": "polyface-boundary-2000-private-before-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "7e2b2cf8416e501367f413211d18872e965de84ac8c4066489144a24031de98c"
+    },
+    {
+      "name": "polyface-boundary-2000-private-after-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "4db34aa08d860f548ef12c5e503800cf78b08e4ec4d4d4e45d266286676f88e4"
+    },
+    {
+      "name": "polyface-boundary-2000-private-after-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "8a58b703634cd0f814750a1d4901bd6fb583903e6d3e3a40fb4d8a7764dd4efc"
+    },
+    {
+      "name": "polyface-boundary-2000-private-nested-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c9d9471e1236cff2e6c30eca420eaf39c37ba7fbd10411a3810715996ff90cb4"
+    },
+    {
+      "name": "polyface-boundary-2000-private-nested-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e1a7e3a16ab5e01443d48f5a513037102ed9bf3d2d669b6ca4c6433b01b702dc"
+    },
+    {
+      "name": "polyface-boundary-2000-unknown-subclass-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b0b3efeb885a02b3d918eee863ee6826f59da0bc282d6c2bff3d7c975dd222bc"
+    },
+    {
+      "name": "polyface-boundary-2000-unknown-subclass-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "7602a4050ba2227c1c66b9a262b30702f87fa1108195a2f3565a003408bd6eb4"
+    },
+    {
+      "name": "polyface-boundary-2000-public-resumes-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "857ebb43253bc6cf64ea9021d9e02426642d01f718abe005b4ae157edd326d4a"
+    },
+    {
+      "name": "polyface-boundary-2000-public-resumes-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "879fd99384f62633c18c6d2239aaf25d848aa145319ac80970d19fe0fd03e026"
+    },
+    {
+      "name": "polyface-boundary-2000-xdata-boundary-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0f1761fe032d9c180785333d015a19e7110bb94d992e11c625e2a8959fe27fab"
+    },
+    {
+      "name": "polyface-boundary-2000-xdata-boundary-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "9bc13bda6b1127cb2247f60eb6970b853dc510509348a453f6e706abb39b5bbf"
+    },
+    {
+      "name": "polyface-boundary-2000-xdata-control-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "faaaf0b2a5305411227784cbf3faec6818aaeb60090824e30407c90c44cdb527"
+    },
+    {
+      "name": "polyface-boundary-2000-xdata-control-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "73c31eed9040d8118f64463fb96bd09a3ba3bdf22b7bab0a2403d1f9bf8cab6d"
+    },
+    {
+      "name": "polyface-boundary-2004-private-before-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "281921a182da331776349a34cd3ff76dc11ed0b8346c750ebe4671cc9755664b"
+    },
+    {
+      "name": "polyface-boundary-2004-private-before-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "20a105eb42d06808b0e1bad858d1563353cc1100e6bf2ead079209e4d11d3646"
+    },
+    {
+      "name": "polyface-boundary-2004-private-after-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "3f71a4b6002945d5b7730df9cbd17003aaa0baf47e023904e751cf825c4a9aa0"
+    },
+    {
+      "name": "polyface-boundary-2004-private-after-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "18e15d7f371bf29fb60ce2638d7b69db04360f3f363be68919ce75b04af7b514"
+    },
+    {
+      "name": "polyface-boundary-2004-private-nested-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "06f476d4a54b00ef949bee328bfa0eedaa720634763b7b08c72706b481be07c0"
+    },
+    {
+      "name": "polyface-boundary-2004-private-nested-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "8e44029e6df2c765723bc6c3940625a5825dce33ba99ad8bbd1946b5b8c3abeb"
+    },
+    {
+      "name": "polyface-boundary-2004-unknown-subclass-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "cfb894fd5ab70ab20a27b7a0cdbd35b281b98771169ab4db236f43475d54317c"
+    },
+    {
+      "name": "polyface-boundary-2004-unknown-subclass-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "4f5ca0d81f44039ef16f01f0ee905dc18f482c35831cedeb438d4c55b5e510f6"
+    },
+    {
+      "name": "polyface-boundary-2004-public-resumes-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "601d68659f4874cb5e69a25b00f9ef0eb59d031b135a7b99b44204c8dbad0da0"
+    },
+    {
+      "name": "polyface-boundary-2004-public-resumes-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "32906d35e65c877c6f3b8bbfeb7d7d868398a40582b0fbe3b4f19487a6baf56d"
+    },
+    {
+      "name": "polyface-boundary-2004-xdata-boundary-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "943495a8933421b98335fdeae71f99b0d5ab85d574671e5197387db277cb2470"
+    },
+    {
+      "name": "polyface-boundary-2004-xdata-boundary-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "d1c42ac85b7e99deb2d53081a68fdccd417fc3df56e014e25447328f78473593"
+    },
+    {
+      "name": "polyface-boundary-2004-xdata-control-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0b897e64e6392c481f84bf9e2aa1a41ab610ddf9e72123e1bad62ed7a77486a5"
+    },
+    {
+      "name": "polyface-boundary-2004-xdata-control-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0caf384bf92fc4e63da2c4033970e03c7af329c37b5f6183c55b6bb3b29b4668"
+    },
+    {
+      "name": "polyface-boundary-2007-private-before-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "7a93a95640889797f6b4ed33e618dbdaef77573a7d7cd145bc262a851e438ccd"
+    },
+    {
+      "name": "polyface-boundary-2007-private-before-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c54bb0052f599fe899f3e4326a5fb87b2cc1f89271c8dd76fd219743145fed83"
+    },
+    {
+      "name": "polyface-boundary-2007-private-after-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "58a059b42dd0b73bcd65e2da5c72c19e152899953c3daad65bf50e2cf37df0f8"
+    },
+    {
+      "name": "polyface-boundary-2007-private-after-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "a1864f7aff1d6434e2564472d75e3635389d31a5e474b64d8dd4b3e27f8970bd"
+    },
+    {
+      "name": "polyface-boundary-2007-private-nested-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "22de6196c6c1f3351bdac5583ebdaead2bb486bf682897028dfe0d86916e7684"
+    },
+    {
+      "name": "polyface-boundary-2007-private-nested-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "3bd6080e39fd999572de0ed4208dcc011ba2ba4f9cd0df7c57cc6ddb798c6108"
+    },
+    {
+      "name": "polyface-boundary-2007-unknown-subclass-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0df99bbcbe739821e96b4f5d7ba79c87ce4cdeb250ddbec606b2f96dd27fc2ae"
+    },
+    {
+      "name": "polyface-boundary-2007-unknown-subclass-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b3eeec9eee908d4bbfbf1170cd61bca84432445bf349f3c1c933385b4ba40e97"
+    },
+    {
+      "name": "polyface-boundary-2007-public-resumes-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0e0d5e98f2869cf55cd8c59337fe77cb97a4e5c82d6f21ff3f19006c934b1cc6"
+    },
+    {
+      "name": "polyface-boundary-2007-public-resumes-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "6a23223b308192ceec2a6ff3b032f50c2264b1c9128f8df80c32badc5e40002b"
+    },
+    {
+      "name": "polyface-boundary-2007-xdata-boundary-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0ea7d20b07fa846a841842bc3cb0d4932e3e9a57cfd407092c993cac7253a54f"
+    },
+    {
+      "name": "polyface-boundary-2007-xdata-boundary-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "8c6b74467381a978c0058a2551d634bb2770beb3070b482dd3e748919de18413"
+    },
+    {
+      "name": "polyface-boundary-2007-xdata-control-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b5aa86387eb907656d7878ea543110c8568ef9b045b5cc7b7ae47565e5bf88b8"
+    },
+    {
+      "name": "polyface-boundary-2007-xdata-control-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "638a955d265d5487d7c1baa9f6bc5e43ec02d032ae5efcf928972ab3b814b5b1"
+    },
+    {
+      "name": "polyface-boundary-2010-private-before-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e72a57dee59f1a45a65ab3bd2f8f34ce940a0b65019061551809c96a1773f2b8"
+    },
+    {
+      "name": "polyface-boundary-2010-private-before-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "67b13165271234ee735b7bf8b2d5ea24ca39fe6df1ef9287233a5ba97bd63426"
+    },
+    {
+      "name": "polyface-boundary-2010-private-after-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b28a2e4f96c2b655c6ee4cddb60be1b9cde26d3ca4893a931b2935a018381a2c"
+    },
+    {
+      "name": "polyface-boundary-2010-private-after-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "f1a616c87cf0f37941e75d16c309dd4f5d2aeccdd0af1f0df5fa9eadb875e4e8"
+    },
+    {
+      "name": "polyface-boundary-2010-private-nested-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e57549c75bf18da107f94acd59dd8ae18d4003ab526f4c3526030926aa440e18"
+    },
+    {
+      "name": "polyface-boundary-2010-private-nested-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e10e53207e0ad05f11b074315e07726b1efa07d9d913e3f93fc4311bbcce4165"
+    },
+    {
+      "name": "polyface-boundary-2010-unknown-subclass-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "73e85206da3099559827065e4332db793201eb6288ed1f18dc40c3c657ec5cf3"
+    },
+    {
+      "name": "polyface-boundary-2010-unknown-subclass-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "79eae72d51131295cd300c7a1ffa45843b682f29ad84db4a14eee71ebd982b13"
+    },
+    {
+      "name": "polyface-boundary-2010-public-resumes-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "57026023a086734fdfa6d4c84d4a9ec9196b8f6866c91169b12e5e76211b0468"
+    },
+    {
+      "name": "polyface-boundary-2010-public-resumes-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "a5c6d7a837217667bfe93bc961d7df9ef38c36c68e1c2beb83b54814bb3315a8"
+    },
+    {
+      "name": "polyface-boundary-2010-xdata-boundary-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "f593b1c825c4e2ad60f9c1a44231e6fa4508c9f29082b4a3fa2f0090bf210162"
+    },
+    {
+      "name": "polyface-boundary-2010-xdata-boundary-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e2ac095a8fd8addc934bed52155def9046be1dc1f8c79e6f54ea0cd7bf5a0ae3"
+    },
+    {
+      "name": "polyface-boundary-2010-xdata-control-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "ee6f66c5322f3de0f3c2f0fd3a8a6ecab11c20b8dbec292bf509f58c2b804b7f"
+    },
+    {
+      "name": "polyface-boundary-2010-xdata-control-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "aa05ada4498ced60ff37338beb09c799e8fb7537317b6723f9a1adf6fd630ff4"
+    },
+    {
+      "name": "polyface-boundary-2013-private-before-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "08157d61728a0c6031ca16d3998030372233934099325172a778631792a5617e"
+    },
+    {
+      "name": "polyface-boundary-2013-private-before-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "6e99217a1d6a613542ba4c0539aa3ff64d8d26738cfefcbb349a58e8d84083dd"
+    },
+    {
+      "name": "polyface-boundary-2013-private-after-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "660fb2767b1e8cf387055c43e68299e20e3b82dbfa44af467fff261cbfc8351d"
+    },
+    {
+      "name": "polyface-boundary-2013-private-after-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "08d62bc7dfd8fa046cc37424c8b019232dd557b02c51e1154722090115c5bafd"
+    },
+    {
+      "name": "polyface-boundary-2013-private-nested-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b009d11a7e51834d57a44c741278d8ed47f4d5bf2b88219916c12397be16f1b2"
+    },
+    {
+      "name": "polyface-boundary-2013-private-nested-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "8746da918674046c1cca0a55ec39e0d513d816fee907bfb143ace5f002449cbb"
+    },
+    {
+      "name": "polyface-boundary-2013-unknown-subclass-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "a55b8890b421044313e989b53e4b45cc89c9ad74390c0381976e367441ea4168"
+    },
+    {
+      "name": "polyface-boundary-2013-unknown-subclass-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "d27e5a768edc0e88cc3c0feff36932db45589ca8229f3bb0d0632ec3cf7caf83"
+    },
+    {
+      "name": "polyface-boundary-2013-public-resumes-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "1659056fbaae66971d9296438508ceed222aef32cfae400561b68b9354c160df"
+    },
+    {
+      "name": "polyface-boundary-2013-public-resumes-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "64d220f9cddf43603f2a3389fa1b652b2c29e7e8ce52157b92d81cdc5e872b1d"
+    },
+    {
+      "name": "polyface-boundary-2013-xdata-boundary-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "08908670854a8aac5c2984369ea1471939a3cb02678b805497f5eedf49f1a524"
+    },
+    {
+      "name": "polyface-boundary-2013-xdata-boundary-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "48887caa4215784dab7188613c056f8dedcbe22b380569c6099865e886a2c4c5"
+    },
+    {
+      "name": "polyface-boundary-2013-xdata-control-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "22d847341e3f70ca477f6946c1493415a6201a0b6c5735da6af469f68e4191fd"
+    },
+    {
+      "name": "polyface-boundary-2013-xdata-control-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "4ffc2d44d8e7dfb2b897bf5c1b866f01e0a1374c1e7d3f93326183ee3ac89dfe"
+    },
+    {
+      "name": "polyface-boundary-2018-private-before-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "bf5f19eff0811b5361c62a5e560906361e42043d1ff01c4c306abfbd5361f545"
+    },
+    {
+      "name": "polyface-boundary-2018-private-before-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "private-before",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "bc6884ab06b04bc7b52b4a47b522ebca69c592d121210a907755f1f9aa426ece"
+    },
+    {
+      "name": "polyface-boundary-2018-private-after-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "a4fa1ddb34ec98d0290c966ba6bde9d4befb9660de51cc865dc6cab196be6ce5"
+    },
+    {
+      "name": "polyface-boundary-2018-private-after-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "private-after",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "9cbceed3c0aebd64fceca76a39fa893eeb6a13c86d68a2dfa7ad3f125d04fb84"
+    },
+    {
+      "name": "polyface-boundary-2018-private-nested-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b07a164b3a35fb378b1f015b8c8ffd7942636f07bb6655ba03fd341b53a9a45e"
+    },
+    {
+      "name": "polyface-boundary-2018-private-nested-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "private-nested",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e59245eeceaf83de0f672e1b60836dc16b4d9ba1d227d4234915fb16bb5af2e2"
+    },
+    {
+      "name": "polyface-boundary-2018-unknown-subclass-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "270e9022b26e7ab19b069a2e94f447961272b521bbdd0a0452697bf806a2d2d4"
+    },
+    {
+      "name": "polyface-boundary-2018-unknown-subclass-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "unknown-subclass",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "9d1e0846da77d3c1fa40e9a9af825c8cdba31a62cb3eac6f3d0477909dd23ba8"
+    },
+    {
+      "name": "polyface-boundary-2018-public-resumes-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "2f63ad54966ac006aeb0e2440ae2b535ba7ead6fe28fb3b77e907865a31e53f4"
+    },
+    {
+      "name": "polyface-boundary-2018-public-resumes-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "public-resumes",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "cdc784f066652fa6e7d680ae09bb5e197aa7dd7499e73e9885d0241457b1944c"
+    },
+    {
+      "name": "polyface-boundary-2018-xdata-boundary-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "5e35d6252b95e5027271debdaefcb5b4aae2e02ee2c357cfa325bcfa1730f591"
+    },
+    {
+      "name": "polyface-boundary-2018-xdata-boundary-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "xdata-boundary",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "1244fc82410946b675710a526430b6cbda9154fff8b396f3661b55ced3548df6"
+    },
+    {
+      "name": "polyface-boundary-2018-xdata-control-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c2738df93970dcff5e192deb1916a1d0ce620c7e709f7562180024a022bb049b"
+    },
+    {
+      "name": "polyface-boundary-2018-xdata-control-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "xdata-control",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "6b63f28fd27832301d74b050b626a70bb860a286fcff1aee6011af598a343135"
+    }
+  ]
+}

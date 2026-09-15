@@ -1,0 +1,75 @@
+{
+  "task": "PR91 compatibility recheck after POLYFACE and PolygonMesh integration",
+  "production_worktree": "/workspace/scratch/c6901be8789f/netDxf-polyline-integration",
+  "probes": {
+    "source_metadata": {
+      "source_sha256": "2e466169a5d0700ec497ce04aa5c990119556c8085acfb6f87cd3832fd7a86f1",
+      "cases_per_configuration": 8
+    },
+    "hatch": {
+      "source_sha256": "dbf6e1719ba0a99a68070b99bed02d2ab458f56311d55278b44097393ee43910",
+      "cases_per_configuration": 16
+    }
+  },
+  "configurations": {
+    "Debug": {
+      "library_sha256": "f85f25e948be658c012c2b3d7b22a84de3e180227c3e5f124168c1ca14622e25",
+      "probes": {
+        "source-metadata": {
+          "passed": 8,
+          "failed": 0,
+          "side_effects_equal_corrected_baseline": true,
+          "differences": [],
+          "results": "Debug/source-metadata/results.json",
+          "results_sha256": "95bbcd9184966a113b7d87ad410fc1d8771377b3713a30941388ed0a748f96c3",
+          "failure_diagnostics_match_previous_integration": true,
+          "all_results_match_previous_integration": true,
+          "previous_integration_library_sha256": "e4669b57474f490352700285abd72bc9ff1e2fa9a439af2813c099be79ceefa3",
+          "previous_integration_results_sha256": "e90ceb495a4f4eb2551d882f1085817fcb590bbbdf103754aa499b9e41e3d04d"
+        },
+        "hatch": {
+          "passed": 16,
+          "failed": 0,
+          "side_effects_equal_corrected_baseline": true,
+          "differences": [],
+          "results": "Debug/hatch/results.json",
+          "results_sha256": "0ae84e1eb024607192308a5c1d7b60af59fe4cb87afa3e07d9ef0da550db3268",
+          "failure_diagnostics_match_previous_integration": true,
+          "all_results_match_previous_integration": true,
+          "previous_integration_library_sha256": "e4669b57474f490352700285abd72bc9ff1e2fa9a439af2813c099be79ceefa3",
+          "previous_integration_results_sha256": "32954ff74f5e9ad410ec45754cdecff4433ab9d7ea44e1b7628a4c30b30a55f4"
+        }
+      }
+    },
+    "Release": {
+      "library_sha256": "2747a0db34d160003fd5f7e232cb3f58ba957aae4cbc194f75eec0db0c007e22",
+      "probes": {
+        "source-metadata": {
+          "passed": 8,
+          "failed": 0,
+          "side_effects_equal_corrected_baseline": true,
+          "differences": [],
+          "results": "Release/source-metadata/results.json",
+          "results_sha256": "5f348d1eeb2f5808c01651cce157c755f78612a0a96ada7b6f5bb447fd770919",
+          "failure_diagnostics_match_previous_integration": true,
+          "all_results_match_previous_integration": true,
+          "previous_integration_library_sha256": "5b5d7f988cb24c27466e572dc6d896cfb371c289e4096f6f1a5b03b7aa62fa9c",
+          "previous_integration_results_sha256": "c2398ccec230ff0f5209004430fe91b791b833d90839e08ff2022fe90c91b556"
+        },
+        "hatch": {
+          "passed": 16,
+          "failed": 0,
+          "side_effects_equal_corrected_baseline": true,
+          "differences": [],
+          "results": "Release/hatch/results.json",
+          "results_sha256": "dad9c8211062a535bf843e34abca68785360b75265c8a259583894a6578df8e8",
+          "failure_diagnostics_match_previous_integration": true,
+          "all_results_match_previous_integration": true,
+          "previous_integration_library_sha256": "5b5d7f988cb24c27466e572dc6d896cfb371c289e4096f6f1a5b03b7aa62fa9c",
+          "previous_integration_results_sha256": "507a09a2dfc35c62a5ea84d885e793b97e9c15e04474ec20d9130cc07c2333a1"
+        }
+      }
+    }
+  },
+  "scope": "Unchanged source-metadata and HATCH counterexample probes only; no broad suite or rendering qualification."
+}

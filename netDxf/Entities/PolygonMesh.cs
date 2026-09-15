@@ -232,6 +232,8 @@ namespace netDxf.Entities
             get { return this.smoothType; }
             set
             {
+                if (value != PolylineSmoothType.NoSmooth && value != PolylineSmoothType.Quadratic && value != PolylineSmoothType.Cubic)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "The polygon mesh surface type must be NoSmooth, Quadratic, or Cubic.");
                 if (value == PolylineSmoothType.NoSmooth)
                 {
                     this.flags &= ~PolylineTypeFlags.SplineFit;
@@ -297,6 +299,20 @@ namespace netDxf.Entities
             set { this.flags = value; }
         }
 
+        // Used before sampling and before writer preprocessing allocates child handles.
+        internal void ValidateSurface()
+        {
+            int degree = this.smoothType == PolylineSmoothType.Quadratic ? 2 : this.smoothType == PolylineSmoothType.Cubic ? 3 : 0;
+            if (degree == 0 && this.smoothType != PolylineSmoothType.NoSmooth)
+                throw new InvalidOperationException("POLYGONMESH group 75 has an unsupported surface type.");
+            if (degree != 0 && (this.u < degree + (this.IsClosedInU ? 0 : 1) || this.v < degree + (this.IsClosedInV ? 0 : 1)))
+                throw new InvalidOperationException("POLYGONMESH groups 71/72 have too few control vertices for the surface degree and closure.");
+            foreach (Vector3 vertex in this.vertexes)
+                if (double.IsNaN(vertex.X) || double.IsInfinity(vertex.X) || double.IsNaN(vertex.Y) || double.IsInfinity(vertex.Y) ||
+                    double.IsNaN(vertex.Z) || double.IsInfinity(vertex.Z))
+                    throw new InvalidOperationException("POLYGONMESH groups 10/20/30 require finite vertex coordinates.");
+        }
+
         #endregion
 
         #region public methods
@@ -342,6 +358,7 @@ namespace netDxf.Entities
                 throw new ArgumentOutOfRangeException(nameof(precisionV), precisionV, "The precisionV must be equal or greater than three.");
             }
 
+            this.ValidateSurface();
             int degree;
             if (this.smoothType == PolylineSmoothType.Quadratic)
             {

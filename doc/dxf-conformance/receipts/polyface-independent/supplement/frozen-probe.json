@@ -1,0 +1,12 @@
+{
+  "purpose": "Supplemental independent POLYFACE private-context and signed-magnitude review; no native-CAD claim. Main frozen193 probe is unchanged. Original Debug process abort is retained; original Release completes baseline.",
+  "files": {
+    "generate_fixtures.py": "434ad88e857ae47a666ff958f78a82fcb552d3f96f325669c439e2725097e7e7",
+    "probe/Program.cs": "10b1065bfd447c5c7893f268ede82ea4d20ffe47d627fc527b4966262bf73703",
+    "probe/Probe.csproj": "a46af1db4019b0a9dca7923a9b1b9be7bfc5a0a99e49be9274a200aa970752ed",
+    "manifest.json": "c63614ded41356eb5b1736d6e6d7667a391ed3591a961d91bdbb02fd1b873321",
+    "before-release/results.json": "700e7f294bd7f16199fb84c52e7851dd3d62799f0338d401ca834ba0b15f48e9",
+    "before.log": "2fc49a0943bcc693316f2d667b7a3142f0b27fca56b7c9d4e2be1f6bf76ac22b",
+    "baseline-release-runtime/netDxf.netstandard.dll": "39fdf2eeaa33ccb4921633649f46732c7a470143bd7c488f2d9d702a9a418ebf"
+  }
+}

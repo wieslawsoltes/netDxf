@@ -1,0 +1,12 @@
+Process terminated. Assertion failed.
+The polyface must contain at least one face.
+   at netDxf.IO.DxfReader.ReadPolyfaceMesh(Polyline polyline)
+   at netDxf.IO.DxfReader.ReadPolyline()
+   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)
+   at netDxf.IO.DxfReader.ReadEntities()
+   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)
+   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)
+   at netDxf.DxfDocument.Load(Stream stream)
+   at Program.<>c__DisplayClass0_2.<<Main>$>b__5() in /workspace/scratch/c6901be8789f/polyface-independent/supplement/probe/Program.cs:line 32
+   at Program.<>c__DisplayClass0_0.<<Main>$>g__Run|1(String name, Func`1 action) in /workspace/scratch/c6901be8789f/polyface-independent/supplement/probe/Program.cs:line 17
+   at Program.<Main>$(String[] args) in /workspace/scratch/c6901be8789f/polyface-independent/supplement/probe/Program.cs:line 25

@@ -1,0 +1,1227 @@
+{
+  "label": "before-debug",
+  "caseCount": 160,
+  "passed": 64,
+  "failed": 96,
+  "librarySha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+  "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+  "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+  "results": [
+    {
+      "name": "R2000-m-negative",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-m-negative",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-m-too-large",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-m-too-large",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-max-short-product",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-max-short-product",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-missing",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-missing",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-n-zero",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-n-zero",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2000-native-20F",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-native-20F",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-ordinary",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-ordinary",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-polyface-advisory-0",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-polyface-advisory-0",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-polyface-advisory-32767",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-polyface-advisory-32767",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-short-overflow",
+      "binary": false,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 1794."
+    },
+    {
+      "name": "R2000-short-overflow",
+      "binary": true,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 1794."
+    },
+    {
+      "name": "R2000-smooth-density-distinct",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-smooth-density-distinct",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2000-smooth-missing-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-smooth-missing-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-smooth-surplus-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-smooth-surplus-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-surplus",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2000-surplus",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-m-negative",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-m-negative",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-m-too-large",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-m-too-large",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-max-short-product",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-max-short-product",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-missing",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-missing",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-n-zero",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-n-zero",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2004-ordinary",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-ordinary",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-polyface-advisory-0",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-polyface-advisory-0",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-polyface-advisory-32767",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-polyface-advisory-32767",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-short-overflow",
+      "binary": false,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 1872."
+    },
+    {
+      "name": "R2004-short-overflow",
+      "binary": true,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 1872."
+    },
+    {
+      "name": "R2004-smooth-density-distinct",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-smooth-density-distinct",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2004-smooth-missing-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-smooth-missing-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-smooth-surplus-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-smooth-surplus-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-surplus",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2004-surplus",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-m-negative",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-m-negative",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-m-too-large",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-m-too-large",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-max-short-product",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-max-short-product",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-missing",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-missing",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-n-zero",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-n-zero",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2007-ordinary",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-ordinary",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-polyface-advisory-0",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-polyface-advisory-0",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-polyface-advisory-32767",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-polyface-advisory-32767",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-short-overflow",
+      "binary": false,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2044."
+    },
+    {
+      "name": "R2007-short-overflow",
+      "binary": true,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2044."
+    },
+    {
+      "name": "R2007-smooth-density-distinct",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-smooth-density-distinct",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2007-smooth-missing-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-smooth-missing-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-smooth-surplus-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-smooth-surplus-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-surplus",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2007-surplus",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-m-negative",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-m-negative",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-m-too-large",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-m-too-large",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-max-short-product",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-max-short-product",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-missing",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-missing",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-n-zero",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-n-zero",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2010-ordinary",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-ordinary",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-polyface-advisory-0",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-polyface-advisory-0",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-polyface-advisory-32767",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-polyface-advisory-32767",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-short-overflow",
+      "binary": false,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2048."
+    },
+    {
+      "name": "R2010-short-overflow",
+      "binary": true,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2048."
+    },
+    {
+      "name": "R2010-smooth-density-distinct",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-smooth-density-distinct",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2010-smooth-missing-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-smooth-missing-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-smooth-surplus-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-smooth-surplus-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-surplus",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2010-surplus",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-m-negative",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-m-negative",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-m-too-large",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-m-too-large",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-max-short-product",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-max-short-product",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-missing",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-missing",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-n-zero",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-n-zero",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2013-ordinary",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-ordinary",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-polyface-advisory-0",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-polyface-advisory-0",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-polyface-advisory-32767",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-polyface-advisory-32767",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-short-overflow",
+      "binary": false,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2052."
+    },
+    {
+      "name": "R2013-short-overflow",
+      "binary": true,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2052."
+    },
+    {
+      "name": "R2013-smooth-density-distinct",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-smooth-density-distinct",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2013-smooth-missing-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-smooth-missing-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-smooth-surplus-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-smooth-surplus-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-surplus",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2013-surplus",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-m-negative",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-m-negative",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-m-too-large",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-m-too-large",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-max-short-product",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-max-short-product",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-missing",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-missing",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-n-zero",
+      "binary": false,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-n-zero",
+      "binary": true,
+      "passed": false,
+      "published": false,
+      "error": "process ended before probe result",
+      "exitCode": -6,
+      "stderr": "Process terminated. Assertion failed.\nThe number of vertexes along the M direction must be between 2 and 256.\n   at netDxf.IO.DxfReader.ReadPolygonMesh(Polyline polyline)\n   at netDxf.IO.DxfReader.ReadPolyline()\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable`1 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.<<Main>$>g__Run|0_0(String[] caseArgs)\n   at Program.<Main>$(String[] args)\n"
+    },
+    {
+      "name": "R2018-native-20F",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-native-20F",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-ordinary",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-ordinary",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-polyface-advisory-0",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-polyface-advisory-0",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-polyface-advisory-32767",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-polyface-advisory-32767",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-short-overflow",
+      "binary": false,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2052."
+    },
+    {
+      "name": "R2018-short-overflow",
+      "binary": true,
+      "passed": true,
+      "published": false,
+      "rejection": "raw transport validation: Invalid 16-bit integer value for group code 71 at line 2052."
+    },
+    {
+      "name": "R2018-smooth-density-distinct",
+      "binary": false,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-smooth-density-distinct",
+      "binary": true,
+      "passed": true,
+      "published": true,
+      "rejection": null
+    },
+    {
+      "name": "R2018-smooth-missing-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-smooth-missing-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-smooth-surplus-control",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-smooth-surplus-control",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-surplus",
+      "binary": false,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    },
+    {
+      "name": "R2018-surplus",
+      "binary": true,
+      "passed": false,
+      "published": true,
+      "error": "Exception: malformed mesh published"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "review": "Independent unchanged PolygonMesh cardinality before/after probe",
+  "dateUtc": "2026-09-15",
+  "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+  "probeSourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+  "caseDefinitions": 80,
+  "inputTransports": [
+    "ascii",
+    "binary"
+  ],
+  "uniqueOutcomesPerRun": 160,
+  "runs": [
+    {
+      "label": "before-debug",
+      "caseCount": 160,
+      "passed": 64,
+      "failed": 96,
+      "librarySha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+      "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+      "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+      "resultsFile": "before-debug-results.json",
+      "resultsSha256": "5638ee18836c518298b85225884c9212490807f3ad40bde738ecafda01034c62",
+      "uniqueOutcomes": 160,
+      "categories": {
+        "positive": {
+          "caseCount": 52,
+          "passed": 52,
+          "failed": 0,
+          "returnedDocument": 52,
+          "processAbort": 0
+        },
+        "typedMalformed": {
+          "caseCount": 96,
+          "passed": 0,
+          "failed": 96,
+          "returnedDocument": 48,
+          "processAbort": 48
+        },
+        "rawSigned16Overflow": {
+          "caseCount": 12,
+          "passed": 12,
+          "failed": 0,
+          "returnedDocument": 0,
+          "processAbort": 0
+        }
+      }
+    },
+    {
+      "label": "before-release",
+      "caseCount": 160,
+      "passed": 64,
+      "failed": 96,
+      "librarySha256": "05d0d730f8e49a0ecfa7e290938880ca3d6fed203ff39abfd24cc0886c414fb0",
+      "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+      "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+      "resultsFile": "before-release-results.json",
+      "resultsSha256": "83482b9c9bd4c1eced0d37dcfb0be384cc83caefd33a17718c3f2cdd0f71bb95",
+      "uniqueOutcomes": 160,
+      "categories": {
+        "positive": {
+          "caseCount": 52,
+          "passed": 52,
+          "failed": 0,
+          "returnedDocument": 52,
+          "processAbort": 0
+        },
+        "typedMalformed": {
+          "caseCount": 96,
+          "passed": 0,
+          "failed": 96,
+          "returnedDocument": 96,
+          "processAbort": 0
+        },
+        "rawSigned16Overflow": {
+          "caseCount": 12,
+          "passed": 12,
+          "failed": 0,
+          "returnedDocument": 0,
+          "processAbort": 0
+        }
+      }
+    },
+    {
+      "label": "after-debug",
+      "caseCount": 160,
+      "passed": 160,
+      "failed": 0,
+      "librarySha256": "8d43357f749928acd2e02c27f5957df0ba1f575af3bdf5e727f5e3a242663930",
+      "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+      "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+      "resultsFile": "after-debug-results.json",
+      "resultsSha256": "28e99c1f3b6091ecbac260e01f473b1870b95aff3baeba8e2600c89ad564110e",
+      "uniqueOutcomes": 160,
+      "categories": {
+        "positive": {
+          "caseCount": 52,
+          "passed": 52,
+          "failed": 0,
+          "returnedDocument": 52,
+          "processAbort": 0
+        },
+        "typedMalformed": {
+          "caseCount": 96,
+          "passed": 96,
+          "failed": 0,
+          "returnedDocument": 0,
+          "processAbort": 0
+        },
+        "rawSigned16Overflow": {
+          "caseCount": 12,
+          "passed": 12,
+          "failed": 0,
+          "returnedDocument": 0,
+          "processAbort": 0
+        }
+      }
+    },
+    {
+      "label": "after-release",
+      "caseCount": 160,
+      "passed": 160,
+      "failed": 0,
+      "librarySha256": "8f07105379c4f9850e2c6d46fda97f06efbd30fb1a37f18050ba29d438d09190",
+      "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+      "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+      "resultsFile": "after-release-results.json",
+      "resultsSha256": "96837357ef256d697c4f7ed71aaa8cbdd257cc46d834e730f4b90d47e9c38019",
+      "uniqueOutcomes": 160,
+      "categories": {
+        "positive": {
+          "caseCount": 52,
+          "passed": 52,
+          "failed": 0,
+          "returnedDocument": 52,
+          "processAbort": 0
+        },
+        "typedMalformed": {
+          "caseCount": 96,
+          "passed": 96,
+          "failed": 0,
+          "returnedDocument": 0,
+          "processAbort": 0
+        },
+        "rawSigned16Overflow": {
+          "caseCount": 12,
+          "passed": 12,
+          "failed": 0,
+          "returnedDocument": 0,
+          "processAbort": 0
+        }
+      }
+    }
+  ],
+  "fixtureManifestSha256": "c1f0d3f822836e30fc36d871e0f051eeaae738507c8d0415401829d08b1de50e",
+  "frozenInputsSha256": "47971652df4a631864ca5e445c3655e8e4b88c4e7cb394e67a573395ea3fa357",
+  "nativeCarrierManifestSha256": "c04070b031f7e66df02fe72826b940e9e0ba105680c36d7a809864643c6c89a1",
+  "primaryReferences": [
+    {
+      "title": "Autodesk POLYLINE group codes",
+      "url": "https://help.autodesk.com/cloudhelp/2015/ENU/AutoCAD-DXF/files/GUID-ABF6B778-BE20-4B49-9B58-A94E64CEFFF3.htm",
+      "scope": "71/72 grid counts; 73/74 fitting densities; 75 surface type"
+    },
+    {
+      "title": "Autodesk VERTEX group codes",
+      "url": "https://help.autodesk.com/cloudhelp/2021/ENU/AutoCAD-DXF/files/GUID-0741E831-599E-4CBF-91E1-8ADBCFD6556D.htm",
+      "scope": "flag 8 fitted sample, 16 frame control, 64 polygon mesh; POLYFACE is separate"
+    }
+  ],
+  "scope": [
+    "Six schema profiles: R2000, R2004, R2007, R2010, R2013 and R2018. Each definition is exercised as raw-normalized ASCII and binary input.",
+    "52 positive outcomes include ordinary producer meshes, distinct 3x3 smooth controls with 4x5 fitting densities and 20 generated samples, advisory POLYFACE counts, and two scoped native packet carriers. Each successful read is saved and reloaded in both ASCII and binary.",
+    "96 typed malformed outcomes cover missing/surplus ordinary or frame-control coordinates, negative or zero dimensions, the library 256 dimension limit, and the maximum signed-short product.",
+    "12 signed-short 32768 outcomes reject in raw transport validation before typed reading, in baseline and candidate. These are not new typed validation successes.",
+    "The published result field means DxfDocument.Load returned a document. Baseline Release sometimes returns a document while dropping the malformed mesh.",
+    "Native evidence is limited to ordinary 3x4 POLYGONMESH handle 20F from pinned TS1 AC1015 and AC1032 inputs. The parent common owner is mapped from 1F to the generated carrier model owner 17; the 14 native entity/child packets otherwise remain unchanged.",
+    "Positive assertions check grid dimensions, coordinate multiset/count, explicit fitting densities, following LINE presence and transport round trips. They do not establish native packet identity after typed writing, vertex order, fitted-sample identity, or native smooth regeneration.",
+    "Code review confirms range and selected-vertex count checks precede allocation of the output coordinate grid. The earlier reader already collects vertex objects; this is not an allocation-free parsing or denial-of-service guarantee.",
+    "2..256 is the existing library PolygonMesh bound, not a claimed universal Autodesk file-format limit. With signed-short input dimensions, the product 32767*32767 is still within Int32; scalar short overflow is reported separately."
+  ],
+  "methodNotes": [
+    "The final probe accepts documented malformed read rejection as FormatException, InvalidDataException, or a null Load result, and verifies caller stream remains readable.",
+    "An initial exception-taxonomy assumption was corrected in the harness. Only the four final results linked here count; the corrected binary was frozen and rerun unchanged against both baseline and candidate Debug/Release libraries.",
+    "The archived case JSON contains original absolute scratch paths. To replay elsewhere, relocate only case input paths and cases.json entries; preserve archived DXF bytes and Program.cs source. Such relocation changes case JSON hashes but not input hashes."
+  ],
+  "baselineBinaryProvenance": {
+    "capturedFrom": "/workspace/scratch/c6901be8789f/netDxf-hatch-source/tests/netDxf.Conformance/bin/{Debug,Release}/net8.0/netDxf.netstandard.dll",
+    "assemblyInformationalVersion": "3.0.1+6dfe470c7bee42e7f858fd62484adf5701eb3d4d",
+    "sourceQualification": "The baseline is the owner-selected frozen pre-PolygonMesh binary. Its exact identity is the per-configuration SHA256; the embedded commit does not identify any uncommitted source present when it was built."
+  },
+  "candidateBinaryProvenance": {
+    "capturedFrom": "/workspace/scratch/c6901be8789f/netDxf-polygonmesh-cardinality/netDxf/bin/{Debug,Release}/net8.0/netDxf.netstandard.dll",
+    "assemblyInformationalVersion": "3.0.1+d4a236a281e112451af4734922dd91924f57add6",
+    "laterCommittedSourceSnapshot": "13a937bf0e95ee85fe6cdff154b7d6cb04cd7927",
+    "sourceQualification": "The owner supplied these binaries after building the pending PolygonMesh implementation and then committed the source as 13a937b. The embedded revision identifies the parent at build time, not absence of pending source changes."
+  }
+}
