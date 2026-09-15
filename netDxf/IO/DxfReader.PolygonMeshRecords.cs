@@ -44,7 +44,7 @@ namespace netDxf.IO
             while (this.chunk.Code != 0)
             {
                 if (tags.Count >= 4096 || ++this.polylineRecordTags > 1048576)
-                    throw new FormatException("Retained polyline records exceed their tag admission budget.");
+                    throw new FormatException("Retained polygon mesh records exceed their tag admission budget.");
                 if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
                 this.chunk.Next();
             }
@@ -61,13 +61,13 @@ namespace netDxf.IO
                     if (name == "{ACAD_REACTORS" || name == "{ACAD_XDICTIONARY")
                     {
                         if (record.MetadataGroups.Keys.Any(key => (string)tags[key].Value == name))
-                            throw new FormatException("Duplicate polyline metadata control group.");
+                            throw new FormatException("Duplicate polygon mesh metadata control group.");
                         record.MetadataGroups.Add(first, last);
                         for (int at = first + 1; at < last; at++)
                         {
                             if (name == "{ACAD_REACTORS" && tags[at].Code == 330) record.ReactorHandles.Add(PolylineRecordHandle(tags[at]));
                             else if (name == "{ACAD_XDICTIONARY" && tags[at].Code == 360 && record.ExtensionHandle == null) record.ExtensionHandle = PolylineRecordHandle(tags[at]);
-                            else throw new FormatException("Invalid polyline metadata control group.");
+                            else throw new FormatException("Invalid polygon mesh metadata control group.");
                         }
                     }
                     else record.HasPrivateData = true;
@@ -108,7 +108,7 @@ namespace netDxf.IO
                     else
                     {
                         if (stage < (end ? 1 : 3) || name == "AcDbEntity" || name == "AcDbVertex" || name == "AcDbPolygonMeshVertex")
-                            throw new FormatException("Invalid retained polyline subclass sequence.");
+                            throw new FormatException("Invalid retained polygon mesh subclass sequence.");
                         privateSubclass = true;
                         record.HasPrivateData = true;
                     }
@@ -119,13 +119,13 @@ namespace netDxf.IO
                 {
                     if (tag.Code == 8)
                     {
-                        if (record.Layer != null) throw new FormatException("Duplicate polyline record layer.");
+                        if (record.Layer != null) throw new FormatException("Duplicate polygon mesh record layer.");
                         record.Resources.Add(i, this.GetLayer(this.DecodeEncodedNonAsciiCharacters((string)tag.Value)));
                         record.OriginalResourceNames.Add(i, record.Layer.Name);
                     }
                     if (tag.Code == 6)
                     {
-                        if (record.Linetype != null) throw new FormatException("Duplicate polyline record linetype.");
+                        if (record.Linetype != null) throw new FormatException("Duplicate polygon mesh record linetype.");
                         record.Resources.Add(i, this.GetLinetype(this.DecodeEncodedNonAsciiCharacters((string)tag.Value)));
                         record.OriginalResourceNames.Add(i, record.Linetype.Name);
                     }
@@ -177,13 +177,13 @@ namespace netDxf.IO
                 {
                     if (handle == "0") continue;
                     DxfObject target = this.GetObjectBySourceHandle(handle);
-                    if (target == null) throw new FormatException("Unresolved retained polyline reactor: " + handle);
+                    if (target == null) throw new FormatException("Unresolved retained polygon mesh reactor: " + handle);
                     record.PersistentReactors.Add(target); record.OriginalReactors.Add(target);
                 }
                 if (record.ExtensionHandle != null && record.ExtensionHandle != "0")
                 {
                     var extension = this.GetObjectBySourceHandle(record.ExtensionHandle) as netDxf.Objects.DxfDictionary;
-                    if (extension == null || !ReferenceEquals(extension.Owner, record)) throw new FormatException("Invalid retained polyline extension dictionary.");
+                    if (extension == null || !ReferenceEquals(extension.Owner, record)) throw new FormatException("Invalid retained polygon mesh extension dictionary.");
                     record.ExtensionDictionary = extension;
                 }
                 record.OriginalExtension = record.ExtensionDictionary;
@@ -195,7 +195,7 @@ namespace netDxf.IO
                     if (tag.Code == 100) { entity = (string)tag.Value == "AcDbEntity"; continue; }
                     if (!entity || tag.Code != 347 && tag.Code != 390 || PolylineRecordHandle(tag) == "0") continue;
                     DxfObject target = this.GetObjectBySourceHandle(PolylineRecordHandle(tag));
-                    if (target == null) throw new FormatException("Unresolved retained polyline common reference: " + tag.Value);
+                    if (target == null) throw new FormatException("Unresolved retained polygon mesh common reference: " + tag.Value);
                     record.Resources.Add(i, target);
                 }
             }

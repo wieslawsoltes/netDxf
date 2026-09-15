@@ -9,6 +9,19 @@ namespace netDxf.IO
     {
         private void ValidateStoredPolygonMeshRecords()
         {
+            // Metadata may grow after load through the public XData/reactor APIs.
+            // Validate the shared reader budget before writing or allocating anything.
+            long total = 0;
+            foreach (DxfObject item in this.doc.AddedObjects.Values)
+            {
+                int count = item is PolygonMeshRecord mesh ? mesh.TopologyTagCount()
+                    : item is Polyline3DRecord polylineRecord ? polylineRecord.TopologyTagCount() : 0;
+                if (count > 4096)
+                    throw new NotSupportedException("A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.");
+                total += count;
+                if (total > 1048576)
+                    throw new NotSupportedException("Retained VERTEX/SEQEND records exceed the shared document tag admission budget.");
+            }
             foreach (PolygonMesh polyline in this.doc.AddedObjects.Values.OfType<PolygonMesh>())
             {
                 polyline.ValidateStoredRecords(this.doc, true);

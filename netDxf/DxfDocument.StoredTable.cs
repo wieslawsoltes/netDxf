@@ -31,7 +31,7 @@ namespace netDxf
                 {
                     if (entity is Hatch hatch) HatchSourceRelations.ValidateOwner(hatch, block, this);
                     if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
-            if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
+                    if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
                     if (entity is Section section) section.Validate(this);
                     else if (entity is StoredTable table) table.ValidateIncoming(this);
                     else if (entity is Insert insert) visit(insert.Block);
