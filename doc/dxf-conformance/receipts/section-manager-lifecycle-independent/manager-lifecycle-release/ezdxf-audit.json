@@ -1,0 +1,128 @@
+{
+  "ezdxf": "1.4.4",
+  "outputs": 20,
+  "errors": 0,
+  "repairs": 0,
+  "files": [
+    {
+      "file": "created-AutoCad2007-False.dxf",
+      "sha256": "73f572c7054a42f22fd5e587cc77fb0459d8d0638886b6952d34b4824bcf4204",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2007-True.dxf",
+      "sha256": "719a12e3360b3af6c08c027251e5b7309c62a90fe10a182d54457ecf33eac03f",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2010-False.dxf",
+      "sha256": "fe6a240a73b49b6bbfeed75eeadca449bb3d453311f50217cbfda0733eb5f239",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2010-True.dxf",
+      "sha256": "45e9b73e06584c79803fd71ef35e87bcdf1a10214b7e7751b4a159ac1d8425d8",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2013-False.dxf",
+      "sha256": "e89046e87533ddd6ede88cb0e4babc241cb5f338cd948f5e706acdfff73b8187",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2013-True.dxf",
+      "sha256": "438581261b299e8168e44ff212e03b8a8c5772ee150e40b70add0c068283ce00",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2018-False.dxf",
+      "sha256": "c22a924e113b3ef0e3cb945fe2eb0f02e7371facf023f92f95e3d37644f351f9",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "created-AutoCad2018-True.dxf",
+      "sha256": "486316805d68f17c7bf686eb4d49f8cc222bcddf67e3af1c08780b2b3563ff28",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-recreated-False-False.dxf",
+      "sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-recreated-False-True.dxf",
+      "sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-recreated-True-False.dxf",
+      "sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-recreated-True-True.dxf",
+      "sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2007-False.dxf",
+      "sha256": "a430fedc92f06ad1289aeea4ca14c7ef15cbf0bda811535c14ee07a1642660c2",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2007-True.dxf",
+      "sha256": "45adb0949f3bfa066af699d479238f5ec8e89060d9ebd2a8b334fe3b2bf61aaa",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2010-False.dxf",
+      "sha256": "b70a2d0a7e1afeb053354a21c77f31da0270776048c22136c8c985c369580cc7",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2010-True.dxf",
+      "sha256": "c57a070ba673c7d2cd86a140306b29aeb49d3a11bb32c8417614b8cc1a955b9c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2013-False.dxf",
+      "sha256": "756afc456f9d041324f4121601c45de0546e2e8f4bc2e1c560a04daddcfaae88",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2013-True.dxf",
+      "sha256": "26bcd0c502f3d6f9760b99293fc2a7282ae92efc23285c96a88790e4cc3138ff",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2018-False.dxf",
+      "sha256": "519ab1e0e416dcacb4a9fe164a8c899f357332edd6882e76e23349ed9ab739a8",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "recreated-AutoCad2018-True.dxf",
+      "sha256": "94cd5e76ddfd7006d26a430b5706b298b11bb4aa33d6e8d92849fa076ddbb35e",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

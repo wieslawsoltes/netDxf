@@ -1,0 +1,1 @@
+PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim

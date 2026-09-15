@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "scope": "Current common metadata on retained child records guards ordinary entity and containing-block removal",
+  "finding": "The shared collector skipped current XData1005 and persistent reactors when the removal set contained no retained child record, permitting dangling references to ordinary entities.",
+  "test_commit": "f70c60f65e02a5308a921760af192f361b940ebd",
+  "production_fix": "ee1f287fff6889b7d9cba2d1ac5cf7f431297a38",
+  "configuration": "Debug",
+  "same_test_binary_before_and_after": true,
+  "before": {
+    "passed": 0,
+    "failed": 336,
+    "library_sha256": "a7fec594f951b3df4c20459fd2fb1e1362e8c71bef9ac056a5f0e6ce33d75675"
+  },
+  "after": {
+    "passed": 336,
+    "failed": 0,
+    "library_sha256": "04a543935282f70adafbf23ab4fcf879dcac7e2853cd8a9fc570c2f7ba4ffb37"
+  },
+  "conformance_sha256": "cd502ea6d27e8d21e6ffe5669fcaaeaf6728cc9c35ee84d279c9372c8349736a",
+  "matrix": {
+    "profiles": 6,
+    "transports": 2,
+    "retained_record_roles": [
+      "Polyline3D VERTEX",
+      "Polyline3D SEQEND",
+      "PolygonMesh VERTEX",
+      "PolygonMesh SEQEND",
+      "Polyface coordinate VERTEX",
+      "Polyface face VERTEX",
+      "Polyface SEQEND"
+    ],
+    "reference_kinds": [
+      "PersistentReactors",
+      "XData1005"
+    ],
+    "removal_targets": [
+      "ordinary entity",
+      "containing block of ordinary entity"
+    ]
+  },
+  "assertions": [
+    "Reference guards before and after save/reload",
+    "Actual source, parent, child and target identities survive rejection",
+    "Rejection leaves handle allocation unchanged",
+    "Unrelated entity removal succeeds",
+    "Explicitly clearing the last reference releases the target",
+    "Detaching the retained parent unregisters children and releases outgoing target guards"
+  ],
+  "files": {
+    "before-results.json.gz": {
+      "sha256": "efd296a188d338f180056940ba4e378b3a94d816475affd51191225fd46e7cc6",
+      "uncompressed_sha256": "f1f6497e8fe560d0d1479d0162b959744ff3c9ed0db4fa02ed9ce23dac228f6a"
+    },
+    "before-source.json": {
+      "sha256": "fec63ca1f8fd71b6a087d6ad4ff0ff34227af926d8658483778d72ed8a5a30e2",
+      "uncompressed_sha256": "fec63ca1f8fd71b6a087d6ad4ff0ff34227af926d8658483778d72ed8a5a30e2"
+    },
+    "before-runtime.log.gz": {
+      "sha256": "641901d62513abb08ab3cd42d0d866c0560fe7b25ea4616790a065af5299eb32",
+      "uncompressed_sha256": "76b61b289399b57036339a9115f17876fe663500c88271902ba8c4e24b8280b5"
+    },
+    "after-results.json.gz": {
+      "sha256": "125a2552b49ad712d84b4336e165ab18885b725f52bf1a4039e4cce997a39f23",
+      "uncompressed_sha256": "5d571a46022f4be21826ca8b19134bfda3d54079cbfb1f4a85eb512e71c616e7"
+    },
+    "after-source.json": {
+      "sha256": "ac440d6a2076e6130dac57e3f96271e4d981c7e4e95c3ffd3a0446d0a428653b",
+      "uncompressed_sha256": "ac440d6a2076e6130dac57e3f96271e4d981c7e4e95c3ffd3a0446d0a428653b"
+    },
+    "after-runtime.log.gz": {
+      "sha256": "c86093a0c833d083c35b1b1d7755f43c68517005961ba9f29cf405ee4ddcfb1b",
+      "uncompressed_sha256": "fdc349b87e2cf168305ba230772457291087098288e7624b3469647e0fa4b4e6"
+    }
+  },
+  "scope_limit": "This correction covers retained children; it does not globally change every entity metadata removal policy. Full integration qualifies both Debug and Release separately."
+}

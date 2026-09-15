@@ -1,0 +1,73 @@
+{
+  "controls": 8,
+  "all_rejected": true,
+  "gate_sha256": "a5be21cbd0bf32af6c384c3b9d7b02e64ef9a42148d27e154a9274cd910e282c",
+  "input_sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6",
+  "linked_sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5",
+  "results": [
+    {
+      "control": "hatch-identity",
+      "file": "hatch-identity.dxf",
+      "sha256": "781fe5800320ae73fa01263daab9d1655906558d48288a386c049b4dee549b53",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "Retained Polyface full header/physical child packets changed"
+    },
+    {
+      "control": "mesh-identity",
+      "file": "mesh-identity.dxf",
+      "sha256": "395e1ce6147d7e7fdd8fe38bc9fe3e3b9aa9701b01e79d6d3c7afb1d71803113",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "Retained Polyface full header/physical child packets changed"
+    },
+    {
+      "control": "face-identity",
+      "file": "face-identity.dxf",
+      "sha256": "9133c4233b98dabb747ae209ec94d515482062203ccb00f8629316e905ad606a",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "SECTION generic source order/repetition/null/count packet changed"
+    },
+    {
+      "control": "coordinate-identity",
+      "file": "coordinate-identity.dxf",
+      "sha256": "857f160d29c5584ba5198b45b0c84dcfdb7a93073ce4b76526535327adf93a03",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "Retained Polyface full header/physical child packets changed"
+    },
+    {
+      "control": "opaque-identity",
+      "file": "opaque-identity.dxf",
+      "sha256": "ba94dd5590ed227318ee39855e33fd7d9687a42053aae7edc4254aa6441d584d",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "Complete opaque source packet/identity changed"
+    },
+    {
+      "control": "hatch-elevation-x",
+      "file": "hatch-elevation-x.dxf",
+      "sha256": "fd1890fdee778ac56ca04bf77f207cfb7843e4413e2436f33e6c7371a5b79c5e",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "HATCH elevation point X/Y must remain zero"
+    },
+    {
+      "control": "geometry-target",
+      "file": "geometry-target.dxf",
+      "sha256": "2cb08b36544a3eb83121b00451f5cdebc3b20c695383e9a9ac35894b926bea0a",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "Explicit native geometry edit/reference packet changed"
+    },
+    {
+      "control": "content-display",
+      "file": "content-display.dxf",
+      "sha256": "fe0747b2b5071fff78330f24ec340904f4a05b68cdeda615d79eb4d98ed36434",
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "rejection": "Explicit native content header/scalar/display edit or untouched packet changed"
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "qualified_commit": "3d487e4dd1e86fd8446a2172e18a6d1b394a7000",
+  "qualified_tree": "ccfc3c6d150710e893da3a582f986cf79a000936",
+  "root_baseline": "ac18082a1a8f90d880dad8307df25932d2b33986",
+  "production_imports": {
+    "opaque_initial": "b2ee2f9cf7b4791d6dae70907e07a229b2c00dd9",
+    "opaque_class_text": "df9b5ac",
+    "opaque_table_resource_guard": "15b228174f3fc4c123caef8b04f1c791efb1001f",
+    "table_content_editing": "c87afec225d1f31b04e645b4d4719cac947fee21",
+    "retained_child_common_metadata_guard": "ee1f287fff6889b7d9cba2d1ac5cf7f431297a38"
+  },
+  "registration": "RegisterTenthMixedModuleTests",
+  "test_prefix": "tenth-mixed/",
+  "test_cases_per_configuration": 16,
+  "native_sources": [
+    {
+      "file": "acad_table_simple.dxf",
+      "url": "https://raw.githubusercontent.com/mozman/ezdxf/v1.4.4/examples_dxf/acad_table_simple.dxf",
+      "sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "profile": "AC1027",
+      "tables": 1,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "B3",
+          "owner": "B2",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "AF"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              2
+            ],
+            [
+              361,
+              "B0"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "AF",
+              "kind": "TABLECONTENT",
+              "owner": "B3"
+            },
+            {
+              "code": 361,
+              "handle": "B0",
+              "kind": "TABLEGEOMETRY",
+              "owner": "B3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "url": "https://raw.githubusercontent.com/mozman/ezdxf/v1.4.4/examples_dxf/acad_table_with_blk_ref.dxf",
+      "sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "profile": "AC1032",
+      "tables": 1,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "119",
+          "owner": "118",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "116"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              9
+            ],
+            [
+              361,
+              "117"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "116",
+              "kind": "TABLECONTENT",
+              "owner": "119"
+            },
+            {
+              "code": 361,
+              "handle": "117",
+              "kind": "TABLEGEOMETRY",
+              "owner": "119"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    2013,
+    2018
+  ],
+  "input_transports": [
+    "ASCII",
+    "binary"
+  ],
+  "output_transports": [
+    "ASCII",
+    "binary"
+  ],
+  "phases": [
+    "input",
+    "linked",
+    "manager-erased",
+    "opaque-guard",
+    "released",
+    "retry"
+  ],
+  "gate": "tools/verify_tenth_mixed.py",
+  "gate_sha256": "a5be21cbd0bf32af6c384c3b9d7b02e64ef9a42148d27e154a9274cd910e282c",
+  "test_source_sha256": "3943abb451e818242f2d73d632bf40a91b47a29dc047218d7ca7185dea163a65",
+  "configurations": {
+    "Debug": {
+      "target": "net8.0",
+      "tests_passed": 16,
+      "tests_failed": 0,
+      "outputs": 48,
+      "gate": {
+        "actual_output_corruptions_rejected": 760,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "coherent_actual_ascii_controls": [
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "manager-identity",
+            "rejected_for": "Explicit native geometry edit/reference packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "section-identity",
+            "rejected_for": "Manager ordered update/list packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "settings-identity",
+            "rejected_for": "Surviving SECTION full plane/appearance/identity packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-manager-after-release",
+            "rejected_for": "Erased manager survived or was replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-polyface-after-release",
+            "rejected_for": "Released Polyface was retained or replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-opaque-after-release",
+            "rejected_for": "Released opaque source was retained or replaced"
+          }
+        ],
+        "declared_schema_opaque_neighbor": true,
+        "native_cad_execution": false,
+        "outputs": 48,
+        "synthetic_retained_polyface": true,
+        "total_controls": 766,
+        "world_pattern_probes": 5280
+      },
+      "library_sha256": "5f68130642edc56c14d01abb554e682f97032753a0c838501495a761e4d57333",
+      "test_assembly_sha256": "ba4bf4a7b3d0a07ba0aba04f579db7f298a8577c14f0f93623cb41f106301d51",
+      "informational_version": "3.0.1+3d487e4dd1e86fd8446a2172e18a6d1b394a7000",
+      "unsuppressed_CS1591_warnings": 561,
+      "build_errors": 0
+    },
+    "Release": {
+      "target": "net8.0",
+      "tests_passed": 16,
+      "tests_failed": 0,
+      "outputs": 48,
+      "gate": {
+        "actual_output_corruptions_rejected": 760,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "coherent_actual_ascii_controls": [
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "manager-identity",
+            "rejected_for": "Explicit native geometry edit/reference packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "section-identity",
+            "rejected_for": "Manager ordered update/list packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "settings-identity",
+            "rejected_for": "Surviving SECTION full plane/appearance/identity packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-manager-after-release",
+            "rejected_for": "Erased manager survived or was replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-polyface-after-release",
+            "rejected_for": "Released Polyface was retained or replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-opaque-after-release",
+            "rejected_for": "Released opaque source was retained or replaced"
+          }
+        ],
+        "declared_schema_opaque_neighbor": true,
+        "native_cad_execution": false,
+        "outputs": 48,
+        "synthetic_retained_polyface": true,
+        "total_controls": 766,
+        "world_pattern_probes": 5280
+      },
+      "library_sha256": "5d1f285d0531d76891f16292862cdfe5175cbcd96a8c2e0e3b79888bc3b54872",
+      "test_assembly_sha256": "e8d16f9e0fb8c71e95912869142a61b9d4ef12cc9c05e953822ba17fecb0a29b",
+      "informational_version": "3.0.1+3d487e4dd1e86fd8446a2172e18a6d1b394a7000",
+      "unsuppressed_CS1591_warnings": 561,
+      "build_errors": 0
+    }
+  },
+  "independent_review": {
+    "receipt": "receipts/tenth-mixed/independent/tenth-review-summary.json",
+    "sha256": "ae3b99e2d7ff38313bdebc537a445337f0e8a7fbf47a94ce4d64ab5ee04c75f6",
+    "gate_replays": {
+      "Debug": {
+        "outputs": 48,
+        "controls": 766,
+        "world_pattern_probes": 5280,
+        "approximate_seconds": 69
+      },
+      "Release": {
+        "outputs": 48,
+        "controls": 766,
+        "world_pattern_probes": 5280,
+        "approximate_seconds": 68
+      }
+    },
+    "additional_actual_ascii_controls": 8,
+    "additional_control_source": "Debug R2018 ASCII linked output; its bytes match the Release source output",
+    "all_additional_controls_audit_clean_and_rejected": true,
+    "open_findings": 0
+  },
+  "native_cad_execution": false,
+  "provenance_limits": [
+    "Native TABLE carriers and complete stored dependencies are pinned producer inputs.",
+    "Retained Polyface, HATCH, SECTION graph and class-free opaque entity are explicitly authored within native carriers; no invented producer provenance.",
+    "SECTIONSETTINGS and TABLEGEOMETRY links exercise explicit generic source pointer storage, not rendering or regeneration semantics.",
+    "Native STYLE and common TABLE/TABLESTYLE normalization is narrowly asserted in the gate; remaining full packets and identities remain exact.",
+    "Component-wide framework targets and complete repository qualification are handled by root integration."
+  ],
+  "matching_root_production_commit": "7240b02ca932e89f5e5ab05e5c5ace7357b893dc",
+  "root_production_comparison": "git diff matching_root_production_commit qualified_commit -- netDxf is empty"
+}

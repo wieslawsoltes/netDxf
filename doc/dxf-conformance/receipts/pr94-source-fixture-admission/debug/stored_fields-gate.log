@@ -1,0 +1,21 @@
+PASS stored-field-AutoCad2000-False-graph.dxf
+PASS stored-field-AutoCad2000-False-native-edited.dxf
+PASS stored-field-AutoCad2000-False-native.dxf
+PASS stored-field-AutoCad2000-True-graph.dxf
+PASS stored-field-AutoCad2000-True-native-edited.dxf
+PASS stored-field-AutoCad2000-True-native.dxf
+PASS stored-field-AutoCad2004-False-graph.dxf
+PASS stored-field-AutoCad2004-True-graph.dxf
+PASS stored-field-AutoCad2007-False-graph.dxf
+PASS stored-field-AutoCad2007-True-graph.dxf
+PASS stored-field-AutoCad2010-False-graph.dxf
+PASS stored-field-AutoCad2010-True-graph.dxf
+PASS stored-field-AutoCad2013-False-graph.dxf
+PASS stored-field-AutoCad2013-True-graph.dxf
+PASS stored-field-AutoCad2018-False-graph.dxf
+PASS stored-field-AutoCad2018-False-native-edited.dxf
+PASS stored-field-AutoCad2018-False-native.dxf
+PASS stored-field-AutoCad2018-True-graph.dxf
+PASS stored-field-AutoCad2018-True-native-edited.dxf
+PASS stored-field-AutoCad2018-True-native.dxf
+PASS 20 FIELD drawings, 12 maps, 100 independent packet/ownership corruption controls

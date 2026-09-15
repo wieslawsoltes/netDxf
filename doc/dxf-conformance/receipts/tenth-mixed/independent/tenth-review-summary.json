@@ -1,0 +1,553 @@
+{
+  "module": "Tenth mixed native storage/editing and ordered dependency graph",
+  "reviewed_checkpoint": "3d487e4dd1e86fd8446a2172e18a6d1b394a7000",
+  "repository": "netDxf-tenth-mixed",
+  "gate_path": "netDxf-tenth-mixed/tools/verify_tenth_mixed.py",
+  "gate_sha256": "a5be21cbd0bf32af6c384c3b9d7b02e64ef9a42148d27e154a9274cd910e282c",
+  "owner_test_path": "netDxf-tenth-mixed/tests/netDxf.Conformance/TenthMixedModuleTests.cs",
+  "owner_test_sha256": "3943abb451e818242f2d73d632bf40a91b47a29dc047218d7ca7185dea163a65",
+  "independent_harness": {
+    "path": "recovery-audit/review_tenth_mixed_independent.py",
+    "sha256": "b30c6f48961cccbf24829e665d445d62f397e459f9d1a04ba82904e752f2e0f7"
+  },
+  "configurations": {
+    "debug": {
+      "owner_runtime_cases": 16,
+      "owner_runtime_failures": 0,
+      "owner_results_path": "tenth-mixed-fixed-debug/results.json",
+      "owner_results_sha256": "05938f3556e5337e6736883a6579587f48b6e876046a5412a8b1aa86b1a41538",
+      "independent_gate_replay": {
+        "actual_output_corruptions_rejected": 760,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "coherent_actual_ascii_controls": [
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "manager-identity",
+            "rejected_for": "Explicit native geometry edit/reference packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "section-identity",
+            "rejected_for": "Manager ordered update/list packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "settings-identity",
+            "rejected_for": "Surviving SECTION full plane/appearance/identity packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-manager-after-release",
+            "rejected_for": "Erased manager survived or was replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-polyface-after-release",
+            "rejected_for": "Released Polyface was retained or replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-opaque-after-release",
+            "rejected_for": "Released opaque source was retained or replaced"
+          }
+        ],
+        "declared_schema_opaque_neighbor": true,
+        "native_cad_execution": false,
+        "outputs": 48,
+        "synthetic_retained_polyface": true,
+        "total_controls": 766,
+        "world_pattern_probes": 5280
+      },
+      "gate_log_path": "recovery-audit/tenth-final-debug-gate.log",
+      "gate_log_sha256": "b86da4056e9bd3c49b26029136b46616a28340bf6b6ac767b8ef340d9d55124c",
+      "outputs": [
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-input.dxf",
+          "sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-linked.dxf",
+          "sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-manager-erased.dxf",
+          "sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-opaque-guard.dxf",
+          "sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-released.dxf",
+          "sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-retry.dxf",
+          "sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-input.dxf",
+          "sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-linked.dxf",
+          "sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-manager-erased.dxf",
+          "sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-opaque-guard.dxf",
+          "sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-released.dxf",
+          "sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-retry.dxf",
+          "sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-input.dxf",
+          "sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-linked.dxf",
+          "sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-manager-erased.dxf",
+          "sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-opaque-guard.dxf",
+          "sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-released.dxf",
+          "sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-retry.dxf",
+          "sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-input.dxf",
+          "sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-linked.dxf",
+          "sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-manager-erased.dxf",
+          "sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-opaque-guard.dxf",
+          "sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-released.dxf",
+          "sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-retry.dxf",
+          "sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-input.dxf",
+          "sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-linked.dxf",
+          "sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-manager-erased.dxf",
+          "sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-opaque-guard.dxf",
+          "sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-released.dxf",
+          "sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-retry.dxf",
+          "sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-input.dxf",
+          "sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-linked.dxf",
+          "sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-manager-erased.dxf",
+          "sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-opaque-guard.dxf",
+          "sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-released.dxf",
+          "sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-retry.dxf",
+          "sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-input.dxf",
+          "sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-linked.dxf",
+          "sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-manager-erased.dxf",
+          "sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-opaque-guard.dxf",
+          "sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-released.dxf",
+          "sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-retry.dxf",
+          "sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-input.dxf",
+          "sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-linked.dxf",
+          "sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-manager-erased.dxf",
+          "sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-opaque-guard.dxf",
+          "sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-released.dxf",
+          "sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-retry.dxf",
+          "sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b"
+        }
+      ],
+      "approximate_gate_elapsed_seconds": 69,
+      "elapsed_measurement": "Fresh log creation timestamp to final modification timestamp, rounded to whole seconds; gates ran concurrently."
+    },
+    "release": {
+      "owner_runtime_cases": 16,
+      "owner_runtime_failures": 0,
+      "owner_results_path": "tenth-mixed-fixed-release/results.json",
+      "owner_results_sha256": "05938f3556e5337e6736883a6579587f48b6e876046a5412a8b1aa86b1a41538",
+      "independent_gate_replay": {
+        "actual_output_corruptions_rejected": 760,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "coherent_actual_ascii_controls": [
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "manager-identity",
+            "rejected_for": "Explicit native geometry edit/reference packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "section-identity",
+            "rejected_for": "Manager ordered update/list packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "settings-identity",
+            "rejected_for": "Surviving SECTION full plane/appearance/identity packet changed"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-manager-after-release",
+            "rejected_for": "Erased manager survived or was replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-polyface-after-release",
+            "rejected_for": "Released Polyface was retained or replaced"
+          },
+          {
+            "audit_errors": 0,
+            "audit_repairs": 0,
+            "control": "new-opaque-after-release",
+            "rejected_for": "Released opaque source was retained or replaced"
+          }
+        ],
+        "declared_schema_opaque_neighbor": true,
+        "native_cad_execution": false,
+        "outputs": 48,
+        "synthetic_retained_polyface": true,
+        "total_controls": 766,
+        "world_pattern_probes": 5280
+      },
+      "gate_log_path": "recovery-audit/tenth-final-release-gate.log",
+      "gate_log_sha256": "b86da4056e9bd3c49b26029136b46616a28340bf6b6ac767b8ef340d9d55124c",
+      "outputs": [
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-input.dxf",
+          "sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-linked.dxf",
+          "sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-manager-erased.dxf",
+          "sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-opaque-guard.dxf",
+          "sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-released.dxf",
+          "sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-False-retry.dxf",
+          "sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-input.dxf",
+          "sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-linked.dxf",
+          "sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-manager-erased.dxf",
+          "sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-opaque-guard.dxf",
+          "sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-released.dxf",
+          "sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-False-True-retry.dxf",
+          "sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-input.dxf",
+          "sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-linked.dxf",
+          "sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-manager-erased.dxf",
+          "sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-opaque-guard.dxf",
+          "sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-released.dxf",
+          "sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-False-retry.dxf",
+          "sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-input.dxf",
+          "sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-linked.dxf",
+          "sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-manager-erased.dxf",
+          "sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-opaque-guard.dxf",
+          "sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-released.dxf",
+          "sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0"
+        },
+        {
+          "file": "tenth-mixed-acad_table_simple.dxf-True-True-retry.dxf",
+          "sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-input.dxf",
+          "sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-linked.dxf",
+          "sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-manager-erased.dxf",
+          "sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-opaque-guard.dxf",
+          "sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-released.dxf",
+          "sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-False-retry.dxf",
+          "sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-input.dxf",
+          "sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-linked.dxf",
+          "sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-manager-erased.dxf",
+          "sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-opaque-guard.dxf",
+          "sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-released.dxf",
+          "sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-False-True-retry.dxf",
+          "sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-input.dxf",
+          "sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-linked.dxf",
+          "sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-manager-erased.dxf",
+          "sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-opaque-guard.dxf",
+          "sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-released.dxf",
+          "sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-False-retry.dxf",
+          "sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-input.dxf",
+          "sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-linked.dxf",
+          "sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-manager-erased.dxf",
+          "sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-opaque-guard.dxf",
+          "sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-released.dxf",
+          "sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446"
+        },
+        {
+          "file": "tenth-mixed-acad_table_with_blk_ref.dxf-True-True-retry.dxf",
+          "sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b"
+        }
+      ],
+      "approximate_gate_elapsed_seconds": 68,
+      "elapsed_measurement": "Fresh log creation timestamp to final modification timestamp, rounded to whole seconds; gates ran concurrently."
+    }
+  },
+  "additional_actual_wire_controls": {
+    "path": "recovery-audit/tenth-final-wire-controls/actual-wire-controls.json",
+    "sha256": "00a9726dc7a0d7b9542faf251f2ecb8699f1f61bca076220b516a5dc21793e72",
+    "controls": 8,
+    "result": "All eight real ASCII output mutations remain ezdxf-audit clean and are rejected by the exact wire oracle.",
+    "source": "Debug R2018 ASCII linked output",
+    "cases": [
+      "hatch-identity",
+      "mesh-identity",
+      "face-identity",
+      "coordinate-identity",
+      "opaque-identity",
+      "hatch-elevation-x",
+      "geometry-target",
+      "content-display"
+    ]
+  },
+  "findings": [
+    {
+      "kind": "oracle coverage",
+      "description": "The transformed HATCH elevation point compared only its Z value while X/Y fell in the general geometry-code allowance.",
+      "resolution": "The final gate requires exact zero X/Y and includes parsed-output controls. An additional independent actual-byte X mutation is rejected specifically for this invariant."
+    }
+  ],
+  "source_and_scope": [
+    "The graph combines exact pinned native TABLE, TABLECONTENT, TABLEGEOMETRY, TABLESTYLE and CELLSTYLEMAP packets with explicitly synthetic retained face-first Polyface records, declared-schema opaque entity links, authored SECTION/SECTIONSETTINGS/manager objects and HATCH affine pattern data.",
+    "Exact native common-packet normalization is bounded to explicitly checked TABLE default insertions and the exact TABLESTYLE metadata group order. Owner/reactor/extension identities, subclass packets, proxy bytes and all other related data remain exact.",
+    "Manager, SECTION, settings, Polyface parent/child, opaque and HATCH identities remain tied to their initial registrations; ordered reference release and retirement cannot silently substitute a new identity. Root and CLASS state are compared across phases.",
+    "The owner independently found the pre-existing retained-child metadata removal gap while qualifying the graph. Root corrected it before these accepted outputs; this review replays the resulting wire evidence and does not claim ownership of that production finding.",
+    "Both final configurations pass the exact 48-output inventory, 760 parsed-output corruptions, six coherent actual ASCII graph substitutions, 5,280 world-pattern probes and zero audit errors/repairs. Eight additional independent coherent identity/value mutations are separate from those 766 controls.",
+    "No native CAD executable was used. Declared unknown entities remain storage-only objects for the independent parser; a clean structural audit is not application geometry interpretation."
+  ]
+}

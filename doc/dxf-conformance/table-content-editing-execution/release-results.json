@@ -1,0 +1,4632 @@
+[
+  {
+    "name": "table-content-edit/native-noop/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-noop/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/native-edit/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/schema/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/2/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/3/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/4/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/5/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/6/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/7/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/8/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/9/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/10/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/11/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/12/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/13/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/14/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/15/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/16/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/17/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/18/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/2/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/3/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/4/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/5/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/6/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/7/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/style/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/table-style/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/snapshots/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/new-target-dispose/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/opaque-style/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/post-edit-lifecycle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/STYLE/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/LTYPE/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/APPID/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/ENTITY/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/BLOCK_RECORD/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/BLOCK_MEMBER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/ATTRIB/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/ENDBLK/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/2/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/3/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/4/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/5/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/6/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/7/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/8/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/9/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/10/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/11/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/12/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/13/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/14/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/15/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/16/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/17/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/atomic/18/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/2/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/3/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/4/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/5/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/6/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/unqualified/7/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/style/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/table-style/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/snapshots/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/new-target-dispose/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/opaque-style/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/post-edit-lifecycle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/STYLE/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/LTYPE/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/APPID/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/ENTITY/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/BLOCK_RECORD/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/BLOCK_MEMBER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/ATTRIB/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/retained-reference/ENDBLK/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/TABLEFORMAT_BEGIN/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/TABLEFORMAT_BEGIN/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/TABLEFORMAT_BEGIN/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/TABLEFORMAT_BEGIN/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/DATAMAP_BEGIN/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/DATAMAP_BEGIN/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/DATAMAP_BEGIN/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/DATAMAP_BEGIN/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/CELLCONTENT_BEGIN/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/CELLCONTENT_BEGIN/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/CELLCONTENT_BEGIN/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/CELLCONTENT_BEGIN/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/LINKEDTABLEDATACELL_BEGIN/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/LINKEDTABLEDATACELL_BEGIN/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/LINKEDTABLEDATACELL_BEGIN/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/LINKEDTABLEDATACELL_BEGIN/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/ACVALUE_END/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/ACVALUE_END/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/ACVALUE_END/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/ACVALUE_END/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/Literal\\U+0041/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/Literal\\U+0041/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/Literal\\U+0041/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/Literal\\U+0041/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/\ud83d\ude00\u6f22\u5b57/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/\ud83d\ude00\u6f22\u5b57/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/\ud83d\ude00\u6f22\u5b57/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/text/\ud83d\ude00\u6f22\u5b57/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/value-validation",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/encoded-string-limit",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/metadata-tag-limit",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/exact-tag-limit",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content-edit/nonfinite-wire",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-noop/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/native-edit/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/schema/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/STYLE/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/LTYPE/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/APPID/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/ENTITY/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/BLOCK_RECORD/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/BLOCK_MEMBER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/ATTRIB/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/ENDBLK/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/2/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/3/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/4/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/5/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/6/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/7/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/8/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/9/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/10/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/11/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/12/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/13/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/14/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/15/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/16/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/17/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/18/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/19/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/metadata-noop/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/post-edit-guards/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/STYLE/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/LTYPE/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/APPID/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/ENTITY/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/BLOCK_RECORD/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/BLOCK_MEMBER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/ATTRIB/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/references/ENDBLK/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/2/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/3/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/4/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/5/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/6/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/7/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/8/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/9/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/10/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/11/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/12/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/13/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/14/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/15/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/16/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/17/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/18/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/atomic/19/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/metadata-noop/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/post-edit-guards/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/nonfinite-value/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/value-snapshots",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/exact-tag-limit",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry-edit/metadata-tag-limit",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/native/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/schema/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/empty/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/17",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/18",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/19",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/20",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/21",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/22",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/False/23",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/False/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/Custom name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/_DATA",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/CELLSTYLE_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/CELLSTYLE_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/False/Za\u017c\u00f3\u0142\u0107 \u65e5\u672c\u8a9e",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/False/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/False/TABLEFORMAT_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/False/CELLSTYLE_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/False/CELLSTYLE_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/False/CONTENTFORMAT_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/False/STYLE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/False/LTYPE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/False/APPID",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/False/ENTITY",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/False/BLOCK_RECORD",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/False/BLOCK_MEMBER",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/17",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/18",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/19",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/20",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/21",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/22",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/malformed/True/23",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/opaque/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/lifecycle/True/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/Custom name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/_DATA",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/CELLSTYLE_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/CELLSTYLE_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/custom-name/True/Za\u017c\u00f3\u0142\u0107 \u65e5\u672c\u8a9e",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/True/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/True/TABLEFORMAT_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/True/CELLSTYLE_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/True/CELLSTYLE_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/format-literal/True/CONTENTFORMAT_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/True/STYLE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/True/LTYPE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/True/APPID",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/True/ENTITY",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/True/BLOCK_RECORD",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "cell-style-map/reference/True/BLOCK_MEMBER",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_simple.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_with_blk_ref.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1018_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1021_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1024_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_simple.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_with_blk_ref.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/older-profile/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class-empty/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/typed-class-conflict/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/private-identity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/leading280/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-margin/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/missing-height/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-height/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-application/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/unknown-first/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/four-rows/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/case-spelling/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/appid/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/block-member/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/attribute/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/endblock/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unclosed-control/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unmatched-control/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/bare-xdata/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_simple.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_with_blk_ref.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1018_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1021_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1024_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_simple.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_with_blk_ref.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/older-profile/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class-empty/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/typed-class-conflict/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/private-identity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/leading280/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-margin/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/missing-height/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-height/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-application/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/unknown-first/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/four-rows/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/case-spelling/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/appid/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/block-member/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/attribute/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/endblock/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unclosed-control/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unmatched-control/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/bare-xdata/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/320",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/329",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/350",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/360",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/369",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/390",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/399",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/480",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/481",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/native/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/schema/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/empty/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/17",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/18",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/19",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/20",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/21",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/22",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/23",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/24",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/25",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/26",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/False/27",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/False/STYLE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/False/LTYPE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/False/APPID",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/False/ENTITY",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/False/BLOCK_RECORD",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/False/BLOCK_MEMBER",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/17",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/18",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/19",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/20",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/21",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/22",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/23",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/24",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/25",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/26",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/malformed/True/27",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/opaque/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/lifecycle/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/True/STYLE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/True/LTYPE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/True/APPID",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/True/ENTITY",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/True/BLOCK_RECORD",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-geometry/dependency/True/BLOCK_MEMBER",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/graph/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/composite-roundtrip/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/composite-roundtrip/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/malformed-envelope/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/malformed-envelope/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/malformed-envelope/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/malformed-envelope/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/acad_table_simple.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/acad_table_simple.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/acad_table_with_blk_ref.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/acad_table_with_blk_ref.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/sample_AC1018_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/sample_AC1018_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/sample_AC1021_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/sample_AC1021_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/sample_AC1024_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/native-packet/sample_AC1024_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/handle-case",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/payload-protection",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/bind-atomicity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/adoption-atomicity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/reference-copy",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/opaque-clone-boundary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "declared-ownership/registered-reciprocity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13DF/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13F2/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/reversed-order/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-content/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-geometry/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/null-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/absent-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-owner/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/undeclared-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/cycle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/private-marker/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/reordered-markers/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/extra-marker/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/trailing-value/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/duplicate-owner-slot/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-cell/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/unknown-scalar-code/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13DF/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13F2/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/reversed-order/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-content/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-geometry/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/null-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/absent-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-owner/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/undeclared-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/cycle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/private-marker/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/reordered-markers/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/extra-marker/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/trailing-value/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/duplicate-owner-slot/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-cell/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/unknown-scalar-code/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/bind-atomicity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/erased-wrapper-bind",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/erased-candidate/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/terminal-descendant/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/terminal-descendant/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/erased-candidate/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/terminal-descendant/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "erasure-declared-ownership/terminal-descendant/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/lifecycle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/source-identity/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/lifecycle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/source-identity/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/lifecycle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/source-identity/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/lifecycle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "seventh-mixed/source-identity/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1018_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1018_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1018_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1018_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1021_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1021_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1021_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1021_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1024_ascii.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1024_ascii.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1024_ascii.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/native/sample_AC1024_ascii.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/17",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/False/18",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/False/STYLE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/False/LTYPE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/False/BLOCK_RECORD",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/False/ENTITY",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/False/BLOCK_MEMBER",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/False/APPID",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/TABLEFORMAT_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/LINKEDTABLEDATACOLUMN_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/LINKEDTABLEDATAROW_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/CELLCONTENT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/DATAMAP_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/False/Literal\\U+0041",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/False/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/False/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/False/DATAMAP_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/False/DATAMAP_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/False/Private value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/False/Private value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/False/Literal\\U+0041",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/False/Literal\\U+0041",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/17",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/malformed/True/18",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/lifecycle/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/True/STYLE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/True/LTYPE",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/True/BLOCK_RECORD",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/True/ENTITY",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/True/BLOCK_MEMBER",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/dependency/True/APPID",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/TABLEFORMAT_END",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/LINKEDTABLEDATACOLUMN_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/LINKEDTABLEDATAROW_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/CELLCONTENT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/DATAMAP_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/literal-marker/True/Literal\\U+0041",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/True/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/True/TABLEFORMAT_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/True/DATAMAP_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/True/DATAMAP_BEGIN",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/True/Private value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/True/Private value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/unqualified-map/True/Literal\\U+0041",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/map-value/True/Literal\\U+0041",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/STYLE/340/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/STYLE/320/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/STYLE/329/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/LTYPE/340/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/LTYPE/320/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/LTYPE/329/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/STYLE/340/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/STYLE/320/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/STYLE/329/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/LTYPE/340/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/LTYPE/320/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-content/opaque-resource/LTYPE/329/True",
+    "passed": true,
+    "error": null
+  }
+]

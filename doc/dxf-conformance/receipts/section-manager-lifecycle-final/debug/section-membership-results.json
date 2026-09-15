@@ -1,0 +1,422 @@
+[
+  {
+    "name": "section-membership/edit/AutoCad2007/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2007/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2007/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2007/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2007/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2007/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2007/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2007/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2007/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2007/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2007/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2007/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2010/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2010/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2010/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2010/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2010/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2010/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2010/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2010/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2010/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2010/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2010/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2010/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2013/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2013/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2013/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2013/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2013/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2013/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2013/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2013/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2013/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2013/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2013/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2013/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2018/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2018/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2018/SECTION_MANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2018/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2018/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2018/SECTION_MANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2018/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2018/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2018/SECTIONMANAGER/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/edit/AutoCad2018/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/mapping/AutoCad2018/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/metadata/AutoCad2018/SECTIONMANAGER/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/null-list",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/null-entry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/detached",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/foreign",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/erased",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/enumerator-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/dispose-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/reentry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/enumerator-root",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/enumerator-target",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/reactors",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/False/root",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/maximum/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/caught-reentry/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/null-list",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/null-entry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/detached",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/foreign",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/erased",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/enumerator-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/dispose-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/reentry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/enumerator-root",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/enumerator-target",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/reactors",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/rejected/True/root",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/maximum/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/caught-reentry/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/native/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/native/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/native/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-membership/native/True/True",
+    "passed": true,
+    "error": null
+  }
+]

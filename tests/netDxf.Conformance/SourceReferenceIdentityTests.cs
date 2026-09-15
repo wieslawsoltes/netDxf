@@ -120,12 +120,12 @@ internal static partial class Program
         }
         else
         {
-            string kind = decoy == "discarded-underlay" ? "PDFUNDERLAY" : decoy == "dictionary-entity" ? "DICTIONARY" : "FUTURE_ENTITY";
-            string subclass = decoy == "discarded-underlay" ? "AcDbUnderlayReference" : decoy == "dictionary-entity" ? "AcDbDictionary" : "AcDbFutureEntity";
+            string kind = decoy == "discarded-underlay" || decoy == "generated-table" ? "PDFUNDERLAY" : decoy == "dictionary-entity" ? "DICTIONARY" : "FUTURE_ENTITY";
+            string subclass = decoy == "discarded-underlay" || decoy == "generated-table" ? "AcDbUnderlayReference" : decoy == "dictionary-entity" ? "AcDbDictionary" : "AcDbFutureEntity";
             var packet = new List<DxfTag> {
                 new DxfTag(0, kind), new DxfTag(5, handle), new DxfTag(100, "AcDbEntity"),
                 new DxfTag(8, "0"), new DxfTag(100, subclass) };
-            if (decoy == "discarded-underlay") packet.Add(new DxfTag(340, "0"));
+            if (decoy == "discarded-underlay" || decoy == "generated-table") packet.Add(new DxfTag(340, "0"));
             tags.InsertRange(raw.Sections.Single(s => s.Name == "ENTITIES").ContentStartTagIndex, packet);
             if (decoy == "generated-table")
             {
@@ -145,6 +145,11 @@ internal static partial class Program
     {
         SourceReferenceFixture fixture = SourceReferenceSeed(path);
         DxfRawDocument raw = SourceReferenceDecoy(SourceReferenceReplace(fixture, path, fixture.Missing), fixture.Missing, decoy);
+        if (decoy is "unknown-entity" or "dictionary-entity")
+        {
+            SourceReferenceRejectMalformedEntity(raw, binary);
+            return;
+        }
         using var stream = new MemoryStream();
         raw.Save(stream, binary);
         stream.Position = 0;
@@ -161,6 +166,39 @@ internal static partial class Program
         }
         Check(rejected, "a missing or discarded source object resolved to a synthesized runtime object");
         Check(stream.CanRead, "rejection closed the caller stream");
+    }
+
+    // These historical decoys deliberately omit the physical BLOCK_RECORD owner.
+    // Opaque admission now rejects the complete input before reference late binding.
+    // Keep this exact early boundary separate from all dangling-reference helpers.
+    private static void SourceReferenceRejectMalformedEntity(DxfRawDocument raw, bool binary)
+    {
+        Check(raw.Sections.Single(s => s.Name == "ENTITIES").Records.Any(r =>
+            r.Name is "FUTURE_ENTITY" or "DICTIONARY" && !r.Tags.TakeWhile(t => t.Code != 100).Any(t => t.Code == 330)),
+            "early-admission fixture must retain its deliberately absent entity owner");
+        using var input = new MemoryStream(); raw.Save(input, binary); input.Position = 0;
+        bool rejected = false;
+        try { rejected = DxfDocument.Load(input) == null; } // Release Load returns null on input errors.
+        catch (InvalidDataException error) when (error.Message ==
+            "Unknown entity requires one physical identity, owner, layer and complete subclass envelope.")
+        { rejected = true; }
+        Check(rejected, "ownerless unknown entity must fail bounded admission before source binding");
+        Check(input.CanRead, "early admission closed the caller stream");
+    }
+
+    // An explicitly declared standalone opaque entity, not native producer evidence.
+    private static DxfRawDocument SourceReferenceOpaqueTarget(DxfRawDocument raw, string handle, bool normalized)
+    {
+        string owner = (string)raw.Sections.Single(s => s.Name == "TABLES").Records.Single(r =>
+            r.Name == "BLOCK_RECORD" && r.Tags.Any(t => t.Code == 2 && Equals(t.Value, "*Model_Space"))).Tags.Single(t => t.Code == 5).Value;
+        string spelling = normalized ? "000" + handle.ToLowerInvariant() : handle;
+        var packet = new DxfTag[] { new(0, "QUALIFIED_SOURCE_TARGET"), new(5, spelling), new(330, owner),
+            new(100, "AcDbEntity"), new(8, "0"), new(100, "AcDbQualifiedSourceTarget"), new(1, "actual retained source") };
+        int at = raw.Sections.Single(s => s.Name == "ENTITIES").ContentStartTagIndex;
+        raw = raw.WithTags(raw.Tags.Take(at).Concat(packet).Concat(raw.Tags.Skip(at)));
+        var seed = raw.Sections.Single(s => s.Name == "HEADER").Records.Single(r => r.Name == "$HANDSEED");
+        ulong next = Math.Max(Convert.ToUInt64((string)seed.Tags.Single(t => t.Code == 5).Value, 16), Convert.ToUInt64(handle, 16) + 1);
+        return raw.WithRecord(seed, seed.Tags.Select(t => t.Code == 5 ? new DxfTag(5, next.ToString("X")) : t));
     }
 
     private static DxfObject? SourceReferenceValue(DxfDocument doc, string handle, string path)

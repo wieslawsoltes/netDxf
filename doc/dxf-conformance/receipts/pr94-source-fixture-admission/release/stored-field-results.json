@@ -1,0 +1,382 @@
+[
+  {
+    "name": "stored-field/native/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/native/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/native/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/native/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/graph/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/negative-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/large-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/missing-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/wrong-owner/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/wrong-child-type/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/duplicate-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/null-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/negative-objects/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/object-count/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/unresolved/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/cycle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/owner-cycle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/alias/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/private-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/private-control/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/private-header/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/unrecognized-prefix/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/negative-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/large-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/missing-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/wrong-owner/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/wrong-child-type/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/duplicate-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/null-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/negative-objects/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/object-count/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/unresolved/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/cycle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/malformed/owner-cycle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/alias/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/private-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/private-control/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/private-header/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/opaque/unrecognized-prefix/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/table-reference/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/table-reference/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/source-identity/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/339",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/349",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/350",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/359",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/360",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/369",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/390",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/399",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/480",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/481",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/320",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "stored-field/exposed-dependency/329",
+    "passed": true,
+    "error": null
+  }
+]

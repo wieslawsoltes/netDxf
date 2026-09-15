@@ -1,0 +1,200 @@
+{
+  "ezdxf": "1.4.4",
+  "outputs": 32,
+  "errors": 0,
+  "repairs": 0,
+  "files": [
+    {
+      "file": "AutoCad2004-False-marker-string.dxf",
+      "sha256": "fe5fc756916d856d45676acc3a20249e3f226e69618f0221683cafe5161b92df",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-False-style.dxf",
+      "sha256": "2462fd559e589993c8d5979fd046bab0ef1a89f96e0044e7da80d761222345c1",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-False-values.dxf",
+      "sha256": "cff476b07fb9ae2744f18c4c9705ed8702fd81137528ce630e1119856605b3d8",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-False-zero.dxf",
+      "sha256": "265c9be17000d6d384257b6c8e3086c1cf98124ea2051088a05b565d8b603ec0",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-True-marker-string.dxf",
+      "sha256": "e252bce6e71441ba55ad3a54203b8db2df2591a2199d6da07543ee32ff8e58ff",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-True-style.dxf",
+      "sha256": "2f4ff490298d630e7d95185bffe5a640e3179b07ce52ace17446882ee3c75695",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-True-values.dxf",
+      "sha256": "c93f427b024320ebc32f76be8609f4100645b1531b5938c1386d9067a7cface4",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2004-True-zero.dxf",
+      "sha256": "35215b127f4434b0aa3775cba27a4b4a43a390af3d3c731f4a3680691e51ce27",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-False-marker-string.dxf",
+      "sha256": "1e087793f552dd8fac8da3c36e2d593fb632a10f749f3298924ab41db910be7a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-False-style.dxf",
+      "sha256": "4e9736957c398400924eb7fb42872a657d12301354e69723f201c0480c804836",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-False-values.dxf",
+      "sha256": "c2c650a5ce17b91e935ebbbf87f3eab2ce0662cb24761f731c19f61245c4d719",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-False-zero.dxf",
+      "sha256": "0290537a4fd09119ac26948ebea5b48c48c30c92e82a9a123c29566df15d1230",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-True-marker-string.dxf",
+      "sha256": "ad3cbe497325652e043240ce3c25efdb53311322620c3348461e00c8c3413a1a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-True-style.dxf",
+      "sha256": "71a6b73943e8c27a47b0d89e312402a308c020ab56e5aa1b4ff255460f4563f8",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-True-values.dxf",
+      "sha256": "200a57f2eae0f6f0db5b4deb0eac6fd7636364dd1762c052b5de76741ae01901",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-True-zero.dxf",
+      "sha256": "0c6d36cb3d567a742d6c4fbbfb521c9f1e576a6c7cefdfe0aed1ae70027681df",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1018-13EF-False.dxf",
+      "sha256": "aa9a8eec02e2821bc1cc88666180aea8b9a5f9df943d5cc5e1280485923e3ec9",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1018-13EF-True.dxf",
+      "sha256": "2df5bf01298160c1975e1b87bc1fa47f9998771737667d136d9c05bd2bbdf27a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1018-747-False.dxf",
+      "sha256": "0298e9ccffa99fee425db7a73b30827b900bdb4e93677a7dd6cefa61159805d9",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1018-747-True.dxf",
+      "sha256": "c21de75fc3947345b1c1893ed4afddbe1e7adc7b78ce5b24556787304c083696",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1021-1385-False.dxf",
+      "sha256": "c9dd7063138bd9e5dfb4eaa440ebea853047f12759f08a0271bb577afb6bf1e2",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1021-1385-True.dxf",
+      "sha256": "7280987ce13e13297c9b31a44bbc9caf2296bf3a5d8952394013a5f6b0e3b5eb",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1021-747-False.dxf",
+      "sha256": "1fed07643fcca956a6bed942d36c51fe9e6c5867fbb6507ff3b60c3517e54061",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1021-747-True.dxf",
+      "sha256": "f37b73079b986fe82461edd9182d334dae325c7389b6333aebd82a376055e0cf",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1024-131E-False.dxf",
+      "sha256": "cfef071d9ff96c81a5c23766ff8121e787cfa39242c942e5c28f264f3de6b2e2",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1024-131E-True.dxf",
+      "sha256": "b8a5be5d73e8789c700983c875dc5f8ba324f2d10a6fa9bd7b84872da1ae106a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1024-747-False.dxf",
+      "sha256": "0706934bdb4c20307748e1c6c855e4150de93dedfe2eb46a9ef9cfc439d19c31",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1024-747-True.dxf",
+      "sha256": "03a24d087921f4ed8b05afc3a9a355a39fd92cb262b65d873b886ca74fe415e5",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1027-AF-False.dxf",
+      "sha256": "1687fcb16a1cb40c488cad2938d5e696afdf1165a3fd264c5e484dae4c702531",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1027-AF-True.dxf",
+      "sha256": "80a5ecd3ff49d74d7f0c691fdfedc487f95d2c825f8378c3ebffd142e12dcd99",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1032-116-False.dxf",
+      "sha256": "a1916cd165303df4d1fcfd170923e91e45edf56cb4da84d1861260ef4d1a4dfe",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-AC1032-116-True.dxf",
+      "sha256": "dec1158167577724fbbe546a2a9ebec36d99d4de717687d8005c109c53ab5832",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

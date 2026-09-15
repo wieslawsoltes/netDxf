@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "module": "Editable loaded TABLECONTENT scalar/header/standalone-style packets",
+  "base_commit": "4bbc4e4136810d48d89d061165261a5224df7945",
+  "production_commit": "c87afec225d1f31b04e645b4d4719cac947fee21",
+  "qualification_commits": [
+    "ced6fd096e8fe7cea43a03b5bce9b292909dc179",
+    "3202d58c784fc8e8ab265dc7571c131f959159a4",
+    "a482b4e33ed12b5461b57937efed8f659495b429",
+    "f1423a4afe265db11d84437fda2880ac12c64eb9",
+    "1cf79376fb89cee35bc1807f63f67c814c03e15c"
+  ],
+  "production_changes_after_freeze": false,
+  "build": {
+    "sdk": "8.0.408",
+    "target": "net8.0",
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "library_errors": 0,
+    "library_existing_CS1591_warnings_per_configuration": 561,
+    "new_warnings": 0,
+    "conformance_errors": 0,
+    "conformance_warnings": 0,
+    "diagnostics_suppressed": false
+  },
+  "configs": [
+    {
+      "configuration": "Debug",
+      "runtime_cases": 926,
+      "runtime_unique_cases": 926,
+      "runtime_failures": 0,
+      "prefix_counts": {
+        "table-content-edit": 165,
+        "table-geometry-edit": 125,
+        "cell-style-map": 160,
+        "table-style": 89,
+        "table-geometry": 142,
+        "declared-ownership": 35,
+        "composite-table": 49,
+        "erasure-declared-ownership": 7,
+        "seventh-mixed": 8,
+        "table-content": 146
+      },
+      "results_path": "doc/dxf-conformance/table-content-editing-execution/debug-results.json",
+      "results_sha256": "1d783916fae8f98ea54653d75930e86a6fa051cbadb6ee75b3b69077ad62082c",
+      "library_sha256": "5615b0ddc598aa39b55b61adba25b53b8e66ca84d0d2a22e5f96c3e3a261edca",
+      "conformance_sha256": "94f130a9fbc11eaa353d75cc805f6f7f5303e33a495d3b6818d860dd95e700e8",
+      "gates": [
+        {
+          "gate": "tools/verify_editable_table_content.py",
+          "gate_sha256": "f8461b1cd38b18f656a07f71a1b36f32c038622c7068c4165465a19a960c8e8a",
+          "result": "PASS 52 outputs, 64 native content packet appearances, 344 explicit scalar changes, 2528 carrier record appearances, 500 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "83605a6580649e9f48f9644920c7a49307e5f1244cca2120c48b665a013af8d5",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_editable_table_content.py.txt"
+        },
+        {
+          "gate": "tools/verify_editable_table_geometry.py",
+          "gate_sha256": "990b7ef10f7d1794de272a7a66477d197653f24bb80259b279bcd958ba64093d",
+          "result": "PASS 46 outputs, 32 native geometry packet appearances, 1264 carrier record appearances, 368 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "002976da7c25290d5091af9b5d135af32a0c04182f99832e5b6a4acc03e5d664",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_editable_table_geometry.py.txt"
+        },
+        {
+          "gate": "tools/verify_stored_cell_style_map.py",
+          "gate_sha256": "17a555e498cc46779f3528de0479563508e7183b0ce7f486b625f082d9723c17",
+          "result": "PASS 36 outputs, 10 native map packets, 632 carrier record appearances, 212 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "ff0c505ef5aea0817bb6c0740c22effadff7a8dbf46771883e16175a520a48a0",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_stored_cell_style_map.py.txt"
+        },
+        {
+          "gate": "tools/verify_table_styles.py",
+          "gate_sha256": "5ec3d0bbdc934aafed0534c98d42781f6dc5167e0ca0d89993ec2f395a437962",
+          "result": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim",
+          "log_sha256": "70d4459585d0f7ff1c6a7915107d95157daf97a3c9f309f5fb9a62136582909e",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_table_styles.py.txt"
+        },
+        {
+          "gate": "tools/verify_stored_table_geometry.py",
+          "gate_sha256": "b6d59510017c9017d4284b30264435a2f60d760d0b9be036eac27a9b826ef5b0",
+          "result": "PASS 36 outputs, 16 native geometry packets, 632 carrier record appearances, 192 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "d543ad41b82eef53d5a1368cec639c991e86a36a22421a27414ed16104d3c8e5",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_stored_table_geometry.py.txt"
+        },
+        {
+          "gate": "tools/verify_declared_ownership.py",
+          "gate_sha256": "bbb88a19fd79e0fb11dcbc7e1266d0cdefdd4df5154fd58b1d845c7360bf342d",
+          "result": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation",
+          "log_sha256": "1e12ee1ac14d5c07c4b902cc2fe6dd6b002d99e1d0d672c3d8d691e298f6e041",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_declared_ownership.py.txt"
+        },
+        {
+          "gate": "tools/verify_composite_table_ownership.py",
+          "gate_sha256": "8f6872eba8e051fe7db1a52612caeb87ab5acbeedc4822c3f79c6945dd64cc60",
+          "result": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls",
+          "log_sha256": "ebde3edfc2d70f68328122c57a50eac5768db2d31d123a9247495d516e47cc8e",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_composite_table_ownership.py.txt"
+        },
+        {
+          "gate": "tools/verify_seventh_mixed.py",
+          "gate_sha256": "9b93654b0975152c3297973389d00098df9757c07136e47a484e3e82cf9212a8",
+          "result": "{\"audit_errors\": 0, \"audit_repairs\": 0, \"evaluation\": false, \"native_cad_execution\": false, \"native_packet_comparisons\": 970, \"negative_controls\": 40, \"outputs\": 20, \"profiles\": [2004, 2018]}",
+          "log_sha256": "33c43cb81b5604b1afafbd9822fc40a4556364cca959b675375fd2aa68720b6e",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_seventh_mixed.py.txt"
+        },
+        {
+          "gate": "tools/verify_stored_table_content.py",
+          "gate_sha256": "4bcd9aaa92149210c6864ad4ee561265635dc7db191bba28c63df60558e3834f",
+          "result": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls",
+          "log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/debug-verify_stored_table_content.py.txt"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "runtime_cases": 926,
+      "runtime_unique_cases": 926,
+      "runtime_failures": 0,
+      "prefix_counts": {
+        "table-content-edit": 165,
+        "table-geometry-edit": 125,
+        "cell-style-map": 160,
+        "table-style": 89,
+        "table-geometry": 142,
+        "declared-ownership": 35,
+        "composite-table": 49,
+        "erasure-declared-ownership": 7,
+        "seventh-mixed": 8,
+        "table-content": 146
+      },
+      "results_path": "doc/dxf-conformance/table-content-editing-execution/release-results.json",
+      "results_sha256": "1d783916fae8f98ea54653d75930e86a6fa051cbadb6ee75b3b69077ad62082c",
+      "library_sha256": "59c96250bad66c04a37fc26bce599cac1bc9f8b75036b4761d790d7e463cb8b1",
+      "conformance_sha256": "3ba7d6e8db0c09d7bac39be8cb5e91ca2d59f9493c75b791c0a43fefa40db235",
+      "gates": [
+        {
+          "gate": "tools/verify_editable_table_content.py",
+          "gate_sha256": "f8461b1cd38b18f656a07f71a1b36f32c038622c7068c4165465a19a960c8e8a",
+          "result": "PASS 52 outputs, 64 native content packet appearances, 344 explicit scalar changes, 2528 carrier record appearances, 500 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "83605a6580649e9f48f9644920c7a49307e5f1244cca2120c48b665a013af8d5",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_editable_table_content.py.txt"
+        },
+        {
+          "gate": "tools/verify_editable_table_geometry.py",
+          "gate_sha256": "990b7ef10f7d1794de272a7a66477d197653f24bb80259b279bcd958ba64093d",
+          "result": "PASS 46 outputs, 32 native geometry packet appearances, 1264 carrier record appearances, 368 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "002976da7c25290d5091af9b5d135af32a0c04182f99832e5b6a4acc03e5d664",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_editable_table_geometry.py.txt"
+        },
+        {
+          "gate": "tools/verify_stored_cell_style_map.py",
+          "gate_sha256": "17a555e498cc46779f3528de0479563508e7183b0ce7f486b625f082d9723c17",
+          "result": "PASS 36 outputs, 10 native map packets, 632 carrier record appearances, 212 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "ff0c505ef5aea0817bb6c0740c22effadff7a8dbf46771883e16175a520a48a0",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_stored_cell_style_map.py.txt"
+        },
+        {
+          "gate": "tools/verify_table_styles.py",
+          "gate_sha256": "5ec3d0bbdc934aafed0534c98d42781f6dc5167e0ca0d89993ec2f395a437962",
+          "result": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim",
+          "log_sha256": "70d4459585d0f7ff1c6a7915107d95157daf97a3c9f309f5fb9a62136582909e",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_table_styles.py.txt"
+        },
+        {
+          "gate": "tools/verify_stored_table_geometry.py",
+          "gate_sha256": "b6d59510017c9017d4284b30264435a2f60d760d0b9be036eac27a9b826ef5b0",
+          "result": "PASS 36 outputs, 16 native geometry packets, 632 carrier record appearances, 192 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "d543ad41b82eef53d5a1368cec639c991e86a36a22421a27414ed16104d3c8e5",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_stored_table_geometry.py.txt"
+        },
+        {
+          "gate": "tools/verify_declared_ownership.py",
+          "gate_sha256": "bbb88a19fd79e0fb11dcbc7e1266d0cdefdd4df5154fd58b1d845c7360bf342d",
+          "result": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation",
+          "log_sha256": "1e12ee1ac14d5c07c4b902cc2fe6dd6b002d99e1d0d672c3d8d691e298f6e041",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_declared_ownership.py.txt"
+        },
+        {
+          "gate": "tools/verify_composite_table_ownership.py",
+          "gate_sha256": "8f6872eba8e051fe7db1a52612caeb87ab5acbeedc4822c3f79c6945dd64cc60",
+          "result": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls",
+          "log_sha256": "ebde3edfc2d70f68328122c57a50eac5768db2d31d123a9247495d516e47cc8e",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_composite_table_ownership.py.txt"
+        },
+        {
+          "gate": "tools/verify_seventh_mixed.py",
+          "gate_sha256": "9b93654b0975152c3297973389d00098df9757c07136e47a484e3e82cf9212a8",
+          "result": "{\"audit_errors\": 0, \"audit_repairs\": 0, \"evaluation\": false, \"native_cad_execution\": false, \"native_packet_comparisons\": 970, \"negative_controls\": 40, \"outputs\": 20, \"profiles\": [2004, 2018]}",
+          "log_sha256": "33c43cb81b5604b1afafbd9822fc40a4556364cca959b675375fd2aa68720b6e",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_seventh_mixed.py.txt"
+        },
+        {
+          "gate": "tools/verify_stored_table_content.py",
+          "gate_sha256": "4bcd9aaa92149210c6864ad4ee561265635dc7db191bba28c63df60558e3834f",
+          "result": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls",
+          "log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3",
+          "log_path": "doc/dxf-conformance/table-content-editing-execution/release-verify_stored_table_content.py.txt"
+        }
+      ]
+    }
+  ],
+  "new_gate": {
+    "outputs_per_configuration": 52,
+    "native_content_packet_appearances_per_configuration": 64,
+    "distinct_native_content_packets": 8,
+    "distinct_qualified_native_scalars": 86,
+    "explicit_native_scalar_changes_per_configuration": 344,
+    "carrier_record_appearances_per_configuration": 2528,
+    "distinct_manifest_verified_carrier_records": 316,
+    "actual_corruption_controls_per_configuration": 500,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "ezdxf": "1.4.4"
+  },
+  "production_files": {
+    "netDxf/Objects/DxfStoredTableContent.cs": "267f10a35dc103bdda7d0a25159f2e6eab6913e11aa4b919d93c193135b7c4e5",
+    "netDxf/Objects/DxfStoredTableContent.Edit.cs": "2dc503a6744d718ec0719ffa9677ec7624dcfd06a26de37a70e8eeed78a683ac",
+    "netDxf/Objects/DxfStoredTableContent.Value.cs": "f0cf7a9f0086ca6d88b28e84b1106d6f925571167b776981ed93eef80f3704b2",
+    "netDxf/Entities/StoredTable.Backing.cs": "407987fad5d4d99e98661d6ca563d39bba0471e24a70c2852a14ade3f05a7940"
+  },
+  "independent_review": {
+    "summary": "doc/dxf-conformance/table-content-editing-review/summary.json",
+    "summary_sha256": "0095b6293528c086a7c2a8c470b1219460b6fa4403a05813a3a0bb6ccd5241bf",
+    "cases_per_configuration": 40,
+    "failures": 0,
+    "outputs_per_configuration": 32,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "production_changes_requested": 0,
+    "native_output_archive": "doc/dxf-conformance/table-content-editing-review/native-outputs.tar.gz",
+    "native_output_archive_sha256": "42f0eb066754f94bc02eafb981a5ecca235eef3dc7cab30af36f887161374248",
+    "all_64_archived_DXF_members_verified_against_original_SHA256": true,
+    "oracle_recommendation": "Exact companion and wrapper owner/reactor/extension metadata comparison plus actual TABLE owner corruption; implemented in f1423a4 and passed 500 controls in both configurations."
+  },
+  "source_evidence": {
+    "manifest": "tests/fixtures/table-content/manifest.json",
+    "manifest_sha256": "9b5cc698a55503d445c97522caa8d72b5e8047479bdbb20c5bbf73f3abb9895e",
+    "native_scalar_inventory": "doc/dxf-conformance/table-content-editing-native-evidence.json",
+    "native_scalar_inventory_sha256": "a1781a0b54c5e5ec8c4ff7b39582c2e57d0429547a4fde7b3157753089c70dc8"
+  },
+  "qualification_corrections": [
+    "Initial R2004 object13EF expected scalar count was corrected from12 to13 using actual native frames; no production change.",
+    "Standalone TABLESTYLE fixture uses a real retained typed/opaque source identity; opaque objects have no public constructor.",
+    "Exact record-limit carrier explicitly raises DxfRawOptions.MaximumTags from its default1000000 to1100000 so it can test the document record limit1048576.",
+    "Debug/Release Save failure contracts are asserted as thrown exception or false return, with zero output bytes.",
+    "Native TABLE comparison uses AcDbBlockReference/table subclass payload and full proxy bytes; ordinary common entity defaults and the existing R2010 proxy-length160\u219292 normalization are disclosed.",
+    "Companion common metadata is checked against verified carrier source records when owner/reactor mappings were explicitly listed by the input fixture manifest."
+  ],
+  "scope": [
+    "Same-kind int32, finite double, string and Vector3 edits in exact native scalar frames; no cell or content insertion/deletion.",
+    "Newer frames require explicit display text; stored flags, units and format strings remain unchanged.",
+    "TABLE-owned terminal style changes reject. Standalone actual registered typed or opaque TABLESTYLE may replace or clear the terminal identity.",
+    "No-op preserves original loaded tag values and snapshots; successful changes expire prior value tokens; rejected callbacks do not roll back unrelated document effects.",
+    "No TABLE authoring, formula evaluation, layout, regeneration, native CAD runtime, source-profile conversion, cloning or erasure claim."
+  ]
+}

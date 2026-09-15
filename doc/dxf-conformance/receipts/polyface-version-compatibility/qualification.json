@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "module": "Retained Polyface source-profile diagnostics",
+  "source_commit": "57fe40e63ceadf2948faaab07b2e61c91688ebe8",
+  "new_cases": 24,
+  "total_report_cases": 662,
+  "gate_outputs": 26,
+  "gate_corruption_controls": 80,
+  "gate_scope": "12 existing omission outputs and14 accepted Polyface target-profile outputs;10 existing omission controls and70 Polyface packet controls",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "passed": 662,
+      "failed": 0,
+      "results_sha256": "06b2f67b1481b50b48319bbd5b7277634b3c9d34e15c3ed072140f6f0feef806",
+      "new_results_sha256": "f5d14ac43cd55482b4a211610c45f8f52e15590a239149e8910ba40112c236d6",
+      "library_sha256": "0ce9eac1a1c62ca103116e2abfd58f8fcf57b5f452f590828f1162733cd963f5",
+      "conformance_sha256": "22a529e7204f5321b4d162171ccc47b41fe65f34e3485cbb0527d9acfcf596a3",
+      "build_log_sha256": "008470edd227ac194d874518a593d22a6ed3569d3d27ac948061c2831b3ac95d",
+      "gate_log_sha256": "c1ce42595782e83d84e6770f63ff81c63b9f11d4714a7b912ee88223b406c638",
+      "gate_log": "debug-gate.log.txt"
+    },
+    {
+      "configuration": "Release",
+      "passed": 662,
+      "failed": 0,
+      "results_sha256": "06b2f67b1481b50b48319bbd5b7277634b3c9d34e15c3ed072140f6f0feef806",
+      "new_results_sha256": "f5d14ac43cd55482b4a211610c45f8f52e15590a239149e8910ba40112c236d6",
+      "library_sha256": "73483fe90fba17c1f20ae7b25610b747ea0d76770c1b28b08ff862bf5fb1f992",
+      "conformance_sha256": "8588afdeb33179188eaa2ec444a2e3c89ba6d740e7f96698f8777eb758346f3f",
+      "build_log_sha256": "5706872b06c9d1c16d62ac0f1458ff461b68bfc6948b5c3a7a2ed29b09c3ce4f",
+      "gate_log_sha256": "c1ce42595782e83d84e6770f63ff81c63b9f11d4714a7b912ee88223b406c638",
+      "gate_log": "release-gate.log.txt"
+    }
+  ],
+  "full_standard_complete": false,
+  "autocad_executed": false,
+  "test_provenance": "Fixture explicitly clears environment-derived LastSavedBy and separately asserts expected loaded CLASS count omissions for R2000. Production diagnostics retain both kinds of known loss. Final actual Save behavior, source registrations and zero-byte rejections are checked. Earlier20/24 and22/24 fixture results are superseded, not additional cases.",
+  "source_sha256": {
+    "netDxf/DxfDocument.VersionCompatibility.cs": "03b0852604bac7f7b2f4e7e9d483ea41e0f907968f42a0a5e870609c564393be",
+    "tests/netDxf.Conformance/PolyfaceVersionCompatibilityTests.cs": "cf3acb6f88490596ecfd8fd5daa7e77aa901b644d1c0bbd080145c3b8b9fd7b4",
+    "tools/verify_version_compatibility.py": "812dab815256359157516333b2542dcf5ec9b08678dcb0c1e6ac2cfdfb154681"
+  }
+}

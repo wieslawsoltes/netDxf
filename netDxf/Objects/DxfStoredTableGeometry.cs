@@ -10,9 +10,23 @@ namespace netDxf.Objects
     /// <summary>One immutable content-geometry packet stored by TABLEGEOMETRY.</summary>
     public sealed class DxfStoredTableCellGeometry
     {
-        internal DxfStoredTableCellGeometry(Vector3 topLeft, Vector3 center, double contentWidth,
+        /// <summary>Creates an immutable stored content-geometry value for explicit packet replacement.</summary>
+        /// <param name="topLeft">The finite group-10 distance vector.</param>
+        /// <param name="center">The finite group-11 distance vector.</param>
+        /// <param name="contentWidth">The finite group-43 value.</param>
+        /// <param name="contentHeight">The finite group-44 value.</param>
+        /// <param name="width">The finite group-45 value.</param>
+        /// <param name="height">The finite group-46 value.</param>
+        /// <param name="value95">The uninterpreted signed group-95 value.</param>
+        public DxfStoredTableCellGeometry(Vector3 topLeft, Vector3 center, double contentWidth,
             double contentHeight, double width, double height, int value95)
         {
+            DxfStoredTableGeometry.CheckFinite(topLeft, nameof(topLeft));
+            DxfStoredTableGeometry.CheckFinite(center, nameof(center));
+            DxfStoredTableGeometry.CheckFinite(contentWidth, nameof(contentWidth));
+            DxfStoredTableGeometry.CheckFinite(contentHeight, nameof(contentHeight));
+            DxfStoredTableGeometry.CheckFinite(width, nameof(width));
+            DxfStoredTableGeometry.CheckFinite(height, nameof(height));
             this.TopLeftDistance = topLeft; this.CenterDistance = center;
             this.ContentWidth = contentWidth; this.ContentHeight = contentHeight;
             this.Width = width; this.Height = height; this.StoredValue95 = value95;
@@ -36,6 +50,30 @@ namespace netDxf.Objects
     /// <summary>One immutable cell packet stored by TABLEGEOMETRY.</summary>
     public sealed class DxfStoredTableGeometryCell
     {
+        /// <summary>Creates an immutable stored cell value for explicit packet replacement.</summary>
+        /// <param name="flags">The uninterpreted signed group-93 flags.</param>
+        /// <param name="width">The finite group-40 value, including its stored gap.</param>
+        /// <param name="height">The finite group-41 value, including its stored gap.</param>
+        /// <param name="reference">An explicit object identity, or null for a null pointer. Replacement validates its source-document membership.</param>
+        /// <param name="geometry">Ordered immutable content packets. Null entries are not permitted.</param>
+        /// <remarks>The sequence is copied without assigning handles or evaluating geometry.</remarks>
+        public DxfStoredTableGeometryCell(int flags, double width, double height, DxfObject reference,
+            IEnumerable<DxfStoredTableCellGeometry> geometry)
+        {
+            DxfStoredTableGeometry.CheckFinite(width, nameof(width));
+            DxfStoredTableGeometry.CheckFinite(height, nameof(height));
+            if (geometry == null) throw new ArgumentNullException(nameof(geometry));
+            var values = new List<DxfStoredTableCellGeometry>();
+            foreach (DxfStoredTableCellGeometry value in geometry)
+            {
+                if (value == null) throw new ArgumentException("A content-geometry packet cannot be null.", nameof(geometry));
+                if (values.Count == DxfStoredTableGeometry.MaximumPayloadTags / 11)
+                    throw new ArgumentException("Content geometry exceeds the TABLEGEOMETRY storage limit.", nameof(geometry));
+                values.Add(value);
+            }
+            this.GeometryDataFlags = flags; this.WidthWithGap = width; this.HeightWithGap = height;
+            this.GeometryReference = reference; this.Geometry = values.AsReadOnly();
+        }
         internal DxfStoredTableGeometryCell(int flags, double width, double height, string reference,
             IList<DxfStoredTableCellGeometry> geometry)
         {
@@ -57,18 +95,19 @@ namespace netDxf.Objects
         internal void SetReference(DxfObject value) { this.GeometryReference = value; }
     }
 
-    /// <summary>A loaded TABLEGEOMETRY with immutable stored cells and exact source dependencies.</summary>
+    /// <summary>A loaded TABLEGEOMETRY with explicitly replaceable stored cells and exact source dependencies.</summary>
     /// <remarks>
     /// This model preserves stored geometry in its source document and DXF version. It does not
-    /// evaluate cell layout, regenerate geometry or expose editing, cloning or erasure of the
-    /// underlying application schema. Common metadata and XData retain their ordinary interfaces.
+    /// evaluate cell layout or regenerate geometry. Explicit replacement changes only its known
+    /// stored packet; creation, cloning and erasure remain unsupported. Common metadata and XData
+    /// retain their ordinary interfaces.
     /// </remarks>
-    public sealed class DxfStoredTableGeometry : DxfDatabaseObject
+    public sealed partial class DxfStoredTableGeometry : DxfDatabaseObject
     {
         internal const int MaximumPayloadTags = 1048576;
         private readonly DxfDocument source;
-        private readonly List<DxfObject> references = new List<DxfObject>();
-        private readonly Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
+        private List<DxfObject> references = new List<DxfObject>();
+        private Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
         private DxfObject sourceOwner;
         private bool resolved;
 
@@ -108,14 +147,14 @@ namespace netDxf.Objects
         /// <summary>Gets the source DXF version. Conversion to another version is not supported.</summary>
         public DxfVersion SourceVersion { get; }
         /// <summary>Gets the complete immutable subclass payload, excluding common metadata and XData.</summary>
-        public IReadOnlyList<DxfTag> Payload { get; }
+        public IReadOnlyList<DxfTag> Payload { get; private set; }
         /// <summary>Gets the stored group-90 row count.</summary>
-        public int RowCount { get; }
+        public int RowCount { get; private set; }
         /// <summary>Gets the stored group-91 column count.</summary>
-        public int ColumnCount { get; }
+        public int ColumnCount { get; private set; }
         /// <summary>Gets the ordered stored cells counted by group 92.</summary>
         /// <remarks>No correspondence between cell index and row/column address is inferred.</remarks>
-        public IReadOnlyList<DxfStoredTableGeometryCell> Cells { get; }
+        public IReadOnlyList<DxfStoredTableGeometryCell> Cells { get; private set; }
         /// <summary>Gets exact source identities for nonzero semantic handles in packet order.</summary>
         public IReadOnlyList<DxfObject> References { get { return this.references.AsReadOnly(); } }
         internal override IEnumerable<DxfObject> DatabaseReferences
@@ -151,6 +190,7 @@ namespace netDxf.Objects
             if (!this.resolved || !ReferenceEquals(database.Document, this.source))
             { errors.Add("Stored TABLEGEOMETRY must remain in its source document."); return; }
             if (this.source.DrawingVariables.AcadVer != this.SourceVersion) errors.Add("Stored TABLEGEOMETRY conversion requires complete schema regeneration.");
+            if (this.StoredRecordTagCount(this.Payload.Count) > MaximumPayloadTags) errors.Add("Stored TABLEGEOMETRY exceeds its record tag limit.");
             if (!ReferenceEquals(this.Owner, this.sourceOwner) || !ReferenceEquals(this.source.GetObjectByHandle(this.sourceOwner.Handle), this.sourceOwner))
                 errors.Add("Stored TABLEGEOMETRY source ownership changed.");
             foreach (var pair in this.handles)

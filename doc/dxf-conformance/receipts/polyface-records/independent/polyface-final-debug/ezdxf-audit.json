@@ -1,0 +1,296 @@
+{
+  "ezdxf": "1.4.4",
+  "outputs": 48,
+  "errors": 0,
+  "repairs": 0,
+  "files": [
+    {
+      "file": "native-2000-False.dxf",
+      "sha256": "bcfdc11bc95d409d4bb85639e8a44ee40a0c06ff9d707918ed37f4b3c4fd231d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2000-True.dxf",
+      "sha256": "920c8202f13001ddc96b56ac26f4f0208eac0cb75d87126cc12671c716c42850",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2004-False.dxf",
+      "sha256": "490ec4b5963d17a516f178f9ebf6c740350ccfd7ac9ff1305a9c0ef311afdf73",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2004-True.dxf",
+      "sha256": "0cd09ac644ffa6b182d8fae4db63522a898f8f3a1924f950388d7dd0ac1c1c6a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2007-False.dxf",
+      "sha256": "d2e8192884b91debb590c81bff26260dc2b2a4c63c3770f004aed473c8c26747",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2007-True.dxf",
+      "sha256": "0ac640203c2bab6b856574f3d1f8fb5443cb76b49aa3cccdda1be4e35e2ca40d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2010-False.dxf",
+      "sha256": "a8bad0aa99872d0d2d71a0eb9debd94bc831855e399a72d863560e113e1cad77",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2010-True.dxf",
+      "sha256": "a5b9fe262eab7e53417628a18be7e4d57715086cf6832453ff4201063a3061ef",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2013-False.dxf",
+      "sha256": "01374fdd9bdfbfd8a8e06c41ae9172250239d0915426faf6497e050b9ebc4d50",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2013-True.dxf",
+      "sha256": "93d8641d4f41759183440dc9a0251d6ed3558b6c8c5111795eba9728783f1567",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2018-False.dxf",
+      "sha256": "ea1b2323a6d2a8d96f8c75f18b9dbcc47aa701489edf007e207ed7783583abac",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-2018-True.dxf",
+      "sha256": "4db8647113cbe0f4d43fdfa6f1fc7c63e0ff726b731a9ca898ce5575d925835c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2000-ascii-clone.dxf",
+      "sha256": "0259fada3cac0ec765ea41356a7de0cb296439ea12916ca8f7b1d395093a6acc",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2000-ascii-edited.dxf",
+      "sha256": "ad167a67f03f15a09aa7870d47546e37a2c970d5c57d1453a3d8d3ba53d7d777",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2000-ascii-readopted.dxf",
+      "sha256": "9a3404e72157fc1c444919c64f62c2042f0224715c11fb302d900de43224f7a2",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2000-binary-clone.dxf",
+      "sha256": "dcbb0709e566766e70d6ba3893505e198ef7f9d50ba8117c17b91b1dc1fbe3be",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2000-binary-edited.dxf",
+      "sha256": "db6d2eb3ec6426109ef76566b0c1cef053902ee14afce79df1aaf061ad88ae53",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2000-binary-readopted.dxf",
+      "sha256": "55388e00e66a997f1caded87b408d52ea3c835caf77aeb2777d36f9a2786b729",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2004-ascii-clone.dxf",
+      "sha256": "56b1ae270a2e3bb16c291d9a2f2f2a2ade03c8f36d1025df9ad015e989628062",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2004-ascii-edited.dxf",
+      "sha256": "64f8513943b7e167864940b9f53410c48ed1b2c59982df97f0b4881ea5e83396",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2004-ascii-readopted.dxf",
+      "sha256": "76b17cfaa9f4592affa802bda14e4d104e9a4fc8850cf03b499ce8298a5c1400",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2004-binary-clone.dxf",
+      "sha256": "7bcd9590ca5728def34607d52a2d2b67af9426ffa82a008957c284d50faf8a29",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2004-binary-edited.dxf",
+      "sha256": "1358333fd6487a016944bd2ba415cdcc4fd09c8d85c1e633a23ce8bf169f5a96",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2004-binary-readopted.dxf",
+      "sha256": "dd6aa7b4a39834b36e88df3cb66fb44d88b4cbea64468a2d25736832fc6daa9e",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2007-ascii-clone.dxf",
+      "sha256": "8cca60eedcd96923a17cabdf828f83fdc0bbbd86345518a60de2271de1b6e7ba",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2007-ascii-edited.dxf",
+      "sha256": "ef61df92f8e79b090b07f6b9dbf91f67f20bd6339902a4ec54561b9bc5efac55",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2007-ascii-readopted.dxf",
+      "sha256": "0195f8311454b3097a859a20025465e9248d952e3e7fbd69122333659a4a77f4",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2007-binary-clone.dxf",
+      "sha256": "2c5d26ed326991d281eaf6fa919e1941f1cd8cf819b2add2b8ac4695419f1c99",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2007-binary-edited.dxf",
+      "sha256": "0b61a085eed9f2ac0ac8cf73dd8fdaa895a4543fd6081af37f79c03d2e5daef8",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2007-binary-readopted.dxf",
+      "sha256": "c6da38f39cd843ed439e2f4d7cfd639e2fa0ce166e4b7cf542c7080d877993b8",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2010-ascii-clone.dxf",
+      "sha256": "07947d811923a2f4bee0b95ea4b6d83e5ac5f7dbbee5bbe3e9e7a0ec59694a10",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2010-ascii-edited.dxf",
+      "sha256": "fb52772ebbfd4438c9bc58f04bd2006857a03e84b6bf54907778c609c73ab242",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2010-ascii-readopted.dxf",
+      "sha256": "7ee01014959ceaf74afaf06deab339c145685c75eebf1df5b852e15620c30332",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2010-binary-clone.dxf",
+      "sha256": "7b07414828edae5a99c71a758c3b1d4120e1dfc62086a5f82cee76ded5b4a1ca",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2010-binary-edited.dxf",
+      "sha256": "d21bc32fc14e00c8e91299f8143f6883702154df82644d7e80ca835b4e1edf75",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2010-binary-readopted.dxf",
+      "sha256": "088efbebe3f566a406fec6b54a9d3a38115a7ac96a3bae5ea5d6940b431f87f2",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2013-ascii-clone.dxf",
+      "sha256": "ae35f04a3b293c29b831094f8ffbc72c0f91d4d66d74b3e5f7adaa710c70f6ed",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2013-ascii-edited.dxf",
+      "sha256": "0eeb8bd0e46d748d0cedde76e5db846fcb6a64e4345df091dfd3f5fecc348cf4",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2013-ascii-readopted.dxf",
+      "sha256": "5b6b35e89f0752364aa44904f3fe69bacfe0669b8ac56d62e712a1ddcda4db12",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2013-binary-clone.dxf",
+      "sha256": "97adf78b25b5bd18ab0cd815968c0d083c6316c41dc3186b4fb2ff8402b01a62",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2013-binary-edited.dxf",
+      "sha256": "50b4f630c46caad0cdf8867c8d400830c0690d6194bf284bb3f7c6a46a874983",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2013-binary-readopted.dxf",
+      "sha256": "1d200ac639d7f322e6f0a95f4e28a7f1fb056ac0fa5ddb3dc86fd8afa2a3563f",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2018-ascii-clone.dxf",
+      "sha256": "99f46f9b8b3c73f77a411056a08c3ba45097db711a11f782696c6333f5f8f39c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2018-ascii-edited.dxf",
+      "sha256": "e6c392740221285944770c176637112fe07a7bae4fa9a7c6e4b9ac313b9bdc29",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2018-ascii-readopted.dxf",
+      "sha256": "8ef73713a7331c9827405d0afe78269c40a592a5d7437255f20bc32ff9136971",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2018-binary-clone.dxf",
+      "sha256": "b7c0ea8b8ffd95927289607036010f56ff572ac309a5ee50c9a9e81450294f3b",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2018-binary-edited.dxf",
+      "sha256": "de044f46b62e78b975ce5d2f63aed8744590b550c3b83f76d6a4f54dc24faa49",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "producer-R2018-binary-readopted.dxf",
+      "sha256": "47ab30725742d88be290dc2228e1fb718a2b1afaed5bbf2ad7746a4b3ad69c04",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

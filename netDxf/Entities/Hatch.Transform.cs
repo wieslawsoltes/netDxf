@@ -15,8 +15,10 @@ namespace netDxf.Entities
         /// their stored meanings; this operation does not evaluate or refit a curve.
         /// Circular boundaries become ellipse edges when required. Conic results whose
         /// stored angles cannot preserve their endpoints within relative tolerance
-        /// 1e-10 are rejected. Nonuniform or shearing changes to patterns and gradients
-        /// are rejected. A successful transform unlinks associative
+        /// 1e-10 are rejected. Explicit predefined/custom pattern line families support
+        /// affine changes when their stored WCS Point2d origin remains representable.
+        /// Nonuniform user-defined, doubled and gradient patterns are rejected.
+        /// A successful transform unlinks associative
         /// sources without transforming or removing those source entities. Validation
         /// completes before unlinking or changing stored state.
         /// </remarks>
@@ -47,8 +49,10 @@ namespace netDxf.Entities
             RequireAffineFinite(xLength); RequireAffineFinite(yLength);
             bool similarity = Math.Abs(Vector3.DotProduct(xUnit, yUnit)) <= 1e-12
                 && Math.Abs(xLength - yLength) <= 1e-12 * Math.Max(xLength, yLength);
-            if (!similarity && (this.Pattern.Fill != HatchFillType.SolidFill || this.Pattern is HatchGradientPattern))
-                throw new NotSupportedException("Nonuniform HATCH transforms require a solid fill.");
+            bool explicitPattern = this.HasExplicitAffinePattern();
+            if (!similarity && (this.Pattern is HatchGradientPattern
+                || this.Pattern.Fill != HatchFillType.SolidFill && (!explicitPattern || this.Pattern.IsDouble)))
+                throw new NotSupportedException("Nonuniform HATCH transforms require a solid fill or an explicit, non-doubled predefined/custom pattern.");
 
             Vector3 position = newOcs * (transformation * (oldOcs * new Vector3(0, 0, this.Elevation)) + translation);
             RequireAffineFinite(position);
@@ -93,14 +97,17 @@ namespace netDxf.Entities
             RequireAffineFinite(scale); RequireAffineFinite(angle);
             if (scale <= 0) throw new ArgumentException("The HATCH pattern direction collapses under this transformation.");
 
-            // Everything above is temporary. Unlink only after validation succeeds.
-            if (this.associative) this.UnLinkBoundary();
             bool identity = translation.X == 0 && translation.Y == 0 && translation.Z == 0;
             for (int row = 0; row < 3; row++)
                 for (int column = 0; column < 3; column++)
                     identity &= transformation[row, column] == (row == column ? 1 : 0);
+            HatchPattern transformedPattern = explicitPattern
+                ? this.TransformAffinePattern(transformation, translation, map, scale, angle, identity) : null;
+            // Everything above is temporary. Unlink only after validation succeeds.
+            if (this.associative) this.UnLinkBoundary();
             if (identity) return;
-            this.Pattern.Scale = scale; this.Pattern.Angle = angle;
+            if (transformedPattern != null) this.pattern = transformedPattern;
+            else { this.Pattern.Scale = scale; this.Pattern.Angle = angle; }
             this.Elevation = position.Z; this.Normal = normal;
             this.BoundaryPaths.Clear(); this.BoundaryPaths.AddRange(paths);
             this.seedPoints.Clear(); foreach (Vector2 seed in seeds) this.seedPoints.Add(seed);

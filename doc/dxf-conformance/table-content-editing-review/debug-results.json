@@ -1,0 +1,207 @@
+{
+  "cases": 40,
+  "failed": 0,
+  "librarySha256": "d38bc6864f54253c55e89cd4289910907bd0ae46ee46cac71de39d908b45710a",
+  "results": [
+    {
+      "name": "AutoCad2004-False-four-kinds-and-snapshots",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-duplicate-foreign-and-kind-guards",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-callbacks-and-source-noop",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-signed-zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-text-framing-and-encoded-limit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-standalone-style-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-four-kinds-and-snapshots",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-duplicate-foreign-and-kind-guards",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-callbacks-and-source-noop",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-signed-zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-text-framing-and-encoded-limit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-standalone-style-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-four-kinds-and-snapshots",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-duplicate-foreign-and-kind-guards",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-callbacks-and-source-noop",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-signed-zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-text-framing-and-encoded-limit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-standalone-style-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-four-kinds-and-snapshots",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-duplicate-foreign-and-kind-guards",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-callbacks-and-source-noop",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-signed-zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-text-framing-and-encoded-limit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-standalone-style-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1027-AF-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1027-AF-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1032-116-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1032-116-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1024-747-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1024-131E-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1024-747-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1024-131E-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1018-747-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1018-13EF-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1018-747-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1018-13EF-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1021-747-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1021-1385-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1021-747-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-AC1021-1385-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

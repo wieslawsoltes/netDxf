@@ -1,0 +1,55 @@
+{
+  "expectFixed": true,
+  "failed": 0,
+  "librarySha256": "5e3a1687c7decee474cc77fa5352bfb6710914db87e19474a888ba39262a5c5a",
+  "results": [
+    {
+      "kind": "requested-section-reactor",
+      "passed": true,
+      "created": false,
+      "creationError": "InvalidOperationException: Section reactors must be registered in the destination document.",
+      "creationSeedDelta": 0,
+      "creationClassCount": 0,
+      "hasAnchor": false,
+      "managerCount": 0,
+      "validation": [
+        "Unregistered persistent reactor: 23"
+      ],
+      "saved": false,
+      "writtenBytes": 0,
+      "saveError": ""
+    },
+    {
+      "kind": "source-root-reactor",
+      "passed": true,
+      "created": false,
+      "creationError": "InvalidOperationException: The manager root reactors must be registered in this document.",
+      "creationSeedDelta": 0,
+      "creationClassCount": 0,
+      "hasAnchor": false,
+      "managerCount": 0,
+      "validation": [
+        "Unregistered persistent reactor: 22"
+      ],
+      "saved": false,
+      "writtenBytes": 0,
+      "saveError": ""
+    },
+    {
+      "kind": "unrelated-line-reactor",
+      "passed": true,
+      "created": true,
+      "creationError": "",
+      "creationSeedDelta": 1,
+      "creationClassCount": 1,
+      "hasAnchor": true,
+      "managerCount": 1,
+      "validation": [
+        "Unregistered persistent reactor: 24"
+      ],
+      "saved": false,
+      "writtenBytes": 0,
+      "saveError": ""
+    }
+  ]
+}

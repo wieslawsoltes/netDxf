@@ -1,7 +1,10 @@
 # Immutable TABLECONTENT storage
 
 `DxfStoredTableContent` retains a loaded TABLECONTENT in its source document and
-DXF profile. The complete ordered `Payload` and four `Subclasses` are immutable.
+DXF profile. The complete ordered `Payload` and four `Subclasses` are immutable
+snapshots. The later [explicit scalar editing module](table-content-editing.md)
+adds bounded header, same-kind scalar and standalone style replacement while
+retaining the storage and lifecycle contracts below.
 Each nonzero exposed semantic handle resolves through the physical source
 identity proof, including exact retained metadata carriers where supported.
 `References` preserves repeated targets in packet order. The terminal group
@@ -51,9 +54,10 @@ dependencies, including the same visible semantic handles in opaque fallback
 objects. Arbitrary handles such as groups 320 and 329 do not become semantic
 dependencies. Source version changes reject during preflight before output.
 Unknown payload dependencies hidden inside strings or binary data are not
-interpreted. Common metadata and XData retain their ordinary APIs; there are no
-editable cells, formula execution, external-file access, rendering or geometry
-regeneration operations in this model.
+interpreted. Common metadata and XData retain their ordinary APIs. General cell
+authoring, formula execution, external-file access, rendering and geometry
+regeneration remain outside this model; the later scalar edit boundary is
+documented separately.
 
 The native fixture README and manifest distinguish two whole unchanged examples
 from three exact selected-packet carriers. All TABLECONTENT payload and resource
@@ -66,9 +70,11 @@ The `StoredTable.BackingContent` API now returns `DxfDatabaseObject`, preserving
 the exact registered identity for either typed or opaque content. Callers use
 `StoredBackingContent.Payload` for a typed object, or pattern-match an opaque
 `BackingContent` and inspect its `Tags`. The existing conservative literal-value
-comparison uses the same logic for both forms. This source-level return-type
-change affects the stored TABLE API introduced during this implementation;
-longstanding unrelated APIs are unchanged.
+comparison uses the same logic for both forms and is now recomputed when read.
+This return-type change affects both source compatibility and the CLR getter
+signature, so existing compiled consumers must rebuild. It affects the stored
+TABLE API introduced during this implementation; longstanding unrelated APIs
+are unchanged.
 
 The mandatory independent `tools/verify_stored_table_content.py` gate requires
 ten native output files and sixteen private/older opaque output files. It
@@ -111,5 +117,6 @@ python tools/verify_stored_table_content.py /path/to/conformance-artifacts
 
 The receipt records exact source and library identities, input fixture hashes,
 normal build diagnostics, both configurations and the independent review scope.
-Native AutoCAD execution, formula evaluation, editable backing cells, automatic
-regeneration and full-drawing byte identity remain outside this qualification.
+Native AutoCAD execution, formula evaluation, general backing-cell authoring,
+automatic regeneration and full-drawing byte identity remain outside this
+storage qualification. The later scalar-edit receipt covers its separate scope.

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "tenth-mixed/reference-release/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_simple.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_simple.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_simple.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_simple.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_with_blk_ref.dxf/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_with_blk_ref.dxf/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_with_blk_ref.dxf/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/reference-release/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "tenth-mixed/atomic-retry/acad_table_with_blk_ref.dxf/True/True",
+    "passed": true,
+    "error": null
+  }
+]

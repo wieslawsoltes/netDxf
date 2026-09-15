@@ -33,6 +33,7 @@ internal static partial class Program
         }
         Run("binary/valid-sentinel-and-string", ValidBinarySentinel);
         RunAdditionalTests();
+        RegisterObservableCollectionInsertTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
@@ -47,6 +48,8 @@ internal static partial class Program
         RegisterStoredDimAssocTests();
         RegisterPolyline3DRecordTests();
         RegisterPolygonMeshRecordTests();
+        RegisterPolyfaceRecordTests();
+        RegisterRetainedRecordTargetRemovalTests();
         RegisterPolylineTopologyTests();
         RegisterPolyfaceGrammarTests();
         RunTypedObjectErasureTests();
@@ -55,11 +58,16 @@ internal static partial class Program
         RunSunTests();
         RegisterStoredSunStudyTests();
         RegisterVersionCompatibilityTests();
+        RegisterPolyfaceVersionCompatibilityTests();
+        RegisterOpaqueEntityTests();
+        RegisterOpaqueEntityBoundaryTests();
         RunUcsBaseTests();
         RunSunStudyProducerRawTests();
         RegisterStoredTableTests();
         RegisterStoredTableContentTests();
         RegisterStoredTableGeometryTests();
+        RegisterEditableTableGeometryTests();
+        RegisterEditableTableContentTests();
         RegisterStoredCellStyleMapTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
@@ -71,6 +79,7 @@ internal static partial class Program
         RegisterSeventhMixedModuleTests();
         RegisterEighthMixedModuleTests();
         RegisterNinthMixedModuleTests();
+        RegisterTenthMixedModuleTests();
         RegisterCompositeTableOwnershipTests();
         RegisterPrivateXRecordTests();
         RunSourceReferenceIdentityTests();
@@ -80,6 +89,7 @@ internal static partial class Program
         RegisterViewLiveSectionTests();
         RegisterSectionManagerTests();
         RegisterSectionManagerMembershipTests();
+        RegisterSectionManagerLifecycleTests();
         RegisterSectionLifecycleTests();
         RunSectionSettingsTests();
         RegisterSectionProducerTests();

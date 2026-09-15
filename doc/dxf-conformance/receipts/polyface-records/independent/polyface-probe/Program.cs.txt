@@ -1,0 +1,117 @@
+using System.Globalization;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.IO;
+using netDxf.Objects;
+using netDxf.Tables;
+
+internal static class Program
+{
+    private static readonly List<object> Results = new();
+    private static int Failed;
+    private static string Output = "";
+    private static void Check(bool value, string message) { if (!value) throw new Exception(message); }
+    private static void Run(string name, Action action)
+    { try { action(); Results.Add(new { name, passed = true, error = "" }); Console.WriteLine("PASS " + name); } catch (Exception error) { Failed++; Results.Add(new { name, passed = false, error = error.ToString() }); Console.WriteLine("FAIL " + name + ": " + error.Message); } }
+    private static long Seed(DxfDocument drawing) => (long)typeof(DxfDocument).GetProperty("NumHandles", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(drawing)!;
+    private static DxfDocument Load(byte[] bytes) { using var input = new MemoryStream(bytes); return DxfDocument.Load(input)!; }
+    private static DxfRawDocument Raw(byte[] bytes) { using var input = new MemoryStream(bytes); return DxfRawDocument.Load(input); }
+    private static byte[] Transport(DxfRawDocument raw, bool binary) { using var output = new MemoryStream(); raw.WithTags(raw.Tags.Where(t => t.Code != 999)).Save(output, binary); return output.ToArray(); }
+    private static byte[] Save(DxfDocument drawing, bool binary) { using var output = new MemoryStream(); Check(drawing.Save(output, binary), "Save returned false."); return output.ToArray(); }
+    private static DxfRawRecord Record(DxfRawDocument raw, string handle) => raw.Sections.SelectMany(s => s.Records).Single(r => r.Tags.Any(t => t.Code == 5 && Equals(t.Value, handle)));
+    private static string Value(DxfTag tag) => tag.Code + ":" + (tag.Value is byte[] bytes ? Convert.ToHexString(bytes) : Convert.ToString(tag.Value, CultureInfo.InvariantCulture));
+    private static void Exact(IEnumerable<DxfTag> actual, IEnumerable<DxfTag> expected, string message) => Check(actual.Select(Value).SequenceEqual(expected.Select(Value)), message);
+    private static void Reject(Action action)
+    { bool rejected = false; try { action(); } catch (Exception error) when (error is ArgumentException or InvalidOperationException or NotSupportedException) { rejected = true; } Check(rejected, "Invalid operation succeeded."); }
+    private static void RejectSave(DxfDocument drawing, bool binary)
+    {
+        long seed = Seed(drawing); using var output = new MemoryStream(); bool rejected = false;
+        try { rejected = !drawing.Save(output, binary); } catch (Exception error) when (error is ArgumentException or InvalidOperationException or NotSupportedException) { rejected = true; }
+        Check(rejected && output.Length == 0 && Seed(drawing) == seed, "Invalid retained geometry was saved or rejection wrote/allocated.");
+    }
+    private static void Wire(DxfDocument drawing, PolyfaceMesh mesh, DxfRawDocument input, bool binary, string name)
+    {
+        var old = mesh.RecordSequence.ToArray(); Check(old.Length == mesh.VertexRecords.Count + mesh.FaceRecords.Count + 1 && ReferenceEquals(old[^1], mesh.EndSequenceRecord), "Physical record inventory changed.");
+        Check(mesh.VertexRecords.Count == mesh.Vertexes.Length && mesh.FaceRecords.Count == mesh.Faces.Count, "Coordinate/face projections changed cardinality.");
+        for (int i = 0; i < mesh.FaceRecords.Count; i++) Check(ReferenceEquals(mesh.FaceRecords[i].Face, mesh.Faces[i]), "Face projection lost actual model identity.");
+        foreach (var record in old) Check(ReferenceEquals(record.Owner, mesh) && ReferenceEquals(drawing.GetObjectByHandle(record.Handle), record), "Retained child identity is not registered under actual parent.");
+        var noop = Raw(Save(drawing, binary)); foreach (var record in old) Exact(Record(noop, record.Handle).Tags, Record(input, record.Handle).Tags, "No-op changed complete child packet " + record.Handle);
+        var point = new Vector3(101.25, -203.5, 307.75); int pointIndex = Math.Min(4, mesh.Vertexes.Length - 1); string pointHandle = mesh.VertexRecords[pointIndex].Handle;
+        mesh.Vertexes[pointIndex] = point; var face = mesh.Faces[0]; short nextIndex = face.VertexIndexes[0] == -2 ? (short)2 : (short)-2; face.VertexIndexes[0] = nextIndex;
+        byte[] saved = Save(drawing, binary); File.WriteAllBytes(Path.Combine(Output, name + ".dxf"), saved); var emitted = Raw(saved);
+        foreach (var record in old)
+        {
+            var expected = Record(input, record.Handle).Tags.Select(t => record.Handle == pointHandle && t.Code is 10 or 20 or 30 ? new DxfTag(t.Code, t.Code == 10 ? point.X : t.Code == 20 ? point.Y : point.Z)
+                : record == mesh.FaceRecords[0] && t.Code == 71 ? new DxfTag(71, nextIndex) : t);
+            Exact(Record(emitted, record.Handle).Tags, expected, "Edit changed unrelated child packet fields " + record.Handle);
+        }
+        var reloaded = Load(saved).Entities.PolyfaceMeshes.Single(p => p.Handle == mesh.Handle);
+        Check(reloaded.RecordSequence.Select(r => r.Handle).SequenceEqual(old.Select(r => r.Handle)) && reloaded.Vertexes[pointIndex] == point && reloaded.Faces[0].VertexIndexes[0] == nextIndex, "Reload changed physical order, coordinate ordinal or signed index.");
+        Check(reloaded.DeclaredVertexCount == mesh.DeclaredVertexCount && reloaded.DeclaredFaceCount == mesh.DeclaredFaceCount, "Writer regenerated advisory source counts.");
+    }
+    private static void Main(string[] args)
+    {
+        string directory = Path.Combine(Path.GetFullPath(args[0]), "tests/fixtures/polyface-records"); Output = Path.GetFullPath(args[1]); Directory.CreateDirectory(Output);
+        using var manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+        foreach (var fixture in manifest.RootElement.GetProperty("fixtures").EnumerateArray())
+        {
+            string file = fixture.GetProperty("file").GetString()!; byte[] bytes = File.ReadAllBytes(Path.Combine(directory, file)); bool binary = fixture.GetProperty("binary").GetBoolean();
+            Check(Convert.ToHexString(SHA256.HashData(bytes)).Equals(fixture.GetProperty("sha256").GetString(), StringComparison.OrdinalIgnoreCase), "Producer fixture hash differs.");
+            string name = Path.GetFileNameWithoutExtension(file); var handles = fixture.GetProperty("handles"); string meshHandle = handles.GetProperty("mesh").GetString()!, plainHandle = handles.GetProperty("plain_mesh").GetString()!;
+            Run(name + "-wire-edit", () =>
+            {
+                var drawing = Load(bytes); var mesh = drawing.Entities.PolyfaceMeshes.Single(p => p.Handle == meshHandle);
+                Check(mesh.VertexRecords.Select(r => r.Handle).SequenceEqual(handles.GetProperty("coordinates").EnumerateArray().Select(v => v.GetString())) && mesh.FaceRecords.Select(r => r.Handle).SequenceEqual(handles.GetProperty("faces").EnumerateArray().Select(v => v.GetString())), "Producer coordinate or face ordinal mapping differs.");
+                Check(mesh.VertexRecords.Concat(mesh.FaceRecords).All(r => r.UsesBlockRecordOwner) && !mesh.EndSequenceRecord.UsesBlockRecordOwner, "Observed producer owner form was lost.");
+                Wire(drawing, mesh, Raw(bytes), binary, name + "-edited");
+            });
+            Run(name + "-layer-and-detach", () =>
+            {
+                var drawing = Load(bytes); var decorated = drawing.Entities.PolyfaceMeshes.Single(p => p.Handle == meshHandle); var plain = drawing.Entities.PolyfaceMeshes.Single(p => p.Handle == plainHandle);
+                var previous = plain.RecordSequence.ToArray(); var oldLayer = plain.Faces[0].Layer; Check(oldLayer != null, "Producer face layer omitted.");
+                foreach (var face in decorated.Faces) face.Layer = null;
+                plain.Faces[0].Layer = new Layer("INDEPENDENT_FACE"); Check(drawing.Layers.Remove(oldLayer), "Face edit retains stale layer reference.");
+                plain.Faces[0].Color = new AciColor(17, 83, 149); plain.Faces[0].Layer = null;
+                Check(drawing.Entities.Remove(plain), "Ordinary null-layer face mesh did not detach.");
+                Check(previous.All(r => drawing.GetObjectByHandle(r.Handle) == null), "Detached mesh left child registrations.");
+                var foreign = new DxfDocument(drawing.DrawingVariables.AcadVer); Reject(() => foreign.Entities.Add(plain));
+                drawing.Entities.Add(plain); Check(previous.SequenceEqual(plain.RecordSequence) && previous.All(r => ReferenceEquals(drawing.GetObjectByHandle(r.Handle), r)), "Readoption changed retained child identity.");
+                byte[] saved = Save(drawing, binary); File.WriteAllBytes(Path.Combine(Output, name + "-readopted.dxf"), saved); var copy = Load(saved).Entities.PolyfaceMeshes.Single(p => p.Handle == plain.Handle);
+                Check(copy.Faces[0].Layer == null && copy.Faces[0].Color.Equals(plain.Faces[0].Color), "Readoption lost explicit face null inheritance/color.");
+            });
+            Run(name + "-clone", () =>
+            {
+                var drawing = Load(bytes); var plain = drawing.Entities.PolyfaceMeshes.Single(p => p.Handle == plainHandle); var decorated = drawing.Entities.PolyfaceMeshes.Single(p => p.Handle == meshHandle); Reject(() => decorated.Clone());
+                var clone = (PolyfaceMesh)plain.Clone(); Check(clone.RecordSequence.Count == plain.RecordSequence.Count && clone.RecordSequence.Zip(plain.RecordSequence).All(pair => !ReferenceEquals(pair.First, pair.Second)), "Clone shares retained child objects.");
+                drawing.Entities.Add(clone); Check(clone.RecordSequence.Zip(plain.RecordSequence).All(pair => pair.First.Handle != pair.Second.Handle), "Same-document clone reused source identity.");
+                var original = plain.Vertexes[0]; clone.Vertexes[0] += Vector3.UnitX; Check(plain.Vertexes[0] == original, "Clone shares coordinate array.");
+                File.WriteAllBytes(Path.Combine(Output, name + "-clone.dxf"), Save(drawing, binary));
+            });
+            Run(name + "-invalid-save", () =>
+            {
+                var drawing = Load(bytes); var plain = drawing.Entities.PolyfaceMeshes.Single(p => p.Handle == plainHandle); var face = plain.Faces[0]; short first = face.VertexIndexes[0];
+                face.VertexIndexes[0] = short.MinValue; RejectSave(drawing, binary); face.VertexIndexes[0] = 0; RejectSave(drawing, binary); face.VertexIndexes[0] = first;
+                var point = plain.Vertexes[0]; plain.Vertexes[0] = new Vector3(double.NaN, 0, 0); RejectSave(drawing, binary); plain.Vertexes[0] = point;
+                var version = drawing.DrawingVariables.AcadVer; drawing.DrawingVariables.AcadVer = version == DxfVersion.AutoCad2018 ? DxfVersion.AutoCad2013 : DxfVersion.AutoCad2018; RejectSave(drawing, binary); drawing.DrawingVariables.AcadVer = version;
+                Check(Save(drawing, binary).Length > 0, "Rejected changes damaged retained state.");
+            });
+        }
+        using var nativeManifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "native-manifest.json")));
+        foreach (var fixture in nativeManifest.RootElement.GetProperty("fixtures").EnumerateArray())
+        {
+            byte[] bytes = File.ReadAllBytes(Path.Combine(directory, fixture.GetProperty("file").GetString()!)); Check(Convert.ToHexString(SHA256.HashData(bytes)).Equals(fixture.GetProperty("sha256").GetString(), StringComparison.OrdinalIgnoreCase), "Native carrier hash differs.");
+            foreach (bool binary in new[] { false, true }) Run("native-" + fixture.GetProperty("year").GetInt32() + "-" + binary, () =>
+            {
+                var raw = Raw(bytes); var drawing = Load(Transport(raw, binary)); var mesh = drawing.Entities.PolyfaceMeshes.Single();
+                Check(mesh.Faces.Select(f => f.VertexIndexes.Length).SequenceEqual(new[] { 1, 2, 4 }) && mesh.VertexRecords.Concat(mesh.FaceRecords).All(r => !r.UsesBlockRecordOwner), "Native point/line/quad or direct-parent owner changed.");
+                Wire(drawing, mesh, raw, binary, "native-" + fixture.GetProperty("year").GetInt32() + "-" + binary);
+            });
+        }
+        File.WriteAllText(Path.Combine(Output, "results.json"), JsonSerializer.Serialize(new { cases = Results.Count, failed = Failed, librarySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(), results = Results }, new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine($"{Results.Count} cases; {Failed} failed."); Environment.ExitCode = Failed == 0 ? 0 : 1;
+    }
+}

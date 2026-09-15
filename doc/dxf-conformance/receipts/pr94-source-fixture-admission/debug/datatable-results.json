@@ -1,0 +1,2337 @@
+[
+  {
+    "name": "datatable/all-types/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/False/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/False/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/False/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/False/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/False/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/False/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/False/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2004/True/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2004/True/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/True/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/True/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/True/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/True/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2004/True/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/False/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/False/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/False/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/False/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/False/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/False/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/False/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2007/True/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2007/True/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/True/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/True/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/True/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/True/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2007/True/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/False/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/False/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/False/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/False/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/False/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/False/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/False/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2010/True/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2010/True/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/True/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/True/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/True/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/True/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2010/True/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/False/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/False/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/False/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/False/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/False/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/False/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/False/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2013/True/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2013/True/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/True/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/True/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/True/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/True/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2013/True/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/False/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/False/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/False/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/False/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/False/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/False/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/False/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/all-types/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/clone-erase/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/none",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/payload",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/control",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/unknown-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/discarded-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/dictionary-entity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/ignored-section",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/missing-table-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/missing-raster-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/table-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/raster-payload-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/source-identity/AutoCad2018/True/unrelated-managed-dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/canonical-forward-identity/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/symbol-table-identities/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/retained-resource-identities/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/section-entity-context/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/missing-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/duplicate-version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/missing-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/negative-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/huge-columns",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/negative-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/huge-rows",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/missing-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/missing-column-name",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/wrong-type-code",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/missing-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/extra-value",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/duplicate-marker",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/bool-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/point-missing-z",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/vector-order",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/unresolved-reference",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/duplicate-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/foreign-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/nonfinite",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/malformed/AutoCad2018/True/surrogate",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/True/version",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/True/type",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/True/field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/True/subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/opaque/AutoCad2018/True/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/native-R2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/R2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/native-R2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/R2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/atomic-mutation",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/external-clone-map",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "datatable/caller-enumerator-reentrancy",
+    "passed": true,
+    "error": null
+  }
+]

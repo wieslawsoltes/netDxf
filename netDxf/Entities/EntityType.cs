@@ -201,6 +201,9 @@ namespace netDxf.Entities
         StoredTable,
 
         /// <summary>A stored section plane and its boundaries.</summary>
-        Section
+        Section,
+
+        /// <summary>A loaded standalone unknown entity with preserved source tags.</summary>
+        OpaqueEntity
     }
 }

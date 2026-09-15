@@ -107,6 +107,7 @@ internal static partial class Program
         if (kind == "ellipse") edge = new HatchBoundaryPath.Ellipse { Center = Vector2.Zero, EndMajorAxis = Vector2.UnitX, MinorRatio = 0.5, StartAngle = 0, EndAngle = 180, IsCounterclockwise = true };
         if (kind == "bulge") edge = new HatchBoundaryPath.Polyline { IsClosed = true, Vertexes = new[] { new Vector3(0, 0, 1), new Vector3(2, 0, 0), new Vector3(0, 2, 0) } };
         HatchPattern pattern = kind == "pattern" ? HatchPattern.Line : kind == "gradient" ? new HatchGradientPattern() : HatchPattern.Solid;
+        if (kind == "pattern") pattern.Type = HatchType.UserDefined;
         var hatch = new Hatch(pattern, new[] { new HatchBoundaryPath(new[] { edge }) }, false); var path = hatch.BoundaryPaths.Single();
         Throws<NotSupportedException>(() => hatch.TransformBy(HatchAffineMatrix(3), new Vector3(7, -11, 13)));
         Check(ReferenceEquals(path, hatch.BoundaryPaths.Single()) && ReferenceEquals(edge, path.Edges.Single()), "Unsupported transform preserves boundary objects");

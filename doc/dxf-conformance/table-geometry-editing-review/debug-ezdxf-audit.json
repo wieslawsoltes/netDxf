@@ -1,0 +1,164 @@
+{
+  "ezdxf": "1.4.4",
+  "outputs": 26,
+  "errors": 0,
+  "repairs": 0,
+  "files": [
+    {
+      "file": "empty-False.dxf",
+      "sha256": "e7f009aa0ee9dc43205668d4e21f68a73561e874dacb0c1100663458b8adaef3",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "empty-True.dxf",
+      "sha256": "0162ea01b7ef2ef2b8e8228c212ffd96e7536c4a1ea6a497711845ab64d39772",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-acad_table_simple-B0-False.dxf",
+      "sha256": "64bc2a14998715fd45c561d747e2169fe4ab28f5883f72f2380f64fc53e43b22",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-acad_table_simple-B0-True.dxf",
+      "sha256": "00f4fcadca84344ef784882341b342cbc081821d717bab0e68c22d4dd21b1e7e",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-acad_table_with_blk_ref-117-False.dxf",
+      "sha256": "b1d500a612ad0744f37fd9618502a10f5cf4ff6fb1b7d307601530a64d071a7e",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-acad_table_with_blk_ref-117-True.dxf",
+      "sha256": "433db8d5ccde81c1ddfecdf82f639dee0cc0427253f7d28c72e9364b6c0d2c4d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1018_ascii-13F0-False.dxf",
+      "sha256": "fc89853e436eff0f613dee5320c12918cafb1f41dd132299bbd7d909dc926512",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1018_ascii-13F0-True.dxf",
+      "sha256": "5350930733c6d45a3ece840f59115d3fc50151b587a8b44c820bdd0dbf6e76e1",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1018_ascii-748-False.dxf",
+      "sha256": "487c7ca8eece462f836a90c3e252cbd4b4129c7bf642c36d0e8a210c9f9be50c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1018_ascii-748-True.dxf",
+      "sha256": "e31c955db89a2b781da4c56badd57f6feaf9665f2f4501672d763d7e8b733f2c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1021_ascii-1386-False.dxf",
+      "sha256": "73ac0e29e634e61e015b6aaae7baa25b0ce1dfda4b34078eb10fc4702f5dc15a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1021_ascii-1386-True.dxf",
+      "sha256": "f8a7ac1987d526610c232b66c5f71984c9222d1920568f51acc8b3b49732aff4",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1021_ascii-748-False.dxf",
+      "sha256": "decd36a083b24c834692443935554c2083f52dc7a335570b378eee4c1d4d69a0",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1021_ascii-748-True.dxf",
+      "sha256": "5eee38bfd6c0a5468a488d1015112d4b86d12c2d3276ea109eaa7d25e445546a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1024_ascii-131F-False.dxf",
+      "sha256": "0ecd6fe368634857ecf43c19ddf324d1c9edbbb2d63b102ec24bb045c61fc746",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1024_ascii-131F-True.dxf",
+      "sha256": "910125dc6362bb758bbf37c7a13ddf079749d329929a538db128b2a4233abb98",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1024_ascii-748-False.dxf",
+      "sha256": "ed793942f779a2c5aa301e3239f4121f3548e08840e6dd2f1b6df9bcc0a6eea1",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-sample_AC1024_ascii-748-True.dxf",
+      "sha256": "23ca2616e599ed65f3438e70f579936d486a577b5e0470bb571d511e1883717d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "noop-False.dxf",
+      "sha256": "75a6bbf458588d5d3cad4df113c8a3f31e6e6be5113302f781772a971d9e0ae9",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "noop-True.dxf",
+      "sha256": "675ef8eabe01cfb52bfaf015fcb83de4904e9bc21aa4416060ae4dff3fce6d2f",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "reference-replacement-False.dxf",
+      "sha256": "af3a8c3321d6cdc10e14b1d4c8d6aa3b5e36a1215338e906b838d1decf8c2ad0",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "reference-replacement-True.dxf",
+      "sha256": "f2200cd9112605752dfff9dc92f4e261a997ab974fca6845096fabb460ba227a",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "replacement-False.dxf",
+      "sha256": "1f45212033b7b854e5cfa92b7787a00095a4204179e20f9b425a37644eea3cbd",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "replacement-True.dxf",
+      "sha256": "abd0d6191ecb8876f427bae3c3200968a612f196dac84cd0579572a7b6457125",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "signed-zero-False.dxf",
+      "sha256": "0fe77e8fb82550ea86980be5674e19e947574eaea7a202ea4d95e6faa092e71d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "signed-zero-True.dxf",
+      "sha256": "2d618c49f2aa9639d517b20b06daa1950736af56c208483bc29977680abc7376",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

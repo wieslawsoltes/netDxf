@@ -1,0 +1,57 @@
+{
+  "module": "Explicit stored TABLECONTENT scalar, header and standalone style replacement",
+  "production_commit": "c87afec225d1f31b04e645b4d4719cac947fee21",
+  "source_worktree": "recovered-modules/netDxf-table-content-edit",
+  "harness": {
+    "recovery-audit/tablecontent-edit-probe/Program.cs": "b42e9c6c0b8f2d58d3878fdff8068ffe1c31eadf0c847578e9fe93e71001ddfa",
+    "recovery-audit/tablecontent-edit-probe/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "recovery-audit/audit_probe_outputs.py": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff"
+  },
+  "configurations": {
+    "debug": {
+      "cases": 40,
+      "failed": 0,
+      "library_sha256": "d38bc6864f54253c55e89cd4289910907bd0ae46ee46cac71de39d908b45710a",
+      "results_path": "recovery-audit/tablecontent-edit-expanded/results.json",
+      "results_sha256": "06eb373071c9de8df5753786586f58eca2a49ece3aa75b79e801146a17cecede",
+      "audit_outputs": 32,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/tablecontent-edit-expanded/ezdxf-audit.json",
+      "audit_sha256": "25776ca41244d54d0b14e73ca83ad54cea884e573556f7a51e8eb953927667fe"
+    },
+    "release": {
+      "cases": 40,
+      "failed": 0,
+      "library_sha256": "59c96250bad66c04a37fc26bce599cac1bc9f8b75036b4761d790d7e463cb8b1",
+      "results_path": "recovery-audit/tablecontent-edit-release/results.json",
+      "results_sha256": "c8d2974659bf044661946f03716b4fa0a667073f3a154d3969d4fea9502d9f28",
+      "audit_outputs": 32,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/tablecontent-edit-release/ezdxf-audit.json",
+      "audit_sha256": "c2d5da95ab2212f9e162bf43b94c22eda27d04336be69ee585b51b52f852e606"
+    }
+  },
+  "coverage": [
+    "24 independent adversarial API cases and 16 native-packet edit cases per configuration. Five native source profiles, eight distinct retained packets, ASCII and binary input/output.",
+    "Exact same-kind integer, double, string and Vector3 changes with explicit modern stored display text, legacy display-text prohibition, negative-zero distinction, original no-op snapshots and seed stability.",
+    "Stale, duplicate and foreign snapshot requests reject without mutation; successful edits retain prior Payload, StoredValues and References snapshots and require fresh tokens.",
+    "MoveNext and Dispose exceptions, caught nested replacement, changed source profile and removed owner anchor during disposal reject without packet or handle allocation. Independent callback document effects are not undone.",
+    "Literal structural-marker strings remain scalar/display data across both encodings. Invalid UTF-16, nonfinite requested values and strings exceeding the encoded escaped-length admission limit reject.",
+    "Explicit standalone actual opaque TABLESTYLE first-to-second-to-null replacements update exact dependencies and serialized group 340 while keeping prior References snapshots. Foreign same-handle targets reject. ACAD_TABLE-owned style changes reject.",
+    "Each native packet preserves exact loaded Payload on no-op; explicit first-scalar/header replacement retains all other tags, references and companion TABLECONTENT packets and reloads exactly.",
+    "All 64 output drawings audited with ezdxf 1.4.4: no errors or repairs. No native CAD runtime was available or claimed."
+  ],
+  "fixture_scope": [
+    "Manifest-pinned unchanged whole R2013/R2018 source drawings plus the previously disclosed R2004/R2007/R2010 selected native packet carriers.",
+    "Group 999 comments are excluded only during raw transport conversion because binary DXF has no comment support. No TABLECONTENT source body changes precede the explicit API request.",
+    "Synthetic scalar carriers declare four same-kind frames within a qualified row/cell envelope without inferred row/column addressing. Synthetic opaque TABLESTYLE carriers explicitly use an unknown private subclass.",
+    "No-op preserves original loaded typed values and snapshot identities; it does not restore lexical spelling already normalized by the reader. Display strings are supplied explicitly; formatting, formulas and TABLE regeneration are not claimed."
+  ],
+  "findings": {
+    "production_changes_requested": 0,
+    "production_findings": "No substantive production defect found against frozen c87afec. The supported DxfTag construction/read path already rejects nonfinite stored doubles.",
+    "oracle_review": "The owner gate now compares the companion TABLE subclass packet and complete proxy bytes separately from existing common-entity default normalization. Independent review additionally requested exact companion owner/reactor/extension metadata comparisons and a TABLE-owner corruption control; this is an oracle coverage recommendation, not a demonstrated production defect."
+  }
+}

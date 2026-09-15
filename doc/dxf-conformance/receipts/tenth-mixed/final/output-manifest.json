@@ -1,0 +1,674 @@
+[
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-False-input.dxf.gz",
+    "uncompressed_sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c",
+    "gzip_sha256": "a164ab9e5a9ac54bf5423226b844e3a2904a555246a0ef3b9718fe8de80c0d6a",
+    "bytes": 72025
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-False-linked.dxf.gz",
+    "uncompressed_sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c",
+    "gzip_sha256": "a777c987ac9ee9fe9f76cbd6d5d66745ddd494e4093ce9a02bcc9ca8425945a4",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47",
+    "gzip_sha256": "9e4836b21b38118c79d0f9948212a50e5a56a5672875625d3a6d0283f294d429",
+    "bytes": 72176
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35",
+    "gzip_sha256": "638b7884606d86032be574f6fb78896fda2d1181101926ea86874db793e898eb",
+    "bytes": 71707
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-False-released.dxf.gz",
+    "uncompressed_sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3",
+    "gzip_sha256": "31a6bb410da9016389b851c426c2baeefd1a4ef107504e56fb14524ab0d1b527",
+    "bytes": 69811
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-False-retry.dxf.gz",
+    "uncompressed_sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934",
+    "gzip_sha256": "2309a6a0adfd96558ce11cd8d32a44b6973184e6c603512e48fecb59c2ffdc18",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-True-input.dxf.gz",
+    "uncompressed_sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c",
+    "gzip_sha256": "4d6446256b19e1eb87e2e0ec15ecd92ca053bd92bc7e578e5b4df3b08f36d3e3",
+    "bytes": 63033
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-True-linked.dxf.gz",
+    "uncompressed_sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03",
+    "gzip_sha256": "7ed9b1235f91519de4f934d52c29cc7159e894bac28e6424c69f796bd21b1e49",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808",
+    "gzip_sha256": "cb5e7a8dad69092413883170c04368bafb69c5bcc78091c328b52176b75e0e3f",
+    "bytes": 62971
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d",
+    "gzip_sha256": "3de95bdf50ceff6580a4ef1fb2f5b789e43accdefb7912209aad1a321e4960a0",
+    "bytes": 62497
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-True-released.dxf.gz",
+    "uncompressed_sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0",
+    "gzip_sha256": "d2ab7d7c7ba608bff623f0ccd3ae3f8dfb0f121ca0bffa24725db4aeaa4506cd",
+    "bytes": 60839
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-False-True-retry.dxf.gz",
+    "uncompressed_sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5",
+    "gzip_sha256": "bd8d11fc9188e0e23741df551dd8c79c9df09dcd5beff8e7541e42c85a2d1fdd",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-False-input.dxf.gz",
+    "uncompressed_sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c",
+    "gzip_sha256": "a164ab9e5a9ac54bf5423226b844e3a2904a555246a0ef3b9718fe8de80c0d6a",
+    "bytes": 72025
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-False-linked.dxf.gz",
+    "uncompressed_sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c",
+    "gzip_sha256": "a777c987ac9ee9fe9f76cbd6d5d66745ddd494e4093ce9a02bcc9ca8425945a4",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47",
+    "gzip_sha256": "9e4836b21b38118c79d0f9948212a50e5a56a5672875625d3a6d0283f294d429",
+    "bytes": 72176
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35",
+    "gzip_sha256": "638b7884606d86032be574f6fb78896fda2d1181101926ea86874db793e898eb",
+    "bytes": 71707
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-False-released.dxf.gz",
+    "uncompressed_sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3",
+    "gzip_sha256": "31a6bb410da9016389b851c426c2baeefd1a4ef107504e56fb14524ab0d1b527",
+    "bytes": 69811
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-False-retry.dxf.gz",
+    "uncompressed_sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934",
+    "gzip_sha256": "2309a6a0adfd96558ce11cd8d32a44b6973184e6c603512e48fecb59c2ffdc18",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-True-input.dxf.gz",
+    "uncompressed_sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c",
+    "gzip_sha256": "4d6446256b19e1eb87e2e0ec15ecd92ca053bd92bc7e578e5b4df3b08f36d3e3",
+    "bytes": 63033
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-True-linked.dxf.gz",
+    "uncompressed_sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03",
+    "gzip_sha256": "7ed9b1235f91519de4f934d52c29cc7159e894bac28e6424c69f796bd21b1e49",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808",
+    "gzip_sha256": "cb5e7a8dad69092413883170c04368bafb69c5bcc78091c328b52176b75e0e3f",
+    "bytes": 62971
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d",
+    "gzip_sha256": "3de95bdf50ceff6580a4ef1fb2f5b789e43accdefb7912209aad1a321e4960a0",
+    "bytes": 62497
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-True-released.dxf.gz",
+    "uncompressed_sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0",
+    "gzip_sha256": "d2ab7d7c7ba608bff623f0ccd3ae3f8dfb0f121ca0bffa24725db4aeaa4506cd",
+    "bytes": 60839
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_simple.dxf-True-True-retry.dxf.gz",
+    "uncompressed_sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5",
+    "gzip_sha256": "bd8d11fc9188e0e23741df551dd8c79c9df09dcd5beff8e7541e42c85a2d1fdd",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-input.dxf.gz",
+    "uncompressed_sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6",
+    "gzip_sha256": "6f742c1756b83289cebcf5e326e95c5507c98e883c1615efd05a72f48a5d4160",
+    "bytes": 124295
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-linked.dxf.gz",
+    "uncompressed_sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5",
+    "gzip_sha256": "f6d8ec14f66bd4ea38f53fb8058c1d104abd29c6d6e0eaf0a5fd29e89ba46b3c",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a",
+    "gzip_sha256": "a8af55cea9b0f29307ba62dd528d79c6793f91fec8a82a8b1b390bcbf9d5c282",
+    "bytes": 124589
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b",
+    "gzip_sha256": "3a87c947df8e5c93cd7098c008d5c20b328e61c44242dadf011aaf9943438785",
+    "bytes": 124111
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-released.dxf.gz",
+    "uncompressed_sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604",
+    "gzip_sha256": "cf78b7f0b818f96ad5929e7ec27730e787c6228025dcf5b7fc7208c204075c75",
+    "bytes": 122003
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-retry.dxf.gz",
+    "uncompressed_sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038",
+    "gzip_sha256": "0f078fd71a6abc37d4116e81cceefdb221ecc559984923ccfebdcbf7662a0238",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-input.dxf.gz",
+    "uncompressed_sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4",
+    "gzip_sha256": "4385a0c19f167909d8108a8c51dc1ee00a9778fba1f999b80377d1fea051bd88",
+    "bytes": 109187
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-linked.dxf.gz",
+    "uncompressed_sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5",
+    "gzip_sha256": "0bf8ec8996899350b27bef096668232ac1be1f53ad2012b3bfd380f026a74edc",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb",
+    "gzip_sha256": "23ba412a74602ae4b34f6e4ed82d884b17bcc6f71e1c11b8b49e8aefbf11069c",
+    "bytes": 109120
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99",
+    "gzip_sha256": "09bf642f7b38a23de0789ea3dc942a1c60ad6a6a8ac64637f940929b77f30d62",
+    "bytes": 108637
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-released.dxf.gz",
+    "uncompressed_sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446",
+    "gzip_sha256": "c03de546b5d51f56f4f5e6e71147c04cf68df85cbb8d1d83fd7100d1af4584d7",
+    "bytes": 106962
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-retry.dxf.gz",
+    "uncompressed_sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b",
+    "gzip_sha256": "4c0561b597801c9477bbd8e6f392fafddc058a15e645627eb8a3609d1599158e",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-input.dxf.gz",
+    "uncompressed_sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6",
+    "gzip_sha256": "6f742c1756b83289cebcf5e326e95c5507c98e883c1615efd05a72f48a5d4160",
+    "bytes": 124295
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-linked.dxf.gz",
+    "uncompressed_sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5",
+    "gzip_sha256": "f6d8ec14f66bd4ea38f53fb8058c1d104abd29c6d6e0eaf0a5fd29e89ba46b3c",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a",
+    "gzip_sha256": "a8af55cea9b0f29307ba62dd528d79c6793f91fec8a82a8b1b390bcbf9d5c282",
+    "bytes": 124589
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b",
+    "gzip_sha256": "3a87c947df8e5c93cd7098c008d5c20b328e61c44242dadf011aaf9943438785",
+    "bytes": 124111
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-released.dxf.gz",
+    "uncompressed_sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604",
+    "gzip_sha256": "cf78b7f0b818f96ad5929e7ec27730e787c6228025dcf5b7fc7208c204075c75",
+    "bytes": 122003
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-retry.dxf.gz",
+    "uncompressed_sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038",
+    "gzip_sha256": "0f078fd71a6abc37d4116e81cceefdb221ecc559984923ccfebdcbf7662a0238",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-input.dxf.gz",
+    "uncompressed_sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4",
+    "gzip_sha256": "4385a0c19f167909d8108a8c51dc1ee00a9778fba1f999b80377d1fea051bd88",
+    "bytes": 109187
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-linked.dxf.gz",
+    "uncompressed_sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5",
+    "gzip_sha256": "0bf8ec8996899350b27bef096668232ac1be1f53ad2012b3bfd380f026a74edc",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb",
+    "gzip_sha256": "23ba412a74602ae4b34f6e4ed82d884b17bcc6f71e1c11b8b49e8aefbf11069c",
+    "bytes": 109120
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99",
+    "gzip_sha256": "09bf642f7b38a23de0789ea3dc942a1c60ad6a6a8ac64637f940929b77f30d62",
+    "bytes": 108637
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-released.dxf.gz",
+    "uncompressed_sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446",
+    "gzip_sha256": "c03de546b5d51f56f4f5e6e71147c04cf68df85cbb8d1d83fd7100d1af4584d7",
+    "bytes": 106962
+  },
+  {
+    "configuration": "Debug",
+    "file": "debug/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-retry.dxf.gz",
+    "uncompressed_sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b",
+    "gzip_sha256": "4c0561b597801c9477bbd8e6f392fafddc058a15e645627eb8a3609d1599158e",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-False-input.dxf.gz",
+    "uncompressed_sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c",
+    "gzip_sha256": "a164ab9e5a9ac54bf5423226b844e3a2904a555246a0ef3b9718fe8de80c0d6a",
+    "bytes": 72025
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-False-linked.dxf.gz",
+    "uncompressed_sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c",
+    "gzip_sha256": "a777c987ac9ee9fe9f76cbd6d5d66745ddd494e4093ce9a02bcc9ca8425945a4",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47",
+    "gzip_sha256": "9e4836b21b38118c79d0f9948212a50e5a56a5672875625d3a6d0283f294d429",
+    "bytes": 72176
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35",
+    "gzip_sha256": "638b7884606d86032be574f6fb78896fda2d1181101926ea86874db793e898eb",
+    "bytes": 71707
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-False-released.dxf.gz",
+    "uncompressed_sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3",
+    "gzip_sha256": "31a6bb410da9016389b851c426c2baeefd1a4ef107504e56fb14524ab0d1b527",
+    "bytes": 69811
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-False-retry.dxf.gz",
+    "uncompressed_sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934",
+    "gzip_sha256": "2309a6a0adfd96558ce11cd8d32a44b6973184e6c603512e48fecb59c2ffdc18",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-True-input.dxf.gz",
+    "uncompressed_sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c",
+    "gzip_sha256": "4d6446256b19e1eb87e2e0ec15ecd92ca053bd92bc7e578e5b4df3b08f36d3e3",
+    "bytes": 63033
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-True-linked.dxf.gz",
+    "uncompressed_sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03",
+    "gzip_sha256": "7ed9b1235f91519de4f934d52c29cc7159e894bac28e6424c69f796bd21b1e49",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808",
+    "gzip_sha256": "cb5e7a8dad69092413883170c04368bafb69c5bcc78091c328b52176b75e0e3f",
+    "bytes": 62971
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d",
+    "gzip_sha256": "3de95bdf50ceff6580a4ef1fb2f5b789e43accdefb7912209aad1a321e4960a0",
+    "bytes": 62497
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-True-released.dxf.gz",
+    "uncompressed_sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0",
+    "gzip_sha256": "d2ab7d7c7ba608bff623f0ccd3ae3f8dfb0f121ca0bffa24725db4aeaa4506cd",
+    "bytes": 60839
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-False-True-retry.dxf.gz",
+    "uncompressed_sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5",
+    "gzip_sha256": "bd8d11fc9188e0e23741df551dd8c79c9df09dcd5beff8e7541e42c85a2d1fdd",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-False-input.dxf.gz",
+    "uncompressed_sha256": "41922422459373bff9a02fe9589c2c7402958bc584f706b6debd09128dd4364c",
+    "gzip_sha256": "a164ab9e5a9ac54bf5423226b844e3a2904a555246a0ef3b9718fe8de80c0d6a",
+    "bytes": 72025
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-False-linked.dxf.gz",
+    "uncompressed_sha256": "498c2e9d080690b5f18b0700d34f5721be2e445fc534bd1dc2498d3edcd1b48c",
+    "gzip_sha256": "a777c987ac9ee9fe9f76cbd6d5d66745ddd494e4093ce9a02bcc9ca8425945a4",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "26bf11008b6726628ed5d974efd9a6333840eb39d83cc40b03539e2361bb1b47",
+    "gzip_sha256": "9e4836b21b38118c79d0f9948212a50e5a56a5672875625d3a6d0283f294d429",
+    "bytes": 72176
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "97c17fc6789f2ec2540444e19e9a7ddeb5d2cf1a3e90ce1352f43d50d550df35",
+    "gzip_sha256": "638b7884606d86032be574f6fb78896fda2d1181101926ea86874db793e898eb",
+    "bytes": 71707
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-False-released.dxf.gz",
+    "uncompressed_sha256": "68d30a9a109fe2f73c794e77b30fb50900dd10c4e160f1cc060e3e419c7fa0a3",
+    "gzip_sha256": "31a6bb410da9016389b851c426c2baeefd1a4ef107504e56fb14524ab0d1b527",
+    "bytes": 69811
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-False-retry.dxf.gz",
+    "uncompressed_sha256": "82d8c8be2820986317cf8196ee22e1000722b516615f77401bb4f8cfc468d934",
+    "gzip_sha256": "2309a6a0adfd96558ce11cd8d32a44b6973184e6c603512e48fecb59c2ffdc18",
+    "bytes": 72321
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-True-input.dxf.gz",
+    "uncompressed_sha256": "6edf51df6ae45e70daae7addd361bc86db21a1afbe9af3be77c33e4700971e5c",
+    "gzip_sha256": "4d6446256b19e1eb87e2e0ec15ecd92ca053bd92bc7e578e5b4df3b08f36d3e3",
+    "bytes": 63033
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-True-linked.dxf.gz",
+    "uncompressed_sha256": "1e0972cb463016301482a3cb19be9dd0e2a484279e2ab6d2af31288b3e5cdd03",
+    "gzip_sha256": "7ed9b1235f91519de4f934d52c29cc7159e894bac28e6424c69f796bd21b1e49",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "226260c1e819fae7ccef466c6bbb3e32de904e4ef06a4f31c3a6da757c0d8808",
+    "gzip_sha256": "cb5e7a8dad69092413883170c04368bafb69c5bcc78091c328b52176b75e0e3f",
+    "bytes": 62971
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "f876e59c66f1479f3ae55a1f854cbfc4cba950eecde6f9ae17e2c9eb5a70e16d",
+    "gzip_sha256": "3de95bdf50ceff6580a4ef1fb2f5b789e43accdefb7912209aad1a321e4960a0",
+    "bytes": 62497
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-True-released.dxf.gz",
+    "uncompressed_sha256": "4dcaa3de6cb7600f54f05f5cc93d17a31964effcd5d003fb35557d3a6b551fb0",
+    "gzip_sha256": "d2ab7d7c7ba608bff623f0ccd3ae3f8dfb0f121ca0bffa24725db4aeaa4506cd",
+    "bytes": 60839
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_simple.dxf-True-True-retry.dxf.gz",
+    "uncompressed_sha256": "ad592a58f85b295a4c6453ff411cd30f954844946770afab43b8cf137ffe12b5",
+    "gzip_sha256": "bd8d11fc9188e0e23741df551dd8c79c9df09dcd5beff8e7541e42c85a2d1fdd",
+    "bytes": 63098
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-input.dxf.gz",
+    "uncompressed_sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6",
+    "gzip_sha256": "6f742c1756b83289cebcf5e326e95c5507c98e883c1615efd05a72f48a5d4160",
+    "bytes": 124295
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-linked.dxf.gz",
+    "uncompressed_sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5",
+    "gzip_sha256": "f6d8ec14f66bd4ea38f53fb8058c1d104abd29c6d6e0eaf0a5fd29e89ba46b3c",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a",
+    "gzip_sha256": "a8af55cea9b0f29307ba62dd528d79c6793f91fec8a82a8b1b390bcbf9d5c282",
+    "bytes": 124589
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b",
+    "gzip_sha256": "3a87c947df8e5c93cd7098c008d5c20b328e61c44242dadf011aaf9943438785",
+    "bytes": 124111
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-released.dxf.gz",
+    "uncompressed_sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604",
+    "gzip_sha256": "cf78b7f0b818f96ad5929e7ec27730e787c6228025dcf5b7fc7208c204075c75",
+    "bytes": 122003
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-False-retry.dxf.gz",
+    "uncompressed_sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038",
+    "gzip_sha256": "0f078fd71a6abc37d4116e81cceefdb221ecc559984923ccfebdcbf7662a0238",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-input.dxf.gz",
+    "uncompressed_sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4",
+    "gzip_sha256": "4385a0c19f167909d8108a8c51dc1ee00a9778fba1f999b80377d1fea051bd88",
+    "bytes": 109187
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-linked.dxf.gz",
+    "uncompressed_sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5",
+    "gzip_sha256": "0bf8ec8996899350b27bef096668232ac1be1f53ad2012b3bfd380f026a74edc",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb",
+    "gzip_sha256": "23ba412a74602ae4b34f6e4ed82d884b17bcc6f71e1c11b8b49e8aefbf11069c",
+    "bytes": 109120
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99",
+    "gzip_sha256": "09bf642f7b38a23de0789ea3dc942a1c60ad6a6a8ac64637f940929b77f30d62",
+    "bytes": 108637
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-released.dxf.gz",
+    "uncompressed_sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446",
+    "gzip_sha256": "c03de546b5d51f56f4f5e6e71147c04cf68df85cbb8d1d83fd7100d1af4584d7",
+    "bytes": 106962
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-False-True-retry.dxf.gz",
+    "uncompressed_sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b",
+    "gzip_sha256": "4c0561b597801c9477bbd8e6f392fafddc058a15e645627eb8a3609d1599158e",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-input.dxf.gz",
+    "uncompressed_sha256": "9e6bb856550ddb8d67f38f686db1b310e74212473916f2f2d87c002e2223e1f6",
+    "gzip_sha256": "6f742c1756b83289cebcf5e326e95c5507c98e883c1615efd05a72f48a5d4160",
+    "bytes": 124295
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-linked.dxf.gz",
+    "uncompressed_sha256": "b701249e16332a9ddc1f47bcecaf2a65cdc603e05e9f1ece9d77ee712e981ba5",
+    "gzip_sha256": "f6d8ec14f66bd4ea38f53fb8058c1d104abd29c6d6e0eaf0a5fd29e89ba46b3c",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-manager-erased.dxf.gz",
+    "uncompressed_sha256": "00646d2f3b24520030d2f3a603782efd1d0e4e85c8e8cc761b96e88111f9003a",
+    "gzip_sha256": "a8af55cea9b0f29307ba62dd528d79c6793f91fec8a82a8b1b390bcbf9d5c282",
+    "bytes": 124589
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "1cf486b65365a81ad411b17359a2f59992327c98815c436d353629578baded3b",
+    "gzip_sha256": "3a87c947df8e5c93cd7098c008d5c20b328e61c44242dadf011aaf9943438785",
+    "bytes": 124111
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-released.dxf.gz",
+    "uncompressed_sha256": "3b8b3632c771f5b8e5611072fef5f1d68b409c24671379c4ff4cac0545dbb604",
+    "gzip_sha256": "cf78b7f0b818f96ad5929e7ec27730e787c6228025dcf5b7fc7208c204075c75",
+    "bytes": 122003
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-False-retry.dxf.gz",
+    "uncompressed_sha256": "849de3be9eb1494ff5cf7780b98a9f2b3053146a2b0989b42048b19ffcf21038",
+    "gzip_sha256": "0f078fd71a6abc37d4116e81cceefdb221ecc559984923ccfebdcbf7662a0238",
+    "bytes": 124740
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-input.dxf.gz",
+    "uncompressed_sha256": "4dde02e8d30443c8f8753a583730b3fa41a623323da842fe9fac79b8e30480a4",
+    "gzip_sha256": "4385a0c19f167909d8108a8c51dc1ee00a9778fba1f999b80377d1fea051bd88",
+    "bytes": 109187
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-linked.dxf.gz",
+    "uncompressed_sha256": "de4c72216b35b97835786146b7cb3ac2d4f6b331ff600f988b0ccc68379d40e5",
+    "gzip_sha256": "0bf8ec8996899350b27bef096668232ac1be1f53ad2012b3bfd380f026a74edc",
+    "bytes": 109253
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-manager-erased.dxf.gz",
+    "uncompressed_sha256": "239f2ff86d1012de0725f94f61aefdc31aa6513ce8d31660fdd7d7f5936622bb",
+    "gzip_sha256": "23ba412a74602ae4b34f6e4ed82d884b17bcc6f71e1c11b8b49e8aefbf11069c",
+    "bytes": 109120
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-opaque-guard.dxf.gz",
+    "uncompressed_sha256": "6f3cd83bb5293e37c08776451f308521c8c855dd26e046fcf6058b309eacac99",
+    "gzip_sha256": "09bf642f7b38a23de0789ea3dc942a1c60ad6a6a8ac64637f940929b77f30d62",
+    "bytes": 108637
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-released.dxf.gz",
+    "uncompressed_sha256": "6618da49b892c300cca8b0251ddfdfd0d150cae4fb80e437e34ab82718aa5446",
+    "gzip_sha256": "c03de546b5d51f56f4f5e6e71147c04cf68df85cbb8d1d83fd7100d1af4584d7",
+    "bytes": 106962
+  },
+  {
+    "configuration": "Release",
+    "file": "release/tenth-mixed-acad_table_with_blk_ref.dxf-True-True-retry.dxf.gz",
+    "uncompressed_sha256": "3558bbbe9fcbf179fd3a7366028ed83cbeabea5dfcef54d3a87ef417f73c107b",
+    "gzip_sha256": "4c0561b597801c9477bbd8e6f392fafddc058a15e645627eb8a3609d1599158e",
+    "bytes": 109253
+  }
+]

@@ -1,0 +1,198 @@
+{
+  "contract": "All eleven native POLYFACE packets preserved except the declared parent owner. Named carrier layers are synthetic, not original layer-table qualification.",
+  "native_application_executed": false,
+  "fixtures": [
+    {
+      "year": 2000,
+      "file": "native-R2000.dxf",
+      "sha256": "fa05c17ac1aeb68c96ee6d34f081c6503f5a2a5032706487bdf47c794b74ca62",
+      "source": {
+        "year": 2000,
+        "repository_path": "test/test-data/example_2000.dxf",
+        "gzip_file": "example_2000.dxf.gz",
+        "gzip_sha256": "c8047efbb62878b28d4e217373765ebb91229009eca0813644228ba5c740aaca",
+        "source_sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+        "git_blob_sha": "70a2c625227cae86ab28254f0754538a7259cb16",
+        "bytes": 1387952
+      },
+      "parent": "4E4",
+      "coordinates": [
+        "4E5",
+        "4E6",
+        "4E7",
+        "4E8",
+        "4E9",
+        "4EA"
+      ],
+      "faces": [
+        "4EB",
+        "4EC",
+        "4ED"
+      ],
+      "seqend": "4EE",
+      "native_owner": "1F",
+      "carrier_owner": "17",
+      "packet_count": 11
+    },
+    {
+      "year": 2004,
+      "file": "native-R2004.dxf",
+      "sha256": "16395aab4d3e34628dd78b4b111e8e1c4d3c96384f37b4fef1ccce74371d2b9b",
+      "source": {
+        "year": 2004,
+        "repository_path": "test/test-data/example_2004.dxf",
+        "gzip_file": "example_2004.dxf.gz",
+        "gzip_sha256": "6ff1fc0dcb27a5f246f1ee03a952dc6a69eefa8266afb1fd6c1f3ab611fb8448",
+        "source_sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+        "git_blob_sha": "f411d9efb8cf774bdc44eee005dfc5bae47fffca",
+        "bytes": 922305
+      },
+      "parent": "4E4",
+      "coordinates": [
+        "4E5",
+        "4E6",
+        "4E7",
+        "4E8",
+        "4E9",
+        "4EA"
+      ],
+      "faces": [
+        "4EB",
+        "4EC",
+        "4ED"
+      ],
+      "seqend": "4EE",
+      "native_owner": "1F",
+      "carrier_owner": "17",
+      "packet_count": 11
+    },
+    {
+      "year": 2007,
+      "file": "native-R2007.dxf",
+      "sha256": "9888193349400ba8fe775d0bca3b01606a0cc3007476aa9582b4393cac6bcf07",
+      "source": {
+        "year": 2007,
+        "repository_path": "test/test-data/example_2007.dxf",
+        "gzip_file": "example_2007.dxf.gz",
+        "gzip_sha256": "0feafb9e31aac2ba2f67b2b602cd291a85c88f5a629c5a586580c8f3bfa7a12d",
+        "source_sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+        "git_blob_sha": "ffdebb6b93cd08f3e29c64b09915b1563fed0a4d",
+        "bytes": 925472
+      },
+      "parent": "4E4",
+      "coordinates": [
+        "4E5",
+        "4E6",
+        "4E7",
+        "4E8",
+        "4E9",
+        "4EA"
+      ],
+      "faces": [
+        "4EB",
+        "4EC",
+        "4ED"
+      ],
+      "seqend": "4EE",
+      "native_owner": "1F",
+      "carrier_owner": "17",
+      "packet_count": 11
+    },
+    {
+      "year": 2010,
+      "file": "native-R2010.dxf",
+      "sha256": "3cb9c936bf3e9152740990b6f5941fe48deb54fb4177a569a40ed70e307e5843",
+      "source": {
+        "year": 2010,
+        "repository_path": "test/test-data/example_2010.dxf",
+        "gzip_file": "example_2010.dxf.gz",
+        "gzip_sha256": "594c49a56335e40a577bdbdb6faa2590efdc57580888b00f33b6b287de675535",
+        "source_sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+        "git_blob_sha": "45a47fd6b6ef65dde6bd70fd1df6445ceeb9cc1b",
+        "bytes": 879558
+      },
+      "parent": "4E4",
+      "coordinates": [
+        "4E5",
+        "4E6",
+        "4E7",
+        "4E8",
+        "4E9",
+        "4EA"
+      ],
+      "faces": [
+        "4EB",
+        "4EC",
+        "4ED"
+      ],
+      "seqend": "4EE",
+      "native_owner": "1F",
+      "carrier_owner": "17",
+      "packet_count": 11
+    },
+    {
+      "year": 2013,
+      "file": "native-R2013.dxf",
+      "sha256": "60e8656ebe44db6d6716312ed7548bd5b9bbb5aeb797f503edcc7c1f4105f44b",
+      "source": {
+        "year": 2013,
+        "repository_path": "test/test-data/example_2013.dxf",
+        "gzip_file": "example_2013.dxf.gz",
+        "gzip_sha256": "784141c23a44adade7ea99f0611caabc6501cb33d4558d582e0e642226e21850",
+        "source_sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+        "git_blob_sha": "e8c0f7254b02c3e036d6ceacbbbfaa60b9d06563",
+        "bytes": 850618
+      },
+      "parent": "4E4",
+      "coordinates": [
+        "4E5",
+        "4E6",
+        "4E7",
+        "4E8",
+        "4E9",
+        "4EA"
+      ],
+      "faces": [
+        "4EB",
+        "4EC",
+        "4ED"
+      ],
+      "seqend": "4EE",
+      "native_owner": "1F",
+      "carrier_owner": "17",
+      "packet_count": 11
+    },
+    {
+      "year": 2018,
+      "file": "native-R2018.dxf",
+      "sha256": "112bce0730466962e79d7c2eba9cb8ca93ae6dff57ca6bd21fda158318b6e503",
+      "source": {
+        "year": 2018,
+        "repository_path": "test/test-data/example_2018.dxf",
+        "gzip_file": "example_2018.dxf.gz",
+        "gzip_sha256": "60be0aed8aa68546cafd1c7f44d44f7a5c45cb3da10c99e258e0254df2ed45e8",
+        "source_sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+        "git_blob_sha": "589fbe42143b6d3e6796c9fc389c521f5d346ad2",
+        "bytes": 845818
+      },
+      "parent": "4E4",
+      "coordinates": [
+        "4E5",
+        "4E6",
+        "4E7",
+        "4E8",
+        "4E9",
+        "4EA"
+      ],
+      "faces": [
+        "4EB",
+        "4EC",
+        "4ED"
+      ],
+      "seqend": "4EE",
+      "native_owner": "1F",
+      "carrier_owner": "17",
+      "packet_count": 11
+    }
+  ]
+}

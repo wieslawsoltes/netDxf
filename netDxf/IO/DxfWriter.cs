@@ -87,8 +87,10 @@ namespace netDxf.IO
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
             }
 
+            this.ValidateOpaqueEntities();
             this.ValidateStoredPolylineRecords();
             this.ValidateStoredPolygonMeshRecords();
+            this.ValidateStoredPolyfaceMeshRecords();
             this.ValidateStoredDimensionHeaders();
             this.ValidateTextStyleStrings();
             this.ValidateAcisEntities();
@@ -115,6 +117,7 @@ namespace netDxf.IO
 
             this.ValidateDatabaseTransport();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
+            this.ValidateOpaqueEntityClasses(classDefinitions);
 
             this.encodedStrings = new Dictionary<string, string>();
             this.polylines = new Dictionary<string, Polyline>();
@@ -1875,6 +1878,7 @@ namespace netDxf.IO
                 return;
             }
 
+            if (entity is DxfOpaqueEntity opaque) { this.WriteOpaqueEntity(opaque); return; }
             this.WriteEntityCommonCodes(entity, layout);
 
             switch (entity.Type)
@@ -2774,6 +2778,11 @@ namespace netDxf.IO
 
         private void WritePolyline(Polyline polyline)
         {
+            if (polyline.StoredPolyfaceSource != null)
+            {
+                this.WriteStoredPolyfaceMeshHeader(polyline.StoredPolyfaceSource);
+                this.WriteStoredPolyfaceMeshRecords(polyline.StoredPolyfaceSource); return;
+            }
             this.chunk.Write(100, polyline.SubclassMarker);
 
             //dummy point
@@ -5165,6 +5174,12 @@ namespace netDxf.IO
 
         private void PreProcessPolyfaceMesh(PolyfaceMesh pMesh)
         {
+            if (pMesh.HasStoredRecords)
+            {
+                this.polylines.Add(pMesh.Handle, new Polyline { Handle = pMesh.Handle, StoredPolyfaceSource = pMesh,
+                    SubclassMarker = SubclassMarker.PolyfaceMesh, Layer = pMesh.Layer, Normal = pMesh.Normal, Color = pMesh.Color, Flags = pMesh.Flags });
+                return;
+            }
             List<Vertex> vertexes = new List<Vertex>();
 
             // first create the polyface mesh vertexes

@@ -1,0 +1,579 @@
+{
+  "schema_version": 1,
+  "module": "Editable loaded TABLEGEOMETRY",
+  "base_commit": "b4b3b581b40e0fc95109fd8ba49bdb4cbd0ef0f0",
+  "production_commit": "34780f6f07a68637643a18d2f51bca9587a0b89b",
+  "qualification_commits": [
+    "88b27ffde6c9eb531af385160834246ed7fef487",
+    "4ad81b67fc5b120b3959fe7d86d5e40025fb8a3c"
+  ],
+  "production_changes_after_freeze": false,
+  "build": {
+    "sdk": "8.0.408",
+    "target": "net8.0",
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "library_errors": 0,
+    "library_existing_CS1591_warnings_per_configuration": 561,
+    "new_warnings": 0,
+    "conformance_errors": 0,
+    "conformance_warnings": 0,
+    "diagnostics_suppressed": false
+  },
+  "configs": [
+    {
+      "configuration": "Debug",
+      "runtime_cases": 761,
+      "runtime_unique_cases": 761,
+      "runtime_failures": 0,
+      "prefix_counts": {
+        "table-geometry-edit": 125,
+        "cell-style-map": 160,
+        "table-style": 89,
+        "table-geometry": 142,
+        "declared-ownership": 35,
+        "composite-table": 49,
+        "erasure-declared-ownership": 7,
+        "seventh-mixed": 8,
+        "table-content": 146
+      },
+      "results_sha256": "5ee0e9839e351390f9ff01fcfe70bd2730e55f5f9c9347bb44e5acc11e9c2216",
+      "library_sha256": "1431e8ebc75f445b3a0e678e5f971009ae70a241b4c68860fcebad4011eb7357",
+      "conformance_sha256": "4ea43d86587f6080e9c71c59e95a50b72eb5c0ecdb3218d7191ca5a9c9c798fa",
+      "gates": [
+        {
+          "gate": "tools/verify_editable_table_geometry.py",
+          "result": "PASS 46 outputs, 32 native geometry packet appearances, 1264 carrier record appearances, 368 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "002976da7c25290d5091af9b5d135af32a0c04182f99832e5b6a4acc03e5d664"
+        },
+        {
+          "gate": "tools/verify_stored_cell_style_map.py",
+          "result": "PASS 36 outputs, 10 native map packets, 632 carrier record appearances, 212 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "ff0c505ef5aea0817bb6c0740c22effadff7a8dbf46771883e16175a520a48a0"
+        },
+        {
+          "gate": "tools/verify_table_styles.py",
+          "result": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim",
+          "log_sha256": "70d4459585d0f7ff1c6a7915107d95157daf97a3c9f309f5fb9a62136582909e"
+        },
+        {
+          "gate": "tools/verify_stored_table_geometry.py",
+          "result": "PASS 36 outputs, 16 native geometry packets, 632 carrier record appearances, 192 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "d543ad41b82eef53d5a1368cec639c991e86a36a22421a27414ed16104d3c8e5"
+        },
+        {
+          "gate": "tools/verify_declared_ownership.py",
+          "result": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation",
+          "log_sha256": "1e12ee1ac14d5c07c4b902cc2fe6dd6b002d99e1d0d672c3d8d691e298f6e041"
+        },
+        {
+          "gate": "tools/verify_composite_table_ownership.py",
+          "result": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls",
+          "log_sha256": "ebde3edfc2d70f68328122c57a50eac5768db2d31d123a9247495d516e47cc8e"
+        },
+        {
+          "gate": "tools/verify_seventh_mixed.py",
+          "result": "{\"audit_errors\": 0, \"audit_repairs\": 0, \"evaluation\": false, \"native_cad_execution\": false, \"native_packet_comparisons\": 970, \"negative_controls\": 40, \"outputs\": 20, \"profiles\": [2004, 2018]}",
+          "log_sha256": "33c43cb81b5604b1afafbd9822fc40a4556364cca959b675375fd2aa68720b6e"
+        },
+        {
+          "gate": "tools/verify_stored_table_content.py",
+          "result": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls",
+          "log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3"
+        }
+      ],
+      "editable_table_geometry_outputs": [
+        {
+          "file": "editable-table-geometry-native-acad_table_simple.dxf-False.dxf",
+          "sha256": "0e3d227c895a2e2874dfe7af8b1d9dee6bef9e693f60534764865e0d44e5830d"
+        },
+        {
+          "file": "editable-table-geometry-native-acad_table_simple.dxf-True.dxf",
+          "sha256": "7d593a6ee1c6086c62dc2ec4bac4fd251d2b7f4390e301f0955a2c4530e21643"
+        },
+        {
+          "file": "editable-table-geometry-native-acad_table_with_blk_ref.dxf-False.dxf",
+          "sha256": "dbbac2af9ddb7d20dab641d911f362e4bcb3083cf74522999d58c1b5fba86595"
+        },
+        {
+          "file": "editable-table-geometry-native-acad_table_with_blk_ref.dxf-True.dxf",
+          "sha256": "f75ba0778a8f97c12f9ca7ea5d35727d82428e5e30afcca227cc465c210d719b"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1018_ascii.dxf-False.dxf",
+          "sha256": "218b29fdc921b6a82d0fc37fd8935f21ecbb36e8039ec701ad3eff0e8ea6121b"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1018_ascii.dxf-True.dxf",
+          "sha256": "413cc113fe2a7b9b1db76804f26eaab85460799af41526062a98286ef49d0358"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1021_ascii.dxf-False.dxf",
+          "sha256": "31b9fbd265be62346ad96239d27346421aaa1a4c0d1fb95873a7d53423bcd823"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1021_ascii.dxf-True.dxf",
+          "sha256": "53b674ba8f84e3868eb3fa4ba3357bdbbe9986f1c65d60536234a8cfe232784d"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1024_ascii.dxf-False.dxf",
+          "sha256": "bb7aaad3c2923210c9d13a038a6f2ba9527601b772a65fda729ce53225733af3"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1024_ascii.dxf-True.dxf",
+          "sha256": "344280019a0420c254f37dc8cc52264564b1c912d88132ef11f1d6c912cab53d"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_simple.dxf-False.dxf",
+          "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_simple.dxf-True.dxf",
+          "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_with_blk_ref.dxf-False.dxf",
+          "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_with_blk_ref.dxf-True.dxf",
+          "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1018_ascii.dxf-False.dxf",
+          "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1018_ascii.dxf-True.dxf",
+          "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1021_ascii.dxf-False.dxf",
+          "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1021_ascii.dxf-True.dxf",
+          "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1024_ascii.dxf-False.dxf",
+          "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1024_ascii.dxf-True.dxf",
+          "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97"
+        },
+        {
+          "file": "editable-table-geometry-reference-APPID-False.dxf",
+          "sha256": "05056157d5ea350fa303b7940271e3fc42e1c824a38dac49ed43e92a821c955a"
+        },
+        {
+          "file": "editable-table-geometry-reference-APPID-True.dxf",
+          "sha256": "67a94550f87a158b6b86d502f9b78fec4c61467c4b89b7fe449b95b309423810"
+        },
+        {
+          "file": "editable-table-geometry-reference-ATTRIB-False.dxf",
+          "sha256": "bd83c586183b1b57d5df146c0fc81d4c549a50a49fea00169330bff51a8b4cb2"
+        },
+        {
+          "file": "editable-table-geometry-reference-ATTRIB-True.dxf",
+          "sha256": "e1868c91e46c8e7ebbf6e2fbb621b9f06b27873c4ab8763a29745effc34293e0"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_MEMBER-False.dxf",
+          "sha256": "f3ea30f47c72bc1e9fa97b47f47dafc2a8c324107a393b739f9b391a86af6905"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_MEMBER-True.dxf",
+          "sha256": "ff0e0a45fe65213dae20b0c9007b41ba547d07dc4a973ac60c5c1d80bca1df9c"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_RECORD-False.dxf",
+          "sha256": "3bae6f202d9c46c84e8a36e789b4c584ba01ec0236edb57382b228f447b3e27a"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_RECORD-True.dxf",
+          "sha256": "342a393420a3d876a51a4476b0a7ac1ce0e06ce2a1e2c9ff8eace19f23cb013f"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENDBLK-False.dxf",
+          "sha256": "100c2e91ee899229243d1434a7f9f0497555c8a7e7882a22c4904fe71363f16e"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENDBLK-True.dxf",
+          "sha256": "d58f39ce99773ff7a4fd97bd14c29ce40c1298149fc6c32feb5ab7d860059d6d"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENTITY-False.dxf",
+          "sha256": "ec378c1c1f2d183e74d87a2ba3fc656cc7cd851d28b1e2907c815320e514a544"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENTITY-True.dxf",
+          "sha256": "fbf3b50b0ebe47338015beb75e0c506a712372cb8e6c9ed5a20f4dba51c3bfda"
+        },
+        {
+          "file": "editable-table-geometry-reference-LTYPE-False.dxf",
+          "sha256": "5af3289fcc602b23232c20bd9d1dc6a1920d7ac97620dc1abd3140ffaf8c5d62"
+        },
+        {
+          "file": "editable-table-geometry-reference-LTYPE-True.dxf",
+          "sha256": "33047966c94beecdd9905d3865de1f7d8fd729510a43ec70f6bc34eb0a6d070f"
+        },
+        {
+          "file": "editable-table-geometry-reference-STYLE-False.dxf",
+          "sha256": "8a88939845bb92008aa7a683e09d42325802cf73a43678606dbae771a777af74"
+        },
+        {
+          "file": "editable-table-geometry-reference-STYLE-True.dxf",
+          "sha256": "8c9816e6576349067dcbea3da12ed8f219ac126572fc6976b47d3b8d3a37d863"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2004-False.dxf",
+          "sha256": "bd58aff80cea58ac29f5d1550f2aea81cd29570bc4a49aa28d6c2893216ddc1b"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2004-True.dxf",
+          "sha256": "8f7051bf79876b6ffc6235770838a5398355ca75ee739d106f2bba10e8f9a010"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2007-False.dxf",
+          "sha256": "11aa3dc322d7f390548bbcb2e0e5f0947ea7d45a264560e1c01650918d8c360a"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2007-True.dxf",
+          "sha256": "2cf4f59c5b52aa70594bf9aa9e50eba2aa13297fb8669d1ea3df7b2858a85c94"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2010-False.dxf",
+          "sha256": "6f80e5ebee153037245fe96c2315defa5ef334ec0b0d3fb3a3c0fbc65ac73702"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2010-True.dxf",
+          "sha256": "067097fd9866ca5da5941b6c308a3acadd35c78efe11de5dd291658b08e5deca"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2013-False.dxf",
+          "sha256": "b22a947e46da89da4b3cd85b32dbcaf0ca225aac2a927156c4e950f10e455c1d"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2013-True.dxf",
+          "sha256": "c1ed883a9ffed79e8449b704c45c49c26940404252a841961ecddd25e5ae12e2"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2018-False.dxf",
+          "sha256": "79964400960a6f92519029b78650f8c20d10b55f696c51a93b6d94702ac3979b"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2018-True.dxf",
+          "sha256": "1a7ed50fc6c9daa0c7884301c58d377ca56906ed31ecc2a28186a4f7987ed6a0"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "runtime_cases": 761,
+      "runtime_unique_cases": 761,
+      "runtime_failures": 0,
+      "prefix_counts": {
+        "table-geometry-edit": 125,
+        "cell-style-map": 160,
+        "table-style": 89,
+        "table-geometry": 142,
+        "declared-ownership": 35,
+        "composite-table": 49,
+        "erasure-declared-ownership": 7,
+        "seventh-mixed": 8,
+        "table-content": 146
+      },
+      "results_sha256": "5ee0e9839e351390f9ff01fcfe70bd2730e55f5f9c9347bb44e5acc11e9c2216",
+      "library_sha256": "22f9e70a05111cb7c1a1041e06f1aefcc1388d4abb4ce1ed84a64ea7a9a88fee",
+      "conformance_sha256": "235a2c01a2d341466175ada1a5834d5a42e14d502a63ec7cf3357709ee7ee354",
+      "gates": [
+        {
+          "gate": "tools/verify_editable_table_geometry.py",
+          "result": "PASS 46 outputs, 32 native geometry packet appearances, 1264 carrier record appearances, 368 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "002976da7c25290d5091af9b5d135af32a0c04182f99832e5b6a4acc03e5d664"
+        },
+        {
+          "gate": "tools/verify_stored_cell_style_map.py",
+          "result": "PASS 36 outputs, 10 native map packets, 632 carrier record appearances, 212 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "ff0c505ef5aea0817bb6c0740c22effadff7a8dbf46771883e16175a520a48a0"
+        },
+        {
+          "gate": "tools/verify_table_styles.py",
+          "result": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim",
+          "log_sha256": "70d4459585d0f7ff1c6a7915107d95157daf97a3c9f309f5fb9a62136582909e"
+        },
+        {
+          "gate": "tools/verify_stored_table_geometry.py",
+          "result": "PASS 36 outputs, 16 native geometry packets, 632 carrier record appearances, 192 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "d543ad41b82eef53d5a1368cec639c991e86a36a22421a27414ed16104d3c8e5"
+        },
+        {
+          "gate": "tools/verify_declared_ownership.py",
+          "result": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation",
+          "log_sha256": "1e12ee1ac14d5c07c4b902cc2fe6dd6b002d99e1d0d672c3d8d691e298f6e041"
+        },
+        {
+          "gate": "tools/verify_composite_table_ownership.py",
+          "result": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls",
+          "log_sha256": "ebde3edfc2d70f68328122c57a50eac5768db2d31d123a9247495d516e47cc8e"
+        },
+        {
+          "gate": "tools/verify_seventh_mixed.py",
+          "result": "{\"audit_errors\": 0, \"audit_repairs\": 0, \"evaluation\": false, \"native_cad_execution\": false, \"native_packet_comparisons\": 970, \"negative_controls\": 40, \"outputs\": 20, \"profiles\": [2004, 2018]}",
+          "log_sha256": "33c43cb81b5604b1afafbd9822fc40a4556364cca959b675375fd2aa68720b6e"
+        },
+        {
+          "gate": "tools/verify_stored_table_content.py",
+          "result": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls",
+          "log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3"
+        }
+      ],
+      "editable_table_geometry_outputs": [
+        {
+          "file": "editable-table-geometry-native-acad_table_simple.dxf-False.dxf",
+          "sha256": "0e3d227c895a2e2874dfe7af8b1d9dee6bef9e693f60534764865e0d44e5830d"
+        },
+        {
+          "file": "editable-table-geometry-native-acad_table_simple.dxf-True.dxf",
+          "sha256": "7d593a6ee1c6086c62dc2ec4bac4fd251d2b7f4390e301f0955a2c4530e21643"
+        },
+        {
+          "file": "editable-table-geometry-native-acad_table_with_blk_ref.dxf-False.dxf",
+          "sha256": "dbbac2af9ddb7d20dab641d911f362e4bcb3083cf74522999d58c1b5fba86595"
+        },
+        {
+          "file": "editable-table-geometry-native-acad_table_with_blk_ref.dxf-True.dxf",
+          "sha256": "f75ba0778a8f97c12f9ca7ea5d35727d82428e5e30afcca227cc465c210d719b"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1018_ascii.dxf-False.dxf",
+          "sha256": "218b29fdc921b6a82d0fc37fd8935f21ecbb36e8039ec701ad3eff0e8ea6121b"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1018_ascii.dxf-True.dxf",
+          "sha256": "413cc113fe2a7b9b1db76804f26eaab85460799af41526062a98286ef49d0358"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1021_ascii.dxf-False.dxf",
+          "sha256": "31b9fbd265be62346ad96239d27346421aaa1a4c0d1fb95873a7d53423bcd823"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1021_ascii.dxf-True.dxf",
+          "sha256": "53b674ba8f84e3868eb3fa4ba3357bdbbe9986f1c65d60536234a8cfe232784d"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1024_ascii.dxf-False.dxf",
+          "sha256": "bb7aaad3c2923210c9d13a038a6f2ba9527601b772a65fda729ce53225733af3"
+        },
+        {
+          "file": "editable-table-geometry-native-sample_AC1024_ascii.dxf-True.dxf",
+          "sha256": "344280019a0420c254f37dc8cc52264564b1c912d88132ef11f1d6c912cab53d"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_simple.dxf-False.dxf",
+          "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_simple.dxf-True.dxf",
+          "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_with_blk_ref.dxf-False.dxf",
+          "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924"
+        },
+        {
+          "file": "editable-table-geometry-noop-acad_table_with_blk_ref.dxf-True.dxf",
+          "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1018_ascii.dxf-False.dxf",
+          "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1018_ascii.dxf-True.dxf",
+          "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1021_ascii.dxf-False.dxf",
+          "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1021_ascii.dxf-True.dxf",
+          "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1024_ascii.dxf-False.dxf",
+          "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b"
+        },
+        {
+          "file": "editable-table-geometry-noop-sample_AC1024_ascii.dxf-True.dxf",
+          "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97"
+        },
+        {
+          "file": "editable-table-geometry-reference-APPID-False.dxf",
+          "sha256": "d52820a937dc2d079e5f5ce9c84d87989c2ad3e4f1edc0144a42525cdd17e965"
+        },
+        {
+          "file": "editable-table-geometry-reference-APPID-True.dxf",
+          "sha256": "457539d83f890a3017ebf8a08b86bc0d7ef08ba7d76a71007ce9897c2766ba94"
+        },
+        {
+          "file": "editable-table-geometry-reference-ATTRIB-False.dxf",
+          "sha256": "9588c55bca1af890947915dab3518e5b17507fed974d06e57ba5cd96bf83ad46"
+        },
+        {
+          "file": "editable-table-geometry-reference-ATTRIB-True.dxf",
+          "sha256": "6c91e67fed581910c8c24f4d9e0cc0255a8375048eca087a50083377aae24c8f"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_MEMBER-False.dxf",
+          "sha256": "98b4d9796352cf081a312bf6f0bfff469c530da60aa4bac66a03bbc41a10376c"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_MEMBER-True.dxf",
+          "sha256": "555fa2ee140a9a2ceb9be1eb4f07f5c13cec4edae246a614b9cf8665fe98a599"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_RECORD-False.dxf",
+          "sha256": "c327069c14e34f0599aae3f32512f57b388c17d7af7174eb12d3d91f2080d08d"
+        },
+        {
+          "file": "editable-table-geometry-reference-BLOCK_RECORD-True.dxf",
+          "sha256": "ea07711b860734035cbaeb9f64a2d6902725eae157a1a64daffbe83aecb9a8b2"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENDBLK-False.dxf",
+          "sha256": "b875845a1512b8f8a02b3dcadc3f38bdb380710e379e8842bb253432771976d7"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENDBLK-True.dxf",
+          "sha256": "37dc5b966fcb32d0d1d06294b3eee4c12e006ba80d11e96994a61a08cc3fc610"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENTITY-False.dxf",
+          "sha256": "386d8bb21c138341544bfbdb6ccc924f2b493fe981a362c91d22f1e28e16952b"
+        },
+        {
+          "file": "editable-table-geometry-reference-ENTITY-True.dxf",
+          "sha256": "3180b815506e42abd609f156113d383f71d9ec935d9ffa26001588a97bcc50b9"
+        },
+        {
+          "file": "editable-table-geometry-reference-LTYPE-False.dxf",
+          "sha256": "966375d3b0ce0106407e17d3ed62ca1a729f342e7bd78325096854d4cb89e3f9"
+        },
+        {
+          "file": "editable-table-geometry-reference-LTYPE-True.dxf",
+          "sha256": "4e6da485d6779f05741a018be74887cb7d4ecdef5eff694f6607d5dc9a5f8166"
+        },
+        {
+          "file": "editable-table-geometry-reference-STYLE-False.dxf",
+          "sha256": "cee8c108f0adb7c0115dd6569e27a3e65164f6092de8c06bebf3a30a01f4754a"
+        },
+        {
+          "file": "editable-table-geometry-reference-STYLE-True.dxf",
+          "sha256": "984e5d0d3b9118f043f07b07453272ce0cf33dfbc0c87ed8385712bf8a65f779"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2004-False.dxf",
+          "sha256": "cd0e8990c9addf0186a9ae8250ef6f99438cc87e42010180c12fa8e7d76c5434"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2004-True.dxf",
+          "sha256": "bb78bc0f4dabcdfac91d4cc70047619d7a820c3998b3b072b4e1ddf4031598ea"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2007-False.dxf",
+          "sha256": "2e768233814658fcac9ebf442211fd5d02a110e457aecb711b2521e471ed5bee"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2007-True.dxf",
+          "sha256": "1d667f56643e3eb0b31693f66e655820d94d220e722c2e9f9e357bbdcf3af9cf"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2010-False.dxf",
+          "sha256": "2ad10dbd3a5d31542f32fd5b38aaa592143acbe3d3700923d653ff89aaab0475"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2010-True.dxf",
+          "sha256": "4b3b46f00e72821264af52f996434793dd138e2b714205dd9de343e3833bc7e5"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2013-False.dxf",
+          "sha256": "d0fbcdd0a925f270bd86c060180ccb0ac8b580659a483fcf7b8e49114e3286e2"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2013-True.dxf",
+          "sha256": "6b04418230eff79361c1b1945745a80de538d6b19eba205305ae020f3b2762d3"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2018-False.dxf",
+          "sha256": "33c366c4376c44c329050ef047bae003f7879d5a02b06e77a223f5eb99c07616"
+        },
+        {
+          "file": "editable-table-geometry-schema-AutoCad2018-True.dxf",
+          "sha256": "28c8295d0a0bfa50a7dc3d42508250f63fcc18a27c9d5b87a153d3708b28a109"
+        }
+      ]
+    }
+  ],
+  "new_module_gate": {
+    "mandatory_outputs_per_configuration": 46,
+    "native_geometry_packet_appearances": 32,
+    "selected_carrier_record_appearances": 1264,
+    "actual_output_corruptions_rejected": 368,
+    "ezdxf_version": "1.4.4",
+    "audit_errors": 0,
+    "audit_repairs": 0
+  },
+  "critical_controls": [
+    "All eight native packets across five profiles, both input/output transports, no-op reconstruction and explicit known-field edits.",
+    "Actual registered resource/entity/metadata references; old dependencies released and new dependencies guarded.",
+    "Previously obtained payload, cell, content and reference snapshots remain unchanged.",
+    "Genuine IEnumerator.GetEnumerator and Dispose callbacks; caught reentry poisons the outer request.",
+    "Changed profile/root is rejected even for a no-op; removed newly requested metadata owner is detected after Dispose.",
+    "Bit-exact no-op versus explicit signed-zero change.",
+    "Actual binary save/reload at 1,048,576 total record tags and metadata-inclusive overflow rejected before output."
+  ],
+  "source_provenance": {
+    "native_evidence": "doc/dxf-conformance/table-geometry-native-evidence.json",
+    "source_manifest_sha256": "fcbfd4fcb93529c1d74cb7368cad689b6b215e0295dbf27008666494c38a86dd",
+    "complete_carrier_manifest_sha256": "9b5cc698a55503d445c97522caa8d72b5e8047479bdbb20c5bbf73f3abb9895e"
+  },
+  "limits": [
+    "Only loaded qualified TABLEGEOMETRY packet replacement; no public object constructor or complete TABLE authoring.",
+    "Unknown/private shapes remain opaque; no grammar widening.",
+    "No table layout, cell evaluation, related-object synchronization, regeneration or native application acceptance is inferred.",
+    "Source profile, owner graph, clone/erase restrictions remain; caller enumeration side effects are not rolled back.",
+    "Original loaded tag values remain on no-op; lexical input spelling normalized by the underlying codec is not restored.",
+    "Native AutoCAD open/AUDIT/save/reopen was not run."
+  ],
+  "independent_review": {
+    "summary": "doc/dxf-conformance/table-geometry-editing-review/summary.json",
+    "summary_sha256": "5a3ba9f6fac2a50685a4daa1ef869e5c36eac08255be8c2d4e5430f7828db6a6",
+    "configurations": {
+      "Debug": {
+        "runtime_cases": 40,
+        "runtime_failures": 0,
+        "audit_outputs": 26,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "library_sha256": "90861fb45bdad3777d2c87e6fbcce8c7af8041e34b930f5e374dc03e3347e482"
+      },
+      "Release": {
+        "runtime_cases": 40,
+        "runtime_failures": 0,
+        "audit_outputs": 26,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "library_sha256": "22f9e70a05111cb7c1a1041e06f1aefcc1388d4abb4ce1ed84a64ea7a9a88fee"
+      }
+    },
+    "harness": "tools/table_geometry_edit_review/Program.cs",
+    "harness_sha256": "53d63cd76b4fd3992905cafa49bfc12ca73355b9aa40f1938f92695086c578e1",
+    "production_changes_requested": 0
+  }
+}

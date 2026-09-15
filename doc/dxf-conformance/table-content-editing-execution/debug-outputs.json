@@ -1,0 +1,262 @@
+[
+  {
+    "file": "editable-table-content-native-acad_table_simple.dxf-False-False.dxf",
+    "sha256": "4df6a507c443abf5b10d45f5537cf241b9b111c0f1434d54d756e89dc4a73d53",
+    "bytes": 68876
+  },
+  {
+    "file": "editable-table-content-native-acad_table_simple.dxf-False-True.dxf",
+    "sha256": "7b37343e5099d837fccb1dc87783c8074cb14d6213069aa9ff42c58282b13f37",
+    "bytes": 59945
+  },
+  {
+    "file": "editable-table-content-native-acad_table_simple.dxf-True-False.dxf",
+    "sha256": "4df6a507c443abf5b10d45f5537cf241b9b111c0f1434d54d756e89dc4a73d53",
+    "bytes": 68876
+  },
+  {
+    "file": "editable-table-content-native-acad_table_simple.dxf-True-True.dxf",
+    "sha256": "7b37343e5099d837fccb1dc87783c8074cb14d6213069aa9ff42c58282b13f37",
+    "bytes": 59945
+  },
+  {
+    "file": "editable-table-content-native-acad_table_with_blk_ref.dxf-False-False.dxf",
+    "sha256": "2f1ab1e8bc564fb72699f06b631d30764ec06245e34d9338de938529cb7f2b7c",
+    "bytes": 121302
+  },
+  {
+    "file": "editable-table-content-native-acad_table_with_blk_ref.dxf-False-True.dxf",
+    "sha256": "2fab584dcf4298d1d432a17f6d10d63293dcbb065edee734c57e0e492da7d4a9",
+    "bytes": 106299
+  },
+  {
+    "file": "editable-table-content-native-acad_table_with_blk_ref.dxf-True-False.dxf",
+    "sha256": "2f1ab1e8bc564fb72699f06b631d30764ec06245e34d9338de938529cb7f2b7c",
+    "bytes": 121302
+  },
+  {
+    "file": "editable-table-content-native-acad_table_with_blk_ref.dxf-True-True.dxf",
+    "sha256": "2fab584dcf4298d1d432a17f6d10d63293dcbb065edee734c57e0e492da7d4a9",
+    "bytes": 106299
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1018_ascii.dxf-False-False.dxf",
+    "sha256": "dbf9156b0f1ed585a592601ba97e2e1e7b423cdb38d6fc0e87875d2d538bc264",
+    "bytes": 128762
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1018_ascii.dxf-False-True.dxf",
+    "sha256": "6b34abf4cfcf526245e376c68e68d06112d475acd0cdddb0751a071d6e6a6b60",
+    "bytes": 105937
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1018_ascii.dxf-True-False.dxf",
+    "sha256": "dbf9156b0f1ed585a592601ba97e2e1e7b423cdb38d6fc0e87875d2d538bc264",
+    "bytes": 128762
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1018_ascii.dxf-True-True.dxf",
+    "sha256": "6b34abf4cfcf526245e376c68e68d06112d475acd0cdddb0751a071d6e6a6b60",
+    "bytes": 105937
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1021_ascii.dxf-False-False.dxf",
+    "sha256": "8233daae64dbd51731d14ddd430f4ae1f5faf10c65d7ec5b2adea291965a9c90",
+    "bytes": 133192
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1021_ascii.dxf-False-True.dxf",
+    "sha256": "e7376c3ebe9fa5651eb8ed9e8c7aae8daf4d9b3e9795ed00cf68f83c9585c10a",
+    "bytes": 109195
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1021_ascii.dxf-True-False.dxf",
+    "sha256": "8233daae64dbd51731d14ddd430f4ae1f5faf10c65d7ec5b2adea291965a9c90",
+    "bytes": 133192
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1021_ascii.dxf-True-True.dxf",
+    "sha256": "e7376c3ebe9fa5651eb8ed9e8c7aae8daf4d9b3e9795ed00cf68f83c9585c10a",
+    "bytes": 109195
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1024_ascii.dxf-False-False.dxf",
+    "sha256": "126d00d1376f6d5a7ad22555fd2a4b8c19fd3d279e78c7b645cd7ea1b9a95267",
+    "bytes": 133210
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1024_ascii.dxf-False-True.dxf",
+    "sha256": "fca2d50ffd2db6c2d437c52854c5323dd3481546b8ef4ee4d7cc51e92781feb7",
+    "bytes": 109208
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1024_ascii.dxf-True-False.dxf",
+    "sha256": "126d00d1376f6d5a7ad22555fd2a4b8c19fd3d279e78c7b645cd7ea1b9a95267",
+    "bytes": 133210
+  },
+  {
+    "file": "editable-table-content-native-sample_AC1024_ascii.dxf-True-True.dxf",
+    "sha256": "fca2d50ffd2db6c2d437c52854c5323dd3481546b8ef4ee4d7cc51e92781feb7",
+    "bytes": 109208
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_simple.dxf-False-False.dxf",
+    "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37",
+    "bytes": 68697
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_simple.dxf-False-True.dxf",
+    "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9",
+    "bytes": 59766
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_simple.dxf-True-False.dxf",
+    "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37",
+    "bytes": 68697
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_simple.dxf-True-True.dxf",
+    "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9",
+    "bytes": 59766
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_with_blk_ref.dxf-False-False.dxf",
+    "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924",
+    "bytes": 120884
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_with_blk_ref.dxf-False-True.dxf",
+    "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945",
+    "bytes": 105881
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_with_blk_ref.dxf-True-False.dxf",
+    "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924",
+    "bytes": 120884
+  },
+  {
+    "file": "editable-table-content-noop-acad_table_with_blk_ref.dxf-True-True.dxf",
+    "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945",
+    "bytes": 105881
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1018_ascii.dxf-False-False.dxf",
+    "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+    "bytes": 128606
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1018_ascii.dxf-False-True.dxf",
+    "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+    "bytes": 105788
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1018_ascii.dxf-True-False.dxf",
+    "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+    "bytes": 128606
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1018_ascii.dxf-True-True.dxf",
+    "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+    "bytes": 105788
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1021_ascii.dxf-False-False.dxf",
+    "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+    "bytes": 132968
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1021_ascii.dxf-False-True.dxf",
+    "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+    "bytes": 108978
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1021_ascii.dxf-True-False.dxf",
+    "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+    "bytes": 132968
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1021_ascii.dxf-True-True.dxf",
+    "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+    "bytes": 108978
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1024_ascii.dxf-False-False.dxf",
+    "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+    "bytes": 132986
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1024_ascii.dxf-False-True.dxf",
+    "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+    "bytes": 108991
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1024_ascii.dxf-True-False.dxf",
+    "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+    "bytes": 132986
+  },
+  {
+    "file": "editable-table-content-noop-sample_AC1024_ascii.dxf-True-True.dxf",
+    "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+    "bytes": 108991
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2004-False.dxf",
+    "sha256": "c29e0e527cf4ba83ee05868edb774138664341e7e12f0e9ee095e30fe4ed88b2",
+    "bytes": 9170
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2004-True.dxf",
+    "sha256": "73db8bbbb2d6b82bf4a88c0c3409267f75ea00784e16a1da1c087ac07319c22b",
+    "bytes": 8717
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2007-False.dxf",
+    "sha256": "5b92a9c29b1436c16ae6f74d78ea6ae03a7696a498265b4c975f728f4c0c5099",
+    "bytes": 9376
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2007-True.dxf",
+    "sha256": "efd6453911a7902b130eb7c0f28e854d964d90fd1fbc3cef5252f99ec104fc8a",
+    "bytes": 8909
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2010-False.dxf",
+    "sha256": "f127e5ea9f79093f0c2ebd20f70c0e5a25b985b3dee3e96ffbcbd6792c453cf6",
+    "bytes": 9376
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2010-True.dxf",
+    "sha256": "a1d8ef5015ffd6e752c4e4268cd0729d86cbcfe492a54f0ad28ae8020f76e4ee",
+    "bytes": 8909
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2013-False.dxf",
+    "sha256": "513f293779c170016897ad52aa392b9be1cd004939f95e2fd581b58d02ac75d7",
+    "bytes": 9378
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2013-True.dxf",
+    "sha256": "c4621c933671f5a19dab3ef4f6bd8e58e4303f9433c366383e8a71fe227580e8",
+    "bytes": 8909
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2018-False.dxf",
+    "sha256": "2aec5bbbda73ced660883958393139be3b1c97f993310422e43d5dbf980bd169",
+    "bytes": 9376
+  },
+  {
+    "file": "editable-table-content-schema-AutoCad2018-True.dxf",
+    "sha256": "c15b5686cc9d44225ab40af2a98331d4567cb01e7f9bb2baf20af0bc86e7367f",
+    "bytes": 8909
+  },
+  {
+    "file": "editable-table-content-style-False.dxf",
+    "sha256": "4091526af249cced56c1833ff87ccaec983d2419b3aaf530def040891c880a3d",
+    "bytes": 9334
+  },
+  {
+    "file": "editable-table-content-style-True.dxf",
+    "sha256": "c4bfc26de4f8b42072ad52563f23e60c242a2c84d01c0b9851d68d8757714516",
+    "bytes": 8867
+  }
+]

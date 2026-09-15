@@ -1,0 +1,1050 @@
+{
+  "reader": "ezdxf 1.4.4",
+  "outputs": 80,
+  "errors": 0,
+  "fixes": 0,
+  "removed_entities": 0,
+  "scope": "Structural actual-output audit, not interpretation or evaluation of unknown geometry",
+  "files": [
+    {
+      "file": "clear-False-False-False.dxf",
+      "sha256": "92286defd44cb52f379c228214d876845cb89550d5b53179eeed80f5c0e9b456",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-False-False-True.dxf",
+      "sha256": "17a675d9f7a0ef043aa005420b61ccf39304a4ea259347621dc6530134970314",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-False-True-False.dxf",
+      "sha256": "847002f86dba16399bd39bbccbdf923e744b6550909e1c4867513c1936b32bc1",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-False-True-True.dxf",
+      "sha256": "a8e21506ec411cf6f0a19903d1dc45978ac03f3edf723b608ba4a2d55e71e489",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-True-False-False.dxf",
+      "sha256": "3470f22c409bf25ff8ddb42d86f7f12073f3fb0ce55c582be177f25882a65d62",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-True-False-True.dxf",
+      "sha256": "457ea7ea5eb3fe7d716bc58eccfcfee65c11a48be8836137056467dd11118d86",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-True-True-False.dxf",
+      "sha256": "b7b289c93ee79e305f50bfe2dd7b849099f339f9bf8eb9cf22d1e3eee94f274b",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "clear-True-True-True.dxf",
+      "sha256": "b063539d5f75a83de167dc01d9b5b7e3ab60e45f4020db02b36be1085d6c7ad9",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-False-False-False.dxf",
+      "sha256": "524ae7d567b025c33e67f1251be26ae919782607be3b7cc89bf1a2a2598a1205",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-False-False-True.dxf",
+      "sha256": "42c35f566069603274c5e1165c6a8278fda2d97b2002eb123c8821db0ed918e7",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-False-True-False.dxf",
+      "sha256": "f2614a05de3fb017e01b416003065255a8fb55902e5ebd2077c4d29a218097a2",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-False-True-True.dxf",
+      "sha256": "8226963491001a98456ff40eed1fef37c04ff936416687c06851545a118b5a00",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-True-False-False.dxf",
+      "sha256": "e21a4960595588259d345d4ff173ad7d9c5e501214bf414961dc38fd6cf809f1",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-True-False-True.dxf",
+      "sha256": "c7ab87e81e79d34a3c658d7d465331317a4ec678ec549779804d53e8eb2effb2",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-True-True-False.dxf",
+      "sha256": "7b591066a36c19dae5f0ad629ad8a0407aca395a4a25965dcafdd94c9ae72d21",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-false-True-True-True.dxf",
+      "sha256": "bfb0b966486fd5429e4b71302b019cb88ef8fec71122201ce15c18b5ea10d94e",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-False-False-False.dxf",
+      "sha256": "80817be1ebbc3a4fedf5e51787a7a92a319b438dd42ded964429d87b2e92b649",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-False-False-True.dxf",
+      "sha256": "b46f5b8d2aae36602e858cb6ba505a0f4f49688b9b548123aab9fa4ab78bfcd9",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-False-True-False.dxf",
+      "sha256": "b769fbf163c758c7796f19e8dbb5472c5ff94effc781e8bc123eeffe7bb7a0df",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-False-True-True.dxf",
+      "sha256": "04ce21381bc18a5709faa87273c7d86cee4f973a62d962f42717f49796ea5853",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-True-False-False.dxf",
+      "sha256": "37a2ec4f91f04d88ee5ec3c63e5d6a4310a49244a922ee1885b56106ea8e05fe",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-True-False-True.dxf",
+      "sha256": "2427f5b2d28df37bdeeaf18e22addb829bd12fe633d358678cae5d993d997fe6",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-True-True-False.dxf",
+      "sha256": "d70ca558ce1697ac52fe313c44ccdc016fe567407639ba02b57868aa20aa6acb",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "create-true-True-True-True.dxf",
+      "sha256": "4049e2063381b85d1c03d15164b74f64116da31a400a4839e37eada2a336702c",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-False-False-False.dxf",
+      "sha256": "2c9544841419e3032621af43e12a9a9b0dd0f644261828dfeeec4c2eb2d17930",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-False-False-True.dxf",
+      "sha256": "d84a1c96399ebe326b0804f6f83547c1c3ebc2814d7b6dbaffb6056aab080b92",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-False-True-False.dxf",
+      "sha256": "ab43404b200f8b0783d3adc357d93a336be9a0d6f8ffc702ad54d4b57004f9f5",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-False-True-True.dxf",
+      "sha256": "2f50793256f56fbc121a2032bd81d9795080b77568b254117aafcde1de4b317d",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-True-False-False.dxf",
+      "sha256": "c3466b113b908a7d592589dfe4a71789dd3f8a702a6cb9ef76d1559af1c43418",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-True-False-True.dxf",
+      "sha256": "00517378387e8bf078b9bb7da51b417aac1be13ac592afd75788748c3a4384de",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-True-True-False.dxf",
+      "sha256": "8654e6764bfef0202fca16171c5b848479b8a048be2f46ae170fbcf8a7caf073",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "insert-True-True-True.dxf",
+      "sha256": "b5c773bf2712d46b1cb1ee453f0fb1cb4e9357751ba516a05ceaff76fbf80b0a",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-block-False-False-False.dxf",
+      "sha256": "189877a12870782ea3ffdec11d54faa540b500024a59254a039a4669fa2883c3",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-False-False-True.dxf",
+      "sha256": "8deb7c65c9b9c6a6ed8b8e1a215907bc9d1b86d5c4c60409c6bf9c9623141d3b",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-False-True-False.dxf",
+      "sha256": "1385dd43fbe93195acaa15b04619ba0241f6ffc95ec1b460fbe7c246ec10ee03",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-False-True-True.dxf",
+      "sha256": "2e8e2d0960645806b4235eb4cf08f9569949b21c15afc0fe1abf323e51c9683e",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-True-False-False.dxf",
+      "sha256": "bd5731bbcc20268b0aea52c58120840118584d11158e0dfcbe2d98ddd65ea002",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-True-False-True.dxf",
+      "sha256": "4452aabd6684635329c7c225a6cf240bbfa7a70cf6c37c5173fa0e9338186e96",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-True-True-False.dxf",
+      "sha256": "2fd1ac2a2e09f2322fc2d63129e0b0a1adaf01ff0b216a73b3e12437a70c456f",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-block-True-True-True.dxf",
+      "sha256": "5cfe8dfe99acd1838fcde550d63a691b93a8209e1d1b7aef1cc8295ac5dd9da3",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "27"
+      ],
+      "opaque_after": [
+        "27"
+      ]
+    },
+    {
+      "file": "remove-hatch-False-False-False.dxf",
+      "sha256": "e69b116fd3012c6f698aef27861ec38bc179ce275c68d47aa3461dbea355aef7",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-False-False-True.dxf",
+      "sha256": "1f685c1e6df86a58a00454124038420e75c905e8cd566c8f14f46275844a17c8",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-False-True-False.dxf",
+      "sha256": "605a7437f75737f12d6e19220ee1fea3f902584c92c6b815e269fda2e9d3c343",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-False-True-True.dxf",
+      "sha256": "0dab399ccb868f4e6b614b56e4bf9aa09dffc588193fcdc9510a72fb7e12d5a8",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-True-False-False.dxf",
+      "sha256": "1124b046a54a22a14748ec5c6d87b64dab0691939fa10473acda845b0422c595",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-True-False-True.dxf",
+      "sha256": "1fd74a90ecdfb826127ae6cc96fb6dc674431b9b06eee5518e793d9b6b1e2968",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-True-True-False.dxf",
+      "sha256": "218f299fe36aa466e905ae817f8b1fea953951ce476bce8005c074c72717324c",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "remove-hatch-True-True-True.dxf",
+      "sha256": "dde51e70b96632ee7fee93e4c7006f1898c48dce11198cb97c2d58ccc80ebddb",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-False-False-False.dxf",
+      "sha256": "c7bf82581dbf729868d17fe65e6405c045fb9f7f9bdb4bd875acc3ef971aee9d",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-False-False-True.dxf",
+      "sha256": "9904a9f2ab1ecf211a52019198fd3c182330bd1f70eeae5e0983ba3fc5d8c27d",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-False-True-False.dxf",
+      "sha256": "b4fbc1c1498ea8a043b226ace0701e676b74d1f063f8ac0bfbce1a8dad41b9a9",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-False-True-True.dxf",
+      "sha256": "078a5faf7fe81f2b6edac6ec8f91d2fd3f3856e4918c5a8509c0a78abf784b9f",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-True-False-False.dxf",
+      "sha256": "b6261d1b1c14521b75e632d4b566b5492c8b0478a7433f9c4ea552cc2fc1fac5",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-True-False-True.dxf",
+      "sha256": "724de649d01199414849eb9cbb4f30e5b8c43e54b2d7d85730654e24b33c1933",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-True-True-False.dxf",
+      "sha256": "4cefc99cdbf1fed723a0f15772e72c5a1ed7604cdf0159de21be17d16173851b",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "replace-True-True-True.dxf",
+      "sha256": "5dbd1eadb8366b6c5dce4dfbc1dacaa4dcdc2961e81b2ebed1252e477204d678",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-False-False-False.dxf",
+      "sha256": "9dcc1ad3a23182c1a068b105ddfd24993ac269bc2ba79a6c741f0e0aec0f8d3c",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-False-False-True.dxf",
+      "sha256": "59cf81c1c853396d76f0e6ba5bbf87fd5dbdf2d0b58176480486cb6760c6628b",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-False-True-False.dxf",
+      "sha256": "b43ac5a08032f0bddf3cc287d578786413606df382369e37a8452986c861ea03",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-False-True-True.dxf",
+      "sha256": "0bf2bdea6e914e7bc56cd3a577ba68920e3b7ad5f94f598d28e93e7c0b0dc931",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-True-False-False.dxf",
+      "sha256": "3daeef4e1c5e28443864dd44406a24449692d276e917c49acb9a94b695a9427d",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-True-False-True.dxf",
+      "sha256": "06a60d9fc33096e07c826da21824991e6fcac4a3aadbffc9d1e520bffc9a8019",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-True-True-False.dxf",
+      "sha256": "fe29f651c18fbb9f3a6f376a1afdcba4806de3a4bc9f7797e64fecc4052ea341",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "transform-True-True-True.dxf",
+      "sha256": "35847b25f8a9cd7a4bd2a574b2cad6b228cd84bb825c2efe8bb867024192d5a9",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-False-False-False.dxf",
+      "sha256": "38a534ad4b8e248bcb540552eda9a6484feb68ead7be4fdffab45f6d6b79ecfc",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-False-False-True.dxf",
+      "sha256": "a97fbffde143ea3d123e238d34887ddc90978ee005e1bf3f79db5c2240369131",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-False-True-False.dxf",
+      "sha256": "412cb3f96062ccc580565b6e0cafe737fe516f839b7a1418c10082442b6f03a6",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-False-True-True.dxf",
+      "sha256": "4957f28f77a7e58fc54df65d2db2345f9abaee47f13542ed5cb5e8edbe8f9c55",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-True-False-False.dxf",
+      "sha256": "2087316a18963f93c5c9513464725b0c9e9b51a4ee45be67d50709600e133f58",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-True-False-True.dxf",
+      "sha256": "5f11e91057a777563094d05d1f9cae779e8b12f6223bfe9589052c2ad311a9f5",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-True-True-False.dxf",
+      "sha256": "e21084ba6d53cfec749b49b188978a21ea67146b8ffc07fa0b75477c7099b27b",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "unlink-True-True-True.dxf",
+      "sha256": "a8745afc6f16798ca55da66375e2cac8e42e9b13e246e066b970eacba5d8adde",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-False-False-False.dxf",
+      "sha256": "fd1d36736837f7b65431ddddd08e0403f3f7f1019483a03a5f0b209b48f8a9c5",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-False-False-True.dxf",
+      "sha256": "526a8172b16d417522e2ff5afa07227b36e22f51d9e09783f6298e94a320df0c",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-False-True-False.dxf",
+      "sha256": "2d34be7124602ca42444b134b224b9b9dc8b3cf7b80df63b3121da7a2f2608f0",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-False-True-True.dxf",
+      "sha256": "57e3149012dce971a31176c0e3f0f0d4ff292508ae0a33e2629d54ebceedf3e0",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-True-False-False.dxf",
+      "sha256": "e76d1d121b3fdb1f5f940f72c06c6ca0d0eefb2bca4997f225be6209e3be7330",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-True-False-True.dxf",
+      "sha256": "18b878932b7a6c1c5bb816e6cf336827c9541291cc4f48e5dd9332c96cefa92d",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-True-True-False.dxf",
+      "sha256": "0cc33eef4e4201b3120980dc24f2292fbc2074acd003a0b445b1ffa18eecad73",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    },
+    {
+      "file": "update-True-True-True.dxf",
+      "sha256": "91028963650a757c04c3584ed7087757e3b417fd863f191da2588ce4d599fb70",
+      "errors": [],
+      "fixes": [],
+      "removed_handles": [],
+      "opaque_before": [
+        "24"
+      ],
+      "opaque_after": [
+        "24"
+      ]
+    }
+  ]
+}

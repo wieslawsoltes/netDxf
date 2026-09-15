@@ -1,0 +1,9 @@
+PASS composite-table-13DF-False-edited.dxf
+PASS composite-table-13DF-False-native.dxf
+PASS composite-table-13DF-True-edited.dxf
+PASS composite-table-13DF-True-native.dxf
+PASS composite-table-13F2-False-edited.dxf
+PASS composite-table-13F2-False-native.dxf
+PASS composite-table-13F2-True-edited.dxf
+PASS composite-table-13F2-True-native.dxf
+PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls

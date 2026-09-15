@@ -249,7 +249,8 @@ internal static partial class Program
         string missing = (string)raw.Sections.Single(s => s.Name == "HEADER").Records.Single(r => r.Name == "$HANDSEED").Tags.Single(t => t.Code == 5).Value;
         var record = StoredFieldRecord(raw, handles["parent"]); var tags = record.Tags.ToList(); int slot = tags.FindIndex(t => t.Code == 331); tags[slot] = new DxfTag(331, missing);
         raw = SourceReferenceDecoy(raw.WithRecord(record, tags), missing, decoy);
-        StoredFieldRejectLoad(raw, binary, "FIELD dependency");
+        if (decoy is "unknown-entity" or "dictionary-entity") SourceReferenceRejectMalformedEntity(raw, binary);
+        else StoredFieldRejectLoad(raw, binary, "FIELD dependency");
     }
     private static void StoredFieldSemantic(short code)
     {

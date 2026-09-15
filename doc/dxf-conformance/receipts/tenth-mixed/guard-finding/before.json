@@ -1,0 +1,23 @@
+{
+  "status": "confirmed_before_integrated_correction",
+  "production_commit": "817372f",
+  "production_note": "Opaque b2ee2f9 integrated onto ac18082; production library built before subsequent TABLECONTENT and opaque follow-up imports. Original Polyface production is133747c.",
+  "probe": "Runtime reflection invokes unchanged TenthMixedSource factory on acad_table_simple ASCII; inspects face metadata, attempts mesh and HATCH removals, then verifies face registration.",
+  "findings": {
+    "face_handle": "CD",
+    "hatch_handle": "C5",
+    "xdata_1005": "C5",
+    "mesh_removed": false,
+    "hatch_removed": true,
+    "face_still_registered": true
+  },
+  "assemblies": {
+    "netDxf.netstandard.dll": "799195437246d92ef2d1d47ba6399741af1485371165f8fff409de5d97429e12",
+    "netDxf.Conformance.dll": "29c809cb2ff1d95d313f240b331e73483b58a9cb83a5c4076e65cfbabd197112"
+  },
+  "files": {
+    "Program.cs": "bf02778879bedec54dd39acb7c49614bf35d5f86c7a1da5b69940a12630429ed",
+    "results-before.log": "76105afa5960c5f3d37a982b229f8ef0c69f9ebdaaa3132155066d4355e2b84c",
+    "Probe.csproj": "8bbf8ab6f77e4fc839ee101969af02852a43655a89482276fdf6817fd119adcd"
+  }
+}

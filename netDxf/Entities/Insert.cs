@@ -409,6 +409,7 @@ namespace netDxf.Entities
 
         private List<EntityObject> ExplodeCellCore(Matrix3 transformation, Vector3 translation, Vector3 arrayOffset)
         {
+            DxfOpaqueEntity.RejectBlockGeometry(this.block);
             List<EntityObject> entities = new List<EntityObject>();
 
             foreach (EntityObject entity in this.block.Entities)

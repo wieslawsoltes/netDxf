@@ -1,0 +1,147 @@
+{
+  "cases": 28,
+  "failed": 0,
+  "librarySha256": "5e3a1687c7decee474cc77fa5352bfb6710914db87e19474a888ba39262a5c5a",
+  "results": [
+    {
+      "name": "canonical-create-erase-AutoCad2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "canonical-create-erase-AutoCad2018-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "class-metadata-absent",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "class-metadata-0",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "class-metadata-91",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "enumeration-and-dispose-atomicity",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "caught-reentry-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "caught-reentry-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "disposal-removes-requested-member",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-members-and-size",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "unsupported-profile-AutoCad2000",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "unsupported-profile-AutoCad2004",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "occupied-anchor-and-orphan-manager",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "conflicting-class",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "erase-incoming-metadata-and-owned-tree",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "metadata-handle-reservation",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "handle-range-exhaustion",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "erasure-source-and-reactor-guards",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-erase-recreate-False-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-erase-recreate-False-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-erase-recreate-True-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-erase-recreate-True-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

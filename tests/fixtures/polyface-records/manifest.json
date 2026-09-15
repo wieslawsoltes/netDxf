@@ -1,0 +1,441 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "source": "https://github.com/mozman/ezdxf/tree/v1.4.4",
+  "unchanged_producer_bytes": true,
+  "native_application_execution": false,
+  "owner_form": "coordinate and face VERTEX -> containing BLOCK_RECORD; SEQEND -> POLYLINE",
+  "fixtures": [
+    {
+      "file": "producer-R2000-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "sha256": "4ad017773fdf3c8d9bf07223ef31afbb9591c051cf1c003feddba22539760262",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2000-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "sha256": "c646c6ad09e66115b2bc956aeafb1228883cf46380714542b89e007c860e5856",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2004-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "sha256": "beed5358ed793c459cf4ee4e5edd46412885e4fb1188184b1409bfba2ff85b22",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2004-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "sha256": "afb888119d012384319eca6c49a5a4bd0f897a832a1e3a6bba6ea8a7f822631f",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2007-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "sha256": "2ee912ba3bfd3a2ab2934731383d764ce5fe8d8e908c27364f41ffea655dcfd2",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2007-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "sha256": "17dbc62e8279bb75135cf2dde1974348b33b3eae47166abe431561f351cd5038",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2010-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "sha256": "badf228b0b5ff43c9a3e143b979035f020547aef87afed489e350ba5e7f73936",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2010-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "sha256": "c3a1da0d41cefba3a4846b770cece81944bd8469d092099f9183563999963137",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2013-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "sha256": "6143303a775fac12f27bb110f32c7d498f56fac86c64b29bbc4619f9a4b116c4",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2013-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "sha256": "7f26618c24f4c0e21c66555b30416c17a676c992968c3dcc170d34a2585da39a",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2018-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "sha256": "f3e1fa09abe635bc787c089882f097532f2308e2f6b829819123f3f7eb8cc788",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    },
+    {
+      "file": "producer-R2018-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "sha256": "06d184c74d3b85d180f9baaf2dea675cc9b973d07caea380b748d282791936c2",
+      "handles": {
+        "mesh": "34",
+        "coordinates": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "3C",
+          "3D"
+        ],
+        "faces": [
+          "3A",
+          "3E"
+        ],
+        "seqend": "35",
+        "face_xrecord": "40",
+        "seqend_xrecord": "42",
+        "block_record": "17",
+        "plain_mesh": "43",
+        "plain_coordinates": [
+          "45",
+          "46",
+          "47",
+          "48"
+        ],
+        "plain_faces": [
+          "49"
+        ],
+        "plain_seqend": "44"
+      }
+    }
+  ]
+}

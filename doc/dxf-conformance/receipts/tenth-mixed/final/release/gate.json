@@ -1,0 +1,49 @@
+{
+  "actual_output_corruptions_rejected": 760,
+  "audit_errors": 0,
+  "audit_repairs": 0,
+  "coherent_actual_ascii_controls": [
+    {
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "control": "manager-identity",
+      "rejected_for": "Explicit native geometry edit/reference packet changed"
+    },
+    {
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "control": "section-identity",
+      "rejected_for": "Manager ordered update/list packet changed"
+    },
+    {
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "control": "settings-identity",
+      "rejected_for": "Surviving SECTION full plane/appearance/identity packet changed"
+    },
+    {
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "control": "new-manager-after-release",
+      "rejected_for": "Erased manager survived or was replaced"
+    },
+    {
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "control": "new-polyface-after-release",
+      "rejected_for": "Released Polyface was retained or replaced"
+    },
+    {
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "control": "new-opaque-after-release",
+      "rejected_for": "Released opaque source was retained or replaced"
+    }
+  ],
+  "declared_schema_opaque_neighbor": true,
+  "native_cad_execution": false,
+  "outputs": 48,
+  "synthetic_retained_polyface": true,
+  "total_controls": 766,
+  "world_pattern_probes": 5280
+}

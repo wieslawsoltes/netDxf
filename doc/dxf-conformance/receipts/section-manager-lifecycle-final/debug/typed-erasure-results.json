@@ -1,0 +1,437 @@
+[
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/lifecycle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/independent/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/ownership/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/ownership/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/ownership/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/ownership/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/idbuffer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/dictionary-default",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/dictionary-entry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/reactor-document",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/reactor-object",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/reactor-line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/reactor-layer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/reactor-attribute",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/reactor-layout-viewport",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-document",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-object",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-layer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-attribute",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-attdef",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xdata-layout-viewport",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/layout-shade",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/standalone-shade",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/header-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord339",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord349",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord350",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord359",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord360",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord369",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord390",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord399",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord480",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/xrecord481",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/incoming/lowercase-padded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/terminal-adoption",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/appid-bookkeeping-and-handlers",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/renamed-shared-appid-unregistration",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/unlinked-orphan-and-unrelated-invalid",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/xrecord-owned-descendants",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/extension-host/line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/extension-host/block",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/extension-host/record",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/extension-host/dictionary",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/extension-plus-owning-aliases",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/nested-tombstone-rejection",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/mleader-and-unused-block",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/arbitrary-handles-and-sort-keys",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/same-name-table-object-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-owned-rejection",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/320",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/360",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/390",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/480",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-exposed/1005",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/opaque-unrelated-preservation",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/callback-erases-clone-source",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "typed-erasure/deep-ownership-without-recursion",
+    "passed": true,
+    "error": null
+  }
+]

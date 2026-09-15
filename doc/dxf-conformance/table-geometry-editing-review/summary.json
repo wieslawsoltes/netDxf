@@ -1,0 +1,54 @@
+{
+  "module": "Explicit stored TABLEGEOMETRY replacement",
+  "production_commit": "34780f6f07a68637643a18d2f51bca9587a0b89b",
+  "source_worktree": "recovered-modules/netDxf-table-geometry-edit",
+  "harness": {
+    "recovery-audit/tablegeometry-edit-probe/Program.cs": "53d63cd76b4fd3992905cafa49bfc12ca73355b9aa40f1938f92695086c578e1",
+    "recovery-audit/tablegeometry-edit-probe/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "recovery-audit/audit_geometry_edit_outputs.py": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff"
+  },
+  "configurations": {
+    "debug": {
+      "cases": 40,
+      "failed": 0,
+      "library_sha256": "90861fb45bdad3777d2c87e6fbcce8c7af8041e34b930f5e374dc03e3347e482",
+      "results_path": "recovery-audit/tablegeometry-edit-expanded/results.json",
+      "results_sha256": "4838012bd95c879405ac49e45c903f4fd53e0904f48b1524d5453fb661d02b12",
+      "audit_outputs": 26,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/tablegeometry-edit-expanded/ezdxf-audit.json",
+      "audit_sha256": "cb3ab734b5dd412772d259f758d2dfdb0a83a6af8f5cb80ac17126e8b29b300f"
+    },
+    "release": {
+      "cases": 40,
+      "failed": 0,
+      "library_sha256": "22f9e70a05111cb7c1a1041e06f1aefcc1388d4abb4ce1ed84a64ea7a9a88fee",
+      "results_path": "recovery-audit/tablegeometry-edit-release/results.json",
+      "results_sha256": "764c24e0c8e8e8339d9be33c963181efacbcd8290b4fa1fd36e08bb65148a7b7",
+      "audit_outputs": 26,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/tablegeometry-edit-release/ezdxf-audit.json",
+      "audit_sha256": "5ae2edc169323c35bae6e4d81471e6f4417e9a6146845952fbd4e61f14fa05b6"
+    }
+  },
+  "coverage": [
+    "24 independent adversarial API cases and 16 native-packet edit cases per configuration; five source profiles, eight distinct retained packets, ASCII and binary transport.",
+    "Bit-exact no-op preserves loaded Payload and Cells snapshots without handle allocation. Explicit signed-zero changes are retained and repeated exact requests are no-ops.",
+    "Immutable constructor and caller collection snapshots; negative finite scalar values, raw integer extremes, duplicate cell values and row/column values without inferred row-times-column constraints.",
+    "Explicit registered STYLE identity dependencies update removal guards and release old targets; old References snapshots remain unchanged. Foreign and detached identities reject.",
+    "MoveNext and Dispose exceptions, caught recursive edits, disposal removal of a requested target, missing source anchor and changed source profile reject without packet or seed mutation. Caller document side effects are not rolled back.",
+    "Native no-op and replacement preserve identity, seed and prior snapshots; the explicit replacement packet and untouched companion TABLEGEOMETRY packets reload exactly.",
+    "All 52 output drawings audited with ezdxf 1.4.4: no errors or repairs. No native CAD runtime was available or claimed."
+  ],
+  "fixture_scope": [
+    "Manifest-pinned whole unchanged originals for R2013 and R2018; previously disclosed selected native packet carriers for R2004, R2007 and R2010.",
+    "Group 999 comments are excluded during raw transport conversion because binary DXF has no comment support; no stored TABLEGEOMETRY body changes precede the explicit API request.",
+    "No-op means the original loaded tag values and snapshot identity, not restoration of lexical input spelling already normalized by the reader."
+  ],
+  "findings": {
+    "production_changes_requested": 0,
+    "initial_probe_failures": "Test fixture setup only: omitted binary comment removal, invalid txt font filename without extension and an incorrect assertion about lexical zero-handle spelling. These were corrected in the independent harness; production stayed unchanged."
+  }
+}

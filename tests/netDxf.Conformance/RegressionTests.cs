@@ -107,7 +107,9 @@ internal static partial class Program
         RegisterHatchSplineRelationTests();
         RegisterHatchAffineTests();
         RegisterHatchConicAffineTests();
+        RegisterHatchPatternAffineTests();
         RegisterHatchSourceRelationTests();
+        RegisterOpaqueHatchReleaseTests();
         RegisterHatchSplineFitApiTests();
         RegisterHatchPathCountTests();
         RegisterHatchGradientAciTests();

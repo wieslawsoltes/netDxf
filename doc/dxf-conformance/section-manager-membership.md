@@ -48,8 +48,9 @@ An empty membership list is allowed, including with the update flag set.
 
 Foreign sections must be mapped explicitly to actual destination section objects
 before passing them to a different already loaded destination manager. Coincident
-handles and names do not authorize adoption. The manager itself still cannot be
-created, cloned, erased or converted to another DXF profile. Its original root
+handles and names do not authorize adoption. The later [explicit lifecycle API](section-manager-lifecycle.md) provides bounded
+database-owned creation and erasure. Manager cloning and conversion to another
+DXF profile remain unsupported. Its original root
 entry spelling, ownership strength and persistent-reactor sequence remain
 required. The [ObjectARX class description](https://help.autodesk.com/cloudhelp/2018/ENU/OARX-RefGuide/files/OREF-AcDbSectionManager.html)
 describes a database-managed object that cannot be instantiated directly. The
@@ -93,5 +94,5 @@ python tools/verify_section_membership.py /path/to/artifacts
 The earlier [stored-manager qualification](section-manager.md) remains the
 evidence for reader recognition, source identity, opaque boundaries and unchanged
 native round-trips. This increment does not qualify automatic manager membership,
-live sectioning, section generation, complete manager creation/clone/erase
+live sectioning, section generation, automatic manager lifecycle and cloning,
 lifecycles, native AutoCAD execution or complete-drawing byte identity.

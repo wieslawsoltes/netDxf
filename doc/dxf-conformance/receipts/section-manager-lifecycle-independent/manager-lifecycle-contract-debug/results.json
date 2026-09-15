@@ -1,0 +1,55 @@
+{
+  "expectFixed": true,
+  "failed": 0,
+  "librarySha256": "a465d4ed58972def6fa9bcb09ad48345fba20793cff4effe39ffdfa03f7d33a8",
+  "results": [
+    {
+      "kind": "requested-section-reactor",
+      "passed": true,
+      "created": false,
+      "creationError": "InvalidOperationException: Section reactors must be registered in the destination document.",
+      "creationSeedDelta": 0,
+      "creationClassCount": 0,
+      "hasAnchor": false,
+      "managerCount": 0,
+      "validation": [
+        "Unregistered persistent reactor: 23"
+      ],
+      "saved": false,
+      "writtenBytes": 0,
+      "saveError": "InvalidOperationException: Section reactors must be registered in the destination document."
+    },
+    {
+      "kind": "source-root-reactor",
+      "passed": true,
+      "created": false,
+      "creationError": "InvalidOperationException: The manager root reactors must be registered in this document.",
+      "creationSeedDelta": 0,
+      "creationClassCount": 0,
+      "hasAnchor": false,
+      "managerCount": 0,
+      "validation": [
+        "Unregistered persistent reactor: 22"
+      ],
+      "saved": false,
+      "writtenBytes": 0,
+      "saveError": "InvalidOperationException: Invalid OBJECTS database: Unregistered persistent reactor: 22"
+    },
+    {
+      "kind": "unrelated-line-reactor",
+      "passed": true,
+      "created": true,
+      "creationError": "",
+      "creationSeedDelta": 1,
+      "creationClassCount": 1,
+      "hasAnchor": true,
+      "managerCount": 1,
+      "validation": [
+        "Unregistered persistent reactor: 24"
+      ],
+      "saved": false,
+      "writtenBytes": 0,
+      "saveError": "InvalidOperationException: Invalid OBJECTS database: Unregistered persistent reactor: 24"
+    }
+  ]
+}

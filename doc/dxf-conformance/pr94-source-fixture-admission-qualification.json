@@ -1,0 +1,92 @@
+{
+  "date": "2026-09-15",
+  "production_base": "7240b02ca932e89f5e5ab05e5c5ace7357b893dc",
+  "fixture_commit": "7b40a5e57a06006a223328292f07b6c02e35f132",
+  "production_changes": false,
+  "net_new_registered_cases": 4,
+  "original_affected_failures": {
+    "Debug": 100,
+    "Release": 4
+  },
+  "test_source_sha256": {
+    "tests/netDxf.Conformance/CompositeTableOwnershipTests.cs": "d97e416de823b26801d9416c987c1399dc1c3ad302c3558954211296a31f6d26",
+    "tests/netDxf.Conformance/DataTableTests.cs": "0bd4b1d2c7e463c5d971616b984c562deda717084506ac8c3b28404488904867",
+    "tests/netDxf.Conformance/SourceReferenceIdentityTests.cs": "63536e8123245c8f747f01e6922aeb07fdf153ececabe550792c66ca3129f90a",
+    "tests/netDxf.Conformance/StoredFieldTests.cs": "76290133cf8a1f1db0d25b834b76ddfd586332f2e60380bcb1b12933b3e79435",
+    "tests/netDxf.Conformance/TableStyleTests.cs": "74ba2416912e63ab778733ee31419f551a9db4af9719ee3882c2ddaa1b969053",
+    "tools/verify_table_styles.py": "c569ceab8d2ccc4d98850387011ff861d0cf8690284d3d9ee4008c4842ff03c5"
+  },
+  "configurations": {
+    "Debug": {
+      "passed": 769,
+      "failed": 0,
+      "case_counts": {
+        "composite-table": 49,
+        "datatable": 467,
+        "source-reference": 84,
+        "stored-field": 76,
+        "table-style": 93
+      },
+      "gates": {
+        "datatable": "{\"audit_errors\": 0, \"audit_fixes\": 0, \"native_cad_execution\": false, \"native_owned_xrecords\": 41, \"native_tables\": 2, \"negative_controls\": 2, \"outputs\": 34}",
+        "table-style": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 118 corruption controls, plus 4 pinned declared opaque inputs; no map semantics or regeneration claim",
+        "stored_fields": "PASS 20 FIELD drawings, 12 maps, 100 independent packet/ownership corruption controls",
+        "composite_table_ownership": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls"
+      },
+      "generated_dxf_files": 136,
+      "new_declared_source_inputs": 4,
+      "new_opaque_outputs": 4,
+      "new_opaque_output_audits": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "library_sha256": "2b1102e14d52a521679ddd2499fead973f7e619c9380ec5ac4525a37648b37db",
+      "conformance_sha256": "316fd23e03d7c106908501c8af3bb20f2b2243dae860525fa8ff9d75331e58a0",
+      "source_profile_scope": "R2004-R2018 DATATABLE; other affected generic references R2018; native gate carriers retain their original source profiles",
+      "transport_scope": "ASCII and binary",
+      "new_pinned_pair_files_archived": 8
+    },
+    "Release": {
+      "passed": 769,
+      "failed": 0,
+      "case_counts": {
+        "composite-table": 49,
+        "datatable": 467,
+        "source-reference": 84,
+        "stored-field": 76,
+        "table-style": 93
+      },
+      "gates": {
+        "datatable": "{\"audit_errors\": 0, \"audit_fixes\": 0, \"native_cad_execution\": false, \"native_owned_xrecords\": 41, \"native_tables\": 2, \"negative_controls\": 2, \"outputs\": 34}",
+        "table-style": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 118 corruption controls, plus 4 pinned declared opaque inputs; no map semantics or regeneration claim",
+        "stored_fields": "PASS 20 FIELD drawings, 12 maps, 100 independent packet/ownership corruption controls",
+        "composite_table_ownership": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls"
+      },
+      "generated_dxf_files": 136,
+      "new_declared_source_inputs": 4,
+      "new_opaque_outputs": 4,
+      "new_opaque_output_audits": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "library_sha256": "8c4c137115aa6cc85452004c2f72ce5e651d655c07475cfd6f9d05e5b60d446e",
+      "conformance_sha256": "7873987fb4fa1cd654bfa6a8d1c4349d997cb02374917f7d3d6362fb54382050",
+      "source_profile_scope": "R2004-R2018 DATATABLE; other affected generic references R2018; native gate carriers retain their original source profiles",
+      "transport_scope": "ASCII and binary",
+      "new_pinned_pair_files_archived": 8
+    }
+  },
+  "limitations": [
+    "Synthetic ownerless unknown/dictionary packets now fail bounded entity admission before reference resolution; their four former saved TABLESTYLE carriers deliberately become rejection cases.",
+    "The generated TABLE/raster negatives retain their intended late unresolved-identity assertions through already qualified discarded-underlay decoys.",
+    "Actual normalized input spellings are captured separately; both code-value readers canonicalize handles before typed SourceTags capture. Only physical5 and TABLESTYLE340 normalize in these complete declared opaque packets.",
+    "DATATABLE source-identity binary variants now write actual binary input.",
+    "No production modifications, native CAD execution, automatic generation or new opaque geometry semantics.",
+    "The archived new source/output pairs are synthetic qualified schema inputs, not native producer evidence. Historical module receipts are unchanged."
+  ],
+  "build_notes": [
+    "Final focused builds use the same production source as 7240b02; assemblies are identified by content hashes, and test source by the frozen fixture commit and file hashes.",
+    "A Debug MSBuild startup failed in DebugUtils Process.get_ProcessName with exit134 before compilation; the unchanged retry succeeded. Its log is retained."
+  ],
+  "independent_review": "receipts/pr94-source-fixture-admission/independent/pr94-fixture-review-summary.json"
+}

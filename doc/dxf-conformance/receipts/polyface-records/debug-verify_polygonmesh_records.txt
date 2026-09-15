@@ -1,0 +1,1 @@
+POLYGONMESH VERTEX/SEQEND: 70 outputs; 2 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and eight actual-output corruption controls passed; zero independent audit errors or repairs.

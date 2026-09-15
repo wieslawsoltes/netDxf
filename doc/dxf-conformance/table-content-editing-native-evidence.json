@@ -1,0 +1,127 @@
+{
+  "source": "Pinned TABLECONTENT bodies from table-content/manifest.json; no authored body counted as native",
+  "schema_cross_check": {
+    "repository": "LibreDWG/libredwg",
+    "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+    "path": "src/dwg_spec_shared.h",
+    "blob": "f53f3c1186102deb9704fb5f1a593c551108895f",
+    "qualification": "Scalar group-code facts only. Native envelope differences control admission; no source implementation copied."
+  },
+  "records": [
+    {
+      "file": "acad_table_simple.dxf",
+      "profile": 2013,
+      "handle": "AF",
+      "kind_inventory": {
+        "4": 7
+      },
+      "format_flags_inventory": {
+        "2": 7
+      },
+      "qualified_scalar_count": 7
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "profile": 2018,
+      "handle": "116",
+      "kind_inventory": {
+        "4": 20
+      },
+      "format_flags_inventory": {
+        "2": 20
+      },
+      "qualified_scalar_count": 20
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "profile": 2004,
+      "handle": "747",
+      "kind_inventory": {
+        "4": 8,
+        "0": 6
+      },
+      "format_flags_inventory": {},
+      "qualified_scalar_count": 8
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "profile": 2004,
+      "handle": "13EF",
+      "kind_inventory": {
+        "4": 5,
+        "2": 4,
+        "32": 2,
+        "8": 2,
+        "1": 2
+      },
+      "format_flags_inventory": {},
+      "qualified_scalar_count": 13
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "profile": 2007,
+      "handle": "747",
+      "kind_inventory": {
+        "4": 8,
+        "0": 6
+      },
+      "format_flags_inventory": {
+        "6": 8,
+        "7": 6
+      },
+      "qualified_scalar_count": 8
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "profile": 2007,
+      "handle": "1385",
+      "kind_inventory": {
+        "4": 5,
+        "2": 4,
+        "32": 2,
+        "8": 2,
+        "1": 2
+      },
+      "format_flags_inventory": {
+        "6": 8,
+        "4": 4,
+        "5": 3
+      },
+      "qualified_scalar_count": 11
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "profile": 2010,
+      "handle": "747",
+      "kind_inventory": {
+        "4": 8,
+        "0": 6
+      },
+      "format_flags_inventory": {
+        "6": 8,
+        "7": 6
+      },
+      "qualified_scalar_count": 8
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "profile": 2010,
+      "handle": "131E",
+      "kind_inventory": {
+        "4": 5,
+        "2": 4,
+        "32": 2,
+        "8": 2,
+        "1": 2
+      },
+      "format_flags_inventory": {
+        "6": 8,
+        "4": 4,
+        "5": 3
+      },
+      "qualified_scalar_count": 11
+    }
+  ],
+  "total_qualified_scalars": 86,
+  "qualification_rule": "Exact scalar presence and complete zero-attribute frame; R2007+ flags 2/4/6 only. R2007+ flags 5 and 7, dates and unknown type 0 have no editable projection."
+}

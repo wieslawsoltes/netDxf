@@ -1,0 +1,552 @@
+[
+  {
+    "name": "section-manager/native/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/native/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/native/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/native/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTION_MANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTION_MANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTION_MANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTION_MANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTIONMANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTIONMANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTIONMANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2007/SECTIONMANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTION_MANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTION_MANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTION_MANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTION_MANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTIONMANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTIONMANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTIONMANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2010/SECTIONMANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTION_MANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTION_MANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTION_MANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTION_MANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTIONMANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTIONMANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTIONMANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2013/SECTIONMANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTION_MANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTION_MANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTION_MANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTION_MANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTIONMANAGER/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTIONMANAGER/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTIONMANAGER/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/schema/AutoCad2018/SECTIONMANAGER/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/False/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/False/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/numeric-identities/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/xdata/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/14",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/15",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/malformed/True/16",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/opaque/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/lifecycle/True/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/numeric-identities/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section-manager/xdata/True",
+    "passed": true,
+    "error": null
+  }
+]

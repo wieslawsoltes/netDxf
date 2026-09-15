@@ -1,0 +1,142 @@
+[
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 139\n   at NetDxf.Conformance.Program.<>c__DisplayClass487_4.<RegisterHatchSourceRelationTests>b__2() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 139\n   at NetDxf.Conformance.Program.<>c__DisplayClass487_4.<RegisterHatchSourceRelationTests>b__2() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 139\n   at NetDxf.Conformance.Program.<>c__DisplayClass487_4.<RegisterHatchSourceRelationTests>b__2() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 139\n   at NetDxf.Conformance.Program.<>c__DisplayClass487_4.<RegisterHatchSourceRelationTests>b__2() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 139\n   at NetDxf.Conformance.Program.<>c__DisplayClass487_4.<RegisterHatchSourceRelationTests>b__2() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 139\n   at NetDxf.Conformance.Program.<>c__DisplayClass487_4.<RegisterHatchSourceRelationTests>b__2() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/discarded",
+    "passed": false,
+    "error": "System.InvalidOperationException: Release HATCH source rejection returns null: discarded\n   at NetDxf.Conformance.Program.HatchSourceReject(String kind, DxfVersion version, Boolean binary, String defect) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/HatchSourceRelationTests.cs:line 84\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "table-style/source-identity/unknown-entity/False",
+    "passed": false,
+    "error": "System.FormatException: TABLESTYLE input was rejected.\n   at NetDxf.Conformance.Program.TableStyleLoad(List`1 payload, Boolean binary, DxfVersion version, String kind, Func`2 mutate) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 67\n   at NetDxf.Conformance.Program.TableStyleSourceIdentity(String decoy, Boolean binary) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 259\n   at NetDxf.Conformance.Program.<>c__DisplayClass1616_4.<RegisterTableStyleTests>b__3() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 23\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "table-style/source-identity/dictionary-entity/False",
+    "passed": false,
+    "error": "System.FormatException: TABLESTYLE input was rejected.\n   at NetDxf.Conformance.Program.TableStyleLoad(List`1 payload, Boolean binary, DxfVersion version, String kind, Func`2 mutate) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 67\n   at NetDxf.Conformance.Program.TableStyleSourceIdentity(String decoy, Boolean binary) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 259\n   at NetDxf.Conformance.Program.<>c__DisplayClass1616_4.<RegisterTableStyleTests>b__3() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 23\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "table-style/source-identity/unknown-entity/True",
+    "passed": false,
+    "error": "System.FormatException: TABLESTYLE input was rejected.\n   at NetDxf.Conformance.Program.TableStyleLoad(List`1 payload, Boolean binary, DxfVersion version, String kind, Func`2 mutate) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 67\n   at NetDxf.Conformance.Program.TableStyleSourceIdentity(String decoy, Boolean binary) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 259\n   at NetDxf.Conformance.Program.<>c__DisplayClass1616_4.<RegisterTableStyleTests>b__3() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 23\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  },
+  {
+    "name": "table-style/source-identity/dictionary-entity/True",
+    "passed": false,
+    "error": "System.FormatException: TABLESTYLE input was rejected.\n   at NetDxf.Conformance.Program.TableStyleLoad(List`1 payload, Boolean binary, DxfVersion version, String kind, Func`2 mutate) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 67\n   at NetDxf.Conformance.Program.TableStyleSourceIdentity(String decoy, Boolean binary) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 259\n   at NetDxf.Conformance.Program.<>c__DisplayClass1616_4.<RegisterTableStyleTests>b__3() in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/TableStyleTests.cs:line 23\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-editing-integration/tests/netDxf.Conformance/Program.cs:line 122"
+  }
+]
