@@ -447,5 +447,6 @@
     "results_sha256": "0401414c093d6b32897af858a9d90590407420247d0d4f74b1a1d3c61f0ebfec",
     "baseline_dll_sha256": "964a1963a524e8338e81c4663f9603eb5beaa99aa0ba19e62ebaf3bcb172a183",
     "note": "120 geometry tests stopped at rational-flag loss; independent40 separately exercises periodic forms and world-space defects."
-  }
+  },
+  "warning_count_clarification": "The original fields counted 561 CS1591 warnings. The frozen module source also emitted one CS1573 warning for missing newNormal XML documentation (562 total). PR92 integration adds the XML parameter comment without changing behavior; source and build-log hashes in this receipt still identify the original run."
 }

@@ -457,6 +457,7 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="transformation">Transformation matrix.</param>
         /// <param name="translation">Translation vector.</param>
+        /// <param name="newNormal">Normal of the transformed hatch plane.</param>
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         private void TransformCurvedBoundary(Matrix3 transformation, Vector3 translation, Vector3 newNormal)
         {

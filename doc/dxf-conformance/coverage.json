@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "b77d731ef874fc21b594ffc208d30b92e7f48db6",
-    "tree": "27b6fa0145322aa5af26e486e6232486ce08d540"
+    "commit": "1ed8719e2b1a2dcbde9556f52e9951485b7c2f6e",
+    "tree": "c1e7c729aaccb05dea5b4980ecba45663c4bd5e9"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 28627,
+    "test_cases": 29293,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 91,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/91/checks"
+    "last_implementation_pr": 92,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/34982636218"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -663,6 +663,30 @@
     "POLYGONCARDINALITY": {
       "label": "PolygonMesh physical grid cardinality and export preflight",
       "path": "doc/dxf-conformance/POLYGONMESH_CARDINALITY.md"
+    },
+    "STOREDSTUDY": {
+      "label": "SUNSTUDY immutable empty-date storage",
+      "path": "doc/dxf-conformance/stored-sunstudy.md"
+    },
+    "TABLEGEOMETRY": {
+      "label": "TABLEGEOMETRY immutable cell geometry storage",
+      "path": "doc/dxf-conformance/table-geometry.md"
+    },
+    "VIEWSECTION": {
+      "label": "VIEW live-section reference and lifecycle",
+      "path": "doc/dxf-conformance/view-live-section.md"
+    },
+    "VERTEXTOPOLOGY": {
+      "label": "Retained Polyline3D insertion, removal and movement",
+      "path": "doc/dxf-conformance/polyline3d-topology.md"
+    },
+    "HATCHAFFINE": {
+      "label": "HATCH direct affine spline and straight-boundary transforms",
+      "path": "doc/dxf-conformance/hatch-affine-transforms.md"
+    },
+    "MIX8": {
+      "label": "Mixed stored references, topology edits and affine geometry",
+      "path": "doc/dxf-conformance/eighth-mixed-modules.md"
     }
   },
   "features": [
@@ -6410,7 +6434,7 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "Ordinary Polyline3D VERTEX and SEQEND identities",
-      "scope": "Loaded ordinary unsmoothed 3D polylines retain physical VERTEX/SEQEND identities, common metadata, optional fields, source profiles and exact native DIMASSOC target identities. Equal-count coordinate edits and synchronized reversal preserve record slots. Qualified safe clones and parent moves retain coherent references; unsupported count/smoothing changes, foreign adoption and unmapped dependencies reject. Other POLYLINE families, fitted vertices and complete association evaluation remain separate.",
+      "scope": "Loaded ordinary unsmoothed 3D polylines retain physical VERTEX/SEQEND identities, common metadata, optional fields, source profiles and exact native DIMASSOC target identities. Equal-count coordinate edits and synchronized reversal preserve record slots. Qualified safe clones and parent moves retain coherent references; unsupported direct count/smoothing changes, foreign adoption and unmapped dependencies reject. Other POLYLINE families, fitted vertices and complete association evaluation remain separate. Explicit supported topology operations are qualified separately.",
       "evidence": [
         "VERTEXREC"
       ],
@@ -6431,7 +6455,7 @@
       "area": "Raw record preservation",
       "pipeline": "raw",
       "feature": "Scoped SUNSTUDY producer packet preservation",
-      "scope": "Six disclosed R2013/R2018 carriers retain exact SUNSTUDY packets and four dependencies through exact and normalized raw writes. Original producer failures, empty unrelated DIMSTYLE pointers and corrupt binary hour payloads remain separately pinned; adapters change only listed unrelated null pointers. No typed SUNSTUDY editing or native CAD acceptance is qualified.",
+      "scope": "Six disclosed R2013/R2018 carriers retain exact SUNSTUDY packets and four dependencies through exact and normalized raw writes. Original producer failures, empty unrelated DIMSTYLE pointers and corrupt binary hour payloads remain separately pinned; adapters change only listed unrelated null pointers. Typed immutable empty-date storage is qualified separately; editable date/solar semantics and native CAD acceptance remain open.",
       "evidence": [
         "SUNSTUDY"
       ],
@@ -6488,6 +6512,132 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "stored-sunstudy-empty-dates",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SUNSTUDY immutable empty-date storage",
+      "scope": "Internal-version-0 R2013/R2018 packets preserve ordered raw fields, boolean hours and four exact accepted source identities. Six explicitly adapted independent-producer carriers qualify this subset. Source ownership, profile, clone and dependency removal guards apply. Unknown/private versions and date arrays remain opaque; no solar evaluation or target-class inference.",
+      "evidence": [
+        "STOREDSTUDY"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-geometry-storage",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLEGEOMETRY immutable cell geometry storage",
+      "scope": "Qualified R2004+ source-bound packets preserve declared dimensions, ordered cells and geometry records, raw flags, complete payload and exact source references including retained child metadata. Native packets and synthetic pointer cases are distinguished. Unknown shapes remain opaque; layout, regeneration and editable geometry are separate.",
+      "evidence": [
+        "TABLEGEOMETRY"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "view-live-section-reference",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "VIEW live-section reference and lifecycle",
+      "scope": "R2007+ group334 retains actual SECTION identities and explicit null presence. ClearLiveSectionReference removes the optional field. Shared consumers prevent target erasure; clone adoption requires actual destination mappings. Actual VIEW producer packets use an explicitly authored SECTION carrier.",
+      "evidence": [
+        "VIEWSECTION"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "polyline3d-explicit-topology",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Retained Polyline3D insertion, removal and movement",
+      "scope": "Explicit InsertVertex, RemoveVertexAt and MoveVertex preserve identity/coordinate pairs and unchanged SEQEND records. Insertion reserves actual registered and owner-held identities; removal protects incoming references and retains at least two points. Invalid, foreign, profile and unsupported metadata edits reject before mutation. Plain unsmoothed retained 3D sequences only.",
+      "evidence": [
+        "VERTEXTOPOLOGY"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-direct-affine-storage",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH direct affine spline and straight-boundary transforms",
+      "scope": "Direct control/fit/tangent/seed transformation preserves stored knots, weights and flags, including periodic flags without evaluation. Transformed OCS axes define the plane; rank-two maps are accepted when the plane remains two-dimensional. Unsupported non-similarity patterns, gradients, conics and bulges reject before unlinking or callbacks.",
+      "evidence": [
+        "HATCHAFFINE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-stored-topology-hatch-mixed",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Mixed stored references, topology edits and affine geometry",
+      "scope": "R2013/R2018 SUNSTUDY-to-VIEW-to-SECTION and TABLEGEOMETRY-to-VERTEX graphs retain exact source dependencies through explicit topology edits and HATCH transforms. Authored links and stored producer packets are disclosed separately; complete retained packets and rejected operations are independently checked.",
+      "evidence": [
+        "MIX8"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -6499,7 +6649,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH periodic spline semantics, full affine geometry and automatic associative regeneration; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining internal VERTEX variants. Nonperiodic HATCH spline validation, accepted stored weights and ordered source-relation lifecycle are implemented. UCS base-reference storage and the qualified packed transparency/SECTION/SUN fields are implemented. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
+      "scope": "HATCH periodic spline evaluation, exact conic/pattern affine transforms and automatic associative regeneration; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining internal VERTEX variants. Direct HATCH spline/straight-boundary transforms, explicit retained Polyline3D topology edits and VIEW live-section references now have scoped qualification. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
     },
     {
       "id": "new-entities",
@@ -6509,7 +6659,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, editable SECTION_MANAGER lifecycles, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT storage, stored SECTION_MANAGER lists, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
+      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY and CELLSTYLEMAP storage, complete FIELD and DIMASSOC graphs, editable SECTION_MANAGER lifecycles, material/rendering and broader SUNSTUDY schemas. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT/TABLEGEOMETRY and empty-date SUNSTUDY storage, stored SECTION_MANAGER lists, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
     },
     {
       "id": "historical-typed",
