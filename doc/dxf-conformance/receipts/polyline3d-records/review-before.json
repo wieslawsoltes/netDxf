@@ -1,0 +1,71 @@
+{
+  "library_sha256": "fdc79353178877b6e0964689f0de4aa12a6e7bea5a4f507705f53f0fc210af41",
+  "results": [
+    {
+      "scenario": "parent-xdata-clone",
+      "binary": false,
+      "rejected": false,
+      "source_handle": "3D",
+      "expected_handle": "8B",
+      "actual_handle": "3D",
+      "actual_target_type": "LINE",
+      "correct": false
+    },
+    {
+      "scenario": "header-incoming-removal",
+      "binary": false,
+      "rejected": false,
+      "target_still_registered": false
+    },
+    {
+      "scenario": "loaded-reactor-move",
+      "binary": false,
+      "rejected": false,
+      "old_handle": "3B",
+      "new_handle": "54",
+      "save_reload_error": "FormatException: Unresolved persistent reactor: 3B"
+    },
+    {
+      "scenario": "loaded-child-xdata-move",
+      "binary": false,
+      "rejected": false,
+      "old_handle": "3B",
+      "new_handle": "55",
+      "actual_handle": "3B",
+      "correct": false
+    },
+    {
+      "scenario": "parent-xdata-clone",
+      "binary": true,
+      "rejected": false,
+      "source_handle": "3D",
+      "expected_handle": "8B",
+      "actual_handle": "3D",
+      "actual_target_type": "LINE",
+      "correct": false
+    },
+    {
+      "scenario": "header-incoming-removal",
+      "binary": true,
+      "rejected": false,
+      "target_still_registered": false
+    },
+    {
+      "scenario": "loaded-reactor-move",
+      "binary": true,
+      "rejected": false,
+      "old_handle": "3B",
+      "new_handle": "54",
+      "save_reload_error": "FormatException: Unresolved persistent reactor: 3B"
+    },
+    {
+      "scenario": "loaded-child-xdata-move",
+      "binary": true,
+      "rejected": false,
+      "old_handle": "3B",
+      "new_handle": "55",
+      "actual_handle": "3B",
+      "correct": false
+    }
+  ]
+}

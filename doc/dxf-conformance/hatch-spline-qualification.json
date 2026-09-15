@@ -136,5 +136,88 @@
     "Invalid stream saves fail before destination writes, handle mutation or lazy OBJECTS creation. The existing path Save wrapper can truncate its file before stream preflight.",
     "The explicit input-sentinel assertions strengthen proof; DxfRawDocument.Save(Stream) already preserved IsBinary, so no production transport change was required.",
     "Combined integration qualification remains separate from this isolated source receipt."
-  ]
+  ],
+  "recovery_extension_2026_09_15": {
+    "source_commit": "edb664db35af9351049062380c8820a571adcc23",
+    "source_tree": "b33965f2d2fb46348776d38ef8093ed523584966",
+    "scope": "Additional indexed optional rational-weight preservation: omitted weights default to one, explicit negative weights and signed zero survive without changing the rational flag. No production implementation change.",
+    "sdk": "8.0.408",
+    "target_framework": "net8.0",
+    "independent_reader": "ezdxf 1.4.4",
+    "test_file_sha256": "ff8ea33e574c93da47a58091c1a0adc209bf1ef975ee65cdb6a7fba76dbba541",
+    "verifier_sha256": "102490a49ad1a791f22e60863ecf791d80753238fa08d407affca24da0b37247",
+    "focused_runner_sha256": "9f9163c64f65315e52324f34bc6e4636ba644d00f898859859ad072204188831",
+    "registrations": [
+      "RegisterHatchSplineRelationTests",
+      "RegisterHatchSplineFitTests",
+      "RegisterHatchSplineFitApiTests",
+      "RegisterHatchEdgeDispatchTests",
+      "RegisterHatchScalarOrderTests"
+    ],
+    "configurations": {
+      "Debug": {
+        "passed": 1290,
+        "failed": 0,
+        "relation_and_weight_cases": 204,
+        "existing_fit_api_dispatch_scalar_cases": 1086,
+        "build_warnings": 561,
+        "build_errors": 0,
+        "results_sha256": "7f2ddf015056b8431d237c18d2e95a4e76b52946e67a29cb25ead74615e52c6d",
+        "build_log_sha256": "00052e153bd1a600bc7ba821696a4d1cb3e04f66e43841cf0de0c66db52c8178",
+        "test_log_sha256": "f40642fc2206b6c54ce81243b75121823f9df9484b75cc316395ce284ae7426b",
+        "production_dll_sha256": "039bf9eb124b2021d4dced61b7cdaebfb50119c172c668d8e99aa4135e47aaad",
+        "tests_dll_sha256": "8530532d632c66b92eba6a933798682141e16c2369f37109c62c3de5e016464d",
+        "independent_gate": {
+          "audit_errors": 0,
+          "audit_fixes": 0,
+          "native_cad_execution": false,
+          "negative_controls": 5,
+          "outputs": 36,
+          "periodic_shape_evaluation": false,
+          "producer_inputs": 12,
+          "spline_packets": 144
+        },
+        "gate_sha256": "fee0b8d3d67df30c48c834d89b47293035332535877d7d1d5689824c7a98f63a"
+      },
+      "Release": {
+        "passed": 1290,
+        "failed": 0,
+        "relation_and_weight_cases": 204,
+        "existing_fit_api_dispatch_scalar_cases": 1086,
+        "build_warnings": 561,
+        "build_errors": 0,
+        "results_sha256": "7f2ddf015056b8431d237c18d2e95a4e76b52946e67a29cb25ead74615e52c6d",
+        "build_log_sha256": "cdfa95430fa370e0ba5f461fbf1612d8c916e3edd340a64252ec0a5c0cf35c1b",
+        "test_log_sha256": "f40642fc2206b6c54ce81243b75121823f9df9484b75cc316395ce284ae7426b",
+        "production_dll_sha256": "ae1e32698248b679cb37cfa5c586cf5a38daf0f7e0b60d495086bd9eb9a45eac",
+        "tests_dll_sha256": "5533e714abd9ea884c985ed9b1c2a016ed4e07accdbdc0e4348fd3ac8780f2ae",
+        "independent_gate": {
+          "audit_errors": 0,
+          "audit_fixes": 0,
+          "native_cad_execution": false,
+          "negative_controls": 5,
+          "outputs": 36,
+          "periodic_shape_evaluation": false,
+          "producer_inputs": 12,
+          "spline_packets": 144
+        },
+        "gate_sha256": "fee0b8d3d67df30c48c834d89b47293035332535877d7d1d5689824c7a98f63a"
+      }
+    },
+    "actual_output_negative_controls": {
+      "rejected": [
+        "missing-mandatory-rational-output",
+        "weight-loss-in-actual-output",
+        "rational-flag-loss-in-actual-output"
+      ],
+      "receipt_sha256": "78a61ca3bb8ca2a01f35770aae45d5e86a59b6510a75200c2e99982f959c4b75",
+      "profile": "R2000 ASCII",
+      "method": "Copy all 36 outputs, remove the mandatory rational-weight output or alter a stored negative weight/rational flag in its actual DXF packet, and require the verifier to fail."
+    },
+    "limits": [
+      "Rational sparse-weight inputs are explicit mutations of pinned independent producer drawings; negative/zero-weight curve evaluation and native CAD acceptance are not qualified.",
+      "Physical presence of default weight tags is not represented; numeric indexed defaults and the rational flag are preserved.",
+      "Historical qualification above remains the receipt for the earlier 24-output gate. This extension supersedes the current gate inventory with 36 outputs and 144 spline packets."
+    ]
+  }
 }

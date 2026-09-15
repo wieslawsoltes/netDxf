@@ -1,0 +1,122 @@
+[
+  {
+    "year": 2000,
+    "binary": false,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2000,
+    "binary": true,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2004,
+    "binary": false,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2004,
+    "binary": true,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2007,
+    "binary": false,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2007,
+    "binary": true,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2010,
+    "binary": false,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2010,
+    "binary": true,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2013,
+    "binary": false,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2013,
+    "binary": true,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2018,
+    "binary": false,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  },
+  {
+    "year": 2018,
+    "binary": true,
+    "source_vertex": "F1009",
+    "source_vertex_registered": false,
+    "source_vertex_written": false,
+    "retained_vertex_reactor": false,
+    "geometry_count": 4,
+    "output_vertex_count": 4
+  }
+]

@@ -67,7 +67,7 @@ internal static partial class Program
         // original native resources must survive every failed preflight.
         bool rejected = false;
         try { action(); }
-        catch (Exception error) when (error is InvalidOperationException or NotSupportedException or ArgumentException) { rejected = true; }
+        catch (Exception error) when (mustThrow && (error is InvalidOperationException or NotSupportedException or ArgumentException)) { rejected = true; }
         finally { foreach (var block in doc.Blocks.Items) block.Entities.RemoveItem -= Removed; }
         if (mustThrow) Check(rejected, "Seventh mixed operation should reject before mutation");
         Equal(seed, OwnershipSeed(doc), "Rejected mixed operation allocated handles");

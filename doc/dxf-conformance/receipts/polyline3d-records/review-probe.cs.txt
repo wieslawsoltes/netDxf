@@ -1,0 +1,32 @@
+using System.Text.Json;
+using System.Security.Cryptography;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.Tables;
+var results = new List<object>();
+var fixtureRoot = "/workspace/scratch/2ec4aa26f01f/repos/netDxf-vertex-records/tests/fixtures/polyline3d-records";
+DxfDocument Load(bool binary) => DxfDocument.Load(Path.Combine(fixtureRoot, "producer-R2018-" + (binary ? "binary" : "ascii") + ".dxf"));
+Polyline3D Parent(DxfDocument d) => (Polyline3D)d.GetObjectByHandle("3B");
+void Link(DxfObject o,string target) { var data = new XData(new ApplicationRegistry("REVIEW_LINK")); data.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle,target)); o.XData.Add(data); }
+string LinkValue(DxfObject o) => (string)o.XData["REVIEW_LINK"].XDataRecord.Single().Value;
+DxfDocument Round(DxfDocument d,bool binary) { using var s=new MemoryStream(); if(!d.Save(s,binary)) throw new Exception("Save false");s.Position=0;return DxfDocument.Load(s) ?? throw new Exception("Load null"); }
+foreach(bool binary in new[]{false,true}) foreach(string scenario in new[]{"parent-xdata-clone","header-incoming-removal","loaded-reactor-move","loaded-child-xdata-move"}) {
+ try {
+  var d=Load(binary);var p=Parent(d);var child=p.VertexRecords[0];
+  if(scenario=="parent-xdata-clone") {
+   Link(p,child.Handle);var c=(Polyline3D)p.Clone();var target=new DxfDocument(DxfVersion.AutoCad2018);for(int i=0;i<100;i++)target.Entities.Add(new Line(Vector3.Zero,Vector3.UnitX));target.Entities.Add(c);
+   string actual=LinkValue(c);results.Add(new{scenario,binary,rejected=false,source_handle=child.Handle,expected_handle=c.VertexRecords[0].Handle,actual_handle=actual,actual_target_type=target.GetObjectByHandle(actual)?.CodeName,correct=actual==c.VertexRecords[0].Handle});
+  } else if(scenario=="header-incoming-removal") {
+   string h=child.Handle;d.DrawingVariables.AddCustomVariable(new HeaderVariable("$REVIEW_VERTEX",330,h));bool removed=d.Entities.Remove(p);results.Add(new{scenario,binary,rejected=!removed,target_still_registered=d.GetObjectByHandle(h)!=null});
+  } else {
+   if(scenario=="loaded-reactor-move")child.PersistentReactors.Add(p);else Link(child,p.Handle);
+   d=Round(d,binary);p=Parent(d);child=p.VertexRecords[0];string old=p.Handle;bool removed=d.Entities.Remove(p);
+   if(!removed){results.Add(new{scenario,binary,rejected=true,old_handle=old});continue;}
+   d.Entities.Add(p);string current=p.Handle;
+   try {var loaded=Round(d,binary);var cp=(Polyline3D)loaded.GetObjectByHandle(current);string actual=scenario=="loaded-reactor-move"?cp.VertexRecords[0].PersistentReactors.Single().Handle:LinkValue(cp.VertexRecords[0]);results.Add(new{scenario,binary,rejected=false,old_handle=old,new_handle=current,actual_handle=actual,correct=actual==current});}
+   catch(Exception error){results.Add(new{scenario,binary,rejected=false,old_handle=old,new_handle=current,save_reload_error=error.GetType().Name+": "+error.Message});}
+  }
+ }catch(Exception error){results.Add(new{scenario,binary,rejected=true,error=error.GetType().Name+": "+error.Message});}
+}
+Console.WriteLine(JsonSerializer.Serialize(new{library_sha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(),results},new JsonSerializerOptions{WriteIndented=true}));

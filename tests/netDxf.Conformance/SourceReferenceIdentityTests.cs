@@ -16,6 +16,8 @@ internal static partial class Program
             {
                 foreach (string decoy in new[] { "absent", "unknown-entity", "discarded-underlay", "dictionary-entity", "ignored-section" })
                     Run($"source-reference/reject/{path}/{decoy}/{binary}", () => SourceReferenceReject(path, decoy, binary));
+                if (path != "extension")
+                    Run($"source-reference/reject/{path}/generated-table/{binary}", () => SourceReferenceReject(path, "generated-table", binary));
                 foreach (bool normalized in new[] { false, true })
                     Run($"source-reference/retained/{path}/{normalized}/{binary}", () => SourceReferenceRetained(path, normalized, binary));
             }
@@ -123,6 +125,16 @@ internal static partial class Program
                 new DxfTag(8, "0"), new DxfTag(100, subclass) };
             if (decoy == "discarded-underlay") packet.Add(new DxfTag(340, "0"));
             tags.InsertRange(raw.Sections.Single(s => s.Name == "ENTITIES").ContentStartTagIndex, packet);
+            if (decoy == "generated-table")
+            {
+                // A successfully constructed TABLE collection can still have a generated
+                // identity when its original record omitted group 5. Accepted-instance
+                // tracking must retain that distinction even if another record has 5.
+                var table = raw.Sections.Single(s => s.Name == "TABLES").Records.Single(r => r.Name == "TABLE" && r.Tags.Any(t => t.Code == 2 && Equals(t.Value, "LAYER")));
+                int identity = table.Tags.ToList().FindIndex(t => t.Code == 5);
+                Check(identity >= 0, "source LAYER table identity");
+                tags.RemoveAt(table.StartTagIndex + identity);
+            }
         }
         return raw.WithTags(tags);
     }

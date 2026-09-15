@@ -329,6 +329,7 @@ namespace netDxf.IO
             this.ResolveMTextColumnLinks();
             this.ResolveUcsReferences();
             this.ImportDatabaseObjects();
+            this.ResolveStoredPolylineRecords();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
             this.ResolveSections();
@@ -8588,6 +8589,9 @@ namespace netDxf.IO
                 }
             }
 
+            if (smoothType == PolylineSmoothType.NoSmooth && ((int)flags & ~129) == 8)
+                return this.ReadStoredPolylineSequence(flags, normal, xData);
+
             //begin to read the vertex list (although it is not recommended the vertex list might have 0 entries)
             while (this.chunk.ReadString() != DxfObjectCode.EndSequence)
             {
@@ -8596,6 +8600,7 @@ namespace netDxf.IO
                     Vertex vertex = this.ReadVertex();
                     vertexes.Add(vertex);
                 }
+                else throw new FormatException("A POLYLINE vertex sequence requires SEQEND.");
             }
 
             // read the end sequence object until a new element is found

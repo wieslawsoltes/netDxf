@@ -110,6 +110,11 @@ namespace netDxf.Objects
                     foreach (DxfTag tag in opaque.Tags)
                         if (tag.ValueType == DxfTagValueType.Handle) handle((string)tag.Value, "opaque handle " + tag.Code);
                 if (item is Section section) reference(section.GeometrySettings, "section settings");
+                if (item is Polyline3DRecord polylineRecord)
+                {
+                    foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");
+                    foreach (DxfTag tag in polylineRecord.OpaqueHandleTags) handle((string)tag.Value, "polyline record handle");
+                }
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)

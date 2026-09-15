@@ -252,7 +252,17 @@ internal static partial class Program
         }
         Equal(count, doc.Objects.Items.Count(), "rejection or read-only edit changed object count");
         if (scenario is >= 7 and <= 11 or 14)
-        { using var output = new MemoryStream(); CheckSaveRejected(doc, output); Equal(0L, output.Length, "invalid DIMASSOC preflight wrote bytes"); }
+        {
+            using var output = new MemoryStream();
+            if (scenario == 11)
+            {
+                Check(doc.Objects.Validate().Any(error => error.Contains("Stored DIMASSOC version conversion", StringComparison.Ordinal)), "DIMASSOC profile validation disappeared");
+                // Retained native VERTEX records can reject the same profile change earlier.
+                try { CheckSaveRejected(doc, output); } catch (NotSupportedException) { }
+            }
+            else CheckSaveRejected(doc, output);
+            Equal(0L, output.Length, "invalid DIMASSOC preflight wrote bytes");
+        }
         else { Check(ReferenceEquals(doc.GetObjectByHandle(association.Handle), association) && !association.IsErased, "association lost registration"); Equal(0, doc.Objects.Validate().Count, "valid lifecycle database"); }
     }
 }

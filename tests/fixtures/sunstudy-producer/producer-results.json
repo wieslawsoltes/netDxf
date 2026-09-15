@@ -1,0 +1,167 @@
+{
+  "producer": "IxMilia.Dxf 0.8.4",
+  "assemblySha256": "70460eae6fd10ca6ca35653cb52eb03c2cbba2240b0afbda98afc744ad5dc67f",
+  "unexpected": false,
+  "attempts": [
+    {
+      "name": "ixmilia-sunstudy-R2013-ascii-no-dates-no-hours.dxf",
+      "expectedStage": "complete",
+      "stage": "complete",
+      "saved": true,
+      "reloaded": true,
+      "identity": true,
+      "datesMatch": true,
+      "hoursMatch": true
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-ascii-no-dates-hours.dxf",
+      "expectedStage": "complete",
+      "stage": "complete",
+      "saved": true,
+      "reloaded": true,
+      "identity": true,
+      "datesMatch": true,
+      "hoursMatch": true
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-ascii-dates-no-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-ascii-dates-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-binary-no-dates-no-hours.dxf",
+      "expectedStage": "complete",
+      "stage": "complete",
+      "saved": true,
+      "reloaded": true,
+      "identity": true,
+      "datesMatch": true,
+      "hoursMatch": true
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-binary-no-dates-hours.dxf",
+      "expectedStage": "reload",
+      "stage": "reload",
+      "saved": true,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Boolean' to type 'System.Int16'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-binary-dates-no-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-binary-dates-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-ascii-no-dates-no-hours.dxf",
+      "expectedStage": "complete",
+      "stage": "complete",
+      "saved": true,
+      "reloaded": true,
+      "identity": true,
+      "datesMatch": true,
+      "hoursMatch": true
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-ascii-no-dates-hours.dxf",
+      "expectedStage": "complete",
+      "stage": "complete",
+      "saved": true,
+      "reloaded": true,
+      "identity": true,
+      "datesMatch": true,
+      "hoursMatch": true
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-ascii-dates-no-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-ascii-dates-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-binary-no-dates-no-hours.dxf",
+      "expectedStage": "complete",
+      "stage": "complete",
+      "saved": true,
+      "reloaded": true,
+      "identity": true,
+      "datesMatch": true,
+      "hoursMatch": true
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-binary-no-dates-hours.dxf",
+      "expectedStage": "reload",
+      "stage": "reload",
+      "saved": true,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Boolean' to type 'System.Int16'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-binary-dates-no-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-binary-dates-hours.dxf",
+      "expectedStage": "save",
+      "stage": "save",
+      "saved": false,
+      "reloaded": false,
+      "expectedFailure": true,
+      "errorType": "System.InvalidCastException",
+      "errorMessage": "Unable to cast object of type 'System.Double' to type 'System.Int32'."
+    }
+  ]
+}

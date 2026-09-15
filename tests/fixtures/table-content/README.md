@@ -36,11 +36,19 @@ generation. No audit repairs are applied: all three carriers must audit with
 zero errors and zero fixes after writing.
 
 The generator proves complete selected-packet equality after only the listed
-metadata changes. The shipping native tests then load these carriers and both
-whole ezdxf examples, save in ASCII and binary, and reload. This qualifies
+metadata changes and verifies every retained exposed nonzero semantic handle
+against a physical carrier record, including common persistent reactors. The
+shipping native tests then load these carriers and both whole ezdxf examples,
+save in ASCII and binary, and reload. The independent output gate also requires
+all selected identities and all original exposed dependencies to retain their
+source types and checks emitted selected records for dangling references.
+This qualifies
 stored content packets, explicit resource identities and ownership context.
 It does not qualify the other omitted contents of the ACadSharp drawings,
 editable cells, formula evaluation, table layout, rendering or regeneration.
+Output packet equality covers TABLECONTENT and its native wrapper. Other typed
+resource packets may be normalized; current BLOCK_RECORD output omits optional
+group-331 backlinks while retaining their original target records.
 
 Run from the repository root:
 

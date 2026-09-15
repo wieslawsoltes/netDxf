@@ -117,9 +117,10 @@ references, and synchronized flat/backing stored values. Initial output
 qualification is planned for R2010/R2013/R2018; the wider structural transport
 tests above do not establish TABLE entity export eligibility.
 
-That module still needs typed TABLECONTENT and TABLESTYLE models, complete
-reference enumeration for their supported grammar, clone/resource mapping,
-strict packet/count validation, and independent assertions of the stored cells.
+Immutable typed TABLECONTENT and TABLESTYLE storage is now implemented, with
+qualified source-reference enumeration, packet validation and independent
+preservation checks. Editable cells still need complete backing schemas,
+clone/resource mapping and independent assertions of synchronized cell values.
 CELLSTYLEMAP and TABLEGEOMETRY require separately grounded subsets. Native display
 regeneration remains a distinct concern: Autodesk's
 [AcDbTable.generateLayout documentation](https://help.autodesk.com/cloudhelp/2018/ENU/OARX-RefGuide/files/OREF-AcDbTable__generateLayout.html)
