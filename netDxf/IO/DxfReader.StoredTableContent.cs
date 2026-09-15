@@ -16,6 +16,11 @@ namespace netDxf.IO
             DatabaseRecord record = this.ReadStoredObjectHeader(tags, out List<DxfTag> opaque, out int start, out string handle);
             int end = tags.FindIndex(start, tag => tag.Code == 1001); if (end < 0) end = tags.Count;
             var body = tags.GetRange(start, end - start);
+            var subclasses = body.Where(tag => tag.Code == 100).Select(tag => (string)tag.Value).ToArray();
+            if (this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004 && subclasses.Length != 0
+                && subclasses.All(DxfStoredTableContent.SubclassNames.Contains) && body.All(tag => tag.Code != 102)
+                && !subclasses.SequenceEqual(DxfStoredTableContent.SubclassNames))
+                throw new FormatException("TABLECONTENT requires the complete ordered public subclass hierarchy.");
             bool known = this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004 && opaque.Count == 0
                 && body.Any(tag => tag.Code == 100 && DxfStoredTableContent.SubclassNames.Contains((string)tag.Value))
                 && body.All(tag => tag.Code != 102 && (tag.Code != 100 || DxfStoredTableContent.SubclassNames.Contains((string)tag.Value)));

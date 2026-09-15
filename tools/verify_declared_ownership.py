@@ -32,7 +32,7 @@ def inspect(path, year, binary):
     check(payload == [[102, "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"], [360, content], [70, 2], [90, 1],
                       [10, [0.0, 0.0, 0.0]], [90, 0], [90, 2], [361, geometry]],
           "Exact stored wrapper envelope changed")
-    for handle, kind, subclass in ((content, "TABLECONTENT", "AcDbTableContent"), (geometry, "TABLEGEOMETRY", "AcDbTableGeometry")):
+    for handle, kind, subclass in ((content, "TABLECONTENT", "PrivateOwnershipTableContent"), (geometry, "TABLEGEOMETRY", "AcDbTableGeometry")):
         check(wire[handle] == [[0, kind], [5, handle], [330, record.dxf.handle], [100, subclass], [90, 0]],
               "Child identity, owner, or structural test body changed")
     check(len(list(doc.modelspace())) == 0, "Structural ownership fixture gained entities")
@@ -58,16 +58,17 @@ def inspect_native(directory):
                     doc = ezdxf.readfile(path)
                     check(doc.dxfversion == item["profile"], "Extracted native profile changed")
                     wire = records(path)
-                    target = doc.rootdict["NATIVE_WRAPPER"]
-                    check(target.dxf.handle == wrapper["handle"] and target.dxf.owner == doc.rootdict.dxf.handle, "Native wrapper registration changed")
+                    target = doc.entitydb[wrapper["handle"]]
+                    owner = doc.entitydb[target.dxf.owner]
+                    check(owner.dxftype() == "DICTIONARY" and owner["NATIVE_WRAPPER"] is target, "Native wrapper registration changed")
                     before, after = source_wire[wrapper["handle"]], wire[wrapper["handle"]]
                     start_before = before.index([100, "AcDbXrecord"])
                     start_after = after.index([100, "AcDbXrecord"])
                     check(before[start_before:] == after[start_after:], "Native XRECORD payload or cloning policy changed")
                     for child in wrapper["children"]:
-                        check(wire[child["handle"]] == source_wire[child["handle"]], "Native opaque child body/identity/owner changed")
+                        check(wire[child["handle"]] == source_wire[child["handle"]], "Native stored child body/identity/owner changed")
                     print("PASS " + path.name)
-    print("PASS16 extracted native owning envelopes and unchanged opaque child records; external resource semantics are not asserted")
+    print("PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation")
 
 
 def main():

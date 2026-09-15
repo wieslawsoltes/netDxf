@@ -50,6 +50,7 @@ internal static partial class Program
         RunSunTests();
         RunUcsBaseTests();
         RegisterStoredTableTests();
+        RegisterStoredTableContentTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
         RegisterStoredTableNameSpellingTests();
@@ -57,7 +58,9 @@ internal static partial class Program
         RegisterStoredFieldTests();
         RegisterFifthMixedModuleTests();
         RegisterSixthMixedModuleTests();
+        RegisterSeventhMixedModuleTests();
         RegisterCompositeTableOwnershipTests();
+        RegisterPrivateXRecordTests();
         RunSourceReferenceIdentityTests();
         RunNumericHandleTests();
         RegisterSectionTests();

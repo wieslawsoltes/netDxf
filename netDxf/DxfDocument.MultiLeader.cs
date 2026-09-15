@@ -24,6 +24,8 @@ namespace netDxf
                 else if(item is MultiLeader leader)references=leader.Data.SelectMany(d=>d.References);
                 else if(item is DxfMLeaderStyle style)references=style.DatabaseReferences;
                 else if(item is DxfStoredTableContent content)references=content.References;
+                else if(item is DxfOpaqueObject opaqueContent && opaqueContent.CodeName=="TABLECONTENT")
+                    references=opaqueContent.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value)).Where(value=>value!=null);
                 else if(item is DxfTableStyle tableStyle)references=tableStyle.References;
                 else if(item is DxfStoredDimAssoc association)references=association.References;
                 else if(item is DxfOpaqueObject opaque && opaque.CodeName=="DIMASSOC")references=opaque.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value));

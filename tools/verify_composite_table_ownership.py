@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Require exact native R2004 composite ownership packets in all eight outputs.
 
-The four maps explicitly identify the rebound external owner, opaque table
+The four maps explicitly identify the effective native/carrier owner, stored table
 caches, DATATABLE and its 41 native XRECORD children. No display/evaluation claim.
 """
 import argparse

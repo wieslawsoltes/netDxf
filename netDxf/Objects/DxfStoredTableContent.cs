@@ -127,7 +127,7 @@ namespace netDxf.Objects
         private void ReadOuterCounts(IReadOnlyList<DxfTag> tags)
         {
             List<DxfTag> outer = ValidateFrames(tags);
-            if (outer.Count < 3 || outer[0].Code != 90) return;
+            if (outer == null || outer.Count < 3 || outer[0].Code != 90) return;
             int index = 1, columns = 0, rows = 0;
             while (index < outer.Count && outer[index].Code == 300 && (string)outer[index].Value == "COLUMN") { columns++; index++; }
             if (index >= outer.Count || outer[index].Code != 91) return;
@@ -161,6 +161,13 @@ namespace netDxf.Objects
                 }
                 if (tag.Code == 1 && text.EndsWith("_BEGIN", StringComparison.Ordinal) && FrameNames.Contains(text.Substring(0, text.Length - 6)))
                 {
+                    if (text == "DATAMAP_BEGIN")
+                    {
+                        // Native maps are empty or contain one named stored value. Skip value text
+                        // as data; unfamiliar map shapes retain their packet without projection.
+                        if (!TryReadDataMapEnd(tags, index, out int end)) return null;
+                        index = end; continue;
+                    }
                     if (stack.Count >= 64) throw new FormatException("TABLECONTENT packet nesting exceeds the supported storage limit.");
                     stack.Push(text.Substring(0, text.Length - 6));
                 }
@@ -172,6 +179,32 @@ namespace netDxf.Objects
             }
             if (stack.Count != 0) throw new FormatException("TABLECONTENT has an unterminated stored packet.");
             return outer;
+        }
+        private static bool TryReadDataMapEnd(IReadOnlyList<DxfTag> tags, int start, out int end)
+        {
+            end = start;
+            if (start + 1 >= tags.Count || tags[start + 1].Code != 90) return false;
+            int count = (int)tags[start + 1].Value;
+            if (count == 0)
+            {
+                if (start + 2 >= tags.Count || tags[start + 2].Code != 309 || (string)tags[start + 2].Value != "DATAMAP_END")
+                    throw new FormatException("TABLECONTENT empty DATAMAP framing is invalid.");
+                end = start + 2; return true;
+            }
+            if (count != 1 || start + 5 >= tags.Count || tags[start + 2].Code != 300
+                || tags[start + 3].Code != 301 || (string)tags[start + 3].Value != "DATAMAP_VALUE") return false;
+            // The pinned R2004 maps use the earlier exact numeric-value envelope.
+            if (start + 6 < tags.Count && tags[start + 4].Code == 90 && (int)tags[start + 4].Value == 2
+                && tags[start + 5].Code == 140 && tags[start + 6].Code == 309 && (string)tags[start + 6].Value == "DATAMAP_END")
+            { end = start + 6; return true; }
+            if (tags[start + 4].Code != 93 || tags[start + 5].Code != 90) return false;
+            int index = start + 6;
+            while (index < tags.Count && !(tags[index].Code == 304 && (string)tags[index].Value == "ACVALUE_END")
+                && !(tags[index].Code == 309 && (string)tags[index].Value == "DATAMAP_END")) index++;
+            if (index == tags.Count || tags[index].Code != 304) throw new FormatException("TABLECONTENT has an unterminated DATAMAP AcValue packet.");
+            index++;
+            if (index >= tags.Count || tags[index].Code != 309 || (string)tags[index].Value != "DATAMAP_END") return false;
+            end = index; return true;
         }
     }
 }

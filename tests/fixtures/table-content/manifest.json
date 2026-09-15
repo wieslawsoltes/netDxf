@@ -1,0 +1,1877 @@
+{
+  "schema": 1,
+  "extractor": "ezdxf 1.4.4",
+  "original_transformations": [],
+  "files": [
+    {
+      "file": "acad_table_simple.dxf",
+      "source_sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "profile": "AC1027",
+      "scope": "whole unchanged original",
+      "fixture": "../table-oracle/acad_table_simple.dxf.gz"
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "source_sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "profile": "AC1032",
+      "scope": "whole unchanged original",
+      "fixture": "../table-oracle/acad_table_with_blk_ref.dxf.gz"
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "source_sha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+      "profile": "AC1024",
+      "scope": "exact selected native packets with explicit carrier ownership changes",
+      "fixture": "extracted/sample_AC1024_ascii.dxf",
+      "sha256": "bb741cb0ec11eecb3b279c5e5c5fe084994113d95cad2b7707a0d1e582d67532",
+      "content_handles": [
+        "747",
+        "131E"
+      ],
+      "records": [
+        {
+          "handle": "14",
+          "type": "LTYPE",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "5",
+              "after": "F00002"
+            }
+          ]
+        },
+        {
+          "handle": "11",
+          "type": "STYLE",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "3",
+              "after": "F00005"
+            }
+          ]
+        },
+        {
+          "handle": "570",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "A0B",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "A36",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "1318",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "58D",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "571",
+          "type": "SOLID",
+          "changes": []
+        },
+        {
+          "handle": "572",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "573",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "574",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "575",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "576",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "577",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "578",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "579",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "57A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57D",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57E",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57F",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "580",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "581",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "582",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "583",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "584",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "585",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "586",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "587",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "588",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "589",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58E",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "A0E",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "A0F",
+          "type": "CIRCLE",
+          "changes": []
+        },
+        {
+          "handle": "A10",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "A52",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "A37",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A38",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A39",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3A",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3B",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3C",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3D",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3E",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3F",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A40",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A41",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A43",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "A44",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "A46",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A47",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A48",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A49",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4D",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4E",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4F",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A50",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A51",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A53",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "1319",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "131B",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "131C",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "131D",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "131A",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "528",
+          "type": "ACAD_TABLE",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "A35",
+          "type": "ACAD_TABLE",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "D2F",
+          "type": "INSERT",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "A0C",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "1310",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "1320",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "D30",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "A0D",
+          "type": "SORTENTSTABLE",
+          "changes": []
+        },
+        {
+          "handle": "1311",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1321",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "D31",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "87",
+          "type": "TABLESTYLE",
+          "changes": [
+            {
+              "index": 6,
+              "code": 330,
+              "before": "86",
+              "after": "F0000A"
+            },
+            {
+              "index": 10,
+              "code": 330,
+              "before": "86",
+              "after": "F0000A"
+            }
+          ]
+        },
+        {
+          "handle": "747",
+          "type": "TABLECONTENT",
+          "changes": []
+        },
+        {
+          "handle": "748",
+          "type": "TABLEGEOMETRY",
+          "changes": []
+        },
+        {
+          "handle": "131E",
+          "type": "TABLECONTENT",
+          "changes": []
+        },
+        {
+          "handle": "131F",
+          "type": "TABLEGEOMETRY",
+          "changes": []
+        },
+        {
+          "handle": "D32",
+          "type": "SPATIAL_FILTER",
+          "changes": []
+        },
+        {
+          "handle": "104",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "130F",
+          "type": "CELLSTYLEMAP",
+          "changes": []
+        }
+      ],
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "source_sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+      "profile": "AC1018",
+      "scope": "exact selected native packets with explicit carrier ownership changes",
+      "fixture": "extracted/sample_AC1018_ascii.dxf",
+      "sha256": "089768e2147d96de8735bfab6e6f25b11beb628999111772e0f265ff0a23d4ed",
+      "content_handles": [
+        "747",
+        "13EF"
+      ],
+      "records": [
+        {
+          "handle": "14",
+          "type": "LTYPE",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "5",
+              "after": "F00002"
+            }
+          ]
+        },
+        {
+          "handle": "11",
+          "type": "STYLE",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "3",
+              "after": "F00005"
+            }
+          ]
+        },
+        {
+          "handle": "570",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "A0B",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "A36",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "13E9",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "58D",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "571",
+          "type": "SOLID",
+          "changes": []
+        },
+        {
+          "handle": "572",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "573",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "574",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "575",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "576",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "577",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "578",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "579",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "57A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57D",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57E",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57F",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "580",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "581",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "582",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "583",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "584",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "585",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "586",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "587",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "588",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "589",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58E",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "A0E",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "A0F",
+          "type": "CIRCLE",
+          "changes": []
+        },
+        {
+          "handle": "A10",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "A52",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "A37",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A38",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A39",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3A",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3B",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3C",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3D",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3E",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3F",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A40",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A41",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A43",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "A44",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "A46",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A47",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A48",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A49",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4D",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4E",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4F",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A50",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A51",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A53",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "13EA",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "13EC",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "13ED",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "13EE",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "13EB",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "528",
+          "type": "ACAD_TABLE",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "A35",
+          "type": "ACAD_TABLE",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "D2F",
+          "type": "INSERT",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "A0C",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "13DE",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "13F1",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "D30",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "A0D",
+          "type": "SORTENTSTABLE",
+          "changes": []
+        },
+        {
+          "handle": "1459",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "13DF",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "13F2",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "D31",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "87",
+          "type": "TABLESTYLE",
+          "changes": [
+            {
+              "index": 6,
+              "code": 330,
+              "before": "86",
+              "after": "F0000A"
+            },
+            {
+              "index": 10,
+              "code": 330,
+              "before": "86",
+              "after": "F0000A"
+            }
+          ]
+        },
+        {
+          "handle": "145A",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "747",
+          "type": "TABLECONTENT",
+          "changes": []
+        },
+        {
+          "handle": "748",
+          "type": "TABLEGEOMETRY",
+          "changes": []
+        },
+        {
+          "handle": "143D",
+          "type": "DATATABLE",
+          "changes": []
+        },
+        {
+          "handle": "13EF",
+          "type": "TABLECONTENT",
+          "changes": []
+        },
+        {
+          "handle": "13F0",
+          "type": "TABLEGEOMETRY",
+          "changes": []
+        },
+        {
+          "handle": "145B",
+          "type": "DATATABLE",
+          "changes": []
+        },
+        {
+          "handle": "D32",
+          "type": "SPATIAL_FILTER",
+          "changes": []
+        },
+        {
+          "handle": "104",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "143E",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "143F",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1440",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1441",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1442",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1443",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1444",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1445",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1446",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1447",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1448",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1449",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "144A",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "144B",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "144C",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "144D",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "144E",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "144F",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1450",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1451",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1452",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "145C",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "145D",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "145E",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "145F",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1460",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1461",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1462",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1463",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1464",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1465",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1466",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1467",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1468",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1469",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "146A",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "146B",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "146C",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "146D",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "146E",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "146F",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "13D9",
+          "type": "CELLSTYLEMAP",
+          "changes": []
+        },
+        {
+          "handle": "1401",
+          "type": "XRECORD",
+          "changes": []
+        }
+      ],
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "source_sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+      "profile": "AC1021",
+      "scope": "exact selected native packets with explicit carrier ownership changes",
+      "fixture": "extracted/sample_AC1021_ascii.dxf",
+      "sha256": "6a1dd29b34024f32d50a12b0d7c84da5b7d2084f22069bddbd90115de15544ac",
+      "content_handles": [
+        "747",
+        "1385"
+      ],
+      "records": [
+        {
+          "handle": "14",
+          "type": "LTYPE",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "5",
+              "after": "F00002"
+            }
+          ]
+        },
+        {
+          "handle": "11",
+          "type": "STYLE",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "3",
+              "after": "F00005"
+            }
+          ]
+        },
+        {
+          "handle": "570",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "A0B",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "A36",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "137F",
+          "type": "BLOCK_RECORD",
+          "changes": [
+            {
+              "index": 2,
+              "code": 330,
+              "before": "1",
+              "after": "F00009"
+            }
+          ]
+        },
+        {
+          "handle": "58D",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "571",
+          "type": "SOLID",
+          "changes": []
+        },
+        {
+          "handle": "572",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "573",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "574",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "575",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "576",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "577",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "578",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "579",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "57A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57D",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57E",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "57F",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "580",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "581",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "582",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "583",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "584",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "585",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "586",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "587",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "588",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "589",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "58E",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "A0E",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "A0F",
+          "type": "CIRCLE",
+          "changes": []
+        },
+        {
+          "handle": "A10",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "A52",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "A37",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A38",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A39",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3A",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3B",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3C",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3D",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3E",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A3F",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A40",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A41",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "A43",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "A44",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "A46",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A47",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A48",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A49",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4A",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4B",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4C",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4D",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4E",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A4F",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A50",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A51",
+          "type": "LINE",
+          "changes": []
+        },
+        {
+          "handle": "A53",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "1380",
+          "type": "BLOCK",
+          "changes": []
+        },
+        {
+          "handle": "1382",
+          "type": "MTEXT",
+          "changes": []
+        },
+        {
+          "handle": "1383",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "1384",
+          "type": "INSERT",
+          "changes": []
+        },
+        {
+          "handle": "1381",
+          "type": "ENDBLK",
+          "changes": []
+        },
+        {
+          "handle": "528",
+          "type": "ACAD_TABLE",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "A35",
+          "type": "ACAD_TABLE",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "D2F",
+          "type": "INSERT",
+          "changes": [
+            {
+              "index": 5,
+              "code": 330,
+              "before": "1F",
+              "after": "F00017"
+            }
+          ]
+        },
+        {
+          "handle": "A0C",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "1374",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "1387",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "D30",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "A0D",
+          "type": "SORTENTSTABLE",
+          "changes": []
+        },
+        {
+          "handle": "1375",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "1388",
+          "type": "XRECORD",
+          "changes": []
+        },
+        {
+          "handle": "D31",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "87",
+          "type": "TABLESTYLE",
+          "changes": [
+            {
+              "index": 6,
+              "code": 330,
+              "before": "86",
+              "after": "F0000A"
+            },
+            {
+              "index": 10,
+              "code": 330,
+              "before": "86",
+              "after": "F0000A"
+            }
+          ]
+        },
+        {
+          "handle": "747",
+          "type": "TABLECONTENT",
+          "changes": []
+        },
+        {
+          "handle": "748",
+          "type": "TABLEGEOMETRY",
+          "changes": []
+        },
+        {
+          "handle": "1385",
+          "type": "TABLECONTENT",
+          "changes": []
+        },
+        {
+          "handle": "1386",
+          "type": "TABLEGEOMETRY",
+          "changes": []
+        },
+        {
+          "handle": "D32",
+          "type": "SPATIAL_FILTER",
+          "changes": []
+        },
+        {
+          "handle": "104",
+          "type": "DICTIONARY",
+          "changes": []
+        },
+        {
+          "handle": "136F",
+          "type": "CELLSTYLEMAP",
+          "changes": []
+        }
+      ],
+      "audit_errors": 0,
+      "audit_repairs": 0
+    }
+  ]
+}

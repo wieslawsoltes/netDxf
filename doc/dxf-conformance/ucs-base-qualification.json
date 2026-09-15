@@ -71,5 +71,28 @@
     "Ezdxf1.4.4 does not model UCS79/346; the gate uses raw tags for those fields.",
     "The20 R2004+ output drawings each retain producer LINE20 transparency440=0; exactly that ancillary validator repair is reported separately. Any other repair fails.",
     "Combined integration qualification remains separate from this isolated source receipt."
-  ]
+  ],
+  "explicit_input_transport_proof": {
+    "source_commit": "fe4261bed8a0a4506222d0350607fa569848bf0a",
+    "production_changed": false,
+    "scope": "Additional named-transport and binary-sentinel assertions on original fixtures and serialized raw inputs. DxfRawDocument.Save(Stream) already preserved IsBinary, so the prior input matrix remains valid.",
+    "configurations": {
+      "Debug": {
+        "passed": 242,
+        "failed": 0,
+        "results_sha256": "374aa36be4af5fb4c0edf324fe6b97b749e3abd4f0938e67e5a69646e2bdec16",
+        "log_sha256": "065f8cd31f0944d371b4d9ed9a97c196da4b49c9735f252147b3bbe2737e6978",
+        "tests_dll_sha256": "6226ae7613bd261926b03b4b0791251073cbe99eb398ac9671472be741760362",
+        "production_dll_sha256": "5180ade78791ff4046018c029849ee8b4eb88824912e2e3c9489d063caadffc0"
+      },
+      "Release": {
+        "passed": 242,
+        "failed": 0,
+        "results_sha256": "374aa36be4af5fb4c0edf324fe6b97b749e3abd4f0938e67e5a69646e2bdec16",
+        "log_sha256": "065f8cd31f0944d371b4d9ed9a97c196da4b49c9735f252147b3bbe2737e6978",
+        "tests_dll_sha256": "39bb21f0db299664815a8a9835aa8ae3475c7b416fa820120877c3901aa32454",
+        "production_dll_sha256": "43008bb0c5c26380fd70169672066619dbfd7034b30bd8a8a29593ed815ca4be"
+      }
+    }
+  }
 }

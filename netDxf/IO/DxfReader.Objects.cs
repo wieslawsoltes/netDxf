@@ -99,6 +99,12 @@ namespace netDxf.IO
                 this.databaseRecords.Add(envelope);
                 return envelope;
             }
+            if (codeName == "XRECORD" && this.TryReadPrivateXRecord(tags, out DatabaseRecord privateRecord))
+            {
+                privateRecord.SourceIdentity = source;
+                this.databaseRecords.Add(privateRecord);
+                return privateRecord;
+            }
             DatabaseRecord result = new DatabaseRecord { SourceIdentity = source };
             string handle = null;
             int payload = 0;
@@ -214,7 +220,8 @@ namespace netDxf.IO
         }
         private XRecord ReadXRecordDatabaseRecord()
         {
-            DatabaseRecord record = this.ReadDatabaseRecord(); DxfXRecord typed = (DxfXRecord)record.Object;
+            DatabaseRecord record = this.ReadDatabaseRecord();
+            if (!(record.Object is DxfXRecord typed)) return null; // Private records have no legacy layer-state projection.
             XRecord legacy = new XRecord { Handle = typed.Handle, OwnerHandle = record.Metadata.Owner, Flags = typed.Cloning };
             foreach (DxfTag tag in typed.Data) legacy.Entries.Add(new XRecordEntry(tag.Code, tag.Value));
             return legacy;

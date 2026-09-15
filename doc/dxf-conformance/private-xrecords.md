@@ -1,0 +1,13 @@
+# Private native XRECORD payload preservation
+
+The pinned ACadSharp R2004 drawing contains XRECORD `145A`, owned by dictionary `1459`, with the complete stored body `100 AcDbXrecord`, `280 1`, `1070 0`, `1070 1`, `1070 1`. Those three extended-code values occur without a group-1001 application registry envelope. The native packet is retained as `DxfOpaqueObject` with code name `XRECORD`; it is not exposed as authored `DxfXRecord.Data` or interpreted as layer-state data.
+
+The [Autodesk XRECORD DXF reference](https://help.autodesk.com/cloudhelp/2025/ENU/AutoCAD-DXF/files/GUID-24668FAF-AE03-41AE-AFA4-276C3692827F.htm) specifies ordinary application data groups 1–369, excluding 5 and105. The public authoring validation remains unchanged. This preservation exception is supported by the exact native private packet; it does not expand the documented public application-data grammar.
+
+Recognition requires the actual `AcDbXrecord` body marker outside common application groups. A group at or above1000 in that body before a real outer group1001 selects whole opaque payload preservation. Group1001 text inside a balanced private group102 application block remains private data. A real outer XData envelope is parsed separately through the existing XData validation and preserves APPID identity and metadata bookkeeping. Unsupported data in the common header alone does not manufacture a private body. Missing public subclass markers and malformed actual XData retain their rejection behavior.
+
+The record keeps its accepted physical source token, common owner, persistent reactors, extension dictionary, and ordered opaque payload. Existing opaque graph rules reject cloning and owned-tree erasure before mutation. The legacy layer-state projection is omitted for this private record. The complete native carrier keeps the source record unchanged, including its original owner/reactor handles.
+
+`RegisterPrivateXRecordTests` covers all six profile transports for the synthetic preservation boundary, both native transports, private nested APPID-looking values, private subclasses, valid actual XData, malformed actual XData, missing markers, immutable payloads, source identities, clone/adoption/erasure refusal, and unchanged authored group-code limits. Synthetic all-profile tests establish transport storage behavior; the actual private producer evidence is the pinned R2004 packet.
+
+`tools/verify_private_xrecords.py` requires all 12 synthetic graph outputs and both native145A outputs. It checks exact complete native tags, owner/reactor/extension identities, private data versus actual XData, zero independent-reader audit errors or repairs, and98 parsed-field corruption controls.

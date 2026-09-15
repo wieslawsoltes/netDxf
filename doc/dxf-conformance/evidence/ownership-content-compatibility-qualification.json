@@ -1,0 +1,304 @@
+{
+  "schema": 1,
+  "module": "Native TABLECONTENT ownership-fixture compatibility and private XRECORD preservation",
+  "checkpoint": "abeeea974e7b5842083b6ada86929b4f039c574e",
+  "compatibility_source": "69fd822",
+  "private_xrecord_source": "9dab3e8",
+  "private_gate_source": "39f0570",
+  "configurations": {
+    "Debug": {
+      "passed": 223,
+      "failed": 0,
+      "families": {
+        "private-xrecord": {
+          "passed": 25,
+          "failed": 0
+        },
+        "composite-table": {
+          "passed": 49,
+          "failed": 0
+        },
+        "declared-ownership": {
+          "passed": 35,
+          "failed": 0
+        },
+        "table-content": {
+          "passed": 114,
+          "failed": 0
+        }
+      },
+      "production_dll_sha256": "e2945064cfd9d45f748cf789c5c651d1cb33168b3d60c577daf8608b17d4c8d4",
+      "conformance_dll_sha256": "fce167e16e56b2663269b1f97bf8f0480c84559fbcac02cfc280f51afd7f97e3",
+      "gates": {
+        "private": {
+          "required_dxf_files": 14,
+          "parsed_field_corruption_controls": 98,
+          "final_output": "PASS fourteen private XRECORD outputs, exact native145A bytes-as-tags, common metadata, and98 corruption controls"
+        },
+        "composite": {
+          "required_dxf_files": 8,
+          "parsed_field_corruption_controls": 80,
+          "final_output": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls"
+        },
+        "declared": {
+          "required_dxf_files": 28,
+          "parsed_field_corruption_controls": 0,
+          "final_output": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation"
+        },
+        "content": {
+          "required_dxf_files": 26,
+          "parsed_field_corruption_controls": 112,
+          "final_output": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records, exact opaque variants, and 112 corruption controls"
+        }
+      },
+      "outputs": {
+        "composite-table-13DF-False-edited.dxf": "ed58b998c903b0620be0d317cac726c5f177bef39d4b4b2f2bd4502cd1d29887",
+        "composite-table-13DF-False-map.json": "59ef0116886cb0a22311b7b8eded014106a65157b16cb10017341ed08a012e0e",
+        "composite-table-13DF-False-native.dxf": "4556cebf59141c97f59ba2112d1b1cf68a32b77843f505900e1761fd6f4a5e42",
+        "composite-table-13DF-True-edited.dxf": "2fba4d8550cc1184d9a5e7779865186f692b8230e67708279e52d3dcef896c62",
+        "composite-table-13DF-True-map.json": "59ef0116886cb0a22311b7b8eded014106a65157b16cb10017341ed08a012e0e",
+        "composite-table-13DF-True-native.dxf": "7f7f5fb1d215b63b3566cbc639d28680f72056ba62acb3707bf7519e79d50099",
+        "composite-table-13F2-False-edited.dxf": "983424c7849c566817844a8e6f020c2038ad16621d7d4cf9a4c8849b89028896",
+        "composite-table-13F2-False-map.json": "8e9b1eb57b04f9f0ebddb9d45cc6bc41cb7da91f6f33f06c1dc443741b662e04",
+        "composite-table-13F2-False-native.dxf": "981710532f0ef3c84d3e21b96bb9dd1e8b3bdcf5e51aa025c2273918ccecdc4f",
+        "composite-table-13F2-True-edited.dxf": "3dddbde5ba13b034b56c566b879228047e31ea2212913117874983ef7e5fcb16",
+        "composite-table-13F2-True-map.json": "8e9b1eb57b04f9f0ebddb9d45cc6bc41cb7da91f6f33f06c1dc443741b662e04",
+        "composite-table-13F2-True-native.dxf": "4af94705a7804bc5af1ba1d9140d189af91a0527559a60a69259aedbc4ac77d1",
+        "declared-native-acad_table_simple.dxf-B3-binary.dxf": "27128db4bd87aec564b8ba49e9663045b1b9e8c39c54aef470df9bacb930522d",
+        "declared-native-acad_table_simple.dxf-B3-text.dxf": "d967f0f09d70cf3e61b3a917fb50c79a29441288a95c32d72ee84922ff796331",
+        "declared-native-acad_table_with_blk_ref.dxf-119-binary.dxf": "d22d5f870cb3f54f9fb724e96cbd38965b13c45353e2eab2d8e26e1b68d6b178",
+        "declared-native-acad_table_with_blk_ref.dxf-119-text.dxf": "b0603676a9d553b2c61ced42b439cbb5d056eb30f70570dca434d0007389dd80",
+        "declared-native-sample_AC1018_ascii.dxf-13DF-binary.dxf": "d64ef35016ed589953ba0f94c52bd5eaa4764b0e6f20a90f4bf61319182a6261",
+        "declared-native-sample_AC1018_ascii.dxf-13DF-text.dxf": "7138f4e0b4572999c9a430a1acf49e649781c1d12d50d48b1848e432411b5979",
+        "declared-native-sample_AC1018_ascii.dxf-13F2-binary.dxf": "39e08625ebd2fe65e83f85151a43e0555e5b75a260b7188ca96e2ba5e5132f95",
+        "declared-native-sample_AC1018_ascii.dxf-13F2-text.dxf": "02491b41d3325685e08a13a4e45590574b28b7973b58ce0c9fc638e56806201a",
+        "declared-native-sample_AC1021_ascii.dxf-1375-binary.dxf": "b51e095b491dbe64f94b76bc5e2d3e17ef8d830c6f3670d74587be95babec89b",
+        "declared-native-sample_AC1021_ascii.dxf-1375-text.dxf": "622c667f39e21bacbcea7e34dfa2034a20bf0d78d6be92a42978ad5c21acb7bb",
+        "declared-native-sample_AC1021_ascii.dxf-1388-binary.dxf": "8881eb81c270173f7de94eb07962f2efd26189f5613d0d5acf4ee4ef93bad0c0",
+        "declared-native-sample_AC1021_ascii.dxf-1388-text.dxf": "9b54a910af073ca191bf8f6caa8b35487f83c9cec1b358e5b2f6ab9e9171bcea",
+        "declared-native-sample_AC1024_ascii.dxf-1311-binary.dxf": "66001253d379d1b6964c831d60c8b5cc39b1f7b28e5a1614189188ce597e2534",
+        "declared-native-sample_AC1024_ascii.dxf-1311-text.dxf": "bff617c92785457a0e79d2ef445ed83a461f3c91517e8a4f005704c679301fa5",
+        "declared-native-sample_AC1024_ascii.dxf-1321-binary.dxf": "40783162019ba613fdba59f6b71a3a3db1d76b34012c823e2b7b4ef0fc52d6cd",
+        "declared-native-sample_AC1024_ascii.dxf-1321-text.dxf": "9ce4352cffd861bedd554387cb2920bf75e13f0484f3475dc8b95bead82f374a",
+        "declared-ownership-AutoCad2000-binary.dxf": "d18063dc6599485d62e5238a9ef3188a828032995a8564ac0a8341682020306c",
+        "declared-ownership-AutoCad2000-text.dxf": "f895fe02c5d07354d50a40a5196ef13eaf2f685ddc22fd611d5505e3fdf1fe7f",
+        "declared-ownership-AutoCad2004-binary.dxf": "d18fc7a5bd56e6f1eb1dc28a9eea1f973699c9d92d822ea29ebf07362b795665",
+        "declared-ownership-AutoCad2004-text.dxf": "c0f7318470cbd0b38f25ee04675e441a3a9aedc976443fcbcf9e30aead508c1a",
+        "declared-ownership-AutoCad2007-binary.dxf": "1280727143b8e42478951e35d5747917ab60964d56fd58b399d1e42d7999fc9f",
+        "declared-ownership-AutoCad2007-text.dxf": "6596c1adcfb10eb267a1948199afebb635898101f91002b5a9b2c3f9d7f06dbc",
+        "declared-ownership-AutoCad2010-binary.dxf": "11ceeed00807470f016ef13544adf43717ae41446c392f83c1c5d6f1d7410439",
+        "declared-ownership-AutoCad2010-text.dxf": "391b77cb9153b9317e705c999e47be5550f80ccdaf7a599e7ebe689882e1ca77",
+        "declared-ownership-AutoCad2013-binary.dxf": "8eee90a797064cb19681ce677397e64d5c166c45f787c0f8c2a9858882ac1545",
+        "declared-ownership-AutoCad2013-text.dxf": "f91fccaa9903a3cb51627a0bdc1a6fe10a10e8ebf9e97cad87740ae86a85cd2e",
+        "declared-ownership-AutoCad2018-binary.dxf": "ddee2a701955618eeabd924458e3edeb1838924c9e244e2937f6cb2cc6c6832a",
+        "declared-ownership-AutoCad2018-text.dxf": "a6b4d6246e213566c4c5cd34e8b1fe756bc91dfa7b219aa6ef2892e0417c9137",
+        "private-xrecord-AutoCad2000-False.dxf": "77dd4fc5abc1facfd23bf0fa145aeb933eb68fac1c41823e820334ff0c573058",
+        "private-xrecord-AutoCad2000-True.dxf": "7105e44fe55b2d55597ff94f5b0e2111e34ebfc71580e7259c4b665feb3f5a8a",
+        "private-xrecord-AutoCad2004-False.dxf": "2b0605688a6de25d22a11f4c8d273a886cedb9424bdf3e93c036ea76f5b52d82",
+        "private-xrecord-AutoCad2004-True.dxf": "8d6f4e564f2444c7646d70ba06ca41fc7941d1f5159b43630cc82d26e8a9e510",
+        "private-xrecord-AutoCad2007-False.dxf": "64391383c097de6d37221e50649a611003a2173ebe974eabd56b19d71f23af9d",
+        "private-xrecord-AutoCad2007-True.dxf": "cb80f4b6112fca896bba33a5368a0aa0b30e6507eb6ae1f36e61efabc1106985",
+        "private-xrecord-AutoCad2010-False.dxf": "0ae5c0ef155fa4649e24985623532244640af57c98330deadd6df41fa92f4181",
+        "private-xrecord-AutoCad2010-True.dxf": "f4c85a7ac9bd208e46d64ebb8f1a1626766fdc4ca5c586d0cbb9d75e401c2497",
+        "private-xrecord-AutoCad2013-False.dxf": "434aa56386b1c4e1b6dd175a682c6965a20a5f7f67327aa28642faa314a14670",
+        "private-xrecord-AutoCad2013-True.dxf": "dbd761e129d19aca820ad75884ec973939156664555e00fe853cb589c0abba67",
+        "private-xrecord-AutoCad2018-False.dxf": "96a988073477ecc4dac5c9a115c4b4711dbc1d26d4a8016b801624ee22b30b04",
+        "private-xrecord-AutoCad2018-True.dxf": "ef95438fca65f541c8e03268b8905a4074f375c2b60af9096e389c9f1d4a01dc",
+        "private-xrecord-native-False.dxf": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+        "private-xrecord-native-True.dxf": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+        "table-content-native-acad_table_simple.dxf-False.dxf": "bd6cae07fa714ff8e688359bbda8c71587d2349cdfb582e153988ea3b2c9251a",
+        "table-content-native-acad_table_simple.dxf-True.dxf": "c249a461ccd4f27d52c5f9af56cb7df89ba59476ec63f76fe76e6a40461df731",
+        "table-content-native-acad_table_with_blk_ref.dxf-False.dxf": "76216091077450d51d4a8506658dd596754475510425248f5d6ff52f24296671",
+        "table-content-native-acad_table_with_blk_ref.dxf-True.dxf": "04c8feaec6f81b73306a50b5c02338d5f48691ad2b452759343580fc9be01995",
+        "table-content-native-sample_AC1018_ascii.dxf-False.dxf": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+        "table-content-native-sample_AC1018_ascii.dxf-True.dxf": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+        "table-content-native-sample_AC1021_ascii.dxf-False.dxf": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+        "table-content-native-sample_AC1021_ascii.dxf-True.dxf": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+        "table-content-native-sample_AC1024_ascii.dxf-False.dxf": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+        "table-content-native-sample_AC1024_ascii.dxf-True.dxf": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+        "table-content-opaque-0-False.dxf": "5e7e267d12b80a13df1f4ba9c941e4f8443d695bc738749445fc22db919c764c",
+        "table-content-opaque-0-True.dxf": "475e726e8790a0731e05311d2cf7b4e38935b48ed05bad998796883b765c7965",
+        "table-content-opaque-1-False.dxf": "84a5c8bb0ed06c5c4f5ad17a1f015cd44db22e33a9879c75178255fca561b1b8",
+        "table-content-opaque-1-True.dxf": "e22df6502720a38708b6ca1595b6784b536325decb2e0835c7706f0fbec7f479",
+        "table-content-opaque-2-False.dxf": "d1d43f5ebffcad06cebb956b66e318c66f7ebe54640b2cd6a930feca80466fb5",
+        "table-content-opaque-2-True.dxf": "b6e6a7a119c7372363a6a8d798b2ba6f161fbfb8045ce6d3427a554f9d295726",
+        "table-content-opaque-3-False.dxf": "5b935784a92a6a5d5c587b710929add0bdf852712cc854ef47d4b1a03050aaf7",
+        "table-content-opaque-3-True.dxf": "76ed96be297aa4a3c3eb262849b93b8c50c3571b9570af96299825370221d7dd",
+        "table-content-opaque-4-False.dxf": "667705054c41ed9394986a682a4388dd3d93aa28df386a2f756d1279b98668a7",
+        "table-content-opaque-4-True.dxf": "35f29ab019485825dcecc03f97c20022ca3536b48c726f975af086a670c9e841",
+        "table-content-opaque-5-False.dxf": "9df905b1a4cbc47a275c96c2ef351569c1f243e4839882d602ecda51b2bf7640",
+        "table-content-opaque-5-True.dxf": "d131b2186482a6e375be336ff21366f9b7d4fd2cac4270e5583da25472609e83",
+        "table-content-opaque-6-False.dxf": "027fd4ac6194149642e6d17e4f704a3a4e54a5e5834966e3f62697010db16d0b",
+        "table-content-opaque-6-True.dxf": "f234d15c895fbd781fda5bcac48eeb16c0c7b54a4fac1d48d5f0be396f9eb578",
+        "table-content-opaque-7-False.dxf": "ed62141a50448803a187d22f7c1f69414a25056289f1ea3a542726d2df7ee053",
+        "table-content-opaque-7-True.dxf": "8359766d8f7845213e2703ad1a1b5229116f4c2cfd4e9d2f35e8455c642e27e7"
+      }
+    },
+    "Release": {
+      "passed": 223,
+      "failed": 0,
+      "families": {
+        "private-xrecord": {
+          "passed": 25,
+          "failed": 0
+        },
+        "composite-table": {
+          "passed": 49,
+          "failed": 0
+        },
+        "declared-ownership": {
+          "passed": 35,
+          "failed": 0
+        },
+        "table-content": {
+          "passed": 114,
+          "failed": 0
+        }
+      },
+      "production_dll_sha256": "b98769c5ac81f81ce7bbc829f8d2d08c6783a33fd4f18fcf325900595102430c",
+      "conformance_dll_sha256": "62eaf30af1f730bb811729d3a18f3e2fcd3ce20ec8ad3ad25fb37fb37043cc01",
+      "gates": {
+        "private": {
+          "required_dxf_files": 14,
+          "parsed_field_corruption_controls": 98,
+          "final_output": "PASS fourteen private XRECORD outputs, exact native145A bytes-as-tags, common metadata, and98 corruption controls"
+        },
+        "composite": {
+          "required_dxf_files": 8,
+          "parsed_field_corruption_controls": 80,
+          "final_output": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls"
+        },
+        "declared": {
+          "required_dxf_files": 28,
+          "parsed_field_corruption_controls": 0,
+          "final_output": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation"
+        },
+        "content": {
+          "required_dxf_files": 26,
+          "parsed_field_corruption_controls": 112,
+          "final_output": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records, exact opaque variants, and 112 corruption controls"
+        }
+      },
+      "outputs": {
+        "composite-table-13DF-False-edited.dxf": "ed58b998c903b0620be0d317cac726c5f177bef39d4b4b2f2bd4502cd1d29887",
+        "composite-table-13DF-False-map.json": "59ef0116886cb0a22311b7b8eded014106a65157b16cb10017341ed08a012e0e",
+        "composite-table-13DF-False-native.dxf": "4556cebf59141c97f59ba2112d1b1cf68a32b77843f505900e1761fd6f4a5e42",
+        "composite-table-13DF-True-edited.dxf": "2fba4d8550cc1184d9a5e7779865186f692b8230e67708279e52d3dcef896c62",
+        "composite-table-13DF-True-map.json": "59ef0116886cb0a22311b7b8eded014106a65157b16cb10017341ed08a012e0e",
+        "composite-table-13DF-True-native.dxf": "7f7f5fb1d215b63b3566cbc639d28680f72056ba62acb3707bf7519e79d50099",
+        "composite-table-13F2-False-edited.dxf": "983424c7849c566817844a8e6f020c2038ad16621d7d4cf9a4c8849b89028896",
+        "composite-table-13F2-False-map.json": "8e9b1eb57b04f9f0ebddb9d45cc6bc41cb7da91f6f33f06c1dc443741b662e04",
+        "composite-table-13F2-False-native.dxf": "981710532f0ef3c84d3e21b96bb9dd1e8b3bdcf5e51aa025c2273918ccecdc4f",
+        "composite-table-13F2-True-edited.dxf": "3dddbde5ba13b034b56c566b879228047e31ea2212913117874983ef7e5fcb16",
+        "composite-table-13F2-True-map.json": "8e9b1eb57b04f9f0ebddb9d45cc6bc41cb7da91f6f33f06c1dc443741b662e04",
+        "composite-table-13F2-True-native.dxf": "4af94705a7804bc5af1ba1d9140d189af91a0527559a60a69259aedbc4ac77d1",
+        "declared-native-acad_table_simple.dxf-B3-binary.dxf": "27128db4bd87aec564b8ba49e9663045b1b9e8c39c54aef470df9bacb930522d",
+        "declared-native-acad_table_simple.dxf-B3-text.dxf": "d967f0f09d70cf3e61b3a917fb50c79a29441288a95c32d72ee84922ff796331",
+        "declared-native-acad_table_with_blk_ref.dxf-119-binary.dxf": "d22d5f870cb3f54f9fb724e96cbd38965b13c45353e2eab2d8e26e1b68d6b178",
+        "declared-native-acad_table_with_blk_ref.dxf-119-text.dxf": "b0603676a9d553b2c61ced42b439cbb5d056eb30f70570dca434d0007389dd80",
+        "declared-native-sample_AC1018_ascii.dxf-13DF-binary.dxf": "d64ef35016ed589953ba0f94c52bd5eaa4764b0e6f20a90f4bf61319182a6261",
+        "declared-native-sample_AC1018_ascii.dxf-13DF-text.dxf": "7138f4e0b4572999c9a430a1acf49e649781c1d12d50d48b1848e432411b5979",
+        "declared-native-sample_AC1018_ascii.dxf-13F2-binary.dxf": "39e08625ebd2fe65e83f85151a43e0555e5b75a260b7188ca96e2ba5e5132f95",
+        "declared-native-sample_AC1018_ascii.dxf-13F2-text.dxf": "02491b41d3325685e08a13a4e45590574b28b7973b58ce0c9fc638e56806201a",
+        "declared-native-sample_AC1021_ascii.dxf-1375-binary.dxf": "b51e095b491dbe64f94b76bc5e2d3e17ef8d830c6f3670d74587be95babec89b",
+        "declared-native-sample_AC1021_ascii.dxf-1375-text.dxf": "622c667f39e21bacbcea7e34dfa2034a20bf0d78d6be92a42978ad5c21acb7bb",
+        "declared-native-sample_AC1021_ascii.dxf-1388-binary.dxf": "8881eb81c270173f7de94eb07962f2efd26189f5613d0d5acf4ee4ef93bad0c0",
+        "declared-native-sample_AC1021_ascii.dxf-1388-text.dxf": "9b54a910af073ca191bf8f6caa8b35487f83c9cec1b358e5b2f6ab9e9171bcea",
+        "declared-native-sample_AC1024_ascii.dxf-1311-binary.dxf": "66001253d379d1b6964c831d60c8b5cc39b1f7b28e5a1614189188ce597e2534",
+        "declared-native-sample_AC1024_ascii.dxf-1311-text.dxf": "bff617c92785457a0e79d2ef445ed83a461f3c91517e8a4f005704c679301fa5",
+        "declared-native-sample_AC1024_ascii.dxf-1321-binary.dxf": "40783162019ba613fdba59f6b71a3a3db1d76b34012c823e2b7b4ef0fc52d6cd",
+        "declared-native-sample_AC1024_ascii.dxf-1321-text.dxf": "9ce4352cffd861bedd554387cb2920bf75e13f0484f3475dc8b95bead82f374a",
+        "declared-ownership-AutoCad2000-binary.dxf": "7f602caadb5477f5cd343428ae3f793ba7b3f0d684ce06d2a622f1d19b0ddb9d",
+        "declared-ownership-AutoCad2000-text.dxf": "0ac3a5a6d22f6c4c78a66b2c36998b2b1f06eb6fdad4d7bcee3de11f181e5c19",
+        "declared-ownership-AutoCad2004-binary.dxf": "57a57ca2db14c235c2967c49f4b9bf5950eb44786eac90dbc369bd67240b7d66",
+        "declared-ownership-AutoCad2004-text.dxf": "986cdf46c878a1c06d090a551adbdd565f62158dcac312ac4dbac4d8c350bbb6",
+        "declared-ownership-AutoCad2007-binary.dxf": "dffc291c2f91487086f4c5553e69af01d84d9ec31a45db67eff7bbde4cf2fa56",
+        "declared-ownership-AutoCad2007-text.dxf": "534c33a98c75223bbe378d8545bbc5791c522eed41b649ffff4d2b17ca6c72df",
+        "declared-ownership-AutoCad2010-binary.dxf": "fb17bea70becc4f112e0de6b38cb4d27ee5c9208e3749a75f8b32a11517eb4e1",
+        "declared-ownership-AutoCad2010-text.dxf": "d12026816a0ec00e4aae9a23d600f544440e1817cd7bba3068c4c3d95bb79848",
+        "declared-ownership-AutoCad2013-binary.dxf": "1984286f4038fc36bb8127d9dda4b98ac179e2c5132de4a6838c7d56177a9a78",
+        "declared-ownership-AutoCad2013-text.dxf": "8bc44c899182649de19f5b80b4a2422fea8cc695308b30d86593a589baafd108",
+        "declared-ownership-AutoCad2018-binary.dxf": "6c4488d409206a379521854b3e9d12abebb31db4299ba18f24beb2f36e77744a",
+        "declared-ownership-AutoCad2018-text.dxf": "35b96f4a1127f1a74431c8a27d88e63b95567aa2bf1476430e02837ce7684f34",
+        "private-xrecord-AutoCad2000-False.dxf": "1498356304d7de31d951d1a903375b7e1f454e36ceef11d828f3a9752e4030e5",
+        "private-xrecord-AutoCad2000-True.dxf": "63fd36a62ebe53cec3b51829de04f94c8d79ae7ff8298b51c376570cd5887071",
+        "private-xrecord-AutoCad2004-False.dxf": "e8dcf36d8e211c06a3657c923c937aa89b279999e97ea4d6ee57289bff606012",
+        "private-xrecord-AutoCad2004-True.dxf": "99d61819b7b55f5cad6145bb026155f838985644828b34009d636ec0a68079c8",
+        "private-xrecord-AutoCad2007-False.dxf": "7195b83912663ae83dc22105708959293085101495c70bb49fbe3341fa46e7ee",
+        "private-xrecord-AutoCad2007-True.dxf": "ae0222692d71767db30379d38f1e9cdaa85f750cc808937db726638d1da9ed67",
+        "private-xrecord-AutoCad2010-False.dxf": "c840069bbd54bd8d35e8fcf15b36fb70208245deb0ad473072ef97cfccd31ea3",
+        "private-xrecord-AutoCad2010-True.dxf": "158793b07f0e8b89e2845a2a07a6ed6b309e009219de0a03d37e41af8f1d5372",
+        "private-xrecord-AutoCad2013-False.dxf": "2d457fecc1815201b67d5e85b55260e8cf8623b70e59e5fb6d998ef9469c2d2d",
+        "private-xrecord-AutoCad2013-True.dxf": "a88cf90ef4b14b883d3b35a2cafaf59a6959a2287c7375daf2213d7e6fe49c79",
+        "private-xrecord-AutoCad2018-False.dxf": "80be0156abf46948217f4cc80080bb02de52ef2f7dfba8d88bfa568f1f8a833d",
+        "private-xrecord-AutoCad2018-True.dxf": "36c2542fc62ec6d2e9802bedca82642b17b32fac351a5379ccf3734961a479cc",
+        "private-xrecord-native-False.dxf": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+        "private-xrecord-native-True.dxf": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+        "table-content-native-acad_table_simple.dxf-False.dxf": "bd6cae07fa714ff8e688359bbda8c71587d2349cdfb582e153988ea3b2c9251a",
+        "table-content-native-acad_table_simple.dxf-True.dxf": "c249a461ccd4f27d52c5f9af56cb7df89ba59476ec63f76fe76e6a40461df731",
+        "table-content-native-acad_table_with_blk_ref.dxf-False.dxf": "76216091077450d51d4a8506658dd596754475510425248f5d6ff52f24296671",
+        "table-content-native-acad_table_with_blk_ref.dxf-True.dxf": "04c8feaec6f81b73306a50b5c02338d5f48691ad2b452759343580fc9be01995",
+        "table-content-native-sample_AC1018_ascii.dxf-False.dxf": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+        "table-content-native-sample_AC1018_ascii.dxf-True.dxf": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+        "table-content-native-sample_AC1021_ascii.dxf-False.dxf": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+        "table-content-native-sample_AC1021_ascii.dxf-True.dxf": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+        "table-content-native-sample_AC1024_ascii.dxf-False.dxf": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+        "table-content-native-sample_AC1024_ascii.dxf-True.dxf": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+        "table-content-opaque-0-False.dxf": "82f7834d222c22e2c1fb4f852244e1673d7b22d6145faf1a3a781fa4c527c3ab",
+        "table-content-opaque-0-True.dxf": "761f23c9492aa8ce1e8c1ba2958ccd53cb9609a15380d1c0e3a8759d1d81c79c",
+        "table-content-opaque-1-False.dxf": "e98b98d49e7891365bfd5fac3575cf6351df6bab5198331691de7baf8b3df149",
+        "table-content-opaque-1-True.dxf": "504db0cad1043153b73175f8f62664abe6ad9d1a9768063080aac9c41e127ff6",
+        "table-content-opaque-2-False.dxf": "f3937c842be580e1bbff44e7c705dbb79ba37b5ef85163cc91d34f16419617ec",
+        "table-content-opaque-2-True.dxf": "7c555b5c49a8c116ab421e9a09c5044db7541ab70784d7129e57dc5b314d2dcf",
+        "table-content-opaque-3-False.dxf": "d3da452825182d2c51cac72bfdf36360530521ede879abf30383f5c54572a0b6",
+        "table-content-opaque-3-True.dxf": "2d20631f0ad2e9c84d92e1a890ce143e3a0e63b03c1df02083de2b5e60bd8a42",
+        "table-content-opaque-4-False.dxf": "b0947b8204b746c281b8368f3561604b62a1686ad098fcda3bf0faf850d88f91",
+        "table-content-opaque-4-True.dxf": "47e7f6650933fcd1efc19153260f581d607b9f41f99b0343a5544158bf9517fa",
+        "table-content-opaque-5-False.dxf": "9815b48725f0e5b9ab9594bbd640e6491b494c0533902dd130b2ed10cad8d839",
+        "table-content-opaque-5-True.dxf": "fc52605a6a6cac6f1425ebc837a9df7eaeeb3e3323ff2133d93153ccba9c4243",
+        "table-content-opaque-6-False.dxf": "eee7c2553042c888a35d101267d6c3c57b070fd402487c648e7eda8c05254ae9",
+        "table-content-opaque-6-True.dxf": "cabd000c7b2418ea22e9ce1c950c3d723db49db5bed9ad3109772cd734e32de3",
+        "table-content-opaque-7-False.dxf": "0cf0658f0dbdcb17b674fd44137fd59cd14aeeacf8572e58c6ef7da7f8340bbe",
+        "table-content-opaque-7-True.dxf": "e960ec1b660e49e60e7be0bdf48e143196eeb8fe4261740273d8524adc1b6565"
+      }
+    }
+  },
+  "real_file_corruption_controls": [
+    {
+      "name": "private-missing-file",
+      "exit_code": 1,
+      "last_error": "ValueError: All fourteen private XRECORD drawings are mandatory"
+    },
+    {
+      "name": "private-mutated-native-shaped-body",
+      "exit_code": 1,
+      "last_error": "ValueError: Exact private body and real XData differs"
+    },
+    {
+      "name": "composite-missing-map",
+      "exit_code": 1,
+      "last_error": "ValueError: All four composite TABLE maps are mandatory"
+    },
+    {
+      "name": "content-missing-native-output",
+      "exit_code": 1,
+      "last_error": "ValueError: All ten native TABLECONTENT outputs are mandatory"
+    },
+    {
+      "name": "content-mutated-stored-count",
+      "exit_code": 1,
+      "last_error": "ValueError: Exact TABLECONTENT payload differs: 747"
+    },
+    {
+      "name": "content-mutated-source-mapping",
+      "exit_code": 1,
+      "last_error": "ValueError: Extracted native packet differs outside its explicit mapping: 14"
+    }
+  ],
+  "limits": [
+    "Native private XRECORD evidence is R2004 record145A, with complete unchanged common metadata and body. Synthetic all-profile cases qualify storage transport only.",
+    "Managed layer-state dictionary application schemas are not expanded.",
+    "TABLECONTENT final custom-map projection source is separately qualified by its owner at809b0d2; the independent final50-probe receipt uses that DLL.",
+    "No TABLE editing, expression evaluation, rendering, or complete original ACadSharp drawing import is claimed."
+  ]
+}

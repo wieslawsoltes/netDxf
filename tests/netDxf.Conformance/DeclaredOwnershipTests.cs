@@ -31,11 +31,11 @@ internal static partial class Program
         Run("declared-ownership/registered-reciprocity", DeclaredOwnershipRegisteredReciprocity);
     }
 
-    // These opaque child bodies are structural test carriers, not an editable TABLE implementation.
+    // These explicitly private opaque bodies test ownership without claiming the public TABLECONTENT grammar.
     // The ownership marker and 360/361 relationships come from the frozen native TABLE fixtures.
     private static DxfDatabaseObject OwnershipChild(string kind)
     {
-        var tags = new List<DxfTag> { new(100, kind == "TABLECONTENT" ? "AcDbTableContent" : "AcDbTableGeometry"), new(90, 0) };
+        var tags = new List<DxfTag> { new(100, kind == "TABLECONTENT" ? "PrivateOwnershipTableContent" : "AcDbTableGeometry"), new(90, 0) };
         return (DxfDatabaseObject)Activator.CreateInstance(typeof(DxfOpaqueObject), BindingFlags.Instance | BindingFlags.NonPublic,
             null, new object[] { kind, tags }, null)!;
     }
@@ -150,13 +150,14 @@ internal static partial class Program
                 .SelectMany(table => table.Tags.Where(t => t.Code == 360 || t.Code == 350))
                 .Where(t => (string)t.Value != "0")
                 .Select(t => sourceObjects.Single(r => r.Tags.Any(h => h.Code == 5 && (string)h.Value == (string)t.Value)))).ToArray();
-            var minimal = new DxfDocument(source.Version); string root = minimal.Objects.Root.Handle;
-            using var setup = new MemoryStream(); Check(minimal.Save(setup, binary), "native packet setup save"); setup.Position = 0;
-            var raw = DxfRawDocument.Load(setup); var dictionary = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DICTIONARY" && r.Tags.Any(t => t.Code == 5 && (string)t.Value == root));
+            using var setup = new MemoryStream(TableContentSourceBytes(file));
+            var raw = DxfRawDocument.Load(setup);
+            var retainedWrapper = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Tags.Any(t => t.Code == 5 && (string)t.Value == wrapperHandle));
+            string root = (string)retainedWrapper.Tags.TakeWhile(t => t.Code != 100).Last(t => t.Code == 330).Value;
+            var dictionary = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DICTIONARY" && r.Tags.Any(t => t.Code == 5 && (string)t.Value == root));
+            // Same-owner alias: source extension dictionaries remain attached to their
+            // actual native hosts when the complete dependency carrier retains them.
             raw = raw.WithRecord(dictionary, dictionary.Tags.Concat(new[] { new DxfTag(3, "NATIVE_WRAPPER"), new DxfTag(360, wrapperHandle) }));
-            int boundary = raw.Sections.Single(s => s.Name == "OBJECTS").EndTagIndex - 1;
-            var packetTags = wrapper.Tags.Select(t => t.Code == 330 ? new DxfTag(330, root) : t).Concat(children.SelectMany(r => r.Tags));
-            raw = raw.WithTags(raw.Tags.Take(boundary).Concat(packetTags).Concat(raw.Tags.Skip(boundary)));
             using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
             var loaded = DxfDocument.Load(input) ?? throw new Exception("Native owning packet load failed.");
             var record = (DxfXRecord)loaded.GetObjectByHandle(wrapperHandle);
@@ -178,7 +179,7 @@ internal static partial class Program
             {
                 string handle = (string)child.Tags.Single(t => t.Code == 5).Value;
                 var after = savedObjects.Single(r => r.Tags.Any(t => t.Code == 5 && (string)t.Value == handle));
-                Check(OwnershipTagValues(child.Tags).SequenceEqual(OwnershipTagValues(after.Tags)), "Native opaque child record changed");
+                Check(OwnershipTagValues(child.Tags).SequenceEqual(OwnershipTagValues(after.Tags)), "Native stored child record changed");
             }
         }
     }

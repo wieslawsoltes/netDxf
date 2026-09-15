@@ -31,11 +31,17 @@ internal static partial class Program
         using var metadata = JsonDocument.Parse(File.ReadAllText(Path.Combine("tests", "fixtures", "ucs-record-base", "carriers", "manifest.json")));
         string expected = metadata.RootElement.GetProperty("files").EnumerateArray().Single(item => item.GetProperty("file").GetString() == file).GetProperty("sha256").GetString()!;
         Equal(expected, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)).ToLowerInvariant(), "Pinned independent producer bytes");
+        UcsBaseAssertTransport(bytes, binary);
         return DxfRawDocument.Load(new MemoryStream(bytes));
     }
     private static DxfRawRecord UcsBaseRecord(DxfRawDocument raw, string name) => raw.Sections.Single(section => section.Name == "TABLES").Records.Single(record => record.Name == "UCS" && record.Tags.Any(tag => tag.Code == 2 && (string)tag.Value == name));
+    private static void UcsBaseAssertTransport(byte[] bytes, bool binary)
+    {
+        byte[] sentinel = System.Text.Encoding.ASCII.GetBytes("AutoCAD Binary DXF\r\n\u001a\0");
+        Equal(binary, bytes.AsSpan().StartsWith(sentinel), "Actual input bytes use the named DXF transport");
+    }
     private static DxfDocument UcsBaseLoad(DxfRawDocument raw)
-    { using var bytes = new MemoryStream(); raw.Save(bytes); bytes.Position = 0; return DxfDocument.Load(bytes) ?? throw new Exception("UCS base load failed."); }
+    { using var bytes = new MemoryStream(); raw.Save(bytes, raw.IsBinary); UcsBaseAssertTransport(bytes.ToArray(), raw.IsBinary); bytes.Position = 0; return DxfDocument.Load(bytes) ?? throw new Exception("UCS base load failed."); }
     private static DxfDocument UcsBaseRoundTrip(DxfDocument doc, bool binary, string? output = null)
     {
         using var bytes = new MemoryStream(); Check(doc.Save(bytes, binary), "UCS base save"); if (output != null) File.WriteAllBytes(Path.Combine(ArtifactDirectory, output), bytes.ToArray()); bytes.Position = 0;
@@ -135,7 +141,7 @@ internal static partial class Program
             case "duplicate-owner-name": Set(2, "BOTTOM_FROM_WORLD"); break;
             case "missing-owner-identity": tags.RemoveAll(tag => tag.Code == 5); break;
         }
-        child = UcsBaseRecord(raw, "LEFT_FROM_SURVEY"); raw = raw.WithRecord(child, tags); using var bytes = new MemoryStream(); raw.Save(bytes); bytes.Position = 0; bool rejected = false;
+        child = UcsBaseRecord(raw, "LEFT_FROM_SURVEY"); raw = raw.WithRecord(child, tags); using var bytes = new MemoryStream(); raw.Save(bytes, binary); UcsBaseAssertTransport(bytes.ToArray(), binary); bytes.Position = 0; bool rejected = false;
         try { rejected = DxfDocument.Load(bytes) == null; } catch (Exception error) when (error is FormatException || error is ArgumentException || error is InvalidDataException) { rejected = true; }
         Check(rejected, "Malformed or unretained UCS base relationship must reject: " + defect);
     }

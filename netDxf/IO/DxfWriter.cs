@@ -97,6 +97,7 @@ namespace netDxf.IO
             this.ValidateLwPolylineFidelity();
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
+            this.ValidateHatchSplineData();
             this.ValidateHatchSplineFitVersions();
             this.ValidateHelixVersions();
             this.ValidateLightVersions();
@@ -3247,7 +3248,7 @@ namespace netDxf.IO
                 {
                     this.chunk.Write(10, point.X);
                     this.chunk.Write(20, point.Y);
-                    if (spline.IsRational)
+                    if (spline.IsRational || point.Z != 1.0)
                     {
                         this.chunk.Write(42, point.Z);
                     }

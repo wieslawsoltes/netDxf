@@ -55,15 +55,15 @@ internal static partial class Program
         handles.AddRange(CompositeTablePayload(wrapper).Where(t => t.Code is 360 or 361).Select(t => (string)t.Value));
         var table = CompositeTableRecord(source, handles[3]);
         handles.AddRange(CompositeTablePayload(table).Where(t => t.Code == 360).Select(t => (string)t.Value));
-        var doc = new DxfDocument(DxfVersion.AutoCad2004); var owner = new DxfDictionary(); doc.Objects.Root.Add("COMPOSITE_OWNER", owner); string root = owner.Handle;
-        using var bytes = new MemoryStream(); Check(doc.Save(bytes, binary), "composite base save"); bytes.Position = 0; var raw = DxfRawDocument.Load(bytes);
+        // The shared carrier retains actual native TABLECONTENT dependencies, including
+        // styles and referenced block members. Only manifest-listed common owners change.
+        using var bytes = new MemoryStream(TableContentSourceBytes("sample_AC1018_ascii.dxf"));
+        var raw = DxfRawDocument.Load(bytes);
+        var retainedWrapper = CompositeTableRecord(raw, wrapperHandle);
+        string root = (string)retainedWrapper.Tags.TakeWhile(t => t.Code != 100).Last(t => t.Code == 330).Value;
         var dictionary = CompositeTableRecord(raw, root);
         raw = raw.WithRecord(dictionary, dictionary.Tags.Concat(new[] { new DxfTag(3, "NATIVE_COMPOSITE"), new DxfTag(360, wrapperHandle) }));
-        int boundary = raw.Sections.Single(s => s.Name == "OBJECTS").EndTagIndex - 1;
-        // The wrapper's external dictionary owner/reactor is explicitly rebound to
-        // this carrier root. Every subclass packet and descendant owner is native.
-        var packet = handles.SelectMany(h => h == wrapperHandle ? CompositeTableRecord(source, h).Tags.Select(t => t.Code == 330 ? new DxfTag(330, root) : t) : CompositeTableRecord(source, h).Tags);
-        return (raw.WithTags(raw.Tags.Take(boundary).Concat(packet).Concat(raw.Tags.Skip(boundary))), source, root, handles);
+        return (raw, source, root, handles);
     }
     private static DxfDocument? CompositeTableTryLoad(DxfRawDocument raw, bool binary)
     { using var bytes = new MemoryStream(); DxfRawDocument.Create(raw.Tags, binary).Save(bytes); bytes.Position = 0; return DxfDocument.Load(bytes); }

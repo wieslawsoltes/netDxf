@@ -1,0 +1,69 @@
+{
+  "production_commit": "1d1ec8fca3fb649145e90a5e4005b5dd98606dc3",
+  "scope": "Reject unsupported nonzero public MESH override declarations; no property value grammar or override support is implemented.",
+  "source_boundary": "ReadMesh only; after completed crease data or completed face list with no optional edge list, outside private102/later subclasses and before1001.",
+  "before_behavior": {
+    "independent_cases": 18,
+    "accepted": 18,
+    "emitted_override_count": 0,
+    "disclosure": "Synthetic declaration-only/marker/zero-property controls, not qualified native property packets.",
+    "evidence": "recovery-validation/mesh-override/output-before/wire-review.json"
+  },
+  "new_test_cases": 116,
+  "existing_mesh_cases": 624,
+  "configurations": {
+    "Debug": {
+      "unique_passed_cases": 740,
+      "failed_cases": 0,
+      "library_sha256": "c9b8a5733a3ac72e3bc654b286fcefde86ee1f837bc64711eda29842e615d79b",
+      "build_errors": 0,
+      "existing_cs1591_warnings": 561,
+      "mesh_independent_gates": 5,
+      "failed_gates": 0,
+      "new_gate": {
+        "passed": true,
+        "outputs": 64,
+        "native_source_packets": 2,
+        "exact_native_output_bodies": 4,
+        "negative_controls": [
+          "nonzero-count",
+          "subdivision",
+          "missing-vertex",
+          "following-line",
+          "missing-mesh",
+          "native-override-count"
+        ],
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "ezdxf": "1.4.4"
+      }
+    },
+    "Release": {
+      "unique_passed_cases": 740,
+      "failed_cases": 0,
+      "library_sha256": "c879b5d23574e30bc1f69ffaf1cd7c13fc7fcce01660f735a10282bbd9c25718",
+      "build_errors": 0,
+      "existing_cs1591_warnings": 561,
+      "mesh_independent_gates": 5,
+      "failed_gates": 0,
+      "new_gate": {
+        "passed": true,
+        "outputs": 64,
+        "native_source_packets": 2,
+        "exact_native_output_bodies": 4,
+        "negative_controls": [
+          "nonzero-count",
+          "subdivision",
+          "missing-vertex",
+          "following-line",
+          "missing-mesh",
+          "native-override-count"
+        ],
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "ezdxf": "1.4.4"
+      }
+    }
+  },
+  "identical_complete_case_sets": true
+}

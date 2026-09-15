@@ -1059,7 +1059,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.XRecord:
                         XRecord xRecord = this.ReadXRecordDatabaseRecord();
-                        Debug.Assert(xRecord != null, "XRecord cannot be null");
+                        // Private opaque XRECORDs remain in the object database without a layer-state projection.
                         if (xRecord != null)
                         {
                             this.xRecords.Add(xRecord.Handle, xRecord);
@@ -4499,6 +4499,8 @@ namespace netDxf.IO
         {
             int subdivisionLevel = 0;
             bool blendCrease = false;
+            bool creaseListRead = false, publicSubclass = true, xdataStarted = false;
+            int privateDepth = 0;
             List<Vector3> vertexes = null;
             List<int[]> faces = null;
             List<MeshEdge> edges = null;
@@ -4506,8 +4508,36 @@ namespace netDxf.IO
 
             while (this.chunk.Code != 0)
             {
+                // The public override declaration follows the counted crease list.
+                // Private packets and XData must not reuse its codes as mesh fields.
+                if (this.chunk.Code == 102)
+                {
+                    string control = this.chunk.ReadString();
+                    if (control.StartsWith("{", StringComparison.Ordinal)) privateDepth++;
+                    else if (control == "}" && privateDepth > 0) privateDepth--;
+                    this.ReadNextMeshTag();
+                    continue;
+                }
+                if (privateDepth > 0) { this.ReadNextMeshTag(); continue; }
+                if (this.chunk.Code == 100)
+                {
+                    publicSubclass = this.chunk.ReadString() == SubclassMarker.Mesh;
+                    this.ReadNextMeshTag();
+                    continue;
+                }
+                if (this.chunk.Code == 1001) xdataStarted = true;
+                else if (!publicSubclass || xdataStarted) { this.ReadNextMeshTag(); continue; }
                 switch (this.chunk.Code)
                 {
+                    case 90:
+                        if (creaseListRead || (faces != null && edges == null))
+                        {
+                            int overrides = this.chunk.ReadInt();
+                            if (overrides < 0) throw this.MeshReadError(90, "The subentity override count cannot be negative.");
+                            if (overrides != 0) throw this.MeshReadError(90, "Subentity property overrides are not supported.");
+                        }
+                        this.ReadNextMeshTag();
+                        break;
                     case 72:
                         short blend = this.chunk.ReadShort();
                         if (blend != 0 && blend != 1)
@@ -4542,6 +4572,7 @@ namespace netDxf.IO
                         if (numCrease < 0 || edges == null || numCrease != edges.Count)
                             throw this.MeshReadError(95, "The crease count must match an existing edge list.");
                         this.ReadMeshEdgeCreases(edges);
+                        creaseListRead = true;
                         break;
                     case 1001:
                         string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
@@ -9508,6 +9539,8 @@ namespace netDxf.IO
                     }
                 }
             }
+            try { HatchSplineData.Validate(spline); }
+            catch (ArgumentException error) { throw this.InvalidHatchEdgeData(error.Message); }
             return spline;
         }
 
