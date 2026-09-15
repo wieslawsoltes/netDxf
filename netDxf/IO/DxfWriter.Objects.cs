@@ -71,6 +71,7 @@ namespace netDxf.IO
                 else if (count > 0) definitions.Add(new DxfClass(names[i], cppNames[i], "ObjectDBX Classes") { ProxyFlags = 0, IsEntity = false, InstanceCount = count });
             }
             this.PrepareGeoDataClass(definitions);
+            this.PrepareLayerFilterPointerClasses(definitions);
             this.PrepareMultiLeaderClasses(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
@@ -118,6 +119,7 @@ namespace netDxf.IO
             else if (this.WriteGeoDataPayload(item)) { }
             else if (this.WriteOutputSettingsPayload(item)) { }
             else if (this.WriteMLeaderStylePayload(item)) { }
+            else if (this.WriteLayerFilterPointerPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

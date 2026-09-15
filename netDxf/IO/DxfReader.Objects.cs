@@ -35,6 +35,12 @@ namespace netDxf.IO
                 if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
                 this.chunk.Next();
             }
+            if (codeName == "LAYER_FILTER" || codeName == "OBJECT_PTR")
+            {
+                DatabaseRecord envelope = this.ReadLayerFilterPointerRecord(codeName, tags);
+                this.databaseRecords.Add(envelope);
+                return envelope;
+            }
             DatabaseRecord result = new DatabaseRecord();
             string handle = null;
             int payload = 0;
