@@ -45,3 +45,11 @@ The report captures the current source version, requested target version, diagno
 | `CLASS_INSTANCE_COUNT_OMITTED` | Explicit CLASS instance count, including zero | R2000 omits group 91 |
 
 These are concrete existing writer rules, not inferred DXF restrictions. For example, legacy MTEXT defined height remains represented through XData and is not diagnosed as a loss. Proxy-graphics count-code changes preserve the payload and are not omissions. Arbitrary opaque objects are not assigned invented version legality. New typed features must extend this bounded matrix when their writer guards are added; the implementation includes the PR93 CELLSTYLEMAP and ordinary PolygonMesh record storage increments.
+
+## Qualification
+
+The checked-in [qualification receipt](version-compatibility-qualification.json) records 638 passing, unique conformance cases in each of Debug and Release. The matrix includes 396 authored feature/target/transport comparisons, 132 stored-family comparisons, 16 further upgrade cases, 36 explicit-null SUN cases, 12 ordinary PolygonMesh record cases, 12 physical omission checks, 12 preserved MTEXT defined-height controls, 12 opaque-packet exclusion controls, and ten traversal/snapshot/purity checks. Debug and Release results are byte-identical.
+
+The mandatory `tools/verify_version_compatibility.py` gate independently decodes the twelve omission output files per configuration and rejects ten deliberately corrupted physical packets. A separate [independent review](receipts/version-compatibility-independent/README.md) passes 518 cases in each configuration, checks every documented code and exact property path, and preserves its harnesses, result records and actual-writer evidence. Fixture-helper reuse is explicitly identified in that review.
+
+All five supported library target frameworks build in Release. This isolated qualification predates the PR92 HATCH XML-parameter documentation cleanup and records its exact existing warning breakdown in the receipt; the diagnostic implementation adds no warnings. No native CAD acceptance or exhaustive validity conclusion follows from these results.
