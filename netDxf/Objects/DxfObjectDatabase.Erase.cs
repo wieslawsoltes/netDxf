@@ -124,6 +124,7 @@ namespace netDxf.Objects
                     foreach (DxfObject target in meshRecord.References) reference(target, "polygon mesh record reference");
                     foreach (DxfTag tag in meshRecord.OpaqueHandleTags) handle((string)tag.Value, "polygon mesh record handle");
                 }
+                if (item is DxfOpaqueEntity opaqueEntity) foreach (DxfObject target in opaqueEntity.References) reference(target, "unknown entity reference");
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)

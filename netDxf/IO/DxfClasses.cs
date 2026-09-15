@@ -46,9 +46,12 @@ namespace netDxf.IO
                 if (type != DxfObjectCode.Class) throw new InvalidDataException("Unexpected record in CLASSES: " + type);
                 string name = null, cppName = null, application = string.Empty;
                 int flags = 0; int? count = null; bool wasProxy = false, isEntity = false;
+                var sourceFields = new System.Collections.Generic.HashSet<short>();
+                bool opaqueQualified = true;
                 this.ReadNextClassTag();
                 while (this.chunk.Code != 0)
                 {
+                    if (!sourceFields.Add(this.chunk.Code)) opaqueQualified = false;
                     switch (this.chunk.Code)
                     {
                         case 1: name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
@@ -59,9 +62,11 @@ namespace netDxf.IO
                         case 280: wasProxy = this.ReadClassFlag(); break;
                         case 281: isEntity = this.ReadClassFlag(); break;
                         // Unknown class-field tags remain outside this typed-definition feature.
+                        default: opaqueQualified = false; break;
                     }
                     this.ReadNextClassTag();
                 }
+                if (!opaqueQualified && name != null) this.unqualifiedOpaqueClasses.Add(name);
                 try
                 {
                     this.doc.Classes.Add(new DxfClass(name, cppName, application)

@@ -642,6 +642,14 @@ namespace netDxf
         /// </remarks>
         public bool Save(string file, bool isBinary)
         {
+            // Opaque-specific refusals must precede destination truncation and document path changes.
+#if DEBUG
+            new DxfWriter().PreflightOpaqueEntities(this, isBinary);
+#else
+            try { new DxfWriter().PreflightOpaqueEntities(this, isBinary); }
+            catch (DxfVersionNotSupportedException) { throw; }
+            catch { return false; }
+#endif
             FileInfo fileInfo = new FileInfo(file);
             this.name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
             DxfWriter dxfWriter = new DxfWriter();
@@ -964,6 +972,7 @@ namespace netDxf
                 case EntityType.Spline:
                 case EntityType.Helix:
                 case EntityType.Section:
+                case EntityType.OpaqueEntity:
                 case EntityType.StoredTable:
                     break;
                 case EntityType.MultiLeader:
@@ -1138,6 +1147,7 @@ namespace netDxf
                 case EntityType.Spline:
                 case EntityType.Helix:
                 case EntityType.Section:
+                case EntityType.OpaqueEntity:
                 case EntityType.StoredTable:
                     break;
                 case EntityType.MultiLeader:
@@ -1266,6 +1276,7 @@ namespace netDxf
             entity.LayerChanged -= this.Entity_LayerChanged;
             entity.LinetypeChanged -= this.Entity_LinetypeChanged;
 
+            if (entity is DxfOpaqueEntity removedOpaque) removedOpaque.MarkRemoved();
             if (entity is StoredTable removedTable) removedTable.MarkRemoved();
             entity.Handle = null;
             entity.Owner = null;

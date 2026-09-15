@@ -319,6 +319,12 @@ namespace netDxf.Collections
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<StoredTable>(); }
         }
 
+        /// <summary>Gets stored standalone unknown entities in the active layout.</summary>
+        public IEnumerable<DxfOpaqueEntity> OpaqueEntities
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<DxfOpaqueEntity>(); }
+        }
+
         /// <summary>Gets the stored section planes in the active layout.</summary>
         public IEnumerable<Section> Sections
         {

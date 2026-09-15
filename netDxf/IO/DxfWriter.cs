@@ -87,6 +87,7 @@ namespace netDxf.IO
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
             }
 
+            this.ValidateOpaqueEntities();
             this.ValidateStoredPolylineRecords();
             this.ValidateStoredPolygonMeshRecords();
             this.ValidateStoredDimensionHeaders();
@@ -115,6 +116,7 @@ namespace netDxf.IO
 
             this.ValidateDatabaseTransport();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
+            this.ValidateOpaqueEntityClasses(classDefinitions);
 
             this.encodedStrings = new Dictionary<string, string>();
             this.polylines = new Dictionary<string, Polyline>();
@@ -1875,6 +1877,7 @@ namespace netDxf.IO
                 return;
             }
 
+            if (entity is DxfOpaqueEntity opaque) { this.WriteOpaqueEntity(opaque); return; }
             this.WriteEntityCommonCodes(entity, layout);
 
             switch (entity.Type)

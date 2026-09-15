@@ -73,6 +73,7 @@ namespace netDxf.Entities
                 if (block == null || !visited.Add(block)) return;
                 foreach (EntityObject entity in block.Entities)
                 {
+                    if (entity is DxfOpaqueEntity) throw new NotSupportedException("Cloning blocks with unknown entities requires their complete application schema.");
                     if (entity is Polyline3D polyline) polyline.RejectStoredRecordClone();
                     if (entity is PolygonMesh mesh) mesh.RejectStoredRecordClone();
                     if (entity is Insert insert) visit(insert.Block);
@@ -87,6 +88,7 @@ namespace netDxf.Entities
             for (DxfObject current = source; current != null; current = current.Owner)
             {
                 if (!visited.Add(current)) throw new InvalidOperationException("The clone source has cyclic ownership.");
+                if (current is DxfOpaqueEntity) throw new NotSupportedException("Cloning unknown entity metadata requires its complete application schema.");
                 if (current is Polyline3DRecord || current is PolygonMeshRecord)
                     throw new NotSupportedException("Cloning a retained polyline record's owned metadata requires its complete source graph.");
             }

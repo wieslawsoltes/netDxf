@@ -101,6 +101,7 @@ namespace netDxf
                 if (entity is Light) this.Minimum(DxfVersion.AutoCad2007, "LIGHT_PROFILE", entity, "Type", "LIGHT entities");
                 if (entity is Section) this.Minimum(DxfVersion.AutoCad2007, "SECTION_PROFILE", entity, "Type", "SECTION entities");
                 if (entity is Viewport viewport) this.SunSlot(viewport);
+                if (entity is DxfOpaqueEntity opaque) this.SourceProfile(opaque, opaque.SourceVersion);
                 if (entity is StoredTable table) this.SourceProfile(table, table.SourceVersion);
                 if (entity is Polyline2D polyline)
                     for (int i = 0; i < polyline.Vertexes.Count; i++)

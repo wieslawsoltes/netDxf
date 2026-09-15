@@ -443,6 +443,7 @@ namespace netDxf.Blocks
                 throw new ArgumentNullException(nameof(doc));
             }
 
+            DxfOpaqueEntity.RejectBlockGeometry(doc.Layouts[Layout.ModelSpaceName].AssociatedBlock);
             Block block = new Block(name)
             {
                 Origin = doc.DrawingVariables.InsBase
@@ -565,6 +566,7 @@ namespace netDxf.Blocks
         /// <returns>Return true if the file has been successfully save, false otherwise.</returns>
         public bool Save(string file, DxfVersion version, bool isBinary)
         {
+            DxfOpaqueEntity.RejectBlockGeometry(this);
             DxfDocument dwg = new DxfDocument(version);
             dwg.DrawingVariables.InsBase = this.origin;
             dwg.DrawingVariables.InsUnits = this.Record.Units;
@@ -742,6 +744,7 @@ namespace netDxf.Blocks
             if (e.Item is Hatch incomingHatch && e.Item.Owner == null) HatchSourceRelations.ValidateOwner(incomingHatch, this);
             if (e.Item is Section section && this.Record.Owner != null) section.Validate(this.Record.Owner.Owner);
             if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
+            if (e.Item is DxfOpaqueEntity opaque && e.Item.Owner == null) opaque.ValidateIncoming(this.Record.Owner?.Owner, this);
             if (e.Item is StoredTable storedTable && e.Item.Owner == null) storedTable.ValidateIncoming(this.Record.Owner?.Owner);
             if (e.Item != null && e.Item.Owner == null && this.Record.Owner != null) this.Record.Owner.Owner.ValidateStoredTableEntityAdoption(e.Item);
             // null items, entities already owned by another Block, attribute definitions and attributes are not allowed in the entities list.
