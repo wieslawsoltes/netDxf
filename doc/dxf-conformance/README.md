@@ -2,7 +2,9 @@
 
 Start with the [current version and feature comparison](version-feature-matrix.md), with typed editing distinguished from raw preservation and each format family shown separately. The machine-readable source is [coverage.json](coverage.json). It includes evidence links, a pinned production commit/tree, explicit missing/lossy/rejected states, and the remaining implementation sequence.
 
-The latest [stored reference and editing checkpoint](checkpoint-stored-editing-2026-09-15.md) records PR #92: 29,293 passing cases and 106 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 278 scoped rows. SUNSTUDY/TABLEGEOMETRY storage, VIEW live-section references, explicit retained Polyline3D topology and direct HATCH transforms have separate source and lifecycle contracts. The integration receipt pins the verified source archive and distinguishes storage from evaluation.
+The latest [map, mesh and conic checkpoint](checkpoint-map-mesh-conic-2026-09-15.md) records PR #93: 30,772 passing cases and 112 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 284 scoped rows. It adds stored CELLSTYLEMAP access, explicit SECTION_MANAGER membership editing, retained PolygonMesh records, affine HATCH conics and bounded target-version diagnostics. The integration receipt pins exact source and verified CI artifacts. The CELLSTYLEMAP getter return-type change requires consumers to recompile; its migration is documented.
+
+The [stored reference and editing checkpoint](checkpoint-stored-editing-2026-09-15.md) records PR #92: 29,293 passing cases and 106 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 278 scoped rows. SUNSTUDY/TABLEGEOMETRY storage, VIEW live-section references, explicit retained Polyline3D topology and direct HATCH transforms have separate source and lifecycle contracts. The integration receipt pins the verified source archive and distinguishes storage from evaluation.
 
 The [POLYFACE and PolygonMesh integrity checkpoint](checkpoint-polyline-integrity-2026-09-15.md) records PR #91: 28,627 passing cases and 100 independent gates in each local configuration, all five Release library targets, and 272 scoped rows. All four implementation CI jobs passed; Linux Release also passed all 100 independent gates. Signed face topology, independent clones and exact polygon-grid cardinality have explicit evidence; arbitrary child metadata and native smooth-surface regeneration remain outside this increment.
 
@@ -46,10 +48,12 @@ Stored [UCS-record orthographic base references](ucs-record-base.md) preserve th
 
 Loaded [ordinary 3D POLYLINE child records](polyline3d-records.md) retain VERTEX and SEQEND identities, optional packets, common metadata and exact native association references. The focused module has 382 Debug/Release cases and 90 independently checked outputs, including clone/removal guards and parent-reactor moves. It remains source/profile bound; fitted and legacy 2D records and full metadata-graph cloning remain separate work. Explicit [retained topology operations](polyline3d-topology.md) now support insertion, removal and movement under their documented guards.
 
-The [immutable section manager](section-manager.md) retains the stored update flag,
+The [stored section manager](section-manager.md) retains the stored update flag,
 ordered section pointers and exact source identities with root-anchor and lifecycle
 guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
-storage; live sectioning and automatic membership maintenance remain separate.
+storage. [Explicit membership replacement](section-manager-membership.md) edits its
+ordered list and flag atomically; live sectioning and automatic membership maintenance
+remain separate.
 
 [POLYFACE face grammar and clone isolation](polyface-grammar.md) qualify signed indices,
 zero termination, advisory counts and independent face lifecycles across both

@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "module": "PR93 stored map access, explicit membership, retained mesh records, affine HATCH conics and target-version diagnostics",
+  "base_commit": "6128f0533becdb8b63b0755054ecc37eac7266cf",
+  "implementation_commit": "358af5f72e1af4eaaed0c9293b7dc5b841bad391",
+  "implementation_tree": "0b190ff8de849b3af99d04ad470c2e7d473b4e31",
+  "local_equivalent_commit": "5b076379bacb28d2c29d7c9d76fd446a0b9d105a",
+  "executed_source": {
+    "library": "db7c49f5796e7324d118b352e5fa941a037cc040",
+    "conformance": "9bae5b99d3df8415891378100a45d1a42209b4b5",
+    "independent_verifiers": "5b076379bacb28d2c29d7c9d76fd446a0b9d105a",
+    "provenance": "Later commits change independent gates, receipts and documentation only. The final test-only correction uses a valid unknown TABLECONTENT subclass for opaque controls. Frozen matching conformance-directory libraries were executed in both configurations."
+  },
+  "sdk": "8.0.408",
+  "independent_reader": "ezdxf 1.4.4",
+  "new_cases": {
+    "CELLSTYLEMAP": 160,
+    "SECTION_MANAGER_membership": 84,
+    "PolygonMesh_retained_records": 387,
+    "HATCH_conics_added": 205,
+    "HATCH_obsolete_rejection_cases_removed": 3,
+    "target_version_report": 638,
+    "mixed_graph": 8,
+    "net_addition": 1479
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "passed": 30772,
+      "failed": 0,
+      "unique": 30772,
+      "results_sha256": "7f1d3e0fbd72a7a89f13b4b573c0c36046d5f7ca8d8aabfb517c1126992ffac5",
+      "conformance_log_sha256": "c7d316e971decb9e7662d7d03972cd528c39371ae4aa645da66a6a01e8f782d2",
+      "library_sha256": "28af81b7f494235abb534b8dec1c0fdd99d02e9435b8a9cb39d83cc64cde8e9e",
+      "conformance_sha256": "9a9068d9abe09ffba1fbd7d345b28483342a080975408bd1de63de4f547218ca",
+      "independent_passed": 112,
+      "independent_failed": 0,
+      "independent_results_sha256": "70f5ba6575f7314824c77ed998e86e3f7d100c854eb22f1d8d9a4fe2d7e0f99c",
+      "dxf_artifacts": 4825
+    },
+    {
+      "configuration": "Release",
+      "passed": 30772,
+      "failed": 0,
+      "unique": 30772,
+      "results_sha256": "7f1d3e0fbd72a7a89f13b4b573c0c36046d5f7ca8d8aabfb517c1126992ffac5",
+      "conformance_log_sha256": "c7d316e971decb9e7662d7d03972cd528c39371ae4aa645da66a6a01e8f782d2",
+      "library_sha256": "d79eccbec179f07abc2cef4648653b1d50609b28313ac173194162bf849874fd",
+      "conformance_sha256": "a042a3a21eeb48a301e54f5e9be057d6df72140bc0ef2af8d4f5b15af66239a6",
+      "independent_passed": 112,
+      "independent_failed": 0,
+      "independent_results_sha256": "fa38a8f940a1f9bb3147afaf89262211fc52998e72d27b8c3b162f5e882e8f65",
+      "dxf_artifacts": 4825
+    }
+  ],
+  "full_standard_complete": false,
+  "autocad_executed": false,
+  "api_compatibility": {
+    "member": "DxfTableStyle.CellStyleMap",
+    "before": "DxfOpaqueObject",
+    "after": "DxfDatabaseObject",
+    "source_and_binary_break": true,
+    "migration": "Recompile consumers. Use StoredCellStyleMap.Payload for the qualified typed map, or pattern-match CellStyleMap as DxfOpaqueObject when opaque Tags access is required."
+  },
+  "integration_correction": {
+    "initial_ci_run": 34987648924,
+    "initial_local_independent": {
+      "passed": 111,
+      "failed": 1,
+      "per_configuration": true
+    },
+    "cause": "The old SECTION verifier included section-membership-* outputs in its section-* inventory.",
+    "fix": "Exclude the membership prefix from the old suite only. Its exact 70-file inventory and the separate membership gate exact 52-file inventory remain mandatory.",
+    "source_changed": false,
+    "initial_results_sha256": {
+      "debug": "e8f8742c81ec58a8170e17e66803bab8ab3a9db41b037e76fbdd4c6ddb006fc1",
+      "release": "7e7a1f1b87d6d5291059f2244dbbb1949c487322bc27bf446b3791ae64257127"
+    }
+  },
+  "preexisting_bug_fixed": "Polyline3D and PolygonMesh retained child metadata now receive per-packet and aggregate physical-tag budget checks before output/allocation. The Polyline3D ordinary XData growth failure existed before PR92; archived before/after receipts distinguish it from the new topology operations.",
+  "coverage": {
+    "rows": 284,
+    "profiles": 9,
+    "ledger_tests": 18,
+    "test_failures": 0,
+    "test_log_sha256": "34eedd7dfabf29187c713e5511ed28edf7a04280d15a107e2b48ed4b56335d30"
+  },
+  "field_audit": {
+    "self_test": "Passed in PR92 for the unchanged tool source; implementation CI executes it again.",
+    "io_files": 109,
+    "methods": 724,
+    "model_header_files": 259,
+    "source_inventory_sha256": "a1ab255b61a3936229a7d4d09e5271f18fb3b3e4165db00b20881b75176a7475",
+    "field_inventory_sha256": "3137359a0d03335338d3b93008f99a02dfdc913b98063fdf539d3fa1be4f8fd7",
+    "scope": "Static syntax evidence, not semantic completeness."
+  },
+  "builds": {
+    "targets": [
+      "netstandard2.0",
+      "net471",
+      "net48",
+      "net6.0",
+      "net8.0"
+    ],
+    "Release_all_targets": "passed",
+    "Debug_netstandard2_0": "passed",
+    "errors": 0,
+    "existing_CS1591_per_library_target": 561,
+    "other_warnings": 0,
+    "conformance_warnings": 0,
+    "logs": {
+      "following-release-targets.log": "c7f36e787026553dc23d7c9e3a15ef1e25cd7bf2ca223abb14c79e0f345e18d1",
+      "following-debug-netstandard.log": "b4663e95bbba27f4a7088d2b25e6563a33b4d11b7bf3af155f1adee8ef37011d",
+      "following-debug-tests-build.log": "d5476d294719857026f860c7737eaba1356cb2ff506455d833983d01760ef7cb",
+      "following-release-tests-build.log": "99c069b9106f7eac9b4d73499787e6af5f0aaa54d92ef94ced5a7527a2312d16"
+    }
+  },
+  "independent_review_receipts": [
+    "cell-style-map-qualification.json",
+    "section-manager-membership-qualification.json",
+    "receipts/polygonmesh-records",
+    "receipts/hatch-conic",
+    "version-compatibility-qualification.json",
+    "ninth-mixed-qualification.json",
+    "receipts/ninth-mixed-independent"
+  ],
+  "limitations": [
+    "Native AutoCAD execution remains unavailable and unqualified.",
+    "CELLSTYLEMAP is source-bound immutable packet access; role meanings, format evaluation and editable table backing remain separate.",
+    "SECTION_MANAGER membership editing requires a qualified loaded manager; public creation and explicit erasure remain separate.",
+    "PolygonMesh retention covers ordinary unsmoothed sequences only; fitted grids, POLYFACE records and general topology operations remain separate.",
+    "HATCH conics preserve exact curve classes under the documented numeric contract; unrepresentable tiny bulges reject atomically. Non-similarity pattern/gradient transforms remain separate.",
+    "Version diagnostics report documented writer rejections and omissions. They do not establish complete compatibility, perform conversion, or enable earlier typed dialects.",
+    "Mixed graph links are explicitly authored and their retained source packet provenance is documented."
+  ],
+  "source_sha256": {
+    "netDxf/DxfDocument.MetadataReferences.cs": "eea9093bccd57c133008481936ab588b5dfcc065f4f85b32c9bc8aa9e2497b2e",
+    "netDxf/DxfDocument.MultiLeader.cs": "b4f64a8a74e2d619377da6295264d43c3a73723426cf449b79858a8f7b229b2e",
+    "netDxf/DxfDocument.PolygonMeshRecords.cs": "752523dffea417be7541b50047ad392cb65771ffa5f4f4793c9940168cc08eb4",
+    "netDxf/DxfDocument.PolylineRecords.cs": "1765c2279d8520923976609bb90b27ea6b34f2ef5e9a84f267a82048be1754a1",
+    "netDxf/DxfDocument.PolylineTopology.cs": "3566d98fb5c1aa41f7c6a0030e65475030e833c1e3e1040217700eabc1366aaa",
+    "netDxf/DxfDocument.StoredTable.cs": "d578c1a8311cafe335bc652673bc6e96dfa48c2a10eb9d7ce115942b4d0a2cc6",
+    "netDxf/DxfDocument.VersionCompatibility.cs": "d6390dd901d6b25e921a6dc0ec42934ff8293902f8f7ce4a31e2f153013c7cdc",
+    "netDxf/DxfDocument.cs": "fd162baa5fd4faf2ab32e935f82dfe3c7f97fbb6a765f09f06838db2790994e7",
+    "netDxf/DxfVersionCompatibilityReport.cs": "0683bc03cf6dc004903d87410fb2916bc83a3cf395ebf49b4e3f28cf51a04785",
+    "netDxf/Entities/Hatch.ConicTransform.cs": "a186a00bb545474411be0a41c3ba35cbb3cf1da0a2cd7902566fb4b3c84fed7e",
+    "netDxf/Entities/Hatch.Transform.cs": "a65471e204483161b594a3037287baa9e1c3c923ea64569b5c328946cba1e96b",
+    "netDxf/Entities/Hatch.cs": "d28d40276ffa05e94a6ed9060f4aec89d7a6c317413e780c7d702cbe26d7fb25",
+    "netDxf/Entities/PolygonMesh.StoredRecords.cs": "b9dbfeff0badc26331f9bb333b0212cafb5d468f5f76c5800ebceaf176d57fc2",
+    "netDxf/Entities/PolygonMesh.cs": "0128c5012ae66e8d2bab707c7f752cfdda67f17221234afa7503b18832e0633c",
+    "netDxf/Entities/PolygonMeshRecord.cs": "53c5365783e5ff4cfbfb1fcf4a533d34682f284ffbcab382c2ded0d6f97650d7",
+    "netDxf/Entities/Polyline.cs": "5c9babf4b8d33647c2f3a3773facf016c8c08270b823100b0371be2cc9ccfdc6",
+    "netDxf/Entities/Polyline3D.StoredRecords.cs": "98f734180ff583ed9b373208557c26eaebb637f2f909886dfef4c9004a22add1",
+    "netDxf/IO/DxfReader.Objects.cs": "3f589b95e1a600e2d5e83cafb0a92b5ab3893feefe2dd050d4384a5d38d41059",
+    "netDxf/IO/DxfReader.PolygonMeshRecords.cs": "81662bfa97c67926a7b9d956d702088e34fc8f2111ebc33d2990f91dd9b544b7",
+    "netDxf/IO/DxfReader.StoredCellStyleMap.cs": "c0c32fd0120b672ff3535a89371cba6048facc768c3696963e0085be08947a52",
+    "netDxf/IO/DxfReader.cs": "8259b100f81964f60024ed9f4a2373c7a0f5e12beda697fea51a9fcc66f782c1",
+    "netDxf/IO/DxfWriter.Objects.cs": "78389c74d74cc3e999c7803152316934214430ec36d0c1548498188e74cc15e6",
+    "netDxf/IO/DxfWriter.PolygonMeshRecords.cs": "987ba707ce3e19011c81ec24f2b551bbfea433663eb8a5a47c2b33785ed2918d",
+    "netDxf/IO/DxfWriter.StoredCellStyleMap.cs": "2ecd20311b4023263f04f5e18bc7070bfe6a049994588716f8cbc71a9830c3c8",
+    "netDxf/IO/DxfWriter.cs": "5b1dc304333ac9e2754c5f61ec2e0e7567d4d1a9b7a04b21f2d6924f669ddf68",
+    "netDxf/Objects/DxfObjectDatabase.Erase.cs": "7d215545e585e97c74b944e59af1b679b3bfb93023259c220afc93d25eb059d7",
+    "netDxf/Objects/DxfObjectDatabase.Section.cs": "055a6285e4ad41bc4409b67c661104ece7b1c19fb7d443ddf4b18b37100d6956",
+    "netDxf/Objects/DxfStoredCellStyleMap.cs": "23511b45ca4541a104606937f74542fc731d122e444976e50f8b364a27c4ad0f",
+    "netDxf/Objects/DxfStoredSectionManager.cs": "30c382d4ac8fb4357b4293613278cb9d93970448c3ad0ea75ae4dc07fc8b48c7",
+    "netDxf/Objects/DxfTableStyle.cs": "b7b4026996df2551d98f1caa2f8b2c6175a115fc80e79f4a0104328ee245529f",
+    "tests/netDxf.Conformance/HatchAffineTests.cs": "177e5d8d72b2e0e289ebd7e6e0feabc1133ce4e47318a2f302f75e1dc8a60e61",
+    "tests/netDxf.Conformance/HatchBoundaryFlagsTests.cs": "59f9ebc35c23f7dc5e51aa79c6cbe8675a387b7d743ce385abd0c5cc0a229589",
+    "tests/netDxf.Conformance/HatchConicAffineTests.cs": "dd12da0545ea466ec1f86120802672c3b2ba984f7139c7300255cd6dc9b5bfd6",
+    "tests/netDxf.Conformance/HatchPolylineClosureTests.cs": "9ff1dd3fef2e3d02321201a3344bbe1858153804b397734bf475ede72bc55e1f",
+    "tests/netDxf.Conformance/NinthMixedModuleTests.cs": "f80d837e83579375d3cc18490a0a92e64689e4ce8fa0c8f7fbed077d8751e452",
+    "tests/netDxf.Conformance/PolygonMeshRecordTests.cs": "622a5f364a7ec9a71762ac4fdca825d22128faed7e70548efbf033c042203b1e",
+    "tests/netDxf.Conformance/Program.cs": "a94d17067de97914fd835be4ce3d64828be9f5f84cb7e50b1c59f17c531ce0c8",
+    "tests/netDxf.Conformance/RegressionTests.cs": "7d72cab57e71feee9d8ff75b2dd9eca2437fc63f5574cc2ebad751caa1961e50",
+    "tests/netDxf.Conformance/SectionManagerMembershipTests.cs": "7e890f010d37503b0f7054b38495d07c2ab4553e160b2d564d62e0c57d3ad71a",
+    "tests/netDxf.Conformance/StoredCellStyleMapTests.cs": "1d891a33feed837606185b48601ab3ad274d65ee8ac45d0ae4ee140c0173c19b",
+    "tests/netDxf.Conformance/TableStyleTests.cs": "e576595bd35ecb98e91e61185fbbcde44e3c7bb6fb2f86a8584da0451190ee02",
+    "tests/netDxf.Conformance/VersionCompatibilityTests.cs": "645cd6c2560a15c7d3a38110a61ae6c1aa2cc8131fb8fd7b5849c8be86493c64",
+    "tools/cell_style_map_review/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "tools/cell_style_map_review/Program.cs": "2fa516d68f898273499217334867ebc56ca5bd06f44aa603dca37d8a6692438a",
+    "tools/cell_style_map_review/README.md": "5c5b703f9c0aaf731c6f4a0a53657a89b35b5660f15f6d7db68bdc074d672af9",
+    "tools/verify_hatch_conic.py": "6f16154577fd3e04e5e66c419163ef663d5516684b5d6a8aeddb16e72d2b4fd0",
+    "tools/verify_ninth_mixed.py": "dcd5f53f94474d3efe6c7653cd7edd4d460845d93694193bd82ec4844d3f2cad",
+    "tools/verify_polygonmesh_records.py": "2644acfb2f3aeba40c4dd24552d59f487453041f3bf785e06c10263bf965a80d",
+    "tools/verify_section.py": "a77d75407b52f62db48d97d67cdf8ff787d1db9a7a736990062abe6ae0fb90b5",
+    "tools/verify_section_membership.py": "c831101fb972be171bebbe600c02ac959335fbd5b2dbf2f9dc3d23f46a3bdc0f",
+    "tools/verify_stored_cell_style_map.py": "17a555e498cc46779f3528de0479563508e7183b0ce7f486b625f082d9723c17",
+    "tools/verify_table_styles.py": "5ec3d0bbdc934aafed0534c98d42781f6dc5167e0ca0d89993ec2f395a437962",
+    "tools/verify_version_compatibility.py": "6ee20a6a0119c1790e382eeb67fa34aca62b535df6428110be4fe903464e0f49"
+  },
+  "implementation_ci": {
+    "run_id": 34989160308,
+    "url": "https://github.com/wieslawsoltes/netDxf/actions/runs/34989160308",
+    "head_sha": "358af5f72e1af4eaaed0c9293b7dc5b841bad391",
+    "all_four_jobs": "success",
+    "job_ids": [
+      104448982750,
+      104448982785,
+      104448982810,
+      104448982947
+    ],
+    "passed_per_job": 30772,
+    "failed_per_job": 0,
+    "linux_release_independent_gates": 112,
+    "verified_artifacts": [
+      {
+        "archive": "pr93-implementation-linux-debug.zip",
+        "sha256": "350f4a26acca51e27976ab570611802b88b00566a9be16b317ecc34f5f731956",
+        "tree": "0b190ff8de849b3af99d04ad470c2e7d473b4e31",
+        "passed_cases": 30772,
+        "dxf_artifacts": 4825,
+        "verified_source_files": 1844
+      },
+      {
+        "archive": "pr93-implementation-linux-release.zip",
+        "sha256": "c82d264e41c40be1647cb2e7b36440c4b945430da6ed33bf0af7bdd0fec61321",
+        "tree": "0b190ff8de849b3af99d04ad470c2e7d473b4e31",
+        "passed_cases": 30772,
+        "dxf_artifacts": 4825,
+        "passed_independent_verifiers": 112
+      }
+    ]
+  }
+}
