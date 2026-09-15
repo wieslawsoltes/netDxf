@@ -1,0 +1,967 @@
+{
+  "producer": "ezdxf",
+  "version": "1.4.4",
+  "files": [
+    {
+      "file": "ezdxf-hatch-conic-R2000-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "sha256": "18257afdd8497db02f0b56d8095d5cacfa13bdf6a2f71b2ca0b6afeae6af4ac3",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2000-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "sha256": "79fdb575cbd7e3a83e76a348ebfc6bbdb709b3f0a6ef83417609fd2a9b178249",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2004-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "sha256": "92b7f2b6c1dc11c9e8604bdb307f1ee874db8a232d8180ba633a5069b19b6dba",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2004-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "sha256": "6a46d3e5a85bbe3d6dcafe92fcbae9fe3e8f1d455720eb5e20d5c12de7861552",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2007-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "sha256": "f859c0860c2dc5cf6a2080e9fbffd976deb224646fa82d3e60f16a1b5770fe40",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2007-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "sha256": "1344922394b9ad2bcd1081a9daba2e3075e0d5b70bbb133c9aa9fa80d06dd4ef",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2010-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "sha256": "d08070176a946791aa9916558996b453a3010259e8829d48b7729a6b8e649b55",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2010-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "sha256": "d0500b82255fb4ee8da348b0feb6ea5f44b653bdc635625b1bfc2b1a526f3a1e",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2013-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "sha256": "fd0349e7a6819e6449938d883bf8dc595527bd38a6ac212d1b23fe458035ac18",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2013-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "sha256": "62f4dcfd6973620ba03fdc3bb8576c29827e976de62c8963c83ad2c01e397d55",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2018-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "sha256": "5fea2de6018ba8c66407fb6163df1a020488b14b8ded592d3f5daf6c8dc4a05a",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-conic-R2018-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "sha256": "af0da85b2acd4addd47ecaa0f581e102f7f0072ba022b34ce7daf5a2e9d24104",
+      "hatches": 25,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    }
+  ],
+  "cases": [
+    {
+      "name": "ARC_1_SHORT",
+      "kind": "ARC",
+      "producer_start": 30,
+      "producer_end": 150,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          30.0
+        ],
+        [
+          51,
+          150.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ARC_1_LONG",
+      "kind": "ARC",
+      "producer_start": 150,
+      "producer_end": 390,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          150.0
+        ],
+        [
+          51,
+          390.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ARC_1_ZERO",
+      "kind": "ARC",
+      "producer_start": 0,
+      "producer_end": 0,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          0.0
+        ],
+        [
+          51,
+          0.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ARC_1_FULL",
+      "kind": "ARC",
+      "producer_start": 30,
+      "producer_end": 390,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          30.0
+        ],
+        [
+          51,
+          390.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ARC_1_CARDINAL",
+      "kind": "ARC",
+      "producer_start": 90,
+      "producer_end": 270,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          90.0
+        ],
+        [
+          51,
+          270.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ARC_0_SHORT",
+      "kind": "ARC",
+      "producer_start": 30,
+      "producer_end": 150,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          210.0
+        ],
+        [
+          51,
+          330.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ARC_0_LONG",
+      "kind": "ARC",
+      "producer_start": 150,
+      "producer_end": 390,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          -30.0
+        ],
+        [
+          51,
+          210.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ARC_0_ZERO",
+      "kind": "ARC",
+      "producer_start": 0,
+      "producer_end": 0,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          360.0
+        ],
+        [
+          51,
+          360.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ARC_0_FULL",
+      "kind": "ARC",
+      "producer_start": 30,
+      "producer_end": 390,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          -30.0
+        ],
+        [
+          51,
+          330.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ARC_0_CARDINAL",
+      "kind": "ARC",
+      "producer_start": 90,
+      "producer_end": 270,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          2
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          40,
+          5.0
+        ],
+        [
+          50,
+          90.0
+        ],
+        [
+          51,
+          270.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_1_SHORT",
+      "kind": "ELLIPSE",
+      "producer_start": 30,
+      "producer_end": 150,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          30.0
+        ],
+        [
+          51,
+          150.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_1_LONG",
+      "kind": "ELLIPSE",
+      "producer_start": 150,
+      "producer_end": 390,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          150.0
+        ],
+        [
+          51,
+          390.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_1_ZERO",
+      "kind": "ELLIPSE",
+      "producer_start": 0,
+      "producer_end": 0,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          0.0
+        ],
+        [
+          51,
+          0.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_1_FULL",
+      "kind": "ELLIPSE",
+      "producer_start": 30,
+      "producer_end": 390,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          30.0
+        ],
+        [
+          51,
+          390.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_1_CARDINAL",
+      "kind": "ELLIPSE",
+      "producer_start": 90,
+      "producer_end": 270,
+      "producer_ccw": true,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          90.0
+        ],
+        [
+          51,
+          270.0
+        ],
+        [
+          73,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_0_SHORT",
+      "kind": "ELLIPSE",
+      "producer_start": 30,
+      "producer_end": 150,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          210.0
+        ],
+        [
+          51,
+          330.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_0_LONG",
+      "kind": "ELLIPSE",
+      "producer_start": 150,
+      "producer_end": 390,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          -30.0
+        ],
+        [
+          51,
+          210.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_0_ZERO",
+      "kind": "ELLIPSE",
+      "producer_start": 0,
+      "producer_end": 0,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          360.0
+        ],
+        [
+          51,
+          360.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_0_FULL",
+      "kind": "ELLIPSE",
+      "producer_start": 30,
+      "producer_end": 390,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          -30.0
+        ],
+        [
+          51,
+          330.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "ELLIPSE_0_CARDINAL",
+      "kind": "ELLIPSE",
+      "producer_start": 90,
+      "producer_end": 270,
+      "producer_ccw": false,
+      "raw_tags": [
+        [
+          72,
+          3
+        ],
+        [
+          10,
+          2.0
+        ],
+        [
+          20,
+          3.0
+        ],
+        [
+          11,
+          3.0
+        ],
+        [
+          21,
+          4.0
+        ],
+        [
+          40,
+          0.4
+        ],
+        [
+          50,
+          90.0
+        ],
+        [
+          51,
+          270.0
+        ],
+        [
+          73,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "BULGE_POS",
+      "kind": "POLYLINE",
+      "bulge": 0.25,
+      "closed": true
+    },
+    {
+      "name": "BULGE_NEG",
+      "kind": "POLYLINE",
+      "bulge": -0.25,
+      "closed": true
+    },
+    {
+      "name": "BULGE_LONG",
+      "kind": "POLYLINE",
+      "bulge": 2.0,
+      "closed": false
+    },
+    {
+      "name": "BULGE_LONG_NEG",
+      "kind": "POLYLINE",
+      "bulge": -2.0,
+      "closed": false
+    },
+    {
+      "name": "BULGE_SMALL",
+      "kind": "POLYLINE",
+      "bulge": 0.001,
+      "closed": false
+    }
+  ],
+  "scope": "Actual ASCII and binary producer output; raw endpoint angles distinguish zero and full turns. No native CAD execution."
+}
