@@ -72,6 +72,15 @@ namespace netDxf.Entities
                 || this.vertexes.Count != this.storedVertexRecords.Length)
                 throw new NotSupportedException("Retained legacy 2D records require unchanged ordinary topology and legacy width representation.");
             this.ValidateVertexFidelity();
+            long retainedTags = 0;
+            foreach (Polyline2DRecord record in this.StoredRecords)
+            {
+                int count = record.TopologyTagCount();
+                if (count > 4096) throw new NotSupportedException("A retained legacy child exceeds its packet tag admission budget.");
+                retainedTags += count;
+            }
+            if (retainedTags > 1048576 || this.StoredHeaderTags.Count + this.LegacyHeaderValues().Count - this.StoredHeaderIndices.Count > 4096)
+                throw new NotSupportedException("The retained legacy chain exceeds its tag admission budget.");
             if (!LegacyFinite(this.Elevation) || !LegacyFinite(this.Thickness) || !LegacyFinite(this.Normal.X)
                 || !LegacyFinite(this.Normal.Y) || !LegacyFinite(this.Normal.Z) || Vector3.IsZero(this.Normal))
                 throw new InvalidOperationException("Retained legacy 2D elevation, thickness and normal must be finite, with a nonzero normal.");
@@ -121,7 +130,10 @@ namespace netDxf.Entities
                 || Math.Abs(Vector3.DotProduct(x / x.Modulus(), newNormal / normalScale)) > MathHelper.Epsilon
                 || Math.Abs(Vector3.DotProduct(y / y.Modulus(), newNormal / normalScale)) > MathHelper.Epsilon)
                 throw new NotSupportedException("A retained legacy transform must preserve the entity plane perpendicular to its normal.");
-            var positions = new Vector2[this.vertexes.Count]; double elevation = 0;
+            Vector3 origin = transWO * (transformation * (transOW * new Vector3(0, 0, this.Elevation)) + translation);
+            if (!LegacyFinite(origin.X) || !LegacyFinite(origin.Y) || !LegacyFinite(origin.Z))
+                throw new InvalidOperationException("The transformed retained legacy plane must be finite.");
+            var positions = new Vector2[this.vertexes.Count]; double elevation = origin.Z;
             for (int i = 0; i < this.vertexes.Count; i++)
             {
                 Vector2 point = this.vertexes[i].Position;

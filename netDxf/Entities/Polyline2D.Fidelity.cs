@@ -25,7 +25,7 @@ namespace netDxf.Entities
 
         /// <summary>Gets the effective outgoing segment start width for the specified vertex.</summary>
         /// <param name="vertexIndex">Index of the outgoing segment's vertex.</param>
-        /// <returns>Nonzero constant width, or the raw start width when constant width is absent or zero.</returns>
+        /// <returns>Nonzero lightweight constant width, or the vertex override; an omitted legacy override inherits the parent default.</returns>
         public double GetEffectiveStartWidth(int vertexIndex)
         {
             Polyline2DVertex vertex = this.vertexes[vertexIndex];
@@ -34,7 +34,7 @@ namespace netDxf.Entities
 
         /// <summary>Gets the effective outgoing segment end width for the specified vertex.</summary>
         /// <param name="vertexIndex">Index of the outgoing segment's vertex.</param>
-        /// <returns>Nonzero constant width, or the raw end width when constant width is absent or zero.</returns>
+        /// <returns>Nonzero lightweight constant width, or the vertex override; an omitted legacy override inherits the parent default.</returns>
         public double GetEffectiveEndWidth(int vertexIndex)
         {
             Polyline2DVertex vertex = this.vertexes[vertexIndex];

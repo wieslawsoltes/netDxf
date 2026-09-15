@@ -48,6 +48,7 @@ internal static partial class Program
         RegisterPolyline3DRecordTests();
         RegisterPolygonMeshRecordTests();
         RegisterPolyfaceRecordTests();
+        RegisterPolyline2DRecordTests();
         RegisterPolylineTopologyTests();
         RegisterPolyfaceGrammarTests();
         RunTypedObjectErasureTests();

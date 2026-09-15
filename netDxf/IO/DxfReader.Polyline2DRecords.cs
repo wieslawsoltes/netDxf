@@ -78,7 +78,6 @@ namespace netDxf.IO
                 if (records.Count >= 65536) throw new FormatException("Retained legacy POLYLINE exceeds its record admission budget.");
                 records.Add(this.ReadStoredPolyline2DRecord(false));
             }
-            if (records.Count < 2) throw new FormatException("An ordinary retained legacy POLYLINE requires at least two vertices.");
             if (this.chunk.Code != 0 || this.chunk.ReadString() != DxfObjectCode.EndSequence)
                 throw new FormatException("A legacy POLYLINE child sequence requires SEQEND.");
             Polyline2DRecord end = this.ReadStoredPolyline2DRecord(true);

@@ -1871,7 +1871,7 @@ namespace netDxf.IO
                 return;
             }
 
-            if (entity.Type == EntityType.Polyline2D && ((Polyline2D)entity).Vertexes.Count < 2)
+            if (entity.Type == EntityType.Polyline2D && ((Polyline2D)entity).Vertexes.Count < 2 && !((Polyline2D)entity).HasStoredRecords)
             {
                 Debug.Assert(false, "Polyline2D entities with less than two vertexes are not allowed." + "Entity handle: " + entity.Handle);
                 return;
