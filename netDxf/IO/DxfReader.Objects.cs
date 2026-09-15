@@ -119,7 +119,7 @@ namespace netDxf.IO
                 for (int i = payload; i < tags.Count; i++)
                     if (tags[i].Code == 1001) { this.ReadDatabaseXData(result.Object, tags, i); break; }
             }
-            else if (!this.ReadStoredEnvelopePayload(result, codeName, tags, payload) && !this.ReadContainerPayload(result, codeName, tags, payload) && !this.ReadGeoDataPayload(result, codeName, tags, payload) && !this.ReadOutputSettingsPayload(result, codeName, tags, payload) && !this.ReadMLeaderStylePayload(result, codeName, tags, payload)) result.Object = new DxfOpaqueObject(codeName, tags.Skip(payload).ToList());
+            else if (!this.ReadStoredEnvelopePayload(result, codeName, tags, payload) && !this.ReadContainerPayload(result, codeName, tags, payload) && !this.ReadGeoDataPayload(result, codeName, tags, payload) && !this.ReadOutputSettingsPayload(result, codeName, tags, payload) && !this.ReadMLeaderStylePayload(result, codeName, tags, payload) && !this.ReadLightListPayload(result, codeName, tags, payload)) result.Object = new DxfOpaqueObject(codeName, tags.Skip(payload).ToList());
             result.Object.Handle = handle;
             this.databaseRecords.Add(result);
             return result;
@@ -240,6 +240,7 @@ namespace netDxf.IO
             this.ResolveDeclaredOwnership();
             this.ResolveGeoDataHosts();
             this.ResolveOutputSettingsReferences();
+            this.ResolveLightListReferences();
         }
         private void ApplyDatabaseMetadata(DxfObject item, DatabaseMetadata metadata)
         {

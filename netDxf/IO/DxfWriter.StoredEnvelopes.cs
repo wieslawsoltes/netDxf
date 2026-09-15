@@ -23,9 +23,14 @@ namespace netDxf.IO
         }
         private void PrepareStoredEnvelopeClasses(DxfClassCollection definitions)
         {
-            if (!this.doc.Objects.Items.Any(item => item is DxfSpatialIndex)) return;
             const string name = "SPATIAL_INDEX";
             int count = this.doc.Objects.Items.Count(item => item.CodeName == name);
+            if (!this.doc.Objects.Items.Any(item => item is DxfSpatialIndex))
+            {
+                if (definitions.Contains(name) && definitions[name].CppClassName == "AcDbSpatialIndex" && !definitions[name].IsEntity)
+                    definitions[name].InstanceCount = count;
+                return;
+            }
             if (definitions.Contains(name))
             {
                 DxfClass definition = definitions[name];

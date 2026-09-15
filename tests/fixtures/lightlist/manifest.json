@@ -1,0 +1,848 @@
+{
+  "producer": "IxMilia.Dxf 0.8.4",
+  "secondary_transport_writer": "ezdxf 1.4.4 low-level tag writer",
+  "native_autocad": false,
+  "qualification": "Published storage grammar only; all version values explicitly synthetic and uninterpreted.",
+  "augmentations": [
+    "Remove IxMilia default empty optional handle fields330..369; they are not valid hexadecimal DXF handles.",
+    "Remove IxMilia default unscoped STYLE1071=0 (2010+) lacking required1001 application marker; no LIGHTLIST data is involved.",
+    "Add missing root dictionary owner330=0 (IxMilia emits no root owner).",
+    "Replace each populated LIGHTLIST group1 with independent names; IxMilia derives these names from LIGHT.Name and discards them when reading.",
+    "Add documented owner reactors, one extension dictionary/XRECORD, APPID and terminal XData, and update HANDSEED.",
+    "Use a custom QA_LIGHTLISTS dictionary; this does not qualify ACAD_LIGHT application placement.",
+    "Re-encode augmented low-level tags in the original transport; neither high-level producer saves them again."
+  ],
+  "stored_names": [
+    "Stored alias 青",
+    "",
+    "Literal\\U+0041 🧪"
+  ],
+  "fixtures": [
+    {
+      "file": "independent-lightlist-R2007-ascii.dxf",
+      "sha256": "502fe86d6cec9a42b8e6f9798d5258263ceb1e9658b91bc80d30b693e251c545",
+      "original_producer_sha256": "2934216c7e42a5aa342d727f098229386c1f4c6ea77c8b41e3124089289ef49a",
+      "year": 2007,
+      "version": "AC1021",
+      "binary": false,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2007-binary.dxf",
+      "sha256": "641be2ad6370421bb6f0824fffd04f93784a28b6338ab66341cb0cb52e80417a",
+      "original_producer_sha256": "3d8a2c3fff8ab31b3fc4c0d8627ea7a5c0c0e7f2866f30e6e216b561ae525098",
+      "year": 2007,
+      "version": "AC1021",
+      "binary": true,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2010-ascii.dxf",
+      "sha256": "060b16d06e15bdd35e60c544d0136af5628cb130b481250c297c0fd9d72ce290",
+      "original_producer_sha256": "a02aa4484719a99743dc609e1edac9a3cc34d54fc0f579862fc041a52d295b1c",
+      "year": 2010,
+      "version": "AC1024",
+      "binary": false,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2010-binary.dxf",
+      "sha256": "d5c3f54ced1f33e6893fdd8ec7da242be48485ccf8c0044ef998b5e9de80c8d5",
+      "original_producer_sha256": "7c2a065c051f9ca3d3575fc7866b7380231dd01cea176b471a93545eac0ebc4d",
+      "year": 2010,
+      "version": "AC1024",
+      "binary": true,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2013-ascii.dxf",
+      "sha256": "8f3b40af844aa92c2df015145144fcd93a507cec4b9e10ac10e35098a2ae60ab",
+      "original_producer_sha256": "90b782252313f0158e10d6663de56c69e1859e91ac4b70eddae2afd856ec421e",
+      "year": 2013,
+      "version": "AC1027",
+      "binary": false,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2013-binary.dxf",
+      "sha256": "07dd1813ade4457c3ac87d231f018a770d02627fd70477df395092e4605e90a5",
+      "original_producer_sha256": "97b8fadac4d5cb0a952121bcfb4c108eb8440aa28d337cc30fb3adf22365b5ee",
+      "year": 2013,
+      "version": "AC1027",
+      "binary": true,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2018-ascii.dxf",
+      "sha256": "a60b00ca73ea25919907c5886ef8060fa5b85a911206787724e29c3250708cf8",
+      "original_producer_sha256": "5cf739e266b7168339e755b384d0a7ece8badb09aeffda5ec50d95e2286a10d6",
+      "year": 2018,
+      "version": "AC1032",
+      "binary": false,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    },
+    {
+      "file": "independent-lightlist-R2018-binary.dxf",
+      "sha256": "1f73423cabb6832cfcfe9876d43d02033258a4aa37fd6babb5f9e6c48c0ffcb8",
+      "original_producer_sha256": "c5663cf8bc4881d26577283256d8d4fe94469785f5dc4dc7ebaafbe09c551ca4",
+      "year": 2018,
+      "version": "AC1032",
+      "binary": true,
+      "dictionary": "22",
+      "lights": [
+        "1D",
+        "1E"
+      ],
+      "line": "1F",
+      "lists": [
+        {
+          "handle": "23",
+          "owner": "22",
+          "stored_version": -2147483648,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": "500"
+        },
+        {
+          "handle": "24",
+          "owner": "22",
+          "stored_version": -7,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "25",
+          "owner": "22",
+          "stored_version": 0,
+          "entries": [],
+          "extension": null
+        },
+        {
+          "handle": "26",
+          "owner": "22",
+          "stored_version": 2147483647,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        },
+        {
+          "handle": "27",
+          "owner": "22",
+          "stored_version": 42,
+          "entries": [
+            {
+              "light": "1D",
+              "name": "Stored alias 青"
+            },
+            {
+              "light": "1E",
+              "name": ""
+            },
+            {
+              "light": "1D",
+              "name": "Literal\\U+0041 🧪"
+            }
+          ],
+          "extension": null
+        }
+      ]
+    }
+  ],
+  "producer_package_sha256": "3b08f5b604c958ea6c29f107f751d75abdf3328713ec586bc4fdbf0302e24c81",
+  "producer_package_sha512": "T84UGifvXWXlQ9Fg2l+on3X8UR4zDhDnG/SNiE3uLuS2f4l4MyBi29GULt7A+bxCrgir0izK+xyLcs4xqFSW/Q=="
+}

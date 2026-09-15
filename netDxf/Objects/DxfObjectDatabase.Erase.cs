@@ -68,9 +68,9 @@ namespace netDxf.Objects
                 if (!handles.Add(ErasureHandle(item.Handle))) throw new InvalidOperationException("The erased ownership subtree contains duplicate numeric handles.");
                 // AddedObjects.Remove releases these counts and subscriptions. Verify its lookups now,
                 // before the commit performs any collection mutation or event unsubscription.
-                foreach (string appId in item.XData.AppIds)
-                    if (!this.Document.ApplicationRegistries.References.ContainsKey(appId))
-                        throw new InvalidOperationException("An erased object has inconsistent APPID reference bookkeeping: " + appId);
+                foreach (XData data in item.XData.Values)
+                    if (!this.Document.ApplicationRegistries.References.ContainsKey(data.ApplicationRegistry.Name))
+                        throw new InvalidOperationException("An erased object has inconsistent APPID reference bookkeeping: " + data.ApplicationRegistry.Name);
             }
 
             foreach (DxfObject item in carriers)
@@ -141,6 +141,7 @@ namespace netDxf.Objects
                 add(item);
                 if (item is Insert insert) foreach (netDxf.Entities.Attribute attribute in insert.Attributes) add(attribute);
                 if (item is Block block) add(block.End);
+                if (item is Layout layout) add(layout.Viewport);
             }
             foreach (DxfDatabaseObject item in this.objects.Values) add(item);
             return result;

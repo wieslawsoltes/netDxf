@@ -302,7 +302,7 @@ namespace netDxf.Objects
                 this.Document.NumHandles = item.AssignHandle(this.Document.NumHandles);
             }
             // XData may have been shared with a foreign document; never transfer its application registry.
-            foreach (XData data in item.XData.Values.ToList()) item.XData[data.ApplicationRegistry.Name] = (XData)data.Clone();
+            foreach (XData data in item.XData.Values.ToList()) item.XData.ReplaceForBinding(data.ApplicationRegistry.Name, (XData)data.Clone());
             item.Database = this;
             this.objects.Add(item.Handle, item);
             this.Document.AddedObjects.Add(item.Handle, item);

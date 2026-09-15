@@ -74,6 +74,7 @@ namespace netDxf.IO
             this.PrepareGeoDataClass(definitions);
             this.PrepareLayerFilterPointerClasses(definitions);
             this.PrepareMultiLeaderClasses(definitions);
+            this.PrepareLightListClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -122,6 +123,7 @@ namespace netDxf.IO
             else if (this.WriteOutputSettingsPayload(item)) { }
             else if (this.WriteMLeaderStylePayload(item)) { }
             else if (this.WriteLayerFilterPointerPayload(item)) { }
+            else if (this.WriteLightListPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

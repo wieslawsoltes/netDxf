@@ -18,7 +18,7 @@ internal static partial class Program
         foreach (bool binary in new[] { false, true })
         {
             bool b = binary;
-            Run($"stored-envelopes/version-preflight/{b}", () => StoredEnvelopeVersion(b));
+            Run($"stored-envelopes/earliest-profile/{b}", () => StoredEnvelopeVersion(b));
             Run($"stored-envelopes/class-preflight/{b}", () => StoredEnvelopeClass(b));
             Run($"stored-envelopes/input-limits/{b}", () => StoredEnvelopeInputLimits(b));
             foreach (int scenario in Enumerable.Range(0, 3))
@@ -47,7 +47,6 @@ internal static partial class Program
                 Run($"stored-envelopes/authored/{v}/{b}", () => StoredEnvelopeAuthor(v, b));
                 foreach (string kind in new[] { "spatial", "vba" })
                 {
-                    if (kind == "vba" && version == DxfVersion.AutoCad2000) continue;
                     string k = kind;
                     foreach (bool inputBinary in new[] { false, true })
                     {
@@ -110,7 +109,6 @@ internal static partial class Program
         var doc = new DxfDocument(version); var line = new Line(new Vector3(2, 3, 5), new Vector3(7, 11, 13)); doc.Entities.Add(line);
         var graph = new DxfDictionary(); doc.NamedObjects.Add("STORED_AUTHORED", graph);
         var index = new DxfSpatialIndex { Timestamp = -1234.125 }; graph.Add("INDEX", index);
-        if (version >= DxfVersion.AutoCad2004)
         {
             var project = new DxfVbaProject(); project.SetChunks(new[] { Enumerable.Range(0, 127).Select(i => (byte)i).ToArray(), Array.Empty<byte>(), new byte[] { 0, 255, 17 } });
             graph.Add("VBA", project);
@@ -131,7 +129,7 @@ internal static partial class Program
         stream.Position = 0; var loaded = DxfDocument.Load(stream) ?? throw new InvalidOperationException("Authored reload failed.");
         var graph = (DxfDictionary)loaded.NamedObjects["STORED_AUTHORED"]; var original = (DxfDictionary)doc.NamedObjects["STORED_AUTHORED"];
         Equal(-1234.125, ((DxfSpatialIndex)graph["INDEX"]).Timestamp, "Authored timestamp");
-        if (version >= DxfVersion.AutoCad2004) StoredChunksEqual((DxfVbaProject)original["VBA"], (DxfVbaProject)graph["VBA"]);
+        StoredChunksEqual((DxfVbaProject)original["VBA"], (DxfVbaProject)graph["VBA"]);
         foreach (DxfDictionaryEntry entry in graph.Entries)
         {
             var item = (DxfDatabaseObject)entry.Target;
@@ -299,30 +297,30 @@ internal static partial class Program
     }
     private static void StoredEnvelopeVersion(bool binary)
     {
-        var doc = new DxfDocument(DxfVersion.AutoCad2000) { Name = "original" }; var project = new DxfVbaProject { Data = new byte[] { 7 } }; doc.NamedObjects.Add("VBA", project);
-        Check(doc.Objects.Validate().Any(e => e.Contains("VBA_PROJECT", StringComparison.Ordinal)), "VBA profile validation missing.");
-        using var stream = new MemoryStream(); stream.Write(new byte[] { 1, 2, 3 }); long position = stream.Position; string seed = doc.DrawingVariables.HandleSeed;
-#if DEBUG
-        Throws<InvalidOperationException>(() => doc.Save(stream, binary));
-#else
-        Check(!doc.Save(stream, binary), "Unqualified VBA profile saved.");
-#endif
-        Check(stream.ToArray().SequenceEqual(new byte[] { 1, 2, 3 }) && stream.Position == position, "VBA preflight touched output.");
-        Equal(seed, doc.DrawingVariables.HandleSeed, "VBA preflight changed seed");
+        var source = StoredEnvelopeCreate(DxfVersion.AutoCad2018);
+        var target = new DxfDocument(DxfVersion.AutoCad2000) { Name = "original" };
+        for (int i = 0; i < 30; i++) target.Entities.Add(new Line(Vector3.Zero, new Vector3(i, 1, 0)));
+        Line mapped = target.Entities.Lines.Last();
+        Check(mapped.Handle != source.Entities.Lines.Single().Handle, "Earliest-profile mapping would be vacuous.");
+        var clone = target.Objects.Clone((DxfDictionary)source.NamedObjects["STORED_AUTHORED"], target.NamedObjects, "COPIED",
+            new Dictionary<DxfObject, DxfObject> { [source.Entities.Lines.Single()] = mapped });
+        Check(clone["INDEX"] is DxfSpatialIndex && clone["VBA"] is DxfVbaProject, "Earliest-profile clone lost typed envelopes.");
+        foreach (DxfDictionaryEntry entry in clone.Entries)
+        {
+            Check(ReferenceEquals(entry.Target.Owner, clone) && ReferenceEquals(entry.Target.PersistentReactors.Single(), clone), "Earliest-profile clone owner/reactor leak.");
+            Equal(mapped.Handle, (string)entry.Target.XData["STORED_AUTHORED"].XDataRecord[0].Value, "Earliest-profile XData mapping");
+        }
+        Equal(0, target.Objects.Validate().Count, "Earliest-profile validation");
+        using var output = new MemoryStream(); Check(target.Save(output, binary), "Earliest-profile stream save failed."); output.Position = 0;
+        var loaded = DxfDocument.Load(output) ?? throw new InvalidOperationException("Earliest-profile reload failed.");
+        StoredChunksEqual((DxfVbaProject)clone["VBA"], (DxfVbaProject)((DxfDictionary)loaded.NamedObjects["COPIED"])["VBA"]);
         WithAtomicDirectory(path =>
         {
-            AtomicPrepare(path, true); Throws<InvalidOperationException>(() => doc.SaveAtomic(path, binary)); AtomicUnchanged(path, true); Equal("original", doc.Name, "Rejected atomic VBA changed name");
+            AtomicPrepare(path, true); target.SaveAtomic(path, binary);
+            var saved = DxfDocument.Load(path) ?? throw new InvalidOperationException("Earliest-profile atomic save failed.");
+            Check(((DxfDictionary)saved.NamedObjects["COPIED"])["VBA"] is DxfVbaProject, "Atomic save did not retain typed VBA.");
+            Equal(0, saved.Objects.Validate().Count, "Earliest-profile atomic graph");
         });
-        var supported = new DxfDocument(DxfVersion.AutoCad2004); supported.NamedObjects.Add("VBA", new DxfVbaProject());
-        int count = doc.Objects.Items.Count;
-        Throws<InvalidOperationException>(() => doc.Objects.CloneObject((DxfVbaProject)supported.NamedObjects["VBA"], doc.NamedObjects, "FAILED"));
-        Equal(count, doc.Objects.Items.Count, "Unqualified clone registered objects"); Equal(seed, doc.DrawingVariables.HandleSeed, "Unqualified clone changed seed");
-        using var fixture = File.OpenRead(StoredFixture("vba", DxfVersion.AutoCad2004, false)); var raw = DxfRawDocument.Load(fixture); var tags = raw.Tags.ToList();
-        int version = tags.FindIndex(t => t.Code == 9 && (string)t.Value == "$ACADVER") + 1; tags[version] = new(1, "AC1015");
-        using var input = new MemoryStream(); DxfRawDocument.Create(tags).Save(input, binary); input.Position = 0;
-        var opaque = DxfDocument.Load(input) ?? throw new InvalidOperationException("Unqualified input lost opaque preservation.");
-        Check(((DxfDictionary)opaque.NamedObjects["QA_STORED_ENVELOPES"])["ITEM_0"] is DxfOpaqueObject, "Unqualified input was partially typed.");
-        using var saved = new MemoryStream(); Check(opaque.Save(saved, binary), "Unqualified opaque save failed.");
     }
     private static void StoredEnvelopePrivateClass(bool binary, int scenario)
     {

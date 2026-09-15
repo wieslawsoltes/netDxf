@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using netDxf.Header;
 using netDxf.Objects;
 
 namespace netDxf.IO
@@ -10,8 +9,6 @@ namespace netDxf.IO
         private bool ReadStoredEnvelopePayload(DatabaseRecord record, string type, List<DxfTag> tags, int start)
         {
             if (type != "SPATIAL_INDEX" && type != "VBA_PROJECT") return false;
-            // Earlier VBA profiles retain the existing opaque path, without interpreting a partial envelope.
-            if (type == "VBA_PROJECT" && this.doc.DrawingVariables.AcadVer < DxfVersion.AutoCad2004) return false;
             int end = tags.FindIndex(start, tag => tag.Code == 1001);
             if (end < 0) end = tags.Count;
             string first = type == "SPATIAL_INDEX" ? "AcDbIndex" : "AcDbVbaProject";

@@ -14,6 +14,11 @@ internal static partial class Program
         foreach (DxfVersion version in SupportedVersions)
             foreach (bool binary in new[] { false, true })
                 Run($"declared-ownership/graph/{version}/{binary}", () => DeclaredOwnershipRoundTrip(version, binary));
+        foreach (bool binary in new[] { false, true })
+            Run($"declared-ownership/composite-roundtrip/{binary}", () => DeclaredOwnershipCompositeRoundtrip(binary));
+        foreach (bool binary in new[] { false, true })
+            foreach (bool duplicate in new[] { false, true })
+                Run($"declared-ownership/malformed-envelope/{binary}/{duplicate}", () => DeclaredOwnershipMalformed(binary, duplicate));
         Run("declared-ownership/payload-protection", DeclaredOwnershipPayload);
         Run("declared-ownership/bind-atomicity", DeclaredOwnershipBindAtomicity);
         Run("declared-ownership/adoption-atomicity", DeclaredOwnershipAdoptionAtomicity);
@@ -86,6 +91,41 @@ internal static partial class Program
         }
     }
 
+    private static void DeclaredOwnershipCompositeRoundtrip(bool binary)
+    {
+        var doc = new DxfDocument(DxfVersion.AutoCad2004); var graph = OwnershipGraph(); doc.Objects.Root.Add("GRAPH", graph.Record);
+        using var saved = new MemoryStream(); Check(doc.Save(saved, binary), "composite setup save"); saved.Position = 0;
+        var raw = DxfRawDocument.Load(saved);
+        var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "XRECORD");
+        // The native R2004 corpus carries these additional sections and another 360 slot.
+        // Reuse a structural carrier target here; actual native DATATABLE packets are pinned separately.
+        var tags = record.Tags.Concat(new DxfTag[] { new(102, "ACAD_ROUNDTRIP_PRE2007_TABLE"), new(90, 7), new(91, 3),
+            new(102, "ACAD_ROUNDTRIP_PRE2007_TABLECELL"), new(360, graph.Content.Handle) }).ToArray();
+        raw = raw.WithRecord(record, tags);
+        using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
+        var loaded = DxfDocument.Load(input) ?? throw new Exception("Composite envelope load failed.");
+        var result = (DxfXRecord)loaded.GetObjectByHandle(graph.Record.Handle);
+        Check(!result.IsSchemaManaged, "An unqualified composite envelope became managed");
+        Equal(15, result.Data.Count, "Composite envelope payload length");
+        Equal("ACAD_ROUNDTRIP_PRE2007_TABLECELL", (string)result.Data[13].Value, "Composite section marker");
+        using var output = new MemoryStream(); Check(loaded.Save(output, binary), "Composite envelope save failed"); output.Position = 0;
+        var second = DxfDocument.Load(output) ?? throw new Exception("Composite envelope second load failed.");
+        var twice = (DxfXRecord)second.GetObjectByHandle(result.Handle);
+        Check(result.Data.Select(t => (t.Code, t.Value)).SequenceEqual(twice.Data.Select(t => (t.Code, t.Value))), "Composite envelope changed on roundtrip");
+    }
+
+    private static void DeclaredOwnershipMalformed(bool binary, bool duplicate)
+    {
+        var doc = new DxfDocument(); var graph = OwnershipGraph(); doc.Objects.Root.Add("GRAPH", graph.Record);
+        using var saved = new MemoryStream(); Check(doc.Save(saved, binary), "malformed setup save"); saved.Position = 0;
+        var raw = DxfRawDocument.Load(saved); var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "XRECORD");
+        var tags = duplicate ? record.Tags.Concat(new[] { new DxfTag(360, graph.Content.Handle) }) : record.Tags.Where(t => t.Code != 361);
+        using var input = new MemoryStream(); raw.WithRecord(record, tags).Save(input); input.Position = 0;
+        bool rejected;
+        try { rejected = DxfDocument.Load(input) == null; } catch (FormatException) { rejected = true; }
+        Check(rejected, "Malformed single-section envelope loaded");
+    }
+
     private static void DeclaredOwnershipPayload()
     {
         var doc = new DxfDocument(); var graph = OwnershipGraph(); doc.Objects.Root.Add("GRAPH", graph.Record);
@@ -133,7 +173,7 @@ internal static partial class Program
     {
         var doc = new DxfDocument(); var graph = OwnershipGraph(); var outside = new DxfPlaceholder();
         graph.Content.PersistentReactors.Add(outside);
-        long seed = OwnershipSeed(doc); int count = doc.Objects.Items.Count;
+        int count = doc.Objects.Items.Count; long seed = OwnershipSeed(doc);
         Throws<ArgumentException>(() => doc.Objects.Root.Add("GRAPH", graph.Record));
         Equal(seed, OwnershipSeed(doc), "failed adoption changed allocation seed"); Equal(count, doc.Objects.Items.Count, "failed adoption registered partial graph");
         Check(!doc.Objects.Root.Contains("GRAPH") && graph.Record.Owner == null && graph.Record.Handle == null && graph.Content.Handle == null && graph.Geometry.Handle == null, "failed adoption changed graph");
@@ -162,7 +202,7 @@ internal static partial class Program
     private static void DeclaredOwnershipOpaqueClone()
     {
         var doc = new DxfDocument(); var graph = OwnershipGraph(); doc.Objects.Root.Add("SOURCE", graph.Record);
-        long seed = OwnershipSeed(doc); int count = doc.Objects.Items.Count;
+        int count = doc.Objects.Items.Count; long seed = OwnershipSeed(doc);
         Throws<NotSupportedException>(() => doc.Objects.CloneObject(graph.Record, doc.Objects.Root, "OPAQUE_COPY"));
         Equal(seed, OwnershipSeed(doc), "opaque clone allocated handles"); Equal(count, doc.Objects.Items.Count, "opaque clone registered partial graph");
         Check(!doc.Objects.Root.Contains("OPAQUE_COPY"), "opaque clone added destination name");

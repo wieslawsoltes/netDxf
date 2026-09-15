@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using netDxf.Header;
 
 namespace netDxf.Objects
 {
     /// <summary>An inert VBA_PROJECT byte envelope. Its contents are never executed or interpreted.</summary>
-    /// <remarks>Typed export is qualified for AutoCAD 2004 and later. Physical group-310 chunk boundaries, including empty chunks, are retained.</remarks>
+    /// <remarks>Typed export is qualified for AutoCAD 2000 and later. Physical group-310 chunk boundaries, including empty chunks, are retained.</remarks>
     public sealed class DxfVbaProject : DxfDatabaseObject
     {
         /// <summary>The maximum admitted payload size, in bytes (16 MiB).</summary>
@@ -72,11 +71,6 @@ namespace netDxf.Objects
         internal override DxfDatabaseObject CloneShell()
         {
             var result = new DxfVbaProject(); result.SetChunks(this.chunks); return result;
-        }
-        internal override void ValidateDatabaseSchema(DxfObjectDatabase database, List<string> errors)
-        {
-            if (database.Document.DrawingVariables.AcadVer < DxfVersion.AutoCad2004)
-                errors.Add("Typed VBA_PROJECT export is qualified for AutoCAD 2004 and later.");
         }
     }
 }

@@ -36,7 +36,7 @@ namespace netDxf.Tables
     /// Do not use the default "ACAD" application registry name for your own extended data, it is sometimes used by AutoCad to store internal data.
     /// Instead, create your own application registry name and store your extended data there.
     /// </remarks>
-    public class ApplicationRegistry :
+    public partial class ApplicationRegistry :
         TableObject
     {
         #region constants
@@ -158,7 +158,7 @@ namespace netDxf.Tables
                     XData xdataCopy = new XData(xdataAppReg);
                     foreach (XDataRecord record in data.XDataRecord)
                     {
-                        xdataCopy.XDataRecord.Add(new XDataRecord(record.Code, record.Value));
+                        xdataCopy.XDataRecord.Add(new XDataRecord(record.Code, record.Value is byte[] bytes ? bytes.Clone() : record.Value));
                     }
                     copy.XData.Add(xdataCopy);
                 }

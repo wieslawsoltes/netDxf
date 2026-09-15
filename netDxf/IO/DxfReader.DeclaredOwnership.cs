@@ -11,6 +11,9 @@ namespace netDxf.IO
             foreach (DxfXRecord record in this.doc.Objects.Items.OfType<DxfXRecord>())
             {
                 if (!record.IsTableRoundtripRecord) continue;
+                // Older drawings can append further roundtrip sections, including a
+                // DATATABLE owner slot. Preserve unqualified composite envelopes.
+                if (record.Data.Skip(1).Any(tag => tag.Code == 102)) continue;
                 DxfTag content = record.Data.FirstOrDefault(tag => tag.Code == 360);
                 DxfTag geometry = record.Data.FirstOrDefault(tag => tag.Code == 361);
                 try

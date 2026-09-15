@@ -18,9 +18,15 @@ namespace netDxf.IO
         private void PrepareStoredEnvelopeClass(DxfClassCollection definitions, string name, string cppName,
             string applicationName, int flags, bool typedPresent)
         {
-            // Unknown-only records and unused declarations retain the caller's class metadata.
-            if (!typedPresent) return;
             int count = this.doc.Objects.Items.Count(item => item.CodeName == name);
+            if (!typedPresent)
+            {
+                // A compatible declaration can outlive its last typed instance after erasure.
+                // Unfamiliar declarations retain their private metadata unchanged.
+                if (definitions.Contains(name) && definitions[name].CppClassName == cppName && !definitions[name].IsEntity)
+                    definitions[name].InstanceCount = count;
+                return;
+            }
             if (definitions.Contains(name))
             {
                 DxfClass definition = definitions[name];

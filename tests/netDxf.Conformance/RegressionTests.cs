@@ -4,8 +4,10 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterFourthMixedModuleTests();
         RegisterStoredEnvelopeTests();
         RegisterDeclaredOwnershipTests();
+        RegisterErasureDeclaredOwnershipTests();
         RegisterTextStyleFidelityTests();
         RegisterAttributeDefaultValueTests();
         RegisterThirdMixedModuleTests();

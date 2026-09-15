@@ -34,8 +34,6 @@ def generate():
     manifest = {"producer": "ezdxf 1.4.4 plus explicit public-schema tag patch", "qualification": "synthetic stored envelopes, no native CAD corpus", "sources": []}
     for kind in ("spatial", "vba"):
         for year in YEARS:
-            if kind == "vba" and year == 2000:
-                continue
             doc = ezdxf.new(f"R{year}")
             doc.header["$TDCREATE"] = 2451544.5
             doc.header["$TDUPDATE"] = 2451544.5
@@ -63,6 +61,11 @@ def generate():
             graph.add("FOLLOWING", following)
             stream = io.StringIO(); doc.write(stream)
             source_records = list(records(list(tag_compiler(ascii_tags_loader(io.StringIO(stream.getvalue()))))))
+            # ezdxf adds some automatic CLASS definitions through set iteration; pin their order.
+            class_positions = [i for i, record in enumerate(source_records) if record[0].value == "CLASS"]
+            ordered_classes = sorted((source_records[i] for i in class_positions), key=lambda record: next(tag.value for tag in record if tag.code == 1))
+            for position, record in zip(class_positions, ordered_classes):
+                source_records[position] = record
             by_handle = {entry["handle"]: (entry, value) for entry, value in zip(targets, values)}
             for record in source_records:
                 handle = next((tag.value for tag in record if tag.code == 5), None)

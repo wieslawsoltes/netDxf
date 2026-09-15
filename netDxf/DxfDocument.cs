@@ -1848,10 +1848,11 @@ namespace netDxf
             DxfObject o = e.Item.Value;
             if (o != null)
             {
-                foreach (string appReg in o.XData.AppIds)
+                foreach (XData data in new List<XData>(o.XData.Values))
                 {
-                    o.XData[appReg].ApplicationRegistry = this.appRegistries.Add(o.XData[appReg].ApplicationRegistry);
-                    this.appRegistries.References[appReg].Add(e.Item.Value);
+                    ApplicationRegistry registry = this.CanonicalXDataRegistry(data.ApplicationRegistry);
+                    o.XData.CanonicalizeApplicationRegistry(data.ApplicationRegistry.Name, registry);
+                    this.appRegistries.References[registry.Name].Add(e.Item.Value);
                 }
 
                 o.XDataAddAppReg += this.DxfObject_XDataAddAppReg;
@@ -1868,19 +1869,28 @@ namespace netDxf
             DxfObject o = e.Item.Value;
             if (o != null)
             {
-                foreach (string appReg in o.XData.AppIds)
+                foreach (XData data in o.XData.Values)
                 {
-                    this.appRegistries.References[appReg].Remove(e.Item.Value);
+                    this.appRegistries.References[data.ApplicationRegistry.Name].Remove(e.Item.Value);
                 }
                 o.XDataAddAppReg -= this.DxfObject_XDataAddAppReg;
                 o.XDataRemoveAppReg -= this.DxfObject_XDataRemoveAppReg;
             }
         }
 
+        private ApplicationRegistry CanonicalXDataRegistry(ApplicationRegistry source)
+        {
+            if (this.appRegistries.TryGetValue(source.Name, out ApplicationRegistry registered)) return registered;
+            // XData supplied by a caller or another document keeps its registry and mutable payload.
+            return this.appRegistries.Add((ApplicationRegistry)source.Clone());
+        }
+
         private void DxfObject_XDataAddAppReg(DxfObject sender, ObservableCollectionEventArgs<ApplicationRegistry> e)
         {
-            sender.XData[e.Item.Name].ApplicationRegistry = this.appRegistries.Add(sender.XData[e.Item.Name].ApplicationRegistry);
-            this.appRegistries.References[e.Item.Name].Add(sender);
+            XData data = sender.XData[e.Item.Name];
+            ApplicationRegistry registry = this.CanonicalXDataRegistry(data.ApplicationRegistry);
+            sender.XData.CanonicalizeApplicationRegistry(e.Item.Name, registry);
+            this.appRegistries.References[registry.Name].Add(sender);
         }
 
         private void DxfObject_XDataRemoveAppReg(DxfObject sender, ObservableCollectionEventArgs<ApplicationRegistry> e)

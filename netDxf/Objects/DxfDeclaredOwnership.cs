@@ -31,6 +31,7 @@ namespace netDxf.Objects
         // Both slots are validated before either child gains an owner or the payload becomes managed.
         internal void BindTableRoundtripChildren(DxfDatabaseObject content, DxfDatabaseObject geometry)
         {
+            if (this.IsErased) throw new InvalidOperationException("An erased record cannot bind owned objects.");
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (geometry == null) throw new ArgumentNullException(nameof(geometry));
             if (this.IsSchemaManaged) throw new InvalidOperationException("The ownership schema is already bound.");
@@ -59,6 +60,7 @@ namespace netDxf.Objects
 
         private void CheckOwnedCandidate(DxfDatabaseObject child, DxfTag slot)
         {
+            if (child.IsErased) throw new InvalidOperationException("An erased object cannot be attached again.");
             if (child.Owner != null && !ReferenceEquals(child.Owner, this)) throw new ArgumentException("A schema child already has another owner.");
             if (DxfObjectDatabase.IsAncestor(child, this)) throw new ArgumentException("Declared ownership cannot form a cycle.");
             if (child.Database != this.Database) throw new ArgumentException("Schema children must share the record's registration state and database.");
