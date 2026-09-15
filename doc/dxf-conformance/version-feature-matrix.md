@@ -2,8 +2,8 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-15**. Implementation snapshot for PR **#94**: [`1631547bfae37dccbea900970ceaaad61c868020`](https://github.com/wieslawsoltes/netDxf/tree/1631547bfae37dccbea900970ceaaad61c868020).
-Source tree: `aacbe71c64d3a2fc1998396aaae4877b617d7589`. Branch: `netstandard`.
+Audit date: **2026-09-15**. Implementation snapshot for PR **#95**: [`ec085f403eb56f361f8ba05574b2bb2f94a24e1f`](https://github.com/wieslawsoltes/netDxf/tree/ec085f403eb56f361f8ba05574b2bb2f94a24e1f).
+Source tree: `cde35e08b2dbce2d4f7ff0c665e20301f9c9a52a`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
@@ -254,7 +254,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Native TABLE backing with explicit lifecycle/reference release · typed | X | X | X | V | V | P | P | T | T | The qualified tenth mixed graph combines native R2013/R2018 TABLE carriers, explicit TABLECONTENT/TABLEGEOMETRY edits, created SECTION_MANAGER membership, SECTIONSETTINGS references, retained Polyface records, an authored opaque neighbor and affine explicit HATCH patterns. Actual shared dependencies require ordered release; failure/retry cases preserve snapshots and pre-output invariants. Complete native stored packets and resource normalization allowances are checked separately from declared generic-pointer semantics, with independent world-space pattern evaluation and actual wire corruption controls. [MIX10](tenth-mixed.md) |
 | Ordinary legacy 2D POLYLINE parent and child retention · typed | X | X | X | T | T | T | T | T | T | Loaded ordinary AcDb2dPolyline chains retain parent public/private packets, physical VERTEX/SEQEND identities, optional widths and identifiers, owner variants and exact dependencies. Qualified point/bulge/width edits, reversal, transforms, empty/singleton chains and clean clone/adoption preserve the retained contract. Private/owned/external metadata limits lifecycle operations. Nonzero child Z, fitted variants and unqualified topology reject; source-profile and shared metadata limits apply. [POLYLINE2DRECORDS](polyline2d-records.md), [POLYLINE2DRECOVERY](receipts/polyline2d-integration-20260915/README.md) |
 | MESH scoped declaration uniqueness and counted packet framing · typed | X | X | X | V | V | V | T | T | T | Public version, blend, subdivision and vertex/face/edge/crease/override counts are unique, including empty packets. Repeated declarations and orphan public coordinates/crease items reject before allocation or packet replacement. Private groups and unrelated subclasses do not supply declarations. A zero override count is not a terminator; unique reordered fields remain accepted. Nonzero override values, private payload retention and subdivision evaluation remain unimplemented. [MESHFRAMING](mesh-field-framing.md), [MESHDECL](mesh-override-declaration.md) |
-| Qualified periodic HATCH boundary conversion and evaluation · typed | X | X | X | T | T | T | T | T | T | Supported expanded and legacy compact periodic HATCH forms convert to/from standalone SPLINE without refitting or regenerating knots. Exact overlap, degree 1–10, strict cyclic knots, positive finite weights and resolvable active-domain grids bound the contract. Local-support rational evaluation and boundary prevalidation preserve source arrays/relationships on rejection. Arbitrary periodic forms, repeated knots, adaptive error bounds and native rendering remain outside qualification. [HATCHPERIODIC](hatch-periodic-conversion.md), [HATCHPERIODICRECOVERY](receipts/hatch-periodic-recovery/qualification.json) |
+| Qualified periodic HATCH boundary conversion and evaluation · typed | X | X | X | T | T | T | T | T | T | Supported expanded and legacy compact periodic HATCH forms convert to/from standalone SPLINE without refitting or regenerating knots. Exact overlap, degree 1–10, strict cyclic knots, positive finite weights with a nonzero minimum/maximum ratio, and resolvable active-domain grids bound the contract. Local-support evaluation uses exponent-scaled arithmetic and bounded exact-rational fallback for cancellation or underflowed basis. Costly exact samples may reject; boundary prevalidation preserves source arrays/relationships on rejection. Arbitrary periodic forms, repeated knots, adaptive error bounds and native rendering remain outside qualification. [HATCHPERIODIC](hatch-periodic-conversion.md), [HATCHPERIODICRECOVERY](receipts/hatch-periodic-recovery/qualification.json) |
 
 ## 7. Symbol tables
 
@@ -438,7 +438,7 @@ Feature changes require reviewable PRs, independently authored positive and malf
 
 ## 17. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **33,296 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **34,836 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 

@@ -1,0 +1,44 @@
+{
+  "cases": 2,
+  "samples": 8,
+  "constant_coordinates_checked": 8,
+  "issues": [
+    {
+      "name": "positive-subnormal-basis--1e-15",
+      "sample": 2,
+      "axis": 0,
+      "actual": 2.4703282292062327e-15,
+      "expected": 2.5000000000000004e-15,
+      "relative": 0.011868708317507056,
+      "ulps": 75226876113108.0,
+      "constant": false
+    },
+    {
+      "name": "positive-subnormal-basis--1e-14",
+      "sample": 2,
+      "axis": 0,
+      "actual": 2.5197347937903574e-14,
+      "expected": 2.5e-14,
+      "relative": 0.00789391751614293,
+      "ulps": 62542057984317.0,
+      "constant": false
+    }
+  ],
+  "rejections": [],
+  "reverse_issues": [
+    {
+      "name": "positive-subnormal-basis--1e-15",
+      "sample": 2,
+      "axis": 0,
+      "forward": 2.4703282292062327e-15,
+      "reverse": 0
+    },
+    {
+      "name": "positive-subnormal-basis--1e-14",
+      "sample": 2,
+      "axis": 0,
+      "forward": 2.5197347937903574e-14,
+      "reverse": 0
+    }
+  ]
+}

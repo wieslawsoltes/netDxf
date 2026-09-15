@@ -1,0 +1,40 @@
+{
+  "baseline_integration_commit": "677c266",
+  "final_production_commit": "b604a12",
+  "runtime_target": "net8.0",
+  "sdk": "8.0.408",
+  "counts": {
+    "before": {
+      "cases": 376,
+      "samples": 4619,
+      "accepted_coordinate_failures": 1246,
+      "rejected_cases": 29,
+      "reversal_failures": 2
+    },
+    "after-debug": {
+      "cases": 376,
+      "samples": 4707,
+      "accepted_coordinate_failures": 0,
+      "rejected_cases": 25,
+      "reversal_failures": 0
+    },
+    "after-release": {
+      "cases": 376,
+      "samples": 4707,
+      "accepted_coordinate_failures": 0,
+      "rejected_cases": 25,
+      "reversal_failures": 0
+    }
+  },
+  "native_cad_execution": false,
+  "exact_oracle": "Python Fraction applied to actual binary64 knots,controls,weights and sample parameter",
+  "known_refusals": "25 input/grid cases with repeated knots or insufficient distinct representable samples; same inventory before and after. Before additionally rejects4finiteconstantMaxValue cases.",
+  "final_source_sha256": {
+    "netDxf/Entities/Spline.cs": "088b82bb67e397ef7bc0516e1e510edbf56576c6d5fbe64f9a33fd87b55e62e6",
+    "netDxf/Entities/PeriodicSplineData.cs": "9873d98843ad7e158a0cba439ca2e0d0186ec13bff5000b640b23cacbbdae60e",
+    "netDxf/Entities/PeriodicSplineExactEvaluation.cs": "0c7ec395a0088f51f105caa0d93f9f5c6ed58a3b9b1bb3b6d975062edbd3ac9b",
+    "netDxf/Entities/HatchBoundaryPath.cs": "dc30d3a142fe4dc93137852ed541ceb7897306a9fd998bb9056f718243f14ddd",
+    "netDxf/Entities/Hatch.cs": "0bfa75872edb031078f8f84ea5248580e1b19e3a8f68c406abe9bccc1066a6e7"
+  },
+  "archive_sha256": "81bb5455e862c178c2622ba1e9e7958c0c67ae3aa9d2b1f58c7ad7690bd6f3cd"
+}

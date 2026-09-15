@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "1631547bfae37dccbea900970ceaaad61c868020",
-    "tree": "aacbe71c64d3a2fc1998396aaae4877b617d7589"
+    "commit": "ec085f403eb56f361f8ba05574b2bb2f94a24e1f",
+    "tree": "cde35e08b2dbce2d4f7ff0c665e20301f9c9a52a"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 33296,
+    "test_cases": 34836,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 94,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/35001265150"
+    "last_implementation_pr": 95,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/35029062734"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -7129,7 +7129,7 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "Qualified periodic HATCH boundary conversion and evaluation",
-      "scope": "Supported expanded and legacy compact periodic HATCH forms convert to/from standalone SPLINE without refitting or regenerating knots. Exact overlap, degree 1–10, strict cyclic knots, positive finite weights and resolvable active-domain grids bound the contract. Local-support rational evaluation and boundary prevalidation preserve source arrays/relationships on rejection. Arbitrary periodic forms, repeated knots, adaptive error bounds and native rendering remain outside qualification.",
+      "scope": "Supported expanded and legacy compact periodic HATCH forms convert to/from standalone SPLINE without refitting or regenerating knots. Exact overlap, degree 1–10, strict cyclic knots, positive finite weights with a nonzero minimum/maximum ratio, and resolvable active-domain grids bound the contract. Local-support evaluation uses exponent-scaled arithmetic and bounded exact-rational fallback for cancellation or underflowed basis. Costly exact samples may reject; boundary prevalidation preserves source arrays/relationships on rejection. Arbitrary periodic forms, repeated knots, adaptive error bounds and native rendering remain outside qualification.",
       "evidence": [
         "HATCHPERIODIC",
         "HATCHPERIODICRECOVERY"

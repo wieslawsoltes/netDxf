@@ -1,0 +1,132 @@
+{
+  "all_target_release_build": {
+    "command": "dotnet build netDxf/netDxf.csproj -c Release --no-restore -m:1 -nr:false -v:normal",
+    "errors": 0,
+    "log": "all-target-release-build.log.gz",
+    "note": "An earlier parallel build process reported failure without compiler diagnostics; this serialized retry compiled every target successfully.",
+    "passed": true,
+    "targets": [
+      "netstandard2.0",
+      "net471",
+      "net48",
+      "net6.0",
+      "net8.0"
+    ],
+    "warnings": 2805
+  },
+  "exact_arithmetic_budget": {
+    "excess_budget_behavior": "NotSupportedException",
+    "final_rounding_temporary_extra_bits": 1074,
+    "maximum_controls": 11,
+    "maximum_fraction_component_bytes": 65536,
+    "maximum_local_basis_steps": 55
+  },
+  "exact_helper_receipt": "exact-helper/README.md",
+  "independent_frozen_review": "../hatch-periodic-independent-numeric-20260915/qualification.json",
+  "independent_frozen_review_summary": {
+    "accepted_per_configuration": 351,
+    "cases_per_configuration": 376,
+    "coordinate_errors": 0,
+    "expected_knot_or_grid_refusals_per_configuration": 25,
+    "preceding_coordinate_errors": 1246,
+    "preceding_refusals": 29,
+    "preceding_reversal_errors": 2,
+    "reversal_errors": 0,
+    "samples_per_configuration": 4707
+  },
+  "independent_periodic_gate": {
+    "debug": {
+      "actual_evaluator_world_samples": 73728,
+      "actual_output_negative_controls": 5,
+      "additional_canonical_curve_drawings": 48,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "canonical_audited_drawings": 96,
+      "compact_compatibility_drawings": 48,
+      "constant_samples": 850,
+      "exact_rational_local_weight_samples": 48,
+      "exact_rational_scaled_samples": 552,
+      "maximum_world_error": 9.607118501968132e-15,
+      "native_cad_execution": false,
+      "outputs": 96,
+      "periodic_curves": 1152,
+      "storage_only_outputs": 26
+    },
+    "release": {
+      "actual_evaluator_world_samples": 73728,
+      "actual_output_negative_controls": 5,
+      "additional_canonical_curve_drawings": 48,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "canonical_audited_drawings": 96,
+      "compact_compatibility_drawings": 48,
+      "constant_samples": 850,
+      "exact_rational_local_weight_samples": 48,
+      "exact_rational_scaled_samples": 552,
+      "maximum_world_error": 9.607118501968132e-15,
+      "native_cad_execution": false,
+      "outputs": 96,
+      "periodic_curves": 1152,
+      "storage_only_outputs": 26
+    }
+  },
+  "library_sha256": {
+    "Debug/net8.0": "ae799655d7f3d766b2f085b40b6278c3affb88cc0b5428a1c43f226138c3356e",
+    "Release/net471": "334a91ffa5c82c64236ad4b781f51d17f0855109283a53b14b5bbc1378fb562a",
+    "Release/net48": "0e5c0f95fb4b88656752516b15bd5c5f895cf67d69ec3c6fb8447eccafcdcc91",
+    "Release/net6.0": "01018a6c62f1da7d13de8f81953dd7ff60f56a13def1d33538b54004634c7c96",
+    "Release/net8.0": "4f9bf7cfc6a95ffcf0b676e7f428a7447e5c158899a7fa01822eaf4717127c08",
+    "Release/netstandard2.0": "a0a8d3870757904e2a51d7d2b7eba2c0eb309e15d30b4951a1747a16b7af0fc0"
+  },
+  "limitations": [
+    "The existing positive-weight, strictly increasing cyclic-knot admission contract and nonzero minimum/maximum weight ratio remain unchanged.",
+    "Exact fallback has an explicit arithmetic budget; no global adaptive tessellation or universal numerical error bound is introduced.",
+    "Independent mathematical witnesses and producer DXF fixtures are qualified separately; no native CAD process was executed.",
+    "Older-framework compilation does not qualify execution on those older runtimes."
+  ],
+  "original_recovery_receipt": "../hatch-periodic-recovery/qualification.json",
+  "output_hashes": "output-hashes.json.gz",
+  "predecessor_commit": "6c2a607",
+  "production_commit": "b604a12451c07f6b8233763b9538c6cd664e997f",
+  "reproduction": [
+    "DXF_TEST_FILTER=hatch-periodic DXF_TEST_ARTIFACTS=artifacts/hatch-periodic-frozen-{configuration} dotnet run --project tests/netDxf.Conformance -c {Configuration} -p:TargetFrameworks=net8.0",
+    "python3 tools/verify_hatch_periodic_conversion.py artifacts/hatch-periodic-frozen-{configuration}",
+    "DXF_TEST_FILTER=spline DXF_TEST_ARTIFACTS=artifacts/hatch-frozen-spline-{configuration} dotnet tests/netDxf.Conformance/bin/{Configuration}/net8.0/netDxf.Conformance.dll"
+  ],
+  "scope": "Periodic sample arithmetic, exact local-basis fallback, and reflected small knots on opposite-sign active domains",
+  "source_sha256": {
+    "netDxf/Entities/PeriodicSplineData.cs": "9873d98843ad7e158a0cba439ca2e0d0186ec13bff5000b640b23cacbbdae60e",
+    "netDxf/Entities/PeriodicSplineExactEvaluation.cs": "0c7ec395a0088f51f105caa0d93f9f5c6ed58a3b9b1bb3b6d975062edbd3ac9b",
+    "netDxf/Entities/Spline.cs": "088b82bb67e397ef7bc0516e1e510edbf56576c6d5fbe64f9a33fd87b55e62e6",
+    "tests/fixtures/hatch-periodic-conversion/weighted-cancellation.json": "5abe47c3ea3e08a45b945feea154d7bae11b11fa4e49a9ad2c8b887d09c6520e",
+    "tests/netDxf.Conformance/HatchPeriodicConversionTests.cs": "f6c8763eebd3f77d07a42c68f0dfec7e6b9e3200f2e3c2468aa35fdd885bb5ca",
+    "tools/verify_hatch_periodic_conversion.py": "51eb631a606aea29501847bf08c2650a39d9febccac3752b43978a82ad4571ce"
+  },
+  "test_results": {
+    "before-constant-debug": {
+      "failed": 47,
+      "file": "before-constant-debug-results.json.gz",
+      "passed": 3
+    },
+    "periodic-debug": {
+      "failed": 0,
+      "file": "periodic-debug-results.json.gz",
+      "passed": 331
+    },
+    "periodic-release": {
+      "failed": 0,
+      "file": "periodic-release-results.json.gz",
+      "passed": 331
+    },
+    "spline-debug": {
+      "failed": 0,
+      "file": "spline-debug-results.json.gz",
+      "passed": 1556
+    },
+    "spline-release": {
+      "failed": 0,
+      "file": "spline-release-results.json.gz",
+      "passed": 1556
+    }
+  }
+}

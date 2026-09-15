@@ -1,0 +1,74 @@
+{
+  "build-audit-evidence.tar.gz": {
+    "bytes": 235133,
+    "sha256": "9c49d0dcf02378ae22cbf1f6792ce901257500e529eb9ef3adbc0a0e1cd3cd3e"
+  },
+  "build-audit-qualification.json": {
+    "bytes": 4979,
+    "sha256": "61fa980d1283799557a5aa179e8c463d576d2422635a510cdbdc9def409e7243"
+  },
+  "ci-implementation-debug-verification.json": {
+    "bytes": 434,
+    "sha256": "d74c27ca8cc357fce68eeab363ce3b0b7b242e4c1536d72a54f4a9e916a32b65"
+  },
+  "ci-implementation-release-verification.json": {
+    "bytes": 389,
+    "sha256": "4b6024606b4b783dc2a05dda5cec97c1705bcaae17db0acc6614549c1a2b20c7"
+  },
+  "ci-implementation-summary.json": {
+    "bytes": 1730,
+    "sha256": "e5906f2c0f3e0222af90e080110f75ec1d943a5f4ecdafbdef7c8bd4b9aea7d9"
+  },
+  "debug-build.log.gz": {
+    "bytes": 14089,
+    "sha256": "d4c89b619cafb0373751fc2269322ad8c3975d9b50b88ea03271014223fa9f0f"
+  },
+  "debug-conformance.log.gz": {
+    "bytes": 124486,
+    "sha256": "624a80fa1a242bf61533af23eeef7811331c3ef15a1f43e44a61f8301eb869e6"
+  },
+  "debug-independent-logs.tar.gz": {
+    "bytes": 35502,
+    "sha256": "f4bc62e4c96b602a8cdcec38492ea376eeaab55a45db82b0392db43a63df9b54"
+  },
+  "debug-independent-results.json.gz": {
+    "bytes": 2223,
+    "sha256": "8a11999397be4282738b002cc5b245aae3d8d3761e7dd8b7969b9346dff5e26f"
+  },
+  "debug-output-manifest.json.gz": {
+    "bytes": 312128,
+    "sha256": "2aa9e7f8dccc22546e20f163f09516881844609a0b8527b57f4c401f5a688c86"
+  },
+  "debug-results.json.gz": {
+    "bytes": 131262,
+    "sha256": "4608c3e76b1b79e7b25e46577f6863e112ad97e373c567eccd0cc19bfa87de81"
+  },
+  "independent-verifier-source-hashes.json": {
+    "bytes": 13501,
+    "sha256": "2ac770fc064c5ab1d7d7a795a1b66f76a93ae3a7ffe76a9628aefac51a00cff5"
+  },
+  "release-build.log.gz": {
+    "bytes": 14089,
+    "sha256": "76091087be8dce3789c88bb961b2585e67a06ae1fdcb762a7eff1dd9c6105eb1"
+  },
+  "release-conformance.log.gz": {
+    "bytes": 124486,
+    "sha256": "624a80fa1a242bf61533af23eeef7811331c3ef15a1f43e44a61f8301eb869e6"
+  },
+  "release-independent-logs.tar.gz": {
+    "bytes": 35502,
+    "sha256": "f7a4bffe2f1c0cff9d39f92e08af3b6bf5e2796a8d8d46b564b941a11933929a"
+  },
+  "release-independent-results.json.gz": {
+    "bytes": 2221,
+    "sha256": "8bbebf60e9f3b22c473b28475da8810b70df4f8d4a4a8b296a40287967999b4f"
+  },
+  "release-output-manifest.json.gz": {
+    "bytes": 311901,
+    "sha256": "fc2c8668cac3f78b41ce684bccaaf6f88cbcc0f1941e423936bfb5a45ddfefe8"
+  },
+  "release-results.json.gz": {
+    "bytes": 131262,
+    "sha256": "4608c3e76b1b79e7b25e46577f6863e112ad97e373c567eccd0cc19bfa87de81"
+  }
+}
