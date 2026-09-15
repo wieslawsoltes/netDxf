@@ -2,7 +2,7 @@
 
 Start with the [current version and feature comparison](version-feature-matrix.md), with typed editing distinguished from raw preservation and each format family shown separately. The machine-readable source is [coverage.json](coverage.json). It includes evidence links, a pinned production commit/tree, explicit missing/lossy/rejected states, and the remaining implementation sequence.
 
-The latest [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) records PR #88: 25,408 passing cases, 86 independent gates, all five library targets, and a 259-row scoped comparison. It follows the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
+The latest [association and child-record recovery checkpoint](checkpoint-recovery-2026-09-15.md) records PR #89: 26,980 passing cases, 96 independent gates in each local configuration, all five Release library targets, and a 270-row scoped comparison. It follows the [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) for PR #88 and the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
 
 `DxfDocument` admits the six 2000–2018 format families. `DxfRawDocument` additionally admits R11/R12, R13 and R14 for ordered preservation and scoped immutable edits. Unknown raw records surviving is not evidence that the typed model can edit or evaluate them. No completeness percentage is inferred from test count.
 
