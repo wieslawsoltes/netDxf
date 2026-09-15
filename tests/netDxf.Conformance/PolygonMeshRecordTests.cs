@@ -190,9 +190,17 @@ internal static partial class Program
             }
             else
             {
-                string text = System.Text.Encoding.UTF8.GetString(wire);
-                Check(text.Contains("10\n1.0000000000000002\n", StringComparison.Ordinal), "nonfinite text injection coordinate");
-                wire = System.Text.Encoding.UTF8.GetBytes(text.Replace("10\n1.0000000000000002\n", "10\nNaN\n"));
+                string[] lines = System.Text.Encoding.UTF8.GetString(wire).Replace("\r\n", "\n").Split('\n');
+                bool target = false, changed = false;
+                for (int i = 0; i + 1 < lines.Length; i += 2)
+                {
+                    short code = short.Parse(lines[i].Trim(), System.Globalization.CultureInfo.InvariantCulture);
+                    if (code == 0) target = false;
+                    else if (code == 5 && lines[i + 1] == handle) target = true;
+                    else if (target && code == 10) { lines[i + 1] = "NaN"; changed = true; break; }
+                }
+                Check(changed, "nonfinite text injection coordinate");
+                wire = System.Text.Encoding.UTF8.GetBytes(string.Join("\n", lines));
             }
         }
         bool rejected = false;

@@ -1,0 +1,77 @@
+{
+  "productionSourceCommit": "8ceb7e73208f2b40710b4d7b0ab9677bbb709d7c",
+  "testSourceCommit": "51cd3f5cd69203ce082fb16edce26d3cb32c3282",
+  "build": {
+    "sdk": "8.0.408",
+    "framework": "net8.0",
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "errors": 0,
+    "existingCS1591WarningsPerConfiguration": 561,
+    "note": "Production files were compiled before the checkpoint commit was created; the binary informational version embeds the preceding commit. The production file SHA-256 map and exact DLL hashes identify the exercised source."
+  },
+  "testsPerConfiguration": {
+    "newPolygonMeshRecords": 387,
+    "existingPolygonMeshGrammarAndCounts": 727,
+    "existingPolylineRecordsAndTopology": 551,
+    "total": 1665,
+    "failed": 0
+  },
+  "gatesPerConfiguration": {
+    "polygonMeshRecords": {
+      "outputs": 70,
+      "corruptionControls": 8
+    },
+    "polygonMeshCardinality": {
+      "outputs": 116,
+      "corruptionControls": 12
+    },
+    "polyline3DRecords": {
+      "outputs": 90,
+      "corruptionControls": 6
+    },
+    "polylineTopology": {
+      "outputs": 98,
+      "corruptionControls": 8
+    }
+  },
+  "independentReviewPerConfiguration": {
+    "cases": 50,
+    "failed": 0,
+    "outputs": 12,
+    "ezdxfErrors": 0,
+    "ezdxfRepairs": 0
+  },
+  "libraries": {
+    "Debug": "8f937a30d3229ffe8b5f7a68e57166746edd7b969dcd8e1b90f18d0a1cb413ed",
+    "Release": "8ef3e8a7860837ddc371536b5de9ba5b2d291696f29f09718f4ec596e68e9937"
+  },
+  "productionFileSha256": {
+    "netDxf/DxfDocument.MetadataReferences.cs": "eea9093bccd57c133008481936ab588b5dfcc065f4f85b32c9bc8aa9e2497b2e",
+    "netDxf/DxfDocument.MultiLeader.cs": "c9d485e5b85a059396fe6224fbfee6659b6033cf7aec5cab6fdf20d9e677c144",
+    "netDxf/DxfDocument.PolygonMeshRecords.cs": "752523dffea417be7541b50047ad392cb65771ffa5f4f4793c9940168cc08eb4",
+    "netDxf/DxfDocument.PolylineRecords.cs": "1765c2279d8520923976609bb90b27ea6b34f2ef5e9a84f267a82048be1754a1",
+    "netDxf/DxfDocument.PolylineTopology.cs": "3566d98fb5c1aa41f7c6a0030e65475030e833c1e3e1040217700eabc1366aaa",
+    "netDxf/DxfDocument.StoredTable.cs": "9d1e3a81e10e8f4744845b2538e33a89c69abdbb63bc0684e20841e66d1717a3",
+    "netDxf/DxfDocument.cs": "fd162baa5fd4faf2ab32e935f82dfe3c7f97fbb6a765f09f06838db2790994e7",
+    "netDxf/Entities/PolygonMesh.StoredRecords.cs": "b9dbfeff0badc26331f9bb333b0212cafb5d468f5f76c5800ebceaf176d57fc2",
+    "netDxf/Entities/PolygonMesh.cs": "0128c5012ae66e8d2bab707c7f752cfdda67f17221234afa7503b18832e0633c",
+    "netDxf/Entities/PolygonMeshRecord.cs": "53c5365783e5ff4cfbfb1fcf4a533d34682f284ffbcab382c2ded0d6f97650d7",
+    "netDxf/Entities/Polyline.cs": "5c9babf4b8d33647c2f3a3773facf016c8c08270b823100b0371be2cc9ccfdc6",
+    "netDxf/Entities/Polyline3D.StoredRecords.cs": "98f734180ff583ed9b373208557c26eaebb637f2f909886dfef4c9004a22add1",
+    "netDxf/IO/DxfReader.PolygonMeshRecords.cs": "81662bfa97c67926a7b9d956d702088e34fc8f2111ebc33d2990f91dd9b544b7",
+    "netDxf/IO/DxfReader.cs": "5cf390a132e4c87b81f1809e00fedf2348f02f44700748e10f26c1b4094dd4a6",
+    "netDxf/IO/DxfWriter.PolygonMeshRecords.cs": "987ba707ce3e19011c81ec24f2b551bbfea433663eb8a5a47c2b33785ed2918d",
+    "netDxf/IO/DxfWriter.cs": "5b1dc304333ac9e2754c5f61ec2e0e7567d4d1a9b7a04b21f2d6924f669ddf68",
+    "netDxf/Objects/DxfObjectDatabase.Erase.cs": "b8d7ddaaaa11308ccc30ec22d17c48deae6d5639c1776cf1a1c5650464114636",
+    "netDxf/Objects/DxfObjectDatabase.Section.cs": "797d2420531d9bed08e3a1dd76ef3c7ddc60fc45cb6f8465e70c5d6f572e478f"
+  },
+  "testAndVerifierSha256": {
+    "tests/netDxf.Conformance/PolygonMeshRecordTests.cs": "622a5f364a7ec9a71762ac4fdca825d22128faed7e70548efbf033c042203b1e",
+    "tools/verify_polygonmesh_records.py": "2644acfb2f3aeba40c4dd24552d59f487453041f3bf785e06c10263bf965a80d"
+  },
+  "nativeApplicationExecuted": false,
+  "fullRepositoryAndAllFrameworkBuilds": "Owned by parent integration qualification"
+}

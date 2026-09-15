@@ -1,0 +1,138 @@
+{
+  "finding": "Retained child public XData growth could emit a packet the reader rejects; predates PR92 topology.",
+  "origin_commit": "ff22331",
+  "c108_and_b2_writer_blob": "ca6984be234e94b5fdba641a13ce40f0a8453755",
+  "harness_sha256": "3f9463f477abb073d75a529471eec9975319372a917e38fd0cb9cb51bfab81b9",
+  "runs": {
+    "pre-topology": {
+      "librarySha256": "d3fefe6f28fa0f6b59112c775da25833b2e901d419fb3b9020176cb056b4e214",
+      "assemblyRevision": "3.0.1+c108513f3e13486c049d4d07fac79bf3d0bb7217",
+      "expected": "gap",
+      "results": [
+        {
+          "binary": false,
+          "sequenceEnd": false,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 33948,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        },
+        {
+          "binary": false,
+          "sequenceEnd": true,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 33949,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        },
+        {
+          "binary": true,
+          "sequenceEnd": false,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 20934,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        },
+        {
+          "binary": true,
+          "sequenceEnd": true,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 20934,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        }
+      ]
+    },
+    "pr92": {
+      "librarySha256": "98c17c5b5d53772478574f1f2239a50bad34054da5ee6b3517b91a5209d3a127",
+      "assemblyRevision": "3.0.1+0562d9a8c1074ce97f7c731122ca6b93b77bd67f",
+      "expected": "gap",
+      "results": [
+        {
+          "binary": false,
+          "sequenceEnd": false,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 33949,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        },
+        {
+          "binary": false,
+          "sequenceEnd": true,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 33949,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        },
+        {
+          "binary": true,
+          "sequenceEnd": false,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 20934,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        },
+        {
+          "binary": true,
+          "sequenceEnd": true,
+          "saveResult": "accepted",
+          "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+          "outputBytes": 20934,
+          "seedDelta": 1,
+          "expectedOutcome": true
+        }
+      ]
+    },
+    "pr93-fix": {
+      "librarySha256": "8f937a30d3229ffe8b5f7a68e57166746edd7b969dcd8e1b90f18d0a1cb413ed",
+      "assemblyRevision": "3.0.1+2d9b231d2568e92887c6ec9164a7ad667216ee61",
+      "expected": "fixed",
+      "results": [
+        {
+          "binary": false,
+          "sequenceEnd": false,
+          "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+          "reloadResult": "not attempted",
+          "outputBytes": 0,
+          "seedDelta": 0,
+          "expectedOutcome": true
+        },
+        {
+          "binary": false,
+          "sequenceEnd": true,
+          "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+          "reloadResult": "not attempted",
+          "outputBytes": 0,
+          "seedDelta": 0,
+          "expectedOutcome": true
+        },
+        {
+          "binary": true,
+          "sequenceEnd": false,
+          "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+          "reloadResult": "not attempted",
+          "outputBytes": 0,
+          "seedDelta": 0,
+          "expectedOutcome": true
+        },
+        {
+          "binary": true,
+          "sequenceEnd": true,
+          "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+          "reloadResult": "not attempted",
+          "outputBytes": 0,
+          "seedDelta": 0,
+          "expectedOutcome": true
+        }
+      ]
+    }
+  },
+  "counting_note": "XData XYZ positions/directions are three scalar XDataRecord instances. No Vector3-valued XDataRecord or implicit vector expansion exists; physical tag count equals record count for these public values."
+}

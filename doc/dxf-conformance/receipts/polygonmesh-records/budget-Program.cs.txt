@@ -1,0 +1,38 @@
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.Tables;
+
+var results = new List<object>();
+Directory.CreateDirectory(args[0]);
+foreach (bool binary in new[] { false, true }) foreach (bool end in new[] { false, true })
+{
+    var original = new DxfDocument(DxfVersion.AutoCad2018); original.Entities.Add(new Polyline3D(new[] { Vector3.Zero, Vector3.UnitX }));
+    using var source = new MemoryStream(); if (!original.Save(source, binary)) throw new Exception("Fixture save failed."); source.Position = 0;
+    var document = DxfDocument.Load(source)!; var polyline = document.Entities.Polylines3D.Single();
+    var record = end ? polyline.EndSequenceRecord : polyline.VertexRecords[0];
+    var data = new XData(new ApplicationRegistry("INDEPENDENT_BUDGET"));
+    for (int i = 0; i < 4200; i++) data.XDataRecord.Add(new XDataRecord(XDataCode.String, ""));
+    record.XData.Add(data);
+    var property = typeof(DxfDocument).GetProperty("NumHandles", BindingFlags.Instance | BindingFlags.NonPublic)!;
+    long seed = Convert.ToInt64(property.GetValue(document)); using var output = new MemoryStream();
+    string saveResult, reloadResult = "not attempted";
+    try { saveResult = document.Save(output, binary) ? "accepted" : "rejected-false"; }
+    catch (Exception error) { saveResult = error.GetType().Name + ": " + error.Message; }
+    if (saveResult == "accepted")
+    {
+        File.WriteAllBytes(Path.Combine(args[0], $"oversized-polyline-{binary}-{end}.dxf"), output.ToArray()); output.Position = 0;
+        try { reloadResult = DxfDocument.Load(output) == null ? "rejected-null" : "accepted"; }
+        catch (Exception error) { reloadResult = error.GetType().Name + ": " + error.Message; }
+    }
+    long delta = Convert.ToInt64(property.GetValue(document)) - seed;
+    bool expected = args[1] == "gap" ? saveResult == "accepted" && reloadResult.StartsWith("FormatException:")
+        : saveResult.StartsWith("NotSupportedException:") && output.Length == 0 && delta == 0;
+    results.Add(new { binary, sequenceEnd = end, saveResult, reloadResult, outputBytes = output.Length, seedDelta = delta, expectedOutcome = expected });
+    if (!expected) Environment.ExitCode = 1;
+}
+var report = new { librarySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(), assemblyRevision = typeof(DxfDocument).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion, expected = args[1], results };
+File.WriteAllText(Path.Combine(args[0], "results.json"), JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true })); Console.WriteLine(JsonSerializer.Serialize(report));

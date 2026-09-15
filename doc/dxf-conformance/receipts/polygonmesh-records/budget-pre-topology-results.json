@@ -1,0 +1,43 @@
+{
+  "librarySha256": "d3fefe6f28fa0f6b59112c775da25833b2e901d419fb3b9020176cb056b4e214",
+  "assemblyRevision": "3.0.1\u002Bc108513f3e13486c049d4d07fac79bf3d0bb7217",
+  "expected": "gap",
+  "results": [
+    {
+      "binary": false,
+      "sequenceEnd": false,
+      "saveResult": "accepted",
+      "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+      "outputBytes": 33948,
+      "seedDelta": 1,
+      "expectedOutcome": true
+    },
+    {
+      "binary": false,
+      "sequenceEnd": true,
+      "saveResult": "accepted",
+      "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+      "outputBytes": 33949,
+      "seedDelta": 1,
+      "expectedOutcome": true
+    },
+    {
+      "binary": true,
+      "sequenceEnd": false,
+      "saveResult": "accepted",
+      "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+      "outputBytes": 20934,
+      "seedDelta": 1,
+      "expectedOutcome": true
+    },
+    {
+      "binary": true,
+      "sequenceEnd": true,
+      "saveResult": "accepted",
+      "reloadResult": "FormatException: Retained polyline records exceed their tag admission budget.",
+      "outputBytes": 20934,
+      "seedDelta": 1,
+      "expectedOutcome": true
+    }
+  ]
+}

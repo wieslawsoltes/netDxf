@@ -1,0 +1,30 @@
+{
+  "module": "Ordinary PolygonMesh retained children",
+  "production_commit": "8ceb7e7",
+  "library_sha256": "8f937a30d3229ffe8b5f7a68e57166746edd7b969dcd8e1b90f18d0a1cb413ed",
+  "cases": 50,
+  "failures": 0,
+  "audit_outputs": 12,
+  "audit_errors": 0,
+  "audit_repairs": 0,
+  "harness_sha256": "7720bdc9dea73a5f471e98eb2c2c6190ef70722cc1ffb5d10a532c931691c331",
+  "results_sha256": "51d765d9a3a512fffe5ad4e1c048560a5be0bb036ab5a3096f1f3785998030cb",
+  "audit_sha256": "879746c92a85757757c7a5256133ad4449c4f677f9b12507f5d6827d9b14778b",
+  "scope": [
+    "Twelve unchanged ezdxf1.4.4 producer fixtures; all six versions and both transports; exact physical child packet preservation after one coordinate edit.",
+    "Wire ordinal to U/V slot mapping, retained exact identities and terminal identity, ordinary clone/adoption, incoming child references block parent removal, released reference permits same-source re-adoption.",
+    "Source-profile and nonfinite geometry save rejection before output/allocation.",
+    "Demonstrated existing metadata-growth gap and verified per-record budget fix. Larger aggregate, exact-limit, reactor and XYZ scalar-triple boundaries are covered by module-owner tests.",
+    "No native CAD application execution claim."
+  ],
+  "release": {
+    "library_sha256": "8ef3e8a7860837ddc371536b5de9ba5b2d291696f29f09718f4ec596e68e9937",
+    "cases": 50,
+    "failures": 0,
+    "audit_outputs": 12,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "results_sha256": "c4f1c1bca668e910b9f59f1c95039fa661c57a9033e7cb049cbb63f89b5d4478",
+    "audit_sha256": "879746c92a85757757c7a5256133ad4449c4f677f9b12507f5d6827d9b14778b"
+  }
+}
