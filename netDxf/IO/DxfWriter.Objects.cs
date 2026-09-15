@@ -15,12 +15,15 @@ namespace netDxf.IO
         }
         private void ValidateDatabaseTransport()
         {
+            foreach (DxfStoredField field in this.doc.Objects.Items.OfType<DxfStoredField>()) field.ValidateSource(this.doc);
             if (this.isBinary) return;
             foreach (DxfDatabaseObject item in this.doc.Objects.Items)
             {
                 if (item is DxfDictionaryVariable variable) CheckDatabaseText(variable.Value);
                 if (item is DxfXRecord record)
                     foreach (DxfTag tag in record.Data) if (tag.Value is string text) CheckDatabaseText(text);
+                if (item is DxfStoredField field)
+                    foreach (DxfTag tag in field.Payload) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfTableStyle style)
@@ -72,6 +75,7 @@ namespace netDxf.IO
                 }
                 else if (count > 0) definitions.Add(new DxfClass(names[i], cppNames[i], "ObjectDBX Classes") { ProxyFlags = 0, IsEntity = false, InstanceCount = count });
             }
+            this.PrepareStoredFieldClass(definitions);
             this.PrepareStoredEnvelopeClasses(definitions);
             this.PrepareGeoDataClass(definitions);
             this.PrepareLayerFilterPointerClasses(definitions);
@@ -82,6 +86,7 @@ namespace netDxf.IO
             this.PrepareTableStyleClass(definitions);
             this.PrepareLightListClass(definitions);
             this.PrepareDataTableClass(definitions);
+            this.PrepareSunClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -124,6 +129,7 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteStoredFieldPayload(item)) { }
             else if (this.WriteLayerIndexPayload(item)) { }
             else if (this.WriteSectionSettingsPayload(item)) { }
             else if (this.WriteStoredEnvelopePayload(item)) { }
@@ -135,6 +141,7 @@ namespace netDxf.IO
             else if (this.WriteLightListPayload(item)) { }
             else if (this.WriteDataTablePayload(item)) { }
             else if (this.WriteTableStylePayload(item)) { }
+            else if (this.WriteSunPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

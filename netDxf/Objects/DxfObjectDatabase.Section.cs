@@ -158,6 +158,7 @@ namespace netDxf.Objects
             var tree = this.objects.Values.Where(o => IsAncestor(section, o)).ToList();
             foreach (DxfDatabaseObject item in tree)
             {
+                if (item is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (item is DxfOpaqueObject) throw new NotSupportedException("An opaque section-owned object requires its application schema before erasure.");
                 this.CheckRegistered(item); deleted.Add(item);
             }

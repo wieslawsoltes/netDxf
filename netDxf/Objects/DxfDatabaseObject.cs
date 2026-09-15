@@ -90,6 +90,7 @@ namespace netDxf.Objects
             ValidateName(name);
             if (target == null) throw new ArgumentNullException(nameof(target));
             if (target is DxfDatabaseObject erased && erased.IsErased) throw new InvalidOperationException("An erased object cannot be attached again.");
+            if (target is DxfSun) throw new ArgumentException("SUN must be attached through SetSun to a view or viewport owner.", nameof(target));
             if (target is netDxf.Entities.EntityObject) throw new ArgumentException("Graphical entities cannot be dictionary entries; use XRECORD pointer data.", nameof(target));
             if (this.index.ContainsKey(name)) throw new ArgumentException("The dictionary already contains this name.", nameof(name));
             if (this.Database != null && this == this.Database.Root && DxfObjectDatabase.IsReservedName(name))

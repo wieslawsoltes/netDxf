@@ -344,6 +344,7 @@ namespace netDxf.Tables
         /// <summary>Creates an independent detached record with the supplied configuration name.</summary>
         public override TableObject Clone(string newName)
         {
+            netDxf.Objects.SunReferences.CheckClone(this);
             VPort copy = new VPort(newName)
             {
                 ViewCenter = this.ViewCenter,
@@ -381,6 +382,7 @@ namespace netDxf.Tables
                 BaseUcs = this.BaseUcs
             };
             foreach (XData data in this.XData.Values) copy.XData.Add((XData)data.Clone());
+            copy.SunHandlePresent = this.SunHandlePresent;
             return copy;
         }
 

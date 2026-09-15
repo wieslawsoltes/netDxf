@@ -43,6 +43,7 @@ namespace netDxf
 
         private short transparency;
         private int? storedAlphaValue;
+        internal bool HasValueEdit { get; private set; }
 
         #endregion
 
@@ -92,6 +93,12 @@ namespace netDxf
             this.transparency = value;
         }
 
+        // Layer-state zero has an opaque effective value while its exact stored bits remain zero.
+        internal Transparency(short effectiveValue, int storedValue) : this(effectiveValue)
+        {
+            this.storedAlphaValue = storedValue;
+        }
+
         #endregion
 
         #region public properties
@@ -134,6 +141,7 @@ namespace netDxf
                 }
                 this.transparency = value;
                 this.storedAlphaValue = null;
+                this.HasValueEdit = true;
             }
         }
 
@@ -206,7 +214,7 @@ namespace netDxf
         /// <returns>A new transparency that is a copy of this instance.</returns>
         public object Clone()
         {
-            return new Transparency { transparency = this.transparency, storedAlphaValue = this.storedAlphaValue };
+            return new Transparency { transparency = this.transparency, storedAlphaValue = this.storedAlphaValue, HasValueEdit = this.HasValueEdit };
         }
 
         #endregion

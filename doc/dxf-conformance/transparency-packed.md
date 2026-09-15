@@ -34,3 +34,13 @@ includes eight distinct packed values. The layer writer also retains explicitly
 imported opaque packed values and rewrites existing transparency XData after a
 successful edit to opaque. No rendering or transparency flag interpretation is
 introduced by this storage correction.
+
+Boundary qualification also preserves the complete `AcCmTransparency` XData
+packet, including ancillary text, binary data and duplicate integer slots. The
+reader projects its last 1071 slot; an edit updates only that slot, preserving
+all earlier slots and tag order. An untouched packet without 1071 remains
+unchanged. An explicit successful percentage edit may append a previously absent
+1071, and a failed edit leaves the packet untouched. Layer-state group 440 uses
+retained packed bits before the legacy opaque-zero encoding; physically stored
+zero remains observable while retaining its existing effective opaque value.
+Independent before/after probes detected these boundary losses before release.

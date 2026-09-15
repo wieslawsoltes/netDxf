@@ -11,6 +11,7 @@ internal static partial class Program
     private static readonly int[] TransparencyWireValues = { 0x02000000, 0x02000001, 0x02000018, 0x02000080, 0x020000FE, 0x020000FF, 0x01000000, unchecked((int)0x8100127F) };
     private static void RegisterTransparencyStoredTests()
     {
+        RegisterTransparencyBoundaryTests();
         foreach (int mode in new[] { 0x01000000, 0x02000000 }) for (int alpha = 0; alpha < 256; alpha++)
         { int packed = mode | alpha; Run($"transparency/stored/packed-{packed:X8}", () => TransparencyStoredSample(packed)); }
         foreach (int value in new[] { 0, -1, int.MinValue, int.MaxValue, 0x0300007F, 0x00123456, unchecked((int)0xA5123481), 0x42000000 })

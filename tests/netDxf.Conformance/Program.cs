@@ -46,11 +46,13 @@ internal static partial class Program
         RunTypedObjectErasureTests();
         RunLightListTests();
         RunDataTableTests();
+        RunSunTests();
         RegisterStoredTableTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
         RegisterStoredTableNameSpellingTests();
         RegisterTableStyleTests();
+        RegisterStoredFieldTests();
         RegisterFifthMixedModuleTests();
         RunSourceReferenceIdentityTests();
         RunNumericHandleTests();

@@ -59,6 +59,13 @@ namespace netDxf
                 foreach (var definition in block.AttributeDefinitions.Values) add(definition);
             }
             if (this.SectionReferencesRemoval(removed)) return true;
+            foreach (DxfObject item in removed) if (SunReferences.Get(item) != null) return true;
+            foreach (DxfStoredField field in this.AddedObjects.Values.OfType<DxfStoredField>())
+            {
+                if (field.References.Any(removed.Contains)) return true;
+                for (DxfObject owner = field.Owner; owner != null; owner = owner.Owner)
+                    if (removed.Contains(owner)) return true;
+            }
             foreach (StoredTable table in this.AddedObjects.Values.OfType<StoredTable>())
                 if (!removed.Contains(table) && table.References.Any(removed.Contains)) return true;
             foreach (DxfTableStyle style in this.AddedObjects.Values.OfType<DxfTableStyle>())

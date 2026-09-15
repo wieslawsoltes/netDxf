@@ -12,7 +12,7 @@ namespace netDxf.IO
         private void ValidateSections()
         {
             foreach (Section section in this.doc.Blocks.SelectMany(b => b.Entities).OfType<Section>()) section.Validate(this.doc);
-            foreach (DxfSectionSettings settings in this.doc.Objects.Items.OfType<DxfSectionSettings>())
+            foreach (DxfSectionSettings settings in this.doc.AddedObjects.Values.OfType<DxfSectionSettings>())
             {
                 if (this.doc.DrawingVariables.AcadVer < netDxf.Header.DxfVersion.AutoCad2007) throw new System.NotSupportedException("SECTIONSETTINGS output requires R2007 or later.");
                 settings.ValidateValues();

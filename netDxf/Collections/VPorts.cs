@@ -120,6 +120,7 @@ namespace netDxf.Collections
         {
             if (name == null || VPort.IsActiveName(name) || !this.Contains(name) || this.HasReferences(name)) return false;
             IReadOnlyList<VPort> entries = this.GetConfiguration(name);
+            foreach (VPort record in entries) if (record.Sun != null) return false;
             foreach (VPort record in entries) this.Remove(record);
             return entries.Count != 0;
         }
@@ -129,7 +130,7 @@ namespace netDxf.Collections
         {
             if (record == null || !ReferenceEquals(record.Owner, this)) return false;
             if (VPort.IsActiveName(record.Name) && this.GetConfiguration(VPort.DefaultName).Count == 1) return false;
-            if (this.HasReferences(record.Name)) return false;
+            if (this.HasReferences(record.Name) || record.Sun != null) return false;
             UcsReferences.Unregister(record);
             this.Owner.AddedObjects.Remove(record.Handle);
             this.records.Remove(record);
