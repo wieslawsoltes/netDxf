@@ -227,10 +227,15 @@ internal static partial class Program
         else
         { tags.Add(new DxfTag(102, "{UNTERMINATED")); tags.Add(new DxfTag(71, (short)5)); }
         raw = raw.WithRecord(face, tags);
-        if (context == 6)
+        if (context == 5 || context == 6)
         {
+            if (context == 5)
+            {
+                using var input = new MemoryStream(); raw.Save(input, binary);
+                File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"polyface-invalid-xdata-{version}-{binary}.dxf"), input.ToArray());
+            }
             bool rejected = false; try { _ = PolyfaceGrammarLoad(raw, binary); } catch (FormatException) { rejected = true; }
-            Check(rejected, "Unclosed private POLYFACE control group accepted"); return;
+            Check(rejected, "Malformed private or XData POLYFACE packet accepted"); return;
         }
         var loaded = PolyfaceGrammarLoad(raw, binary);
         Check(loaded.Entities.PolyfaceMeshes.Single().Faces.Single().VertexIndexes.SequenceEqual(new short[] { 1, 2, 3, 4 }), "Private child metadata acquired public geometry semantics");

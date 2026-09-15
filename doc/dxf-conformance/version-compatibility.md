@@ -39,7 +39,7 @@ The report captures the current source version, requested target version, diagno
 | `DATATABLE_PROFILE`, `SORTENTSTABLE_PROFILE` | Corresponding typed objects | Requires R2004+ |
 | `LIGHTLIST_PROFILE`, `SUN_PROFILE`, `MLEADERSTYLE_PROFILE`, `SECTIONSETTINGS_PROFILE` | Corresponding typed objects | Requires R2007+ |
 | `GEODATA_PROFILE` | Typed version-2 GEODATA | Requires R2010+ |
-| `STORED_SOURCE_PROFILE` | TABLE, TABLESTYLE, TABLECONTENT, TABLEGEOMETRY, CELLSTYLEMAP, FIELD, DIMASSOC, SECTION_MANAGER, SUNSTUDY and retained POLYLINE and PolygonMesh VERTEX/SEQEND packets | Requires the exact source profile, including when upgrading |
+| `STORED_SOURCE_PROFILE` | TABLE, TABLESTYLE, TABLECONTENT, TABLEGEOMETRY, CELLSTYLEMAP, FIELD, DIMASSOC, SECTION_MANAGER, SUNSTUDY and retained Polyline3D, PolygonMesh and PolyfaceMesh child packets | Requires the exact source profile, including when upgrading |
 | `HATCH_GRADIENT_OMITTED` | Gradient pattern packet | R2000 omits gradient data and writes the base hatch fill |
 | `HEADER_LAST_SAVED_BY_OMITTED` | Nonempty `DrawingVariables.LastSavedBy` | R2000 omits `$LASTSAVEDBY` |
 | `CLASS_INSTANCE_COUNT_OMITTED` | Explicit CLASS instance count, including zero | R2000 omits group 91 |
@@ -50,6 +50,26 @@ These are concrete existing writer rules, not inferred DXF restrictions. For exa
 
 The checked-in [qualification receipt](version-compatibility-qualification.json) records 638 passing, unique conformance cases in each of Debug and Release. The matrix includes 396 authored feature/target/transport comparisons, 132 stored-family comparisons, 16 further upgrade cases, 36 explicit-null SUN cases, 12 ordinary PolygonMesh record cases, 12 physical omission checks, 12 preserved MTEXT defined-height controls, 12 opaque-packet exclusion controls, and ten traversal/snapshot/purity checks. Debug and Release results are byte-identical.
 
-The mandatory `tools/verify_version_compatibility.py` gate independently decodes the twelve omission output files per configuration and rejects ten deliberately corrupted physical packets. A separate [independent review](receipts/version-compatibility-independent/README.md) passes 518 cases in each configuration, checks every documented code and exact property path, and preserves its harnesses, result records and actual-writer evidence. Fixture-helper reuse is explicitly identified in that review.
+The initial `tools/verify_version_compatibility.py` gate independently decodes twelve omission output files per configuration and rejects ten deliberately corrupted physical packets. A separate [independent review](receipts/version-compatibility-independent/README.md) passes 518 cases in each configuration, checks every documented code and exact property path, and preserves its harnesses, result records and actual-writer evidence. Fixture-helper reuse is explicitly identified in that review.
 
 All five supported library target frameworks build in Release. This isolated qualification predates the PR92 HATCH XML-parameter documentation cleanup and records its exact existing warning breakdown in the receipt; the diagnostic implementation adds no warnings. No native CAD acceptance or exhaustive validity conclusion follows from these results.
+
+## Retained Polyface extension
+
+PR94 adds `STORED_SOURCE_PROFILE` diagnostics for each registered
+`PolyfaceMeshRecord`, with its actual live source identity and captured physical
+handle. Newly authored meshes have no retained child records and acquire no
+source-profile restriction from this rule. Other writer restrictions still apply.
+The [extension receipt](receipts/polyface-version-compatibility/qualification.json)
+records 24 new cases and all 662 report cases passing in both configurations. These
+compare diagnostics with actual accepted and rejected saves across six targets and
+both transports, including zero-byte rejection and unchanged registrations.
+Expected R2000 omissions of loaded CLASS counts remain visible alongside mesh
+profile rejections.
+
+The mandatory gate now checks 26 outputs: the original twelve omission examples
+and fourteen accepted Polyface exports. It rejects 80 packet corruptions in total,
+including target version, coordinate, signed face index, child owner and missing
+SEQEND mutations. The fourteen Polyface outputs also pass ezdxf audits without
+errors or repairs. This is scoped source-profile evidence, not a general promise
+that a report without diagnostics can be saved.

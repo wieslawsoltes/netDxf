@@ -1,0 +1,30 @@
+PASS declared-ownership-AutoCad2000-text.dxf
+PASS declared-ownership-AutoCad2000-binary.dxf
+PASS declared-ownership-AutoCad2004-text.dxf
+PASS declared-ownership-AutoCad2004-binary.dxf
+PASS declared-ownership-AutoCad2007-text.dxf
+PASS declared-ownership-AutoCad2007-binary.dxf
+PASS declared-ownership-AutoCad2010-text.dxf
+PASS declared-ownership-AutoCad2010-binary.dxf
+PASS declared-ownership-AutoCad2013-text.dxf
+PASS declared-ownership-AutoCad2013-binary.dxf
+PASS declared-ownership-AutoCad2018-text.dxf
+PASS declared-ownership-AutoCad2018-binary.dxf
+PASS 12 exact ownership envelopes and reciprocal child identities; TABLE cell/display semantics remain outside this gate
+PASS declared-native-acad_table_simple.dxf-B3-text.dxf
+PASS declared-native-acad_table_simple.dxf-B3-binary.dxf
+PASS declared-native-acad_table_with_blk_ref.dxf-119-text.dxf
+PASS declared-native-acad_table_with_blk_ref.dxf-119-binary.dxf
+PASS declared-native-sample_AC1024_ascii.dxf-1311-text.dxf
+PASS declared-native-sample_AC1024_ascii.dxf-1311-binary.dxf
+PASS declared-native-sample_AC1024_ascii.dxf-1321-text.dxf
+PASS declared-native-sample_AC1024_ascii.dxf-1321-binary.dxf
+PASS declared-native-sample_AC1018_ascii.dxf-13DF-text.dxf
+PASS declared-native-sample_AC1018_ascii.dxf-13DF-binary.dxf
+PASS declared-native-sample_AC1018_ascii.dxf-13F2-text.dxf
+PASS declared-native-sample_AC1018_ascii.dxf-13F2-binary.dxf
+PASS declared-native-sample_AC1021_ascii.dxf-1375-text.dxf
+PASS declared-native-sample_AC1021_ascii.dxf-1375-binary.dxf
+PASS declared-native-sample_AC1021_ascii.dxf-1388-text.dxf
+PASS declared-native-sample_AC1021_ascii.dxf-1388-binary.dxf
+PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation

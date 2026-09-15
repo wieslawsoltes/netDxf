@@ -1,0 +1,106 @@
+{
+  "module": "Source-bound standalone DxfOpaqueEntity retention with editable common metadata",
+  "production_commit": "15b228174f3fc4c123caef8b04f1c791efb1001f",
+  "production_tree": "d0a5d447e94ae5af2c96840b05536ce3bc9c4d56",
+  "initial_production_commit": "b2ee2f9cf7b4791d6dae70907e07a229b2c00dd9",
+  "source_worktree": "netDxf-opaque-entity-assessment",
+  "harness": {
+    "recovery-audit/opaque-probe/Program.cs": "2529f0116201686c3470416028c56cfeda1c08044bf9bdd74dd5f43e549f1c30",
+    "recovery-audit/opaque-probe/Boundaries.cs": "883afb7af68c9116ba0fdac184f45c5079292763d3b7f97fef116a1afe994e2f",
+    "recovery-audit/opaque-probe/PlacementsAndBudget.cs": "a7f52c40a743dce6269565cb146c5f211f2643119f95fdf9ad222023c5ac85ec",
+    "recovery-audit/opaque-probe/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "recovery-audit/opaque-corrections-probe/Program.cs": "539ca616cfdee6a36f30047968f88dada117b59013b8a64a847dae6569929fd5",
+    "recovery-audit/opaque-corrections-probe/Probe.csproj": "50dd62d55b04516fd69ea1c2cad2cd4696e19bee5455a848d23e3c60ebec2361",
+    "recovery-audit/audit_probe_outputs.py": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff"
+  },
+  "fixture_factory": {
+    "path": "recovery-audit/frozen-opaque-factory/netDxf.Conformance.dll",
+    "sha256": "3ebd50db7a5f1a9d61b45c4652b2c670408fef1a909158e960597372ca541cd6",
+    "method": "NetDxf.Conformance.Program.OpaqueFixture(DxfVersion, string)",
+    "scope": "Pinned initial declared-schema fixture factory only; all review assertions, mutations, metadata/placement carriers and output audits are independent."
+  },
+  "configurations": {
+    "debug": {
+      "cases": 91,
+      "failed": 0,
+      "library_sha256": "b00470c616f2a949bc510b1dfda0cd9f70d9ad5e2a8fdc69dc101dc440a6ab41",
+      "results_path": "recovery-audit/opaque-v7/results.json",
+      "results_sha256": "0db794544634fb403e65264a8710ccc555d3efa0ca7f5cf538361eb4103598ca",
+      "audit_outputs": 57,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/opaque-v7/ezdxf-audit.json",
+      "audit_sha256": "b1feade7aa5c6195562cae5428f0706f47076c0fa73810883e7327288aa837e9"
+    },
+    "release": {
+      "cases": 91,
+      "failed": 0,
+      "library_sha256": "0a36811b386e4bc30a1a4ad6c84d866268e1baa95194fba57b1b4d542fe12f27",
+      "results_path": "recovery-audit/opaque-final-release/results.json",
+      "results_sha256": "d1fb2039d243bd8982e65082fe2c5024076e36a3adb8eab189c4e3f534ba8c41",
+      "audit_outputs": 57,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/opaque-final-release/ezdxf-audit.json",
+      "audit_sha256": "9bacbadc1aeaf019b64484b7be806d715e32113368ecc16f823d02219310bae7"
+    }
+  },
+  "coverage": [
+    "Across six supported profiles and both input transports, exact complete source tags persist through both output transports and reload, including uninterpreted common/private groups, binary data and arbitrary nonsemantic handles.",
+    "Combined common appearance overlays preserve the original immutable SourceTags and exact private body. Checks cover actual layer identity, signed true-color encoding, lineweight, linetype scale, visibility, proxy bytes, available color-name/shadow fields and literal Unicode-looking XData strings.",
+    "CLASS source identity and semantic values are pinned. Replacing a declaration with an equal clone, changing fields, changing source profile or colliding with a writer-generated declaration rejects before stream/file mutation; correctly escaped literal CLASS text reloads unchanged.",
+    "Public aggregate/child/proxy names, excluded subclasses, public groups 66/101, duplicate common framing, malformed control groups, missing actual owner and extra unretained CLASS fields reject. Private groups containing lookalike codes remain inert in the positive source packet.",
+    "Actual source extension dictionary reciprocity and persistent reactors survive exact packet output. Reactor edits reject, source target removal remains blocked and restoring original metadata permits save.",
+    "Exact standard group 340 links to LAYER/LTYPE/STYLE/APPID block resource removal. Current common Layer/Linetype and XData APPID remain guarded, while old common resources release after explicit replacement. Source XData 1003 binds its actual layer, guards removal and emits its new name after rename.",
+    "Paper-space and unused-block placements retain their actual physical BLOCK_RECORD owner and complete packet. Block cloning and Insert explosion reject before handle mutation. Compatibility analysis includes these non-model source objects.",
+    "After mutable XData growth across 17 entities, the exact aggregate 1,048,576-tag boundary saves and reloads with every packet below 65,536 tags. One extra tag rejects in both transports before changing stream bytes/cursor, existing file bytes, source snapshots, registrations, CLASS identities or seed.",
+    "Binary comment output, embedded NUL and source profile changes reject before output/file replacement. Ordinary text and binary saves preserve source packet fields within the documented transport boundary."
+  ],
+  "findings": [
+    {
+      "defect": "Literal CLASS application text was reinterpreted on output because ordinary CLASS encoding did not escape literal backslashes. Loaded application text literal \\U+0041 became literal A after save/reload.",
+      "correction": "df9b5ac selects backslash-safe encoding for declarations belonging to retained opaque entities and validates opaque string framing before output.",
+      "before_library_sha256": "8850c8d5a8cd272264c2364ebf33446671c370c103fc2e4c0ec0fdd9e67ace5e"
+    },
+    {
+      "defect": "Source XData 1003 bound its actual Layer in References, but the shared table-resource collector omitted DxfOpaqueEntity, allowing Layers.Remove to remove that dependency.",
+      "correction": "15b2281 adds DxfOpaqueEntity.References to the shared resource collector; direct Layer/Linetype/Style/APPID and current metadata controls pass."
+    }
+  ],
+  "correction_proof": {
+    "before": {
+      "path": "recovery-audit/opaque-corrections-before/results.json",
+      "sha256": "d0c15be776c5b8040c8d06a42ee75782889eb136d71199b151e2e6da00374fa6",
+      "library_sha256": "8850c8d5a8cd272264c2364ebf33446671c370c103fc2e4c0ec0fdd9e67ace5e",
+      "cases": 4,
+      "unexpected_observations": 0,
+      "meaning": "Both original defects reproduced"
+    },
+    "debug": {
+      "path": "recovery-audit/opaque-corrections-debug/results.json",
+      "sha256": "f8c7b9e3c5278b310973b77245d5c2b5b6403743eea0a306bab83e32187c96e8",
+      "library_sha256": "b00470c616f2a949bc510b1dfda0cd9f70d9ad5e2a8fdc69dc101dc440a6ab41",
+      "cases": 4,
+      "unexpected_observations": 0,
+      "meaning": "Both defects corrected"
+    },
+    "release": {
+      "path": "recovery-audit/opaque-corrections-release/results.json",
+      "sha256": "29af2a7fd4804f9a2bc244d1977baab9b7cd04313e21f35f88429bf79375349f",
+      "library_sha256": "0a36811b386e4bc30a1a4ad6c84d866268e1baa95194fba57b1b4d542fe12f27",
+      "cases": 4,
+      "unexpected_observations": 0,
+      "meaning": "Both defects corrected"
+    }
+  },
+  "scope": [
+    "All unknown-entity fixtures are explicitly declared synthetic schemas built on ordinary netDxf scaffolds. No supplied native unknown entity producer packet was available; no application-private geometry or semantics are qualified.",
+    "ezdxf 1.4.4 retains QUALIFIED_FUTURE_CURVE as ezdxf.entities.dxfentity.DXFTagStorage. The 114 main output audits check surrounding DXF structure; they do not interpret the unknown entity or validate its application semantics. Exact raw/source packet assertions are separate.",
+    "No native CAD executable was available or invoked. Geometry, aggregate/embedded sequences, proxy entities, discarded external ACDSDATA, owner relocation, cloning and target-profile conversion retain explicit boundaries.",
+    "Two expanded-probe setup issues were corrected without source changes: a generated RASTERVARIABLES fixture initially kept a duplicate original CLASS, and legacy raw CLASS Unicode text now uses explicit wire Unicode escapes. A transient MSBuild ProcessName initializer failure was retried successfully."
+  ],
+  "audit_scope": {
+    "path": "recovery-audit/opaque-audit-scope.json",
+    "sha256": "489354dc748204d61c3c7a19c8327579061a80afca949ee4046b0c89f1447f8d"
+  }
+}

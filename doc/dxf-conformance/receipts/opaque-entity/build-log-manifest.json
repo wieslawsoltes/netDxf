@@ -1,0 +1,26 @@
+{
+  "archive": "opaque-build-logs.tar.gz",
+  "archiveSha256": "8eee3f68ac95e2a847199242c15991f4eaa9915d4e8c7225c307fd3c208bb306",
+  "members": [
+    {
+      "member": "opaque-entity-tests-v7-build.log",
+      "bytes": 182882,
+      "sha256": "e3df4a3c0ca57c4f64f1718fdd8bb09b1e37fe9f5c531626410c831c8172517b"
+    },
+    {
+      "member": "opaque-entity-final-debug-build-retry.log",
+      "bytes": 197,
+      "sha256": "cd7903e053e99556f772bdd5b178a9f2d6960669782a711e4001c14dfb102f4f"
+    },
+    {
+      "member": "opaque-entity-final-release-build.log",
+      "bytes": 279,
+      "sha256": "d24d0d718af55ae38afbd3b54b6048669a122d7ce29d6bf736a797c5ec77f997"
+    },
+    {
+      "member": "opaque-entity-final-all-targets-build.log",
+      "bytes": 917413,
+      "sha256": "bf931eb36b39c355e18da842bb4aa4056e3ffe822282313c2d94f9a5db15399d"
+    }
+  ]
+}

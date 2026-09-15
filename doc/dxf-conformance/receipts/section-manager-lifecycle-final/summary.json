@@ -1,0 +1,68 @@
+{
+  "Debug/manager-lifecycle": {
+    "exit": 0,
+    "passed": 128,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "{\"actual_output_corruptions_rejected\": 276, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_section_generation\": false, \"native_before_after_record_comparisons\": 4, \"native_cad_execution\": false, \"outputs\": 40}"
+  },
+  "Debug/section-membership": {
+    "exit": 0,
+    "passed": 84,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "{\"actual_output_corruptions_rejected\": 260, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_membership\": false, \"native_cad_execution\": false, \"native_manager_boundary_comparisons\": 4, \"outputs\": 52, \"section_evaluation\": false}"
+  },
+  "Debug/section-manager": {
+    "exit": 0,
+    "passed": 110,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "PASS 52 outputs, 4 exact native packets, 32 explicit schema cases, 16 opaque cases, and 160 corruption controls"
+  },
+  "Debug/section": {
+    "exit": 0,
+    "passed": 215,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "{\"actual_output_packet_corruption_controls\": 6, \"adapted_documented_name_structural_audits\": 56, \"adapted_producer_extracted_source_audits\": 8, \"native_original_transformations\": 0, \"pinned_producer_originals_and_exact_extractions\": 8, \"unmodified_native_name_audits\": 14, \"unmodified_native_original_audits\": 1, \"verified_outputs\": 70}"
+  },
+  "Debug/typed-erasure": {
+    "exit": 0,
+    "passed": 87,
+    "failed": 0
+  },
+  "Release/manager-lifecycle": {
+    "exit": 0,
+    "passed": 128,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "{\"actual_output_corruptions_rejected\": 276, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_section_generation\": false, \"native_before_after_record_comparisons\": 4, \"native_cad_execution\": false, \"outputs\": 40}"
+  },
+  "Release/section-membership": {
+    "exit": 0,
+    "passed": 84,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "{\"actual_output_corruptions_rejected\": 260, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_membership\": false, \"native_cad_execution\": false, \"native_manager_boundary_comparisons\": 4, \"outputs\": 52, \"section_evaluation\": false}"
+  },
+  "Release/section-manager": {
+    "exit": 0,
+    "passed": 110,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "PASS 52 outputs, 4 exact native packets, 32 explicit schema cases, 16 opaque cases, and 160 corruption controls"
+  },
+  "Release/section": {
+    "exit": 0,
+    "passed": 215,
+    "failed": 0,
+    "gate_exit": 0,
+    "gate_summary": "{\"actual_output_packet_corruption_controls\": 6, \"adapted_documented_name_structural_audits\": 56, \"adapted_producer_extracted_source_audits\": 8, \"native_original_transformations\": 0, \"pinned_producer_originals_and_exact_extractions\": 8, \"unmodified_native_name_audits\": 14, \"unmodified_native_original_audits\": 1, \"verified_outputs\": 70}"
+  },
+  "Release/typed-erasure": {
+    "exit": 0,
+    "passed": 87,
+    "failed": 0
+  }
+}

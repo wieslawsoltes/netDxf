@@ -1,0 +1,7 @@
+{
+  "source": "f70c60f65e02a5308a921760af192f361b940ebd",
+  "binaries": {
+    "netDxf.netstandard.dll": "a7fec594f951b3df4c20459fd2fb1e1362e8c71bef9ac056a5f0e6ce33d75675",
+    "netDxf.Conformance.dll": "cd502ea6d27e8d21e6ffe5669fcaaeaf6728cc9c35ee84d279c9372c8349736a"
+  }
+}

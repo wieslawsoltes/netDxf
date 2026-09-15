@@ -1,0 +1,2 @@
+MSBuild version 17.11.26+2b19be476 for .NET
+  netDxf.Conformance -> /workspace/scratch/2ec4aa26f01f/polyface-records-netDxf/tests/netDxf.Conformance/bin/Release/net8.0/netDxf.Conformance.dll

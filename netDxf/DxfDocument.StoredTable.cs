@@ -14,8 +14,10 @@ namespace netDxf
     {
         internal void ValidateStoredTableEntityAdoption(EntityObject entity)
         {
+            if (entity is DxfOpaqueEntity opaque) opaque.ValidateIncoming(this);
             if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
             if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
+            if (entity is PolyfaceMesh polyface) polyface.ValidateStoredRecords(this, false);
             if (entity is StoredTable table) table.ValidateIncoming(this);
             else if (entity is Insert insert) this.ValidateStoredTableBlockAdoption(insert.Block);
             else if (entity is Dimension dimension && dimension.Block != null) this.ValidateStoredTableBlockAdoption(dimension.Block);
@@ -29,9 +31,11 @@ namespace netDxf
                 if (block == null || !visited.Add(block) || this.Blocks.Contains(block.Name)) return;
                 foreach (EntityObject entity in block.Entities)
                 {
+                    if (entity is DxfOpaqueEntity opaque) opaque.ValidateIncoming(this, block);
                     if (entity is Hatch hatch) HatchSourceRelations.ValidateOwner(hatch, block, this);
                     if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
                     if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
+                    if (entity is PolyfaceMesh polyface) polyface.ValidateStoredRecords(this, false);
                     if (entity is Section section) section.Validate(this);
                     else if (entity is StoredTable table) table.ValidateIncoming(this);
                     else if (entity is Insert insert) visit(insert.Block);
@@ -64,6 +68,7 @@ namespace netDxf
                 foreach (var entity in block.Entities) add(entity);
                 foreach (var definition in block.AttributeDefinitions.Values) add(definition);
             }
+            if (this.OpaqueEntityReferencesRemoval(removed)) return true;
             if (this.StoredPolylineReferencesRemoval(removed)) return true;
             if (this.SectionReferencesRemoval(removed)) return true;
             foreach (DxfObject item in removed) if (SunReferences.Get(item) != null) return true;

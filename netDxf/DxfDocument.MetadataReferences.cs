@@ -25,6 +25,7 @@ namespace netDxf
             if (owner is Block block) result.Add(block.End);
             if (owner is Polyline3D polyline) foreach (Polyline3DRecord record in polyline.StoredRecords) result.Add(record);
             if (owner is PolygonMesh mesh) foreach (PolygonMeshRecord record in mesh.StoredRecords) result.Add(record);
+            if (owner is PolyfaceMesh polyface) foreach (PolyfaceMeshRecord record in polyface.StoredRecords) result.Add(record);
             if (owner is Layout layout && layout.Viewport != null) result.Add(layout.Viewport);
             return result;
         }

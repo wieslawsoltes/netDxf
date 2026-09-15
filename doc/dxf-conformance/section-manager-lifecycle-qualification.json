@@ -1,0 +1,132 @@
+{
+  "module": "Explicit database-owned SECTION_MANAGER creation and erasure",
+  "production_commit": "5464b0385b44273733ae2701a2fa292465ccced0",
+  "base_commit": "d737ba2e6d38fd6296ff174db1628359e86bf7b5",
+  "production_chain": [
+    "0442c91ff6362f742cd12c1f5b6db3c7b7757269",
+    "5464b0385b44273733ae2701a2fa292465ccced0"
+  ],
+  "qualification_source_revision": "5464b0385b44273733ae2701a2fa292465ccced0",
+  "targets_qualified_here": [
+    "net8.0 Debug",
+    "net8.0 Release"
+  ],
+  "production_files": {
+    "netDxf/Objects/DxfObjectDatabase.SectionManager.cs": "2a196516d012636054912d7715e10ef283d2feaae878d863ad4d63ee3d937f41",
+    "netDxf/Objects/DxfObjectDatabase.Erase.cs": "7555ddd39a1e57f6466facf914df0237c7d72607beb5b2c042b63f3fb2997706",
+    "netDxf/Objects/DxfStoredSectionManager.cs": "c46a47f5698ac1c2238b77efacd0999e005ac7c8a76bd7b859cd9db90f25a9a5"
+  },
+  "configurations": {
+    "Debug": {
+      "library_sha256": "a465d4ed58972def6fa9bcb09ad48345fba20793cff4effe39ffdfa03f7d33a8",
+      "new_tests_passed": 128,
+      "neighbor_tests_passed": 496,
+      "unique_tests_passed": 624,
+      "failed": 0,
+      "legacy_CS1591_warnings": 561,
+      "lifecycle_outputs": 40,
+      "lifecycle_controls": 276,
+      "lifecycle_audit_errors": 0,
+      "lifecycle_audit_repairs": 0,
+      "independent_tests_passed": 31,
+      "independent_outputs_audited": 20
+    },
+    "Release": {
+      "library_sha256": "5e3a1687c7decee474cc77fa5352bfb6710914db87e19474a888ba39262a5c5a",
+      "new_tests_passed": 128,
+      "neighbor_tests_passed": 496,
+      "unique_tests_passed": 624,
+      "failed": 0,
+      "legacy_CS1591_warnings": 561,
+      "lifecycle_outputs": 40,
+      "lifecycle_controls": 276,
+      "lifecycle_audit_errors": 0,
+      "lifecycle_audit_repairs": 0,
+      "independent_tests_passed": 31,
+      "independent_outputs_audited": 20
+    }
+  },
+  "results": {
+    "Debug/manager-lifecycle": {
+      "exit": 0,
+      "passed": 128,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "{\"actual_output_corruptions_rejected\": 276, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_section_generation\": false, \"native_before_after_record_comparisons\": 4, \"native_cad_execution\": false, \"outputs\": 40}"
+    },
+    "Debug/section-membership": {
+      "exit": 0,
+      "passed": 84,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "{\"actual_output_corruptions_rejected\": 260, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_membership\": false, \"native_cad_execution\": false, \"native_manager_boundary_comparisons\": 4, \"outputs\": 52, \"section_evaluation\": false}"
+    },
+    "Debug/section-manager": {
+      "exit": 0,
+      "passed": 110,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "PASS 52 outputs, 4 exact native packets, 32 explicit schema cases, 16 opaque cases, and 160 corruption controls"
+    },
+    "Debug/section": {
+      "exit": 0,
+      "passed": 215,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "{\"actual_output_packet_corruption_controls\": 6, \"adapted_documented_name_structural_audits\": 56, \"adapted_producer_extracted_source_audits\": 8, \"native_original_transformations\": 0, \"pinned_producer_originals_and_exact_extractions\": 8, \"unmodified_native_name_audits\": 14, \"unmodified_native_original_audits\": 1, \"verified_outputs\": 70}"
+    },
+    "Debug/typed-erasure": {
+      "exit": 0,
+      "passed": 87,
+      "failed": 0
+    },
+    "Release/manager-lifecycle": {
+      "exit": 0,
+      "passed": 128,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "{\"actual_output_corruptions_rejected\": 276, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_section_generation\": false, \"native_before_after_record_comparisons\": 4, \"native_cad_execution\": false, \"outputs\": 40}"
+    },
+    "Release/section-membership": {
+      "exit": 0,
+      "passed": 84,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "{\"actual_output_corruptions_rejected\": 260, \"audit_errors\": 0, \"audit_repairs\": 0, \"automatic_membership\": false, \"native_cad_execution\": false, \"native_manager_boundary_comparisons\": 4, \"outputs\": 52, \"section_evaluation\": false}"
+    },
+    "Release/section-manager": {
+      "exit": 0,
+      "passed": 110,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "PASS 52 outputs, 4 exact native packets, 32 explicit schema cases, 16 opaque cases, and 160 corruption controls"
+    },
+    "Release/section": {
+      "exit": 0,
+      "passed": 215,
+      "failed": 0,
+      "gate_exit": 0,
+      "gate_summary": "{\"actual_output_packet_corruption_controls\": 6, \"adapted_documented_name_structural_audits\": 56, \"adapted_producer_extracted_source_audits\": 8, \"native_original_transformations\": 0, \"pinned_producer_originals_and_exact_extractions\": 8, \"unmodified_native_name_audits\": 14, \"unmodified_native_original_audits\": 1, \"verified_outputs\": 70}"
+    },
+    "Release/typed-erasure": {
+      "exit": 0,
+      "passed": 87,
+      "failed": 0
+    }
+  },
+  "independent_final_receipt": "receipts/section-manager-lifecycle-independent/manager-lifecycle-final-review-summary.json",
+  "independent_historical_receipt": "receipts/section-manager-lifecycle-independent/manager-lifecycle-review-summary.json",
+  "durable_evidence_manifest": "receipts/section-manager-lifecycle-final/manifest.json",
+  "independent_evidence_manifest": "receipts/section-manager-lifecycle-independent/manifest.json",
+  "qualification_boundaries": [
+    "Creation and explicit erasure store the public manager packet/root anchor. They do not generate sections or run a CAD application.",
+    "R2007, R2010, R2013 and R2018 creation/recreation are explicit schema cases. Unchanged native producer input is one pinned R2018 LiveSection drawing, with both input/output transports.",
+    "Actual references and required root/Section metadata validate after caller enumeration/disposal. Unrelated invalid LINE metadata remains outside creation validation; caller-owned changes are retained.",
+    "Manager/SECTION/settings/root identities and surviving packets compare exactly across lifecycle phases. The existing writer reallocates an exact empty ACAD_LAYERSTATES dictionary per save; the gate validates its full packet/ancestry and normalizes only its generated identity and immediate entry.",
+    "Authored packet baseline is emitted after ordinary save/reload before explicit edits. No broad normalization of native manager or SECTION packets is allowed.",
+    "Erasure preserves existing CLASS metadata and updates only a present manager count. Absent declaration/count is not invented by creation, erasure or analysis.",
+    "Known legacy CS1591 warnings remain unsuppressed. Final source is qualified separately from historical 0442 results.",
+    "Initial owner harness issues corrected: read-only Section view wrappers have value/identity sequence rather than wrapper-reference equality; foreign fixture needs R2018; Release Save reports rejection by false while Debug can throw.",
+    "Independent review identified actual retained-handle reservations, existing CLASS count correction and required post-Dispose metadata admission; all are included in final frozen production."
+  ]
+}

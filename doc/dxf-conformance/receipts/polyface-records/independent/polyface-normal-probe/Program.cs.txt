@@ -1,0 +1,37 @@
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+
+var results = new List<object>(); bool expectFixed = args.Length > 2 && args[2] == "fixed"; int failed = 0;
+foreach (bool authored in new[] { false, true })
+foreach (string invalid in new[] { "nan", "infinity", "zero" })
+foreach (bool binary in new[] { false, true })
+{
+    (DxfDocument drawing, PolyfaceMesh mesh) = Fixture(args[0], authored);
+    Vector3 normal = invalid == "nan" ? new Vector3(double.NaN, 0, 1) : invalid == "infinity" ? new Vector3(0, double.PositiveInfinity, 1) : Vector3.Zero;
+    mesh.Normal = normal;
+    var seed = typeof(DxfDocument).GetProperty("NumHandles", BindingFlags.Instance | BindingFlags.NonPublic)!; long before = (long)seed.GetValue(drawing)!;
+    using var output = new MemoryStream(); bool saved = false, cloned = false, reloaded = false; string saveError = "", cloneError = "", reloadError = "";
+    try { saved = drawing.Save(output, binary); } catch (Exception error) { saveError = error.GetType().Name + ": " + error.Message; }
+    try { _ = mesh.Clone(); cloned = true; } catch (Exception error) { cloneError = error.GetType().Name + ": " + error.Message; }
+    if (saved) { output.Position = 0; try { reloaded = DxfDocument.Load(output) != null; } catch (Exception error) { reloadError = error.GetType().Name + ": " + error.Message; } }
+    (DxfDocument adoptionDrawing, PolyfaceMesh detached) = Fixture(args[0], authored); if (!adoptionDrawing.Entities.Remove(detached)) throw new Exception("Cannot prepare detached normal fixture."); detached.Normal = normal;
+    long adoptionSeed = (long)seed.GetValue(adoptionDrawing)!; bool adopted = false; string adoptionError = "";
+    try { adoptionDrawing.Entities.Add(detached); adopted = true; } catch (Exception error) { adoptionError = error.GetType().Name + ": " + error.Message; }
+    long seedDelta = (long)seed.GetValue(drawing)! - before, adoptionSeedDelta = (long)seed.GetValue(adoptionDrawing)! - adoptionSeed;
+    bool passed = !expectFixed || !saved && !cloned && !adopted && output.Length == 0 && seedDelta == 0 && adoptionSeedDelta == 0 && detached.Owner == null;
+    if (!passed) failed++;
+    results.Add(new { authored, invalid, binary, passed, saved, cloned, reloaded, adopted, writtenBytes = output.Length, seedDelta, adoptionSeedDelta, saveError, cloneError, reloadError, adoptionError });
+    Directory.CreateDirectory(args[1]); if (saved) File.WriteAllBytes(Path.Combine(args[1], $"nonfinite-{authored}-{invalid}-{binary}.dxf"), output.ToArray());
+}
+File.WriteAllText(Path.Combine(args[1], "results.json"), JsonSerializer.Serialize(new { expectFixed, failed, librarySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(), results }, new JsonSerializerOptions { WriteIndented = true })); Console.WriteLine(JsonSerializer.Serialize(results)); Environment.ExitCode = failed == 0 ? 0 : 1;
+
+static (DxfDocument, PolyfaceMesh) Fixture(string repository, bool authored)
+{
+    if (!authored)
+    { var loaded = DxfDocument.Load(Path.Combine(repository, "tests/fixtures/polyface-records/producer-R2018-ascii.dxf")); return (loaded, loaded.Entities.PolyfaceMeshes.Single(p => p.Handle == "43")); }
+    var drawing = new DxfDocument(DxfVersion.AutoCad2018); var mesh = new PolyfaceMesh(new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY }, new[] { new short[] { 1, 2, 3 } }); drawing.Entities.Add(mesh); return (drawing, mesh);
+}

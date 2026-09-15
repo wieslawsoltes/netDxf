@@ -1,0 +1,2642 @@
+[
+  {
+    "name": "opaque-entity/packet/AutoCad2000/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2000/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2000/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2000/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2004/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2004/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2004/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2004/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2007/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2007/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2007/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2007/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2010/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2010/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2010/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2010/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2013/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2013/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2013/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2013/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2018/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2018/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2018/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/packet/AutoCad2018/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/lifecycle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/common-edits/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-owner/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-handle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-handle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-owner/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-layer/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-target/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-appid/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-layer/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-common/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/children/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/embedded/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/proxy-name/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/proxy-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/vertex-name/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/vertex-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/attribute-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/block-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/dimension-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/modeler-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/surface-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/bad-scale/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/bad-xdata/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/class-field/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/class-duplicate/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/class-object/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-owner/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-handle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-handle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-owner/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-layer/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-target/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/missing-appid/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-layer/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/duplicate-common/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/children/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/embedded/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/proxy-name/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/proxy-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/vertex-name/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/vertex-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/attribute-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/block-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/dimension-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/modeler-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/surface-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/bad-scale/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/bad-xdata/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/class-field/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/class-duplicate/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/reject/class-object/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/aci/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/true-color/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/linetype/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/weight/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/scale/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/visibility/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/transparency/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/color-name/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/shadow/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-empty/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/graphics-null/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/xdata/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/app-rename/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/field/layer-rename/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-change/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-replace/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/class-remove/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/profile/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/reactor/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/extension/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/weight/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/scale/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/preflight/xdata-target/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/common-graphics-empty/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/common-graphics-count/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/control-value/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/control-depth/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/space-mismatch/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/layout-mismatch/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/actual-layer-missing/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/target-duplicate/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/self-owner/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/self-pointer/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/null-pointer/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/no-class/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/acds-data/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/comments/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-transport/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/tag-budget/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/block-atomicity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-retry/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/common-graphics-empty/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/common-graphics-count/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/control-value/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/control-depth/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/space-mismatch/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/layout-mismatch/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/actual-layer-missing/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/target-duplicate/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/self-owner/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/self-pointer/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/null-pointer/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/no-class/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/boundary/acds-data/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/comments/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-transport/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/tag-budget/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/block-atomicity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-retry/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/paper/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/placement/unused-block/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/class-literal/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/xdata-layer/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LAYER/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/LTYPE/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/table-reference/STYLE/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/aggregate-budget/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/binary-chunk/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-preflight/class-nul/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-preflight/class-crlf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-preflight/xdata-nul/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/aggregate-budget/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/binary-chunk/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-preflight/class-nul/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-preflight/class-crlf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-entity/text-preflight/xdata-nul/True",
+    "passed": true,
+    "error": null
+  }
+]

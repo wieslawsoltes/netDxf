@@ -324,6 +324,8 @@ namespace netDxf.IO
                 this.RelinkOrphanLayouts();
             }
 
+            // Reject physical ambiguity before adding retained entity identities to collections.
+            this.ValidateSourceIdentityDeclarations();
             // perform all necessary post processes
             this.PostProcesses();
             this.ResolveMTextColumnLinks();
@@ -331,10 +333,12 @@ namespace netDxf.IO
             this.ImportDatabaseObjects();
             this.ResolveStoredPolylineRecords();
             this.ResolveStoredPolygonMeshRecords();
+            this.ResolveStoredPolyfaceMeshRecords();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
             this.ResolveSections();
             this.ResolveViewSections();
+            this.ResolveOpaqueEntities();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -1106,6 +1110,7 @@ namespace netDxf.IO
 
             while (this.chunk.ReadString() != DxfObjectCode.EndSection)
             {
+                if (this.chunk.Code == 0) this.hasDiscardedAcdsData = true;
                 //read the ACDSSCHEMA and ACDSRECORD, multiple entries
                 do
                 {
@@ -3568,6 +3573,7 @@ namespace netDxf.IO
 
         private DxfObject ReadEntity(bool isBlockEntity)
         {
+            if (IsOpaqueEntityCandidate(this.chunk.ReadString())) return this.ReadOpaqueEntity(isBlockEntity);
             SourceRecordIdentity source = this.CurrentSourceRecord;
             string handle = null;
             bool duplicateHandle = false;
@@ -8488,6 +8494,8 @@ namespace netDxf.IO
 
         private EntityObject ReadPolyline()
         {
+            if (this.chunk.Code == 100 && this.chunk.ReadString() == SubclassMarker.PolyfaceMesh)
+                return this.ReadStoredPolyfaceMesh();
             // the entity Polyline in DXF can actually hold four kinds of entities
             // 1. 3D polyline is the generic polyline
             // 2. Polygon mesh

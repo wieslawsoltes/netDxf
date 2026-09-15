@@ -642,6 +642,14 @@ namespace netDxf
         /// </remarks>
         public bool Save(string file, bool isBinary)
         {
+            // Opaque-specific refusals must precede destination truncation and document path changes.
+#if DEBUG
+            new DxfWriter().PreflightOpaqueEntities(this, isBinary);
+#else
+            try { new DxfWriter().PreflightOpaqueEntities(this, isBinary); }
+            catch (DxfVersionNotSupportedException) { throw; }
+            catch { return false; }
+#endif
             FileInfo fileInfo = new FileInfo(file);
             this.name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
             DxfWriter dxfWriter = new DxfWriter();
@@ -964,6 +972,7 @@ namespace netDxf
                 case EntityType.Spline:
                 case EntityType.Helix:
                 case EntityType.Section:
+                case EntityType.OpaqueEntity:
                 case EntityType.StoredTable:
                     break;
                 case EntityType.MultiLeader:
@@ -1049,6 +1058,7 @@ namespace netDxf
             this.AddedObjects.Add(entity.Handle, entity);
             this.RegisterStoredPolylineRecords(entity as Polyline3D);
             this.RegisterStoredPolygonMeshRecords(entity as PolygonMesh);
+            this.RegisterStoredPolyfaceMeshRecords(entity as PolyfaceMesh);
 
             entity.LayerChanged += this.Entity_LayerChanged;
             entity.LinetypeChanged += this.Entity_LinetypeChanged;
@@ -1138,6 +1148,7 @@ namespace netDxf
                 case EntityType.Spline:
                 case EntityType.Helix:
                 case EntityType.Section:
+                case EntityType.OpaqueEntity:
                 case EntityType.StoredTable:
                     break;
                 case EntityType.MultiLeader:
@@ -1183,7 +1194,10 @@ namespace netDxf
                     PolyfaceMesh mesh = (PolyfaceMesh) entity;
                     foreach (PolyfaceMeshFace face in mesh.Faces)
                     {
-                        this.layers.References[face.Layer.Name].Remove(mesh);
+                        if (face.Layer != null)
+                        {
+                            this.layers.References[face.Layer.Name].Remove(mesh);
+                        }
                     }
                     mesh.PolyfaceMeshFaceLayerChanged -= this.Entity_LayerChanged;
                     break;
@@ -1262,10 +1276,12 @@ namespace netDxf
             this.AddedObjects.Remove(entity.Handle);
             this.UnregisterStoredPolylineRecords(entity as Polyline3D);
             this.UnregisterStoredPolygonMeshRecords(entity as PolygonMesh);
+            this.UnregisterStoredPolyfaceMeshRecords(entity as PolyfaceMesh);
 
             entity.LayerChanged -= this.Entity_LayerChanged;
             entity.LinetypeChanged -= this.Entity_LinetypeChanged;
 
+            if (entity is DxfOpaqueEntity removedOpaque) removedOpaque.MarkRemoved();
             if (entity is StoredTable removedTable) removedTable.MarkRemoved();
             entity.Handle = null;
             entity.Owner = null;

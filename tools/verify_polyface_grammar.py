@@ -35,12 +35,14 @@ def validate(records, variant):
     check(len(headers) == 1, "POLYFACE header inventory")
     header = headers[0]
     check(only(header, 70) == 64, "POLYFACE header flag")
+    check(only(header, 71) == -17 and only(header, 72) == 123, "Stored advisory header counts changed")
     parent = only(header, 5)
     start = packets.index(header)
     sequence = packets[start + 1:start + 7]
     check([record[0][1] for record in sequence] == ["VERTEX"] * 5 + ["SEQEND"],
           "Physical coordinate/face/SEQEND output sequence")
-    coordinates, face, end = sequence[:4], sequence[4], sequence[5]
+    coordinates = sequence[1:5] if variant & 1 else sequence[:4]
+    face, end = sequence[0] if variant & 1 else sequence[4], sequence[5]
     for record, point in zip(coordinates, POINTS):
         check(only(record, 70) == 192, "Coordinate vertex role")
         check(tuple(only(record, 10)) == point, "Coordinate order or position changed")
@@ -48,9 +50,20 @@ def validate(records, variant):
     check(only(face, 70) == 128, "Face vertex role")
     check(tuple(only(face, 10)) == (0.0, 0.0, 0.0), "Face dummy coordinate changed")
     indices = [(code, value) for code, value in face if 71 <= code <= 74]
-    check(indices == list(enumerate(EXPECTED[variant], 71)),
-          "Active fixed face slots, signs or terminator changed")
-    check(all(1 <= abs(value) <= len(POINTS) for _, value in indices), "Dangling face index")
+    raw_slots = [(-1, 0, 32767, -32768), (1, -2, 0, 4), (1, -2, 3, 0),
+                 (-1, 2, -3, 4), (1, 0, -4, 0), (-1, 2, -3, 4),
+                 (1, 2, 1, 0), (1, 2, 3, 0)][variant]
+    order = (3, 1, 0, 2) if variant == 5 else (0, 1, 2, 3)
+    expected_packet = [(71+slot, raw_slots[slot]) for slot in order
+                       if not (variant == 4 and slot in (1, 3)) and not (variant == 7 and slot == 3)]
+    check(indices == expected_packet, "Stored fixed slots, omissions, inactive values or physical slot order changed")
+    by_slot = dict(indices); active = []
+    for code in range(71, 75):
+        value = by_slot.get(code, 0)
+        if value == 0: break
+        active.append(value)
+    check(tuple(active) == EXPECTED[variant], "Active semantic face indices or invisible-edge signs changed")
+    check(all(1 <= abs(value) <= len(POINTS) for value in active), "Dangling active face index")
     for record in sequence:
         check(only(record, 330) == parent, "Child owner does not identify actual POLYFACE parent")
     following = packets[start + 7]

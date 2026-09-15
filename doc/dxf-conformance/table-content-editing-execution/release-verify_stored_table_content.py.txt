@@ -1,0 +1,27 @@
+PASS table-content-native-acad_table_simple.dxf-False.dxf
+PASS table-content-native-acad_table_simple.dxf-True.dxf
+PASS table-content-native-acad_table_with_blk_ref.dxf-False.dxf
+PASS table-content-native-acad_table_with_blk_ref.dxf-True.dxf
+PASS table-content-native-sample_AC1018_ascii.dxf-False.dxf
+PASS table-content-native-sample_AC1018_ascii.dxf-True.dxf
+PASS table-content-native-sample_AC1021_ascii.dxf-False.dxf
+PASS table-content-native-sample_AC1021_ascii.dxf-True.dxf
+PASS table-content-native-sample_AC1024_ascii.dxf-False.dxf
+PASS table-content-native-sample_AC1024_ascii.dxf-True.dxf
+PASS table-content-opaque-0-False.dxf
+PASS table-content-opaque-0-True.dxf
+PASS table-content-opaque-1-False.dxf
+PASS table-content-opaque-1-True.dxf
+PASS table-content-opaque-2-False.dxf
+PASS table-content-opaque-2-True.dxf
+PASS table-content-opaque-3-False.dxf
+PASS table-content-opaque-3-True.dxf
+PASS table-content-opaque-4-False.dxf
+PASS table-content-opaque-4-True.dxf
+PASS table-content-opaque-5-False.dxf
+PASS table-content-opaque-5-True.dxf
+PASS table-content-opaque-6-False.dxf
+PASS table-content-opaque-6-True.dxf
+PASS table-content-opaque-7-False.dxf
+PASS table-content-opaque-7-True.dxf
+PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls

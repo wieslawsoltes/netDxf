@@ -2,6 +2,8 @@
 
 Start with the [current version and feature comparison](version-feature-matrix.md), with typed editing distinguished from raw preservation and each format family shown separately. The machine-readable source is [coverage.json](coverage.json). It includes evidence links, a pinned production commit/tree, explicit missing/lossy/rejected states, and the remaining implementation sequence.
 
+The next PR #94 comparison adds seven bounded rows for [TABLEGEOMETRY replacement](table-geometry-editing.md), [SECTION_MANAGER creation and erasure](section-manager-lifecycle.md), [retained Polyface records](polyface-records.md), [explicit HATCH pattern affine transforms](hatch-pattern-affine.md), [TABLECONTENT scalar/header edits](table-content-editing.md), [standalone opaque entities](opaque-entities.md), and the [tenth mixed graph](tenth-mixed.md). The ledger has 291 rows. The mixed graph remains provisional while combined qualification is completed; final source, test-count and CI pins still refer to the preceding checkpoint until the integration receipt is finalized. Per-module notes distinguish native packets from authored schema carriers and keep evaluation, regeneration and private dependencies outside their claims.
+
 The latest [map, mesh and conic checkpoint](checkpoint-map-mesh-conic-2026-09-15.md) records PR #93: 30,772 passing cases and 112 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 284 scoped rows. It adds stored CELLSTYLEMAP access, explicit SECTION_MANAGER membership editing, retained PolygonMesh records, affine HATCH conics and bounded target-version diagnostics. The integration receipt pins exact source and verified CI artifacts. The CELLSTYLEMAP getter return-type change requires consumers to recompile; its migration is documented.
 
 The [stored reference and editing checkpoint](checkpoint-stored-editing-2026-09-15.md) records PR #92: 29,293 passing cases and 106 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 278 scoped rows. SUNSTUDY/TABLEGEOMETRY storage, VIEW live-section references, explicit retained Polyline3D topology and direct HATCH transforms have separate source and lifecycle contracts. The integration receipt pins the verified source archive and distinguishes storage from evaluation.
@@ -52,9 +54,12 @@ The [stored section manager](section-manager.md) retains the stored update flag,
 ordered section pointers and exact source identities with root-anchor and lifecycle
 guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
 storage. [Explicit membership replacement](section-manager-membership.md) edits its
-ordered list and flag atomically; live sectioning and automatic membership maintenance
-remain separate.
+ordered list and flag atomically. [Database creation and guarded erasure](section-manager-lifecycle.md)
+now manage explicit manager lifecycles while preserving member identities; live sectioning,
+section generation and automatic membership maintenance remain separate.
 
 [POLYFACE face grammar and clone isolation](polyface-grammar.md) qualify signed indices,
 zero termination, advisory counts and independent face lifecycles across both
-transports. Arbitrary POLYFACE child metadata remains outside that geometry scope.
+transports. The newer [retained-record subset](polyface-records.md) adds source identities,
+physical record order and qualified common metadata with fixed-topology edits. Private
+metadata graphs and unrestricted topology changes remain outside that scope.

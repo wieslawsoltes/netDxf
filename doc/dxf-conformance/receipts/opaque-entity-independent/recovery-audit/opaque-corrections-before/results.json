@@ -1,0 +1,38 @@
+{
+  "cases": 4,
+  "failed": 0,
+  "expectFixed": false,
+  "librarySha256": "8850c8d5a8cd272264c2364ebf33446671c370c103fc2e4c0ec0fdd9e67ace5e",
+  "results": [
+    {
+      "kind": "class-literal",
+      "binary": false,
+      "initial": "literal \\U\u002B0041",
+      "actual": "literal A",
+      "preserved": false,
+      "expectedPreserved": false
+    },
+    {
+      "kind": "xdata-layer-removal",
+      "binary": false,
+      "bound": true,
+      "removed": true,
+      "expectedRemoved": true
+    },
+    {
+      "kind": "class-literal",
+      "binary": true,
+      "initial": "literal \\U\u002B0041",
+      "actual": "literal A",
+      "preserved": false,
+      "expectedPreserved": false
+    },
+    {
+      "kind": "xdata-layer-removal",
+      "binary": true,
+      "bound": true,
+      "removed": true,
+      "expectedRemoved": true
+    }
+  ]
+}

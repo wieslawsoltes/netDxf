@@ -8,11 +8,11 @@ using netDxf.IO;
 
 namespace netDxf.Objects
 {
-    /// <summary>A loaded section-manager packet with explicitly replaceable ordered section references.</summary>
+    /// <summary>A source-profile-bound section-manager packet with explicitly replaceable ordered section references.</summary>
     /// <remarks>
     /// This source-bound object stores the update flag and section list without performing
-    /// live sectioning or automatically synchronizing the list with edits to the drawing. Creation, cloning, erasure
-    /// and version conversion require the complete manager lifecycle and are not supported.
+    /// live sectioning or automatically synchronizing the list with edits to the drawing. Explicit creation
+    /// and erasure use the document database's manager APIs. Cloning and version conversion are not supported.
     /// </remarks>
     public sealed class DxfStoredSectionManager : DxfDatabaseObject
     {
@@ -34,6 +34,24 @@ namespace netDxf.Objects
             this.RequiresFullUpdate = requiresFullUpdate;
             this.sectionHandles = handles.ToArray();
             this.Tags = new List<DxfTag>(tags).AsReadOnly();
+        }
+
+        internal static DxfStoredSectionManager CreateCanonical(DxfDocument source, DxfDictionary root, IList<Section> members, bool requiresFullUpdate)
+        {
+            var tags = new List<DxfTag>(members.Count + 3)
+            {
+                new DxfTag(100, "AcDbSectionManager"), new DxfTag(70, requiresFullUpdate ? (short)1 : (short)0),
+                new DxfTag(90, members.Count)
+            };
+            foreach (Section section in members) tags.Add(new DxfTag(330, section.Handle));
+            var manager = new DxfStoredSectionManager(source, "SECTION_MANAGER", tags, requiresFullUpdate, Array.Empty<string>())
+            {
+                Owner = root, sourceEntryName = "ACAD_SECTION_MANAGER", sourceEntryIsHardOwner = false,
+                sourceReactors = new DxfObject[] { root }, resolved = true
+            };
+            manager.sections.AddRange(members);
+            manager.PersistentReactors.Add(root);
+            return manager;
         }
 
         /// <summary>Gets the original DXF profile, which must be retained on save.</summary>

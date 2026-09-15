@@ -1,0 +1,56 @@
+{
+  "module": "Explicit database-owned SECTION_MANAGER creation and erasure",
+  "production_commit": "0442c91ff6362f742cd12c1f5b6db3c7b7757269",
+  "source_worktree": "netDxf-section-manager-lifecycle",
+  "harness": {
+    "recovery-audit/manager-lifecycle-probe/Program.cs": "6c397d6f2436923695812205689d2c7a9be04c0bf412b939dcc2a0b24d0c944e",
+    "recovery-audit/manager-lifecycle-probe/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "recovery-audit/audit_probe_outputs.py": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff"
+  },
+  "configurations": {
+    "debug": {
+      "cases": 28,
+      "failed": 0,
+      "library_sha256": "a022473def86807e009d40e9890c20a99dbe63a76a1064ab86cb8edbbadfb321",
+      "results_path": "recovery-audit/manager-lifecycle-debug/results.json",
+      "results_sha256": "56020ea30e0dfb344b70daf0b7e80eeb6ee7e87d2ae31c29c635fba57af38fb9",
+      "audit_outputs": 20,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/manager-lifecycle-debug/ezdxf-audit.json",
+      "audit_sha256": "637b3ff96e9af0d6f721d91d1fda608d6eb940178e9dbc57efef5df93e89484d"
+    },
+    "release": {
+      "cases": 28,
+      "failed": 0,
+      "library_sha256": "056908238f711de39af1d4265ec46386d22fd85fc530a8aff5b652193f0a2e15",
+      "results_path": "recovery-audit/manager-lifecycle-release/results.json",
+      "results_sha256": "6c4bfa60e006e4052b38093c345618350c8329415a276287a986209d16748805",
+      "audit_outputs": 20,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/manager-lifecycle-release/ezdxf-audit.json",
+      "audit_sha256": "a225593bb332f9dcd64576e2ec78b7cb2b1233c7f68a88499ae56359188ec6f4"
+    }
+  },
+  "coverage": [
+    "28 independent cases in each configuration: canonical creation/erasure/recreation across four supported profiles and both output transports, plus four native input/output combinations.",
+    "Creation uses one new handle, preserves explicit order and repetitions, installs reciprocal source root/soft-entry/reactor identity, retains root flags and copies caller collections. Retired manager snapshots remain inspectable after erasure.",
+    "Compatible existing CLASS declarations retain object identity, metadata and absent-count presence. Present counts become one on creation and zero on erasure. Conflicting declaration rejects atomically.",
+    "MoveNext, GetEnumerator and Dispose callbacks: enumeration/disposal failures are atomic; a caller-caught recursive creation poisons the outer attempt; callbacks removing requested sections reject without allocation and preserve caller side effects.",
+    "Foreign same-handle, detached, null and excessive members reject. Exact 65536 memberships succeed. Unsupported profiles, occupied case-insensitive anchors, orphan managers, exhausted handle range, changed source profile/reactors and foreign erase requests reject.",
+    "Actual ATTRIB XData 1005 pointers protect manager and typed owned extension descendants. Releasing pointers permits exact typed ownership cascade; referenced sections and containing INSERT remain registered.",
+    "A deliberately lowered private seed proves manager allocation reserves the live owner-held ATTRIB identity. The original valid global seed is restored after that assertion before unrelated legacy writer allocation; this does not claim general support for a manually corrupted global seed.",
+    "Native source LiveSection manager erase/recreate preserves original SECTION identities and old snapshots, assigns a fresh manager identity, and reloads requested membership and flag.",
+    "20 emitted DXFs per configuration audited with ezdxf 1.4.4: no errors or repairs. No native CAD runtime was available or claimed."
+  ],
+  "source_review": {
+    "findings_fixed_before_frozen_candidate": [
+      "Candidate allocation used ordinary GetObjectByHandle and omitted owner-held ATTRIB/ENDBLK identities; changed to StoredTableHandleTarget.",
+      "Compatible present CLASS count now updates on creation while absent count remains absent."
+    ],
+    "remaining_production_findings": 0,
+    "verifier_review": "Read the owner lifecycle verifier; complete surviving-record comparisons for erase/recreate, exact root identity and native manager packet, with no additional normalization or identity-rewrite issue found."
+  },
+  "initial_probe_failures": "One initial fixture failure: leaving a deliberately lowered private seed active caused unrelated writer layout synthesis to collide with a live handle. Restoring the original valid seed after the targeted allocation assertion corrected the test; frozen production remained unchanged."
+}

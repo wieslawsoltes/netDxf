@@ -29,7 +29,8 @@ namespace netDxf.IO
             public object Value { get { return this.inner.Value; } }
             public long CurrentPosition { get { return this.inner.CurrentPosition; } }
             public bool Code5IsString { get { return this.inner.Code5IsString; } set { this.inner.Code5IsString = value; } }
-            internal void SkipComments() { if (this.inner is TextCodeValueReader text) text.SkipComments = true; }
+            internal void SkipComments() { this.SetSkipComments(true); }
+            internal void SetSkipComments(bool value) { if (this.inner is TextCodeValueReader text) text.SkipComments = value; }
             public void Next()
             {
                 this.inner.Next();

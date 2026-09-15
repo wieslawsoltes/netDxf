@@ -37,7 +37,7 @@ codes inside a private subclass or private application group remain opaque data.
 `Tags` excludes common metadata and real XData. Common metadata keeps its ordinary
 APIs, but changing the source root entry or persistent reactors causes schema
 validation and save preflight to fail. Source-profile conversion also fails before
-output. The manager cannot be cloned or erased, including through an enclosing
+output. The manager cannot be cloned or generically erased, including through an enclosing
 ownership graph. Referenced sections remain protected by the existing entity
 removal and section erasure checks. The section list is not automatically rebuilt
 when other sections are added or copied, and the update flag is not recomputed
@@ -103,5 +103,9 @@ Native evidence currently covers one R2018 manager with one section and update
 flag zero. Other profiles, the documented spelling, flag one, empty lists and
 multiple pointers are qualified by schema cases, not by additional native
 drawings. This increment does not qualify live sectioning, automatic manager
-membership maintenance, section generation, complete manager creation/clone/erase lifecycles, native
+membership maintenance, section generation, automatic manager lifecycle and cloning, native
 AutoCAD execution, or complete-drawing byte identity.
+
+The later [explicit manager lifecycle](section-manager-lifecycle.md) adds bounded
+database-owned canonical creation and explicit erasure. Its qualified entry points
+retain the source-profile and actual-reference rules described here.

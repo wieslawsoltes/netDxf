@@ -1,0 +1,3363 @@
+{
+  "purpose": "Source inventory only; no native unknown-entity qualification is claimed.",
+  "sourceFiles": [
+    {
+      "file": "TestDxfDocument/sample binary.dxf",
+      "storedSha256": "c073b4292103a15077da4f44c662aa066b5c12908fe729c7931353d4943b1f02",
+      "inflatedSha256": "c073b4292103a15077da4f44c662aa066b5c12908fe729c7931353d4943b1f02",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 819
+    },
+    {
+      "file": "TestDxfDocument/sample.dxf",
+      "storedSha256": "d00cf10b426389adf34e339a20b5dc9613b1db1950691d7c32304fa5e04e6f6c",
+      "inflatedSha256": "d00cf10b426389adf34e339a20b5dc9613b1db1950691d7c32304fa5e04e6f6c",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 819
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2000-ascii.dxf",
+      "storedSha256": "2311278278dd63323e5b1feecbd37aa8fe3facb6073121d0d1d81f891e957aea",
+      "inflatedSha256": "2311278278dd63323e5b1feecbd37aa8fe3facb6073121d0d1d81f891e957aea",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2000-binary.dxf",
+      "storedSha256": "5093eef3a84250e509e05c32bf60de065da1ddca88aa04444d1f49c49ca4bc4b",
+      "inflatedSha256": "5093eef3a84250e509e05c32bf60de065da1ddca88aa04444d1f49c49ca4bc4b",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2004-ascii.dxf",
+      "storedSha256": "c9868e901a12654e1368c069c21e0e0243a412dc98f465662239fe88bbb8c039",
+      "inflatedSha256": "c9868e901a12654e1368c069c21e0e0243a412dc98f465662239fe88bbb8c039",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2004-binary.dxf",
+      "storedSha256": "35cc6dabb68630ccf600b861ba6d1406f6b340f44961e35b3c016b432b10031d",
+      "inflatedSha256": "35cc6dabb68630ccf600b861ba6d1406f6b340f44961e35b3c016b432b10031d",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2007-ascii.dxf",
+      "storedSha256": "cf549d64050ea9e7b4f02eda71edf983d99f1ee77db5dffc9baa13bb4959d718",
+      "inflatedSha256": "cf549d64050ea9e7b4f02eda71edf983d99f1ee77db5dffc9baa13bb4959d718",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2007-binary.dxf",
+      "storedSha256": "63755dc476308cd19846179d6edb7ae3dfe276ad627ddc5a73d8e2232bf6652e",
+      "inflatedSha256": "63755dc476308cd19846179d6edb7ae3dfe276ad627ddc5a73d8e2232bf6652e",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2010-ascii.dxf",
+      "storedSha256": "c54b57114d524840aa5a570ef8cd11183f90d49dce0e9d9e5368399dbe2a5228",
+      "inflatedSha256": "c54b57114d524840aa5a570ef8cd11183f90d49dce0e9d9e5368399dbe2a5228",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2010-binary.dxf",
+      "storedSha256": "dd00f224c10bdcd1f48f5e1cf70ba31fc3559254a38a9090e470ba1406f470fd",
+      "inflatedSha256": "dd00f224c10bdcd1f48f5e1cf70ba31fc3559254a38a9090e470ba1406f470fd",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2000-ascii.dxf",
+      "storedSha256": "6b42bc8ce8dba4bc0a4443482c8c0a4d45db0aadad8f1a9a24d71b9234c01130",
+      "inflatedSha256": "6b42bc8ce8dba4bc0a4443482c8c0a4d45db0aadad8f1a9a24d71b9234c01130",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2000-binary.dxf",
+      "storedSha256": "c0ec9748938efb9e8fd424f16285f98be39085cbc0d16da6b248d638a60f04f3",
+      "inflatedSha256": "c0ec9748938efb9e8fd424f16285f98be39085cbc0d16da6b248d638a60f04f3",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2004-ascii.dxf",
+      "storedSha256": "a3afcd093e03ac0ce5c005ca81e5a2563b0b36ebc1da3f0e3a7808c833358692",
+      "inflatedSha256": "a3afcd093e03ac0ce5c005ca81e5a2563b0b36ebc1da3f0e3a7808c833358692",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2004-binary.dxf",
+      "storedSha256": "5e5f492bfd36faded5513a47374d75a3f4fe9ed5d37abfd44cb1f8392b68b86b",
+      "inflatedSha256": "5e5f492bfd36faded5513a47374d75a3f4fe9ed5d37abfd44cb1f8392b68b86b",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2007-ascii.dxf",
+      "storedSha256": "f67d1040bc77bbc357e94b378ba34599f611be62f6fd6ecb34b51de3ca041270",
+      "inflatedSha256": "f67d1040bc77bbc357e94b378ba34599f611be62f6fd6ecb34b51de3ca041270",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2007-binary.dxf",
+      "storedSha256": "5e0181d85e1d87af7d3b81d14a9cd94dc409d9d4a58e88bc49a694800293d913",
+      "inflatedSha256": "5e0181d85e1d87af7d3b81d14a9cd94dc409d9d4a58e88bc49a694800293d913",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2010-ascii.dxf",
+      "storedSha256": "d3375d8e62f2df57d107e5b6b7c3919dc9b12cb11e28212e39a0176fc20d4e2d",
+      "inflatedSha256": "d3375d8e62f2df57d107e5b6b7c3919dc9b12cb11e28212e39a0176fc20d4e2d",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2010-binary.dxf",
+      "storedSha256": "3d725812f87cd4b0614c696f7646ebc44a4def43c189207fa8f700f886467497",
+      "inflatedSha256": "3d725812f87cd4b0614c696f7646ebc44a4def43c189207fa8f700f886467497",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2000-ascii.dxf",
+      "storedSha256": "a6800952dfc9b7fc9acef5f85910abfd433d02d87e4a2a75a85a3269f278e77b",
+      "inflatedSha256": "a6800952dfc9b7fc9acef5f85910abfd433d02d87e4a2a75a85a3269f278e77b",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2000-binary.dxf",
+      "storedSha256": "4a08e60402d5e3c96c676b0f86041d95c58eca0a4ed27cf886aeb82d0d1c507b",
+      "inflatedSha256": "4a08e60402d5e3c96c676b0f86041d95c58eca0a4ed27cf886aeb82d0d1c507b",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2004-ascii.dxf",
+      "storedSha256": "64265e6d5cd9012d1e6c7331f9170b02824ed80a85d2d4b5c5e72fcccfb4cb09",
+      "inflatedSha256": "64265e6d5cd9012d1e6c7331f9170b02824ed80a85d2d4b5c5e72fcccfb4cb09",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2004-binary.dxf",
+      "storedSha256": "7a3e861e1efcd030ae7c54dbe875bc877c9482be148905ad81788a8131c88933",
+      "inflatedSha256": "7a3e861e1efcd030ae7c54dbe875bc877c9482be148905ad81788a8131c88933",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2007-ascii.dxf",
+      "storedSha256": "e49461ef8fcab6e5dc8a970d0aca16da1b92213d9bbd43315d4a61b6ccef38da",
+      "inflatedSha256": "e49461ef8fcab6e5dc8a970d0aca16da1b92213d9bbd43315d4a61b6ccef38da",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2007-binary.dxf",
+      "storedSha256": "e1824c36b6953c9edccc37e7eb25d47ea76b3c83eb320a891d32a139f68abd8a",
+      "inflatedSha256": "e1824c36b6953c9edccc37e7eb25d47ea76b3c83eb320a891d32a139f68abd8a",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2010-ascii.dxf",
+      "storedSha256": "1d38e5b26789b700d5da2c6362195518ea61cae761ca8f35df8858be7611b356",
+      "inflatedSha256": "1d38e5b26789b700d5da2c6362195518ea61cae761ca8f35df8858be7611b356",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2010-binary.dxf",
+      "storedSha256": "c30b61aae191087a3a0a82ca2f7a2bc3c4c934b6cfc5dc61a7e5f2a273a785bb",
+      "inflatedSha256": "c30b61aae191087a3a0a82ca2f7a2bc3c4c934b6cfc5dc61a7e5f2a273a785bb",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2000-False.dxf",
+      "storedSha256": "66d3c484987563044880fa4719ba6f9f7c6e768964cd0c42636fa9a526372639",
+      "inflatedSha256": "66d3c484987563044880fa4719ba6f9f7c6e768964cd0c42636fa9a526372639",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2000-True.dxf",
+      "storedSha256": "9c9d86453b7c4f22d58270fdbfc93cddb21ecd5de9c85d0c03ba7189513e9c0c",
+      "inflatedSha256": "9c9d86453b7c4f22d58270fdbfc93cddb21ecd5de9c85d0c03ba7189513e9c0c",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2004-False.dxf",
+      "storedSha256": "7a891a481110de1b4b020b2a49a27fbec9a14b46755d7aa292b150236d358b24",
+      "inflatedSha256": "7a891a481110de1b4b020b2a49a27fbec9a14b46755d7aa292b150236d358b24",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2004-True.dxf",
+      "storedSha256": "32a1f38d5b099b0e2aba926c8630fe0b783c5e38d257eec4298c5bed6167a6d2",
+      "inflatedSha256": "32a1f38d5b099b0e2aba926c8630fe0b783c5e38d257eec4298c5bed6167a6d2",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2007-False.dxf",
+      "storedSha256": "926e2fc99acf7cb7253c3e642da22b7973f505440643ca4589e22bce9cad13e7",
+      "inflatedSha256": "926e2fc99acf7cb7253c3e642da22b7973f505440643ca4589e22bce9cad13e7",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2007-True.dxf",
+      "storedSha256": "6908d80536a1ad2412713726e28184e19e0c03a5def0349b4071b6e3c0ee3b8b",
+      "inflatedSha256": "6908d80536a1ad2412713726e28184e19e0c03a5def0349b4071b6e3c0ee3b8b",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2010-False.dxf",
+      "storedSha256": "9c9335e21e6f2a9046bdb137881ded96cd136581df1c79e5afc10c1cd90f7f99",
+      "inflatedSha256": "9c9335e21e6f2a9046bdb137881ded96cd136581df1c79e5afc10c1cd90f7f99",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2010-True.dxf",
+      "storedSha256": "0d87aa80e2f86834f8cd4ba82ed8ff9c830982313fb9ab88d4ef8081556e2cbc",
+      "inflatedSha256": "0d87aa80e2f86834f8cd4ba82ed8ff9c830982313fb9ab88d4ef8081556e2cbc",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2013-False.dxf",
+      "storedSha256": "6d1c81b7fd570a2cbbfa0ab0ba1b5aad2ed30d6680c563bc9d579ba71a0c7846",
+      "inflatedSha256": "6d1c81b7fd570a2cbbfa0ab0ba1b5aad2ed30d6680c563bc9d579ba71a0c7846",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2013-True.dxf",
+      "storedSha256": "e7190d33578d2c6d4c58cfad823db5183314d43de6c39d9e0ec2e34bad2c60b5",
+      "inflatedSha256": "e7190d33578d2c6d4c58cfad823db5183314d43de6c39d9e0ec2e34bad2c60b5",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2018-False.dxf",
+      "storedSha256": "1e55878e19c037a544bf5309cf69f48e483e2be5ea130f989e27370b55c50b5a",
+      "inflatedSha256": "1e55878e19c037a544bf5309cf69f48e483e2be5ea130f989e27370b55c50b5a",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2018-True.dxf",
+      "storedSha256": "9b22a6a52f42e74a2e5b7a929e523f33851ed5910958fff57fd7266e296b7431",
+      "inflatedSha256": "9b22a6a52f42e74a2e5b7a929e523f33851ed5910958fff57fd7266e296b7431",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2000.dxf",
+      "storedSha256": "f84fc5af08ef5d4731e5320bcef182ec0b8658290726e320ad7b5762227ff928",
+      "inflatedSha256": "f84fc5af08ef5d4731e5320bcef182ec0b8658290726e320ad7b5762227ff928",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 146
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2004.dxf",
+      "storedSha256": "ede3ebb63bfa9df9ca25bbe2b60f729225b9b3342c3b00435822347c212dc202",
+      "inflatedSha256": "ede3ebb63bfa9df9ca25bbe2b60f729225b9b3342c3b00435822347c212dc202",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 146
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2007.dxf",
+      "storedSha256": "6cfd23e8899da8d5cde7600d1b7d719293b8d520d6e7e8cf30a9e690eb48c800",
+      "inflatedSha256": "6cfd23e8899da8d5cde7600d1b7d719293b8d520d6e7e8cf30a9e690eb48c800",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 146
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2010.dxf",
+      "storedSha256": "2a7301742ae69c4515513089e6bb48de7d24d69b8fefa59c1f56ae37d5258c3c",
+      "inflatedSha256": "2a7301742ae69c4515513089e6bb48de7d24d69b8fefa59c1f56ae37d5258c3c",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 146
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2013.dxf",
+      "storedSha256": "249bae576968df27b7a31df8f6cc0dbd135e8408108e5d4a21dfb7e621e85ea4",
+      "inflatedSha256": "249bae576968df27b7a31df8f6cc0dbd135e8408108e5d4a21dfb7e621e85ea4",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 146
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2018.dxf",
+      "storedSha256": "b23d1ac079d9c22f92832187a995114a3aff5f93a1cc0e98b9bb93961551c370",
+      "inflatedSha256": "b23d1ac079d9c22f92832187a995114a3aff5f93a1cc0e98b9bb93961551c370",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 146
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2000.dxf.gz",
+      "storedSha256": "c8047efbb62878b28d4e217373765ebb91229009eca0813644228ba5c740aaca",
+      "inflatedSha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 788
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2004.dxf.gz",
+      "storedSha256": "6ff1fc0dcb27a5f246f1ee03a952dc6a69eefa8266afb1fd6c1f3ab611fb8448",
+      "inflatedSha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 776
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2007.dxf.gz",
+      "storedSha256": "0feafb9e31aac2ba2f67b2b602cd291a85c88f5a629c5a586580c8f3bfa7a12d",
+      "inflatedSha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 593
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2010.dxf.gz",
+      "storedSha256": "594c49a56335e40a577bdbdb6faa2590efdc57580888b00f33b6b287de675535",
+      "inflatedSha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 591
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2013.dxf.gz",
+      "storedSha256": "784141c23a44adade7ea99f0611caabc6501cb33d4558d582e0e642226e21850",
+      "inflatedSha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 550
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2018.dxf.gz",
+      "storedSha256": "60be0aed8aa68546cafd1c7f44d44f7a5c45cb3da10c99e258e0254df2ed45e8",
+      "inflatedSha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 537
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2000.dxf",
+      "storedSha256": "a666edfe32f4ef3dd9f03335d7f2be1242ed3f895f30e3b9748535a3c1745f49",
+      "inflatedSha256": "a666edfe32f4ef3dd9f03335d7f2be1242ed3f895f30e3b9748535a3c1745f49",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 120
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2004.dxf",
+      "storedSha256": "3358eec5e0fca86e69de306988665982994aeba580c2e79c0655bfe9cfcd4004",
+      "inflatedSha256": "3358eec5e0fca86e69de306988665982994aeba580c2e79c0655bfe9cfcd4004",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 120
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2007.dxf",
+      "storedSha256": "9051fc61f6d4fcf1d16e8c40dfedf647a9458f1a10f411f0b94b507e50f3245f",
+      "inflatedSha256": "9051fc61f6d4fcf1d16e8c40dfedf647a9458f1a10f411f0b94b507e50f3245f",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 120
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2010.dxf",
+      "storedSha256": "257d0bef069e06b36c9e4840d8e0f19ff4ed2f25fcca55f9e54f8aa8b1ba0ddf",
+      "inflatedSha256": "257d0bef069e06b36c9e4840d8e0f19ff4ed2f25fcca55f9e54f8aa8b1ba0ddf",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 120
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2013.dxf",
+      "storedSha256": "1c5773ac732d837a60d4a058b6776facb431bd744effbb9ad62f2d68336e6cd2",
+      "inflatedSha256": "1c5773ac732d837a60d4a058b6776facb431bd744effbb9ad62f2d68336e6cd2",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 120
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2018.dxf",
+      "storedSha256": "f518b21acb7db6a0cd10f31a0f1c438082191e1d9673338afd749cfa041204de",
+      "inflatedSha256": "f518b21acb7db6a0cd10f31a0f1c438082191e1d9673338afd749cfa041204de",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 120
+    },
+    {
+      "file": "tests/fixtures/field-oracle/TS1-AC1015.dxf.gz",
+      "storedSha256": "766affd7cc3995aadd6221b3b6af81f7d2edef1d6e26dab904523ab62e12dbee",
+      "inflatedSha256": "d55726ba862a45572a6b72493e3139b809d0a806e7eba6e4cae578a1a4227303",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 444
+    },
+    {
+      "file": "tests/fixtures/field-oracle/TS1-AC1032.dxf.gz",
+      "storedSha256": "2e41e56cb64961082a13c9e655e96df7c602da79e7968159de4c7d2e848bec64",
+      "inflatedSha256": "ef795fb7c4c9cfc4486ff3cc0254d38cbdb870a326e7e8cccd78b0e046868d14",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 370
+    },
+    {
+      "file": "tests/fixtures/geodata/independent-geodata-R2010.dxf",
+      "storedSha256": "13dc5c813acb7ad7e899cae726a19fd750f7d0cfa8e045843009eca639363d77",
+      "inflatedSha256": "13dc5c813acb7ad7e899cae726a19fd750f7d0cfa8e045843009eca639363d77",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/geodata/independent-geodata-R2013.dxf",
+      "storedSha256": "11bb02f9d0a4f02550057adcdc647a6a79db758059242bcd857da7d197d970a5",
+      "inflatedSha256": "11bb02f9d0a4f02550057adcdc647a6a79db758059242bcd857da7d197d970a5",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/geodata/independent-geodata-R2018.dxf",
+      "storedSha256": "eaf905dcb1c6177cb91c80d9f6d5cc53b45dd2b3b5f3eb7b976402064492cf69",
+      "inflatedSha256": "eaf905dcb1c6177cb91c80d9f6d5cc53b45dd2b3b5f3eb7b976402064492cf69",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2000-ascii.dxf",
+      "storedSha256": "18257afdd8497db02f0b56d8095d5cacfa13bdf6a2f71b2ca0b6afeae6af4ac3",
+      "inflatedSha256": "18257afdd8497db02f0b56d8095d5cacfa13bdf6a2f71b2ca0b6afeae6af4ac3",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2000-binary.dxf",
+      "storedSha256": "79fdb575cbd7e3a83e76a348ebfc6bbdb709b3f0a6ef83417609fd2a9b178249",
+      "inflatedSha256": "79fdb575cbd7e3a83e76a348ebfc6bbdb709b3f0a6ef83417609fd2a9b178249",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2004-ascii.dxf",
+      "storedSha256": "92b7f2b6c1dc11c9e8604bdb307f1ee874db8a232d8180ba633a5069b19b6dba",
+      "inflatedSha256": "92b7f2b6c1dc11c9e8604bdb307f1ee874db8a232d8180ba633a5069b19b6dba",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2004-binary.dxf",
+      "storedSha256": "6a46d3e5a85bbe3d6dcafe92fcbae9fe3e8f1d455720eb5e20d5c12de7861552",
+      "inflatedSha256": "6a46d3e5a85bbe3d6dcafe92fcbae9fe3e8f1d455720eb5e20d5c12de7861552",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2007-ascii.dxf",
+      "storedSha256": "f859c0860c2dc5cf6a2080e9fbffd976deb224646fa82d3e60f16a1b5770fe40",
+      "inflatedSha256": "f859c0860c2dc5cf6a2080e9fbffd976deb224646fa82d3e60f16a1b5770fe40",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2007-binary.dxf",
+      "storedSha256": "1344922394b9ad2bcd1081a9daba2e3075e0d5b70bbb133c9aa9fa80d06dd4ef",
+      "inflatedSha256": "1344922394b9ad2bcd1081a9daba2e3075e0d5b70bbb133c9aa9fa80d06dd4ef",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2010-ascii.dxf",
+      "storedSha256": "d08070176a946791aa9916558996b453a3010259e8829d48b7729a6b8e649b55",
+      "inflatedSha256": "d08070176a946791aa9916558996b453a3010259e8829d48b7729a6b8e649b55",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2010-binary.dxf",
+      "storedSha256": "d0500b82255fb4ee8da348b0feb6ea5f44b653bdc635625b1bfc2b1a526f3a1e",
+      "inflatedSha256": "d0500b82255fb4ee8da348b0feb6ea5f44b653bdc635625b1bfc2b1a526f3a1e",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2013-ascii.dxf",
+      "storedSha256": "fd0349e7a6819e6449938d883bf8dc595527bd38a6ac212d1b23fe458035ac18",
+      "inflatedSha256": "fd0349e7a6819e6449938d883bf8dc595527bd38a6ac212d1b23fe458035ac18",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2013-binary.dxf",
+      "storedSha256": "62f4dcfd6973620ba03fdc3bb8576c29827e976de62c8963c83ad2c01e397d55",
+      "inflatedSha256": "62f4dcfd6973620ba03fdc3bb8576c29827e976de62c8963c83ad2c01e397d55",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2018-ascii.dxf",
+      "storedSha256": "5fea2de6018ba8c66407fb6163df1a020488b14b8ded592d3f5daf6c8dc4a05a",
+      "inflatedSha256": "5fea2de6018ba8c66407fb6163df1a020488b14b8ded592d3f5daf6c8dc4a05a",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-conic-affine/ezdxf-hatch-conic-R2018-binary.dxf",
+      "storedSha256": "af0da85b2acd4addd47ecaa0f581e102f7f0072ba022b34ce7daf5a2e9d24104",
+      "inflatedSha256": "af0da85b2acd4addd47ecaa0f581e102f7f0072ba022b34ce7daf5a2e9d24104",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 137
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2000-ascii.dxf",
+      "storedSha256": "7f1b77c20f056d36ece9f601ea0f61aee10500c7f936293ec954c2756e5a9155",
+      "inflatedSha256": "7f1b77c20f056d36ece9f601ea0f61aee10500c7f936293ec954c2756e5a9155",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2000-binary.dxf",
+      "storedSha256": "623299f1ee093816f31113bb40b44e76bee9a6a136e9aaecbd5094b2afa4a13e",
+      "inflatedSha256": "623299f1ee093816f31113bb40b44e76bee9a6a136e9aaecbd5094b2afa4a13e",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2004-ascii.dxf",
+      "storedSha256": "a0a17585ca9f08428cc58320a7382ffe66556370982e548c19742fe74cbf0491",
+      "inflatedSha256": "a0a17585ca9f08428cc58320a7382ffe66556370982e548c19742fe74cbf0491",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2004-binary.dxf",
+      "storedSha256": "1d17de092221cc92ae1eaf2b0f66d94c0e51c371981efaa816cdacef1e483328",
+      "inflatedSha256": "1d17de092221cc92ae1eaf2b0f66d94c0e51c371981efaa816cdacef1e483328",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2007-ascii.dxf",
+      "storedSha256": "b218bf9f044c694d0c3db5396cab4774e23edb5877847807a51bfa06148e84e0",
+      "inflatedSha256": "b218bf9f044c694d0c3db5396cab4774e23edb5877847807a51bfa06148e84e0",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2007-binary.dxf",
+      "storedSha256": "d2017b5a72df42f34250cdb3ea2dde8b9ce747f75da87dbb79ac3e5d96536735",
+      "inflatedSha256": "d2017b5a72df42f34250cdb3ea2dde8b9ce747f75da87dbb79ac3e5d96536735",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2010-ascii.dxf",
+      "storedSha256": "d501bcb3f682aa7bfba718b7d80a5b747458045350ee19a293e818ecc6b02820",
+      "inflatedSha256": "d501bcb3f682aa7bfba718b7d80a5b747458045350ee19a293e818ecc6b02820",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2010-binary.dxf",
+      "storedSha256": "cb7334d1bf346a24265f22ce618ca72bd62c638ce586a8176d4b68ecd97490f4",
+      "inflatedSha256": "cb7334d1bf346a24265f22ce618ca72bd62c638ce586a8176d4b68ecd97490f4",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2013-ascii.dxf",
+      "storedSha256": "7ae1a1fe1ff5d6714844c63cfe599ccb5cc83edc455cab1a32af987fea542280",
+      "inflatedSha256": "7ae1a1fe1ff5d6714844c63cfe599ccb5cc83edc455cab1a32af987fea542280",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2013-binary.dxf",
+      "storedSha256": "849b46eb98360e773b7fe161b644d4d3032a706b16d0310b53905a3fbb214e4c",
+      "inflatedSha256": "849b46eb98360e773b7fe161b644d4d3032a706b16d0310b53905a3fbb214e4c",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2018-ascii.dxf",
+      "storedSha256": "cbbc37804604241affb8d99bc496c423cf119d5a5ff7c6f51aaf55365c5ef515",
+      "inflatedSha256": "cbbc37804604241affb8d99bc496c423cf119d5a5ff7c6f51aaf55365c5ef515",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/native-R2018-binary.dxf",
+      "storedSha256": "7f1a1b75de34a7072574aa49fe871e1fe1781dd7f4c7f8bef0ce8bb1319ff3cd",
+      "inflatedSha256": "7f1a1b75de34a7072574aa49fe871e1fe1781dd7f4c7f8bef0ce8bb1319ff3cd",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2000-ascii.dxf",
+      "storedSha256": "49003f9164c3ba26bd8d5cc7d8c96f0ad09ea42ed5d7927e978cf0e4797a2cce",
+      "inflatedSha256": "49003f9164c3ba26bd8d5cc7d8c96f0ad09ea42ed5d7927e978cf0e4797a2cce",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2000-binary.dxf",
+      "storedSha256": "c56bcf3ad2ebe0f095c53ef6a04d0b0115200f6994e1b3a3968f7fc229915051",
+      "inflatedSha256": "c56bcf3ad2ebe0f095c53ef6a04d0b0115200f6994e1b3a3968f7fc229915051",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2004-ascii.dxf",
+      "storedSha256": "9d40a3c878e67a0c81ab5a92f3bbdb3b860b3b3dbff9847612bcb81c9f4c41e8",
+      "inflatedSha256": "9d40a3c878e67a0c81ab5a92f3bbdb3b860b3b3dbff9847612bcb81c9f4c41e8",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2004-binary.dxf",
+      "storedSha256": "5deaaa1f1e7be28374b0081a24fc2e43ff164eb81ff6854201ecf9dadfc0d683",
+      "inflatedSha256": "5deaaa1f1e7be28374b0081a24fc2e43ff164eb81ff6854201ecf9dadfc0d683",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2007-ascii.dxf",
+      "storedSha256": "c12e62efa4bd6dba9a2f2e981b6ee53d75041b3bb0282e13ed8aec5cf3707d3c",
+      "inflatedSha256": "c12e62efa4bd6dba9a2f2e981b6ee53d75041b3bb0282e13ed8aec5cf3707d3c",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2007-binary.dxf",
+      "storedSha256": "99a10643215977cb015b1c04d90750e7037e8a074750ff127803bc06c82f6ee6",
+      "inflatedSha256": "99a10643215977cb015b1c04d90750e7037e8a074750ff127803bc06c82f6ee6",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2010-ascii.dxf",
+      "storedSha256": "46203ecd8e5dfedbacfa3c0bb7d2e79d89ea6e318e901bcc0387c0b14fc6f99c",
+      "inflatedSha256": "46203ecd8e5dfedbacfa3c0bb7d2e79d89ea6e318e901bcc0387c0b14fc6f99c",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2010-binary.dxf",
+      "storedSha256": "78a31f46e45e3356ed8dc012235d7cc4855d9b9a1112dedc9cce2d4865738854",
+      "inflatedSha256": "78a31f46e45e3356ed8dc012235d7cc4855d9b9a1112dedc9cce2d4865738854",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2013-ascii.dxf",
+      "storedSha256": "b4b65605b504d33890b050b42b26e450914d1c6b645dff0251ca089ac799eab9",
+      "inflatedSha256": "b4b65605b504d33890b050b42b26e450914d1c6b645dff0251ca089ac799eab9",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2013-binary.dxf",
+      "storedSha256": "f00659ab40f2d2405e723e8406922eaf45adc4c833cb1bf1b11366b062c92536",
+      "inflatedSha256": "f00659ab40f2d2405e723e8406922eaf45adc4c833cb1bf1b11366b062c92536",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2018-ascii.dxf",
+      "storedSha256": "3bd95372f73539b1786fa496bdeb0fae66c43565f4e850ae19c8cb44e06200c5",
+      "inflatedSha256": "3bd95372f73539b1786fa496bdeb0fae66c43565f4e850ae19c8cb44e06200c5",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-source-relations/producer-R2018-binary.dxf",
+      "storedSha256": "39243becbb647232ea1786ff1cbdc99d6a27b9233ec3b5411d5146785c59d542",
+      "inflatedSha256": "39243becbb647232ea1786ff1cbdc99d6a27b9233ec3b5411d5146785c59d542",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2000-ascii.dxf",
+      "storedSha256": "89edd3f13f006688cc73bc40bd0838f24a6433832ac6cb5e030483d409cf52bf",
+      "inflatedSha256": "89edd3f13f006688cc73bc40bd0838f24a6433832ac6cb5e030483d409cf52bf",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2000-binary.dxf",
+      "storedSha256": "ec84eeb56929e09ef5895909ecb2919fee9285701d3b448922dec2cb6072fe60",
+      "inflatedSha256": "ec84eeb56929e09ef5895909ecb2919fee9285701d3b448922dec2cb6072fe60",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2004-ascii.dxf",
+      "storedSha256": "dfb73a6251a2efcff75ea45030df0e94ea18e43667beb01a21581235b253f52e",
+      "inflatedSha256": "dfb73a6251a2efcff75ea45030df0e94ea18e43667beb01a21581235b253f52e",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2004-binary.dxf",
+      "storedSha256": "0e42d530649d485ad7e98f50aceba051e33baa3acc54ae8ba602fa1eb179da4d",
+      "inflatedSha256": "0e42d530649d485ad7e98f50aceba051e33baa3acc54ae8ba602fa1eb179da4d",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2007-ascii.dxf",
+      "storedSha256": "8b567f2aedf4944c01a1ffeff2cc585d72cc196ea1e6982b7afc508fb9fe24cd",
+      "inflatedSha256": "8b567f2aedf4944c01a1ffeff2cc585d72cc196ea1e6982b7afc508fb9fe24cd",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2007-binary.dxf",
+      "storedSha256": "4acf6a67fb50e3a01ff85b5d0dce36bff69ba440afaa7d206eccb156111a52cf",
+      "inflatedSha256": "4acf6a67fb50e3a01ff85b5d0dce36bff69ba440afaa7d206eccb156111a52cf",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2010-ascii.dxf",
+      "storedSha256": "b8dc3a63b249a7da48ef3d55b45a05d648646d76597889eb462a74c96c6a6911",
+      "inflatedSha256": "b8dc3a63b249a7da48ef3d55b45a05d648646d76597889eb462a74c96c6a6911",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2010-binary.dxf",
+      "storedSha256": "1fbcca27c8a7ef5ca5f1de6f8e70ae2abb252380361b8effbf80c1400fc794f6",
+      "inflatedSha256": "1fbcca27c8a7ef5ca5f1de6f8e70ae2abb252380361b8effbf80c1400fc794f6",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2013-ascii.dxf",
+      "storedSha256": "14e089e17928eaa02a23159a81bdf8d72e44d3c6b0ad535b193767144eca0400",
+      "inflatedSha256": "14e089e17928eaa02a23159a81bdf8d72e44d3c6b0ad535b193767144eca0400",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2013-binary.dxf",
+      "storedSha256": "7a726ebd954b4ae10992ba2113a2978561427bc98c0ce679845fac65dd130263",
+      "inflatedSha256": "7a726ebd954b4ae10992ba2113a2978561427bc98c0ce679845fac65dd130263",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2018-ascii.dxf",
+      "storedSha256": "fa7906fa1e0b896237d493e9e2eb894f45866dbaf0f47311a2d2c3dce4de8b8d",
+      "inflatedSha256": "fa7906fa1e0b896237d493e9e2eb894f45866dbaf0f47311a2d2c3dce4de8b8d",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/hatch-spline-relations/ezdxf-hatch-spline-R2018-binary.dxf",
+      "storedSha256": "53b3a57ea75937b9f9bbac7069ca9d0ff45b233574dc4e573d188595421969cf",
+      "inflatedSha256": "53b3a57ea75937b9f9bbac7069ca9d0ff45b233574dc4e573d188595421969cf",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 92
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2000.dxf",
+      "storedSha256": "58e72a9c33a0ab37a7eddca4b98e6a6cdbde875510452655c866333f1eb249a6",
+      "inflatedSha256": "58e72a9c33a0ab37a7eddca4b98e6a6cdbde875510452655c866333f1eb249a6",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2004.dxf",
+      "storedSha256": "64f17fb5a09fe9821ffd34c0fffbff3bc6c9ac83efbb37ec64523495a87bf650",
+      "inflatedSha256": "64f17fb5a09fe9821ffd34c0fffbff3bc6c9ac83efbb37ec64523495a87bf650",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2007.dxf",
+      "storedSha256": "366100fcea7c9a294ff04f66fe397ca61cfdad88f5555b2301af120ffb710fa0",
+      "inflatedSha256": "366100fcea7c9a294ff04f66fe397ca61cfdad88f5555b2301af120ffb710fa0",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2010.dxf",
+      "storedSha256": "d33a75f5c581b9769b51c4312e7ad81feeabb797109018f382a766ca44d4f3ad",
+      "inflatedSha256": "d33a75f5c581b9769b51c4312e7ad81feeabb797109018f382a766ca44d4f3ad",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2013.dxf",
+      "storedSha256": "43660f7fb60f11604932c1b93812cfe24c4b3203b4cdbc2e87730f062b0871cb",
+      "inflatedSha256": "43660f7fb60f11604932c1b93812cfe24c4b3203b4cdbc2e87730f062b0871cb",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2018.dxf",
+      "storedSha256": "e2c7abef442e576295b55b286fa4cb9b4a870defc0d5c65267dea35d62aa2ed5",
+      "inflatedSha256": "e2c7abef442e576295b55b286fa4cb9b4a870defc0d5c65267dea35d62aa2ed5",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2000-ascii.dxf",
+      "storedSha256": "1a0ea250b4098344b0ca8cc1ee9926d676d3e65a47a4cc3afc3631e9967c6050",
+      "inflatedSha256": "1a0ea250b4098344b0ca8cc1ee9926d676d3e65a47a4cc3afc3631e9967c6050",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2000-binary.dxf",
+      "storedSha256": "63374dab2e2b1b32a8db61816cc787c64b60a3859b0a69218bdc3dcf13ab222b",
+      "inflatedSha256": "63374dab2e2b1b32a8db61816cc787c64b60a3859b0a69218bdc3dcf13ab222b",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2004-ascii.dxf",
+      "storedSha256": "752810b7c5c37ed6fdc825baa1ed07eee066abd3dbe82e654c4bc3b219b7e538",
+      "inflatedSha256": "752810b7c5c37ed6fdc825baa1ed07eee066abd3dbe82e654c4bc3b219b7e538",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2004-binary.dxf",
+      "storedSha256": "c71c3619fba0c532e037f40bb22548971b7bbd4d165cba1aa86bd494049b1ba3",
+      "inflatedSha256": "c71c3619fba0c532e037f40bb22548971b7bbd4d165cba1aa86bd494049b1ba3",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2007-ascii.dxf",
+      "storedSha256": "cda684e10ebc502ea9ff0c2a42a38e00537f6c92b1cc581b14a68abac392b085",
+      "inflatedSha256": "cda684e10ebc502ea9ff0c2a42a38e00537f6c92b1cc581b14a68abac392b085",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2007-binary.dxf",
+      "storedSha256": "9f53f3695b0f372df583448dfe71ed90f65803ed02ae10e84283a11a35800914",
+      "inflatedSha256": "9f53f3695b0f372df583448dfe71ed90f65803ed02ae10e84283a11a35800914",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2010-ascii.dxf",
+      "storedSha256": "b01d3a0a5cca9b0ab281073d6e9f346b09e28f11ae20168bb613615b914d8658",
+      "inflatedSha256": "b01d3a0a5cca9b0ab281073d6e9f346b09e28f11ae20168bb613615b914d8658",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2010-binary.dxf",
+      "storedSha256": "f428592ee2dddca1ebbc84e51c4d0e6f4bc940d3ccefbf941e5e641724867300",
+      "inflatedSha256": "f428592ee2dddca1ebbc84e51c4d0e6f4bc940d3ccefbf941e5e641724867300",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2013-ascii.dxf",
+      "storedSha256": "7920f1dc47f0a9bf4584b18e3967c46c4cbb73cbc29bc21caaf7183c24f7a9f3",
+      "inflatedSha256": "7920f1dc47f0a9bf4584b18e3967c46c4cbb73cbc29bc21caaf7183c24f7a9f3",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2013-binary.dxf",
+      "storedSha256": "bf24f2ae7230a459c8c7fc03f83f1f924001f0a05a257f73681d161afb811e73",
+      "inflatedSha256": "bf24f2ae7230a459c8c7fc03f83f1f924001f0a05a257f73681d161afb811e73",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2018-ascii.dxf",
+      "storedSha256": "a29c9db33decef6dc174c156c03119d7bc11f615f0f27ce76d0432dadb998be4",
+      "inflatedSha256": "a29c9db33decef6dc174c156c03119d7bc11f615f0f27ce76d0432dadb998be4",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2018-binary.dxf",
+      "storedSha256": "0d5b7181955fd27ab784a391e0897900e9683bd7966f4851b50ee0a89c9c7712",
+      "inflatedSha256": "0d5b7181955fd27ab784a391e0897900e9683bd7966f4851b50ee0a89c9c7712",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2000-ascii.dxf.gz",
+      "storedSha256": "1c40127fdc173a5aec3e04bf4900107e6ca2c02edd076e3c51cecd310d722018",
+      "inflatedSha256": "fb03dafe0333f44ca5bc4e5c3b9c7860cc0b4613540bf4dbea99857d24e34cf0",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2000-binary.dxf.gz",
+      "storedSha256": "dcb3c834b0616b6c622e0c24c5634e41a968ce32e56bd9ccd8c099473d608723",
+      "inflatedSha256": "b205789e793173070e75dacdac85312387137883af45d6bd2ed044e3062823fb",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2004-ascii.dxf.gz",
+      "storedSha256": "346ea737946a376ae13cd9f6c6c1ed77ffa521e2b49bdadf32ec23264dd32f3d",
+      "inflatedSha256": "cbfc9e08d1cbac1d8998773e0f295e83b6227ac62547421f7e6ffc4e73f499b8",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2004-binary.dxf.gz",
+      "storedSha256": "f398670098524ad5b3cd1f63fc33549cc382eda0c3ed1193c1bbfcf477298e51",
+      "inflatedSha256": "3d7170ad0bfe106d34fc4df9edb5df2a7ff09fee530f5e22d52336daaf1f970c",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2007-ascii.dxf.gz",
+      "storedSha256": "70801c54438030fb17de3f4a136cfc67beed3e56b66c24a3339c2bccdedb5a4f",
+      "inflatedSha256": "01c03f3bf4bc258569261cde9f49be513e1edee0221f084ad675dbbba3a3b9a4",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2007-binary.dxf.gz",
+      "storedSha256": "c7ece3c9a0508a9a7bcad92840f470fd72e09aad2f70a31637b7c82245011272",
+      "inflatedSha256": "fb536ba1c14e37ba8305b4ca0af0ed8dc64017a4a97cb71a09836a5547830dad",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2010-ascii.dxf.gz",
+      "storedSha256": "bca3f83fe344ef131d2049c8f6f12a32778f3775ce124b6e8bf720bb85591cac",
+      "inflatedSha256": "ada615407fda379bb99b802f495cbad4c1a41aea9c1fc78a7467cc81ced02d94",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2010-binary.dxf.gz",
+      "storedSha256": "3dcaee2ccc4e9f1baf55f47e346d0ef5e6f051744d64113439a810b8b5ae7f7b",
+      "inflatedSha256": "94b6a59e07547841ee979cd6730984797d35a1c7b54c9f5d04831cef25085ea3",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2013-ascii.dxf.gz",
+      "storedSha256": "709db050aeff71c85b4996e4fd5f870b74018679fc402f286e5d58675a3dd859",
+      "inflatedSha256": "77068fed2e330683d1da128d300d35b15603d487b0209af29b7c7efb58c05007",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2013-binary.dxf.gz",
+      "storedSha256": "ee5b8809c7da507879f7077f6756c940c279fee4ef4145e6f2d03ed54c8cb1a0",
+      "inflatedSha256": "80431fb79cd87803edeae8ed58bad83df991152cca7357154910da84655f1ee2",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2018-ascii.dxf.gz",
+      "storedSha256": "abee888f0fba6e66e6ebbd63363fd9247ddb53f06d0845ab31a9feb245ae8503",
+      "inflatedSha256": "4f87d642d486f722ff393297e8fbd6077e21e71005b8666694d0a2a325d561d9",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2018-binary.dxf.gz",
+      "storedSha256": "21f1a8487b1f163aa84de7946b3aee1ad17f40a4144837945c328925a1ed7160",
+      "inflatedSha256": "0fcaae62b9f233641d431b151a5f195f3acd1c50a8b13a0e76399e8966e641b5",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 63
+    },
+    {
+      "file": "tests/fixtures/legacy/ASCII_R12.dxf",
+      "storedSha256": "b476d3e53fe24c1db3c701d20b2bebd774f7bd7966b12d81891505b9b29e4d21",
+      "inflatedSha256": "b476d3e53fe24c1db3c701d20b2bebd774f7bd7966b12d81891505b9b29e4d21",
+      "transport": "ascii",
+      "sourceVersion": "AC1009",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/legacy/bin_dxf_r12.dxf",
+      "storedSha256": "1e7a904d67bc7036bd3f78a6273cdf28124ba7e8b731604c0593288182f2aa0e",
+      "inflatedSha256": "1e7a904d67bc7036bd3f78a6273cdf28124ba7e8b731604c0593288182f2aa0e",
+      "transport": "binary",
+      "sourceVersion": "AC1009",
+      "recordCount": 40
+    },
+    {
+      "file": "tests/fixtures/legacy/bin_dxf_r13.dxf",
+      "storedSha256": "c65782683815ff0f1680d26207da1637a486f96b30bc215685e26cf7adee8464",
+      "inflatedSha256": "c65782683815ff0f1680d26207da1637a486f96b30bc215685e26cf7adee8464",
+      "transport": "binary",
+      "sourceVersion": "AC1012",
+      "recordCount": 157
+    },
+    {
+      "file": "tests/fixtures/legacy/bin_dxf_r14.dxf",
+      "storedSha256": "177a97e5dc86ca106d0dd6365d139122fc54ff78df87670847eb7174a8bbd5eb",
+      "inflatedSha256": "177a97e5dc86ca106d0dd6365d139122fc54ff78df87670847eb7174a8bbd5eb",
+      "transport": "binary",
+      "sourceVersion": "AC1014",
+      "recordCount": 160
+    },
+    {
+      "file": "tests/fixtures/legacy/small_r13.dxf",
+      "storedSha256": "a1007452f8ada2e71fdef60f79923924045cb371f37eeab896a61f5628573d0b",
+      "inflatedSha256": "a1007452f8ada2e71fdef60f79923924045cb371f37eeab896a61f5628573d0b",
+      "transport": "ascii",
+      "sourceVersion": "AC1012",
+      "recordCount": 139
+    },
+    {
+      "file": "tests/fixtures/legacy/small_r14.dxf",
+      "storedSha256": "92e792f8f9169e4226c9b7dbe848ba9afb96d3e388e6297c55481e1941c65fb0",
+      "inflatedSha256": "92e792f8f9169e4226c9b7dbe848ba9afb96d3e388e6297c55481e1941c65fb0",
+      "transport": "ascii",
+      "sourceVersion": "AC1014",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2007-ascii.dxf",
+      "storedSha256": "502fe86d6cec9a42b8e6f9798d5258263ceb1e9658b91bc80d30b693e251c545",
+      "inflatedSha256": "502fe86d6cec9a42b8e6f9798d5258263ceb1e9658b91bc80d30b693e251c545",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2007-binary.dxf",
+      "storedSha256": "641be2ad6370421bb6f0824fffd04f93784a28b6338ab66341cb0cb52e80417a",
+      "inflatedSha256": "641be2ad6370421bb6f0824fffd04f93784a28b6338ab66341cb0cb52e80417a",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2010-ascii.dxf",
+      "storedSha256": "060b16d06e15bdd35e60c544d0136af5628cb130b481250c297c0fd9d72ce290",
+      "inflatedSha256": "060b16d06e15bdd35e60c544d0136af5628cb130b481250c297c0fd9d72ce290",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2010-binary.dxf",
+      "storedSha256": "d5c3f54ced1f33e6893fdd8ec7da242be48485ccf8c0044ef998b5e9de80c8d5",
+      "inflatedSha256": "d5c3f54ced1f33e6893fdd8ec7da242be48485ccf8c0044ef998b5e9de80c8d5",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2013-ascii.dxf",
+      "storedSha256": "8f3b40af844aa92c2df015145144fcd93a507cec4b9e10ac10e35098a2ae60ab",
+      "inflatedSha256": "8f3b40af844aa92c2df015145144fcd93a507cec4b9e10ac10e35098a2ae60ab",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2013-binary.dxf",
+      "storedSha256": "07dd1813ade4457c3ac87d231f018a770d02627fd70477df395092e4605e90a5",
+      "inflatedSha256": "07dd1813ade4457c3ac87d231f018a770d02627fd70477df395092e4605e90a5",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2018-ascii.dxf",
+      "storedSha256": "a60b00ca73ea25919907c5886ef8060fa5b85a911206787724e29c3250708cf8",
+      "inflatedSha256": "a60b00ca73ea25919907c5886ef8060fa5b85a911206787724e29c3250708cf8",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2018-binary.dxf",
+      "storedSha256": "1f73423cabb6832cfcfe9876d43d02033258a4aa37fd6babb5f9e6c48c0ffcb8",
+      "inflatedSha256": "1f73423cabb6832cfcfe9876d43d02033258a4aa37fd6babb5f9e6c48c0ffcb8",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 64
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-absent.dxf",
+      "storedSha256": "b979185f0ef6d0bf484c9c5ac08be3fcaa0c95e143ac95dbc4ec2af6ef6a31ec",
+      "inflatedSha256": "b979185f0ef6d0bf484c9c5ac08be3fcaa0c95e143ac95dbc4ec2af6ef6a31ec",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-positive.dxf",
+      "storedSha256": "a982d3f966498b5d164ed9c51c12bf6ccc24dff453eb62f53fc3fbcfa7c42771",
+      "inflatedSha256": "a982d3f966498b5d164ed9c51c12bf6ccc24dff453eb62f53fc3fbcfa7c42771",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-zero.dxf",
+      "storedSha256": "fa9cdc69c318b47d3f739d63288c0deef423af88b1979598ea4c22518834623b",
+      "inflatedSha256": "fa9cdc69c318b47d3f739d63288c0deef423af88b1979598ea4c22518834623b",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-absent.dxf",
+      "storedSha256": "e959e64724cb8bad54573fc459505026fbdd2d6a22ee3fa4d590b49f4f325edc",
+      "inflatedSha256": "e959e64724cb8bad54573fc459505026fbdd2d6a22ee3fa4d590b49f4f325edc",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-positive.dxf",
+      "storedSha256": "ce092d17fddb68c86d53dca6f285b74c2cd8073a1585aa940bbd1b4d84e6b689",
+      "inflatedSha256": "ce092d17fddb68c86d53dca6f285b74c2cd8073a1585aa940bbd1b4d84e6b689",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-zero.dxf",
+      "storedSha256": "119b0f92ae6fb1a4ae2d378555595aeda0f0c6608c6ac323793175098000c1ed",
+      "inflatedSha256": "119b0f92ae6fb1a4ae2d378555595aeda0f0c6608c6ac323793175098000c1ed",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2007.dxf",
+      "storedSha256": "413766dae4d16e60e1f1ad509f1c0d997173128c84799aa3c6a5b1802bf39fa0",
+      "inflatedSha256": "413766dae4d16e60e1f1ad509f1c0d997173128c84799aa3c6a5b1802bf39fa0",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 107
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2010.dxf",
+      "storedSha256": "aa64de7f72161558ed60b663ddda3cb58dc0c3696e1093b876f09513a124dcf9",
+      "inflatedSha256": "aa64de7f72161558ed60b663ddda3cb58dc0c3696e1093b876f09513a124dcf9",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 107
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2013.dxf",
+      "storedSha256": "e165c1340eca1440549548acc256cf4e9c00dbbaaea788bc7aa8e1a62b0587f6",
+      "inflatedSha256": "e165c1340eca1440549548acc256cf4e9c00dbbaaea788bc7aa8e1a62b0587f6",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 107
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2018.dxf",
+      "storedSha256": "70db668b4c3bd1324e9a857f58676c7697b79fcd22815a94f62ae96d645df786",
+      "inflatedSha256": "70db668b4c3bd1324e9a857f58676c7697b79fcd22815a94f62ae96d645df786",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 107
+    },
+    {
+      "file": "tests/fixtures/mleader-native/native-mleader-R2007.dxf.gz",
+      "storedSha256": "cd4253dfac2a7a1c5e5949c3e8320d95e2d3846d8d8e1e410940ab0c4f0b769d",
+      "inflatedSha256": "5e57fbcb9bbf326de7bbcdc9951e51c1d52834ae4f6117c0e3f95fdda09474ab",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/conflicting/independent-mtext-static-R2018.dxf",
+      "storedSha256": "c32cd080274b701c7778fa79c14d4e4b30be8fef482c448ccafc72278e311bb2",
+      "inflatedSha256": "c32cd080274b701c7778fa79c14d4e4b30be8fef482c448ccafc72278e311bb2",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2000.dxf",
+      "storedSha256": "e50d1d0c2afb92546aeb83bc08ecea594ece01d755e80e5f5679272fa6ef08f5",
+      "inflatedSha256": "e50d1d0c2afb92546aeb83bc08ecea594ece01d755e80e5f5679272fa6ef08f5",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2013.dxf",
+      "storedSha256": "9ce220643b3c82d235c777bca2787bbc18e1e8878f8d015975a17d32d9157be6",
+      "inflatedSha256": "9ce220643b3c82d235c777bca2787bbc18e1e8878f8d015975a17d32d9157be6",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2018.dxf",
+      "storedSha256": "4e52b04d25b48c927c6e3796a7bb9d87fb6ab5af1b71573891b0f3a959d36a96",
+      "inflatedSha256": "4e52b04d25b48c927c6e3796a7bb9d87fb6ab5af1b71573891b0f3a959d36a96",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2000.dxf",
+      "storedSha256": "dd17a5cf0de5df0695501549ef0a55b1f06f2f8fb13479d028addc08aa2b10e6",
+      "inflatedSha256": "dd17a5cf0de5df0695501549ef0a55b1f06f2f8fb13479d028addc08aa2b10e6",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2013.dxf",
+      "storedSha256": "e7033abb5a6fabf7c7d238cf1313ef49f30ef78d537473a8f4230ee466fdd118",
+      "inflatedSha256": "e7033abb5a6fabf7c7d238cf1313ef49f30ef78d537473a8f4230ee466fdd118",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2018.dxf",
+      "storedSha256": "be681369e45190ef26ac01ea3b191a88b7150a5ad5ebc8c0d63c852191023dfe",
+      "inflatedSha256": "be681369e45190ef26ac01ea3b191a88b7150a5ad5ebc8c0d63c852191023dfe",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static-R2000.dxf",
+      "storedSha256": "80f56b71dca0828f3c170cbd7cbc2e73014732c187d991309c098148840dd4f8",
+      "inflatedSha256": "80f56b71dca0828f3c170cbd7cbc2e73014732c187d991309c098148840dd4f8",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static-R2013.dxf",
+      "storedSha256": "82f563edf1c7dbcb3b5f8e90ef0ba60fde40c734a54342a1fe6e1731976e8389",
+      "inflatedSha256": "82f563edf1c7dbcb3b5f8e90ef0ba60fde40c734a54342a1fe6e1731976e8389",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static-R2018.dxf",
+      "storedSha256": "c0cc69229846dfdf57d2b352b85c47f09857d9c1145db9f3b89a45b614afd2de",
+      "inflatedSha256": "c0cc69229846dfdf57d2b352b85c47f09857d9c1145db9f3b89a45b614afd2de",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static_reordered-R2013.dxf",
+      "storedSha256": "ca392e1b016e9310d30ff00757e84b599a7e6c03a47772670aae55dfaf0bdd06",
+      "inflatedSha256": "ca392e1b016e9310d30ff00757e84b599a7e6c03a47772670aae55dfaf0bdd06",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 91
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2000.dxf",
+      "storedSha256": "92e617e16709e64ce837606ab35ebec98dd00c9fb0555b351800fbc0ecf7a45f",
+      "inflatedSha256": "92e617e16709e64ce837606ab35ebec98dd00c9fb0555b351800fbc0ecf7a45f",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 129
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2004.dxf",
+      "storedSha256": "56a6363bde968f48f97fdc91cb7809337d56196e1e984b8726726d1453ec7d96",
+      "inflatedSha256": "56a6363bde968f48f97fdc91cb7809337d56196e1e984b8726726d1453ec7d96",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 129
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2007.dxf",
+      "storedSha256": "9a3711d2d312725ef9a418bc72201328d3e70509b37c784f6025aebab690d0ad",
+      "inflatedSha256": "9a3711d2d312725ef9a418bc72201328d3e70509b37c784f6025aebab690d0ad",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 130
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2010.dxf",
+      "storedSha256": "4627c47d62400a41aa065a03549654f5479854c9f657d87caa4fe2d365295602",
+      "inflatedSha256": "4627c47d62400a41aa065a03549654f5479854c9f657d87caa4fe2d365295602",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 130
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2013.dxf",
+      "storedSha256": "5aeaba4c3ffff9236e1ad23dcc1a78d80fe014d4ab214e5022fd9639b152402b",
+      "inflatedSha256": "5aeaba4c3ffff9236e1ad23dcc1a78d80fe014d4ab214e5022fd9639b152402b",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 130
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2018.dxf",
+      "storedSha256": "a437c9d728c9b8211944dd37dd3d3e25b6fe572fee7dd772a6c1b8844c1b7027",
+      "inflatedSha256": "a437c9d728c9b8211944dd37dd3d3e25b6fe572fee7dd772a6c1b8844c1b7027",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 130
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1015-ascii-cubic.dxf",
+      "storedSha256": "ce181fe99b0d47225bef8c46161343ffeb48443c76cb5dcb2a9ce8216adb859d",
+      "inflatedSha256": "ce181fe99b0d47225bef8c46161343ffeb48443c76cb5dcb2a9ce8216adb859d",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1015-ascii-plain.dxf",
+      "storedSha256": "c5398ee331b3d7fed43cad83cfbd2432e94be60a2ed6fa5111a46d694b088903",
+      "inflatedSha256": "c5398ee331b3d7fed43cad83cfbd2432e94be60a2ed6fa5111a46d694b088903",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1015-ascii-quadratic.dxf",
+      "storedSha256": "71ec3daadb66c2227c6d5855b417322ca3c4df5fdbdbb811446b98a7cf598e82",
+      "inflatedSha256": "71ec3daadb66c2227c6d5855b417322ca3c4df5fdbdbb811446b98a7cf598e82",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1015-binary-cubic.dxf",
+      "storedSha256": "2656cc6f1469635d3e6db740bba629c2b58155e02394ff2e5c310735db4e22f4",
+      "inflatedSha256": "2656cc6f1469635d3e6db740bba629c2b58155e02394ff2e5c310735db4e22f4",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1015-binary-plain.dxf",
+      "storedSha256": "0927221d5c56d56f898e8630ef3bbff43638f14aaae97139eca03e5021439c78",
+      "inflatedSha256": "0927221d5c56d56f898e8630ef3bbff43638f14aaae97139eca03e5021439c78",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1015-binary-quadratic.dxf",
+      "storedSha256": "161f81d39bad2974e61d3002b001b7d0f7f53f61195dce086a9fe6c19ac29d6e",
+      "inflatedSha256": "161f81d39bad2974e61d3002b001b7d0f7f53f61195dce086a9fe6c19ac29d6e",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1018-ascii-cubic.dxf",
+      "storedSha256": "d31dbee02004f5b22e674f6b079d8198e91677cb2d4fab8d7597abb6837581c4",
+      "inflatedSha256": "d31dbee02004f5b22e674f6b079d8198e91677cb2d4fab8d7597abb6837581c4",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1018-ascii-plain.dxf",
+      "storedSha256": "21f92799d0100d04010cb0e47883d5c0b11f286ee06a4c3f3d6a2405f7617a8e",
+      "inflatedSha256": "21f92799d0100d04010cb0e47883d5c0b11f286ee06a4c3f3d6a2405f7617a8e",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1018-ascii-quadratic.dxf",
+      "storedSha256": "be11d6c559cbede02c03575a8ee66b30c35f07da949f5013fe8b07af02f898e5",
+      "inflatedSha256": "be11d6c559cbede02c03575a8ee66b30c35f07da949f5013fe8b07af02f898e5",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1018-binary-cubic.dxf",
+      "storedSha256": "3d9b7662aeb1d64011e7db8f3da7d765f281a76a2181094aea9ed1305ea6e996",
+      "inflatedSha256": "3d9b7662aeb1d64011e7db8f3da7d765f281a76a2181094aea9ed1305ea6e996",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1018-binary-plain.dxf",
+      "storedSha256": "ae206e02c5ca78049730c9eef50cd30bebade1e0f01ffcc0a8efcaf21b0e7354",
+      "inflatedSha256": "ae206e02c5ca78049730c9eef50cd30bebade1e0f01ffcc0a8efcaf21b0e7354",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1018-binary-quadratic.dxf",
+      "storedSha256": "ac018cdea4c6cd2bd7dbea464c818911047a2ab1d6e7f2a5ebdd4b3b76d8155d",
+      "inflatedSha256": "ac018cdea4c6cd2bd7dbea464c818911047a2ab1d6e7f2a5ebdd4b3b76d8155d",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1021-ascii-cubic.dxf",
+      "storedSha256": "a65ab74390931e8b20c6a56b7ac5b88eca77b90e92073ad288dd5876b7423bc1",
+      "inflatedSha256": "a65ab74390931e8b20c6a56b7ac5b88eca77b90e92073ad288dd5876b7423bc1",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1021-ascii-plain.dxf",
+      "storedSha256": "f2112c760e41f988c1b8fd374549b600b23a43f1b86921e0c98cfa50c10fb2d4",
+      "inflatedSha256": "f2112c760e41f988c1b8fd374549b600b23a43f1b86921e0c98cfa50c10fb2d4",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1021-ascii-quadratic.dxf",
+      "storedSha256": "c48ad46d5d5b88a76eab2cdb794eff0f3a175e54b01c042815b0b11b260fd29b",
+      "inflatedSha256": "c48ad46d5d5b88a76eab2cdb794eff0f3a175e54b01c042815b0b11b260fd29b",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1021-binary-cubic.dxf",
+      "storedSha256": "1977959c17755b10bc33d85d2ac7e1f3bf13772b4a2b26e39eeb23bd3915c76e",
+      "inflatedSha256": "1977959c17755b10bc33d85d2ac7e1f3bf13772b4a2b26e39eeb23bd3915c76e",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1021-binary-plain.dxf",
+      "storedSha256": "a013e41e04d1d117cc6edc99a5b4d87094b4f5c0db312647943f0e517ad7c6c7",
+      "inflatedSha256": "a013e41e04d1d117cc6edc99a5b4d87094b4f5c0db312647943f0e517ad7c6c7",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1021-binary-quadratic.dxf",
+      "storedSha256": "286d00c5a88aa5a3af5452d6768c788d05d206f8a9ef0c69e26de888eeea1fd7",
+      "inflatedSha256": "286d00c5a88aa5a3af5452d6768c788d05d206f8a9ef0c69e26de888eeea1fd7",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1024-ascii-cubic.dxf",
+      "storedSha256": "2f9f684da0be9969c95707741aa87fb71f910da1f6c1f9c84119ed17219767b9",
+      "inflatedSha256": "2f9f684da0be9969c95707741aa87fb71f910da1f6c1f9c84119ed17219767b9",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1024-ascii-plain.dxf",
+      "storedSha256": "62ffbca560947eb7c3ffdb7a3dd5dd95c04fedb87c156654b87119de690a434a",
+      "inflatedSha256": "62ffbca560947eb7c3ffdb7a3dd5dd95c04fedb87c156654b87119de690a434a",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1024-ascii-quadratic.dxf",
+      "storedSha256": "ef42f7420e7f86a8e6e2a14ef787898703c47576c3e094326be4286073ec1d80",
+      "inflatedSha256": "ef42f7420e7f86a8e6e2a14ef787898703c47576c3e094326be4286073ec1d80",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1024-binary-cubic.dxf",
+      "storedSha256": "b80218235fcb4a1737ea17355ad8a1f4e61def96585e184d70c49a49a6c26a16",
+      "inflatedSha256": "b80218235fcb4a1737ea17355ad8a1f4e61def96585e184d70c49a49a6c26a16",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1024-binary-plain.dxf",
+      "storedSha256": "93be50c962cd5c3c381953f880cba674acffcb1e5143e2c9daaa36369ec597bf",
+      "inflatedSha256": "93be50c962cd5c3c381953f880cba674acffcb1e5143e2c9daaa36369ec597bf",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1024-binary-quadratic.dxf",
+      "storedSha256": "173ae73b5c57495839fcdfd08bb74398edab909c89e1a81c20621c25f1e9ff1b",
+      "inflatedSha256": "173ae73b5c57495839fcdfd08bb74398edab909c89e1a81c20621c25f1e9ff1b",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1027-ascii-cubic.dxf",
+      "storedSha256": "81c116e5ffe89bc95a3386577d38ae032d7b3f5613f80e34a0e7739211850591",
+      "inflatedSha256": "81c116e5ffe89bc95a3386577d38ae032d7b3f5613f80e34a0e7739211850591",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1027-ascii-plain.dxf",
+      "storedSha256": "fe398b44248227952a16b6fd4ff9c38d742103ba1f07d1904b942631455f28ac",
+      "inflatedSha256": "fe398b44248227952a16b6fd4ff9c38d742103ba1f07d1904b942631455f28ac",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1027-ascii-quadratic.dxf",
+      "storedSha256": "11ad10377762079c5f08939a598da349a3f4ad86e3a193b25a83d5acbd00b24c",
+      "inflatedSha256": "11ad10377762079c5f08939a598da349a3f4ad86e3a193b25a83d5acbd00b24c",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1027-binary-cubic.dxf",
+      "storedSha256": "e791e842034d5a84a55252730e8e1e846f2a372e7cf5286f96c00a626e6ec316",
+      "inflatedSha256": "e791e842034d5a84a55252730e8e1e846f2a372e7cf5286f96c00a626e6ec316",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1027-binary-plain.dxf",
+      "storedSha256": "3f7bd83530cdfcf94ec97c2542b4b36379bbea11414bb9a3a2b3480e7ff586c0",
+      "inflatedSha256": "3f7bd83530cdfcf94ec97c2542b4b36379bbea11414bb9a3a2b3480e7ff586c0",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1027-binary-quadratic.dxf",
+      "storedSha256": "293f3dd767ee0a586017ac2174f7389ec39dcb645f078640a2e164f202b5f846",
+      "inflatedSha256": "293f3dd767ee0a586017ac2174f7389ec39dcb645f078640a2e164f202b5f846",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1032-ascii-cubic.dxf",
+      "storedSha256": "81d641aa030a9261cc9a84b254d875cb5d816636ca0f6b2aa3996efb9d547c2a",
+      "inflatedSha256": "81d641aa030a9261cc9a84b254d875cb5d816636ca0f6b2aa3996efb9d547c2a",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1032-ascii-plain.dxf",
+      "storedSha256": "5b85e38824f120a2b79f04b3cefd1ed569451d15f48f0f237385558a31e3fe56",
+      "inflatedSha256": "5b85e38824f120a2b79f04b3cefd1ed569451d15f48f0f237385558a31e3fe56",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1032-ascii-quadratic.dxf",
+      "storedSha256": "bbced6fb5863a0a09701e432bb777dca5968ee1853386662cf99529aa8907dd0",
+      "inflatedSha256": "bbced6fb5863a0a09701e432bb777dca5968ee1853386662cf99529aa8907dd0",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1032-binary-cubic.dxf",
+      "storedSha256": "4418abc61f3d34896398f67c91be2596d879722cff2fcb794542743596441fde",
+      "inflatedSha256": "4418abc61f3d34896398f67c91be2596d879722cff2fcb794542743596441fde",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1032-binary-plain.dxf",
+      "storedSha256": "711e5a8fb259a1770e57718727bc81c75dc01c9a5c2c0f357b4fd3fbc80a549e",
+      "inflatedSha256": "711e5a8fb259a1770e57718727bc81c75dc01c9a5c2c0f357b4fd3fbc80a549e",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 105
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/AC1032-binary-quadratic.dxf",
+      "storedSha256": "e1b7cefce51c3cfc6cb0c51c74aec6bbf02ee19a9ac043d9e0a2fcfe905ffb1d",
+      "inflatedSha256": "e1b7cefce51c3cfc6cb0c51c74aec6bbf02ee19a9ac043d9e0a2fcfe905ffb1d",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 125
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/R2000-native-20F.dxf",
+      "storedSha256": "ae05717a5c809348a71e7dada4858e1290709079f8664b684c9f3fd988937f02",
+      "inflatedSha256": "ae05717a5c809348a71e7dada4858e1290709079f8664b684c9f3fd988937f02",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-cardinality/R2018-native-20F.dxf",
+      "storedSha256": "5513a00cf85f292a4da39900e6aee34e4baac4db47285ea3d4e015b6643d7e96",
+      "inflatedSha256": "5513a00cf85f292a4da39900e6aee34e4baac4db47285ea3d4e015b6643d7e96",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 101
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2000-ascii.dxf",
+      "storedSha256": "8b04b6eed8c372f75936149ada2e62e3dbc3d67c41e93fefec3ea7cf76e12eb8",
+      "inflatedSha256": "8b04b6eed8c372f75936149ada2e62e3dbc3d67c41e93fefec3ea7cf76e12eb8",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2000-binary.dxf",
+      "storedSha256": "45e2136698e9ec6b43799a98b9468d4376c6803221cda48f3ec6c6c754591d3c",
+      "inflatedSha256": "45e2136698e9ec6b43799a98b9468d4376c6803221cda48f3ec6c6c754591d3c",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2004-ascii.dxf",
+      "storedSha256": "fcccbc9855f42e94788d026255d2f950778c0f8c7f024c2bbcf6d26834223dc1",
+      "inflatedSha256": "fcccbc9855f42e94788d026255d2f950778c0f8c7f024c2bbcf6d26834223dc1",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2004-binary.dxf",
+      "storedSha256": "348fa5443c3f44c510366541bbf31832c5d87f509961becd28453279755b7c20",
+      "inflatedSha256": "348fa5443c3f44c510366541bbf31832c5d87f509961becd28453279755b7c20",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2007-ascii.dxf",
+      "storedSha256": "74f341d07352b6ce0d7e7f50cc94b806193bff88c2ce078133b715a6da9b2280",
+      "inflatedSha256": "74f341d07352b6ce0d7e7f50cc94b806193bff88c2ce078133b715a6da9b2280",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2007-binary.dxf",
+      "storedSha256": "f79c412ff123350c3a9ad2aedc8165a759a6f2c1089856c092feac1967ec5aca",
+      "inflatedSha256": "f79c412ff123350c3a9ad2aedc8165a759a6f2c1089856c092feac1967ec5aca",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2010-ascii.dxf",
+      "storedSha256": "c9b3a76d9fe2c2f2edd322d3cce5e262d34d51cf5e2bedb828d0c3364de429a1",
+      "inflatedSha256": "c9b3a76d9fe2c2f2edd322d3cce5e262d34d51cf5e2bedb828d0c3364de429a1",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2010-binary.dxf",
+      "storedSha256": "8ba40271797ca615704482ca1cbce57a329bb74b3a18d98d7dcd99d11e6a2f85",
+      "inflatedSha256": "8ba40271797ca615704482ca1cbce57a329bb74b3a18d98d7dcd99d11e6a2f85",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2013-ascii.dxf",
+      "storedSha256": "605cc3a7f72f35a322268e18305ccb988e0f562dbd4f1d349d8301e0373d044d",
+      "inflatedSha256": "605cc3a7f72f35a322268e18305ccb988e0f562dbd4f1d349d8301e0373d044d",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2013-binary.dxf",
+      "storedSha256": "06dab37a6f1503769d3d1b0acb882eba9d03cbfab4f3d5fa4b20c0317c909ed8",
+      "inflatedSha256": "06dab37a6f1503769d3d1b0acb882eba9d03cbfab4f3d5fa4b20c0317c909ed8",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2018-ascii.dxf",
+      "storedSha256": "d5c8a2599f93e20b076e0235844ee8a8e7d000c1348888a618e80ffe5e44c48a",
+      "inflatedSha256": "d5c8a2599f93e20b076e0235844ee8a8e7d000c1348888a618e80ffe5e44c48a",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polygonmesh-records/producer-R2018-binary.dxf",
+      "storedSha256": "c5ce0f9c40227af9b56d59880f33a9c04da64dc932e6527d755c8b30e4a7f79a",
+      "inflatedSha256": "c5ce0f9c40227af9b56d59880f33a9c04da64dc932e6527d755c8b30e4a7f79a",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 115
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2000-ascii.dxf",
+      "storedSha256": "fb0d318086ad10402940a8b72993fc61bb44d9ff5168cf3ee4f410951ed473a6",
+      "inflatedSha256": "fb0d318086ad10402940a8b72993fc61bb44d9ff5168cf3ee4f410951ed473a6",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2000-binary.dxf",
+      "storedSha256": "e7da9fee4b3ffcba168e3f3c81de5ac1f21b3866391000f20124036aac4f12d2",
+      "inflatedSha256": "e7da9fee4b3ffcba168e3f3c81de5ac1f21b3866391000f20124036aac4f12d2",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2004-ascii.dxf",
+      "storedSha256": "265dfb2a9e4f6723b307a6a78591d916a098cd230c3f25f616d5a312c46dc91b",
+      "inflatedSha256": "265dfb2a9e4f6723b307a6a78591d916a098cd230c3f25f616d5a312c46dc91b",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2004-binary.dxf",
+      "storedSha256": "67084c22d2d5977cdf5fae29bb072bf9d4a10811c56715aca80e50b8d9f718db",
+      "inflatedSha256": "67084c22d2d5977cdf5fae29bb072bf9d4a10811c56715aca80e50b8d9f718db",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2007-ascii.dxf",
+      "storedSha256": "70470d54270b865b09fa8541ea6495cdd1f6540c575e459fd9aba13409b846a0",
+      "inflatedSha256": "70470d54270b865b09fa8541ea6495cdd1f6540c575e459fd9aba13409b846a0",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2007-binary.dxf",
+      "storedSha256": "dc35ea5132364f0d0f8081ded6c872a9a650b6cb4ceb6e73c75d6140288cbc3a",
+      "inflatedSha256": "dc35ea5132364f0d0f8081ded6c872a9a650b6cb4ceb6e73c75d6140288cbc3a",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2010-ascii.dxf",
+      "storedSha256": "f553a2e9a75d6f2eaf4fb02e448458417efc7a530a1da6d5908f1f87197d3b0b",
+      "inflatedSha256": "f553a2e9a75d6f2eaf4fb02e448458417efc7a530a1da6d5908f1f87197d3b0b",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2010-binary.dxf",
+      "storedSha256": "b94ec56a490145f08b191d4f3b53bc4c5387f00dd0a3d7fb348d6eee3aab3b5d",
+      "inflatedSha256": "b94ec56a490145f08b191d4f3b53bc4c5387f00dd0a3d7fb348d6eee3aab3b5d",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2013-ascii.dxf",
+      "storedSha256": "1a7c5f66392481498eea5c4053c0b8b3db48f25dff52d8db891eee3d4ebaa4b0",
+      "inflatedSha256": "1a7c5f66392481498eea5c4053c0b8b3db48f25dff52d8db891eee3d4ebaa4b0",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2013-binary.dxf",
+      "storedSha256": "9727be989b31ee413f54f81ba8bfe000c69f2db698ecb7f30c922c78fb7d10b2",
+      "inflatedSha256": "9727be989b31ee413f54f81ba8bfe000c69f2db698ecb7f30c922c78fb7d10b2",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2018-ascii.dxf",
+      "storedSha256": "3fd6f2c545940dbd8ae019384eaf20f4b19a6d6aefb601cfa659b9b38050d0d8",
+      "inflatedSha256": "3fd6f2c545940dbd8ae019384eaf20f4b19a6d6aefb601cfa659b9b38050d0d8",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/polyline3d-records/producer-R2018-binary.dxf",
+      "storedSha256": "f7051122eeebc7f3a61458f41dbe74fa9e91d611731773068ff189b40cfc1b48",
+      "inflatedSha256": "f7051122eeebc7f3a61458f41dbe74fa9e91d611731773068ff189b40cfc1b48",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 103
+    },
+    {
+      "file": "tests/fixtures/raw-objects-R2000.dxf",
+      "storedSha256": "308c500a530feddca2d2f01691faac2efed871bdf4fc708e0af149d0c1702e98",
+      "inflatedSha256": "308c500a530feddca2d2f01691faac2efed871bdf4fc708e0af149d0c1702e98",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/raw-objects-R2018.dxf",
+      "storedSha256": "0631df37e447399011c67a9650967995052bbe9f74a78bd5d65da7b06fa3eeee",
+      "inflatedSha256": "0631df37e447399011c67a9650967995052bbe9f74a78bd5d65da7b06fa3eeee",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/section/LiveSection1.dxf.gz",
+      "storedSha256": "7a1f9dedfde2629330e9d9bfa18ee5920a3e75499d2c65e079a558fccf608942",
+      "inflatedSha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 243
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2007-ascii.dxf",
+      "storedSha256": "991871d8c1c12b7a995ffde7e6d9415915eef40a9aa774c502c5a6adb45bab64",
+      "inflatedSha256": "991871d8c1c12b7a995ffde7e6d9415915eef40a9aa774c502c5a6adb45bab64",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2007-binary.dxf",
+      "storedSha256": "8d384dfbd12bc0e13e377deef97c72caf65c900f692a50c23249468eede4286b",
+      "inflatedSha256": "8d384dfbd12bc0e13e377deef97c72caf65c900f692a50c23249468eede4286b",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2010-ascii.dxf",
+      "storedSha256": "c5118142e474e0d5cbafb957d66c061c36ce14d451bc3c376d57243ecece8f99",
+      "inflatedSha256": "c5118142e474e0d5cbafb957d66c061c36ce14d451bc3c376d57243ecece8f99",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2010-binary.dxf",
+      "storedSha256": "5bda41fa5a4a4bfdd9c58b4766e98235f905d9f8d465548aa7bfb579f8e0773c",
+      "inflatedSha256": "5bda41fa5a4a4bfdd9c58b4766e98235f905d9f8d465548aa7bfb579f8e0773c",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2013-ascii.dxf",
+      "storedSha256": "409f6b2956af1711d5439eed435068a0d928721d96f6a2e3ec30352f9716d79d",
+      "inflatedSha256": "409f6b2956af1711d5439eed435068a0d928721d96f6a2e3ec30352f9716d79d",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2013-binary.dxf",
+      "storedSha256": "349ec8ce25e08e73e03cb032b2f839007fdaa397dd636bdcef2af886ea9c19ba",
+      "inflatedSha256": "349ec8ce25e08e73e03cb032b2f839007fdaa397dd636bdcef2af886ea9c19ba",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2018-ascii.dxf",
+      "storedSha256": "ddb7e8200c31ab06f5bdc2230e133e126d0866ba75f84e0121484c92792c7a13",
+      "inflatedSha256": "ddb7e8200c31ab06f5bdc2230e133e126d0866ba75f84e0121484c92792c7a13",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2018-binary.dxf",
+      "storedSha256": "e5380662da814fabbfae761b01c687a39d9b959d5d95890c4f3ca3d7983525a8",
+      "inflatedSha256": "e5380662da814fabbfae761b01c687a39d9b959d5d95890c4f3ca3d7983525a8",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 88
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2007-ascii.dxf.gz",
+      "storedSha256": "51e7d634f13cb43a94c68f730e237bc82c16714c3630c62170567e214a4e9b08",
+      "inflatedSha256": "4dcd0385063b959bb88f5637034ff4d49be56f2277e42af29d5673d34b2f86ba",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2007-binary.dxf.gz",
+      "storedSha256": "f4bbc39aa8d5e48d7b90037ccc1788a5e97575610d1ee8d456a31fc31e19ff76",
+      "inflatedSha256": "3990b4c79e13dce5d613805fc6964b6e389ff0cb1de3518ace4fec65b870a65a",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2010-ascii.dxf.gz",
+      "storedSha256": "43e7fb056a15a988bef7419cae727fa2164b38f10d558681b3f1500f55ed811e",
+      "inflatedSha256": "e046c119bf199219e1594df34ef2a69421dcd8b92d58c2ac0acce756264d6141",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2010-binary.dxf.gz",
+      "storedSha256": "88a154944e9166cb0c056820930be28a5bd44bee196bbd6f8e41caac282cb04e",
+      "inflatedSha256": "7e99455e8f4f8e745f9e07a19912ecb5112effc75939b7346daff9073a61eb5d",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2013-ascii.dxf.gz",
+      "storedSha256": "893f16faf9aae7629ac3e186311f49afc71cdc95e799c0988ce1cd2644b008ce",
+      "inflatedSha256": "6196a4870854a1f9d62bf91585c265ea931407bdca57e6ca191f6ec31fc9a8b6",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2013-binary.dxf.gz",
+      "storedSha256": "906545b5ace257e1cf6ec157719b84932fc90098740f48da071007fdbefbfb91",
+      "inflatedSha256": "db60db602cb25f55e2051396eb442a26dabf9d119463ec534557f5b44fa6eef9",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2018-ascii.dxf.gz",
+      "storedSha256": "d54402b7629169d24dc250ec8edcc8950adddd87b5b21f789a8dc84bb2c6eb06",
+      "inflatedSha256": "26c1ae6252545b6285617ebcc1955b98a795d73b078d462772286351297783a1",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2018-binary.dxf.gz",
+      "storedSha256": "d2e2cf2af3a7bbbd42e8a6a093dc0818acb1114ff889d61d5d7245c770f3a8fa",
+      "inflatedSha256": "36bc52d170775f068716e6a758d272e1522c53aff11d6a6cce74b1445ca410d8",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2007-ascii.dxf",
+      "storedSha256": "016a8e8e800dadb3e22ee492c54b313a71f8706c3b73775b5575d7ffe0423257",
+      "inflatedSha256": "016a8e8e800dadb3e22ee492c54b313a71f8706c3b73775b5575d7ffe0423257",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2007-binary.dxf",
+      "storedSha256": "f38839e20be3bdb132728f68b3056f98cd00589636de90f7f788861ef06b1cfa",
+      "inflatedSha256": "f38839e20be3bdb132728f68b3056f98cd00589636de90f7f788861ef06b1cfa",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2010-ascii.dxf",
+      "storedSha256": "faa9be7a5f325401272bbae13e5da4b2b5b3c2618c7e5c5259bf514a0aff154e",
+      "inflatedSha256": "faa9be7a5f325401272bbae13e5da4b2b5b3c2618c7e5c5259bf514a0aff154e",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2010-binary.dxf",
+      "storedSha256": "85a81a7d3bdc7da0c3d0bab61822f4acf05ce8b2fabd677f7bfab0182dbeb48c",
+      "inflatedSha256": "85a81a7d3bdc7da0c3d0bab61822f4acf05ce8b2fabd677f7bfab0182dbeb48c",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2013-ascii.dxf",
+      "storedSha256": "d88bfe4f17d8f6b6833a9ee0d69c2b2dc2b7e4f40e99bf408689e45fdae17f64",
+      "inflatedSha256": "d88bfe4f17d8f6b6833a9ee0d69c2b2dc2b7e4f40e99bf408689e45fdae17f64",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2013-binary.dxf",
+      "storedSha256": "015389640312be39a8a056c219ef4fd6b2c0dbb4c36a1f1ec38d7afd7c5663df",
+      "inflatedSha256": "015389640312be39a8a056c219ef4fd6b2c0dbb4c36a1f1ec38d7afd7c5663df",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2018-ascii.dxf",
+      "storedSha256": "5320c1c1905492e292ea4b81ed79cff8faa4c85223c0b50bc42bb34f457680fd",
+      "inflatedSha256": "5320c1c1905492e292ea4b81ed79cff8faa4c85223c0b50bc42bb34f457680fd",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2018-binary.dxf",
+      "storedSha256": "392043ab76a78df5bb3f462e68e1912572e500019deebbb22d7de273f79f3529",
+      "inflatedSha256": "392043ab76a78df5bb3f462e68e1912572e500019deebbb22d7de273f79f3529",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 89
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2007-ascii.dxf.gz",
+      "storedSha256": "375c386358a054f87f1ea5771a549d2564439e9b6800cac92e864e6209badc75",
+      "inflatedSha256": "0d5a607a49a83c9707a6d3928364ecd4aef0bf4ed7c45141922f771cc4fbc48b",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2007-binary.dxf.gz",
+      "storedSha256": "0c768fbaaf5c8644eaae3f9da8502505b2754240a993c482321b9f8e65300a2b",
+      "inflatedSha256": "87455c9979349a7b7c8a96a2504b03b377ab72c979bf52d84bc2bc7ee361d8ea",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2010-ascii.dxf.gz",
+      "storedSha256": "d763a5e5fd570aa096bb90f7b1904b109ca9d323908aa6542fd59b43c4fd9c0f",
+      "inflatedSha256": "7265e42981ecf0c22d1646f7713d2ad8a2ee5024eb8bf3d9afbb40c463343d49",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2010-binary.dxf.gz",
+      "storedSha256": "3ac355b928db712d1c305e2dc8a17701cf31cf354c776a35fe285cc160993858",
+      "inflatedSha256": "984c86a416c5c408cbe0ecdd309e7ba5bb7831d74396f8d59868295a567af81e",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2013-ascii.dxf.gz",
+      "storedSha256": "4488fdabb2181ea806d5069011ca987b5634b3c330970c9db47dfc59dabf0570",
+      "inflatedSha256": "656d5197c02db96598a2103b93cb4f46eec19c17fe4678b8ff462dcc9927eb7d",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2013-binary.dxf.gz",
+      "storedSha256": "1c83d57d7f9c4f543fdc0d2e2be8d9614e83be80f0a2cc0eab37b3bae2fd92d3",
+      "inflatedSha256": "93caf0a0063a19436dc1f8c6f1982d2667ea835d5928f723e8d59a09748b7420",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2018-ascii.dxf.gz",
+      "storedSha256": "9d4a38015f12d9189b99fe7354bbfc162b38a090668f3bafcc23770ac21297c0",
+      "inflatedSha256": "7ca01795c7e59bf3d3c66c03cae30d2b9f87118919c03c854ae4c7234175b97f",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2018-binary.dxf.gz",
+      "storedSha256": "9edb6abee88710c0e975b269ad3b15b005c6100acca778940dc3614c7ad7a4e8",
+      "inflatedSha256": "c052ddc7a1ffe805165fe0c4b5b218bf55a02a1a4369c4da7d1d7b8b5259528f",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 54
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2000-ascii.dxf",
+      "storedSha256": "707f47d7647335b5c9bd210927e1c5fffb5f40f5aa0cf07ce9dff6b59b6fffee",
+      "inflatedSha256": "707f47d7647335b5c9bd210927e1c5fffb5f40f5aa0cf07ce9dff6b59b6fffee",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2000-binary.dxf",
+      "storedSha256": "561e5ffadb364dc562239dff592b2cd5b1e145809d062393496104146e9e277e",
+      "inflatedSha256": "561e5ffadb364dc562239dff592b2cd5b1e145809d062393496104146e9e277e",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2004-ascii.dxf",
+      "storedSha256": "73a6449fc3dada2ba69a7974849ac969cf6485a3c92698c1c899c9cba7069d19",
+      "inflatedSha256": "73a6449fc3dada2ba69a7974849ac969cf6485a3c92698c1c899c9cba7069d19",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2004-binary.dxf",
+      "storedSha256": "400673ea99f74ae865369f0eb21fde7341b5a99030a0233d397365e16a65039e",
+      "inflatedSha256": "400673ea99f74ae865369f0eb21fde7341b5a99030a0233d397365e16a65039e",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2007-ascii.dxf",
+      "storedSha256": "e45c25a228d4ad88e7f18fa63b802a3f9eabbbe5b3171b7525f15949fec8d0db",
+      "inflatedSha256": "e45c25a228d4ad88e7f18fa63b802a3f9eabbbe5b3171b7525f15949fec8d0db",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2007-binary.dxf",
+      "storedSha256": "3b49756e894e0b1737284ed88d3bb61b44f144052922920b70538d03e2f5ba6d",
+      "inflatedSha256": "3b49756e894e0b1737284ed88d3bb61b44f144052922920b70538d03e2f5ba6d",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2010-ascii.dxf",
+      "storedSha256": "efc41fa2316232e8b3066126342a7f3b90ce620f7837a6b162a6e2bab59c3c62",
+      "inflatedSha256": "efc41fa2316232e8b3066126342a7f3b90ce620f7837a6b162a6e2bab59c3c62",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2010-binary.dxf",
+      "storedSha256": "233a009f243c1ef82d4272a547f5f3033439464460b5119f3f32619a11074094",
+      "inflatedSha256": "233a009f243c1ef82d4272a547f5f3033439464460b5119f3f32619a11074094",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2013-ascii.dxf",
+      "storedSha256": "5c8ae2d3c93683386fed65987bf1cafe829f3c2d78b0a285d0b3492cde419048",
+      "inflatedSha256": "5c8ae2d3c93683386fed65987bf1cafe829f3c2d78b0a285d0b3492cde419048",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2013-binary.dxf",
+      "storedSha256": "1713b3202aa04cf51c44002a791ca9b1abe1357fbdbd6e687af4468a55c07308",
+      "inflatedSha256": "1713b3202aa04cf51c44002a791ca9b1abe1357fbdbd6e687af4468a55c07308",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2018-ascii.dxf",
+      "storedSha256": "1871c55add58a7ea296a2976f99d58ec3b8a588804e8886a4b99753478da2c8e",
+      "inflatedSha256": "1871c55add58a7ea296a2976f99d58ec3b8a588804e8886a4b99753478da2c8e",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2018-binary.dxf",
+      "storedSha256": "6e61c3ecf72ef521883af8ff2e465df4187431188feb2228501f5eb9fefad5a5",
+      "inflatedSha256": "6e61c3ecf72ef521883af8ff2e465df4187431188feb2228501f5eb9fefad5a5",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 97
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2000-ascii.dxf",
+      "storedSha256": "ffc640f4a2facf6526f76f484ed8ea3770dd15bb5a83059a636b73967ed6267c",
+      "inflatedSha256": "ffc640f4a2facf6526f76f484ed8ea3770dd15bb5a83059a636b73967ed6267c",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2000-binary.dxf",
+      "storedSha256": "962e9a7044be4db8aefde05d0a2260d119cf5a7e1669fc1145a17ca96f2020e7",
+      "inflatedSha256": "962e9a7044be4db8aefde05d0a2260d119cf5a7e1669fc1145a17ca96f2020e7",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2004-ascii.dxf",
+      "storedSha256": "b8a76937e8041ee27260a0b420ee5464a65882c3d17ad9e60d544ef1d5a0627f",
+      "inflatedSha256": "b8a76937e8041ee27260a0b420ee5464a65882c3d17ad9e60d544ef1d5a0627f",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2004-binary.dxf",
+      "storedSha256": "882c3206f439f6b0ced794edd0c13fa2736fe3ec07d7a7028ee3fc8d7fbfe955",
+      "inflatedSha256": "882c3206f439f6b0ced794edd0c13fa2736fe3ec07d7a7028ee3fc8d7fbfe955",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2007-ascii.dxf",
+      "storedSha256": "5f2bbcc886b964cf340541f446d2e5c1c59f2d4386761154b46503d52af8cecb",
+      "inflatedSha256": "5f2bbcc886b964cf340541f446d2e5c1c59f2d4386761154b46503d52af8cecb",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2007-binary.dxf",
+      "storedSha256": "eec6e8e76abaacbc0c7a8d30c8b3319faef51d2fc795cdfeb3ce93655dedda50",
+      "inflatedSha256": "eec6e8e76abaacbc0c7a8d30c8b3319faef51d2fc795cdfeb3ce93655dedda50",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2010-ascii.dxf",
+      "storedSha256": "ea3328fb8e1512c7b7ef3eb25074876b8219fd3c59f367b99beb54bcd128a15f",
+      "inflatedSha256": "ea3328fb8e1512c7b7ef3eb25074876b8219fd3c59f367b99beb54bcd128a15f",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2010-binary.dxf",
+      "storedSha256": "cbc4d2508e155a6b833634886094d2ed4100f8421b2a8b429fd9e35ac9befcf7",
+      "inflatedSha256": "cbc4d2508e155a6b833634886094d2ed4100f8421b2a8b429fd9e35ac9befcf7",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2013-ascii.dxf",
+      "storedSha256": "fc0263d07abe8ab84775f3425ea4fadf80e3cc09f2ebb7398026a15524e24346",
+      "inflatedSha256": "fc0263d07abe8ab84775f3425ea4fadf80e3cc09f2ebb7398026a15524e24346",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2013-binary.dxf",
+      "storedSha256": "09fd1dea77cc70d10089e4ee2f1b87a3b0c2e95cfd8e348945a97bd8c984875a",
+      "inflatedSha256": "09fd1dea77cc70d10089e4ee2f1b87a3b0c2e95cfd8e348945a97bd8c984875a",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2018-ascii.dxf",
+      "storedSha256": "ca497007b1b552aba1753b995e81db2296731214ecfd4ff0d0e3b6ffde01090a",
+      "inflatedSha256": "ca497007b1b552aba1753b995e81db2296731214ecfd4ff0d0e3b6ffde01090a",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2018-binary.dxf",
+      "storedSha256": "978c325eb8607895ea0a593ad9ad3329edc0924e070d2ad8aecfb15a8fdac589",
+      "inflatedSha256": "978c325eb8607895ea0a593ad9ad3329edc0924e070d2ad8aecfb15a8fdac589",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 99
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2000-False.dxf",
+      "storedSha256": "209bffda1c8419700f517e86dad064f88ad926d6464094b619b227ff035d65ff",
+      "inflatedSha256": "209bffda1c8419700f517e86dad064f88ad926d6464094b619b227ff035d65ff",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2000-True.dxf",
+      "storedSha256": "0cb29889524a1f5e9918ee1384df89d66f52de8780fad5047f52ce35c0d4124f",
+      "inflatedSha256": "0cb29889524a1f5e9918ee1384df89d66f52de8780fad5047f52ce35c0d4124f",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2004-False.dxf",
+      "storedSha256": "6fad3b47f19a49ab127a948ba14a82a83f3d5c0db8951b5ffcba7794c8a6b1a8",
+      "inflatedSha256": "6fad3b47f19a49ab127a948ba14a82a83f3d5c0db8951b5ffcba7794c8a6b1a8",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2004-True.dxf",
+      "storedSha256": "b0038313976940cc0b8566c93b62d2e4cc68525d78d4006c611eea6f5c60b144",
+      "inflatedSha256": "b0038313976940cc0b8566c93b62d2e4cc68525d78d4006c611eea6f5c60b144",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2007-False.dxf",
+      "storedSha256": "3bc53d3a8c3ec6d76c5aceaa061182e5bcf1c25dacd6fb967859370d502a7fdd",
+      "inflatedSha256": "3bc53d3a8c3ec6d76c5aceaa061182e5bcf1c25dacd6fb967859370d502a7fdd",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2007-True.dxf",
+      "storedSha256": "eb7256f697476bb8b3c704cefd3a307b9ff91415c98c6136f9a9129405882c55",
+      "inflatedSha256": "eb7256f697476bb8b3c704cefd3a307b9ff91415c98c6136f9a9129405882c55",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2010-False.dxf",
+      "storedSha256": "47022c1717844fadd7f7bc24aada9e3cc4437f17dd706f6b8a56f6ac3ea0a0e9",
+      "inflatedSha256": "47022c1717844fadd7f7bc24aada9e3cc4437f17dd706f6b8a56f6ac3ea0a0e9",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2010-True.dxf",
+      "storedSha256": "ff7285528a4497eff19dc80736d007848b29f0734868952de5fcf9ee36c265cd",
+      "inflatedSha256": "ff7285528a4497eff19dc80736d007848b29f0734868952de5fcf9ee36c265cd",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2013-False.dxf",
+      "storedSha256": "777434cbe3a8391698b202a866bdc2d6e14b95fd63b21e8e2fc61f3384ffa1f3",
+      "inflatedSha256": "777434cbe3a8391698b202a866bdc2d6e14b95fd63b21e8e2fc61f3384ffa1f3",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2013-True.dxf",
+      "storedSha256": "2a054fd5b33879a013d1c21af2b22de1943543fabc15267f043e8fa79cb7c0ba",
+      "inflatedSha256": "2a054fd5b33879a013d1c21af2b22de1943543fabc15267f043e8fa79cb7c0ba",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2018-False.dxf",
+      "storedSha256": "f51d7b992bb7a72f89c582027dd61502c75ac0594c71c83afba496f9847addb3",
+      "inflatedSha256": "f51d7b992bb7a72f89c582027dd61502c75ac0594c71c83afba496f9847addb3",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2018-True.dxf",
+      "storedSha256": "a9e72c45c9f3221db3907dfd7dee749b9cc0784209ed0b21e50265d04643e17b",
+      "inflatedSha256": "a9e72c45c9f3221db3907dfd7dee749b9cc0784209ed0b21e50265d04643e17b",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 95
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/carriers/ixmilia-sunstudy-R2013-ascii-no-dates-hours.dxf",
+      "storedSha256": "79e081a9c0a95a3693a0898fa4f092379a8beeb8d7a26d53f2ed8d55f6014ff7",
+      "inflatedSha256": "79e081a9c0a95a3693a0898fa4f092379a8beeb8d7a26d53f2ed8d55f6014ff7",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/carriers/ixmilia-sunstudy-R2013-ascii-no-dates-no-hours.dxf",
+      "storedSha256": "2cc5ba8e891a83481c9c3d1343f605398e76336f2eb7c711841b82aa096d6336",
+      "inflatedSha256": "2cc5ba8e891a83481c9c3d1343f605398e76336f2eb7c711841b82aa096d6336",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/carriers/ixmilia-sunstudy-R2013-binary-no-dates-no-hours.dxf",
+      "storedSha256": "c1b8d34842d75c0c647f140e1612caa06699fa06b83e4fb2a93b15de8eacdb1e",
+      "inflatedSha256": "c1b8d34842d75c0c647f140e1612caa06699fa06b83e4fb2a93b15de8eacdb1e",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/carriers/ixmilia-sunstudy-R2018-ascii-no-dates-hours.dxf",
+      "storedSha256": "93deffed25e20507146213603d1d2b18269a7ed139f63479d8336322fb6ad101",
+      "inflatedSha256": "93deffed25e20507146213603d1d2b18269a7ed139f63479d8336322fb6ad101",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/carriers/ixmilia-sunstudy-R2018-ascii-no-dates-no-hours.dxf",
+      "storedSha256": "8fbf9c68f5900736efe1187b0ed8125e5ece244015d19c413f393cffc890c0b7",
+      "inflatedSha256": "8fbf9c68f5900736efe1187b0ed8125e5ece244015d19c413f393cffc890c0b7",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/carriers/ixmilia-sunstudy-R2018-binary-no-dates-no-hours.dxf",
+      "storedSha256": "0aa1d7514a2f239f6f7a692b02d946438b7a01eae052339a601481daa21febe9",
+      "inflatedSha256": "0aa1d7514a2f239f6f7a692b02d946438b7a01eae052339a601481daa21febe9",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-reloads-gzip/ixmilia-sunstudy-R2013-binary-no-dates-hours.dxf.gz",
+      "storedSha256": "33f17105db45c5f3b93c883ec0c3cafc37126e325ffdfb52a17f5aeb02121d2d",
+      "inflatedSha256": "0ff65b7c9cfb0daeefea17cc36d5eef23bafdf9bb97e993e83d25feba9c727d1",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-reloads-gzip/ixmilia-sunstudy-R2018-binary-no-dates-hours.dxf.gz",
+      "storedSha256": "30323ee6c33062afa8045391f951e25866f65b9d09140f2e7316c067805d666d",
+      "inflatedSha256": "d970985005326a31f4a6c0f535af7a89d62bc9c744e5e87b4546fb890152585b",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2013-ascii-dates-hours.dxf.gz",
+      "storedSha256": "9e1e5a04f56cc484c8d2388f5303294f53df579727b18323eb4d4c8b3c5149e5",
+      "inflatedSha256": "c32434c9f90359648f40ce59f1b98a653a2abdab407924cfee638235fc9d9cc4",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2013-ascii-dates-no-hours.dxf.gz",
+      "storedSha256": "ad6b545a8ce43f7eca0cc1592018fc85c8ead8c1608c9cff2db850f988631ee9",
+      "inflatedSha256": "879116c70b8523218f7c26c573a600f0cf028eafb5a7436a0108d86275d0b133",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2013-binary-dates-hours.dxf.gz",
+      "storedSha256": "98b618d4ac89d1575c4f8a6165838d94b6f3dc89e65843519afaa608c8c88560",
+      "inflatedSha256": "28d2e688d70ccd73645fef86cb1a26b623ad97843dd70da3697b79631dec0c07",
+      "transport": "binary"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2013-binary-dates-no-hours.dxf.gz",
+      "storedSha256": "bb6f2705e58787438b6f717486cf0a7fb11e68a18e1a4fe83eaa6bd1a73377e7",
+      "inflatedSha256": "011b5e2e5459c1b23c70d5bf43ef9fb6556b5219c81be97b6385964cd6e11dfb",
+      "transport": "binary"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2018-ascii-dates-hours.dxf.gz",
+      "storedSha256": "5c63f701b04f6fb7f6c1cc533c33447229d5481ac393847c307001212441347a",
+      "inflatedSha256": "c9df82bf01f84f011122d875e349cae21c73cf7b6edafbbe7489d50b0ecb28da",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2018-ascii-dates-no-hours.dxf.gz",
+      "storedSha256": "6983d0c73d6027cd5be803fa38f10f2fe4c6a3e83288a7d4bca0b990ea03a380",
+      "inflatedSha256": "c25ddec36f26f40472aaa5a14d36f5135bb9bb6692215bda3ba4ca376b479476",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 53
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2018-binary-dates-hours.dxf.gz",
+      "storedSha256": "81e2065961820af96a1d14062a7fd27732c71c99ba884c8d74f88052b6eee447",
+      "inflatedSha256": "4c1ba2978e5ef98937be360026632547323047f1439664bf6074bb0163e3d743",
+      "transport": "binary"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2018-binary-dates-no-hours.dxf.gz",
+      "storedSha256": "e7caba7f1d43caec8b55dc3f9cb1455cb39e80bb0a3521d2c1ac0bd061905a38",
+      "inflatedSha256": "882c68e0aa82d92a57a7b5e17c0ab64e2f411ef72117549e583f8bc51670a644",
+      "transport": "binary"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/originals-gzip/ixmilia-sunstudy-R2013-ascii-no-dates-hours.dxf.gz",
+      "storedSha256": "28bc4f3a93ccf0082b87f2186f7481e350380a9b2757ed247a7fa8410ddc86f8",
+      "inflatedSha256": "9075081ba307e1aeaf17a32b5143795919e4e546ed6ae1f02c1ab675b6135b25",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/originals-gzip/ixmilia-sunstudy-R2013-ascii-no-dates-no-hours.dxf.gz",
+      "storedSha256": "8226b572270869b0f46057ffe77b635317b28cf575fa210756a0bbafcf754abe",
+      "inflatedSha256": "bedfe47572a31883204443eeafbc95b589c765b4742099a5b1b27713542c29ed",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/originals-gzip/ixmilia-sunstudy-R2013-binary-no-dates-no-hours.dxf.gz",
+      "storedSha256": "1cb490429c9d5669ee982481ef91ea9517b42ece37c05a1b64aad7914a88796b",
+      "inflatedSha256": "181c8f3eecfc04a574737d272a8d217749bcded3a09a1e345005f8798225540b",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/originals-gzip/ixmilia-sunstudy-R2018-ascii-no-dates-hours.dxf.gz",
+      "storedSha256": "669383c42bd4f640dfa6b5882578170c92d5abe619b57434faf12c8e8f2e730d",
+      "inflatedSha256": "ce31af4cec86ead5ce3eb6106476775353f72590e1b86e419942fd8d0b1671ed",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/originals-gzip/ixmilia-sunstudy-R2018-ascii-no-dates-no-hours.dxf.gz",
+      "storedSha256": "a6f6d4f0aff1d629a88700d644652b5a8c21719cdac8edfac52d2cc349dfeadd",
+      "inflatedSha256": "84b7ea803f819ab997affcb0654103d7921bc85e3c78ffa42bba03b562ee72f9",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/originals-gzip/ixmilia-sunstudy-R2018-binary-no-dates-no-hours.dxf.gz",
+      "storedSha256": "9901871c1f8ce4628f3be2db5509b98e8a82b41cb8609bde28cd7fe93b326d03",
+      "inflatedSha256": "cb84689acd41edd12c91e420b1edfb07374e6653ac612e9d53f91335e48194cf",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/resaved-gzip/ixmilia-sunstudy-R2013-ascii-no-dates-hours-resaved.dxf.gz",
+      "storedSha256": "ad9a5a44b4e8d888e33bd9b725e7a4842e38cdb7d06357bf27fa647afd587d07",
+      "inflatedSha256": "127ce923228489d40bf442433e77cd07ceb01f970a01d12e3794180db7aa6395",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/resaved-gzip/ixmilia-sunstudy-R2013-ascii-no-dates-no-hours-resaved.dxf.gz",
+      "storedSha256": "d06c930ab23b840b800a5d748c16738c584ce38ab8ca16cde423be3fe086daa5",
+      "inflatedSha256": "7484e95c844800e4e64a2efc549a4fc9aba1d5fbcbf44db18f601239a5bf70c7",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/resaved-gzip/ixmilia-sunstudy-R2013-binary-no-dates-no-hours-resaved.dxf.gz",
+      "storedSha256": "377791baea516afa59378fdd0436c703cfec2c3d0f4790dff13020a564ec9df7",
+      "inflatedSha256": "d907223e9589aacb306bea45ff24dfc1578976d6463e8c450adf0fda63aa0084",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/resaved-gzip/ixmilia-sunstudy-R2018-ascii-no-dates-hours-resaved.dxf.gz",
+      "storedSha256": "a29aed12ec89ae731c82c71a9205593d8bddb2cd9a5abdb38a2dad94290f6457",
+      "inflatedSha256": "8a478e61df9620e49fa29245839b5020dac56ebf2a8f6554683f5577a9dafefe",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/resaved-gzip/ixmilia-sunstudy-R2018-ascii-no-dates-no-hours-resaved.dxf.gz",
+      "storedSha256": "4e68efa6b522b2e5f80d7ed888338fcbb0bd213cf838d1717c61514588eedf53",
+      "inflatedSha256": "a679ce54fe63e278b02d0450280deec2536a8ec960550b72c2baf1059e7886f7",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/resaved-gzip/ixmilia-sunstudy-R2018-binary-no-dates-no-hours-resaved.dxf.gz",
+      "storedSha256": "13d5f46a9d578ad732e74f2d14a06f13468bbbbf50d7f3678b7c84e423741680",
+      "inflatedSha256": "059fe525c24156b71c2cc39568336174ded4f5e63b75d4b7a317206faaeb55a9",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/typed-carriers/ixmilia-sunstudy-R2013-ascii-no-dates-hours.dxf",
+      "storedSha256": "4415464aec0d3dae9e317940d75cc392b346643b42b673efd3ed8de19d737985",
+      "inflatedSha256": "4415464aec0d3dae9e317940d75cc392b346643b42b673efd3ed8de19d737985",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/typed-carriers/ixmilia-sunstudy-R2013-ascii-no-dates-no-hours.dxf",
+      "storedSha256": "b74663d54366390e3c5e364ba93a9b6bfd11a450cd4202cd20877748c74785d7",
+      "inflatedSha256": "b74663d54366390e3c5e364ba93a9b6bfd11a450cd4202cd20877748c74785d7",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/typed-carriers/ixmilia-sunstudy-R2013-binary-no-dates-no-hours.dxf",
+      "storedSha256": "c7c5d687d3f4f59d95e2d2c047fcd775b552dbdc703715318f41db8c47cb781b",
+      "inflatedSha256": "c7c5d687d3f4f59d95e2d2c047fcd775b552dbdc703715318f41db8c47cb781b",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/typed-carriers/ixmilia-sunstudy-R2018-ascii-no-dates-hours.dxf",
+      "storedSha256": "722411d25f7e67c091ab9ef127f81bdd512da1872656a08a85fd9eb687ba87d5",
+      "inflatedSha256": "722411d25f7e67c091ab9ef127f81bdd512da1872656a08a85fd9eb687ba87d5",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/typed-carriers/ixmilia-sunstudy-R2018-ascii-no-dates-no-hours.dxf",
+      "storedSha256": "4ebd42280962939134af37780efdf2f13585d5284f1f5db98c776d3b2166c28d",
+      "inflatedSha256": "4ebd42280962939134af37780efdf2f13585d5284f1f5db98c776d3b2166c28d",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/typed-carriers/ixmilia-sunstudy-R2018-binary-no-dates-no-hours.dxf",
+      "storedSha256": "9272c33664cd11f4b5b0b167b3e92b805a87d215af259481cb7c033595d387dd",
+      "inflatedSha256": "9272c33664cd11f4b5b0b167b3e92b805a87d215af259481cb7c033595d387dd",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 57
+    },
+    {
+      "file": "tests/fixtures/table-content/extracted/sample_AC1018_ascii.dxf",
+      "storedSha256": "089768e2147d96de8735bfab6e6f25b11beb628999111772e0f265ff0a23d4ed",
+      "inflatedSha256": "089768e2147d96de8735bfab6e6f25b11beb628999111772e0f265ff0a23d4ed",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 225
+    },
+    {
+      "file": "tests/fixtures/table-content/extracted/sample_AC1021_ascii.dxf",
+      "storedSha256": "6a1dd29b34024f32d50a12b0d7c84da5b7d2084f22069bddbd90115de15544ac",
+      "inflatedSha256": "6a1dd29b34024f32d50a12b0d7c84da5b7d2084f22069bddbd90115de15544ac",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 178
+    },
+    {
+      "file": "tests/fixtures/table-content/extracted/sample_AC1024_ascii.dxf",
+      "storedSha256": "bb741cb0ec11eecb3b279c5e5c5fe084994113d95cad2b7707a0d1e582d67532",
+      "inflatedSha256": "bb741cb0ec11eecb3b279c5e5c5fe084994113d95cad2b7707a0d1e582d67532",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 178
+    },
+    {
+      "file": "tests/fixtures/table-oracle/acad_table_simple.dxf.gz",
+      "storedSha256": "b2a629b8b7d8292cc3d6205faf6a09358094f09eb63c3b3e2f6d27d6f788902f",
+      "inflatedSha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 186
+    },
+    {
+      "file": "tests/fixtures/table-oracle/acad_table_with_blk_ref.dxf.gz",
+      "storedSha256": "e0d65de681d84f2787d185b4f1d75426bd85cc68fa8543d7cc3c8a353d2ba942",
+      "inflatedSha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 237
+    },
+    {
+      "file": "tests/fixtures/table-oracle/sample_AC1018_ascii.dxf.gz",
+      "storedSha256": "2472008a90e95a8533dccadda487f689d29811c3d945fae3b4b2a59fba772426",
+      "inflatedSha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 1066
+    },
+    {
+      "file": "tests/fixtures/table-oracle/sample_AC1021_ascii.dxf.gz",
+      "storedSha256": "2da81bce6b3d07cf99c2957f8f3f2a345a365097a467d9472865b3b725791f22",
+      "inflatedSha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 996
+    },
+    {
+      "file": "tests/fixtures/table-oracle/sample_AC1024_ascii.dxf.gz",
+      "storedSha256": "a672d1a4a20e7ff207b167edfd25e170093872704a905a1ae006933b6a4028d0",
+      "inflatedSha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 988
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/acad_table_simple.dxf.records.dxf.gz",
+      "storedSha256": "57f01531eae31e9168e7e202ced034d69857f8eb224fee79690f5970df0b65af",
+      "inflatedSha256": "60ace80990ae6cf3254e3de774016a041fc9e7becf54dec0bab3e9b69b5609dc",
+      "transport": "ascii",
+      "sourceVersion": null,
+      "recordCount": 3
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/acad_table_with_blk_ref.dxf.records.dxf.gz",
+      "storedSha256": "6e93886ed23d4fe57978119542c74ab559ea75c46a288e377b45f8c23ad1ec90",
+      "inflatedSha256": "a97fa91b533bb76794a4d488e215d65164b16bce4f58bf3998784fd7726c6667",
+      "transport": "ascii",
+      "sourceVersion": null,
+      "recordCount": 3
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/sample_AC1018_ascii.dxf.records.dxf.gz",
+      "storedSha256": "4fcb7b836f08f4bd9eeda7ce09679853f90241d1513f6aecc3d7f86dc040b7f6",
+      "inflatedSha256": "ddf03cb52d1252f2e47a6714440f3a3fe6b8a74a84be92ed1be00f4bb504c73d",
+      "transport": "ascii",
+      "sourceVersion": null,
+      "recordCount": 3
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/sample_AC1021_ascii.dxf.records.dxf.gz",
+      "storedSha256": "e37875a59ab4af742140d7aceee319016bbe00f97232cbe747cfa5bd3fdf84e0",
+      "inflatedSha256": "bd697c3dc984d95653dccab4ef580936cf7227067ad94f50b95a89210651252d",
+      "transport": "ascii",
+      "sourceVersion": null,
+      "recordCount": 3
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/sample_AC1024_ascii.dxf.records.dxf.gz",
+      "storedSha256": "7323f25dfc5658dd84f6278eb4801ae9df040206316858bf5fdb0756214f8624",
+      "inflatedSha256": "c40d125a46ee839c12e939a9a7a7fa6ef7238c5ad4f0a80c13b7303b46a0c6a9",
+      "transport": "ascii",
+      "sourceVersion": null,
+      "recordCount": 3
+    },
+    {
+      "file": "tests/fixtures/typed-containers/compatibility-probe/sortentstable-R2000.dxf",
+      "storedSha256": "f8ed92a1036f839cef9955c4284c1da1a2ca3d70e9056998edc90112c4ba235c",
+      "inflatedSha256": "f8ed92a1036f839cef9955c4284c1da1a2ca3d70e9056998edc90112c4ba235c",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 135
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2000.dxf",
+      "storedSha256": "09df6e3a24b774efdf91cc88078816687ef6574f0239e3e42dbd2aaa96431c2f",
+      "inflatedSha256": "09df6e3a24b774efdf91cc88078816687ef6574f0239e3e42dbd2aaa96431c2f",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 132
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2004.dxf",
+      "storedSha256": "a854c9333a5429c4f7f02477709e89d364553da827aa1946eb9b76512d28b7da",
+      "inflatedSha256": "a854c9333a5429c4f7f02477709e89d364553da827aa1946eb9b76512d28b7da",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 135
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2007.dxf",
+      "storedSha256": "1ab464e40d07a2ef442f7aaae1115b74a5d19e7164d92c8472eb3e159c4dce24",
+      "inflatedSha256": "1ab464e40d07a2ef442f7aaae1115b74a5d19e7164d92c8472eb3e159c4dce24",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 135
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2010.dxf",
+      "storedSha256": "bf5d41a384ca4fbc37c5a7ca884a42525083814e781ef7fde1967132dd0924d9",
+      "inflatedSha256": "bf5d41a384ca4fbc37c5a7ca884a42525083814e781ef7fde1967132dd0924d9",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 135
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2013.dxf",
+      "storedSha256": "84f114cb352c61df2ff7f7e095e576dca3004ebb4966dad1d42a979081c41b52",
+      "inflatedSha256": "84f114cb352c61df2ff7f7e095e576dca3004ebb4966dad1d42a979081c41b52",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 135
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2018.dxf",
+      "storedSha256": "e19ddd47cfcd394a85ca7ee8be03a26c0e9c91e68fa46f241339e1fef59a0003",
+      "inflatedSha256": "e19ddd47cfcd394a85ca7ee8be03a26c0e9c91e68fa46f241339e1fef59a0003",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 135
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2000.dxf",
+      "storedSha256": "267855abfccbe49bca4a3d559796d1187eec5f94cf8ced3f2d4f7d81727dc6d9",
+      "inflatedSha256": "267855abfccbe49bca4a3d559796d1187eec5f94cf8ced3f2d4f7d81727dc6d9",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2004.dxf",
+      "storedSha256": "f7328a42be28d9189d35a8dc23dcfa40bef7f341366ef2d195d45d47a5e17efb",
+      "inflatedSha256": "f7328a42be28d9189d35a8dc23dcfa40bef7f341366ef2d195d45d47a5e17efb",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2007.dxf",
+      "storedSha256": "ee9a5fd6945b9ea42ab8f060c2882da16e6715cc4740b6ec3d832a0084192b45",
+      "inflatedSha256": "ee9a5fd6945b9ea42ab8f060c2882da16e6715cc4740b6ec3d832a0084192b45",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2010.dxf",
+      "storedSha256": "50dc6d1b5b5fedc953871f5553e82d61933d7da7e3c1b7a584b7409cf42806a5",
+      "inflatedSha256": "50dc6d1b5b5fedc953871f5553e82d61933d7da7e3c1b7a584b7409cf42806a5",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2013.dxf",
+      "storedSha256": "335a55f1ae509f41722810fb468a8fa8661662f9126b444acbfa5cd1a4c8e3f3",
+      "inflatedSha256": "335a55f1ae509f41722810fb468a8fa8661662f9126b444acbfa5cd1a4c8e3f3",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2018.dxf",
+      "storedSha256": "a682fa977b16e89c49320b570d260fff188022f27da3e48b2f8ce9b711f25848",
+      "inflatedSha256": "a682fa977b16e89c49320b570d260fff188022f27da3e48b2f8ce9b711f25848",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 94
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2000-ascii.dxf",
+      "storedSha256": "98fe907ed200da6d502d9a7b91f6a3f39d15516c7436b7ba884b47bb124cff67",
+      "inflatedSha256": "98fe907ed200da6d502d9a7b91f6a3f39d15516c7436b7ba884b47bb124cff67",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2000-binary.dxf",
+      "storedSha256": "e92824f9bdc6cd2a2b4d6ebf949388b865e3716ec4f8a3a68366defce54b3184",
+      "inflatedSha256": "e92824f9bdc6cd2a2b4d6ebf949388b865e3716ec4f8a3a68366defce54b3184",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2004-ascii.dxf",
+      "storedSha256": "4a46775c6d188a5c70250ca4db973987eaf4cd1fec7b228f12fd1a1d864e5bb4",
+      "inflatedSha256": "4a46775c6d188a5c70250ca4db973987eaf4cd1fec7b228f12fd1a1d864e5bb4",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2004-binary.dxf",
+      "storedSha256": "968110cd0451670c80e95aa7c732f51309c70b805dad5020fcc2f1df5195982a",
+      "inflatedSha256": "968110cd0451670c80e95aa7c732f51309c70b805dad5020fcc2f1df5195982a",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2007-ascii.dxf",
+      "storedSha256": "6d257fce74678122cf6fcf521442045d1b5b35eb52289c44fea67b3c78f0e9bc",
+      "inflatedSha256": "6d257fce74678122cf6fcf521442045d1b5b35eb52289c44fea67b3c78f0e9bc",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2007-binary.dxf",
+      "storedSha256": "e68d5134e055da92319f95c5dceed39ab335eab3055e0e14a863aaa77b9517df",
+      "inflatedSha256": "e68d5134e055da92319f95c5dceed39ab335eab3055e0e14a863aaa77b9517df",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2010-ascii.dxf",
+      "storedSha256": "5475f8c71574e44e7ec9ec907d9af3400787ae90d4d0f7aedca43caee1217354",
+      "inflatedSha256": "5475f8c71574e44e7ec9ec907d9af3400787ae90d4d0f7aedca43caee1217354",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2010-binary.dxf",
+      "storedSha256": "e6eb7fce4cd4f84431a35a968c1a2652a4599fb97ad4f281625e015bee64d1d3",
+      "inflatedSha256": "e6eb7fce4cd4f84431a35a968c1a2652a4599fb97ad4f281625e015bee64d1d3",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2013-ascii.dxf",
+      "storedSha256": "8bf364052ddb42f6c792aa3fed982cb81404dd0073af8c9587e1f60c8b154109",
+      "inflatedSha256": "8bf364052ddb42f6c792aa3fed982cb81404dd0073af8c9587e1f60c8b154109",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2013-binary.dxf",
+      "storedSha256": "e5d81f3f6f49b1e580efa421c18d37c870502c2da980662c7326e25d38d4b754",
+      "inflatedSha256": "e5d81f3f6f49b1e580efa421c18d37c870502c2da980662c7326e25d38d4b754",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2018-ascii.dxf",
+      "storedSha256": "ed863662df32b1cd8927cb041edd61fe0c1a084e6ec86c073e8107d7ebe2caaa",
+      "inflatedSha256": "ed863662df32b1cd8927cb041edd61fe0c1a084e6ec86c073e8107d7ebe2caaa",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2018-binary.dxf",
+      "storedSha256": "4f0630dfd0134900f7486f357d7bab85027f067c2acef98ed966001ea64539ff",
+      "inflatedSha256": "4f0630dfd0134900f7486f357d7bab85027f067c2acef98ed966001ea64539ff",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2000-ascii.dxf",
+      "storedSha256": "701fdc1f648b3abf8e70ada950c92117ca8d535256d299849dc5cc37ef21b98b",
+      "inflatedSha256": "701fdc1f648b3abf8e70ada950c92117ca8d535256d299849dc5cc37ef21b98b",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2000-binary.dxf",
+      "storedSha256": "24f2ebfe06b7e21dd98a3e9ba335daad62bef9bf7f25ee06763bdba3e95526f8",
+      "inflatedSha256": "24f2ebfe06b7e21dd98a3e9ba335daad62bef9bf7f25ee06763bdba3e95526f8",
+      "transport": "binary",
+      "sourceVersion": "AC1015",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2004-ascii.dxf",
+      "storedSha256": "212db63eed04e89a502718dd6a34b85884496944e7bcac326cab40affcfce001",
+      "inflatedSha256": "212db63eed04e89a502718dd6a34b85884496944e7bcac326cab40affcfce001",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2004-binary.dxf",
+      "storedSha256": "c236c641bd52cc4cf3fa57011d95d6bed5375143f63e702316566062baadfe24",
+      "inflatedSha256": "c236c641bd52cc4cf3fa57011d95d6bed5375143f63e702316566062baadfe24",
+      "transport": "binary",
+      "sourceVersion": "AC1018",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2007-ascii.dxf",
+      "storedSha256": "9ea9f8c4f93bc5fdce99cefc05100f6532cc6411d152c7503ea448ea409fa07d",
+      "inflatedSha256": "9ea9f8c4f93bc5fdce99cefc05100f6532cc6411d152c7503ea448ea409fa07d",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2007-binary.dxf",
+      "storedSha256": "9e486ac5e1a6ab4a850b9bc64a02d130f4a0f505f82d3b678561fb959f02bf50",
+      "inflatedSha256": "9e486ac5e1a6ab4a850b9bc64a02d130f4a0f505f82d3b678561fb959f02bf50",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2010-ascii.dxf",
+      "storedSha256": "1452b05c7494e3222fde3b4285664e392a37a3ac0a014fff45f79cd8729a133a",
+      "inflatedSha256": "1452b05c7494e3222fde3b4285664e392a37a3ac0a014fff45f79cd8729a133a",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2010-binary.dxf",
+      "storedSha256": "ccbf86c37a870f6d6a4658c1335d13ad1ed4a6f8543837d3ab027b1289181498",
+      "inflatedSha256": "ccbf86c37a870f6d6a4658c1335d13ad1ed4a6f8543837d3ab027b1289181498",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2013-ascii.dxf",
+      "storedSha256": "69bfaec4c5a0b74e3e114a1d4f9aec65484dd69e1faba6ea2cfeb106c31162ae",
+      "inflatedSha256": "69bfaec4c5a0b74e3e114a1d4f9aec65484dd69e1faba6ea2cfeb106c31162ae",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2013-binary.dxf",
+      "storedSha256": "ed45f61b721ca1da2c96791a083234f2e9ea1651e8ec299d743d8b4adc5f65ba",
+      "inflatedSha256": "ed45f61b721ca1da2c96791a083234f2e9ea1651e8ec299d743d8b4adc5f65ba",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2018-ascii.dxf",
+      "storedSha256": "edd4b1e6023e1ea25c807c27ae7b5fc701c26a25ff8890afade0925d609f43c8",
+      "inflatedSha256": "edd4b1e6023e1ea25c807c27ae7b5fc701c26a25ff8890afade0925d609f43c8",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2018-binary.dxf",
+      "storedSha256": "e95612ed14be83b2280ec15929ed36cb9a5a72f0fe5c1730a5262062edddff83",
+      "inflatedSha256": "e95612ed14be83b2280ec15929ed36cb9a5a72f0fe5c1730a5262062edddff83",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 56
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2007-ascii.dxf",
+      "storedSha256": "a3696ad6c47f15d1b609a19c6995cb7efd81df4277428d8bb45d7eb6272fedfa",
+      "inflatedSha256": "a3696ad6c47f15d1b609a19c6995cb7efd81df4277428d8bb45d7eb6272fedfa",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2007-binary.dxf",
+      "storedSha256": "e49b816fbfb59425ed658aa45b684581db246c42854f86fb8d8bf96f00e7da91",
+      "inflatedSha256": "e49b816fbfb59425ed658aa45b684581db246c42854f86fb8d8bf96f00e7da91",
+      "transport": "binary",
+      "sourceVersion": "AC1021",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2010-ascii.dxf",
+      "storedSha256": "ee2021bc95345c288f351f891bf6eca75b7148f48d529e4a343bf68a08d6890e",
+      "inflatedSha256": "ee2021bc95345c288f351f891bf6eca75b7148f48d529e4a343bf68a08d6890e",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2010-binary.dxf",
+      "storedSha256": "1660883b2ed21a2ec896c9dbcc08ab45de10030648371f626b4a1a8eb848e6ee",
+      "inflatedSha256": "1660883b2ed21a2ec896c9dbcc08ab45de10030648371f626b4a1a8eb848e6ee",
+      "transport": "binary",
+      "sourceVersion": "AC1024",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2013-ascii.dxf",
+      "storedSha256": "2d228d7311cf29f455c57a307cc97db8c3e4210a55ec60db16254883db44d82c",
+      "inflatedSha256": "2d228d7311cf29f455c57a307cc97db8c3e4210a55ec60db16254883db44d82c",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2013-binary.dxf",
+      "storedSha256": "e7e2fcbc0803ac3985e9fde17703d3fd98eb9a4cf8e7f3a77cde1f088c669e44",
+      "inflatedSha256": "e7e2fcbc0803ac3985e9fde17703d3fd98eb9a4cf8e7f3a77cde1f088c669e44",
+      "transport": "binary",
+      "sourceVersion": "AC1027",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2018-ascii.dxf",
+      "storedSha256": "db29d4493bff6be4cf022e54f6e668b69799d48706ce7164081eaf7b81b9d074",
+      "inflatedSha256": "db29d4493bff6be4cf022e54f6e668b69799d48706ce7164081eaf7b81b9d074",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-live-section/ezdxf-view-live-section-R2018-binary.dxf",
+      "storedSha256": "0e7c4a705edf322a27bda9e922aed307cd912c57c93897b88c76c403b83900e0",
+      "inflatedSha256": "0e7c4a705edf322a27bda9e922aed307cd912c57c93897b88c76c403b83900e0",
+      "transport": "binary",
+      "sourceVersion": "AC1032",
+      "recordCount": 90
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2000.dxf",
+      "storedSha256": "a6eb5841244161feabc11645728ab35ca375795852ef72ec07cd6de94a0f736b",
+      "inflatedSha256": "a6eb5841244161feabc11645728ab35ca375795852ef72ec07cd6de94a0f736b",
+      "transport": "ascii",
+      "sourceVersion": "AC1015",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2004.dxf",
+      "storedSha256": "a6cb597606df88b9a01b655fdf8c7d1734baaf77f58ae1529c6dfb7f70b0ed98",
+      "inflatedSha256": "a6cb597606df88b9a01b655fdf8c7d1734baaf77f58ae1529c6dfb7f70b0ed98",
+      "transport": "ascii",
+      "sourceVersion": "AC1018",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2007.dxf",
+      "storedSha256": "e4a7055e76121f96bed5c26fccd90b919bd690493bd2726b870a3fb78c7f845a",
+      "inflatedSha256": "e4a7055e76121f96bed5c26fccd90b919bd690493bd2726b870a3fb78c7f845a",
+      "transport": "ascii",
+      "sourceVersion": "AC1021",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2010.dxf",
+      "storedSha256": "4a8ff22c36f3f79a864914e99fa92bf5fe8babd1d58d50ea1467eb4a469f376a",
+      "inflatedSha256": "4a8ff22c36f3f79a864914e99fa92bf5fe8babd1d58d50ea1467eb4a469f376a",
+      "transport": "ascii",
+      "sourceVersion": "AC1024",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2013.dxf",
+      "storedSha256": "09e8939702b577e3fa233c3b77612eb0ad9cce4b06f503e8a66fffda4bcb009f",
+      "inflatedSha256": "09e8939702b577e3fa233c3b77612eb0ad9cce4b06f503e8a66fffda4bcb009f",
+      "transport": "ascii",
+      "sourceVersion": "AC1027",
+      "recordCount": 93
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2018.dxf",
+      "storedSha256": "640b5b2809ac094b5eff0ab8783bf31425a7727686d1b4e6e4080333bd0e188d",
+      "inflatedSha256": "640b5b2809ac094b5eff0ab8783bf31425a7727686d1b4e6e4080333bd0e188d",
+      "transport": "ascii",
+      "sourceVersion": "AC1032",
+      "recordCount": 93
+    }
+  ],
+  "scannedFiles": 412,
+  "knownDispatch": [
+    "3DFACE",
+    "3DSOLID",
+    "ACAD_TABLE",
+    "ARC",
+    "ARC_DIMENSION",
+    "ATTDEF",
+    "BODY",
+    "CIRCLE",
+    "DGNUNDERLAY",
+    "DIMENSION",
+    "DWFUNDERLAY",
+    "ELLIPSE",
+    "HATCH",
+    "HELIX",
+    "IMAGE",
+    "INSERT",
+    "LEADER",
+    "LIGHT",
+    "LINE",
+    "LWPOLYLINE",
+    "MESH",
+    "MLEADER",
+    "MLINE",
+    "MTEXT",
+    "MULTILEADER",
+    "OLE2FRAME",
+    "OLEFRAME",
+    "PDFUNDERLAY",
+    "POINT",
+    "POLYLINE",
+    "RAY",
+    "REGION",
+    "SECTION",
+    "SECTIONOBJECT",
+    "SHAPE",
+    "SOLID",
+    "SPLINE",
+    "TEXT",
+    "TOLERANCE",
+    "TRACE",
+    "VIEWPORT",
+    "WIPEOUT",
+    "XLINE"
+  ],
+  "typeCounts": {
+    "ATTRIB": 40,
+    "SEQEND": 172,
+    "VERTEX": 2131
+  },
+  "unknownStandaloneCandidates": [],
+  "errors": [
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2013-binary-dates-hours.dxf.gz",
+      "error": "unpack_from requires a buffer of at least 9695 bytes for unpacking 4 bytes at offset 9691 (actual buffer size is 9691)"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2013-binary-dates-no-hours.dxf.gz",
+      "error": "unpack_from requires a buffer of at least 9695 bytes for unpacking 4 bytes at offset 9691 (actual buffer size is 9691)"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2018-binary-dates-hours.dxf.gz",
+      "error": "unpack_from requires a buffer of at least 9681 bytes for unpacking 4 bytes at offset 9677 (actual buffer size is 9677)"
+    },
+    {
+      "file": "tests/fixtures/sunstudy-producer/failed-saves-gzip/ixmilia-sunstudy-R2018-binary-dates-no-hours.dxf.gz",
+      "error": "unpack_from requires a buffer of at least 9681 bytes for unpacking 4 bytes at offset 9677 (actual buffer size is 9677)"
+    }
+  ]
+}

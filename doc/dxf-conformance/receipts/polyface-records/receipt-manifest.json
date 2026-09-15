@@ -1,0 +1,194 @@
+{
+  "README.md": {
+    "sha256": "5c61e9388adb65e885264971d674a88ed044dc36124294476ce21aff46d667bf",
+    "bytes": 3936
+  },
+  "debug-output-manifest.json": {
+    "sha256": "fe674fba5617c293993b6e89ed421baad7d10896f96661e77262bfe28ccf1640",
+    "bytes": 119749
+  },
+  "debug-production-build.txt": {
+    "sha256": "a6e55b4c9639e32ab84acb08ccebf691c9e3e9e8ccc47c8bc70f71c4ecfe1d83",
+    "bytes": 173890
+  },
+  "debug-results.json": {
+    "sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+    "bytes": 278984
+  },
+  "debug-tests-rebuild.txt": {
+    "sha256": "4c7c7e6cb812948cc3e36cfc6104f80ca6675c956781c4b4e033ccf7384e4655",
+    "bytes": 189
+  },
+  "debug-verify_polyface_grammar.txt": {
+    "sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+    "bytes": 4456
+  },
+  "debug-verify_polyface_records.txt": {
+    "sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac",
+    "bytes": 7202
+  },
+  "debug-verify_polygonmesh_cardinality.txt": {
+    "sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba",
+    "bytes": 103
+  },
+  "debug-verify_polygonmesh_records.txt": {
+    "sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3",
+    "bytes": 356
+  },
+  "debug-verify_polyline3d_records.txt": {
+    "sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+    "bytes": 342
+  },
+  "debug-verify_polyline_topology.txt": {
+    "sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+    "bytes": 272
+  },
+  "independent/audit_probe_outputs.py": {
+    "sha256": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff",
+    "bytes": 1045
+  },
+  "independent/polyface-final-debug/ezdxf-audit.json": {
+    "sha256": "1e1a116028c11df30ad92424de508b5e23e00bf9aaf1dea80bc4d21360f3056a",
+    "bytes": 8836
+  },
+  "independent/polyface-final-debug/results.json": {
+    "sha256": "bf49b1d428e17f8070d395d41779ccce8c56c45ec0eafd609a16d4dda3af8f65",
+    "bytes": 6132
+  },
+  "independent/polyface-final-release/ezdxf-audit.json": {
+    "sha256": "1e1a116028c11df30ad92424de508b5e23e00bf9aaf1dea80bc4d21360f3056a",
+    "bytes": 8836
+  },
+  "independent/polyface-final-release/results.json": {
+    "sha256": "a97e7080ff84440acffec1845421f9a1079e44a32c47b16c3e34f06990f4155b",
+    "bytes": 6132
+  },
+  "independent/polyface-normal-debug/results.json": {
+    "sha256": "1358601b4d3f94d7864dcf31a15176b924a4d49f1d2da09f37f1427add1714ba",
+    "bytes": 7262
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-False-infinity-False.dxf": {
+    "sha256": "04af26eaeed4aac5c22c5ff0be5ba2039f95c7f7833bad6e4cce32f22f9089e5",
+    "bytes": 17289
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-False-infinity-True.dxf": {
+    "sha256": "09449359631a65fac103a90e339cf8c0ad2b894eab181a6656b69fe90ca196bc",
+    "bytes": 16645
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-False-nan-False.dxf": {
+    "sha256": "f06c492e2b7d023b3b25c8e6c192c52bc1514c581f33cd2b418d0637c63875f7",
+    "bytes": 17289
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-False-nan-True.dxf": {
+    "sha256": "f3de91ba5a72d833559581abccf25a0dd5108d1c1be7de69e18139c6277397a0",
+    "bytes": 16645
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-False-zero-False.dxf": {
+    "sha256": "f06c492e2b7d023b3b25c8e6c192c52bc1514c581f33cd2b418d0637c63875f7",
+    "bytes": 17289
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-False-zero-True.dxf": {
+    "sha256": "f3de91ba5a72d833559581abccf25a0dd5108d1c1be7de69e18139c6277397a0",
+    "bytes": 16645
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-True-infinity-False.dxf": {
+    "sha256": "6f5da939ce5009453b48c0bfdea0ed2b508f157b82ca9270241091c052ccd1d1",
+    "bytes": 8873
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-True-infinity-True.dxf": {
+    "sha256": "a088456dc1ef8c1d5d6df60821afc567a52bf40e195ead84725566d43616375b",
+    "bytes": 8473
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-True-nan-False.dxf": {
+    "sha256": "f0c5b98c526ed4a12d9cd877b5eb9a9f0b70f83915dbe126d6ed4de85a63f452",
+    "bytes": 8875
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-True-nan-True.dxf": {
+    "sha256": "6cce31cca99229dd628ec3baf04420810531e3cf2ce9cf7f0bcc3f5f56742efe",
+    "bytes": 8473
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-True-zero-False.dxf": {
+    "sha256": "e61d300b54f9e4278b197d75be9352d1ee54d434c96603398a17d810f57f81b5",
+    "bytes": 8877
+  },
+  "independent/polyface-normal-expanded-before/nonfinite-True-zero-True.dxf": {
+    "sha256": "f838d2eaca064420fa5cf7500c0f95d9ebac45a9457bc03dbc2f16a83fc06c5a",
+    "bytes": 8473
+  },
+  "independent/polyface-normal-expanded-before/results.json": {
+    "sha256": "3f0cc99b4922cf521b8ff74b6200082b7bd391cc54ce4f03a3ff14ec67326c99",
+    "bytes": 5892
+  },
+  "independent/polyface-normal-probe/Probe.csproj.txt": {
+    "sha256": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "bytes": 383
+  },
+  "independent/polyface-normal-probe/Program.cs.txt": {
+    "sha256": "a9098fddd6ff16b56aed267b6d67fcaa2a4298dad6840d574e846c48de8b749b",
+    "bytes": 3544
+  },
+  "independent/polyface-normal-release/results.json": {
+    "sha256": "95e026ec96f5ff04245b8595f285b0cc7d626f6df2985d191f31193e298f3692",
+    "bytes": 6398
+  },
+  "independent/polyface-probe/Probe.csproj.txt": {
+    "sha256": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "bytes": 383
+  },
+  "independent/polyface-probe/Program.cs.txt": {
+    "sha256": "c3cfb464987b7fe2612c66f393c94bbeadf2b56069b73b10db35f234afad87a5",
+    "bytes": 12855
+  },
+  "independent/polyface-review-summary.json": {
+    "sha256": "68e2a971b2cc0efa86a521d5a94ac3f40359e2eb64156a762b4699b61a993fc5",
+    "bytes": 5333
+  },
+  "production-source-hashes.json": {
+    "sha256": "99baf26b103f146f8491e37b8f0c018c47f105d58362ba4311e3e84d4b4d0d22",
+    "bytes": 2199
+  },
+  "qualification.json": {
+    "sha256": "9ec5ec3867b2a17ddad3ab453430c4c511423c152709fc74552f0fde45846387",
+    "bytes": 11861
+  },
+  "release-output-manifest.json": {
+    "sha256": "c1211fde0f2e255bd59f57844cc87b3f81d13ab9fa1a75913c105c099376b52c",
+    "bytes": 119749
+  },
+  "release-production-build.txt": {
+    "sha256": "904639eb6e29c0665e7dee7e642b8b4086978ea9b03a360701bed7ead8dfed55",
+    "bytes": 173974
+  },
+  "release-results.json": {
+    "sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+    "bytes": 278984
+  },
+  "release-tests-rebuild.txt": {
+    "sha256": "40467a73b068291af700ccd2e9c01a0224b321bc110c6779cff39af4316c9c55",
+    "bytes": 191
+  },
+  "release-verify_polyface_grammar.txt": {
+    "sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+    "bytes": 4456
+  },
+  "release-verify_polyface_records.txt": {
+    "sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac",
+    "bytes": 7202
+  },
+  "release-verify_polygonmesh_cardinality.txt": {
+    "sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba",
+    "bytes": 103
+  },
+  "release-verify_polygonmesh_records.txt": {
+    "sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3",
+    "bytes": 356
+  },
+  "release-verify_polyline3d_records.txt": {
+    "sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+    "bytes": 342
+  },
+  "release-verify_polyline_topology.txt": {
+    "sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+    "bytes": 272
+  }
+}

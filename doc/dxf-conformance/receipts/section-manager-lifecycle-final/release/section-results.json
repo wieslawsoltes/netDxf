@@ -1,0 +1,1077 @@
+[
+  {
+    "name": "section/api/stored-values",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/False/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2007/True/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/False/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2010/True/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/False/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2013/True/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/False/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/authored/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native-name/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/count-negative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/count-excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/count-short",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/incomplete-vector",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/duplicate-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/duplicate-color",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/private-field",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/missing-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/unknown-subclass",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/missing-state",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/wrong-settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/malformed/AutoCad2018/True/private-after-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native/R2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/native/R2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/unsupported-profile/AutoCad2000",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/unsupported-profile/AutoCad2004",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/owned/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/cross-document/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/adoption-rollback/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/numeric-handles/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-source/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/layer-destination/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/linetype-destination/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-destination/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/callback/appid-attachment/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/following-line/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/native-private-clone-rejection",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/lifecycle/common-metadata-admission",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2007/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2007/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2007/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2007/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2010/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2010/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2010/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2010/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2013/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2013/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2013/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2013/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2018/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2018/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2018/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "section/producer/AutoCad2018/True/True",
+    "passed": true,
+    "error": null
+  }
+]

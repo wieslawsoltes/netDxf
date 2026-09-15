@@ -18,20 +18,21 @@ namespace netDxf.Objects
         public IReadOnlyList<DxfTag> Tags { get; }
     }
 
-    /// <summary>A loaded TABLECONTENT with immutable stored data and exact source dependencies.</summary>
+    /// <summary>A loaded TABLECONTENT with immutable packet snapshots and exact source dependencies.</summary>
     /// <remarks>
     /// The object remains in its source document and DXF version. Nested cell values, formatting,
-    /// formulas and data links remain stored packets; editing, cloning, erasure and regeneration
-    /// require the complete application schema. Common metadata and XData retain their ordinary interfaces.
+    /// formulas and data links remain stored packets. Qualified scalar values and the small header
+    /// can be explicitly replaced without evaluation or regeneration. Cloning, erasure and other
+    /// structural edits require the complete schema. Common metadata and XData retain their ordinary interfaces.
     /// </remarks>
-    public sealed class DxfStoredTableContent : DxfDatabaseObject
+    public sealed partial class DxfStoredTableContent : DxfDatabaseObject
     {
         internal const int MaximumPayloadTags = 1048576;
         internal static readonly string[] SubclassNames = { "AcDbLinkedData", "AcDbLinkedTableData", "AcDbFormattedTableData", "AcDbTableContent" };
         private readonly DxfDocument source;
-        private readonly List<DxfObject> references = new List<DxfObject>();
-        private readonly Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
-        private readonly string styleHandle;
+        private List<DxfObject> references = new List<DxfObject>();
+        private Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
+        private string styleHandle;
         private DxfObject sourceOwner;
         private bool resolved;
 
@@ -55,19 +56,31 @@ namespace netDxf.Objects
             var terminal = packets[3].Tags;
             if (terminal.Count != 2 || terminal[1].Code != 340) throw new FormatException("TABLECONTENT requires one terminal table-style handle.");
             this.styleHandle = (string)terminal[1].Value;
-            this.ReadOuterCounts(packets[1].Tags);
+            var valueStarts = new List<int>();
+            this.ReadOuterCounts(packets[1].Tags, valueStarts);
+            var values = new List<DxfStoredTableContentValue>();
+            if (this.ColumnCount.HasValue && this.RowCount.HasValue)
+                foreach (int index in valueStarts)
+                {
+                    DxfStoredTableContentValue value = DxfStoredTableContentValue.TryRead(packets[1].Tags, index, starts[1], this.SourceVersion, decode);
+                    if (value != null) values.Add(value);
+                }
+            this.StoredValues = values.AsReadOnly();
             ValidateFrames(packets[2].Tags);
         }
         /// <summary>Gets the source DXF version. Conversion to another version is not supported.</summary>
         public DxfVersion SourceVersion { get; }
         /// <summary>Gets the complete immutable subclass payload, excluding common metadata and XData.</summary>
-        public IReadOnlyList<DxfTag> Payload { get; }
+        public IReadOnlyList<DxfTag> Payload { get; private set; }
         /// <summary>Gets the four ordered stored subclass packets.</summary>
-        public IReadOnlyList<DxfStoredTableContentSubclass> Subclasses { get; }
+        public IReadOnlyList<DxfStoredTableContentSubclass> Subclasses { get; private set; }
         /// <summary>Gets the decoded linked-data name, or null when its small header is not recognized.</summary>
-        public string Name { get; }
+        public string Name { get; private set; }
         /// <summary>Gets the decoded linked-data description, or null when its small header is not recognized.</summary>
-        public string Description { get; }
+        public string Description { get; private set; }
+        /// <summary>Gets qualified scalar content frames in stored packet order, without inferred cell addresses.</summary>
+        /// <remarks>Unknown values, fields, blocks, attributes and data maps remain in Payload without editable projections.</remarks>
+        public IReadOnlyList<DxfStoredTableContentValue> StoredValues { get; private set; }
         /// <summary>Gets the outer stored column count, or null for an unrecognized outer packet.</summary>
         public int? ColumnCount { get; private set; }
         /// <summary>Gets the outer stored row count, or null for an unrecognized outer packet.</summary>
@@ -118,15 +131,17 @@ namespace netDxf.Objects
                 errors.Add("Stored TABLECONTENT source ownership changed.");
             foreach (var pair in this.handles)
                 if (!ReferenceEquals(this.source.StoredTableHandleTarget(pair.Key), pair.Value)) errors.Add("A stored TABLECONTENT dependency is no longer registered: " + pair.Key);
+            if (this.StoredRecordTagCount(this.Payload.Count) > MaximumPayloadTags)
+                errors.Add("Stored TABLECONTENT and common metadata exceed the record tag limit.");
             foreach (DxfTag tag in this.Payload)
                 if (tag.Value is string text)
                     for (int i = 0; i < text.Length; i++)
                         if (char.IsSurrogate(text[i]) && (!char.IsHighSurrogate(text[i]) || i + 1 == text.Length || !char.IsLowSurrogate(text[++i])))
                         { errors.Add("Stored TABLECONTENT contains invalid UTF-16 text."); break; }
         }
-        private void ReadOuterCounts(IReadOnlyList<DxfTag> tags)
+        private void ReadOuterCounts(IReadOnlyList<DxfTag> tags, List<int> valueStarts)
         {
-            List<DxfTag> outer = ValidateFrames(tags);
+            List<DxfTag> outer = ValidateFrames(tags, valueStarts);
             if (outer == null || outer.Count < 3 || outer[0].Code != 90) return;
             int index = 1, columns = 0, rows = 0;
             while (index < outer.Count && outer[index].Code == 300 && (string)outer[index].Value == "COLUMN") { columns++; index++; }
@@ -144,9 +159,10 @@ namespace netDxf.Objects
             "FORMATTEDTABLEDATACELL", "FORMATTEDTABLEDATACOLUMN", "FORMATTEDTABLEDATAROW", "GRIDFORMAT",
             "LINKEDTABLEDATACELL", "LINKEDTABLEDATACOLUMN", "LINKEDTABLEDATAROW", "TABLECELL", "TABLECOLUMN", "TABLEFORMAT", "TABLEROW"
         }, StringComparer.Ordinal);
-        private static List<DxfTag> ValidateFrames(IReadOnlyList<DxfTag> tags)
+        private static List<DxfTag> ValidateFrames(IReadOnlyList<DxfTag> tags, List<int> valueStarts = null)
         {
             var stack = new Stack<string>(); var outer = new List<DxfTag>();
+            bool project = true;
             for (int index = 1; index < tags.Count; index++)
             {
                 DxfTag tag = tags[index];
@@ -159,6 +175,11 @@ namespace netDxf.Objects
                     if (index == tags.Count) throw new FormatException("TABLECONTENT has an unterminated stored AcValue packet.");
                     continue;
                 }
+                // The earlier scalar encoding has no ACVALUE_END marker. Its exact scalar
+                // span is skipped so a group-1 string remains data even when it names a frame.
+                if (tag.Code == 300 && text == "VALUE" && stack.Count > 0 && stack.Peek() == "CELLCONTENT"
+                    && DxfStoredTableContentValue.TryLegacyScalarEnd(tags, index, out int scalarEnd))
+                { index = scalarEnd; continue; }
                 if (tag.Code == 1 && text.EndsWith("_BEGIN", StringComparison.Ordinal) && FrameNames.Contains(text.Substring(0, text.Length - 6)))
                 {
                     if (text == "DATAMAP_BEGIN")
@@ -168,6 +189,9 @@ namespace netDxf.Objects
                         if (!TryReadDataMapEnd(tags, index, out int end)) return null;
                         index = end; continue;
                     }
+                    if (project && valueStarts != null && text == "CELLCONTENT_BEGIN" && stack.Count == 2
+                        && stack.Peek() == "LINKEDTABLEDATACELL" && stack.Last() == "LINKEDTABLEDATAROW"
+                        && index > 0 && tags[index - 1].Code == 302 && (string)tags[index - 1].Value == "CONTENT") valueStarts.Add(index);
                     if (stack.Count >= 64) throw new FormatException("TABLECONTENT packet nesting exceeds the supported storage limit.");
                     stack.Push(text.Substring(0, text.Length - 6));
                 }
@@ -176,6 +200,9 @@ namespace netDxf.Objects
                     if (stack.Count == 0 || stack.Pop() != text.Substring(0, text.Length - 4)) throw new FormatException("TABLECONTENT has mismatched stored packet framing.");
                 }
                 else if (stack.Count == 0) outer.Add(tag);
+                if ((tag.Code == 1 && text.EndsWith("_BEGIN", StringComparison.Ordinal) && !FrameNames.Contains(text.Substring(0, text.Length - 6)))
+                    || (tag.Code == 309 && text.EndsWith("_END", StringComparison.Ordinal) && !FrameNames.Contains(text.Substring(0, text.Length - 4))))
+                { project = false; valueStarts?.Clear(); }
             }
             if (stack.Count != 0) throw new FormatException("TABLECONTENT has an unterminated stored packet.");
             return outer;

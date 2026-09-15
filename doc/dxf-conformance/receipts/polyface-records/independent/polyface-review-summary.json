@@ -1,0 +1,73 @@
+{
+  "module": "Retained PolyfaceMesh coordinate, face and SEQEND records",
+  "production_commit": "133747c78d4477ebff865e15c757e07265ac062c",
+  "qualified_source_checkpoint": "2d126eecf9373089f0e433a1d934d5ccb7116982",
+  "qualified_remote_checkpoint": "609509b502cddf41ab6e88d320753240933a590e",
+  "source_tree": "071ed2e24231ccb2d3f315c201a97b78c51922bd",
+  "harness": {
+    "recovery-audit/polyface-probe/Program.cs": "c3cfb464987b7fe2612c66f393c94bbeadf2b56069b73b10db35f234afad87a5",
+    "recovery-audit/polyface-probe/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "recovery-audit/polyface-normal-probe/Program.cs": "a9098fddd6ff16b56aed267b6d67fcaa2a4298dad6840d574e846c48de8b749b",
+    "recovery-audit/polyface-normal-probe/Probe.csproj": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7",
+    "recovery-audit/audit_probe_outputs.py": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff"
+  },
+  "configurations": {
+    "debug": {
+      "cases": 60,
+      "failed": 0,
+      "normal_cases": 12,
+      "normal_failed": 0,
+      "library_sha256": "04cf0c697b1c768cf5a7a4a030e2b637655b381604c4a8801da5cd8cbe621752",
+      "results_path": "recovery-audit/polyface-final-debug/results.json",
+      "results_sha256": "bf49b1d428e17f8070d395d41779ccce8c56c45ec0eafd609a16d4dda3af8f65",
+      "normal_results_path": "recovery-audit/polyface-normal-debug/results.json",
+      "normal_results_sha256": "1358601b4d3f94d7864dcf31a15176b924a4d49f1d2da09f37f1427add1714ba",
+      "audit_outputs": 48,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/polyface-final-debug/ezdxf-audit.json",
+      "audit_sha256": "1e1a116028c11df30ad92424de508b5e23e00bf9aaf1dea80bc4d21360f3056a"
+    },
+    "release": {
+      "cases": 60,
+      "failed": 0,
+      "normal_cases": 12,
+      "normal_failed": 0,
+      "library_sha256": "036e4006368afb2a1f084b9874cf822f4832b62ce02862f7664ab4e52da04c24",
+      "results_path": "recovery-audit/polyface-final-release/results.json",
+      "results_sha256": "a97e7080ff84440acffec1845421f9a1079e44a32c47b16c3e34f06990f4155b",
+      "normal_results_path": "recovery-audit/polyface-normal-release/results.json",
+      "normal_results_sha256": "95e026ec96f5ff04245b8595f285b0cc7d626f6df2985d191f31193e298f3692",
+      "audit_outputs": 48,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "audit_path": "recovery-audit/polyface-final-release/ezdxf-audit.json",
+      "audit_sha256": "1e1a116028c11df30ad92424de508b5e23e00bf9aaf1dea80bc4d21360f3056a"
+    }
+  },
+  "coverage": [
+    "60 principal cases per configuration: 12 pinned unchanged ezdxf producer inputs across six DXF profiles and both transports, with wire/edit, layer/removal, clone and invalid-save checks; plus 12 native carrier cases.",
+    "Full retained child packets are compared by raw typed tag values before and after a coordinate ordinal edit and signed face-index edit. All unrelated child tags and physical record order remain exact.",
+    "Coordinate and face projections bind actual records/models; producer block-record owner form and native direct POLYLINE owner form survive. Native point/line/quad faces and advisory source counts are retained.",
+    "Current face-layer identity releases the old layer guard. Null layer inheritance and explicit color survive detach/readoption and save/reload. Foreign adoption rejects; same-document readoption retains exact child identities.",
+    "Plain same-document clones have fresh child identities and independent geometry. Decorated graphs with private/owned/external dependencies reject cloning. Invalid active signed index, nonfinite coordinate and changed profile reject before bytes/seed mutation.",
+    "12 normal cases per configuration cover authored and retained meshes, NaN/infinity/zero inputs and both transports. Save, clone and adoption all reject, without output or handle allocation; failed adoption leaves the parent detached.",
+    "48 output DXFs per configuration audited with ezdxf1.4.4; zero errors/repairs. No native CAD application runtime was available or claimed."
+  ],
+  "fixture_scope": "Native carriers retain all eleven source POLYFACE packets except the explicitly mapped parent common owner. Carrier layer-table records are synthetic; they are not original layer-table qualification. Producer fixtures are unchanged ezdxf1.4.4 output. Source/fixture hashes are verified by the harness.",
+  "findings_fixed": [
+    "RemoveEntityFromDocument unconditionally dereferenced nullable Face.Layer; fixed before7f6530d and covered by loaded detach/readoption.",
+    "The inherited Normal setter permits nonfinite stored state. Before133747c, all12 normal controls saved, cloned and adopted successfully, and every saved output failed reload. Shared Polyface-specific normal validation now protects save/clone/adoption for both authored and retained meshes."
+  ],
+  "normal_before": {
+    "path": "polyface-normal-expanded-before/results.json",
+    "sha256": "3f0cc99b4922cf521b8ff74b6200082b7bd391cc54ce4f03a3ff14ec67326c99",
+    "library_sha256": "98ad8d67ccfa05e54fb56f2bb4d42cf7078c2495ace20518fbc1bcb690881360",
+    "source": "7f6530d",
+    "saved": 12,
+    "cloned": 12,
+    "adopted": 12,
+    "reloaded": 0
+  },
+  "remaining_production_findings": 0
+}

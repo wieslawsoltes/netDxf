@@ -1,0 +1,10 @@
+using System.Reflection;
+using System.Text;
+using netDxf;
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+var asm=Assembly.LoadFrom("/workspace/scratch/2ec4aa26f01f/netDxf-tenth-mixed/tests/netDxf.Conformance/bin/Debug/net8.0/netDxf.Conformance.dll");
+var type=asm.GetType("NetDxf.Conformance.Program");
+var doc=(DxfDocument)type.GetMethod("TenthMixedSource",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{"acad_table_simple.dxf",false});
+var mesh=doc.Entities.PolyfaceMeshes.Single(m=>m.Layer.Name=="TENTH_GRAPH");var hatch=doc.Entities.Hatches.Single(h=>h.Layer.Name=="TENTH_PATTERN");
+Console.WriteLine("face="+mesh.FaceRecords[0].Handle+" hatch="+hatch.Handle+" XData="+string.Join(",",mesh.FaceRecords[0].XData.Values.SelectMany(x=>x.XDataRecord).Select(x=>x.Code+"="+x.Value)));
+Console.WriteLine("mesh removal="+doc.Entities.Remove(mesh));Console.WriteLine("hatch removal="+doc.Entities.Remove(hatch));Console.WriteLine("face still registered="+(doc.GetObjectByHandle(mesh.FaceRecords[0].Handle)==mesh.FaceRecords[0]));

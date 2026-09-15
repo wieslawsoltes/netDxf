@@ -33,7 +33,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a polyface mesh <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class PolyfaceMesh :
+    public partial class PolyfaceMesh :
         EntityObject
     {
         #region delegates and events
@@ -323,6 +323,7 @@ namespace netDxf.Entities
         /// <returns>A new PolyfaceMesh that is a copy of this instance.</returns>
         public override object Clone()
         {
+            this.RejectStoredRecordClone();
             PolyfaceMesh entity = new PolyfaceMesh(this.vertexes, this.faces.Select(face => (PolyfaceMeshFace) face.Clone()))
             {
                 //EntityObject properties
@@ -345,6 +346,7 @@ namespace netDxf.Entities
             }
 
             this.CopyCommonDataTo(entity);
+            this.CopyStoredRecordsTo(entity);
             return entity;
         }
 

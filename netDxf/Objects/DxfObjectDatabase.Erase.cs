@@ -23,6 +23,11 @@ namespace netDxf.Objects
         /// </remarks>
         public void EraseOwnedTree(DxfDatabaseObject root)
         {
+            this.EraseOwnedTreeCore(root, null);
+        }
+
+        private void EraseOwnedTreeCore(DxfDatabaseObject root, DxfStoredSectionManager selectedManager)
+        {
             if (root == null) throw new ArgumentNullException(nameof(root));
             if (root.IsErased) throw new InvalidOperationException("The object has already been erased.");
             if (root.Database != this) throw new ArgumentException("The object must belong to this database.", nameof(root));
@@ -55,7 +60,7 @@ namespace netDxf.Objects
                 if (value is DxfStoredCellStyleMap) throw new NotSupportedException("Stored CELLSTYLEMAP erasure requires its complete application schema.");
                 if (value is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (value is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
-                if (value is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");
+                if (value is DxfStoredSectionManager && !ReferenceEquals(value, selectedManager)) throw new NotSupportedException("Stored section-manager erasure requires the explicit manager lifecycle API.");
                 if (value is DxfOpaqueObject) throw new NotSupportedException("An opaque object requires its application schema before erasure: " + value.CodeName);
                 tree.Add(value);
                 if (children.TryGetValue(item, out List<DxfObject> next)) foreach (DxfObject child in next) pending.Enqueue(child);
@@ -124,6 +129,14 @@ namespace netDxf.Objects
                     foreach (DxfObject target in meshRecord.References) reference(target, "polygon mesh record reference");
                     foreach (DxfTag tag in meshRecord.OpaqueHandleTags) handle((string)tag.Value, "polygon mesh record handle");
                 }
+                if (item is PolyfaceMeshRecord polyfaceRecord)
+                {
+                    foreach (DxfObject target in polyfaceRecord.References) reference(target, "polyface record reference");
+                    foreach (DxfTag tag in polyfaceRecord.OpaqueHandleTags) handle((string)tag.Value, "polyface record handle");
+                }
+                if (item is PolyfaceMesh polyface)
+                    foreach (DxfTag tag in polyface.StoredHeaderReferences) handle((string)tag.Value, "polyface header handle");
+                if (item is DxfOpaqueEntity opaqueEntity) foreach (DxfObject target in opaqueEntity.References) reference(target, "unknown entity reference");
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)

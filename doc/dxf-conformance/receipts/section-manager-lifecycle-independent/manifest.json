@@ -1,0 +1,376 @@
+{
+  "manager-lifecycle-review-summary.json": {
+    "sha256": "df1e359866626956d78ba5b5dd9b855daaa3b76ac6a0127527589c04d75c06b1"
+  },
+  "manager-lifecycle-probe/Program.cs": {
+    "sha256": "6c397d6f2436923695812205689d2c7a9be04c0bf412b939dcc2a0b24d0c944e"
+  },
+  "manager-lifecycle-probe/Probe.csproj": {
+    "sha256": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7"
+  },
+  "audit_probe_outputs.py": {
+    "sha256": "70514b948b01e4cb2277f7470dea7a62db7424bbc996d37b1a3e7cc1cd4a0fff"
+  },
+  "manager-lifecycle-debug/results.json": {
+    "sha256": "56020ea30e0dfb344b70daf0b7e80eeb6ee7e87d2ae31c29c635fba57af38fb9"
+  },
+  "manager-lifecycle-debug/ezdxf-audit.json": {
+    "sha256": "637b3ff96e9af0d6f721d91d1fda608d6eb940178e9dbc57efef5df93e89484d"
+  },
+  "manager-lifecycle-release/results.json": {
+    "sha256": "6c4bfa60e006e4052b38093c345618350c8329415a276287a986209d16748805"
+  },
+  "manager-lifecycle-release/ezdxf-audit.json": {
+    "sha256": "a225593bb332f9dcd64576e2ec78b7cb2b1233c7f68a88499ae56359188ec6f4"
+  },
+  "manager-lifecycle-debug/created-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "dfc1b565b98b703583e7863f9a2dc4b6ad3806889be19cf33faa857b9cac3c7f",
+    "uncompressed_sha256": "42507c1ae55374b5e0af25d7440f4f53c60bad1202e2701125835cd4f92211e5"
+  },
+  "manager-lifecycle-debug/created-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "7ae2d38deb75ebb978f323776c6376903914e21a519b3bbb62bcb04ef79b445f",
+    "uncompressed_sha256": "d3d96932c8be0c904fe92a2d554399fca8d959bb21e5e5eafcc3a9b6286075c6"
+  },
+  "manager-lifecycle-debug/created-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "754ae206fa8c2de506acdb8cccb7367835f21bbde43e6f09e7dd986d987e2905",
+    "uncompressed_sha256": "df7a3482cf20805fee536f09261c40c9fc053051c8ebf8c02d900f7b76cdfa6e"
+  },
+  "manager-lifecycle-debug/created-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "31ec89b38a98cfcce987b0dda7faf273023ea0d1bd5599765ea5303e6995a296",
+    "uncompressed_sha256": "3a2d641fbfe22ef5242462a35ce743422f7d7f6f470f4b7523564727d9e1243f"
+  },
+  "manager-lifecycle-debug/created-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "9a467e339f14badef5131da18432e99fa993bd3421089298a6e6e63117d520c5",
+    "uncompressed_sha256": "fab2016907a0ae0fcc8db52e1b1ec82ba60a9170f0c16c22e76eb545b5b9d060"
+  },
+  "manager-lifecycle-debug/created-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "e2ae04705b3ee99795ef8058acc59dba6c23beba3ba0d1e6a15873e36689e6fd",
+    "uncompressed_sha256": "643865d3287c8ecb3cac295dede6b233e2bc6081aaf32aa2dbb4f8f939c07115"
+  },
+  "manager-lifecycle-debug/created-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "fd20b3fc2631ebee220996731aff5f510358056e91dcd8d66864c9a55f533cee",
+    "uncompressed_sha256": "4c094b1cb088020da64f8339b0d532b9153d9a772a114e87b4922219dc41db59"
+  },
+  "manager-lifecycle-debug/created-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "daf418e2aec7622ed7a4502439c4bf63e5d57d20d283a36a9e5b386b04555011",
+    "uncompressed_sha256": "6de1f8a4f154c5b23cf893ddf351a89064f679478a32abb410dd80568f5e7eaa"
+  },
+  "manager-lifecycle-debug/native-recreated-False-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-debug/native-recreated-False-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-debug/native-recreated-True-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-debug/native-recreated-True-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "eb007b37343da8f1f5bf6b364d03db9c762f4d78ddb67f982716049ff2d9dd66",
+    "uncompressed_sha256": "7a7477195d1cae3e8d806886277a735d21e24e6a97c1e355d6a2db40ed6a4ef4"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "d0d08c3b2849f58b61d90149a5d9e3e365eedb3b745612199382bc6a03e9ee44",
+    "uncompressed_sha256": "eb7fed1d59386fef966ce3c86a8ab3f4c197c4c37e2710e8d0ea826ff6e72f30"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "545035204ee9da94f245e93940e3bbd8457f0b050c66104434b73de3cd7c3373",
+    "uncompressed_sha256": "a5fab4609976cd557c3bec6773d770134a11732316468eaf7cc48d5dce281fcd"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "fedcb8d73bcf291e447fea08b7c025488e68924688558e3a3775d5eb5963e04d",
+    "uncompressed_sha256": "54825f07171e1f5c8c770a6a2bc70d47e6073075e02e469aae3d0f2d5f347388"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "5efeeb0a241c93d73dc47a0ee5efa8b44bb88fa004f543f31145ba5032b95fda",
+    "uncompressed_sha256": "5bcc3ca7c2077da193495d5b78910155bac3ef1372ec33310387e050f29e859d"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "5a8b9900db4ab3f62c0495035421f46a65be8e7072019cc7ad94cc32a1fc1ccb",
+    "uncompressed_sha256": "fb8ce164d56d9e91cb67f8c4191ab5ff3a9b1961598a9adf7ec73d501032e4eb"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "f14dd5cae36bed8d31d460566d02280b0f235b9719375d432f286e68aa693e14",
+    "uncompressed_sha256": "bf9bd819ecc7e245568575093d302808b19cc7894b9c8f61e5539eee436b2712"
+  },
+  "manager-lifecycle-debug/recreated-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "620186b24b93fe03f67ec27e3549f751f156377648693f888fffe88300c4fa5b",
+    "uncompressed_sha256": "92f3ca1d6605242f8b88be70cdada636f4d2ac04c324fe776625a3b043350ec1"
+  },
+  "manager-lifecycle-release/created-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "f7a4ee1792e98a62ae0b92054e5c637e65ceba3cb857e765ed7fcc1dbcbb8e61",
+    "uncompressed_sha256": "73f572c7054a42f22fd5e587cc77fb0459d8d0638886b6952d34b4824bcf4204"
+  },
+  "manager-lifecycle-release/created-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "2bd88d4af313b12f7fa3412a645404d587d4d451489854f58eb0d421f1250ad0",
+    "uncompressed_sha256": "719a12e3360b3af6c08c027251e5b7309c62a90fe10a182d54457ecf33eac03f"
+  },
+  "manager-lifecycle-release/created-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "2c72472a8774e8d3f94426951701b6d4b7cb0097a316cbfecaebae77566369d7",
+    "uncompressed_sha256": "fe6a240a73b49b6bbfeed75eeadca449bb3d453311f50217cbfda0733eb5f239"
+  },
+  "manager-lifecycle-release/created-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "2da60393a42d5408a4732ad5a5c36884310f5160527229a8b1005038a4269fac",
+    "uncompressed_sha256": "45e9b73e06584c79803fd71ef35e87bcdf1a10214b7e7751b4a159ac1d8425d8"
+  },
+  "manager-lifecycle-release/created-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "a6c764d64ba96ef2bf357e43587b26e0b226edb9cf0d142b641a9e9d4a7825ca",
+    "uncompressed_sha256": "e89046e87533ddd6ede88cb0e4babc241cb5f338cd948f5e706acdfff73b8187"
+  },
+  "manager-lifecycle-release/created-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "d8f8c67c3bf9950846463bda20a797cd17ecadc5b9930b09ee628fec22a61e89",
+    "uncompressed_sha256": "438581261b299e8168e44ff212e03b8a8c5772ee150e40b70add0c068283ce00"
+  },
+  "manager-lifecycle-release/created-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "bf1c41d6dbd176b8817a157f448479924d2d0b54ca3aa49e71b2f5342e5765b5",
+    "uncompressed_sha256": "c22a924e113b3ef0e3cb945fe2eb0f02e7371facf023f92f95e3d37644f351f9"
+  },
+  "manager-lifecycle-release/created-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "e0b07d7081c540723f61ca1bd3ff41a846d919054827b65929b8fef096b74319",
+    "uncompressed_sha256": "486316805d68f17c7bf686eb4d49f8cc222bcddf67e3af1c08780b2b3563ff28"
+  },
+  "manager-lifecycle-release/native-recreated-False-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-release/native-recreated-False-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-release/native-recreated-True-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-release/native-recreated-True-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "2eb53da21462b0192bd9f436b050f6c2591a6a85e041edf29a7b256d447d94b1",
+    "uncompressed_sha256": "a430fedc92f06ad1289aeea4ca14c7ef15cbf0bda811535c14ee07a1642660c2"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "73471e37303a9618c856718b5a6f856234018bcac6c5593826b037374eb3bd3a",
+    "uncompressed_sha256": "45adb0949f3bfa066af699d479238f5ec8e89060d9ebd2a8b334fe3b2bf61aaa"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "33396cc4f4d7a8e4bfcb8387378a617e6c7fead2eef89f86b1cdaa7e6e4f119c",
+    "uncompressed_sha256": "b70a2d0a7e1afeb053354a21c77f31da0270776048c22136c8c985c369580cc7"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "e52ea4a76b9fa71d558f7ddbdbcb8a2710c68af1e3821ebb013644429bfd9169",
+    "uncompressed_sha256": "c57a070ba673c7d2cd86a140306b29aeb49d3a11bb32c8417614b8cc1a955b9c"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "a01f1ca8a3c0e6602e35068a2efeaad8728239019da5df57f5b7f4726e4c990d",
+    "uncompressed_sha256": "756afc456f9d041324f4121601c45de0546e2e8f4bc2e1c560a04daddcfaae88"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "074a1a0d477fa1cd6be7adb9d191bb208d08aea48d8337a92a8d14b7d2afbfe1",
+    "uncompressed_sha256": "26bcd0c502f3d6f9760b99293fc2a7282ae92efc23285c96a88790e4cc3138ff"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "91628a857f719185e34becc970f6195ed915579eb90f1ad4ce10cb1346500df0",
+    "uncompressed_sha256": "519ab1e0e416dcacb4a9fe164a8c899f357332edd6882e76e23349ed9ab739a8"
+  },
+  "manager-lifecycle-release/recreated-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "39473fb43d267d7b9fbe7a54ebac5791f909f246a3f15292c4dc39909c6a6f3f",
+    "uncompressed_sha256": "94cd5e76ddfd7006d26a430b5706b298b11bb4aa33d6e8d92849fa076ddbb35e"
+  },
+  "manager-lifecycle-final-review-summary.json": {
+    "sha256": "e15c109922e2ababbfd7bc019c65b59fe2c2575576b8cc49a3979cabd8cf77d3"
+  },
+  "manager-lifecycle-contract-probe/Program.cs": {
+    "sha256": "0c34104f4f6cee9903f627f8bf913b84196f74bfb77979e8ba0aa61f1fa54a6f"
+  },
+  "manager-lifecycle-contract-probe/Probe.csproj": {
+    "sha256": "319ed7e91deda180eba43b5ce9801bdebaf5718265ee0d813ca773ce2a5509d7"
+  },
+  "manager-lifecycle-contract-before/results.json": {
+    "sha256": "f05095106d14d9649d1b03e4bb45780b9e55e59e90e657c13cbb0e767d5b983a"
+  },
+  "manager-lifecycle-contract-debug/results.json": {
+    "sha256": "0d90d67e45afe7af7ef74c5191f08ee8889e488a3d466194fbd838b5dca8e481"
+  },
+  "manager-lifecycle-final-debug/results.json": {
+    "sha256": "c1e15e640b4f699198ac66c9fd59f64adf2c698fafbee31b421f7615e75cc242"
+  },
+  "manager-lifecycle-final-debug/ezdxf-audit.json": {
+    "sha256": "8ad867f35474e5388312714f4c2f4eab61f07d44a548c054b47caa9ff7d8d446"
+  },
+  "manager-lifecycle-contract-release/results.json": {
+    "sha256": "6e58c1409f2bb3d6c2cc1e3bf8b616592f41f198c77b07fcf6fb36cd6a8babb6"
+  },
+  "manager-lifecycle-final-release/results.json": {
+    "sha256": "6de9cc4c425adf6d793679cd742001c769aad5dff612dec502d28f46bf008c26"
+  },
+  "manager-lifecycle-final-release/ezdxf-audit.json": {
+    "sha256": "62dca789dec67a1f2846db4f375dded79b8761423363e8ea6e40fc3b9ce11a56"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "fa02f56cfa2805721f818aa6a111ec1d1f326e29ef410f0d8828ed0dd4ca399f",
+    "uncompressed_sha256": "e54495b12fe8c142461725b0ee853d78493064c358fbfbf8c8ed69cbbecaede5"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "e3257621efb76f66d3a1b441e1feafbfc250a241b2bc38a839a533f6d7faaa34",
+    "uncompressed_sha256": "42d6b7eb54c7382ab25c6911689367a3227ba3430cec087c1796ed7c1bda6b7e"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "9f66efffa9dfc1b2d2c3191ff2b80935cfd00b7aafa4eadc84ae19d56079b96b",
+    "uncompressed_sha256": "0765ee9763c3880011302dc9445fda4d305b75bbe2085fa8452525d3876fb9be"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "38acc23f15cf6728ba07437c4bb2f625945a012f2994031c41d1b05d124aebfd",
+    "uncompressed_sha256": "297bd225718c020062cf88995fc46514b5d87d81b2bbf0139150c7ca2e59e994"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "ddc2fe468e65651997600a96108594cf1dc97aae1ccf08b81814c475ee2ed316",
+    "uncompressed_sha256": "e84f1e3da44608b282a6ee1342fea5ac0c010dc53296c2be94da85e7ae0caa6f"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "ad6e7f123a329e7b5fa75869be3130ce8c06b20f2c2b7907a60fc41663630e17",
+    "uncompressed_sha256": "633092f1c02edae936d630c0f71bb273a9e77025b9ab99ef00a3828cfdc945bb"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "db0c95ced384142733efa026d2803b25d1b65942ed6f9349ff67b18f649fb216",
+    "uncompressed_sha256": "c970e22d8ac7ecb37e2c979860f19bef3da863a5765effc817c36b292741bdcd"
+  },
+  "manager-lifecycle-final-debug/created-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "8f868044d1acb9afdeaeabb5b60472bf5814ea585753e67bac7fe3830b91dcc3",
+    "uncompressed_sha256": "d60209c0ee8589604f9fdec45320e66b1d91b63135e8c238ee6a31c38bb69a7f"
+  },
+  "manager-lifecycle-final-debug/native-recreated-False-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-final-debug/native-recreated-False-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-final-debug/native-recreated-True-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-final-debug/native-recreated-True-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "32cb7bf4cc40933dda8e6c1ec04283ea12f58c1a666d627bc39281f9c2d37682",
+    "uncompressed_sha256": "f7427b2baf3fbb1a6fa17d29fcc46399061b427bfae2d3d68eed46ba989ded94"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "5044835f7cb75b7cb02d10ea293a284c81995b0e089039abe5486bfe88cbd215",
+    "uncompressed_sha256": "5974040dbc75b29c11fe5f9ee4eb9ffbfad9a30f93dbb818b637b9fb7fd7dfaa"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "50d849539b766ddc619a96c6ed7ac184ca72a40856fe711118a93bb12c15596b",
+    "uncompressed_sha256": "7f8da6309e1d49a333e9510d912a359e88022bf8e87db1f17a03353d2f7c8837"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "9f5d1619fcc2cfd05bc9e8e7edb7f94999f3e859d7480284e016fb79c1e4038e",
+    "uncompressed_sha256": "a2b2766dcc7d2502651ad8863a754b4ca63d1aca0bca63cebc8fae4ee8d49cb1"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "6a908c5d05225211bc4624a62c884d721d63cf10bdb7ae135caea29b0508d8bd",
+    "uncompressed_sha256": "7b43710a111b0e0316dccceeec983ca30925272228df69640d4a66cf70662c8d"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "acf9d2c978949bf0982d4663b2ed263aa87f08a8a2fabfc98d0288996cc2bc83",
+    "uncompressed_sha256": "8fa14f4028299d25f106ff615cf905e96df0cefb78469a298a2dac253cd65d82"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "be26f624da62d593eea475da70608ba11c2983052415782ca07f6dcdca29a2c5",
+    "uncompressed_sha256": "48361c80a5dcc84e589f84d555a6ee846559aeabde00ae3a688ab33d152c296c"
+  },
+  "manager-lifecycle-final-debug/recreated-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "dc17734cbff942050e20b13e7727746d15cc3d774b2db440f2b9d2c067659b4c",
+    "uncompressed_sha256": "d4a70263ad02ef21befc12094c71877249f9a15958353df02d71cc82166ed3ea"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "541c78c96e89274d51933180e8b77e1ecf64bb1e001a95ffb2052cdd7524526d",
+    "uncompressed_sha256": "433e8ee9782726837a7eab61add564d12b3cd08bcece543c2023412f269dd724"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "245fefc4920a57a4dc6ace8fd907f3d4f8e21ab28ff03b0b66d4562b1d6a71b0",
+    "uncompressed_sha256": "4d4cfefa758f6d3522d6f24c2728d9bb808a55559291fb7dc8df92957b51fc0b"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "88e6d731c6f8b14cf69171b0e23d16bced01573e0b50947ea6a36573a4f97ea3",
+    "uncompressed_sha256": "9322fc557b27c85f3ba86a71631f102c2cb15964d4d13cb861bba510d46170de"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "92ab10a4a6d1fdba66ee7621d7803f8c2e272effd32a2c2a46be685ec6077d3f",
+    "uncompressed_sha256": "b952a993789dbce186e3cb33831e68b6c652ff7423f8826f40962af91f3471ba"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "10d6129252017b41824e7897ca818acd09742f44100f2d77f9171d474f786c82",
+    "uncompressed_sha256": "f04e951f406882f1c90d69eb815c35608941b13d62e1488166cf3c4dc9d4272a"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "fd23f21aff0641747a0f3bfe9b27aa3ab9299f6bfc3b27b2d16fef29b0e7e785",
+    "uncompressed_sha256": "11b09820e41e7fe7aeedadd823c5f7a0da71da18f25c486b563803655993df2e"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "117a44ab2d1d78c41b1baebb7732bf5cdc301048a67ffa6a8a1970c07ca46cb7",
+    "uncompressed_sha256": "eccc04d81dda4e831583ae1b1c6f77defbd8056867c02165ae21d1cf95de1353"
+  },
+  "manager-lifecycle-final-release/created-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "ba61a7aa8b958fe9ae003fe07e5a232b0b6bb6e33e0ea9bda6f019972b624ea1",
+    "uncompressed_sha256": "b3e0cc0f657b7a4ad396a4be82ce39a785566e35fb7f899558f4cf79f1157b7e"
+  },
+  "manager-lifecycle-final-release/native-recreated-False-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-final-release/native-recreated-False-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-final-release/native-recreated-True-False.dxf.gz": {
+    "gzip_sha256": "12e4b430a8e51b76144d8cc45e42fadfc8d27b75844b0b8e022690604783ab85",
+    "uncompressed_sha256": "753d182ccf5ae57c320b90085303f356778c142ea4898bda85428074c94a38d5"
+  },
+  "manager-lifecycle-final-release/native-recreated-True-True.dxf.gz": {
+    "gzip_sha256": "3aa3db35c069c86d078a301e98e2385db30ebc2037cde78e5b3ff900b6ad0b15",
+    "uncompressed_sha256": "30258207a53155a235ffa8b702bc6e3f0fd1de5f811924a4cc968a7f43791061"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2007-False.dxf.gz": {
+    "gzip_sha256": "6d1ba081483f8630adf8316f5866b045170a868b99072e2a13be41c8b1c6d092",
+    "uncompressed_sha256": "7d9e44780102f71922f02564dac8d259ad109eeb12281aca5cac3e33442216cb"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2007-True.dxf.gz": {
+    "gzip_sha256": "a369bef97c1d73b6e9a68a494009053d74ea2cbacb654e9dafd68e394d7b24db",
+    "uncompressed_sha256": "8b54fc860eae0bb13fc84f6a6410585344ee26da6c469d8b3368bed4b20ddb2a"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2010-False.dxf.gz": {
+    "gzip_sha256": "2bdef88eaa38dddda98d65e98b4f6824a892098ebd0740694fff3d1909841f49",
+    "uncompressed_sha256": "b8857dbccf3831b17cb6ad91bfe2f2e27ac29c2d2b721b9dcaa97f5676ceb396"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2010-True.dxf.gz": {
+    "gzip_sha256": "6c48befad17ed4665a650c861779505aa2fa0ebf4648755de9fad51d85096198",
+    "uncompressed_sha256": "4265e8c5550e515ee21d2df7136c9bb77dcd04476f7e3a5fd90d0f351fbfa7e8"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2013-False.dxf.gz": {
+    "gzip_sha256": "01edba85034c04805f0041ff9a265374d44e5bf3ed7355c1d55226964887d7ba",
+    "uncompressed_sha256": "c08b90ea0665c6b0b77d4f3ff99433ae84deeb3fc6685dc3118c97af269d7ff9"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2013-True.dxf.gz": {
+    "gzip_sha256": "794d37bb0c2b202c40d7ad93de029a1aa493ed328f306d8010a20f2b8ab380a3",
+    "uncompressed_sha256": "b14e092994be0bb6d5dd4059498e8f4a40a5e9068b2fd3854d01741a4be36c01"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2018-False.dxf.gz": {
+    "gzip_sha256": "c6359d4ba200e1067631e8f5421e245cc018b542b5bcf1e4c4324ca03150f972",
+    "uncompressed_sha256": "e014230027fd0852ff136a9bbd3c728c9ba409b7db40245631b979ddbde74ee9"
+  },
+  "manager-lifecycle-final-release/recreated-AutoCad2018-True.dxf.gz": {
+    "gzip_sha256": "ce660969088cec3852894857d782c2a330f79654402fed33bdbcbac3125aa1e7",
+    "uncompressed_sha256": "8a08dac56b4244e9453de7573176c7bd2bef24189ac17b38412265b7ff1014b3"
+  }
+}

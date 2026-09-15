@@ -711,6 +711,34 @@
     "MIX9": {
       "label": "Native map resources, edited manager and retained mesh graph",
       "path": "doc/dxf-conformance/ninth-mixed.md"
+    },
+    "TABLEGEOMETRYEDIT": {
+      "label": "Explicit loaded TABLEGEOMETRY replacement",
+      "path": "doc/dxf-conformance/table-geometry-editing.md"
+    },
+    "SECTIONLIFECYCLE": {
+      "label": "Explicit SECTION_MANAGER creation and erasure",
+      "path": "doc/dxf-conformance/section-manager-lifecycle.md"
+    },
+    "POLYFACERECORDS": {
+      "label": "Retained Polyface records and guarded fixed-topology edits",
+      "path": "doc/dxf-conformance/polyface-records.md"
+    },
+    "HATCHPATTERNAFFINE": {
+      "label": "Explicit HATCH pattern affine transforms",
+      "path": "doc/dxf-conformance/hatch-pattern-affine.md"
+    },
+    "TABLECONTENTEDIT": {
+      "label": "Explicit stored TABLECONTENT scalar and header replacement",
+      "path": "doc/dxf-conformance/table-content-editing.md"
+    },
+    "OPAQUEENTITY": {
+      "label": "Qualified standalone unknown entity packet preservation",
+      "path": "doc/dxf-conformance/opaque-entities.md"
+    },
+    "MIX10": {
+      "label": "Tenth mixed native backing and explicit reference-release graph",
+      "path": "doc/dxf-conformance/tenth-mixed.md"
     }
   },
   "features": [
@@ -795,7 +823,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All 310\u2013319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
       "evidence": [
         "B"
       ]
@@ -809,17 +837,18 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Still absent from DxfDocument typed load/save. DxfRawDocument now retains ordered unfamiliar data; the two pipelines must not be conflated.",
+      "scope": "Eligible standalone unknown entities now retain complete source-bound packets with scoped common edits. Unknown aggregates, proxy families, custom sections and universal private dependency preservation remain unimplemented in the typed pipeline. The independent raw API retains ordered unfamiliar records.",
       "evidence": [
         "RAW",
-        "REC"
+        "REC",
+        "OPAQUEENTITY"
       ]
     },
     {
@@ -860,7 +889,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Selected guards for MESH, HELIX, HATCH, MTEXT and VIEW. No centralized complete schema legality or per-loss report. Explicit SaveAtomic is separately available; existing Save remains nontransactional.",
+      "scope": "AnalyzeVersionCompatibility provides a centralized bounded report for qualified current writer rejections and omissions, including retained source-profile guards. Complete schema legality, every possible loss and schema-aware conversion remain open. Explicit SaveAtomic is separately available; existing Save remains nontransactional.",
       "evidence": [
         "MVER",
         "MTBG",
@@ -868,7 +897,8 @@
         "ATOMIC",
         "HELIX",
         "HEMPTY",
-        "MTCOL"
+        "MTCOL",
+        "VERSIONREPORT"
       ]
     },
     {
@@ -933,9 +963,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Ordered public DxfClass metadata, cloning and generated raster-class reconciliation. Group 91 omitted in AC1015; no preservation of unsupported entity instances through typed IO.",
+      "scope": "Ordered public DxfClass metadata, cloning and generated class reconciliation. Group 91 is omitted in AC1015. Qualified standalone opaque entities retain and pin matching CLASS identities and scalar metadata; arbitrary class-specific entity semantics and proxy integration remain unqualified.",
       "evidence": [
-        "CLS"
+        "CLS",
+        "OPAQUEENTITY",
+        "SECTIONLIFECYCLE"
       ]
     },
     {
@@ -977,9 +1009,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Supported models/relationships only, not unknown-content preservation. `ReadBlocks`, `ReadEntity`, `WriteBlock`, `WriteEntity`.",
+      "scope": "Supported typed models and source relationships include qualified retained child-record families and eligible standalone unknown entities. Unknown aggregates, embedded/private dependency grammars and proxy families still lack complete typed preservation and editing.",
       "evidence": [
-        "B"
+        "B",
+        "POLYFACERECORDS",
+        "OPAQUEENTITY"
       ]
     },
     {
@@ -998,9 +1032,13 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Eleven explicit dispatch cases; no generic ownership graph. `ReadObjects`.",
+      "scope": "The named-object database supports typed ownership, exact references, explicit graph copying and scoped opaque OBJECTS payloads. Additional loaded table backing and explicit SECTION_MANAGER lifecycle operations are qualified separately. Universal class-specific dependency interpretation and unrestricted opaque graph adoption remain open.",
       "evidence": [
-        "B"
+        "B",
+        "NODO",
+        "TABLECONTENTEDIT",
+        "TABLEGEOMETRYEDIT",
+        "SECTIONLIFECYCLE"
       ]
     },
     {
@@ -1342,10 +1380,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Signed one-based face slots, first-zero termination, complete-coordinate range checks, advisory counts and unusual input order have explicit schema coverage. Face/mesh clones preserve null inheritance and isolate faces, arrays and events. Arbitrary child metadata and original child identities remain outside this typed geometry scope.",
+      "scope": "Signed face slots, first-zero termination, advisory counts and unusual physical order have explicit coverage. Loaded coordinate/face/SEQEND records now retain exact identities, common metadata and physical interleaving with guarded point and active-slot edits. Fixed record identity/counts, source/profile binding and metadata-dependent lifecycle restrictions remain; general topology editing and arbitrary private graph cloning are unqualified.",
       "evidence": [
         "B",
-        "POLYFACEGRAMMAR"
+        "POLYFACEGRAMMAR",
+        "POLYFACERECORDS"
       ]
     },
     {
@@ -1644,7 +1683,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer path framing, empty-input retention and exact ordered source relations. Empty output rejects. General geometry, affine validity and automatic associative regeneration remain partial.",
+      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer framing, empty-input retention and ordered source relations. Explicit predefined/custom non-doubled pattern families now have qualified affine mapping. Empty output rejects; gradients, user-defined/doubled nonsimilarity, periodic evaluation and automatic associative regeneration remain partial.",
       "evidence": [
         "HDOUBLE",
         "HSEED",
@@ -1659,7 +1698,8 @@
         "HFIT",
         "HPATH",
         "HEMPTY",
-        "HATCHSOURCE"
+        "HATCHSOURCE",
+        "HATCHPATTERNAFFINE"
       ]
     },
     {
@@ -2048,9 +2088,10 @@
         "AC1027": "M",
         "AC1032": "M"
       },
-      "scope": "Class/unknown subclass/proxy payload preservation.",
+      "scope": "Proxy entity preservation remains unimplemented. The standalone opaque entity path excludes proxy subclasses; CLASS ordinals, embedded references, proxy geometry semantics and regeneration require separate qualification.",
       "evidence": [
-        "B"
+        "B",
+        "OPAQUEENTITY"
       ]
     },
     {
@@ -2456,7 +2497,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Editable ordered typed payload codes1\u2013369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
+      "scope": "Editable ordered typed payload codes1–369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
       "evidence": [
         "NODO"
       ]
@@ -2795,11 +2836,13 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS bundles and source-bound SECTION_MANAGER/SECTIONMANAGER lists retain exact stored fields and explicit references with conservative lifecycle guards. Private manager variants, live sectioning, automatic membership updates and generation remain outside this scope.",
+      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS bundles and source-bound SECTION_MANAGER/SECTIONMANAGER packets retain exact fields and references. Qualified managers support explicit membership replacement, database creation and guarded erasure. Private manager variants, live sectioning, automatic membership maintenance and section generation remain outside this scope.",
       "evidence": [
         "SECTIONSETTINGS",
         "SECTION",
-        "SECTIONMANAGER"
+        "SECTIONMANAGER",
+        "SECTIONMEMBERSHIP",
+        "SECTIONLIFECYCLE"
       ]
     },
     {
@@ -2883,9 +2926,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Loaded immutable TABLESTYLE retains complete packets with conservative classic header/ordered-row projections, exact named STYLE dependencies and an opaque owned CELLSTYLEMAP. Editing, map interpretation and TABLE regeneration remain open.",
+      "scope": "Loaded TABLESTYLE retains complete packets with conservative classic header/ordered-row projections, exact named STYLE dependencies and typed or opaque owned CELLSTYLEMAP identity. The map exposes ordered immutable entry envelopes and format payloads. Style/map editing, nested format evaluation and TABLE regeneration remain open.",
       "evidence": [
-        "TABLESTYLE"
+        "TABLESTYLE",
+        "CELLSTYLEMAP"
       ]
     },
     {
@@ -3051,9 +3095,12 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "EntityObject, ATTRIB and ATTDEF retain optional 430 (2004+), 284 (2007+) and bounded opaque proxy bytes (all admitted profiles; canonical count code 160 from 2013). Internal VERTEX metadata and proxy evaluation remain outside this subset.",
+      "scope": "EntityObject, ATTRIB and ATTDEF retain optional 430 (2004+), 284 (2007+) and bounded opaque proxy bytes (all admitted profiles; canonical count code 160 from 2013). Selected retained POLYLINE child-record families also preserve qualified common metadata; arbitrary child variants and proxy evaluation remain outside this subset.",
       "evidence": [
-        "COMMON"
+        "COMMON",
+        "VERTEXREC",
+        "POLYGONRECORDS",
+        "POLYFACERECORDS"
       ]
     },
     {
@@ -3151,17 +3198,19 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "No universal typed fallback. The raw API retains admitted primitive tag streams without interpreting unknown subclasses.",
+      "scope": "Qualified standalone opaque entity packets and scoped stored-object fallbacks retain unknown application/subclass fields without interpretation. This is not a universal fallback for every modeled entity, aggregate or private dependency grammar. The separate raw API retains admitted primitive streams.",
       "evidence": [
         "RAW",
-        "TAG"
+        "TAG",
+        "OPAQUEENTITY",
+        "NODO"
       ]
     },
     {
@@ -5057,7 +5106,7 @@
         "AC1027": "T",
         "AC1032": "V"
       },
-      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000\u20132013 writer profile.",
+      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000–2013 writer profile.",
       "evidence": [
         "MTCOL"
       ]
@@ -5183,7 +5232,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320\u2013329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
+      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320–329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
       "evidence": [
         "NODO"
       ]
@@ -5456,7 +5505,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Optional group 284 values 0\u20133, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
+      "scope": "Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
       "evidence": [
         "COMMON"
       ]
@@ -5973,7 +6022,7 @@
       "area": "Typed object lifecycle",
       "pipeline": "typed",
       "feature": "Numeric handle identity and null references",
-      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320\u2013329 values preserve lexical data and do not become clone dependencies.",
+      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320–329 values preserve lexical data and do not become clone dependencies.",
       "evidence": [
         "SOURCEID",
         "MIX5"
@@ -6143,9 +6192,10 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "TABLESTYLE immutable stored payload",
-      "scope": "Complete source-bound packets, exact STYLE identity/name spelling, conservative projections and guarded opaque CELLSTYLEMAP ownership. Native full drawings and scoped object-graph carriers are qualified separately.",
+      "scope": "Complete source-bound packets, exact STYLE identity/name spelling, conservative projections and guarded typed or opaque CELLSTYLEMAP ownership. Native full drawings and scoped object-graph carriers are qualified separately; style and format editing remain open.",
       "evidence": [
-        "TABLESTYLE"
+        "TABLESTYLE",
+        "CELLSTYLEMAP"
       ],
       "status": {
         "AC1009": "X",
@@ -6332,9 +6382,10 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "TABLECONTENT immutable stored payload",
-      "scope": "Complete four-subclass source packets retain conservative linked-data/count projections, exact exposed dependencies and terminal TABLESTYLE identity. Source ownership and profile remain fixed; clone and owned erasure reject. Editing, nested cell semantics and regeneration remain open.",
+      "scope": "Complete four-subclass source packets retain conservative linked-data/count projections, exact exposed dependencies and terminal TABLESTYLE identity. Source ownership and profile remain fixed; clone and owned erasure reject. Bounded scalar/header replacement is covered separately; full nested-cell authoring, evaluation and regeneration remain open.",
       "evidence": [
-        "TABLECONTENT"
+        "TABLECONTENT",
+        "TABLECONTENTEDIT"
       ],
       "status": {
         "AC1009": "X",
@@ -6500,9 +6551,11 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "SECTION_MANAGER stored ordered section list",
-      "scope": "Source-bound stored update flag and ordered section pointers with exact registered identities, preserved object spelling, root-anchor checks and clone/erase/profile refusal. Native R2018 evidence is distinguished from synthetic R2007+ schema cases. Explicit qualified membership replacement is covered separately.",
+      "scope": "Source-bound stored update flag and ordered section pointers with exact registered identities, preserved object spelling and root-anchor checks. Native R2018 evidence is distinguished from synthetic R2007+ schema cases. Explicit membership replacement, creation and guarded erasure are covered separately; clone and source-profile conversion remain unsupported.",
       "evidence": [
-        "SECTIONMANAGER"
+        "SECTIONMANAGER",
+        "SECTIONMEMBERSHIP",
+        "SECTIONLIFECYCLE"
       ],
       "status": {
         "AC1009": "X",
@@ -6563,9 +6616,10 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "TABLEGEOMETRY immutable cell geometry storage",
-      "scope": "Qualified R2004+ source-bound packets preserve declared dimensions, ordered cells and geometry records, raw flags, complete payload and exact source references including retained child metadata. Native packets and synthetic pointer cases are distinguished. Unknown shapes remain opaque; layout, regeneration and editable geometry are separate.",
+      "scope": "Qualified R2004+ source-bound packets preserve declared dimensions, ordered cells and geometry records, raw flags, complete payload and exact source references including retained child metadata. Native packets and synthetic pointer cases are distinguished. Explicit loaded-packet replacement is covered separately; unknown shapes remain opaque, and layout/evaluation/regeneration remain unqualified.",
       "evidence": [
-        "TABLEGEOMETRY"
+        "TABLEGEOMETRY",
+        "TABLEGEOMETRYEDIT"
       ],
       "status": {
         "AC1009": "X",
@@ -6626,9 +6680,10 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH direct affine spline and straight-boundary transforms",
-      "scope": "Direct control/fit/tangent/seed transformation preserves stored knots, weights and flags, including periodic flags without evaluation. Transformed OCS axes define the plane; rank-two maps are accepted when the plane remains two-dimensional. Unsupported non-similarity patterns and gradients reject before unlinking or callbacks. Qualified conic and bulge transformations are covered separately.",
+      "scope": "Direct control/fit/tangent/seed transformation preserves stored knots, weights and flags, including periodic flags without evaluation. Transformed OCS axes define the plane; rank-two maps are accepted when the plane remains two-dimensional. Qualified conic, bulge and explicit pattern transforms are covered separately. Gradient, user-defined and doubled-pattern nonsimilarities still reject before unlinking or callbacks.",
       "evidence": [
-        "HATCHAFFINE"
+        "HATCHAFFINE",
+        "HATCHPATTERNAFFINE"
       ],
       "status": {
         "AC1009": "X",
@@ -6689,9 +6744,10 @@
       "area": "Objects",
       "pipeline": "typed",
       "feature": "SECTION_MANAGER explicit atomic membership replacement",
-      "scope": "ReplaceSections edits a loaded qualified manager after bounded enumeration and full source/root/registration checks. Order, repeats, actual target identities and prior snapshots are preserved; stale or foreign inputs reject before mutation. Public creation, erasure and automatic section generation remain separate.",
+      "scope": "ReplaceSections edits a qualified source-bound manager after bounded enumeration and full source/root/registration checks. Order, repeats, actual target identities and prior snapshots are preserved; stale or foreign inputs reject before mutation. Explicit database creation and erasure are covered separately; automatic section generation and membership maintenance remain unimplemented.",
       "evidence": [
-        "SECTIONMEMBERSHIP"
+        "SECTIONMEMBERSHIP",
+        "SECTIONLIFECYCLE"
       ],
       "status": {
         "AC1009": "X",
@@ -6731,9 +6787,10 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH conic and bulge affine transforms",
-      "scope": "Direct arc/ellipse/bulge transformation preserves ordered segments, zero/full/near-full intervals, direction, open closure and mixed spline metadata. Similarities retain polyline representation. Nonrepresentable tiny bulges and dormant values reject atomically; output obeys an explicit numeric endpoint contract. Pattern and gradient non-similarity remain unsupported.",
+      "scope": "Direct arc/ellipse/bulge transformation preserves ordered segments, zero/full/near-full intervals, direction, open closure and mixed spline metadata. Similarities retain polyline representation. Nonrepresentable tiny bulges and dormant values reject atomically; output obeys an explicit numeric endpoint contract. Qualified explicit pattern mapping is separate; gradient, user-defined and doubled-pattern nonsimilarities remain unsupported.",
       "evidence": [
-        "HATCHCONIC"
+        "HATCHCONIC",
+        "HATCHPATTERNAFFINE"
       ],
       "status": {
         "AC1009": "X",
@@ -6752,9 +6809,11 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "Read-only known target-version writer diagnostics",
-      "scope": "AnalyzeVersionCompatibility reports qualified current writer rejections and omissions with immutable captured fields and actual live SourceObject references. It checks known typed features and source-bound packets without changing headers, handles, collections, callbacks or lazy database state. An empty report does not guarantee Save success or complete DXF legality.",
+      "scope": "AnalyzeVersionCompatibility reports qualified current writer rejections and omissions with immutable captured fields and actual live SourceObject references. Covered source-profile guards now include retained Polyface records and qualified standalone opaque entities. Analysis does not change headers, handles, collections, callbacks or lazy database state; an empty report does not guarantee Save success or complete DXF legality.",
       "evidence": [
-        "VERSIONREPORT"
+        "VERSIONREPORT",
+        "POLYFACERECORDS",
+        "OPAQUEENTITY"
       ],
       "status": {
         "AC1009": "X",
@@ -6788,28 +6847,176 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "table-geometry-explicit-replacement",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLEGEOMETRY explicit atomic packet replacement",
+      "scope": "Loaded-only ReplaceGeometry replaces declared dimensions and ordered immutable cell/geometry values with exact registered same-document targets. Enumeration/disposal and current graph validation precede a prepared atomic swap; rejected and bit-equal no-op requests preserve snapshots. Finite/count/full-record limits apply. Native zero-pointer packets and explicitly authored target carriers are distinguished; no layout, regeneration, new TABLE authoring or source-profile migration is implied.",
+      "evidence": [
+        "TABLEGEOMETRYEDIT"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "section-manager-explicit-lifecycle",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "SECTION_MANAGER explicit creation and erasure",
+      "scope": "CreateSectionManager accepts ordered actual SECTION identities, repeats and empty membership; bounded enumeration, root/CLASS/metadata validation and reentry guards precede handle allocation. EraseSectionManager removes only the qualified owned tree after incoming-reference checks, preserves SECTION identities and retires the manager. Prior snapshots and absent CLASS counts survive. No automatic maintenance, live evaluation, clone/adoption or source-profile conversion is supplied.",
+      "evidence": [
+        "SECTIONLIFECYCLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "polyface-retained-records",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Polyface retained coordinate/face/SEQEND records",
+      "scope": "Loaded VertexRecords, FaceRecords, physical RecordSequence and EndSequenceRecord retain exact source identities, common metadata, nullable advisory counts, raw inactive slots and owner variants. Point/active signed-face edits and face Layer/Color changes preserve fixed record topology. Clean clone/adoption and guarded detach/re-adoption are qualified; private/owned/external metadata restrict lifecycle operations. Invalid normals reject before save/clone/adoption. Native and independent producer evidence are separate.",
+      "evidence": [
+        "POLYFACERECORDS",
+        "POLYFACEGRAMMAR"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-explicit-pattern-affine",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH explicit pattern-family affine transforms",
+      "scope": "Stored predefined/custom non-doubled line-family bases, offsets, directions and signed dash/gap/dot lengths map under qualified affine transforms. Separate WCS Origin must map back to Z=0 under the documented scale-relative numeric contract. Shared source patterns and line objects remain unchanged; validation completes before unlinking. Unknown subclass nonidentity, user-defined/gradient/doubled nonsimilarity, native rendering and automatic regeneration remain outside scope.",
+      "evidence": [
+        "HATCHPATTERNAFFINE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "table-content-explicit-replacement",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLECONTENT explicit scalar and header replacement",
+      "scope": "Loaded ReplaceContent atomically changes exact linked-data name/description and snapshot-bound same-kind integer/double/string/Point3D values in measured native frames. Newer profiles require caller-supplied display text; flags, units, format strings, nested packets and nonterminal references remain fixed. Terminal TABLESTYLE changes require actual same-document identity and reject beneath a TABLE owner. Stale/duplicate/reentrant requests and true string/record-limit violations reject before mutation; no-op preserves original snapshots. Table evaluation, layout, full cell authoring and synchronization remain unimplemented.",
+      "evidence": [
+        "TABLECONTENTEDIT"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "opaque-standalone-entity-preservation",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "Qualified standalone unknown entity preservation",
+      "scope": "Loaded eligible unknown entities retain immutable complete SourceTags and support scoped common appearance/XData edits under exact source-document/profile/owner, standard-reference and optional CLASS guards. Private grammar stays uninterpreted; transforms/clones/adoption and unsupported metadata changes reject. Explicit unreferenced removal retires the identity. Proxy, aggregate, child, embedded/modeler/surface forms and nonempty discarded ACDSDATA are excluded. Qualification uses declared schema fixtures; no native unknown-entity producer or geometry semantics is claimed.",
+      "evidence": [
+        "OPAQUEENTITY"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "O",
+        "AC1021": "O",
+        "AC1024": "O",
+        "AC1027": "O",
+        "AC1032": "O"
+      }
+    },
+    {
+      "id": "typed-native-backing-lifecycle-mixed",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Native TABLE backing with explicit lifecycle/reference release",
+      "scope": "Draft tenth mixed graph combines two native R2013/R2018 TABLE carriers, explicit TABLECONTENT/TABLEGEOMETRY edits, created SECTION_MANAGER membership, SECTIONSETTINGS references, retained Polyface records, an authored opaque neighbor and affine explicit HATCH patterns. Actual shared dependencies require ordered release; failure/retry cases preserve snapshots and pre-output invariants. Native stored packets and resource normalization allowances are checked separately from authored generic-pointer semantics. Final combined qualification and promotion of the two native profile cells remain pending.",
+      "evidence": [
+        "MIX10"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      }
     }
   ],
   "next_work": [
     {
       "id": "opaque-graph",
       "title": "Class-specific dependencies and typed integration",
-      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal dependency import and typed unknown-entity preservation. Typed graph copying requires explicit external maps and rejects opaque subtrees. Scoped raw transactions and terminal typed erasure are implemented with documented graph boundaries."
+      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, proxy entities and universal dependency import remain open. Eligible standalone unknown entities now have source-bound packet preservation and common edits; this does not interpret private geometry or dependencies. Typed graph copying still requires explicit external maps and rejects opaque subtrees. Scoped raw transactions and terminal typed erasure retain their documented boundaries."
     },
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH periodic spline evaluation, affine pattern/gradient transforms and automatic associative regeneration; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining POLYLINE record variants. Direct HATCH spline/conic/bulge transforms, explicit retained Polyline3D topology, ordinary PolygonMesh record retention and VIEW live-section references have scoped qualification. Tiny unrepresentable bulges reject under the numeric contract. MTEXT rendering/layout and annotation contexts remain open."
+      "scope": "HATCH periodic spline evaluation, gradient/user-defined/doubled-pattern nonsimilarity and automatic associative regeneration; MESH subentity override values, frozen VPORT symbol-table layers, extended rendering relationships and remaining POLYLINE variants. Direct spline/conic/bulge and explicit pattern-family transforms, retained Polyline3D topology, PolygonMesh/Polyface record subsets and VIEW live-section references now have scoped qualification. Tiny unrepresentable bulges still reject under the numeric contract. MTEXT rendering/layout and annotation contexts remain open."
     },
     {
       "id": "new-entities",
       "title": "Missing typed entity families",
-      "scope": "Editable TABLE and complete backing schemas, proxy variants, modern SAB/ACDSDATA and surface families. Stored SECTION geometry and settings ownership join source-bound TABLE and MULTILEADER payloads; section generation, rendering, regeneration and private graphs remain unqualified."
+      "scope": "Full TABLE authoring and complete backing schemas, proxy variants, modern SAB/ACDSDATA and surface families. Bounded loaded TABLECONTENT and TABLEGEOMETRY edits coexist with source-bound TABLE and MULTILEADER storage; no implicit table synchronization, layout or regeneration is performed. Stored SECTION geometry/settings and qualified standalone opaque entities do not establish section generation, private geometry semantics or rendering."
     },
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, explicit SECTION_MANAGER authoring/erasure, material/rendering and broader SUNSTUDY schemas. CELLSTYLEMAP joins the qualified immutable backing schemas; loaded SECTION_MANAGER lists now support explicit atomic replacement. Table layout, automatic section generation and solar evaluation remain separate."
+      "scope": "TABLESTYLE/CELLSTYLEMAP editing, broader TABLECONTENT/TABLEGEOMETRY authoring, complete FIELD and DIMASSOC graphs, material/rendering and broader SUNSTUDY schemas. Loaded table-content scalar/header and table-geometry packet replacement, immutable CELLSTYLEMAP entry storage, explicit SECTION_MANAGER membership and database creation/erasure now have bounded contracts. Table layout, automatic section generation, private format interpretation and solar evaluation remain separate work."
     },
     {
       "id": "historical-typed",

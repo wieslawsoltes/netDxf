@@ -1,0 +1,123 @@
+{
+  "module": "Bounded standalone opaque entity packet preservation and qualified common edits",
+  "productionCommit": "15b228174f3fc4c123caef8b04f1c791efb1001f",
+  "productionSubtree": "556e8ad7abafeee9f3d26e4e5b23acceb9f1a917",
+  "testCheckpoint": "1e9ba2b9c5a55ef7b9c46c5dd2372bc8fa987deb",
+  "sourceEvidence": {
+    "inventory": "opaque-entity-source-inventory-final.json",
+    "inventorySha256": "04319989f84d695634a9400c40f3e04b563193c8b7c2343de5e84deb773acdc2",
+    "filesScanned": 412,
+    "filesParsed": 408,
+    "documentedTruncatedFiles": 4,
+    "suppliedStandaloneUnknownCandidates": 0,
+    "fixtureOrigin": "Declared synthetic QUALIFIED_FUTURE_CURVE schema on a netDxf-authored scaffold; no native unknown/proxy producer qualification."
+  },
+  "configurations": {
+    "debug": {
+      "cases": 528,
+      "passed": 528,
+      "uniqueCaseNames": 528,
+      "results": "receipts/opaque-entity/debug-results.json",
+      "resultsSha256": "fcdff1d61060449158c87e18851b102ebc43219ecd649648d9cd6a417f215882",
+      "librarySha256": "b00470c616f2a949bc510b1dfda0cd9f70d9ad5e2a8fdc69dc101dc440a6ab41",
+      "conformanceSha256": "bc604f1c6c5aa49cbc4aa448d29f24749afc6c2261f38f36e7cc918917972400",
+      "packetGate": {
+        "completePacketPairs": 24,
+        "literalClassOutputs": 24,
+        "corruptionsRejected": 16,
+        "log": "receipts/opaque-entity/debug-packet-gate.log"
+      }
+    },
+    "release": {
+      "cases": 528,
+      "passed": 528,
+      "uniqueCaseNames": 528,
+      "results": "receipts/opaque-entity/release-results.json",
+      "resultsSha256": "fcdff1d61060449158c87e18851b102ebc43219ecd649648d9cd6a417f215882",
+      "librarySha256": "0a36811b386e4bc30a1a4ad6c84d866268e1baa95194fba57b1b4d542fe12f27",
+      "conformanceSha256": "0ea7b41a3e4783caabf492f1eb9a4ed0a86c8bae026bfb57324b5f2cce7f1541",
+      "packetGate": {
+        "completePacketPairs": 24,
+        "literalClassOutputs": 24,
+        "corruptionsRejected": 16,
+        "log": "receipts/opaque-entity/release-packet-gate.log"
+      }
+    }
+  },
+  "releaseAllTargetsBuild": {
+    "sourceCheckpoint": "1e9ba2b9c5a55ef7b9c46c5dd2372bc8fa987deb",
+    "productionSubtree": "556e8ad7abafeee9f3d26e4e5b23acceb9f1a917",
+    "targets": {
+      "netstandard2.0": {
+        "librarySha256": "771c977e3da5c0116d95a3a95895d56d2d2054b27bfac27f95767436c5cfdc42",
+        "warningCodes": {
+          "CS1591": 561
+        }
+      },
+      "net471": {
+        "librarySha256": "515d4516ff6bdff976e837cb46a4b93a639826f3e632b77f0827846cc3b8d747",
+        "warningCodes": {
+          "CS1591": 561
+        }
+      },
+      "net48": {
+        "librarySha256": "402c09cf24b705e391162561c376e68cf748cbb37487a6b43fa5f645bf7c03d7",
+        "warningCodes": {
+          "CS1591": 561
+        }
+      },
+      "net6.0": {
+        "librarySha256": "a7e68c25ad6a5a370fcbd4deac67fb83e47c4d96f18b8cc04d25db29560d02ed",
+        "warningCodes": {
+          "CS1591": 561
+        }
+      },
+      "net8.0": {
+        "librarySha256": "3929d6c19e5d18148dfd3d9b481bdc076950a722055ff6934969ca0d0e74358c",
+        "warningCodes": {
+          "CS1591": 561
+        }
+      }
+    },
+    "warningCodesTotal": {
+      "CS1591": 2805
+    },
+    "errors": 0,
+    "assemblyIdentityNote": "The final all-target build ran after a test-only commit and regenerated assembly source-revision metadata. Its library hashes differ from the earlier exact libraries used for focused and independent runtime qualification; the production source subtree is identical.",
+    "logs": "receipts/opaque-entity/opaque-build-logs.tar.gz",
+    "logManifest": "receipts/opaque-entity/build-log-manifest.json"
+  },
+  "sourceIdentityRegression": {
+    "cases": 10,
+    "failed": 0,
+    "results": "receipts/opaque-entity/source-identity-results.json",
+    "configuration": "Debug"
+  },
+  "independentReview": {
+    "receipt": "receipts/opaque-entity-independent/recovery-audit/opaque-review-summary.json",
+    "receiptSha256": "a7df616e307dffbb6d5c08e157200bbea72633011578f08b8cbaa6ed172d1bf8",
+    "casesPerConfiguration": 91,
+    "mainOutputAuditsPerConfiguration": 57,
+    "auditErrors": 0,
+    "auditRepairs": 0,
+    "scope": "ezdxf1.4.4 stores the declared unknown type as DXFTagStorage. Clean audits do not establish geometry/application semantics or native CAD execution."
+  },
+  "artifacts": {
+    "archive": "receipts/opaque-entity/opaque-entity-qualified-packets.tar.gz",
+    "archiveSha256": "8f5ea846f84a48a5cb551516e7d9bfb1d6706d49b1bc35a9465db86525998b8f",
+    "packetFiles": 144,
+    "manifest": "receipts/opaque-entity/packet-manifest.json"
+  },
+  "corrections": [
+    "Independent review found and reproduced literal CLASS escape loss in b2ee2f9; df9b5ac fixes opaque-bound CLASS encoding and text preflight.",
+    "Independent review found and reproduced a source1003 layer-removal gap;15b2281 includes opaque references in the shared table resource walk.",
+    "Initial source fixtures contained generic ASCII comments incompatible with raw binary serialization; declared scaffolds remove those header comments. Explicit comment preservation/refusal cases remain separate.",
+    "A legacy raw Unicode fixture used a literal Omega outside the code page; qualification uses the explicit Unicode wire escape. The failed raw construction is not counted as a typed rejection."
+  ],
+  "limits": [
+    "No geometry interpretation, proxy or aggregate/embedded sequence support, authoring, cloning, owner relocation, source-profile conversion, private pointer grammar inference, discarded ACDSDATA preservation or exhaustive DXF legality claim.",
+    "Only known qualified standard links/common resources/XData participate in dependency guards; private application dependencies remain unknown.",
+    "SourceTags preserves typed values and order, not lexical whitespace/numeric spelling or whole-file bytes.",
+    "Opaque-specific preflight preserves stream and existing file state; unrelated legacy writer failures do not acquire a general transactional guarantee."
+  ]
+}

@@ -1,0 +1,642 @@
+[
+  {
+    "name": "manager-lifecycle/created/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/created/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/empty/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/null-list",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/null-entry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/detached",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/foreign",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/erased",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/move-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/get-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/dispose-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/reentry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/caught-reentry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/lower-anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/existing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/orphan",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/opaque",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/seed",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/get-anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/dispose-anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/dispose-class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/dispose-profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/dispose-target",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/False/dispose-seed",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/xrecord330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/xrecord340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/reactor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/default",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/attribute-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/False/owned-incoming",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/foreign",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/erased",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/null",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/root",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/reactors",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/False/opaque-owned",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/False/absent",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/False/count-absent",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/False/stale",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/False/edited",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/False/section-reactor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/False/root-reactor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/False/section-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/False/root-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/False/unrelated-line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/maximum/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/retained-allocation/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/owned-aliases/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/profile-save/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/null-list",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/null-entry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/detached",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/foreign",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/erased",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/excessive",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/move-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/get-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/dispose-throws",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/reentry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/caught-reentry",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/lower-anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/existing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/orphan",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/opaque",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/seed",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/get-anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/dispose-anchor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/dispose-class",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/dispose-profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/dispose-target",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/create-reject/True/dispose-seed",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/xrecord330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/xrecord340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/reactor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/default",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/settings",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/header",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/attribute-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/incoming/True/owned-incoming",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/foreign",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/erased",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/null",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/profile",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/root",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/reactors",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/erase-reject/True/opaque-owned",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/True/absent",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/True/count-absent",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/True/stale",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/class/True/edited",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/True/section-reactor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/True/root-reactor",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/True/section-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/True/root-xdata",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/required-metadata/True/unrelated-line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/maximum/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/retained-allocation/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/owned-aliases/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/profile-save/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/native/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/native/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/native/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "manager-lifecycle/native/True/True",
+    "passed": true,
+    "error": null
+  }
+]

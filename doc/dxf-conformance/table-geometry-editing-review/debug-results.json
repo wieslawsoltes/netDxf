@@ -1,0 +1,207 @@
+{
+  "cases": 40,
+  "failed": 0,
+  "librarySha256": "90861fb45bdad3777d2c87e6fbcce8c7af8041e34b930f5e374dc03e3347e482",
+  "results": [
+    {
+      "name": "no-op-preserves-packet-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "replace-values-and-snapshots-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reference-identity-and-release-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "signed-zero-is-an-explicit-change-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "iteration-and-disposal-atomicity-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "caught-reentry-poisons-outer-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "dispose-removes-new-target-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "source-anchor-noop-guard-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "source-profile-noop-guard-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "foreign-and-detached-identities-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "count-and-cell-null-guards-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "constructor-finite-values-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "no-op-preserves-packet-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "replace-values-and-snapshots-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reference-identity-and-release-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "signed-zero-is-an-explicit-change-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "iteration-and-disposal-atomicity-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "caught-reentry-poisons-outer-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "dispose-removes-new-target-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "source-anchor-noop-guard-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "source-profile-noop-guard-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "foreign-and-detached-identities-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "count-and-cell-null-guards-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "constructor-finite-values-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-acad_table_simple-B0-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-acad_table_simple-B0-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-acad_table_with_blk_ref-117-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-acad_table_with_blk_ref-117-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1024_ascii-748-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1024_ascii-131F-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1024_ascii-748-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1024_ascii-131F-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1018_ascii-748-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1018_ascii-13F0-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1018_ascii-748-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1018_ascii-13F0-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1021_ascii-748-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1021_ascii-1386-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1021_ascii-748-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-sample_AC1021_ascii-1386-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}
