@@ -26,9 +26,7 @@ namespace netDxf.IO
                     if (this.isBinary && tag.Value is byte[] bytes && bytes.Length > byte.MaxValue)
                         throw new NotSupportedException("Retained unknown entity binary chunks exceed binary transport framing.");
                     if (!(tag.Value is string text)) continue;
-                    CheckStyleUnicode(text);
-                    if (!this.isBinary && text.Any(c => c == '\0' || c == '\r' || c == '\n'))
-                        throw new InvalidOperationException("Unknown entity contains a string unsupported by text transport.");
+                    this.ValidateOpaqueText(text);
                 }
             }
             if (entities.Count != 0) this.ValidateOpaqueEntityClasses(this.PrepareClassDefinitions());
@@ -36,7 +34,25 @@ namespace netDxf.IO
         private void ValidateOpaqueEntityClasses(DxfClassCollection definitions)
         {
             foreach (DxfOpaqueEntity entity in this.doc.Blocks.SelectMany(block => block.Entities).OfType<DxfOpaqueEntity>())
+            {
                 entity.ValidatePreparedClass(definitions);
+                if (!definitions.Contains(entity.CodeName)) continue;
+                DxfClass definition = definitions[entity.CodeName];
+                this.ValidateOpaqueText(definition.Name);
+                this.ValidateOpaqueText(definition.CppClassName);
+                this.ValidateOpaqueText(definition.ApplicationName);
+            }
+        }
+        private void ValidateOpaqueText(string text)
+        {
+            CheckStyleUnicode(text);
+            if (text.IndexOf('\0') >= 0 || !this.isBinary && text.Any(c => c == '\r' || c == '\n'))
+                throw new InvalidOperationException("Unknown entity contains a string unsupported by the selected transport.");
+        }
+        private bool IsOpaqueEntityClass(string name)
+        {
+            return this.doc.Blocks.SelectMany(block => block.Entities).OfType<DxfOpaqueEntity>()
+                .Any(entity => string.Equals(entity.CodeName, name, StringComparison.OrdinalIgnoreCase));
         }
         private void WriteOpaqueEntity(DxfOpaqueEntity entity)
         {

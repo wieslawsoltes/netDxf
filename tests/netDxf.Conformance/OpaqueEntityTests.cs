@@ -29,7 +29,13 @@ internal static partial class Program
     {
         var document = new DxfDocument(version);
         var line = new Line(Vector3.Zero, Vector3.UnitX);
-        document.Entities.Add(line);
+        if (defect == "unused-block") { var block = new Block("OPAQUE_OWNER"); block.Entities.Add(line); document.Blocks.Add(block); }
+        else
+        {
+            if (defect == "paper") { document.Layouts.Add(new netDxf.Objects.Layout("OpaquePaper")); document.Entities.ActiveLayout = "OpaquePaper"; }
+            document.Entities.Add(line);
+        }
+        if (defect == "xdata-layer") document.Layers.Add(new Layer("SOURCE_XDATA_LAYER"));
         document.ApplicationRegistries.Add(new ApplicationRegistry("OPAQUE_TEST"));
         document.Classes.Add(new DxfClass(OpaqueName, "AcDbQualifiedFutureCurve", "declared-schema") { IsEntity = defect != "class-object", InstanceCount = version == DxfVersion.AutoCad2000 ? null : 1 });
         using var original = new MemoryStream(); Check(document.Save(original), "Opaque scaffold save"); original.Position = 0;
@@ -48,6 +54,8 @@ internal static partial class Program
             new(62, (short)191), new(48, -8.0),
             new(1001, "OPAQUE_TEST"), new(1000, "source xdata"), new(1005, line.Handle), new(1070, (short)4)
         };
+        if (defect == "paper") tags.Insert(14, new DxfTag(67, (short)1));
+        if (defect == "xdata-layer") tags.Add(new DxfTag(1003, "SOURCE_XDATA_LAYER"));
         int first(short code) => tags.FindIndex(tag => tag.Code == code);
         int body = tags.FindIndex(tag => tag.Code == 100 && (string)tag.Value == "AcDbQualifiedFutureCurve");
         if (defect == "missing-owner") tags.RemoveAt(first(330));
@@ -66,8 +74,7 @@ internal static partial class Program
         if (defect == "bad-scale") tags[first(48)] = new DxfTag(48, 0.0);
         if (defect == "bad-xdata") tags.Add(new DxfTag(1002, "{"));
         var all = raw.Tags.ToList();
-        var section = raw.Sections.Single(section => section.Name == "ENTITIES");
-        int at = section.Records.Last().EndTagIndex;
+        int at = raw.Sections.SelectMany(section => section.Records).Single(record => record.Name == "LINE" && record.Tags.Any(tag => tag.Code == 5 && (string)tag.Value == line.Handle)).EndTagIndex;
         all.InsertRange(at, tags);
         if (defect is "class-field" or "class-duplicate")
         {

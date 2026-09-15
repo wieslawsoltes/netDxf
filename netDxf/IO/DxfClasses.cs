@@ -145,10 +145,12 @@ namespace netDxf.IO
 
         private void WriteClassDefinition(DxfClass definition)
         {
+            Func<string, string> encode = this.IsOpaqueEntityClass(definition.Name)
+                ? (Func<string, string>) this.EncodeDatabaseString : this.EncodeNonAsciiCharacters;
             this.chunk.Write(0, DxfObjectCode.Class);
-            this.chunk.Write(1, this.EncodeNonAsciiCharacters(definition.Name));
-            this.chunk.Write(2, this.EncodeNonAsciiCharacters(definition.CppClassName));
-            this.chunk.Write(3, this.EncodeNonAsciiCharacters(definition.ApplicationName));
+            this.chunk.Write(1, encode(definition.Name));
+            this.chunk.Write(2, encode(definition.CppClassName));
+            this.chunk.Write(3, encode(definition.ApplicationName));
             this.chunk.Write(90, definition.ProxyFlags);
             if (this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000 && definition.InstanceCount.HasValue)
                 this.chunk.Write(91, definition.InstanceCount.Value);

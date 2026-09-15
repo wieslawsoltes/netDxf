@@ -2,6 +2,7 @@
 """Inspect declared-schema opaque entity source/output packets independently of typed loading."""
 import argparse
 import copy
+import re
 from pathlib import Path
 from verify_sunstudy_producer import check, records
 
@@ -81,8 +82,27 @@ def verify(directory):
         try: verify_rows(source, changed, 2018)
         except ValueError: corruptions += 1
         else: raise ValueError(f'Corrupted opaque packet accepted: {fault}')
-    check(outputs == 24 and corruptions == 15, 'Opaque packet evidence inventory changed')
-    print(f'Declared opaque entity gate: {outputs} full source/output packet checks; {corruptions} corruptions rejected. No native/proxy qualification claimed.')
+    literal_checks = 0
+    def decoded(text):
+        return re.sub(r"\\U\+([0-9A-Fa-f]{4})", lambda match: chr(int(match.group(1), 16)), text)
+    def literal(rows):
+        values = [decoded(value) for code, value in definition(rows) if code == 3]
+        check(values == [r"literal \U+0041 Ω"], 'Literal CLASS escape changed its semantic text')
+    for year in PROFILES:
+        for source_binary in (False, True):
+            source = records((directory / f'opaque-class-source-AutoCad{year}-{source_binary}.dxf').read_bytes())
+            literal(source)
+            for output_binary in (False, True):
+                changed = records((directory / f'opaque-class-output-AutoCad{year}-{source_binary}-{output_binary}.dxf').read_bytes())
+                literal(changed)
+                literal_checks += 1
+    changed = copy.deepcopy(changed)
+    definition(changed)[next(i for i, tag in enumerate(definition(changed)) if tag[0] == 3)] = [3, r'literal \U+0041 Ω']
+    try: literal(changed)
+    except ValueError: corruptions += 1
+    else: raise ValueError('Lossy CLASS escape was accepted')
+    check(outputs == 24 and literal_checks == 24 and corruptions == 16, 'Opaque packet evidence inventory changed')
+    print(f'Declared opaque entity gate: {outputs} full source/output packet checks; {literal_checks} CLASS literal checks; {corruptions} corruptions rejected. No native/proxy qualification claimed.')
 
 
 if __name__ == '__main__':

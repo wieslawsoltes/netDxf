@@ -28,6 +28,7 @@ internal static partial class Program
             Run($"opaque-entity/block-atomicity/{binary}", () => OpaqueBlockAtomicity(binary));
             Run($"opaque-entity/class-retry/{binary}", () => OpaqueClassRetry(binary));
         }
+        RegisterOpaqueEntityGraphTests();
     }
     private static DxfRawDocument OpaqueModify(DxfRawDocument raw, Action<List<DxfTag>> edit)
     {

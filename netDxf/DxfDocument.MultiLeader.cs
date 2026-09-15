@@ -18,6 +18,7 @@ namespace netDxf
             {
                 IEnumerable<DxfObject> references;
                 if(item is Polyline3DRecord polylineRecord)references=polylineRecord.References;
+                else if(item is DxfOpaqueEntity opaqueEntity)references=opaqueEntity.References;
                 else if(item is DxfStoredSunStudy study)references=study.References;
                 else if(item is DxfOpaqueObject opaqueStudy && opaqueStudy.CodeName=="SUNSTUDY")
                     references=opaqueStudy.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value)).Where(value=>value!=null);
