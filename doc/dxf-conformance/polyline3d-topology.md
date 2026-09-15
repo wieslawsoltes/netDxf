@@ -54,8 +54,10 @@ A successfully removed `Polyline3DRecord` has `IsRemoved == true`, has no owner
 and is no longer registered. Its retired handle and remaining payload stay
 available to callers that held the record for inspection. There is no record
 resurrection or insertion-by-record API. APPID references and internal metadata
-subscriptions are released. Movement and removal consume no handles, and the
-SEQEND identity survives an empty sequence and subsequent insertion.
+subscriptions are released. Movement and removal consume no handles. Removal
+keeps at least two points in a retained sequence, matching the existing writer's
+minimum, and rejects smaller results before mutation. The SEQEND identity stays
+stable at that boundary and through later insertion.
 
 All argument, current geometry, profile, registration, dependency and admission
 checks occur before point/record mutation or handle allocation. Equal-index

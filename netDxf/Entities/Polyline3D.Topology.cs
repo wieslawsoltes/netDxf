@@ -36,13 +36,15 @@ namespace netDxf.Entities
         /// Retained sequences must be registered in their source document. Incoming semantic
         /// references and private or owned record payloads reject before mutation. Removal does
         /// not cascade to referenced objects. A removed record retains its retired handle for
-        /// inspection, has no owner and cannot be inserted or adopted again. SEQEND stays stable.
+        /// inspection, has no owner and cannot be inserted or adopted again. A retained sequence
+        /// must keep at least two points, as required by the existing writer. SEQEND stays stable.
         /// </remarks>
         public void RemoveVertexAt(int index)
         {
             if (index < 0 || index >= this.vertexes.Count) throw new ArgumentOutOfRangeException(nameof(index));
             DxfDocument document = this.ValidateTopologyEdit();
             if (!this.HasStoredRecords) { this.vertexes.RemoveAt(index); return; }
+            if (this.vertexes.Count <= 2) throw new InvalidOperationException("A retained 3D polyline must keep at least two vertices for output.");
             Polyline3DRecord removed = this.storedVertexRecords[index];
             document.ValidatePolylineVertexRemoval(removed);
             document.UnregisterPolylineVertexRemoval(removed);

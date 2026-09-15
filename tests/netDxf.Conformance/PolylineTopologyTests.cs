@@ -26,7 +26,7 @@ internal static partial class Program
         {
             foreach (int fault in Enumerable.Range(0, 18)) Run($"polyline-topology/rejection/{binary}/{fault}", () => PolylineTopologyRejection(binary, fault));
             foreach (int kind in Enumerable.Range(0, 14)) Run($"polyline-topology/reference/{binary}/{kind}", () => PolylineTopologyReference(binary, kind));
-            Run($"polyline-topology/empty/{binary}", () => PolylineTopologyEmpty(binary));
+            Run($"polyline-topology/minimum/{binary}", () => PolylineTopologyMinimum(binary));
             Run($"polyline-topology/low-source-seed/{binary}", () => PolylineTopologyLowSeed(binary));
             Run($"polyline-topology/retained-handle-reservation/{binary}", () => PolylineTopologyRetainedReservation(binary));
         }
@@ -156,7 +156,7 @@ internal static partial class Program
         var records = polyline.VertexRecords.ToArray(); var points = polyline.Vertexes.ToArray(); var end = polyline.EndSequenceRecord; long seed = OwnershipSeed(doc);
         int callbacks = 0; foreach (var record in records) { record.XDataAddAppReg += (_, _) => callbacks++; record.XDataRemoveAppReg += (_, _) => callbacks++; }
         bool rejected = false; try { edit(); } catch (Exception error) when (error is ArgumentException or InvalidOperationException or NotSupportedException) { rejected = true; }
-        Check(rejected && records.SequenceEqual(polyline.VertexRecords) && points.SequenceEqual(polyline.Vertexes)
+        Check(rejected && records.SequenceEqual(polyline.VertexRecords) && points.Zip(polyline.Vertexes).All(pair => pair.First.X.Equals(pair.Second.X) && pair.First.Y.Equals(pair.Second.Y) && pair.First.Z.Equals(pair.Second.Z))
             && ReferenceEquals(end, polyline.EndSequenceRecord) && OwnershipSeed(doc) == seed && callbacks == 0 && records.All(r => !r.IsRemoved), "rejected topology edit mutated records, points, metadata or seed");
     }
 
@@ -177,7 +177,7 @@ internal static partial class Program
             var record = new DxfXRecord(); record.Data.Add(new DxfTag(kind == 8 ? (short)320 : kind == 4 ? (short)330 : (short)340, "000" + target.Handle.ToLowerInvariant())); doc.Objects.Root.Add("TOPOLOGY_REF", record);
         }
         else if (kind is 6 or 7 or 9) doc.DrawingVariables.AddCustomVariable(new HeaderVariable("$TOPOLOGY_REF", kind == 9 ? (short)329 : kind == 6 ? (short)340 : (short)5, target.Handle));
-        else if (kind == 10) doc.Objects.Root.Add("TOPOLOGY_REF", target, false);
+        else if (kind == 10) { var buffer = new DxfIdBuffer(); buffer.References.Add(target); doc.Objects.Root.Add("TOPOLOGY_REF", buffer); }
         else if (kind == 11) { var extension = new DxfDictionary(); extension.Add("PAYLOAD", new DxfXRecord()); doc.Objects.SetExtensionDictionary(target, extension); }
         else if (kind == 12) { var data = new XData(new ApplicationRegistry("TOPOLOGY_SELF")); data.XDataRecord.Add(new XDataRecord(XDataCode.String, "remove safe metadata")); target.XData.Add(data); arbitrary = true; }
         else { target.PersistentReactors.Add(other); arbitrary = true; }
@@ -188,14 +188,16 @@ internal static partial class Program
         if (kind == 12) Check(doc.ApplicationRegistries.Remove("TOPOLOGY_SELF"), "removed child APPID subscription/reference was retained");
     }
 
-    private static void PolylineTopologyEmpty(bool binary)
+    private static void PolylineTopologyMinimum(bool binary)
     {
         var (doc, polyline) = PolylineTopologySeed(DxfVersion.AutoCad2018, binary); string end = polyline.EndSequenceRecord.Handle;
-        while (polyline.Vertexes.Count != 0) polyline.RemoveVertexAt(0);
-        Equal(0, polyline.VertexRecords.Count, "empty retained sequence");
+        while (polyline.Vertexes.Count > 2) polyline.RemoveVertexAt(0);
+        long seed = OwnershipSeed(doc); var records = polyline.VertexRecords.ToArray();
+        Throws<InvalidOperationException>(() => polyline.RemoveVertexAt(0));
+        Check(records.SequenceEqual(polyline.VertexRecords) && OwnershipSeed(doc) == seed, "minimum point guard mutated the sequence");
         polyline.InsertVertex(0, new Vector3(11, 12, 13));
-        var loaded = StoredDimAssocLoad(StoredDimAssocSave(doc, binary, $"polyline-topology-empty-{binary}.dxf"));
-        Equal(end, loaded.Entities.Polylines3D.Single().EndSequenceRecord.Handle, "empty/refilled SEQEND identity");
+        var loaded = StoredDimAssocLoad(StoredDimAssocSave(doc, binary, $"polyline-topology-minimum-{binary}.dxf"));
+        Equal(end, loaded.Entities.Polylines3D.Single().EndSequenceRecord.Handle, "minimum/refilled SEQEND identity");
     }
 
     private static void PolylineTopologyLowSeed(bool binary)

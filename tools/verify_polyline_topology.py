@@ -23,7 +23,7 @@ def simple_output(path, year, binary, kind):
     check(len(parents) == 1, 'Expected one edited POLYLINE')
     parent = parents[0]
     expected = {'edit': [ZERO, NEW_POINT, ZERO, Y], 'clone': [ZERO, ZERO, Y, NEW_POINT],
-                'unicode': [NEW_POINT, ZERO, X, ZERO, Y], 'empty': [NEW_POINT]}[kind]
+                'unicode': [NEW_POINT, ZERO, X, ZERO, Y], 'minimum': [NEW_POINT, ZERO, Y]}[kind]
     check([tuple(v.dxf.location) for v in parent.vertices] == expected, 'Point order or coordinates changed')
     owned = [v.dxf.handle for v in parent.vertices] + [parent.seqend.dxf.handle]
     check(len(set(owned)) == len(owned) and set(owned) == records.children(after).keys(), 'Child identity inventory')
@@ -102,7 +102,7 @@ def main():
             for kind in ('clone', 'unicode'):
                 verify(f'polyline-topology-{kind}-AutoCad{year}-{input_binary}.dxf', simple_output, year, input_binary, kind)
     for binary in (False, True):
-        verify(f'polyline-topology-empty-{binary}.dxf', simple_output, 2018, binary, 'empty')
+        verify(f'polyline-topology-minimum-{binary}.dxf', simple_output, 2018, binary, 'minimum')
     check({p.name for p in args.artifacts.glob('polyline-topology-*.dxf')} == expected, 'Exact 98-output topology inventory')
     corruption_controls(args.artifacts, sources)
     print('Polyline topology: 98 outputs; all six profiles and both transports; exact native/producer child packets, metadata, insertion, final-index movement, deletion, clones, Unicode resources and eight actual-output corruption controls; zero independent audit errors or repairs.')
