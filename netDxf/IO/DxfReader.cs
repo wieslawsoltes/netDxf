@@ -4506,7 +4506,7 @@ namespace netDxf.IO
             int subdivisionLevel = 0;
             bool blendCrease = false;
             bool creaseListRead = false, publicSubclass = true, xdataStarted = false;
-            bool overrideDeclarationRead = false;
+            bool versionRead = false, blendRead = false, subdivisionRead = false, overrideDeclarationRead = false;
             int privateDepth = 0;
             List<Vector3> vertexes = null;
             List<int[]> faces = null;
@@ -4534,24 +4534,30 @@ namespace netDxf.IO
                 }
                 if (this.chunk.Code == 1001) xdataStarted = true;
                 else if (!publicSubclass || xdataStarted) { this.ReadNextMeshTag(); continue; }
-                if (overrideDeclarationRead && (this.chunk.Code == 71 || this.chunk.Code == 72 ||
-                    this.chunk.Code == 90 || this.chunk.Code == 91 || this.chunk.Code == 92 ||
-                    this.chunk.Code == 93 || this.chunk.Code == 94 || this.chunk.Code == 95 ||
-                    this.chunk.Code == 10 || this.chunk.Code == 20 || this.chunk.Code == 30 || this.chunk.Code == 140))
-                    throw this.MeshReadError(this.chunk.Code, "A public mesh field cannot follow the terminal subentity override declaration.");
                 switch (this.chunk.Code)
                 {
+                    case 10:
+                    case 20:
+                    case 30:
+                    case 140:
+                        throw this.MeshReadError(this.chunk.Code, "A mesh list item must belong to its declared counted list.");
                     case 90:
-                        if (creaseListRead || (faces != null && edges == null))
-                        {
-                            int overrides = this.chunk.ReadInt();
-                            if (overrides < 0) throw this.MeshReadError(90, "The subentity override count cannot be negative.");
-                            if (overrides != 0) throw this.MeshReadError(90, "Subentity property overrides are not supported.");
-                            overrideDeclarationRead = true;
-                        }
+                        if (overrideDeclarationRead)
+                            throw this.MeshReadError(90, "The subentity override count is declared more than once.");
+                        int overrides = this.chunk.ReadInt();
+                        if (overrides < 0) throw this.MeshReadError(90, "The subentity override count cannot be negative.");
+                        if (overrides != 0) throw this.MeshReadError(90, "Subentity property overrides are not supported.");
+                        overrideDeclarationRead = true;
+                        this.ReadNextMeshTag();
+                        break;
+                    case 71:
+                        if (versionRead) throw this.MeshReadError(71, "The mesh version is declared more than once.");
+                        versionRead = true;
                         this.ReadNextMeshTag();
                         break;
                     case 72:
+                        if (blendRead) throw this.MeshReadError(72, "The blend flag is declared more than once.");
+                        blendRead = true;
                         short blend = this.chunk.ReadShort();
                         if (blend != 0 && blend != 1)
                             throw new InvalidDataException("MESH group 72 (Blend Crease) must be zero or one.");
@@ -4559,27 +4565,33 @@ namespace netDxf.IO
                         this.ReadNextMeshTag();
                         break;
                     case 91:
+                        if (subdivisionRead) throw this.MeshReadError(91, "The subdivision level is declared more than once.");
+                        subdivisionRead = true;
                         subdivisionLevel = this.chunk.ReadInt();
                         if (subdivisionLevel < 0 || subdivisionLevel > 255)
                             throw this.MeshReadError(91, "Subdivision level must be between zero and 255.");
                         this.ReadNextMeshTag();
                         break;
                     case 92:
+                        if (vertexes != null) throw this.MeshReadError(92, "The vertex count is declared more than once.");
                         int numVertexes = this.chunk.ReadInt();
                         this.ReadNextMeshTag();
                         vertexes = this.ReadMeshVertexes(numVertexes);
                         break;
                     case 93:
+                        if (faces != null) throw this.MeshReadError(93, "The face-list size is declared more than once.");
                         int sizeFaceList = this.chunk.ReadInt();
                         this.ReadNextMeshTag();
                         faces = this.ReadMeshFaces(sizeFaceList);
                         break;
                     case 94:
+                        if (edges != null) throw this.MeshReadError(94, "The edge count is declared more than once.");
                         int numEdges = this.chunk.ReadInt();
                         this.ReadNextMeshTag();
                         edges = this.ReadMeshEdges(numEdges);
                         break;
                     case 95:
+                        if (creaseListRead) throw this.MeshReadError(95, "The crease count is declared more than once.");
                         int numCrease = this.chunk.ReadInt();
                         this.ReadNextMeshTag();
                         if (numCrease < 0 || edges == null || numCrease != edges.Count)
