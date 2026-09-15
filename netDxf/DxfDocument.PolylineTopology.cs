@@ -21,8 +21,11 @@ namespace netDxf
                 retainedTags += count;
             }
             if (retainedTags > 1048576) throw new NotSupportedException("The inserted VERTEX exceeds the document's retained polyline tag admission budget.");
+            var occupied = new HashSet<ulong>();
+            foreach (DxfObject item in this.RetainedMetadataObjects())
+                if (ulong.TryParse(item.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong value)) occupied.Add(value);
             long number = this.NumHandles;
-            while (number > 0 && number < long.MaxValue && this.StoredTableHandleTarget(number.ToString("X", CultureInfo.InvariantCulture)) != null) number++;
+            while (number > 0 && number < long.MaxValue && occupied.Contains((ulong)number)) number++;
             if (number <= 0 || number == long.MaxValue) throw new InvalidOperationException("No VERTEX identity can be allocated from the current handle seed.");
             string handle = number.ToString("X", CultureInfo.InvariantCulture);
             var tags = new List<DxfTag>

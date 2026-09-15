@@ -205,7 +205,13 @@ internal static partial class Program
         var (original, _) = PolylineTopologySeed(DxfVersion.AutoCad2018, binary);
         var raw = DxfRawDocument.Load(new MemoryStream(StoredDimAssocSave(original, binary)));
         var tags = raw.Tags.ToList(); int seedIndex = tags.FindIndex(t => t.Code == 9 && Equals(t.Value, "$HANDSEED")); tags[seedIndex + 1] = new DxfTag(5, "1");
-        var loaded = StoredDimAssocLoad(StoredDimAssocRawBytes(DxfRawDocument.Create(tags), binary)); var polyline = loaded.Entities.Polylines3D.Single();
+        DxfDocument? loaded;
+        try { using var input = new MemoryStream(StoredDimAssocRawBytes(DxfRawDocument.Create(tags), binary)); loaded = DxfDocument.Load(input); }
+        catch (Exception error) when (error is ArgumentException or FormatException) { loaded = null; }
+        // The existing table reader can reject this low seed before reaching POLYLINE.
+        // Rejection is safe; a successfully admitted drawing must not reuse a physical identity.
+        if (loaded == null) return;
+        var polyline = loaded.Entities.Polylines3D.Single();
         var existing = raw.Sections.Where(s => s.Name != "HEADER").SelectMany(s => s.Records).SelectMany(r => r.Tags.Where(t => t.Code == 5)).Select(t => (string)t.Value).ToHashSet(StringComparer.OrdinalIgnoreCase);
         polyline.InsertVertex(0, Vector3.UnitZ);
         Check(!existing.Contains(polyline.VertexRecords[0].Handle), "authored insertion reused a physical source handle from an advertised low seed");

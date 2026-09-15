@@ -6,6 +6,7 @@ import copy
 import tempfile
 import ezdxf
 from ezdxf.lldxf.types import DXFTag
+from ezdxf.lldxf.encoding import decode_dxf_unicode
 import verify_polyline3d_records as records
 
 native = records.native
@@ -28,11 +29,15 @@ def simple_output(path, year, binary, kind):
     owned = [v.dxf.handle for v in parent.vertices] + [parent.seqend.dxf.handle]
     check(len(set(owned)) == len(owned) and set(owned) == records.children(after).keys(), 'Child identity inventory')
     for index, vertex in enumerate(parent.vertices):
-        check(vertex.dxf.owner == parent.dxf.handle and vertex.dxf.flags == 32, 'Ordinary inserted owner or flags')
+        packet = after[vertex.dxf.handle]
+        check(native.extractor.owner(packet) == parent.dxf.handle and native.one(packet, 70) == 32, 'Ordinary inserted owner or flags')
         layer = 'Łódź层' if kind == 'unicode' and index == 0 else '0'
-        check(vertex.dxf.layer == layer, 'Inserted or surviving resource identity')
+        # The pinned reader's audit projects the parent's layer onto child objects.
+        # Verify the original packet instead, decoding only DXF Unicode escapes.
+        stored_layer = next(t.value for t in after[vertex.dxf.handle] if t.code == 8)
+        check(decode_dxf_unicode(stored_layer) == layer, 'Inserted or surviving resource identity')
         check(not vertex.has_xdata('TOPOLOGY_REF') and not vertex.has_extension_dict, 'Unexpected inserted metadata')
-    check(parent.seqend.dxf.owner == parent.dxf.handle, 'SEQEND owner')
+    check(native.extractor.owner(after[parent.seqend.dxf.handle]) == parent.dxf.handle, 'SEQEND owner')
     return after
 
 
@@ -51,8 +56,10 @@ def producer_output(path, year, input_binary, binary, sources):
     parent = doc.entitydb[handles['polyline']]
     check([v.dxf.handle for v in parent.vertices] == [inserted, *handles['vertices'][1:], handles['vertices'][0]], 'Metadata did not follow moved identity')
     child = doc.entitydb[inserted]
-    check(tuple(child.dxf.location) == NEW_POINT and child.dxf.flags == 32, 'Inserted geometry')
-    check(child.dxf.owner == parent.dxf.handle and child.dxf.layer == parent.dxf.layer, 'Inserted owner or parent layer')
+    expected = [DXFTag(0, 'VERTEX'), DXFTag(5, inserted), DXFTag(330, parent.dxf.handle),
+                DXFTag(100, 'AcDbEntity'), DXFTag(8, parent.dxf.layer), DXFTag(100, 'AcDbVertex'),
+                DXFTag(100, 'AcDb3dPolylineVertex'), DXFTag(10, NEW_POINT), DXFTag(70, 32)]
+    records.equal(expected, after[inserted], 'Canonical inserted geometry, owner, flags or metadata packet')
     check(not child.has_extension_dict and not child.get_reactors() and not child.xdata, 'Inserted child inherited metadata')
     check(parent.seqend.dxf.handle == handles['seqend'], 'SEQEND identity changed')
     return after

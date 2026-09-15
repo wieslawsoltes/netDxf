@@ -1,0 +1,100 @@
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.IO;
+using netDxf.Objects;
+
+internal static class Program
+{
+    private static readonly List<object> Results = new();
+    private static string Output = "";
+    private static int Failed;
+    private static void Check(bool value, string message) { if (!value) throw new Exception(message); }
+    private static void Call(Polyline3D polyline, string name, params object[] args)
+    {
+        try { polyline.GetType().GetMethod(name)!.Invoke(polyline, args); }
+        catch (TargetInvocationException error) { ExceptionDispatchInfo.Capture(error.InnerException!).Throw(); }
+    }
+    private static string Bits(Vector3 value) => string.Join(",", new[] { value.X, value.Y, value.Z }.Select(BitConverter.DoubleToInt64Bits));
+    private static long Seed(DxfDocument doc) => (long)typeof(DxfDocument).GetProperty("NumHandles", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(doc)!;
+    private static string State(DxfDocument doc, Polyline3D polyline) => Seed(doc) + ":" + string.Join("/", polyline.Vertexes.Select(Bits)) + ":" + string.Join("/", polyline.VertexRecords.Select(r => r.Handle + "=" + r.Owner?.Handle)) + ":" + polyline.EndSequenceRecord.Handle + ":" + string.Join("/", doc.Objects.Items.OrderBy(r => r.Handle).Select(r => r.Handle + "=" + r.Owner?.Handle));
+    private static void Refuse(DxfDocument doc, Polyline3D polyline, Action action)
+    {
+        string before = State(doc, polyline); bool refused = false;
+        try { action(); } catch (Exception e) when (e is ArgumentException or InvalidOperationException or NotSupportedException) { refused = true; }
+        Check(refused, "Invalid operation succeeded."); Check(before == State(doc, polyline), "Refusal mutated geometry, identities, database or seed.");
+    }
+    private static byte[] Save(DxfDocument doc, bool binary)
+    { using var output = new MemoryStream(); Check(doc.Save(output, binary), "Save returned false."); return output.ToArray(); }
+    private static DxfDocument Load(byte[] data)
+    { using var input = new MemoryStream(data); return DxfDocument.Load(input) ?? throw new Exception("Load returned null."); }
+    private static DxfDocument Source(DxfVersion version, bool binary)
+    {
+        var doc = new DxfDocument(version); doc.Entities.Add(new Polyline3D(new[] { Vector3.Zero, new Vector3(2, 3, 4), new Vector3(5, 6, 7) }));
+        return Load(Save(doc, binary));
+    }
+    private static void Run(string name, Action action)
+    {
+        try { action(); Results.Add(new { name, passed = true, error = "" }); Console.WriteLine("PASS " + name); }
+        catch (Exception error) { Failed++; Results.Add(new { name, passed = false, error = error.ToString() }); Console.WriteLine("FAIL " + name + ": " + error.Message); }
+    }
+    private static void Main(string[] args)
+    {
+        Output = Path.GetFullPath(args[0]); Directory.CreateDirectory(Output);
+        foreach (DxfVersion version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007, DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })
+        foreach (bool binary in new[] { false, true })
+        {
+            string suffix = version + "-" + binary;
+            Run("edit-identity-" + suffix, () =>
+            {
+                var doc = Source(version, binary); var line = doc.Entities.Polylines3D.Single(); var old = line.VertexRecords.ToArray(); var end = line.EndSequenceRecord; long seed = Seed(doc);
+                Call(line, "InsertVertex", 1, new Vector3(11, 12, 13)); var added = line.VertexRecords[1];
+                Check(line.VertexRecords.Count == 4 && old.All(x => line.VertexRecords.Contains(x)), "Insertion lost retained identities.");
+                Check(ReferenceEquals(added.Owner, line) && ReferenceEquals(doc.GetObjectByHandle(added.Handle), added), "Inserted identity not registered under parent.");
+                Check(Seed(doc) == seed + 1, "Simple insertion did not allocate exactly one handle.");
+                Call(line, "MoveVertex", 1, 3); Check(ReferenceEquals(added, line.VertexRecords[3]) && line.Vertexes[3] == new Vector3(11, 12, 13), "Move split coordinates and identity.");
+                Call(line, "RemoveVertexAt", 3); Check(added.Owner == null && doc.GetObjectByHandle(added.Handle) == null, "Removed identity remains owned or registered.");
+                Check((bool)added.GetType().GetProperty("IsRemoved")!.GetValue(added)!, "Removed record lacks retired status.");
+                Call(line, "MoveVertex", 0, 2); Check(line.VertexRecords.SequenceEqual(new[] { old[1], old[2], old[0] }), "Move reordered wrong retained identities.");
+                Check(ReferenceEquals(end, line.EndSequenceRecord), "Sequence terminator changed.");
+                var bytes = Save(doc, binary); File.WriteAllBytes(Path.Combine(Output, "topology-independent-" + suffix + ".dxf"), bytes);
+                var copy = Load(bytes).Entities.Polylines3D.Single();
+                Check(copy.VertexRecords.Select(x => x.Handle).SequenceEqual(line.VertexRecords.Select(x => x.Handle)) && copy.EndSequenceRecord.Handle == end.Handle, "Round trip changed child handles.");
+                Check(copy.Vertexes.SequenceEqual(line.Vertexes), "Round trip changed edited geometry.");
+            });
+            Run("incoming-pointer-" + suffix, () =>
+            {
+                var doc = Source(version, binary); var line = doc.Entities.Polylines3D.Single(); var record = new DxfXRecord(); record.Data.Add(new DxfTag(330, line.VertexRecords[1].Handle)); doc.Objects.Root.Add("INCOMING", record);
+                Refuse(doc, line, () => Call(line, "RemoveVertexAt", 1));
+                record.Data.Clear(); Call(line, "RemoveVertexAt", 1); Check(line.Vertexes.Count == 2, "Released incoming reference still blocks removal.");
+                Refuse(doc, line, () => Call(line, "RemoveVertexAt", 0)); Check(Save(doc, binary).Length > 0, "Two-point source cannot save after refused deletion.");
+            });
+            Run("owned-metadata-" + suffix, () =>
+            {
+                var doc = Source(version, binary); var line = doc.Entities.Polylines3D.Single(); var dictionary = new DxfDictionary(); dictionary.Add("NOTE", new DxfXRecord()); doc.Objects.SetExtensionDictionary(line.VertexRecords[1], dictionary);
+                Refuse(doc, line, () => Call(line, "RemoveVertexAt", 1)); Check(Save(doc, binary).Length > 0, "Refused owned metadata removal damaged source.");
+            });
+            Run("invalid-state-" + suffix, () =>
+            {
+                var doc = Source(version, binary); var line = doc.Entities.Polylines3D.Single();
+                Refuse(doc, line, () => Call(line, "InsertVertex", 1, new Vector3(double.NaN, 0, 0)));
+                Refuse(doc, line, () => Call(line, "InsertVertex", -1, Vector3.Zero));
+                Refuse(doc, line, () => Call(line, "MoveVertex", 0, line.Vertexes.Count));
+                line.Vertexes.Add(new Vector3(17, 18, 19));
+                Refuse(doc, line, () => Call(line, "MoveVertex", 0, 0)); Refuse(doc, line, () => Call(line, "InsertVertex", 0, Vector3.Zero)); Refuse(doc, line, () => Call(line, "RemoveVertexAt", 0));
+            });
+            Run("profile-" + suffix, () =>
+            {
+                var doc = Source(version, binary); var line = doc.Entities.Polylines3D.Single(); doc.DrawingVariables.AcadVer = version == DxfVersion.AutoCad2018 ? DxfVersion.AutoCad2013 : DxfVersion.AutoCad2018;
+                Refuse(doc, line, () => Call(line, "InsertVertex", 0, Vector3.Zero)); Refuse(doc, line, () => Call(line, "RemoveVertexAt", 0)); Refuse(doc, line, () => Call(line, "MoveVertex", 0, 0));
+                doc.DrawingVariables.AcadVer = version; Check(Save(doc, binary).Length > 0, "Refused profile edit damaged source.");
+            });
+        }
+        File.WriteAllText(Path.Combine(Output, "results.json"), JsonSerializer.Serialize(new { cases = Results.Count, failed = Failed, librarySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(), results = Results }, new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine($"{Results.Count} cases; {Failed} failed."); Environment.ExitCode = Failed == 0 ? 0 : 1;
+    }
+}

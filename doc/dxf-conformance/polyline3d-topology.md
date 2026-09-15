@@ -70,10 +70,28 @@ R2000–R2018 profiles in ASCII and binary, unchanged native DIMASSOC packets,
 unchanged independent ezdxf 1.4.4 child and owned metadata packets, identity
 permutations, repeated saves, clone/adoption boundaries, Unicode layers,
 allocation limits, low advertised source seeds and deletion dependencies.
+The existing table reader may reject an advertised seed that already collides
+with a table identity before reaching POLYLINE; such input does not establish a
+successful topology edit. A separate deliberate counter mutation after a valid
+load exercises actual retained-metadata identity reservation during insertion.
 The deliberate internal allocator-counter mutation is labeled separately from
 native and independent-producer input. The independent verifier requires 98
-outputs and checks eight actual-output corruption controls. Qualification
-results are recorded separately after execution.
+outputs and checks eight actual-output corruption controls.
+The independent reader's audit normalizes child layer and owner projections
+without reporting a repair. The verifier therefore checks those values in the
+original decoded packet stream, including the complete new VERTEX packet.
+
+Source `11eb060186cbf711f1757bb81146d29f72f50fc5` passes **551 cases in both
+Debug and Release**: 169 topology cases and 382 existing retained-record cases.
+Both result lists are byte-identical. Each configuration passes the new
+98-output gate and the existing 90-output retained-record gate, including eight
+and six actual-output corruption controls respectively. All output audits
+report zero errors or repairs. The separate independent runtime review passes
+60 cases and audits 12 outputs per configuration against the exact same library
+hashes. The [qualification receipt](receipts/polyline3d-topology/qualification.json)
+pins source hashes, complete results, output manifests, gate logs and the
+reproducible independent probe. These focused results do not include the
+repository's complete test suite or platform CI.
 
 This adds explicit ordinary Polyline3D topology editing. It does not add
 POLYFACE or PolygonMesh child metadata, fitted or smoothed retained sequences,
