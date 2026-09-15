@@ -30,6 +30,8 @@ internal static partial class Program
         Run("appid-lifecycle/late-attribute-sync", AppIdAttributeSync);
         Run("appid-lifecycle/layout-viewport-replacement", AppIdViewportReplacement);
         Run("appid-lifecycle/block-end-detach-readd", AppIdBlockEndReadd);
+        foreach (bool named in new[] { false, true }) foreach (bool cyclic in new[] { false, true })
+            Run($"appid-lifecycle/block-clone/{named}/{cyclic}", () => AppIdBlockClone(named, cyclic));
         Run("appid-lifecycle/foreign-registration-and-removal", AppIdForeign);
         Run("appid-lifecycle/detached-replacement-and-readd", AppIdDetachedReplacement);
         Run("appid-lifecycle/clone-renamed-registries", AppIdClone);
@@ -210,6 +212,80 @@ internal static partial class Program
         Check(doc.Blocks.Remove(block), "unreferenced block removal failed"); Check(doc.ApplicationRegistries.Remove("END_APP"), "removed block end retained APPID use");
         end.XData.Add(AppIdData(new ApplicationRegistry("DETACHED_END"))); Check(!doc.ApplicationRegistries.Contains("DETACHED_END"), "removed block end retained subscription");
         doc.Blocks.Add(block); Equal(1, doc.ApplicationRegistries.GetReferences("END_APP").Sum(reference => reference.Uses), "block re-add duplicated APPID use"); Equal(1, doc.ApplicationRegistries.GetReferences("DETACHED_END").Sum(reference => reference.Uses), "block re-add omitted pending XData");
+    }
+
+    private static void AppIdBlockClone(bool named, bool cyclic)
+    {
+        var source = new netDxf.Blocks.Block("SOURCE");
+        var endProperty = typeof(netDxf.Blocks.Block).GetProperty("End", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        var sourceEnd = (DxfObject)endProperty.GetValue(source)!;
+        var registry = new ApplicationRegistry("BLOCK_APP");
+        var peer = new ApplicationRegistry("PEER_APP");
+        if (cyclic)
+        {
+            registry.XData.Add(AppIdData(registry, 17));
+            registry.XData.Add(AppIdData(peer, 19));
+            peer.XData.Add(AppIdData(registry, 23));
+        }
+        DxfObject[] originals = { source, source.Record, sourceEnd };
+        for (int index = 0; index < originals.Length; index++)
+            originals[index].XData.Add(AppIdData(registry, (byte)(3 + index * 2)));
+
+        var copy = (netDxf.Blocks.Block)(named ? source.Clone("COPY") : source.Clone());
+        Equal(named ? "COPY" : "SOURCE", copy.Name, "block clone name changed");
+        var copyEnd = (DxfObject)endProperty.GetValue(copy)!;
+        DxfObject[] copies = { copy, copy.Record, copyEnd };
+        for (int index = 0; index < copies.Length; index++)
+        {
+            AppIdHas(copies[index], "BLOCK_APP");
+            XData original = originals[index].XData["BLOCK_APP"], cloned = copies[index].XData["BLOCK_APP"];
+            Check(!ReferenceEquals(original, cloned) && !ReferenceEquals(original.ApplicationRegistry, cloned.ApplicationRegistry), "block metadata clone shares original data or registry");
+            ((byte[])cloned.XDataRecord[0].Value)[1] = (byte)(10 + index);
+            Equal((byte)2, ((byte[])original.XDataRecord[0].Value)[1], "clone binary mutation changed original block metadata");
+            ((byte[])original.XDataRecord[0].Value)[0] = 99;
+            Equal((byte)(3 + index * 2), ((byte[])cloned.XDataRecord[0].Value)[0], "original binary mutation changed cloned block metadata");
+        }
+        var endRegistry = copyEnd.XData["BLOCK_APP"].ApplicationRegistry;
+        if (cyclic)
+        {
+            Check(ReferenceEquals(endRegistry.XData["BLOCK_APP"].ApplicationRegistry, endRegistry), "ENDBLK clone lost registry self-reference");
+            var clonedPeer = endRegistry.XData["PEER_APP"].ApplicationRegistry;
+            Check(!ReferenceEquals(clonedPeer, peer) && ReferenceEquals(clonedPeer.XData["BLOCK_APP"].ApplicationRegistry, endRegistry), "ENDBLK clone lost registry cycle");
+            ((byte[])clonedPeer.XData["BLOCK_APP"].XDataRecord[0].Value)[0] = 55;
+            Equal((byte)23, ((byte[])peer.XData["BLOCK_APP"].XDataRecord[0].Value)[0], "ENDBLK cyclic clone shares nested binary payload");
+        }
+
+        var destination = new DxfDocument(DxfVersion.AutoCad2018);
+        destination.Blocks.Add(copy);
+        var canonical = destination.ApplicationRegistries["BLOCK_APP"];
+        foreach (DxfObject item in copies)
+            Check(ReferenceEquals(item.XData["BLOCK_APP"].ApplicationRegistry, canonical), "cloned block metadata registry not canonical");
+        canonical.Name = "CLONED_APP";
+        foreach (DxfObject item in copies) AppIdHas(item, "CLONED_APP");
+        foreach (DxfObject item in originals) AppIdHas(item, "BLOCK_APP");
+        Equal("BLOCK_APP", registry.Name, "destination rename changed original registry");
+        if (cyclic)
+        {
+            canonical.XData.Clear();
+            destination.ApplicationRegistries["PEER_APP"].XData.Clear();
+        }
+        Equal(3, destination.ApplicationRegistries.GetReferences(canonical).Sum(reference => reference.Uses), "cloned BLOCK, BLOCK_RECORD, or ENDBLK metadata omitted from registry uses");
+        using var stream = new MemoryStream();
+        Check(destination.Save(stream, named), "cloned block metadata save failed");
+        File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"appid-block-clone-{named}-{cyclic}.dxf"), stream.ToArray());
+        stream.Position = 0;
+        var loaded = DxfDocument.Load(stream)!;
+        var loadedBlock = loaded.Blocks[copy.Name];
+        DxfObject[] loadedItems = { loadedBlock, loadedBlock.Record, (DxfObject)endProperty.GetValue(loadedBlock)! };
+        for (int index = 0; index < loadedItems.Length; index++)
+        {
+            Check(loadedItems[index].XData.ContainsAppId("CLONED_APP") && !loadedItems[index].XData.ContainsAppId("BLOCK_APP"), "loaded cloned metadata has missing or stale APPID");
+            Check(ReferenceEquals(loadedItems[index].XData["CLONED_APP"].ApplicationRegistry, loaded.ApplicationRegistries["CLONED_APP"]), "loaded cloned metadata registry not canonical");
+            Check(((byte[])loadedItems[index].XData["CLONED_APP"].XDataRecord[0].Value).SequenceEqual(new[] { (byte)(3 + index * 2), (byte)(10 + index) }), "cloned metadata payload changed during round-trip");
+            Check(!loaded.ApplicationRegistries.Remove("CLONED_APP"), "referenced cloned block registry removed");
+            Check(loadedItems[index].XData.Remove("CLONED_APP"), "renamed cloned metadata removal failed");
+        }
+        Check(loaded.ApplicationRegistries.Remove("CLONED_APP"), "cleared cloned block metadata retained registry reference");
     }
 
     private static void AppIdForeign()

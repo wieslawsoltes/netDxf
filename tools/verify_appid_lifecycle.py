@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Independently verify serialized APPID names and XData carrier membership.
 
-These 36 drawings cover six profiles and both transports. The verifier checks
+These 40 drawings cover six profiles and both transports, including four
+cloned BLOCK/BLOCK_RECORD/ENDBLK metadata graphs. The verifier checks
 the exact registry name, binary payload, carrier identity, and absence of stale
 names. In-memory callback atomicity and ownership use the conformance suite.
 """
@@ -64,6 +65,15 @@ def verify(path, year, binary, prefix):
         expected = [(inserts[0].attribs[0], b"\x01\x02"),
                     (doc.blocks.get("META").block, b"\x03\x02"),
                     (doc.blocks.get("META").endblk, b"\x05\x02")]
+    elif prefix == "appid-block-clone-":
+        name = "CLONED_APP"
+        stale = {"BLOCK_APP"}
+        block = doc.blocks.get("COPY" if binary else "SOURCE")
+        check(len(doc.modelspace()) == 0 and len(block) == 0,
+              "Cloned block geometry inventory differs")
+        expected = [(block.block, b"\x03\x0a"),
+                    (block.block_record, b"\x05\x0b"),
+                    (block.endblk, b"\x07\x0c")]
     else:
         raise ValueError("Unknown fixture family")
 
@@ -111,6 +121,17 @@ def negative_checks(artifacts):
             except (ValueError, ezdxf.DXFError):
                 continue
             raise ValueError("Verifier accepted a corrupted APPID or binary payload")
+        clone_source = artifacts / "appid-block-clone-False-True.dxf"
+        clone_data = clone_source.read_bytes()
+        corrupt = clone_data.replace(b"070C", b"070D", 1)
+        check(corrupt != clone_data, "ENDBLK negative control did not change input")
+        path.write_bytes(corrupt)
+        try:
+            verify(path, 2018, False, "appid-block-clone-")
+        except (ValueError, ezdxf.DXFError):
+            pass
+        else:
+            raise ValueError("Verifier accepted corrupted cloned ENDBLK binary data")
 
 
 def main():
@@ -119,7 +140,10 @@ def main():
     args = parser.parse_args()
     expected = {f"{prefix}AutoCad{year}-{binary}.dxf"
                 for prefix in PREFIXES for year in VERSIONS for binary in (False, True)}
-    actual = {path.name for prefix in PREFIXES for path in args.artifacts.glob(prefix + "*.dxf")}
+    expected.update(f"appid-block-clone-{named}-{cyclic}.dxf"
+                    for named in (False, True) for cyclic in (False, True))
+    actual = {path.name for prefix in PREFIXES + ("appid-block-clone-",)
+              for path in args.artifacts.glob(prefix + "*.dxf")}
     check(actual == expected, "Missing/extra APPID fixtures: " + str(actual ^ expected))
     for prefix in PREFIXES:
         for year in VERSIONS:
@@ -127,8 +151,13 @@ def main():
                 path = args.artifacts / f"{prefix}AutoCad{year}-{binary}.dxf"
                 verify(path, year, binary, prefix)
                 print("PASS", path.name)
+    for named in (False, True):
+        for cyclic in (False, True):
+            path = args.artifacts / f"appid-block-clone-{named}-{cyclic}.dxf"
+            verify(path, 2018, named, "appid-block-clone-")
+            print("PASS", path.name)
     negative_checks(args.artifacts)
-    print("36 APPID drawings, 120 exact XData carrier packets, and 2 negative controls passed.")
+    print("40 APPID drawings, 132 exact XData carrier packets, and 3 negative controls passed.")
 
 
 if __name__ == "__main__":

@@ -31,7 +31,11 @@ name that would collapse distinct entries in the cloned graph.
 BLOCK and ENDBLK carry their own XData packets. The writer places each packet
 after the corresponding record's own fields, and the reader restores ENDBLK
 XData independently. This corrects the previous placement of BLOCK XData at the
-end of ENDBLK and the omission of the latter's stored metadata.
+end of ENDBLK and the omission of the latter's stored metadata. Both BLOCK clone
+overloads also copy ENDBLK XData alongside BLOCK and BLOCK_RECORD metadata.
+Each cloned payload and registry graph is independent, including binary arrays,
+self references and cycles. Registering the cloned block rebinds all three
+metadata carriers to the destination document's canonical registry.
 
 `AppIdXDataLifecycleTests.cs` exercises six supported export profiles (R2000,
 R2004, R2007, R2010, R2013 and R2018) and text/binary transports, plus mutation,
@@ -39,11 +43,12 @@ callback, sharing, cloning and removal cases. The existing STYLE fidelity tests
 also cover invalid UTF-16 save failure followed by repair through the original
 XData value.
 
-`tools/verify_appid_lifecycle.py` independently opens all 36 emitted drawings
-with ezdxf and checks 120 exact XData carrier packets using both the high-level
+`tools/verify_appid_lifecycle.py` independently opens all 40 emitted drawings
+with ezdxf and checks 132 exact XData carrier packets using both the high-level
 reader and physical DXF tags. It verifies APPID table uniqueness, absence of old
 names, binary values, duplicate named VPORT records, main paper-space viewports,
-and distinct BLOCK/ENDBLK/ATTRIB payloads. Two deliberate file corruptions must
+distinct BLOCK/ENDBLK/ATTRIB payloads, and cloned BLOCK/BLOCK_RECORD/ENDBLK
+payloads. Three deliberate file corruptions must
 be rejected. The mandatory independent-verifier runner discovers this gate.
 
 This qualification concerns the library's retained metadata graph and stored

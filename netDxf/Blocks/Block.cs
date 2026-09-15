@@ -684,6 +684,11 @@ namespace netDxf.Blocks
                 copy.Record.XData.Add((XData)data.Clone());
             }
 
+            foreach (XData data in block.End.XData.Values)
+            {
+                copy.End.XData.Add((XData)data.Clone());
+            }
+
             return copy;
         }
 
