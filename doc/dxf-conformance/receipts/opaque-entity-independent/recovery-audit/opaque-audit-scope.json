@@ -1,0 +1,8 @@
+{
+  "ezdxf": "1.4.4",
+  "file": "recovery-audit/opaque-v7/AutoCad2018-False-exact-False.dxf",
+  "sha256": "afbf5f63a70a2a73357d45e4045f6a6213628d0957e07493b6f584fb8dd48e85",
+  "runtime_type": "ezdxf.entities.dxfentity.DXFTagStorage",
+  "dxf_type": "QUALIFIED_FUTURE_CURVE",
+  "scope": "ezdxf retains this declared unknown type as DXFTagStorage. A clean audit checks surrounding DXF structure and does not interpret or qualify unknown entity geometry/application semantics."
+}

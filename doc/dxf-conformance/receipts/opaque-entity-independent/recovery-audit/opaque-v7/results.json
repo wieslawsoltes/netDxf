@@ -1,0 +1,463 @@
+{
+  "cases": 91,
+  "failed": 0,
+  "librarySha256": "b00470c616f2a949bc510b1dfda0cd9f70d9ad5e2a8fdc69dc101dc440a6ab41",
+  "factorySha256": "3ebd50db7a5f1a9d61b45c4652b2c670408fef1a909158e960597372ca541cd6",
+  "results": [
+    {
+      "name": "AutoCad2000-False-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-False-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-False-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-False-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-True-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-True-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-True-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2000-True-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-False-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2004-True-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-False-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-False-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-False-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-False-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-True-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-True-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-True-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2007-True-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-False-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-False-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-False-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-False-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-True-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-True-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-True-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2010-True-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-False-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-False-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-False-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-False-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-True-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-True-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-True-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-True-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-False-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-exact-packet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-common-overlay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-class-pinning",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-True-class-escaped-text",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-layer-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-linetype-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-style-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-appid-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "current-common-resource-guards-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-aggregate-name-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-proxy-name-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-known-casing-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-aggregate-subclass-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-public-66-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-public-101-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-duplicate-common-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-bad-control-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-wrong-owner-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-class-extra-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "source-extension-reactor-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "xdata-layer-identity-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "comments-or-nul-preflight-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "generated-class-preflight-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-layer-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-linetype-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-style-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "table-pointer-appid-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "current-common-resource-guards-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-aggregate-name-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-proxy-name-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-known-casing-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-aggregate-subclass-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-public-66-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-public-101-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-duplicate-common-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-bad-control-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-wrong-owner-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reject-class-extra-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "source-extension-reactor-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "xdata-layer-identity-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "comments-or-nul-preflight-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "generated-class-preflight-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "placement-False-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "placement-True-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "placement-False-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "placement-True-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "aggregate-budget-after-xdata-growth",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

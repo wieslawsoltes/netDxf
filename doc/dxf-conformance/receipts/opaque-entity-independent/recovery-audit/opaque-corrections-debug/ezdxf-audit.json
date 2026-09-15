@@ -1,0 +1,20 @@
+{
+  "ezdxf": "1.4.4",
+  "outputs": 2,
+  "errors": 0,
+  "repairs": 0,
+  "files": [
+    {
+      "file": "class-False.dxf",
+      "sha256": "4bb09a5881d0367fa0af56c2d2cfbb7f10c43e95fdc9121a62c3edc3ee4eb397",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "class-True.dxf",
+      "sha256": "6b9f40aec586c56739a3cfd5be85ed01bf1aa08d0e41aca32af40c89199e9d8e",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

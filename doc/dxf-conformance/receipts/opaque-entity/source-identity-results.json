@@ -1,0 +1,52 @@
+[
+  {
+    "name": "source-identity-metadata/retained-reactor/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/False/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/False/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/False/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/False/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/retained-reactor/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/True/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/True/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/True/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-identity-metadata/reject-duplicate/True/True/True",
+    "passed": true,
+    "error": null
+  }
+]
