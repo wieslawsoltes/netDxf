@@ -1,5 +1,7 @@
 # Stored HATCH affine boundary transforms
 
+The later [explicit pattern affine module](hatch-pattern-affine.md) adds validated affine line-family packets for non-doubled predefined/custom fills, subject to its separate stored WCS Point2d Origin contract. Earlier statements below that reject all non-similar patterns describe this module’s original boundary.
+
 This is the qualification record for the line/spline affine module. Its former conic and bulged-polyline restrictions are superseded by [Affine HATCH conic boundaries](hatch-conic-affine.md); the original observations below remain historical evidence.
 
 `Hatch.TransformBy` now transforms stored LINE and SPLINE boundary coordinates directly. It also transforms closed POLYLINE paths whose bulges are all zero. The image plane comes from the cross product of the two transformed object-coordinate axes, rather than treating the extrusion normal as a position vector. This preserves world-space geometry under nonuniform scaling, shear, rotations and reflections, including a tilted original plane.

@@ -1,5 +1,7 @@
 # Affine HATCH conic boundaries
 
+The later [explicit pattern affine module](hatch-pattern-affine.md) adds validated affine line-family packets for non-doubled predefined/custom fills, subject to its separate stored WCS Point2d Origin contract. Earlier statements below that reject all non-similar patterns describe this module’s original boundary.
+
 `Hatch.TransformBy` transforms circular arcs, elliptic arcs and active polyline bulges directly in the HATCH plane. A nonuniform scale or shear can turn a circular arc into an ellipse edge. Existing ellipse edges remain ellipses with orthogonal major/minor axes; spline packets in the same HATCH continue through the storage-preserving affine route, retaining their knots, flags, weights and optional fit metadata. No tessellation, curve fitting or third-party implementation is used.
 
 For an input conic, write its point as `center + u cos(t) + v sin(t)`. Transform the center as a position and the two axes as vectors using the affine plane map. A scaled two-dimensional symmetric eigensystem supplies the orthogonal major direction and largest singular value. The smaller singular value is `abs(det[u v]) / largest`, which avoids subtracting nearly equal eigenvalues. The output ratio is positive and at most one. Endpoint angles are reconstructed in those axes, and the direction flag follows the orientation of the transformed axis pair. This accommodates axis swaps, shear, reflections, tilted original planes and matrices that retain a two-dimensional image plane.
