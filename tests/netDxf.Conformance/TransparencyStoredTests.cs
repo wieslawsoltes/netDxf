@@ -52,13 +52,16 @@ internal static partial class Program
         }
         byte[] Save(DxfDocument drawing) { using var stream = new MemoryStream(); Check(drawing.Save(stream, binary), "Packed alpha wire save"); return stream.ToArray(); }
         var data = Save(doc); CheckTransparencyWire(data, kind, false);
-        var loaded = DxfDocument.Load(new MemoryStream(data)) ?? throw new Exception("Packed alpha load"); CheckTransparencyWire(Save(loaded), kind, false);
+        File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"transparency-wire-{kind}-{version}-{binary}-authored.dxf"), data);
+        var loaded = DxfDocument.Load(new MemoryStream(data)) ?? throw new Exception("Packed alpha load"); var reloadedBytes = Save(loaded); CheckTransparencyWire(reloadedBytes, kind, false);
+        File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"transparency-wire-{kind}-{version}-{binary}-reloaded.dxf"), reloadedBytes);
         if (kind == "LAYER")
             for (int i = 0; i < TransparencyWireValues.Length; i++)
             { Equal((int?)TransparencyWireValues[i], loaded.Layers["PACKED_" + i].Transparency.StoredAlphaValue, "Layer packed alpha reload"); loaded.Layers["PACKED_" + i].Transparency.Value = 0; loaded.Layers["PACKED_COPY_" + i].Transparency.Value = 0; }
         else
             foreach (var entity in loaded.Entities.All) { Check(entity.Transparency.StoredAlphaValue.HasValue, "Entity lost packed-alpha presence"); entity.Transparency.Value = 0; }
-        CheckTransparencyWire(Save(loaded), kind, true);
+        var editedBytes = Save(loaded); CheckTransparencyWire(editedBytes, kind, true);
+        File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"transparency-wire-{kind}-{version}-{binary}-edited.dxf"), editedBytes);
     }
     private static void CheckTransparencyWire(byte[] bytes, string kind, bool edited)
     {

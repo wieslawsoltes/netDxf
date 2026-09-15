@@ -44,3 +44,23 @@ unchanged. An explicit successful percentage edit may append a previously absent
 retained packed bits before the legacy opaque-zero encoding; physically stored
 zero remains observable while retaining its existing effective opaque value.
 Independent before/after probes detected these boundary losses before release.
+
+Whole-value assignment such as `layer.Transparency = new Transparency(0)` is
+also an explicit edit and replaces the projected integer without discarding
+ancillary data. Layer cloning copies pending edit state directly, preserving
+untouched packets that have no transparency integer. Standalone LAS layer-state
+Save/Load follows the same exact packed-value policy as DXF layer-state records.
+
+The two existing carrier conventions for numeric zero remain distinct: a
+layer-state zero projects to opaque, while the normal transparency API retains
+its legacy ByBlock projection. Layer-state constructor capture, `CopyFrom` and
+`CopyTo` preserve that effective meaning when crossing carriers by discarding an
+ambiguous raw-zero cache and using the existing authored encoding. Same-carrier
+round trips and clones retain raw zero exactly; transfer does not mutate the
+source object or change the global `FromAlphaValue` interpretation.
+
+LAS accepts physical end-of-file only after a complete pair, as emitted by its
+standalone writer. Its reader supplies a local terminator for this convention;
+a dangling group code remains invalid, and DXF readers retain strict explicit
+EOF requirements. The mandatory independent transparency gate consumes the
+shipping authored, cloned, edited, ancillary, transfer and LAS output artifacts.

@@ -1590,7 +1590,7 @@ namespace netDxf.IO
             }
 
             // transparency is stored in XData
-            if (layer.Transparency.Value >= 0 && (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 || layer.Transparency.HasValueEdit && layer.XData.ContainsAppId("AcCmTransparency")))
+            if (layer.Transparency.Value >= 0 && (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 || (layer.Transparency.HasValueEdit || layer.HasTransparencyAssignment) && layer.XData.ContainsAppId("AcCmTransparency")))
             {
                 AddLayerTransparencyXData(layer);
             }

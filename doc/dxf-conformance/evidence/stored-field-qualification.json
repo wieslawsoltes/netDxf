@@ -1,0 +1,160 @@
+{
+  "module": "stored FIELD",
+  "sourceRevision": "a0f231114c45e59b17730cb403239f701be5152b",
+  "productionRevision": "f32f78ffbff005164b052a1abaaadeb09ea2cc4b",
+  "registration": "RegisterStoredFieldTests",
+  "configurations": {
+    "Debug": {
+      "passed": 76,
+      "failed": 0,
+      "requiredEmittedDrawings": 20,
+      "requiredGraphMaps": 12,
+      "independentPacketOwnershipCorruptionControls": 100,
+      "dllSha256": "aae54cb215d0db01f3b048e80496f401144f9f663226ef40dacdd56e80007672",
+      "rejectionResults": "Tests accept Debug FormatException/InvalidOperationException or documented Release null/false; zero-output and pre-allocation assertions remain mandatory."
+    },
+    "Release": {
+      "passed": 76,
+      "failed": 0,
+      "requiredEmittedDrawings": 20,
+      "requiredGraphMaps": 12,
+      "independentPacketOwnershipCorruptionControls": 100,
+      "dllSha256": "6efc52a84681ef55a55ac137bc6b4c4ff47144705d129f08efd9ddc59d6fa656",
+      "rejectionResults": "Tests accept Debug FormatException/InvalidOperationException or documented Release null/false; zero-output and pre-allocation assertions remain mandatory."
+    }
+  },
+  "fileLevelNegativeControls": [
+    {
+      "case": "missing emitted DXF",
+      "exitCode": 1,
+      "lastError": "ValueError: All 20 FIELD drawings are mandatory"
+    },
+    {
+      "case": "missing graph map",
+      "exitCode": 1,
+      "lastError": "ValueError: All 12 FIELD maps are mandatory"
+    },
+    {
+      "case": "actual FIELD child-count wire corruption",
+      "exitCode": 1,
+      "lastError": "ValueError: Synthetic FIELD payload differs"
+    }
+  ],
+  "sourceFixtures": {
+    "repository": "https://github.com/LibreDWG/libredwg",
+    "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+    "files": [
+      {
+        "file": "TS1-AC1015.dxf.gz",
+        "sourcePath": "test/test-data/2000/TS1.dxf",
+        "sha256": "d55726ba862a45572a6b72493e3139b809d0a806e7eba6e4cae578a1a4227303",
+        "gitBlobSha": "f32983e03c4823c2c6039c34bfc1b42befa9c7ef",
+        "bytes": 1057584,
+        "profile": "AC1015",
+        "fieldHandles": [
+          "14E",
+          "14F",
+          "15E",
+          "15F"
+        ],
+        "fieldListHandle": "150",
+        "parents": {
+          "14E": "14D",
+          "15E": "15D"
+        },
+        "children": {
+          "14E": [
+            "14F"
+          ],
+          "15E": [
+            "15F"
+          ],
+          "14F": [],
+          "15F": []
+        },
+        "sourceScope": "Complete published source drawing. Qualification extracts exact FIELD, FIELDLIST and owner dictionary packets into a scoped carrier with synthetic LINE hosts replacing ATTDEF identities; full source loading has separate unrelated blockers. No evaluator execution or external sheet-set resolution."
+      },
+      {
+        "file": "TS1-AC1032.dxf.gz",
+        "sourcePath": "test/test-data/2018/TS1.dxf",
+        "sha256": "ef795fb7c4c9cfc4486ff3cc0254d38cbdb870a326e7e8cccd78b0e046868d14",
+        "gitBlobSha": "d6075cda476367dc0ce51d481966e1c40a6ab14a",
+        "bytes": 969243,
+        "profile": "AC1032",
+        "fieldHandles": [
+          "14E",
+          "14F",
+          "15E",
+          "15F"
+        ],
+        "fieldListHandle": "150",
+        "parents": {
+          "14E": "14D",
+          "15E": "15D"
+        },
+        "children": {
+          "14E": [
+            "14F"
+          ],
+          "15E": [
+            "15F"
+          ],
+          "14F": [],
+          "15F": []
+        },
+        "sourceScope": "Complete published source drawing. Qualification extracts exact FIELD, FIELDLIST and owner dictionary packets into a scoped carrier with synthetic LINE hosts replacing ATTDEF identities; full source loading has separate unrelated blockers. No evaluator execution or external sheet-set resolution."
+      }
+    ],
+    "carrierMapping": {
+      "syntheticHosts": [
+        {
+          "sourceHandle": "14B",
+          "sourceType": "ATTDEF",
+          "carrierHandle": "14B",
+          "carrierType": "LINE"
+        },
+        {
+          "sourceHandle": "15B",
+          "sourceType": "ATTDEF",
+          "carrierHandle": "15B",
+          "carrierType": "LINE"
+        }
+      ],
+      "retainedNativeRecordHandles": [
+        "14C",
+        "14D",
+        "14E",
+        "14F",
+        "15C",
+        "15D",
+        "15E",
+        "15F",
+        "150"
+      ],
+      "modifiedCommonMetadata": {
+        "150": {
+          "sourceOwnerAndReactor": "C",
+          "carrierOwnerAndReactor": "emitted named dictionary root"
+        }
+      },
+      "payloadModifications": "none"
+    }
+  },
+  "qualificationBoundary": {
+    "nativeFieldPackets": 8,
+    "nativeProfileCodes": [
+      "AC1015",
+      "AC1032"
+    ],
+    "nativeOutputDrawings": 8,
+    "syntheticOutputDrawings": 12,
+    "completeOriginalSourceImport": false,
+    "originalSourceBlockers": {
+      "AC1015": "Unsupported OLE2FRAME group 73",
+      "AC1032": "Modern ACIS SAB/ACDSDATA"
+    },
+    "autoCadAudit": false,
+    "fieldEvaluation": false,
+    "payloadExactness": "Ordered typed tags; existing typed reader canonicalizes numeric handle spelling. Carrier host and FIELDLIST common owner mappings are explicit in fixture manifest."
+  }
+}
