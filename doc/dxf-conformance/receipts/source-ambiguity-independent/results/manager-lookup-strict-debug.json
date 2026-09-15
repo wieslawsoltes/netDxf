@@ -1,0 +1,82 @@
+[
+  {
+    "placement": "control",
+    "binary": false,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  },
+  {
+    "placement": "before",
+    "binary": false,
+    "expected_acceptance": false,
+    "accepted": false,
+    "type": null,
+    "referenceExact": false,
+    "error": "FormatException: Unresolved database owner: 228",
+    "passed": true
+  },
+  {
+    "placement": "after",
+    "binary": false,
+    "expected_acceptance": false,
+    "accepted": false,
+    "type": null,
+    "referenceExact": false,
+    "error": "FormatException: Unresolved database owner: 228",
+    "passed": true
+  },
+  {
+    "placement": "private",
+    "binary": false,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  },
+  {
+    "placement": "control",
+    "binary": true,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  },
+  {
+    "placement": "before",
+    "binary": true,
+    "expected_acceptance": false,
+    "accepted": false,
+    "type": null,
+    "referenceExact": false,
+    "error": "FormatException: Unresolved database owner: 228",
+    "passed": true
+  },
+  {
+    "placement": "after",
+    "binary": true,
+    "expected_acceptance": false,
+    "accepted": false,
+    "type": null,
+    "referenceExact": false,
+    "error": "FormatException: Unresolved database owner: 228",
+    "passed": true
+  },
+  {
+    "placement": "private",
+    "binary": true,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  }
+]

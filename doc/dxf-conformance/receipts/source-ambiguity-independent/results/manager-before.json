@@ -1,0 +1,82 @@
+[
+  {
+    "placement": "control",
+    "binary": false,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  },
+  {
+    "placement": "before",
+    "binary": false,
+    "expected_acceptance": false,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": false
+  },
+  {
+    "placement": "after",
+    "binary": false,
+    "expected_acceptance": false,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": false
+  },
+  {
+    "placement": "private",
+    "binary": false,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  },
+  {
+    "placement": "control",
+    "binary": true,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  },
+  {
+    "placement": "before",
+    "binary": true,
+    "expected_acceptance": false,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": false
+  },
+  {
+    "placement": "after",
+    "binary": true,
+    "expected_acceptance": false,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": false
+  },
+  {
+    "placement": "private",
+    "binary": true,
+    "expected_acceptance": true,
+    "accepted": true,
+    "type": "DxfStoredSectionManager",
+    "referenceExact": true,
+    "error": null,
+    "passed": true
+  }
+]
