@@ -198,6 +198,9 @@ namespace netDxf.Entities
         MultiLeader,
 
         /// <summary>A loaded ACAD_TABLE with preserved stored schema.</summary>
-        StoredTable
+        StoredTable,
+
+        /// <summary>A stored section plane and its boundaries.</summary>
+        Section
     }
 }

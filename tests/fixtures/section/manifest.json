@@ -1,0 +1,12 @@
+{
+  "source_repository": "LibreDWG/libredwg",
+  "source_commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+  "source_path": "test/test-data/2018/LiveSection1.dxf",
+  "source_sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+  "gzip_sha256": "7a1f9dedfde2629330e9d9bfa18ee5920a3e75499d2c65e079a558fccf608942",
+  "source_bytes": 146350,
+  "qualified_source_profile": "AC1032",
+  "primary_schema": "https://damassets.autodesk.net/content/dam/autodesk/www/developer-network/platform-technologies/autocad-dxf-archive/acad_dxf_2009.pdf",
+  "primary_pages": "139-140, 223-225 (printed)",
+  "transformations": []
+}

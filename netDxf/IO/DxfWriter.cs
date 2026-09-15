@@ -102,6 +102,7 @@ namespace netDxf.IO
             this.ValidateLightVersions();
             this.ValidateMultiLeaders();
             this.ValidateStoredTables();
+            this.ValidateSections();
             this.ValidateHatchBoundaryPresence();
             this.ValidateOutputSettings();
             IReadOnlyList<string> databaseErrors = this.doc.Objects.Validate();
@@ -1589,7 +1590,7 @@ namespace netDxf.IO
             }
 
             // transparency is stored in XData
-            if (layer.Transparency.Value > 0)
+            if (layer.Transparency.Value >= 0 && (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 || (layer.Transparency.HasValueEdit || layer.HasTransparencyAssignment) && layer.XData.ContainsAppId("AcCmTransparency")))
             {
                 AddLayerTransparencyXData(layer);
             }
@@ -1623,7 +1624,6 @@ namespace netDxf.IO
             if (layer.XData.ContainsAppId("AcCmTransparency"))
             {
                 xdataEntry = layer.XData["AcCmTransparency"];
-                xdataEntry.XDataRecord.Clear();
             }
             else
             {
@@ -1632,7 +1632,12 @@ namespace netDxf.IO
             }
 
             int alpha = Transparency.ToAlphaValue(layer.Transparency);
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int32, alpha));
+            // The reader projects the last Int32 slot. Keep every other stored tag,
+            // including private ancillary data and earlier slots, in its original order.
+            int slot = xdataEntry.XDataRecord.FindLastIndex(record => record.Code == XDataCode.Int32);
+            var value = new XDataRecord(XDataCode.Int32, alpha);
+            if (slot < 0) xdataEntry.XDataRecord.Add(value);
+            else xdataEntry.XDataRecord[slot] = value;
         }
 
         /// <summary>
@@ -1949,6 +1954,9 @@ namespace netDxf.IO
                     break;
                 case EntityType.Ole2Frame:
                     this.WriteOle2Frame((Ole2Frame) entity);
+                    break;
+                case EntityType.Section:
+                    this.WriteSection((Section)entity);
                     break;
                 case EntityType.StoredTable:
                     this.WriteStoredTable((StoredTable)entity);
@@ -4672,6 +4680,7 @@ namespace netDxf.IO
             this.chunk.Write(122, vp.UcsYAxis.Y);
             this.chunk.Write(132, vp.UcsYAxis.Z);
 
+            this.WriteSunReference(vp);
             this.WriteXData(vp.XData);
         }
 
@@ -4960,7 +4969,7 @@ namespace netDxf.IO
             this.chunk.Write(331, this.doc.Linetypes[properties.LinetypeName].Handle);
 
             //this.chunk.Write(1, properties.PlotStyleName);
-            this.chunk.Write(440, properties.Transparency.Value == 0 ? 0 : Transparency.ToAlphaValue(properties.Transparency));
+            this.chunk.Write(440, properties.Transparency.StoredAlphaValue ?? (properties.Transparency.Value == 0 ? 0 : Transparency.ToAlphaValue(properties.Transparency)));
 
             if (properties.Color.UseTrueColor)
             {

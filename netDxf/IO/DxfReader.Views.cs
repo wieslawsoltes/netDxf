@@ -36,6 +36,8 @@ namespace netDxf.IO
         {
             Debug.Assert(this.chunk.ReadString() == SubclassMarker.View);
             string name = string.Empty;
+            string sunHandle = null;
+            var sunContext = new SunOwnerContext(SubclassMarker.View);
             Vector2 center = Vector2.Zero;
             Vector3 direction = Vector3.UnitZ;
             Vector3 target = Vector3.Zero;
@@ -49,9 +51,14 @@ namespace netDxf.IO
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                sunContext.Observe(this.chunk.Code, this.chunk.Value);
                 if (this.TryReadViewUcs(associatedUcs)) continue;
                 switch (this.chunk.Code)
                 {
+                    case 361:
+                        if (!sunContext.IsPublic) break;
+                        if (sunHandle != null) throw new FormatException("Repeated VIEW SUN group 361.");
+                        sunHandle = this.chunk.ReadHex(); break;
                     case 2: name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
                     case 70: flags = (ViewFlags)this.chunk.ReadShort(); break;
                     case 10: center.X = this.chunk.ReadDouble(); break;
@@ -109,6 +116,7 @@ namespace netDxf.IO
                 RenderMode = renderMode,
                 IsCameraPlottable = cameraPlottable
             };
+            if (sunHandle != null) this.AddSunReference(view, sunHandle);
             this.CompleteViewUcs(view, associatedUcs);
             if (xData.Count > 0) this.tableEntryXData.Add(view, xData);
             return view;

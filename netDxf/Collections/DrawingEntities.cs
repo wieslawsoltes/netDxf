@@ -319,6 +319,12 @@ namespace netDxf.Collections
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<StoredTable>(); }
         }
 
+        /// <summary>Gets the stored section planes in the active layout.</summary>
+        public IEnumerable<Section> Sections
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<Section>(); }
+        }
+
         /// <summary>Gets the MULTILEADER entities in the active layout.</summary>
         public IEnumerable<MultiLeader> MultiLeaders
         {

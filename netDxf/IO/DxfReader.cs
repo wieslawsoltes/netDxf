@@ -331,6 +331,7 @@ namespace netDxf.IO
             this.ImportDatabaseObjects();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
+            this.ResolveSections();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -3747,6 +3748,10 @@ namespace netDxf.IO
                 case DxfObjectCode.Ole2Frame:
                     dxfObject = this.ReadOle2Frame();
                     break;
+                case "SECTION":
+                case "SECTIONOBJECT":
+                    dxfObject = this.ReadSection(dxfCode);
+                    break;
                 case "MULTILEADER":
                 case "MLEADER":
                     dxfObject = this.ReadMultiLeader();
@@ -4658,6 +4663,7 @@ namespace netDxf.IO
             Debug.Assert(this.chunk.ReadString() == SubclassMarker.Viewport);
 
             Viewport viewport = new Viewport();
+            var sunContext = new SunOwnerContext(SubclassMarker.Viewport);
             Vector3 center = viewport.Center;
             Vector2 viewCenter = viewport.ViewCenter;
             Vector2 snapBase = viewport.SnapBase;
@@ -4674,8 +4680,13 @@ namespace netDxf.IO
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                sunContext.Observe(this.chunk.Code, this.chunk.Value);
                 switch (this.chunk.Code)
                 {
+                    case 361:
+                        if (sunContext.IsPublic) this.AddSunReference(viewport, this.chunk.ReadHex());
+                        this.chunk.Next();
+                        break;
                     case 10:
                         center.X = this.chunk.ReadDouble();
                         this.chunk.Next();
@@ -11096,7 +11107,7 @@ namespace netDxf.IO
                         break;
                     case 440:
                         int alpha = (int) recordEntry.Value;
-                        transparency = alpha == 0 ? new Transparency(0) : Transparency.FromAlphaValue(alpha);
+                        transparency = alpha == 0 ? new Transparency(0, alpha) : Transparency.FromAlphaValue(alpha);
                         break;
                     case 92:
                         color = AciColor.FromTrueColor((int) recordEntry.Value);

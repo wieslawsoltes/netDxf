@@ -27,6 +27,7 @@ namespace netDxf.Entities
         private readonly Vector3 storedNormal;
         private Block displayBlock;
         private string displayName;
+        private string initialDisplayBlockName;
         private bool pending = true;
         private bool removed;
 
@@ -102,6 +103,7 @@ namespace netDxf.Entities
             if (this.displayName != null && this.source.Blocks.TryGetValue(this.displayName, out Block block))
             {
                 this.displayBlock = block;
+                this.initialDisplayBlockName = block.Name;
                 this.references.Add(block.Record);
             }
             this.ResolveNamedStyles();
@@ -133,7 +135,7 @@ namespace netDxf.Entities
         {
             string style = this.ChangedTextStyleName(tag);
             if (style != null) return style;
-            if (tag.Code != 2 || this.displayBlock == null || this.displayBlock.Name == this.displayName) return null;
+            if (tag.Code != 2 || this.displayBlock == null || this.displayBlock.Name == this.initialDisplayBlockName) return null;
             // Group 2 belongs to the first block-reference subclass only; later private names are left intact.
             int index = this.payload.IndexOfReference(tag);
             int boundary = this.payload.ToList().FindIndex(1, t => t.Code == 100);

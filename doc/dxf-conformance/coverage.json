@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "295e5eef289036dcdc7e0d2134f21d370a239404",
-    "tree": "f7a1d389a0144d2f5e55434a943cba2cb3aa3cc2"
+    "commit": "f9bf71739e7bd60d1e448848921ef153ada47294",
+    "tree": "a64cc268cd1202b44b99f1c96e342bd8db900012"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 23879,
+    "test_cases": 25408,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 87,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/87/checks"
+    "last_implementation_pr": 88,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/88/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -571,6 +571,38 @@
     "SOURCEID": {
       "label": "Retained source identities and numeric handle semantics",
       "path": "doc/dxf-conformance/source-reference-identity.md"
+    },
+    "SECTION": {
+      "label": "SECTION stored geometry and transactional ownership",
+      "path": "doc/dxf-conformance/section.md"
+    },
+    "SECTIONSETTINGS": {
+      "label": "SECTIONSETTINGS stored generation bundles",
+      "path": "doc/dxf-conformance/section-settings.md"
+    },
+    "TABLESTYLE": {
+      "label": "Immutable TABLESTYLE packets and resource references",
+      "path": "doc/dxf-conformance/stored-table-styles.md"
+    },
+    "SUN": {
+      "label": "SUN values and reciprocal registered view ownership",
+      "path": "doc/dxf-conformance/sun.md"
+    },
+    "FIELD": {
+      "label": "Immutable FIELD packets and exact source dependencies",
+      "path": "doc/dxf-conformance/stored-fields.md"
+    },
+    "ALPHASTORE": {
+      "label": "Exact packed transparency and ancillary metadata",
+      "path": "doc/dxf-conformance/transparency-packed.md"
+    },
+    "VPORTFROZEN": {
+      "label": "VPORT frozen-layer primary reference and corpus assessment",
+      "path": "doc/dxf-conformance/vport-frozen-layers-assessment.md"
+    },
+    "MIX6": {
+      "label": "Mixed SECTION, TABLESTYLE, SUN and FIELD lifecycle",
+      "path": "doc/dxf-conformance/sixth-mixed-modules.md"
     }
   },
   "features": [
@@ -1807,16 +1839,17 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Section-plane entity and dependency graph.",
+      "scope": "Stored SECTION/SECTIONOBJECT plane values, optional indicator fields and reciprocal settings ownership. Bounded input, explicit mapped graph cloning and atomic terminal erasure are qualified. Native and producer packet checks are distinct from section-cut evaluation, transforms and regeneration.",
       "evidence": [
-        "B"
+        "SECTION",
+        "SECTIONSETTINGS"
       ]
     },
     {
@@ -2451,16 +2484,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Field expression/evaluation records.",
+      "scope": "Loaded immutable FIELD retains expressions and caches without evaluation, with proven leading child/object lists and accepted source dependencies. Source profile is fixed; clone and owned-subtree erasure reject. Private variants and ACAD_FIELD remain opaque; evaluator semantics remain open.",
       "evidence": [
-        "B"
+        "FIELD"
       ]
     },
     {
@@ -2642,16 +2675,17 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Section-settings graph.",
+      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS type and geometry bundles are stored with exact marker variants, bounded counts, explicit references and clone/erase guards. SECTION_MANAGER remains opaque; generation and private manager semantics remain open.",
       "evidence": [
-        "B"
+        "SECTIONSETTINGS",
+        "SECTION"
       ]
     },
     {
@@ -2706,16 +2740,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Sun configuration/study objects.",
+      "scope": "Stored version-one SUN values and reciprocal registered VIEW/VPORT/VIEWPORT ownership are implemented. SUNSTUDY, retained-only layout viewport owners and solar/rendering evaluation remain open. Named VIEW ownership requires R2010; other registered hosts require R2007.",
       "evidence": [
-        "B"
+        "SUN"
       ]
     },
     {
@@ -2727,16 +2761,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Table style schema.",
+      "scope": "Loaded immutable TABLESTYLE retains complete packets with conservative classic header/ordered-row projections, exact named STYLE dependencies and an opaque owned CELLSTYLEMAP. Editing, map interpretation and TABLE regeneration remain open.",
       "evidence": [
-        "B"
+        "TABLESTYLE"
       ]
     },
     {
@@ -2860,9 +2894,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "440 path exists; version eligibility/all flags unverified.",
+      "scope": "Imported packed alpha bits survive API clones and qualified entity, MTEXT, layer XData and layer-state output. Successful percentage edits clear retained bits; ancillary layer XData remains intact. Legacy effective percentage/equality behavior and broad historical field eligibility remain separate.",
       "evidence": [
-        "B"
+        "ALPHASTORE"
       ]
     },
     {
@@ -5941,6 +5975,175 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "typed-section-owned-settings",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "SECTION owned settings transactions",
+      "scope": "Attach, mapped clone and terminal erase preserve reciprocal settings, complete typed owned metadata, source identity and independent values; unsupported opaque subtrees reject before allocation or callbacks.",
+      "evidence": [
+        "SECTION",
+        "SECTIONSETTINGS"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-section-settings-bundles",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SECTIONSETTINGS public stored bundles",
+      "scope": "Ordered type/source/geometry bundles retain documented and native color and marker variants. Counts derive only from structurally established lists; raw flags and inert resource/file strings remain unevaluated.",
+      "evidence": [
+        "SECTIONSETTINGS"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-style-stored-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLESTYLE immutable stored payload",
+      "scope": "Complete source-bound packets, exact STYLE identity/name spelling, conservative projections and guarded opaque CELLSTYLEMAP ownership. Native full drawings and scoped object-graph carriers are qualified separately.",
+      "evidence": [
+        "TABLESTYLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-field-stored-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "FIELD immutable stored expression graph",
+      "scope": "Exact public FIELD packets retain ordered child ownership and exposed dependencies across source-preserving typed profiles. Native R2000/R2018 packets are tested through disclosed carriers; complete originals meet unrelated OLE2FRAME/ACIS blockers.",
+      "evidence": [
+        "FIELD"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-sun-stored-ownership",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SUN version-one values and host ownership",
+      "scope": "Stored raw time/color/shadow values, optional field presence, registered reciprocal hosts, explicit clone mappings and erasure. R2007+ for VPORT/VIEWPORT, R2010+ for VIEW. Retained-only Layout.Viewport Id1 owners are excluded.",
+      "evidence": [
+        "SUN"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-packed-transparency-retention",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Packed alpha retention and explicit edit semantics",
+      "scope": "Exact imported packed bits, independent clones, successful and failed edits, layer ancillary XData and layer-state stored-zero presence are checked without assigning meaning to unknown flags. This is value/packet retention, not historical rendering legality.",
+      "evidence": [
+        "ALPHASTORE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-callback-free-metadata-copy",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Internal APPID metadata copying without public callbacks",
+      "scope": "Ownership transactions snapshot stored APPID/XData graphs without invoking overridable public clone methods; registry cycles, binary independence and explicit public clone behavior remain covered.",
+      "evidence": [
+        "SECTION"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-section-style-sun-field-mixed",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Mixed SECTION, TABLESTYLE, SUN and FIELD graphs",
+      "scope": "Coexisting stored graphs retain external reference identities, mapped cloneable subtrees, immutable-object rejection and source/destination erasure boundaries. Synthetic cross-family links and scoped native evidence are explicitly distinguished.",
+      "evidence": [
+        "MIX6"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -5952,17 +6155,17 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in."
+      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. The frozen-VPORT assessment found no qualified positive packets and retains the gap. Packed transparency and declared SECTION/SUN fields now retain their scoped stored values. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
     },
     {
       "id": "new-entities",
       "title": "Missing typed entity families",
-      "scope": "Editable TABLE and complete backing schemas, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Source-bound TABLE payloads and literal grids join stored MULTILEADER contexts and inert pre-2013 SAT; rendering, regeneration and private graphs remain unqualified."
+      "scope": "Editable TABLE and complete backing schemas, proxy variants, modern SAB/ACDSDATA and surface families. Stored SECTION geometry and settings ownership join source-bound TABLE and MULTILEADER payloads; section generation, rendering, regeneration and private graphs remain unqualified."
     },
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, material/rendering and sun families. Public stored DATATABLE and LAYER_INDEX graphs join the earlier objects; private schemas and evaluation remain separate."
+      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD evaluator graphs, DIMASSOC, SECTION_MANAGER, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD, public SECTIONSETTINGS and registered SUN ownership are implemented with explicit source and lifecycle boundaries."
     },
     {
       "id": "historical-typed",

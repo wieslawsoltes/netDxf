@@ -37,12 +37,39 @@ namespace netDxf.IO
                 if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
                 this.chunk.Next();
             }
+            if (codeName == "TABLESTYLE" && this.doc.DrawingVariables.AcadVer >= netDxf.Header.DxfVersion.AutoCad2004
+                && tags.FirstOrDefault(t => t.Code == 100)?.Value as string == "AcDbTableStyle")
+            {
+                DatabaseRecord style = this.ReadTableStyleRecord(tags);
+                style.SourceIdentity = source;
+                this.databaseRecords.Add(style);
+                return style;
+            }
+            if (codeName == "SUN")
+            {
+                DatabaseRecord sun = this.ReadSunRecord(tags);
+                sun.SourceIdentity = source;
+                this.databaseRecords.Add(sun);
+                return sun;
+            }
+            if (codeName == "FIELD" || codeName == "ACAD_FIELD")
+            {
+                DatabaseRecord field = this.ReadStoredFieldRecord(codeName, tags);
+                field.SourceIdentity = source; this.databaseRecords.Add(field); return field;
+            }
             if (codeName == "DATATABLE")
             {
                 DatabaseRecord table = this.ReadDataTableRecord(tags);
                 table.SourceIdentity = source;
                 this.databaseRecords.Add(table);
                 return table;
+            }
+            if (codeName == "SECTIONSETTINGS" || codeName == "SECTION_SETTINGS")
+            {
+                DatabaseRecord envelope = this.ReadSectionSettingsRecord(codeName, tags);
+                envelope.SourceIdentity = source;
+                this.databaseRecords.Add(envelope);
+                return envelope;
             }
             if (codeName == "LAYER_INDEX")
             {
@@ -180,7 +207,7 @@ namespace netDxf.IO
         }
         private void ImportDatabaseObjects()
         {
-            if (this.databaseRecords.Count == 0) { this.ResolveOutputSettingsReferences(); return; }
+            if (this.databaseRecords.Count == 0) { this.ResolveSunReferences(); this.ResolveOutputSettingsReferences(); return; }
             foreach (DatabaseRecord record in this.databaseRecords) this.RecordSourceObject(record.Object, record.SourceIdentity);
             // Reserve source identities before lazily creating the document's temporary root.
             foreach (DatabaseRecord record in this.databaseRecords)
@@ -191,6 +218,8 @@ namespace netDxf.IO
             {
                 if (record.Object is DxfXRecord xrecord) foreach (DxfTag tag in xrecord.Data) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfTableStyle style) foreach (DxfTag tag in style.Tags) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfStoredField field) foreach (DxfTag tag in field.Payload) database.ReserveUnresolvedReference(tag);
                 foreach (XData data in record.Object.XData.Values)
                     foreach (XDataRecord tag in data.XDataRecord)
                         if (tag.Code == XDataCode.DatabaseHandle) database.ReserveUnresolvedReference(new DxfTag(1005, tag.Value));
@@ -268,8 +297,12 @@ namespace netDxf.IO
                 DxfObject target = this.GetObjectBySourceHandle(pair.Key);
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
+            this.ResolveTableStyleReferences();
+            this.ResolveSunReferences();
+            this.ResolveStoredFields();
             this.ResolveDataTableReferences();
             this.ResolveLayerIndexReferences();
+            this.ResolveSectionSettingsReferences();
             this.ResolveDeclaredOwnership();
             this.ResolveGeoDataHosts();
             this.ResolveOutputSettingsReferences();

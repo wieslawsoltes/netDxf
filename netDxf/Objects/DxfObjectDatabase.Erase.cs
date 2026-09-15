@@ -49,6 +49,7 @@ namespace netDxf.Objects
                     throw new NotSupportedException("An ownership subtree containing a managed legacy object cannot be erased.");
                 if (value.IsErased || value.Database != this || !this.IsRegistered(value))
                     throw new InvalidOperationException("The erased ownership subtree has inconsistent registration.");
+                if (value is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (value is DxfOpaqueObject) throw new NotSupportedException("An opaque object requires its application schema before erasure: " + value.CodeName);
                 tree.Add(value);
                 if (children.TryGetValue(item, out List<DxfObject> next)) foreach (DxfObject child in next) pending.Enqueue(child);
@@ -60,7 +61,8 @@ namespace netDxf.Objects
             if (ReferenceEquals(parent, this.Root) && aliases.Any(e => IsReservedName(e.Name)))
                 throw new NotSupportedException("Managed legacy dictionary entries cannot be erased through this API.");
             bool extension = ReferenceEquals(root.Owner.ExtensionDictionary, root);
-            if (parent == null && !extension) throw new NotSupportedException("Erase an object through its owning dictionary or reciprocal extension attachment.");
+            bool sun = ReferenceEquals(SunReferences.Get(root.Owner), root);
+            if (parent == null && !extension && !sun) throw new NotSupportedException("Erase an object through its owning dictionary or reciprocal extension attachment.");
 
             var handles = new HashSet<ulong>();
             foreach (DxfDatabaseObject item in tree)
@@ -85,6 +87,7 @@ namespace netDxf.Objects
                     if (handles.Contains(ErasureHandle(target))) throw ErasureReference(item, field, target);
                 };
                 reference(item.Owner, "owner");
+                if (!(sun && ReferenceEquals(item, root.Owner))) reference(SunReferences.Get(item), "SUN owner slot 361");
                 if (!(extension && ReferenceEquals(item, root.Owner) && ReferenceEquals(item.ExtensionDictionary, root)))
                     reference(item.ExtensionDictionary, "extension dictionary");
                 foreach (DxfObject reactor in item.PersistentReactors) reference(reactor, "persistent reactor");
@@ -104,6 +107,7 @@ namespace netDxf.Objects
                 if (item is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags)
                         if (tag.ValueType == DxfTagValueType.Handle) handle((string)tag.Value, "opaque handle " + tag.Code);
+                if (item is Section section) reference(section.GeometrySettings, "section settings");
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)
@@ -123,6 +127,7 @@ namespace netDxf.Objects
             // The internal registration removal event only releases APPID counts and subscriptions.
             foreach (DxfDictionaryEntry alias in aliases) parent.Remove(alias.Name);
             if (extension) root.Owner.ExtensionDictionary = null;
+            if (sun) SunReferences.Set(root.Owner, null, false);
             foreach (DxfDatabaseObject item in tree)
             {
                 this.Document.AddedObjects.Remove(item.Handle);

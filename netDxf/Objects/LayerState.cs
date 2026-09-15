@@ -236,7 +236,7 @@ namespace netDxf.Objects
                 chunk.Write(370, (short) lp.Lineweight);
                 chunk.Write(6, lp.LinetypeName);
                 //chunk.Write(2, properties.PlotStyleName);
-                chunk.Write(440, lp.Transparency.Value == 0 ? 0 : Transparency.ToAlphaValue(lp.Transparency));
+                chunk.Write(440, lp.Transparency.StoredAlphaValue ?? (lp.Transparency.Value == 0 ? 0 : Transparency.ToAlphaValue(lp.Transparency)));
                 if (lp.Color.UseTrueColor)
                 {
                     // this code only appears if the layer color has been defined as true color
@@ -246,6 +246,26 @@ namespace netDxf.Objects
             chunk.Flush();
         }
 
+        // LAS ends after its last complete code/value pair. Its terminator is local to
+        // this codec; the shared DXF reader still rejects physical EOF and dangling values.
+        private sealed class LasRecordBoundaryReader : TextReader
+        {
+            private readonly TextReader source;
+            private bool expectingValue;
+            private bool endValue;
+            private bool ended;
+            internal LasRecordBoundaryReader(TextReader source) { this.source = source; }
+            public override string ReadLine()
+            {
+                if (this.endValue) { this.endValue = false; this.ended = true; return "EOF"; }
+                if (this.ended) return null;
+                string line = this.source.ReadLine();
+                if (line == null && !this.expectingValue) { this.endValue = true; return "0"; }
+                this.expectingValue = !this.expectingValue;
+                return line;
+            }
+        }
+
         private static LayerState Read(Stream stream)
         {
             if (stream == null)
@@ -253,7 +273,7 @@ namespace netDxf.Objects
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            TextCodeValueReader chunk = new TextCodeValueReader(new StreamReader(stream, Encoding.UTF8, true));
+            TextCodeValueReader chunk = new TextCodeValueReader(new LasRecordBoundaryReader(new StreamReader(stream, Encoding.UTF8, true)));
 
             chunk.Next();
             if (chunk.Code == 0 )
@@ -380,7 +400,7 @@ namespace netDxf.Objects
                         break;
                     case 440:
                         int alpha = chunk.ReadInt();
-                        transparency = alpha == 0 ? new Transparency(0) : Transparency.FromAlphaValue(alpha);
+                        transparency = alpha == 0 ? new Transparency(0, alpha) : Transparency.FromAlphaValue(alpha);
                         chunk.Next();
                         break;
                     case 92:

@@ -143,6 +143,13 @@ namespace netDxf.Tables
             return CloneApplicationRegistry(this, this, newName, cloned);
         }
 
+        // Internal ownership transactions copy stored metadata without invoking user overrides.
+        internal ApplicationRegistry CloneStoredGraph()
+        {
+            var cloned = new Dictionary<ApplicationRegistry, ApplicationRegistry>(new RegistryIdentityComparer());
+            return CloneApplicationRegistry(this, this, this.Name, cloned);
+        }
+
         private sealed class RegistryIdentityComparer : IEqualityComparer<ApplicationRegistry>
         {
             public bool Equals(ApplicationRegistry first, ApplicationRegistry second) { return ReferenceEquals(first, second); }

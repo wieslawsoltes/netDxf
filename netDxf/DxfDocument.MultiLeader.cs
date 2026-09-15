@@ -17,9 +17,13 @@ namespace netDxf
             foreach(DxfObject item in this.AddedObjects.Values)
             {
                 IEnumerable<DxfObject> references;
-                if(item is StoredTable table)references=table.References;
+                if(item is DxfStoredField field)references=field.References;
+                else if(item is StoredTable table)references=table.References;
+                else if(item is Section section)references=section.GeometrySettings==null?new DxfObject[0]:new DxfObject[]{section.GeometrySettings};
+                else if(item is DxfSectionSettings settings)references=settings.DatabaseReferences;
                 else if(item is MultiLeader leader)references=leader.Data.SelectMany(d=>d.References);
                 else if(item is DxfMLeaderStyle style)references=style.DatabaseReferences;
+                else if(item is DxfTableStyle tableStyle)references=tableStyle.References;
                 else continue;
                 int count=references.Count(r=>ReferenceEquals(r,target));
                 if(count>0)result.Add(new DxfObjectReference(item,count));

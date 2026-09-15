@@ -305,6 +305,7 @@ namespace netDxf.Tables
         /// <returns>The copied view.</returns>
         public override TableObject Clone(string newName)
         {
+            netDxf.Objects.SunReferences.CheckClone(this);
             View copy = new View(newName)
             {
                 Target = this.target,
@@ -326,6 +327,7 @@ namespace netDxf.Tables
             {
                 copy.XData.Add((XData)data.Clone());
             }
+            copy.SunHandlePresent = this.SunHandlePresent;
             return copy;
         }
 

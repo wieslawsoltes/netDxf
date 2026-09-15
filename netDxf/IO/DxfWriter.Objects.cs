@@ -15,14 +15,19 @@ namespace netDxf.IO
         }
         private void ValidateDatabaseTransport()
         {
+            foreach (DxfStoredField field in this.doc.Objects.Items.OfType<DxfStoredField>()) field.ValidateSource(this.doc);
             if (this.isBinary) return;
             foreach (DxfDatabaseObject item in this.doc.Objects.Items)
             {
                 if (item is DxfDictionaryVariable variable) CheckDatabaseText(variable.Value);
                 if (item is DxfXRecord record)
                     foreach (DxfTag tag in record.Data) if (tag.Value is string text) CheckDatabaseText(text);
+                if (item is DxfStoredField field)
+                    foreach (DxfTag tag in field.Payload) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags) if (tag.Value is string text) CheckDatabaseText(text);
+                if (item is DxfTableStyle style)
+                    foreach (DxfTag tag in style.Tags) if (tag.Value is string text) CheckDatabaseText(text);
                 foreach (XData data in item.XData.Values)
                     foreach (XDataRecord tag in data.XDataRecord) if (tag.Value is string text) CheckDatabaseText(text);
             }
@@ -70,14 +75,18 @@ namespace netDxf.IO
                 }
                 else if (count > 0) definitions.Add(new DxfClass(names[i], cppNames[i], "ObjectDBX Classes") { ProxyFlags = 0, IsEntity = false, InstanceCount = count });
             }
+            this.PrepareStoredFieldClass(definitions);
             this.PrepareStoredEnvelopeClasses(definitions);
             this.PrepareGeoDataClass(definitions);
             this.PrepareLayerFilterPointerClasses(definitions);
             this.PrepareLayerIndexClass(definitions);
             this.PrepareMultiLeaderClasses(definitions);
             this.PrepareStoredTableClasses(definitions);
+            this.PrepareSectionClasses(definitions);
+            this.PrepareTableStyleClass(definitions);
             this.PrepareLightListClass(definitions);
             this.PrepareDataTableClass(definitions);
+            this.PrepareSunClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -120,7 +129,9 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteStoredFieldPayload(item)) { }
             else if (this.WriteLayerIndexPayload(item)) { }
+            else if (this.WriteSectionSettingsPayload(item)) { }
             else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }
@@ -129,6 +140,8 @@ namespace netDxf.IO
             else if (this.WriteLayerFilterPointerPayload(item)) { }
             else if (this.WriteLightListPayload(item)) { }
             else if (this.WriteDataTablePayload(item)) { }
+            else if (this.WriteTableStylePayload(item)) { }
+            else if (this.WriteSunPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

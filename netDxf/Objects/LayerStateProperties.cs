@@ -81,7 +81,7 @@ namespace netDxf.Objects
             this.linetype = layer.Linetype.Name;
             this.color = (AciColor) layer.Color.Clone();
             this.lineweight = layer.Lineweight;
-            this.transparency = (Transparency) layer.Transparency.Clone();
+            this.transparency = CloneTransferredTransparency(layer.Transparency);
             //this.plotStyle = "Color_" + layer.Color.Index;
         }
 
@@ -206,7 +206,7 @@ namespace netDxf.Objects
             }
             if (options.HasFlag(LayerPropertiesRestoreFlags.Transparency))
             {
-                this.transparency = (Transparency) layer.Transparency.Clone();
+                this.transparency = CloneTransferredTransparency(layer.Transparency);
             }
         }
 
@@ -259,7 +259,7 @@ namespace netDxf.Objects
             }
             if (options.HasFlag(LayerPropertiesRestoreFlags.Transparency))
             {
-                layer.Transparency = (Transparency) this.Transparency.Clone();
+                layer.Transparency = CloneTransferredTransparency(this.Transparency);
             }
         }
 
@@ -319,6 +319,13 @@ namespace netDxf.Objects
         }
 
         #endregion
+
+        // State zero means opaque; normal layer zero keeps the legacy ByBlock projection.
+        // Crossing these carriers preserves effective meaning instead of copying ambiguous raw zero.
+        private static Transparency CloneTransferredTransparency(Transparency source)
+        {
+            return source.StoredAlphaValue == 0 ? Transparency.FromCadIndex(source.Value) : (Transparency)source.Clone();
+        }
 
         #region ICloneable
 

@@ -94,6 +94,10 @@ namespace netDxf.Collections
 
         private readonly List<EntityObject> innerArray;
 
+        // A fully validated section graph commits membership without invoking application callbacks.
+        internal void AddPreparedSection(Section section) { this.innerArray.Add(section); }
+        internal void RemovePreparedSection(Section section) { this.innerArray.Remove(section); }
+
         #endregion
 
         #region constructor

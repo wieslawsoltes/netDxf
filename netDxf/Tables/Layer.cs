@@ -64,6 +64,7 @@ namespace netDxf.Tables
         private Linetype linetype;
         private Lineweight lineweight;
         private Transparency transparency;
+        internal bool HasTransparencyAssignment { get; private set; }
 
         #endregion
 
@@ -229,6 +230,7 @@ namespace netDxf.Tables
             set
             {
                 this.transparency = value ?? throw new ArgumentNullException(nameof(value));
+                this.HasTransparencyAssignment = true;
             }
         }
 
@@ -291,7 +293,8 @@ namespace netDxf.Tables
                 Plot = this.plot,
                 Linetype = (Linetype) this.Linetype.Clone(),
                 Lineweight = this.Lineweight,
-                Transparency = (Transparency) this.Transparency.Clone()
+                transparency = (Transparency) this.Transparency.Clone(),
+                HasTransparencyAssignment = this.HasTransparencyAssignment
             };
 
             foreach (XData data in this.XData.Values)
