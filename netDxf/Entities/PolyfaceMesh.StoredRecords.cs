@@ -45,6 +45,7 @@ namespace netDxf.Entities
         internal void BindStoredRecordDocument(DxfDocument document) { this.storedRecordDocument = document; }
         internal void ValidateStoredRecords(DxfDocument document, bool registered)
         {
+            this.ValidatePolyfaceNormal();
             if (!this.HasStoredRecords) return;
             if (this.storedRecordDocument != null && !ReferenceEquals(document, this.storedRecordDocument))
                 throw new NotSupportedException("Retained polyface records cannot be adopted into another document.");
@@ -52,6 +53,13 @@ namespace netDxf.Entities
                 throw new NotSupportedException("Changing retained polyface record counts requires complete topology regeneration.");
             this.ValidateRetainedGeometry();
             foreach (PolyfaceMeshRecord record in this.StoredRecords) record.Validate(document, this, registered);
+        }
+        private void ValidatePolyfaceNormal()
+        {
+            Vector3 normal = this.Normal;
+            if (double.IsNaN(normal.X) || double.IsInfinity(normal.X) || double.IsNaN(normal.Y) || double.IsInfinity(normal.Y)
+                || double.IsNaN(normal.Z) || double.IsInfinity(normal.Z) || Vector3.IsZero(normal))
+                throw new InvalidOperationException("A polyface normal must be finite and nonzero.");
         }
         private void ValidateRetainedGeometry()
         {
@@ -65,6 +73,7 @@ namespace netDxf.Entities
         }
         internal void RejectStoredRecordClone()
         {
+            this.ValidatePolyfaceNormal();
             if (!this.HasStoredRecords) return;
             this.ValidateRetainedGeometry();
             if (this.HasPrivateHeader || this.ExtensionDictionary != null || this.PersistentReactors.Count != 0

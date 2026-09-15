@@ -1,0 +1,18 @@
+{
+  "fixtures": [
+    {
+      "file": "negative-polyface-invalid-xdata-AutoCad2018-False.dxf",
+      "sha256": "31e98be2e8eae906e4203322562651fd337cd9b5b29b49ba0cb667b855ad4c53",
+      "expected": "reject without admitted document graph",
+      "reason": "non-XData group 71 follows 1001/1000 tail in face record",
+      "origin": "explicit schema case context5; previous grammar reader ignored this malformed tail"
+    },
+    {
+      "file": "negative-polyface-invalid-xdata-AutoCad2018-True.dxf",
+      "sha256": "0c39cda60cc62320a05782e912d3e92d38fbe8cd752cf75fec551d5335410fe3",
+      "expected": "reject without admitted document graph",
+      "reason": "non-XData group 71 follows 1001/1000 tail in face record",
+      "origin": "explicit schema case context5; previous grammar reader ignored this malformed tail"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ internal static partial class Program
 {
     private static void RegisterPolyfaceRecordTests()
     {
+        RegisterPolyfaceRecordAdvancedTests();
         foreach (DxfVersion version in SupportedVersions) foreach (bool inputBinary in new[] { false, true })
         {
             Run($"polyface-records/native/{version}/{inputBinary}", () => PolyfaceRecordNative(version, inputBinary));
