@@ -1,0 +1,6 @@
+using netDxf; using netDxf.Entities; using netDxf.IO;
+string fixture="/workspace/scratch/2ec4aa26f01f/polyline2d-records-netDxf/tests/fixtures/polyline2d-records/producer-R2018-ascii.dxf";
+using var input=File.OpenRead(fixture);var raw=DxfRawDocument.Load(input);var parent=raw.Sections.SelectMany(s=>s.Records).Last(r=>r.Name=="POLYLINE");
+var tags=parent.Tags.Where(t=>t.Code!=10&&t.Code!=20&&t.Code!=30).ToArray();raw=raw.WithTags(raw.Tags.Take(parent.StartTagIndex).Concat(tags).Concat(raw.Tags.Skip(parent.EndTagIndex)));
+using var edited=new MemoryStream();raw.Save(edited);edited.Position=0;var doc=DxfDocument.Load(edited);var line=doc.Entities.Polylines2D.Last();line.Elevation=7;
+using var output=File.Create("/workspace/scratch/2ec4aa26f01f/legacy2d-header-probe/edited.dxf");bool saved=doc.Save(output);Console.WriteLine($"Saved={saved}; Handle={line.Handle}; Elevation={line.Elevation}");

@@ -1,0 +1,502 @@
+[
+  {
+    "name": "legacy2d-records-clone-AutoCad2000-False.dxf",
+    "sha256": "0e1340b81bda683f9e72ca13510b6caf3e38c3627b99adc5eae5a291af92412f",
+    "bytes": 8556
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2000-True.dxf",
+    "sha256": "f1db283b4d84c2279952fc984e717764ff40eff944dfb8c88298a134146c1d9f",
+    "bytes": 9017
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2004-False.dxf",
+    "sha256": "91d6da8fccab10b4138847e3ec97c5345c7df0faa9119911120de93f030548a1",
+    "bytes": 8584
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2004-True.dxf",
+    "sha256": "dd5b1e0b8a1491c614483739fe536cc009e9df3eaa9201c59cf4b70540081dd2",
+    "bytes": 9044
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2007-False.dxf",
+    "sha256": "f9f4bb920302823bea52242456e00d73cf323d38b09f60e94fe365d481f50845",
+    "bytes": 8584
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2007-True.dxf",
+    "sha256": "5e3474ee25ae32ee928a923daea1e2969c406eb50e28a4946b059a227a78190b",
+    "bytes": 9042
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2010-False.dxf",
+    "sha256": "a2d039bb69204678f05b4ebdacb1344bbb9eea43161b438582382b37ab0536c5",
+    "bytes": 8584
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2010-True.dxf",
+    "sha256": "319425df75b6ddd889bfca73452375bb7e1a2175cce4c6e9c499cb19b8cc1e72",
+    "bytes": 9044
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2013-False.dxf",
+    "sha256": "f4a35f8f4e0d88eac2a1fb212a9838cbedd36439edfdb88bcd6ebdb9586c8c44",
+    "bytes": 8584
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2013-True.dxf",
+    "sha256": "0e3bae2fe4a93947166991f1122c7c5351e97fe9fb28b67cfb4f9e1eb8b798f9",
+    "bytes": 9044
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2018-False.dxf",
+    "sha256": "9411d8c7fe147e42defb170e34394ffe49ce408ff1815874b2bf2237ebbf63ef",
+    "bytes": 8584
+  },
+  {
+    "name": "legacy2d-records-clone-AutoCad2018-True.dxf",
+    "sha256": "67148074cd91f24a2efd6b3627a7340bf7616ba1d59e2f83e1a8f0c2d9ac0dfd",
+    "bytes": 9044
+  },
+  {
+    "name": "legacy2d-records-degenerate-False-0.dxf",
+    "sha256": "5d1d35b20cd62d38afa630b671164c96f8f739e20e258270c2e66452a1464186",
+    "bytes": 16019
+  },
+  {
+    "name": "legacy2d-records-degenerate-False-1.dxf",
+    "sha256": "e414a63eb41fc1972a078c186ff76af7ae87aba893b812599da30ba19b15912f",
+    "bytes": 16180
+  },
+  {
+    "name": "legacy2d-records-degenerate-True-0.dxf",
+    "sha256": "3f2c0947a03d39d0fcb2be8949c2852b06a2099fbc3dee15b5451dd7488078f4",
+    "bytes": 15490
+  },
+  {
+    "name": "legacy2d-records-degenerate-True-1.dxf",
+    "sha256": "3343bd360fcc658b1ffafefe38e281990bad8a097c497b437b827ccc9b3b8646",
+    "bytes": 15635
+  },
+  {
+    "name": "legacy2d-records-degenerate-transformed-False-0.dxf",
+    "sha256": "1a80178ba8c05a4f1ed93a106cec0b4b22c009eb3984fcba5f2be914717e9161",
+    "bytes": 16020
+  },
+  {
+    "name": "legacy2d-records-degenerate-transformed-False-1.dxf",
+    "sha256": "c13ce3fca5170c07f5d19807f308289f00e60782e056652c08c5b8d5081ba4ef",
+    "bytes": 16181
+  },
+  {
+    "name": "legacy2d-records-degenerate-transformed-True-0.dxf",
+    "sha256": "44d3515be2dc83e9a8ddabd51eb9202fa58904cd4f0a817d316c41687e6f1bd0",
+    "bytes": 15490
+  },
+  {
+    "name": "legacy2d-records-degenerate-transformed-True-1.dxf",
+    "sha256": "1997e71df7cb7583c1e48b8bbb79a7842e32ba064f99a3a16e47907827381da4",
+    "bytes": 15635
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2000-False.dxf",
+    "sha256": "97376018a00aa2e0b3e44c00374cba73991f0bc7def5b61d8ed01754a5a71c61",
+    "bytes": 15336
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2000-True.dxf",
+    "sha256": "597aa134c1a40d2f6d24bf3f91d56daf874b769aec78498a58e7ff57853ffd68",
+    "bytes": 14912
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2004-False.dxf",
+    "sha256": "7f4e1f9415186a037c80e4e7aba0e0569a62fff7ab09b096ed02f7ef6ce33a32",
+    "bytes": 15682
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2004-True.dxf",
+    "sha256": "9421594d6d1fc070e5f54609f5b43a439e3c667f5250499cbcd27b3a95893425",
+    "bytes": 15235
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2007-False.dxf",
+    "sha256": "660512167e385d43bde094f53fb5ee4c45d1bf1aab698e1dee0ff49b2e043f63",
+    "bytes": 16387
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2007-True.dxf",
+    "sha256": "95ac1c0d482125d7359a2b2dd7a69cef19965c5b73f9adfe9cf790eafab18a70",
+    "bytes": 15860
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2010-False.dxf",
+    "sha256": "2530bd5cbfa91c1da9451c6547601818e3c9dbd92aa32e0371574f53854643da",
+    "bytes": 16387
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2010-True.dxf",
+    "sha256": "fe5fab7b3d503dee155f9eaa8317b0e36f320f684583e858df337c28e424d67a",
+    "bytes": 15861
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2013-False.dxf",
+    "sha256": "115015e956a615bbcaeff310cc2a0f174b013ef790a5a7ec9b6bc5c92350391d",
+    "bytes": 16413
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2013-True.dxf",
+    "sha256": "153b27824ba0d0737a6320e8cec4db80e1d2543893d3a83dafbed587f247eb40",
+    "bytes": 15891
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2018-False.dxf",
+    "sha256": "de088dcb0607b6a7e20e3118aabcd922aa1c972320643277aa822211ce3c5a41",
+    "bytes": 16413
+  },
+  {
+    "name": "legacy2d-records-edited-AutoCad2018-True.dxf",
+    "sha256": "2020068edbb5ead2e86a2142f9e97d3921d1db8c01417f4980f9b0ff7e7b2df2",
+    "bytes": 15891
+  },
+  {
+    "name": "legacy2d-records-explicit-zero-False.dxf",
+    "sha256": "e827a203b96c3ff7f21177bd5204fb005747a7b4b90c89aa700300189fa9bef8",
+    "bytes": 16388
+  },
+  {
+    "name": "legacy2d-records-explicit-zero-True.dxf",
+    "sha256": "4751edadba3d8dcd0d9f4ee5c976df690b562f48cc47cf569824f341130fd0b5",
+    "bytes": 15861
+  },
+  {
+    "name": "legacy2d-records-native-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "name": "legacy2d-records-native-True.dxf",
+    "sha256": "6b3d721f8b5bc0f51d3255119c7fcd1bc75cc2090bdb72913b514ec65dc3a95b",
+    "bytes": 13512
+  },
+  {
+    "name": "legacy2d-records-owned-erased-False.dxf",
+    "sha256": "8421d3191ede4bd9d3e0cd3a332ef6b6ff48d75588880ddc974e24142b855edb",
+    "bytes": 16003
+  },
+  {
+    "name": "legacy2d-records-owned-erased-True.dxf",
+    "sha256": "3ce07e9aafec5f4aee1328c49dc62ac553feb4ed301653765f54b0b0652d8c77",
+    "bytes": 15523
+  },
+  {
+    "name": "legacy2d-records-private-False-0.dxf",
+    "sha256": "2a55f255c7b51403dbfa10811f3fc6702af4d41a55adebff6b436a11c192b140",
+    "bytes": 16473
+  },
+  {
+    "name": "legacy2d-records-private-False-1.dxf",
+    "sha256": "4773ef1f252f1fa6aa0582ff35de375a9c0b699a323dafe3b62240835db6c422",
+    "bytes": 16477
+  },
+  {
+    "name": "legacy2d-records-private-False-2.dxf",
+    "sha256": "afe0cd5802307afa649f2f6985d4ef41bb11b209869bc870c0185edaf0f617d0",
+    "bytes": 16473
+  },
+  {
+    "name": "legacy2d-records-private-False-3.dxf",
+    "sha256": "cd8567dcf37dd59d58865dbb668c70361fe1334f7a5626c076d80f179aa96345",
+    "bytes": 16477
+  },
+  {
+    "name": "legacy2d-records-private-True-0.dxf",
+    "sha256": "512f5d81c34e2f8dcda618817586940fe5b7780c70ce2e316b865b801f57d9fb",
+    "bytes": 15949
+  },
+  {
+    "name": "legacy2d-records-private-True-1.dxf",
+    "sha256": "2331a2cd9234d1bc2a130d54dffa0ad1f0b7f4fbe079c63552ce4617efab759e",
+    "bytes": 15955
+  },
+  {
+    "name": "legacy2d-records-private-True-2.dxf",
+    "sha256": "78943825bab5b58d9b16de2265abd8dc612ccb80f5a22b7d78388acf5331bc79",
+    "bytes": 15949
+  },
+  {
+    "name": "legacy2d-records-private-True-3.dxf",
+    "sha256": "af9087f96dde3ca1d240dc06a8e178d07fc198d5523aa8ab9cb1419c479ca1e1",
+    "bytes": 15955
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2000-False-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2000-False-True.dxf",
+    "sha256": "0cd2a86e3cb10c8106f38e7222ea65e964409cfb77d2138d66dd5c59ecaa4836",
+    "bytes": 14862
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2000-True-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2000-True-True.dxf",
+    "sha256": "0cd2a86e3cb10c8106f38e7222ea65e964409cfb77d2138d66dd5c59ecaa4836",
+    "bytes": 14862
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2004-False-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2004-False-True.dxf",
+    "sha256": "73282985c9febd0c3356c387eef1576f6fab0b421f46148ae00c339da2da08bf",
+    "bytes": 15185
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2004-True-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2004-True-True.dxf",
+    "sha256": "73282985c9febd0c3356c387eef1576f6fab0b421f46148ae00c339da2da08bf",
+    "bytes": 15185
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2007-False-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2007-False-True.dxf",
+    "sha256": "3c7fe5625573076a73cb8cf64a0a7748a2b86599d5ac11fe6dc3a2584862f77e",
+    "bytes": 15810
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2007-True-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2007-True-True.dxf",
+    "sha256": "3c7fe5625573076a73cb8cf64a0a7748a2b86599d5ac11fe6dc3a2584862f77e",
+    "bytes": 15810
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2010-False-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2010-False-True.dxf",
+    "sha256": "f5d402e0fec5e40b7bb2936f7cfecb4be2b6a870b57ccd1d06d5727c14fd6610",
+    "bytes": 15811
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2010-True-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2010-True-True.dxf",
+    "sha256": "f5d402e0fec5e40b7bb2936f7cfecb4be2b6a870b57ccd1d06d5727c14fd6610",
+    "bytes": 15811
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2013-False-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2013-False-True.dxf",
+    "sha256": "729b31b8f00f5d3e81f5e4b696996e2dd5cdaa5ed89f51e09dcd71831de5f1cb",
+    "bytes": 15841
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2013-True-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2013-True-True.dxf",
+    "sha256": "729b31b8f00f5d3e81f5e4b696996e2dd5cdaa5ed89f51e09dcd71831de5f1cb",
+    "bytes": 15841
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2018-False-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2018-False-True.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2018-True-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "name": "legacy2d-records-producer-AutoCad2018-True-True.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2000-False.dxf",
+    "sha256": "76bea9ef8373da8f8fa3f12180d5035fa5a68d729358eb0004c854cb4ba47aa0",
+    "bytes": 15305
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2000-True.dxf",
+    "sha256": "f19a9d7f26de48150b549e1a6695b088f80343825e6d91d206379e3366d6da12",
+    "bytes": 14872
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2004-False.dxf",
+    "sha256": "3279dc272ba1f91d4d05408321b292e0625411196ab88cc8b294555560412c4a",
+    "bytes": 15651
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2004-True.dxf",
+    "sha256": "25ccb0da7cf84cbff4a1fde7d11f783fa09f1e2b667094fb4cf87b1c02048f0e",
+    "bytes": 15195
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2007-False.dxf",
+    "sha256": "87e69090abbae5ccf406d3e483fc005441c58b669ad7c734042ad581b5f1314e",
+    "bytes": 16356
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2007-True.dxf",
+    "sha256": "e37de5cfd616223133dd393bb6bde14831f7d5f64f1d23fedad6a4ea01201653",
+    "bytes": 15820
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2010-False.dxf",
+    "sha256": "f4d8ebf588f7d7c169abe6dad7845100f7cd1679cb542167d508e2c3c6133e25",
+    "bytes": 16356
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2010-True.dxf",
+    "sha256": "b07d52e27a510413879318aa2fe7426f0986839e721f2e42c6638a6354b415ec",
+    "bytes": 15821
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2013-False.dxf",
+    "sha256": "01b3f25a697700aa59792ec5e44c6696c0982f1eb50dd50cfad48d8b1cddb84f",
+    "bytes": 16382
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2013-True.dxf",
+    "sha256": "ba7589b7ff463a3f560c5c44493be030eb0c8740e3aa7bafd639659d7fc9cf18",
+    "bytes": 15851
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2018-False.dxf",
+    "sha256": "d41cc9dac8f796e006a92c161e4acb7a165e880a06932414ca90ea957c29b98a",
+    "bytes": 16382
+  },
+  {
+    "name": "legacy2d-records-reversed-AutoCad2018-True.dxf",
+    "sha256": "db018b33098408ac17bf6922558aec5b3193da728f10c77bd1311b83e51c21be",
+    "bytes": 15851
+  },
+  {
+    "name": "legacy2d-records-sparse-header-False.dxf",
+    "sha256": "8c3f7d4bd107a840b1f74f0def68acc3b0bc5845f13064bcba5ee3964a2b1f05",
+    "bytes": 16392
+  },
+  {
+    "name": "legacy2d-records-sparse-header-True.dxf",
+    "sha256": "67125b5abe5e46ed6e0731109ff46cb55e408bb833559d57cc0703e5022f4f55",
+    "bytes": 15848
+  },
+  {
+    "name": "legacy2d-records-sparse-header-edited-False.dxf",
+    "sha256": "efba728aa99216cfd627a77a919ff62dcdf335535a79a43a234a7a47a30f574b",
+    "bytes": 16413
+  },
+  {
+    "name": "legacy2d-records-sparse-header-edited-True.dxf",
+    "sha256": "3499de90f7e80f775bb23febba9e83cc6996b6e1a1471a55506b1c73fe2c7071",
+    "bytes": 15878
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2000-False.dxf",
+    "sha256": "e68ca704ecd207ba27104aeeeecf4c486d014d0506f5fb7efa1a3db7eac994d8",
+    "bytes": 15300
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2000-True.dxf",
+    "sha256": "8c4b48bf43083874d8da5aef6bfc136776b4d4a2eb7b9db3abbc665ba1ead4fa",
+    "bytes": 14862
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2004-False.dxf",
+    "sha256": "ac9e400de130a624a644eef14ad6e880aab7198eca778cced51e13b924cb030c",
+    "bytes": 15646
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2004-True.dxf",
+    "sha256": "3faea1152cccfd534a08d154e3b14aa7145112dd3b6a61754817de3b11706be6",
+    "bytes": 15185
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2007-False.dxf",
+    "sha256": "7f49d4068f0611b14f00ab163bdd7faf09c7e69c716522376aa4bb5210f71958",
+    "bytes": 16351
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2007-True.dxf",
+    "sha256": "4a9e3233f07febd646b79bff9f0c870b1f4158f331af355a333b969f0ae1808a",
+    "bytes": 15810
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2010-False.dxf",
+    "sha256": "48cf136060aa415ec8bd69d924887ee0fcd4fb02e0ef897fba328dc2fb426144",
+    "bytes": 16351
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2010-True.dxf",
+    "sha256": "2e01d2363592b7e902ab74951ced4ddb62d5c42ccdd9c73b698616cd80db2ed5",
+    "bytes": 15811
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2013-False.dxf",
+    "sha256": "75b4ee927fae5af9f3fc25cc87ce104a1bbf594ab58df04d5afd9f707978f549",
+    "bytes": 16377
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2013-True.dxf",
+    "sha256": "cf75ebf6366a4e8dc2712861185beabf745ec166c24613d91acabf51a735edda",
+    "bytes": 15841
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2018-False.dxf",
+    "sha256": "6b0b667c46acefdc09c456db237252bc40316bb3cc4d97e059d02844b2a505d9",
+    "bytes": 16377
+  },
+  {
+    "name": "legacy2d-records-transformed-AutoCad2018-True.dxf",
+    "sha256": "7586f94451941adba1b11bc8bd6cedbf2a584116251a83f39e5b6ab12532773e",
+    "bytes": 15841
+  },
+  {
+    "name": "legacy2d-records-zero-reversed-scaled-False.dxf",
+    "sha256": "eb1ab9bc3d936bf38abcdc492baf27b8850f5ad75eda943560bc856d3c6b9d8f",
+    "bytes": 16399
+  },
+  {
+    "name": "legacy2d-records-zero-reversed-scaled-True.dxf",
+    "sha256": "e1f597d78ba7761ba95cdee3f16e8055f63d78e05fd058aec4cdcaacafe4ee6a",
+    "bytes": 15871
+  }
+]

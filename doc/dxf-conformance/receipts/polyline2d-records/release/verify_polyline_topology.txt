@@ -1,0 +1,1 @@
+Polyline topology: 98 outputs; all six profiles and both transports; exact native/producer child packets, metadata, insertion, final-index movement, deletion, clones, Unicode resources and eight actual-output corruption controls; zero independent audit errors or repairs.
