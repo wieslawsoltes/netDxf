@@ -38,7 +38,7 @@ internal static partial class Program
                     record.Data.Clear(); Check(doc.Entities.Remove(mesh) && doc.GetObjectByHandle(child.Handle) == null, "released XRECORD still blocks mesh detach");
                 }
             });
-        foreach (bool binary in new[] { false, true }) foreach (int scenario in Enumerable.Range(0, 5))
+        foreach (bool binary in new[] { false, true }) foreach (int scenario in Enumerable.Range(0, 8))
             Run($"polygonmesh-records/tag-budgets/{binary}/{scenario}", () => PolygonRecordTagBudget(binary, scenario));
         foreach (DxfVersion version in SupportedVersions) foreach (bool inputBinary in new[] { false, true })
         {
@@ -175,13 +175,29 @@ internal static partial class Program
             else if (fault == 14) tags[publicOwner] = new(330, handles.GetProperty("block_record").GetString()!);
             else if (fault == 15) tags.RemoveAt(at(5));
             else if (fault == 16) tags[at(5)] = new(5, handles.GetProperty("vertices")[1].GetString()!);
-            else if (fault == 18) tags[at(10)] = new(10, double.NaN);
+            else if (fault == 18) tags[at(10)] = new(10, 1.0000000000000002);
             else { tags.RemoveAt(at(5)); tags.InsertRange(0, new DxfTag[] { new(102, "{PRIVATE"), new(5, handle), new(102, "}") }); }
             return tags;
         });
+        byte[] wire = StoredDimAssocRawBytes(raw, binary);
+        if (fault == 18)
+        {
+            if (binary)
+            {
+                int coordinate = wire.AsSpan().IndexOf(BitConverter.GetBytes(1.0000000000000002));
+                Check(coordinate >= 0, "nonfinite wire injection coordinate");
+                Buffer.BlockCopy(BitConverter.GetBytes(double.NaN), 0, wire, coordinate, 8);
+            }
+            else
+            {
+                string text = System.Text.Encoding.UTF8.GetString(wire);
+                Check(text.Contains("10\n1.0000000000000002\n", StringComparison.Ordinal), "nonfinite text injection coordinate");
+                wire = System.Text.Encoding.UTF8.GetBytes(text.Replace("10\n1.0000000000000002\n", "10\nNaN\n"));
+            }
+        }
         bool rejected = false;
-        try { using var stream = new MemoryStream(StoredDimAssocRawBytes(raw, binary)); rejected = DxfDocument.Load(stream) == null; }
-        catch (Exception error) when (error is FormatException or ArgumentException or InvalidOperationException) { rejected = true; }
+        try { using var stream = new MemoryStream(wire); rejected = DxfDocument.Load(stream) == null; }
+        catch (Exception error) when (error is FormatException or ArgumentException or InvalidOperationException or InvalidDataException) { rejected = true; }
         Check(rejected, "malformed child record accepted");
     }
     private static void PolygonRecordHistoricalWriter(DxfVersion version, bool binary)
@@ -430,7 +446,7 @@ internal static partial class Program
             Enumerable.Range(0, scenario == 4 ? 256 : 4).Select(i => new Vector3(i, i % 3, 0))));
         initial.Entities.Add(new Polyline3D(new[] { Vector3.Zero, Vector3.UnitX }));
         var doc = StoredDimAssocLoad(StoredDimAssocSave(initial, binary)); var mesh = doc.Entities.PolygonMeshes.Single();
-        DxfObject target = scenario == 1 ? mesh.EndSequenceRecord : scenario == 2 ? doc.Entities.Polylines3D.Single().VertexRecords[0] : mesh.VertexRecords[0];
+        DxfObject target = scenario == 1 || scenario == 6 ? mesh.EndSequenceRecord : scenario == 2 || scenario == 7 ? doc.Entities.Polylines3D.Single().VertexRecords[0] : mesh.VertexRecords[0];
         var packets = PolygonRecordPackets(StoredDimAssocSave(doc, binary));
         if (scenario == 4)
         {
@@ -448,9 +464,14 @@ internal static partial class Program
         else
         {
             var data = new XData(new ApplicationRegistry("PACKET_BUDGET"));
-            for (int i = packets[target.Handle].Tags.Count; i < 4096; i++) data.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short)1));
+            for (int i = packets[target.Handle].Tags.Count; i < 4096; i++)
+                data.XDataRecord.Add(scenario >= 5
+                    ? new XDataRecord(new[] { XDataCode.WorldSpacePositionX, XDataCode.WorldSpacePositionY, XDataCode.WorldSpacePositionZ }[(i - packets[target.Handle].Tags.Count) % 3], 1.0)
+                    : new XDataRecord(XDataCode.Int16, (short)1));
             target.XData.Add(data);
-            Check(StoredDimAssocLoad(StoredDimAssocSave(doc, binary)) != null, "exact per-record tag boundary must reload");
+            byte[] exact = StoredDimAssocSave(doc, binary);
+            Equal(4097, PolygonRecordPackets(exact)[target.Handle].Tags.Count, "physical tag boundary includes one opening marker");
+            Check(StoredDimAssocLoad(exact) != null, "exact per-record tag boundary must reload");
             data.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short)2));
         }
         long seed = OwnershipSeed(doc); var ids = mesh.VertexRecords.Select(r => r.Handle).ToArray();

@@ -218,14 +218,19 @@ def corruption_controls(folder, sources):
     content = packets(path.read_bytes()); fixture, _ = sources[2018, False]
     target = fixture['handles']['vertices'][0]
     with tempfile.TemporaryDirectory() as temporary:
-        for fault in range(6):
+        for fault in range(8):
             changed = copy.deepcopy(content)
             handle = fixture['handles']['seqend'] if fault == 5 else target
             packet = next(p for p in changed if identity(p) == handle)
-            code = (5, 10, 8, 330, 41, 330)[fault]
-            at = next(i for i, tag in enumerate(packet) if tag.code == code)
-            replacement = ('FFFFFFFE', (99., 98., 97.), 'WRONG_LAYER', '0', 87., '0')[fault]
-            packet[at] = DXFTag(code, replacement)
+            if fault == 6:
+                first = next(i for i, p in enumerate(changed) if identity(p) == fixture['handles']['vertices'][0])
+                second = next(i for i, p in enumerate(changed) if identity(p) == fixture['handles']['vertices'][1])
+                changed[first], changed[second] = changed[second], changed[first]
+            else:
+                code = (5, 10, 8, 330, 41, 330, None, 70)[fault]
+                at = next(i for i, tag in enumerate(packet) if tag.code == code)
+                replacement = ('FFFFFFFE', (99., 98., 97.), 'WRONG_LAYER', '0', 87., '0', None, 32)[fault]
+                packet[at] = DXFTag(code, replacement)
             corrupted = Path(temporary) / f'corrupt-{fault}.dxf'
             corrupted.write_bytes(native.extractor.write(changed, VERSIONS[2018]))
             try: producer_output(corrupted, 2018, False, False, sources)
@@ -255,7 +260,7 @@ def main():
         verify(f'polygonmesh-records-parent-reactor-move-{binary}.dxf', parent_reactor_move, binary, producer)
     check({p.name for p in args.artifacts.glob('polygonmesh-records-*.dxf')} == expected, 'Expected exact 70-output inventory')
     corruption_controls(args.artifacts, producer)
-    print('POLYGONMESH VERTEX/SEQEND: 70 outputs; 2 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and six actual-output corruption controls passed; zero independent audit errors or repairs.')
+    print('POLYGONMESH VERTEX/SEQEND: 70 outputs; 2 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and eight actual-output corruption controls passed; zero independent audit errors or repairs.')
 
 
 if __name__ == '__main__': main()
