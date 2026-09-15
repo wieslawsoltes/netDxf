@@ -189,6 +189,11 @@ namespace netDxf.Objects
                     foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");
                     foreach (DxfTag tag in polylineRecord.OpaqueHandleTags) handle((string)tag.Value, "polyline record handle");
                 }
+                if (item is PolygonMeshRecord meshRecord)
+                {
+                    foreach (DxfObject target in meshRecord.References) reference(target, "polygon mesh record reference");
+                    foreach (DxfTag tag in meshRecord.OpaqueHandleTags) handle((string)tag.Value, "polygon mesh record handle");
+                }
                 if (item is StoredTable table) foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader) foreach (MLeaderData data in leader.Data) foreach (DxfObject target in data.References) reference(target, "MULTILEADER reference");
                 if (item is Layout layout) reference(layout.PlotSettings?.ShadePlotObject, "layout shade plot");
