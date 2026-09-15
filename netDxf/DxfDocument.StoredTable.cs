@@ -28,6 +28,7 @@ namespace netDxf
                 if (block == null || !visited.Add(block) || this.Blocks.Contains(block.Name)) return;
                 foreach (EntityObject entity in block.Entities)
                 {
+                    if (entity is Hatch hatch) HatchSourceRelations.ValidateOwner(hatch, block, this);
                     if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
                     if (entity is Section section) section.Validate(this);
                     else if (entity is StoredTable table) table.ValidateIncoming(this);

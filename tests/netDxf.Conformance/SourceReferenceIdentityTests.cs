@@ -10,6 +10,8 @@ internal static partial class Program
 {
     private static void RunSourceReferenceIdentityTests()
     {
+        RunSourceAmbiguityTests();
+        RunEntitySourceIdentityTests();
         foreach (bool binary in new[] { false, true })
         {
             foreach (string path in new[] { "idbuffer", "dictionary-entry", "dictionary-default", "reactor", "extension" })

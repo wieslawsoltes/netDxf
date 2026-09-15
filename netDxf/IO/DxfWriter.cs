@@ -98,6 +98,7 @@ namespace netDxf.IO
             this.ValidateLwPolylineFidelity();
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
+            this.ValidateHatchSourceRelations();
             this.ValidateHatchSplineData();
             this.ValidateHatchSplineFitVersions();
             this.ValidateHelixVersions();

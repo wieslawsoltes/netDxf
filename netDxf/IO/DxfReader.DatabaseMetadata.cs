@@ -13,9 +13,11 @@ namespace netDxf.IO
             private readonly ICodeValueReader inner;
             private readonly Dictionary<string, DatabaseMetadata> records;
             private readonly HashSet<ulong> sourceIdentities;
+            private readonly Dictionary<ulong, SourceRecordIdentity> sourceDeclarations = new Dictionary<ulong, SourceRecordIdentity>();
             private DatabaseMetadata current = new DatabaseMetadata();
             private string handle;
             private string group;
+            private int groupDepth;
             private bool common;
             private string recordType;
             private string section;
@@ -44,21 +46,46 @@ namespace netDxf.IO
                 }
                 if (this.sectionHeader && this.section == null && this.Code == 2) this.section = this.ReadString();
                 if (!this.common) return;
-                if (this.Code == 100 || this.Code == 1001) { this.Flush(); this.common = false; return; }
                 if (this.Code == 102)
                 {
                     string value = this.ReadString();
-                    if (value == "}") this.group = null;
-                    else if (value.StartsWith("{", StringComparison.Ordinal)) this.group = value;
+                    if (value == "}")
+                    {
+                        if (this.groupDepth > 0) this.groupDepth--;
+                        if (this.groupDepth == 0) this.group = null;
+                    }
+                    else if (value.StartsWith("{", StringComparison.Ordinal))
+                    {
+                        if (this.groupDepth == 0) this.group = value;
+                        this.groupDepth++;
+                    }
                     return;
                 }
                 if (this.group != null)
                 {
-                    if (this.group == "{ACAD_XDICTIONARY" && this.Code == 360) this.current.Extension = this.ReadHex();
-                    else if (this.group == "{ACAD_REACTORS" && this.Code == 330) this.current.Reactors.Add(this.ReadHex());
+                    if (this.groupDepth == 1 && this.group == "{ACAD_XDICTIONARY" && this.Code == 360) this.current.Extension = this.ReadHex();
+                    else if (this.groupDepth == 1 && this.group == "{ACAD_REACTORS" && this.Code == 330) this.current.Reactors.Add(this.ReadHex());
                     return;
                 }
-                if (this.Code == 5 && this.recordType != "DIMSTYLE" || this.Code == 105 && this.recordType == "DIMSTYLE") this.handle = this.ReadHex();
+                if (this.Code == 100 || this.Code == 1001) { this.Flush(); this.common = false; return; }
+                if (this.Code == 5 && this.recordType != "DIMSTYLE" || this.Code == 105 && this.recordType == "DIMSTYLE")
+                {
+                    this.handle = this.ReadHex();
+                    if (this.SourceRecord.IdentitySeen) this.SourceRecord.Ambiguous = true;
+                    this.SourceRecord.IdentitySeen = true;
+                    if (this.IsPhysicalSourceRecord() && ulong.TryParse(this.handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong identity) && identity != 0)
+                    {
+                        if (this.sourceDeclarations.TryGetValue(identity, out SourceRecordIdentity previous) && !ReferenceEquals(previous, this.SourceRecord))
+                        { previous.Ambiguous = true; this.SourceRecord.Ambiguous = true; }
+                        else this.sourceDeclarations[identity] = this.SourceRecord;
+                    }
+                }
+            }
+            private bool IsPhysicalSourceRecord()
+            {
+                return (this.section == "TABLES" || this.section == "BLOCKS" || this.section == "ENTITIES" || this.section == "OBJECTS")
+                    && this.recordType != null && !this.sectionHeader && this.recordType != "ENDSEC"
+                    && this.recordType != "EOF" && this.recordType != "ENDTAB" && this.recordType != "CLASS";
             }
             private void Flush()
             {

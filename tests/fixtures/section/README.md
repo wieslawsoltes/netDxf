@@ -10,7 +10,7 @@ No section entity, settings packet, resource, owner, class or carrier record was
 rewritten in the original. The complete original file loads directly.
 
 The relevant native records are SECTIONOBJECT `228`, SECTION_SETTINGS `22A` and
-the root-owned opaque SECTION_MANAGER `229`. The entity uses indicator field62
+the root-owned stored SECTION_MANAGER `229`. The entity uses indicator field62
 inside AcDbSection and physically owns its settings through360/reciprocal330.
 Settings generation option91 is17, and the four geometry91 values are1/2/4/8;
 these are independent stored integers. Common entity proxy graphics total188bytes.
@@ -19,3 +19,6 @@ these are independent stored integers. Common entity proxy graphics total188byte
 in complete-file exports and distinguishes native audits from the explicit
 in-memory audit adapter used solely for documented SECTION spelling outputs.
 See `doc/dxf-conformance/section.md` for exact qualified scope.
+`tools/verify_section_manager.py` separately qualifies the exact native manager
+packet and its registered section target; its schema cases for other profiles
+are explicitly synthetic. See `doc/dxf-conformance/section-manager.md`.

@@ -65,8 +65,10 @@ internal static partial class Program
         RegisterCompositeTableOwnershipTests();
         RegisterPrivateXRecordTests();
         RunSourceReferenceIdentityTests();
+        RunSourceIdentityMetadataTests();
         RunNumericHandleTests();
         RegisterSectionTests();
+        RegisterSectionManagerTests();
         RegisterSectionLifecycleTests();
         RunSectionSettingsTests();
         RegisterSectionProducerTests();

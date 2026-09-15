@@ -848,6 +848,7 @@ namespace netDxf.Entities
 
         #region private fields
 
+        internal Hatch ContainingHatch { get; set; }
         private readonly List<EntityObject> entities;
         private readonly List<Edge> edges;
         private HatchBoundaryPathTypeFlags pathType;

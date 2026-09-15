@@ -41,3 +41,8 @@ Feature changes are grouped into reviewable PRs with applicable version/transpor
 Stored [UCS-record orthographic base references](ucs-record-base.md) preserve the distinct79/346 relationship, actual target identities and explicit-null presence. Independent producer packets qualify storage and lifecycle behavior; the published schema contradiction and lack of positive native packets remain documented.
 
 Loaded [ordinary 3D POLYLINE child records](polyline3d-records.md) retain VERTEX and SEQEND identities, optional packets, common metadata and exact native association references. The focused module has 382 Debug/Release cases and 90 independently checked outputs, including clone/removal guards and parent-reactor moves. It remains source/profile bound; fitted and legacy 2D records, arbitrary topology changes and full metadata-graph cloning remain separate work.
+
+The [immutable section manager](section-manager.md) retains the stored update flag,
+ordered section pointers and exact source identities with root-anchor and lifecycle
+guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
+storage; live sectioning and automatic membership maintenance remain separate.

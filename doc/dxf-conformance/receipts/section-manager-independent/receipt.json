@@ -1,0 +1,87 @@
+{
+  "review": "Independent local SECTION_MANAGER and retained-entity identity review",
+  "native_source": "tests/fixtures/section/LiveSection1.dxf.gz",
+  "native_source_gzip_sha256": "7a1f9dedfde2629330e9d9bfa18ee5920a3e75499d2c65e079a558fccf608942",
+  "harness": "Program.cs.txt",
+  "harness_sha256": "17e8b7fea69aace53db79cd6bdf883a3bc549679708565932894d47bdcb83889",
+  "harness_executable_sha256": "d7480922b968b897ba55d4c2109edaf7a59ab11ef6b7bfd59c29b6323b6448c5",
+  "runtime": ".NET SDK 8.0.408, net8.0, Linux",
+  "configurations": {
+    "before": {
+      "library_sha256": "70291c10f514d360e1cef27a7011519f449efccd5568116e17bfe1454d372cc3",
+      "passed": 46,
+      "failed": 6,
+      "result_file": "before-results.json",
+      "results_sha256": "d39c35fa5d5cccba266e0ec1eb4af4ad4359cb21e42c977e1d51630b47c25981",
+      "failed_names": [
+        "mixed-root-name/False",
+        "no-target-source-identity/False",
+        "duplicate-source-identity/False",
+        "mixed-root-name/True",
+        "no-target-source-identity/True",
+        "duplicate-source-identity/True"
+      ]
+    },
+    "after-debug": {
+      "library_sha256": "f063676c5c01775f03d27889fd9dbd9cbb37b81170684d881d1b6ea58ca9828a",
+      "passed": 52,
+      "failed": 0,
+      "result_file": "after-debug-results.json",
+      "results_sha256": "013158b004ee54a13a54aa06ad385a7f158c0bfdc736d3aa89c0b1161b116a29",
+      "failed_names": []
+    },
+    "after-release": {
+      "library_sha256": "45765f706b4823525eddd7fbc3291c607edaf6b9a91ad448496a538203b0ee5e",
+      "passed": 52,
+      "failed": 0,
+      "result_file": "after-release-results.json",
+      "results_sha256": "013158b004ee54a13a54aa06ad385a7f158c0bfdc736d3aa89c0b1161b116a29",
+      "failed_names": []
+    }
+  },
+  "independent_output_gates": {
+    "debug": {
+      "script": "tools/verify_section_manager.py",
+      "passed": true,
+      "outputs": 52,
+      "exact_native_packets": 4,
+      "synthetic_schema_cases": 32,
+      "opaque_cases": 16,
+      "corruption_controls": 160,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "log_sha256": "7a7ea19f19462865312715210ddfa16569954a25ae3de4f1576883a2178fe184"
+    },
+    "release": {
+      "script": "tools/verify_section_manager.py",
+      "passed": true,
+      "outputs": 52,
+      "exact_native_packets": 4,
+      "synthetic_schema_cases": 32,
+      "opaque_cases": 16,
+      "corruption_controls": 160,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "log_sha256": "7a7ea19f19462865312715210ddfa16569954a25ae3de4f1576883a2178fe184"
+    }
+  },
+  "reviewed_source_sha256": {
+    "netDxf/IO/DxfReader.cs": "20b06b36ffd2a6037357069d4f244ed680f9ac7d5d52d9fc724f92a6ac801a60",
+    "netDxf/IO/DxfReader.SectionManager.cs": "aab38de5c1e06d4780f768c65167feac5cf2f83aeb913ebb102591d8f8bf6c3e",
+    "netDxf/IO/DxfWriter.SectionManager.cs": "5d143d3a4dc467f532ef914d652e7a127ae7034343b31b17513334c30d8d35ae",
+    "netDxf/Objects/DxfStoredSectionManager.cs": "bca85b2d7d30cd0ccbf020dfff442fb84c2dcdbec8cb5b92b404b7cfee87c770",
+    "tests/netDxf.Conformance/EntitySourceIdentityTests.cs": "1f12e179926f7a7a6c506d01a686e46f3323375549a5f83cc19a81b7a85db1f1",
+    "tests/netDxf.Conformance/SectionManagerTests.cs": "c8cfba7ca0731fc29cc3712fd24c5d8151e46f337546e92838f9fec9cd2b5f87",
+    "tools/verify_section_manager.py": "d24b2e90c653a24d7f21f5f9197c75542309272ea99a78bdbd3388d700ee28dc"
+  },
+  "notes": [
+    "Before and after results use exactly the same final harness.",
+    "The before DLL contains initial SECTION_MANAGER support before casing and retained-entity identity corrections.",
+    "Missing-identity cases execute in child processes; the earlier Debug library exits134, and fixed configurations use normal public load failure behavior.",
+    "DxfDocument.Load throws a FormatException for the covered malformed records in Debug and returns null in Release under its existing public behavior; the harness accepts both.",
+    "The initial probe incorrectly required exceptions in Release. Its source and results remain in initial-probe for transparency and do not form the qualification comparison.",
+    "No network or external-system access was needed for executing the local probes or output validators.",
+    "All native evidence remains the single pinned R2018 source. Other versions and manager shapes use explicitly authored schema fixtures.",
+    "No native AutoCAD execution, section generation or editable manager lifecycle is qualified."
+  ]
+}

@@ -85,6 +85,7 @@ namespace netDxf.IO
             this.PrepareMultiLeaderClasses(definitions);
             this.PrepareStoredTableClasses(definitions);
             this.PrepareSectionClasses(definitions);
+            this.PrepareSectionManagerClasses(definitions);
             this.PrepareTableStyleClass(definitions);
             this.PrepareStoredDimAssocClass(definitions);
             this.PrepareStoredTableContentClass(definitions);
@@ -136,6 +137,7 @@ namespace netDxf.IO
             else if (this.WriteStoredFieldPayload(item)) { }
             else if (this.WriteLayerIndexPayload(item)) { }
             else if (this.WriteSectionSettingsPayload(item)) { }
+            else if (this.WriteSectionManagerPayload(item)) { }
             else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }

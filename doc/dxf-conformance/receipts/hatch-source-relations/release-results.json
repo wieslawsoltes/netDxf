@@ -1,0 +1,2027 @@
+[
+  {
+    "name": "hatch-source/retained/native/AutoCad2000/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2000/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2000/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2000/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2000/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2000/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2000/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2000/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2000/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2000/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2004/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2004/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2004/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2004/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2004/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2004/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2004/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2004/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2004/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2004/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2007/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2007/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2007/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2007/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2007/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2007/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2007/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2007/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2007/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2007/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2010/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2010/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2010/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2010/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2010/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2010/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2010/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2010/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2010/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2010/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2013/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2013/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2013/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2013/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2013/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2013/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2013/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2013/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2013/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2013/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2018/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2018/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2018/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2018/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/False/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2018/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/native/AutoCad2018/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/native/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/native/AutoCad2018/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2018/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/retained/producer/AutoCad2018/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/normalized/producer/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/missing",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/zero",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/wrong-owner",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/self",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/discarded",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/missing-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/private-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/nonassociative",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/short-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/long-count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/duplicate-physical",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/duplicate-common-equal",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/reject/producer/AutoCad2018/True/duplicate-common-different",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/shared/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/shared/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/shared/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/shared/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/shared/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/shared/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/5",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/6",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/7",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/8",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/9",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/10",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/11",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/12",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/13",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-source/api/14",
+    "passed": true,
+    "error": null
+  }
+]

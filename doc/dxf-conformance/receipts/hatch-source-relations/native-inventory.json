@@ -1,0 +1,86 @@
+[
+  {
+    "file": "tests/fixtures/dimassoc/originals-gzip/example_2018.dxf.gz",
+    "sha256": "60be0aed8aa68546cafd1c7f44d44f7a5c45cb3da10c99e258e0254df2ed45e8",
+    "hatch_count": 1,
+    "hatches_with_source_references": [
+      {
+        "hatch": "24F",
+        "refs": [
+          "8E"
+        ],
+        "associative": "1"
+      }
+    ]
+  },
+  {
+    "file": "tests/fixtures/dimassoc/originals-gzip/example_2004.dxf.gz",
+    "sha256": "6ff1fc0dcb27a5f246f1ee03a952dc6a69eefa8266afb1fd6c1f3ab611fb8448",
+    "hatch_count": 1,
+    "hatches_with_source_references": [
+      {
+        "hatch": "24F",
+        "refs": [
+          "8E"
+        ],
+        "associative": "1"
+      }
+    ]
+  },
+  {
+    "file": "tests/fixtures/dimassoc/originals-gzip/example_2000.dxf.gz",
+    "sha256": "c8047efbb62878b28d4e217373765ebb91229009eca0813644228ba5c740aaca",
+    "hatch_count": 1,
+    "hatches_with_source_references": [
+      {
+        "hatch": "24F",
+        "refs": [
+          "8E"
+        ],
+        "associative": "1"
+      }
+    ]
+  },
+  {
+    "file": "tests/fixtures/dimassoc/originals-gzip/example_2007.dxf.gz",
+    "sha256": "0feafb9e31aac2ba2f67b2b602cd291a85c88f5a629c5a586580c8f3bfa7a12d",
+    "hatch_count": 1,
+    "hatches_with_source_references": [
+      {
+        "hatch": "24F",
+        "refs": [
+          "8E"
+        ],
+        "associative": "1"
+      }
+    ]
+  },
+  {
+    "file": "tests/fixtures/dimassoc/originals-gzip/example_2013.dxf.gz",
+    "sha256": "784141c23a44adade7ea99f0611caabc6501cb33d4558d582e0e642226e21850",
+    "hatch_count": 1,
+    "hatches_with_source_references": [
+      {
+        "hatch": "24F",
+        "refs": [
+          "8E"
+        ],
+        "associative": "1"
+      }
+    ]
+  },
+  {
+    "file": "tests/fixtures/dimassoc/originals-gzip/example_2010.dxf.gz",
+    "sha256": "594c49a56335e40a577bdbdb6faa2590efdc57580888b00f33b6b287de675535",
+    "hatch_count": 1,
+    "hatches_with_source_references": [
+      {
+        "hatch": "24F",
+        "refs": [
+          "8E"
+        ],
+        "associative": "1"
+      }
+    ]
+  }
+]

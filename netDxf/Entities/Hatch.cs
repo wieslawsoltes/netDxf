@@ -126,7 +126,15 @@ namespace netDxf.Entities
             this.boundaryPaths.RemoveItem += this.BoundaryPaths_RemoveItem;
             this.associative = associative;
 
-            foreach (HatchBoundaryPath path in paths)
+            var incomingPaths = new List<HatchBoundaryPath>(paths);
+            if (new HashSet<HatchBoundaryPath>(incomingPaths).Count != incomingPaths.Count)
+                throw new ArgumentException("A HATCH boundary path instance cannot occur more than once; clone the path before reuse.", nameof(paths));
+            foreach (HatchBoundaryPath path in incomingPaths)
+            {
+                if (path == null) throw new ArgumentException("HATCH boundary paths cannot contain null.", nameof(paths));
+                HatchSourceRelations.ValidatePathOwner(this, path, null);
+            }
+            foreach (HatchBoundaryPath path in incomingPaths)
             {
                 if (associative)
                 {
@@ -245,8 +253,9 @@ namespace netDxf.Entities
                     entity.RemoveReactor(this);
                     boundary.Add(entity);
                 }
-                path.ClearContour();
             }
+            foreach (EntityObject entity in boundary) this.RemoveUnusedSourceBacklink(entity);
+            foreach (HatchBoundaryPath path in this.boundaryPaths) path.ClearContour();
             return boundary;
         }
 
@@ -614,16 +623,15 @@ namespace netDxf.Entities
 
         private void BoundaryPaths_BeforeAddItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
-            // null items are not allowed in the list.
-            if (e.Item == null)
-            {
-                e.Cancel = true;
-            }
-            e.Cancel = false;
+            e.Cancel = e.Item == null;
+            if (e.Cancel) return;
+            if (this.boundaryPaths.Contains(e.Item)) throw new ArgumentException("A HATCH boundary path instance cannot occur more than once; clone the path before reuse.");
+            HatchSourceRelations.ValidatePathOwner(this, e.Item, this.Owner);
         }
 
         private void BoundaryPaths_AddItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
+            e.Item.ContainingHatch = this;
             if (this.associative)
             {
                 foreach (EntityObject entity in e.Item.Entities)
@@ -645,6 +653,7 @@ namespace netDxf.Entities
 
         private void BoundaryPaths_RemoveItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
+            if (!this.boundaryPaths.Contains(e.Item)) e.Item.ContainingHatch = null;
             if (this.associative)
             {
                 foreach (EntityObject entity in e.Item.Entities)
@@ -653,7 +662,15 @@ namespace netDxf.Entities
                 }
             }
 
+            foreach (EntityObject entity in e.Item.Entities) this.RemoveUnusedSourceBacklink(entity);
             this.OnHatchBoundaryPathRemovedEvent(e.Item);
+        }
+
+        private void RemoveUnusedSourceBacklink(EntityObject entity)
+        {
+            foreach (DxfObject reactor in entity.Reactors) if (ReferenceEquals(reactor, this)) return;
+            for (int i = entity.PersistentReactors.Count - 1; i >= 0; i--)
+                if (ReferenceEquals(entity.PersistentReactors[i], this)) entity.PersistentReactors.RemoveAt(i);
         }
 
         #endregion

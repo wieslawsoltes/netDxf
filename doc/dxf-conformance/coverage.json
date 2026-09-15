@@ -647,6 +647,10 @@
     "MIX7": {
       "label": "Mixed association, UCS and TABLE backing graphs",
       "path": "doc/dxf-conformance/seventh-mixed-modules.md"
+    },
+    "SECTIONMANAGER": {
+      "label": "Immutable section-manager packets and exact source section references",
+      "path": "doc/dxf-conformance/section-manager.md"
     }
   },
   "features": [
@@ -2728,10 +2732,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS type and geometry bundles are stored with exact marker variants, bounded counts, explicit references and clone/erase guards. SECTION_MANAGER remains opaque; generation and private manager semantics remain open.",
+      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS bundles and source-bound SECTION_MANAGER/SECTIONMANAGER lists retain exact stored fields and explicit references with conservative lifecycle guards. Private manager variants, live sectioning, automatic membership updates and generation remain outside this scope.",
       "evidence": [
         "SECTIONSETTINGS",
-        "SECTION"
+        "SECTION",
+        "SECTIONMANAGER"
       ]
     },
     {
@@ -6425,6 +6430,27 @@
         "AC1027": "O",
         "AC1032": "O"
       }
+    },
+    {
+      "id": "typed-section-manager-stored-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SECTION_MANAGER immutable stored section list",
+      "scope": "Source-bound update flag and ordered section pointers with exact registered identities, preserved object spelling, root-anchor checks and clone/erase/profile refusal. Native R2018 evidence is distinguished from synthetic R2007+ schema cases.",
+      "evidence": [
+        "SECTIONMANAGER"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -6446,7 +6472,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, SECTION_MANAGER, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT storage, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
+      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, editable SECTION_MANAGER lifecycles, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT storage, stored SECTION_MANAGER lists, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
     },
     {
       "id": "historical-typed",
