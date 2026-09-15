@@ -159,6 +159,7 @@ namespace netDxf.Objects
             foreach (DxfDatabaseObject item in tree)
             {
                 if (item is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
+                if (item is DxfStoredSunStudy) throw new NotSupportedException("Stored SUNSTUDY erasure requires its complete application lifecycle.");
                 if (item is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (item is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (item is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");

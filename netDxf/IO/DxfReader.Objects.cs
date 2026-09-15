@@ -52,6 +52,11 @@ namespace netDxf.IO
                 this.databaseRecords.Add(content);
                 return content;
             }
+            if (codeName == "SUNSTUDY")
+            {
+                DatabaseRecord study = this.ReadStoredSunStudyRecord(tags);
+                study.SourceIdentity = source; this.databaseRecords.Add(study); return study;
+            }
             if (codeName == "SUN")
             {
                 DatabaseRecord sun = this.ReadSunRecord(tags);
@@ -258,6 +263,7 @@ namespace netDxf.IO
                 if (record.Object is DxfStoredSectionManager manager) foreach (DxfTag tag in manager.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfTableStyle style) foreach (DxfTag tag in style.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredField field) foreach (DxfTag tag in field.Payload) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfStoredSunStudy study) foreach (DxfTag tag in study.Payload) database.ReserveUnresolvedReference(tag);
                 foreach (XData data in record.Object.XData.Values)
                     foreach (XDataRecord tag in data.XDataRecord)
                         if (tag.Code == XDataCode.DatabaseHandle) database.ReserveUnresolvedReference(new DxfTag(1005, tag.Value));
@@ -340,6 +346,7 @@ namespace netDxf.IO
             this.ResolveStoredTableContentReferences();
             this.ResolveSunReferences();
             this.ResolveStoredFields();
+            this.ResolveStoredSunStudyReferences();
             this.ResolveDataTableReferences();
             this.ResolveLayerIndexReferences();
             this.ResolveSectionSettingsReferences();

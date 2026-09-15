@@ -75,6 +75,15 @@ namespace netDxf
                 for (DxfObject owner = content.Owner; owner != null && owners.Add(owner); owner = owner.Owner)
                     if (removed.Contains(owner)) return true;
             }
+            foreach (DxfDatabaseObject study in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "SUNSTUDY"))
+            {
+                if (study is DxfStoredSunStudy stored && stored.References.Any(removed.Contains)) return true;
+                if (study is DxfOpaqueObject opaque && opaque.Tags.Where(DxfObjectDatabase.IsReference)
+                    .Select(tag => this.StoredTableHandleTarget((string)tag.Value)).Any(target => target != null && removed.Contains(target))) return true;
+                var owners = new HashSet<DxfObject>(new MetadataIdentityComparer());
+                for (DxfObject owner = study.Owner; owner != null && owners.Add(owner); owner = owner.Owner)
+                    if (removed.Contains(owner)) return true;
+            }
             foreach (DxfStoredField field in this.AddedObjects.Values.OfType<DxfStoredField>())
             {
                 if (field.References.Any(removed.Contains)) return true;
