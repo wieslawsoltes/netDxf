@@ -1,0 +1,60 @@
+{
+  "producer": "ezdxf 1.4.4 minimal carrier; exact AutoCAD-source records from pinned ACadSharp corpus",
+  "source_file": "tests/fixtures/table-oracle/sample_AC1021_ascii.dxf.gz",
+  "source_sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+  "fixture": "native-mleader-R2007.dxf.gz",
+  "decoded_sha256": "5e57fbcb9bbf326de7bbcdc9951e51c1d52834ae4f6117c0e3f95fdda09474ab",
+  "entity_handles": [
+    "7B8",
+    "B1A",
+    "B1B",
+    "B1C",
+    "B1D",
+    "B1E",
+    "B1F",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B25",
+    "B26",
+    "B27"
+  ],
+  "style_handles": [
+    "D8",
+    "E5"
+  ],
+  "exact_source_handles": [
+    "11",
+    "14",
+    "107",
+    "D7",
+    "D8",
+    "E5",
+    "13CD",
+    "13CE",
+    "7B8",
+    "B1A",
+    "B1B",
+    "B1C",
+    "B1D",
+    "B1E",
+    "B1F",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B25",
+    "B26",
+    "B27"
+  ],
+  "carrier_transformations": [
+    "New empty ezdxf R2007 carrier, deterministic dates/GUIDs, allocated handles rebased into F0000 range; generated CLASS records sorted by name.",
+    "Carrier model-space BLOCK_RECORD, root DICTIONARY, STYLE/LTYPE/APPID table handles use original identities 1F/C/3/5/9.",
+    "Default STYLE and ByBlock LTYPE replaced with exact original records 11 and 14; APPID 107 and style dictionary D7 with D8/E5 added.",
+    "All 15 original MULTILEADER packets, extension dictionary 13CD and XRECORD 13CE copied without changing any tag or owner/reference value.",
+    "Original MULTILEADER and MLEADERSTYLE CLASS records copied; unrelated original tables, entities, OBJECTS and HEADER variables excluded."
+  ]
+}

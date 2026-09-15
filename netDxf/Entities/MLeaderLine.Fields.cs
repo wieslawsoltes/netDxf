@@ -12,12 +12,15 @@ namespace netDxf.Entities
         private static readonly MLeaderField[] fields = new MLeaderField[]
         {
             new MLeaderField(91, typeof(int), 0, false, 2007),
-            new MLeaderField(92, typeof(int), unchecked((int)0xC1000000), false, 2007),
+            new MLeaderField(92, typeof(int), null, false, 2007),
         };
         internal override MLeaderField[] Fields { get { return fields; } }
         /// <summary>Gets or sets the stored group 91 value.</summary>
         public int Index { get { return this.Get<int>(91); } set { this.Set(91, value); } }
-        /// <summary>Gets or sets the stored group 92 value.</summary>
-        public int Color { get { return this.Get<int>(92); } set { this.Set(92, value); } }
+        /// <summary>Gets or sets the effective raw color; an absent stored group 92 has the ByBlock value 0xC1000000.</summary>
+        /// <remarks>Assigning a value makes group 92 explicit. Use StoredColor to preserve or restore physical absence.</remarks>
+        public int Color { get { return this.StoredColor ?? unchecked((int)0xC1000000); } set { this.Set(92, value); } }
+        /// <summary>Gets or sets the optional stored group 92 raw color. Null retains physical absence.</summary>
+        public int? StoredColor { get { return this.Get<int?>(92); } set { this.Set(92, value); } }
     }
 }

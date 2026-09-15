@@ -25,6 +25,7 @@ internal static partial class Program
         RegisterVPortApiTests();
         RegisterViewUcsTests();
         RegisterMLeaderTests();
+        RegisterMLeaderNativeTests();
         RegisterTextFramingTests();
         RegisterMinimalDocumentTests();
         RegisterHeaderProbeTests();
