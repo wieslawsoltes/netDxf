@@ -1184,7 +1184,10 @@ namespace netDxf
                     PolyfaceMesh mesh = (PolyfaceMesh) entity;
                     foreach (PolyfaceMeshFace face in mesh.Faces)
                     {
-                        this.layers.References[face.Layer.Name].Remove(mesh);
+                        if (face.Layer != null)
+                        {
+                            this.layers.References[face.Layer.Name].Remove(mesh);
+                        }
                     }
                     mesh.PolyfaceMeshFaceLayerChanged -= this.Entity_LayerChanged;
                     break;

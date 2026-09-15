@@ -15,6 +15,7 @@ namespace netDxf.Entities
         internal readonly Dictionary<short, int> StoredNormalIndices = new Dictionary<short, int>();
         internal Vector3 StoredNormal;
         internal bool HasPrivateHeader;
+        internal int StoredHeaderPublicEnd;
 
         /// <summary>Gets retained coordinate VERTEX records aligned with the Vertexes array.</summary>
         public IReadOnlyList<PolyfaceMeshRecord> VertexRecords { get { return this.storedVertexRecords; } }
@@ -78,7 +79,7 @@ namespace netDxf.Entities
             this.RejectStoredRecordClone();
             clone.SetStoredRecords(null, this.StoredRecords.Select(record => record.CopyForClone(record.IsFaceRecord ? clone.Faces[record.FaceIndex] : null)).ToArray());
             clone.StoredHeaderTags = new List<DxfTag>(this.StoredHeaderTags);
-            clone.StoredNormal = this.StoredNormal;
+            clone.StoredNormal = this.StoredNormal; clone.StoredHeaderPublicEnd = this.StoredHeaderPublicEnd;
             foreach (var pair in this.StoredNormalIndices) clone.StoredNormalIndices.Add(pair.Key, pair.Value);
             clone.DeclaredVertexCount = this.DeclaredVertexCount; clone.DeclaredFaceCount = this.DeclaredFaceCount;
         }

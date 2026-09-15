@@ -33,14 +33,17 @@ namespace netDxf.IO
         private void WriteStoredPolyfaceMeshHeader(PolyfaceMesh mesh)
         {
             bool changed = mesh.Normal != mesh.StoredNormal;
+            bool appendNormal = changed && mesh.StoredNormalIndices.Count == 0;
             for (int i = 0; i < mesh.StoredHeaderTags.Count; i++)
             {
+                if (appendNormal && i == mesh.StoredHeaderPublicEnd)
+                { this.chunk.Write(210, mesh.Normal.X); this.chunk.Write(220, mesh.Normal.Y); this.chunk.Write(230, mesh.Normal.Z); }
                 DxfTag tag = mesh.StoredHeaderTags[i];
                 if (changed && mesh.StoredNormalIndices.TryGetValue(tag.Code, out int normal) && normal == i)
                     this.chunk.Write(tag.Code, tag.Code == 210 ? mesh.Normal.X : tag.Code == 220 ? mesh.Normal.Y : mesh.Normal.Z);
                 else this.WriteDatabaseTag(tag, false);
             }
-            if (changed && mesh.StoredNormalIndices.Count == 0)
+            if (appendNormal && mesh.StoredHeaderPublicEnd == mesh.StoredHeaderTags.Count)
             { this.chunk.Write(210, mesh.Normal.X); this.chunk.Write(220, mesh.Normal.Y); this.chunk.Write(230, mesh.Normal.Z); }
             this.WriteXData(mesh.XData);
         }

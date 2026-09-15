@@ -30,7 +30,7 @@ namespace netDxf.IO
             }
             PolylineTypeFlags flags = PolylineTypeFlags.PolyfaceMesh; bool flagsSeen = false, privateClass = false, hasPrivate = false;
             short? verticesDeclared = null, facesDeclared = null; Vector3 normal = Vector3.UnitZ;
-            var normalIndices = new Dictionary<short, int>();
+            var normalIndices = new Dictionary<short, int>(); int headerPublicEnd = header.Count;
             for (int i = 1; i < header.Count; i++)
             {
                 DxfTag tag = header[i];
@@ -38,6 +38,7 @@ namespace netDxf.IO
                 if (tag.Code == 100)
                 {
                     if ((string)tag.Value == SubclassMarker.PolyfaceMesh) throw new FormatException("Duplicate POLYFACE subclass.");
+                    if (!privateClass) headerPublicEnd = i;
                     privateClass = true; hasPrivate = true; continue;
                 }
                 if (privateClass) continue;
@@ -93,7 +94,7 @@ namespace netDxf.IO
             try { result = new PolyfaceMesh(points, faces) { Flags = flags, Normal = normal }; }
             catch (ArgumentException error) { throw new FormatException("POLYFACE signed indices must resolve against the complete coordinate sequence.", error); }
             result.SetStoredRecords(this.doc, sequence.ToArray()); result.XData.AddRange(xdata);
-            result.StoredHeaderTags = header; result.StoredNormal = result.Normal; result.HasPrivateHeader = hasPrivate;
+            result.StoredHeaderTags = header; result.StoredNormal = result.Normal; result.HasPrivateHeader = hasPrivate; result.StoredHeaderPublicEnd = headerPublicEnd;
             result.DeclaredVertexCount = verticesDeclared; result.DeclaredFaceCount = facesDeclared;
             foreach (var pair in normalIndices) result.StoredNormalIndices.Add(pair.Key, pair.Value);
             return result;
@@ -166,14 +167,15 @@ namespace netDxf.IO
                 if (tag.Code == 100)
                 {
                     string name = (string)tag.Value;
-                    if (!privateSubclass && stage == 0 && name == "AcDbEntity") stage = 1;
-                    else if (!end && !privateSubclass && stage == 1 && name == "AcDbVertex") stage = 2;
-                    else if (!end && !privateSubclass && stage == 1 && name == "AcDbFaceRecord")
-                    { stage = 3; record.IsFaceRecord = true; record.FaceCommonEnd = i; }
-                    else if (!end && !privateSubclass && stage == 2 && name == "AcDbPolyFaceMeshVertex") stage = 3;
+                    if (stage == 1 && record.FaceCommonEnd < 0) record.FaceCommonEnd = i;
+                    if (stage == 0 && name == "AcDbEntity") { stage = 1; privateSubclass = false; }
+                    else if (!end && stage == 1 && name == "AcDbVertex") { stage = 2; privateSubclass = false; }
+                    else if (!end && stage == 1 && name == "AcDbFaceRecord")
+                    { stage = 3; privateSubclass = false; record.IsFaceRecord = true; }
+                    else if (!end && stage == 2 && name == "AcDbPolyFaceMeshVertex") { stage = 3; privateSubclass = false; }
                     else
                     {
-                        if (stage < (end ? 1 : 3) || name == "AcDbEntity" || name == "AcDbVertex" || name == "AcDbPolyFaceMeshVertex" || name == "AcDbFaceRecord")
+                        if (name == "AcDbEntity" || name == "AcDbVertex" || name == "AcDbPolyFaceMeshVertex" || name == "AcDbFaceRecord")
                             throw new FormatException("Invalid retained POLYFACE subclass sequence.");
                         privateSubclass = true; record.HasPrivateData = true;
                     }
