@@ -1,0 +1,224 @@
+{
+  "source_commit": "c2723537833f4bad9a6f60000921afff4f278cfd",
+  "base_commit": "f2676fb",
+  "runtime": "net8.0",
+  "sdk": "8.0.408",
+  "independent_reader": "ezdxf 1.4.4",
+  "scope": "Immutable source-bound/source-version-bound DIMASSOC; no evaluation or coherent dimension graph cloning/erasure.",
+  "full_standard_complete": false,
+  "autocad_executed": false,
+  "configurations": {
+    "debug": {
+      "passed": 781,
+      "failed": 0,
+      "families": {
+        "dimassoc": 366,
+        "typed-erasure": 87,
+        "appid-lifecycle": 70,
+        "source-reference": 76,
+        "section": 82,
+        "stored-table": 100
+      },
+      "results_sha256": "d289bf6f3ebf08f524e19d92d755b7bcced1fbde924c60a73feab0b5f2466ca6",
+      "focused_log_sha256": "732fe733e6651a13f6a77d9bcbb258f7946c6ba1b5c167231a17fe91ede6ecb4",
+      "library_sha256": "1309eaa6408c5d74c007ac9f1228355dd6482a2ca525cbd4683e7488a9b83346",
+      "gate_log_sha256": "28bb84cd970c49cba191142e2ee982de6b4b0a6da61ba45263586492d7a3e107",
+      "gate": {
+        "required_outputs": 46,
+        "pinned_native_originals": 6,
+        "exact_extractions": 6,
+        "exact_mapped_source_packets": 192,
+        "audits_with_errors_or_repairs": 0,
+        "actual_output_corruption_controls": 5
+      },
+      "output_sha256": {
+        "dimassoc-metadata-False.dxf": "731009deec73974a0f043e41d7923333bd7adaa0fc04091e848a41501a6b4620",
+        "dimassoc-metadata-True.dxf": "260dcae4f2a2be07d907fe89abc0bb5e628b35f69ce0cc78692e6bba3a052cb6",
+        "dimassoc-native-AutoCad2000-False-False.dxf": "516d9c1cc2b61aa65c6e94809eb29ccbb1c8d4f0159f971fe8543fe7abb8a49d",
+        "dimassoc-native-AutoCad2000-False-True.dxf": "5f91df5575bcdbdb21776e051dd53538270828b7f6f67700241adce7351f3aae",
+        "dimassoc-native-AutoCad2000-True-False.dxf": "516d9c1cc2b61aa65c6e94809eb29ccbb1c8d4f0159f971fe8543fe7abb8a49d",
+        "dimassoc-native-AutoCad2000-True-True.dxf": "5f91df5575bcdbdb21776e051dd53538270828b7f6f67700241adce7351f3aae",
+        "dimassoc-native-AutoCad2004-False-False.dxf": "f4e50c24c55115dfbcb62e6d4cbf945e2c74c07364bb4315c4e7d5333837a2d8",
+        "dimassoc-native-AutoCad2004-False-True.dxf": "c31f01b1a219f79b8e2e9638a8db36d4b506e8317eaa49cdb07f46ae7630a647",
+        "dimassoc-native-AutoCad2004-True-False.dxf": "f4e50c24c55115dfbcb62e6d4cbf945e2c74c07364bb4315c4e7d5333837a2d8",
+        "dimassoc-native-AutoCad2004-True-True.dxf": "c31f01b1a219f79b8e2e9638a8db36d4b506e8317eaa49cdb07f46ae7630a647",
+        "dimassoc-native-AutoCad2007-False-False.dxf": "45b21d8ada95041cb66543210fd3190f4e4fdcbfb7fac6615ff15a37ec49a004",
+        "dimassoc-native-AutoCad2007-False-True.dxf": "79f6b9632dbb74eb5ac1f3070a3415a75bf40824504de1aae3b8852f1dc0d79f",
+        "dimassoc-native-AutoCad2007-True-False.dxf": "45b21d8ada95041cb66543210fd3190f4e4fdcbfb7fac6615ff15a37ec49a004",
+        "dimassoc-native-AutoCad2007-True-True.dxf": "79f6b9632dbb74eb5ac1f3070a3415a75bf40824504de1aae3b8852f1dc0d79f",
+        "dimassoc-native-AutoCad2010-False-False.dxf": "a30c03b9019fb683efbff3a4bd00f3d4524c86d10e7f4bf3ac87f58f3cd79008",
+        "dimassoc-native-AutoCad2010-False-True.dxf": "ddd33f700df86954cf99a0fc76817be7b5fcfc73d64712b021a7f8e21e4efe9b",
+        "dimassoc-native-AutoCad2010-True-False.dxf": "a30c03b9019fb683efbff3a4bd00f3d4524c86d10e7f4bf3ac87f58f3cd79008",
+        "dimassoc-native-AutoCad2010-True-True.dxf": "ddd33f700df86954cf99a0fc76817be7b5fcfc73d64712b021a7f8e21e4efe9b",
+        "dimassoc-native-AutoCad2013-False-False.dxf": "87a996202f1e7f7a6afa50540cdfa41a2d00e7bb0ebd4f4ecc332496d4691754",
+        "dimassoc-native-AutoCad2013-False-True.dxf": "fa21cb5f9165645c9f451b25563f1e957d9212087363e7f41c78b4d749b1514b",
+        "dimassoc-native-AutoCad2013-True-False.dxf": "87a996202f1e7f7a6afa50540cdfa41a2d00e7bb0ebd4f4ecc332496d4691754",
+        "dimassoc-native-AutoCad2013-True-True.dxf": "fa21cb5f9165645c9f451b25563f1e957d9212087363e7f41c78b4d749b1514b",
+        "dimassoc-native-AutoCad2018-False-False.dxf": "e4e4cd09d08587e1bb778ff01cf30cfe471181aed79c140d952405bfb2e826e5",
+        "dimassoc-native-AutoCad2018-False-True.dxf": "1a9dcd423fffaed474339355a0686a454411796d35f6cb8527749b1a07da772d",
+        "dimassoc-native-AutoCad2018-True-False.dxf": "e4e4cd09d08587e1bb778ff01cf30cfe471181aed79c140d952405bfb2e826e5",
+        "dimassoc-native-AutoCad2018-True-True.dxf": "1a9dcd423fffaed474339355a0686a454411796d35f6cb8527749b1a07da772d",
+        "dimassoc-opaque-0-False.dxf": "cea064a0da8b93dd0e951ecaff877c6667eb6890081621727340cff805dcb9c0",
+        "dimassoc-opaque-0-True.dxf": "87c49cefaa4ce412de6557b0ec0eba3b8acf0b99ffe3ae9425d9691434c3747b",
+        "dimassoc-opaque-1-False.dxf": "b14958e28f21c6c2769cec17e3e556879bcfb1e6ad4e7df8b0b60f8dc6470d33",
+        "dimassoc-opaque-1-True.dxf": "9069a802a07e4ccb1a851a79f55dd21fb920e8347c88b79b72b34b3e6a5c0990",
+        "dimassoc-opaque-2-False.dxf": "25fcc0100d2c68da507cb0b0c0a542e4d534ee6205f224120e793b0433d4ffe6",
+        "dimassoc-opaque-2-True.dxf": "1679451a5eae1da0ba00107cb9770ef3f03ea8251ca35177ed22b22adab7dc4f",
+        "dimassoc-opaque-3-False.dxf": "9d2db49b56de45bb8471115ed6cc5e428fd23960e682a73bd3169c55519de560",
+        "dimassoc-opaque-3-True.dxf": "46a36f48ae8648e0283dcabdce4a60b78889fc6a57b416afca9414603ab5dbbf",
+        "dimassoc-opaque-4-False.dxf": "3a9bff56527c434028d8f69d114996716b08a2546caf17639200b0a1799f89c3",
+        "dimassoc-opaque-4-True.dxf": "0f0db526de66e80b9786710e237676ca7173a19b6e0baaa3ca5266c97709406f",
+        "dimassoc-opaque-5-False.dxf": "7a34e3f71f02a625eeeb69c404c840a949b8a294361b6eabb59fcda28371f639",
+        "dimassoc-opaque-5-True.dxf": "2692f9b20ae090e672518aad0253aee098224dffe6a32fa46209241f47726c85",
+        "dimassoc-opaque-6-False.dxf": "a2624c0ec8d03fa976eb30412f4039a9de00d9cc9364353114d2036aa794c377",
+        "dimassoc-opaque-6-True.dxf": "1f9a42ff49966115d7b5f4987a47fdd1ed3957a85d276a6e69087bbbaa2e187c",
+        "dimassoc-opaque-7-False.dxf": "9a6b85ce010da7b6bdb43d0a895734ab79c4babd2f4a0d96523c1c653cffcdfd",
+        "dimassoc-opaque-7-True.dxf": "88134704a7f48f8b84c3f26bd1faa7827c5d6cd2cd417b1308f1b088c16229d7",
+        "dimassoc-opaque-8-False.dxf": "2c76675d35217b44eb4729bc939e6e9c4523f623ba742fd865bde1bf57827c5c",
+        "dimassoc-opaque-8-True.dxf": "f9b92347855cafd844e52d5c2cbb631768530bd29e8da8249c1ac8e4403fc7df",
+        "dimassoc-opaque-9-False.dxf": "2c607e7dc964521d4f5a5d4b1e08955aab6ed4245c1ff9ce1c42d1c03bfb1219",
+        "dimassoc-opaque-9-True.dxf": "182a05b8a907a94688a06ec12f41f68b6aaafcc2b0afcb5260bf3d5ae0586a9e"
+      }
+    },
+    "release": {
+      "passed": 781,
+      "failed": 0,
+      "families": {
+        "dimassoc": 366,
+        "typed-erasure": 87,
+        "appid-lifecycle": 70,
+        "source-reference": 76,
+        "section": 82,
+        "stored-table": 100
+      },
+      "results_sha256": "d289bf6f3ebf08f524e19d92d755b7bcced1fbde924c60a73feab0b5f2466ca6",
+      "focused_log_sha256": "732fe733e6651a13f6a77d9bcbb258f7946c6ba1b5c167231a17fe91ede6ecb4",
+      "library_sha256": "836762b098b4d59b416a37d1d382c25d26348bdfa58a66607727e365eed9d43a",
+      "gate_log_sha256": "28bb84cd970c49cba191142e2ee982de6b4b0a6da61ba45263586492d7a3e107",
+      "gate": {
+        "required_outputs": 46,
+        "pinned_native_originals": 6,
+        "exact_extractions": 6,
+        "exact_mapped_source_packets": 192,
+        "audits_with_errors_or_repairs": 0,
+        "actual_output_corruption_controls": 5
+      },
+      "output_sha256": {
+        "dimassoc-metadata-False.dxf": "731009deec73974a0f043e41d7923333bd7adaa0fc04091e848a41501a6b4620",
+        "dimassoc-metadata-True.dxf": "260dcae4f2a2be07d907fe89abc0bb5e628b35f69ce0cc78692e6bba3a052cb6",
+        "dimassoc-native-AutoCad2000-False-False.dxf": "516d9c1cc2b61aa65c6e94809eb29ccbb1c8d4f0159f971fe8543fe7abb8a49d",
+        "dimassoc-native-AutoCad2000-False-True.dxf": "5f91df5575bcdbdb21776e051dd53538270828b7f6f67700241adce7351f3aae",
+        "dimassoc-native-AutoCad2000-True-False.dxf": "516d9c1cc2b61aa65c6e94809eb29ccbb1c8d4f0159f971fe8543fe7abb8a49d",
+        "dimassoc-native-AutoCad2000-True-True.dxf": "5f91df5575bcdbdb21776e051dd53538270828b7f6f67700241adce7351f3aae",
+        "dimassoc-native-AutoCad2004-False-False.dxf": "f4e50c24c55115dfbcb62e6d4cbf945e2c74c07364bb4315c4e7d5333837a2d8",
+        "dimassoc-native-AutoCad2004-False-True.dxf": "c31f01b1a219f79b8e2e9638a8db36d4b506e8317eaa49cdb07f46ae7630a647",
+        "dimassoc-native-AutoCad2004-True-False.dxf": "f4e50c24c55115dfbcb62e6d4cbf945e2c74c07364bb4315c4e7d5333837a2d8",
+        "dimassoc-native-AutoCad2004-True-True.dxf": "c31f01b1a219f79b8e2e9638a8db36d4b506e8317eaa49cdb07f46ae7630a647",
+        "dimassoc-native-AutoCad2007-False-False.dxf": "45b21d8ada95041cb66543210fd3190f4e4fdcbfb7fac6615ff15a37ec49a004",
+        "dimassoc-native-AutoCad2007-False-True.dxf": "79f6b9632dbb74eb5ac1f3070a3415a75bf40824504de1aae3b8852f1dc0d79f",
+        "dimassoc-native-AutoCad2007-True-False.dxf": "45b21d8ada95041cb66543210fd3190f4e4fdcbfb7fac6615ff15a37ec49a004",
+        "dimassoc-native-AutoCad2007-True-True.dxf": "79f6b9632dbb74eb5ac1f3070a3415a75bf40824504de1aae3b8852f1dc0d79f",
+        "dimassoc-native-AutoCad2010-False-False.dxf": "a30c03b9019fb683efbff3a4bd00f3d4524c86d10e7f4bf3ac87f58f3cd79008",
+        "dimassoc-native-AutoCad2010-False-True.dxf": "ddd33f700df86954cf99a0fc76817be7b5fcfc73d64712b021a7f8e21e4efe9b",
+        "dimassoc-native-AutoCad2010-True-False.dxf": "a30c03b9019fb683efbff3a4bd00f3d4524c86d10e7f4bf3ac87f58f3cd79008",
+        "dimassoc-native-AutoCad2010-True-True.dxf": "ddd33f700df86954cf99a0fc76817be7b5fcfc73d64712b021a7f8e21e4efe9b",
+        "dimassoc-native-AutoCad2013-False-False.dxf": "87a996202f1e7f7a6afa50540cdfa41a2d00e7bb0ebd4f4ecc332496d4691754",
+        "dimassoc-native-AutoCad2013-False-True.dxf": "fa21cb5f9165645c9f451b25563f1e957d9212087363e7f41c78b4d749b1514b",
+        "dimassoc-native-AutoCad2013-True-False.dxf": "87a996202f1e7f7a6afa50540cdfa41a2d00e7bb0ebd4f4ecc332496d4691754",
+        "dimassoc-native-AutoCad2013-True-True.dxf": "fa21cb5f9165645c9f451b25563f1e957d9212087363e7f41c78b4d749b1514b",
+        "dimassoc-native-AutoCad2018-False-False.dxf": "e4e4cd09d08587e1bb778ff01cf30cfe471181aed79c140d952405bfb2e826e5",
+        "dimassoc-native-AutoCad2018-False-True.dxf": "1a9dcd423fffaed474339355a0686a454411796d35f6cb8527749b1a07da772d",
+        "dimassoc-native-AutoCad2018-True-False.dxf": "e4e4cd09d08587e1bb778ff01cf30cfe471181aed79c140d952405bfb2e826e5",
+        "dimassoc-native-AutoCad2018-True-True.dxf": "1a9dcd423fffaed474339355a0686a454411796d35f6cb8527749b1a07da772d",
+        "dimassoc-opaque-0-False.dxf": "cea064a0da8b93dd0e951ecaff877c6667eb6890081621727340cff805dcb9c0",
+        "dimassoc-opaque-0-True.dxf": "87c49cefaa4ce412de6557b0ec0eba3b8acf0b99ffe3ae9425d9691434c3747b",
+        "dimassoc-opaque-1-False.dxf": "b14958e28f21c6c2769cec17e3e556879bcfb1e6ad4e7df8b0b60f8dc6470d33",
+        "dimassoc-opaque-1-True.dxf": "9069a802a07e4ccb1a851a79f55dd21fb920e8347c88b79b72b34b3e6a5c0990",
+        "dimassoc-opaque-2-False.dxf": "25fcc0100d2c68da507cb0b0c0a542e4d534ee6205f224120e793b0433d4ffe6",
+        "dimassoc-opaque-2-True.dxf": "1679451a5eae1da0ba00107cb9770ef3f03ea8251ca35177ed22b22adab7dc4f",
+        "dimassoc-opaque-3-False.dxf": "9d2db49b56de45bb8471115ed6cc5e428fd23960e682a73bd3169c55519de560",
+        "dimassoc-opaque-3-True.dxf": "46a36f48ae8648e0283dcabdce4a60b78889fc6a57b416afca9414603ab5dbbf",
+        "dimassoc-opaque-4-False.dxf": "3a9bff56527c434028d8f69d114996716b08a2546caf17639200b0a1799f89c3",
+        "dimassoc-opaque-4-True.dxf": "0f0db526de66e80b9786710e237676ca7173a19b6e0baaa3ca5266c97709406f",
+        "dimassoc-opaque-5-False.dxf": "7a34e3f71f02a625eeeb69c404c840a949b8a294361b6eabb59fcda28371f639",
+        "dimassoc-opaque-5-True.dxf": "2692f9b20ae090e672518aad0253aee098224dffe6a32fa46209241f47726c85",
+        "dimassoc-opaque-6-False.dxf": "a2624c0ec8d03fa976eb30412f4039a9de00d9cc9364353114d2036aa794c377",
+        "dimassoc-opaque-6-True.dxf": "1f9a42ff49966115d7b5f4987a47fdd1ed3957a85d276a6e69087bbbaa2e187c",
+        "dimassoc-opaque-7-False.dxf": "9a6b85ce010da7b6bdb43d0a895734ab79c4babd2f4a0d96523c1c653cffcdfd",
+        "dimassoc-opaque-7-True.dxf": "88134704a7f48f8b84c3f26bd1faa7827c5d6cd2cd417b1308f1b088c16229d7",
+        "dimassoc-opaque-8-False.dxf": "2c76675d35217b44eb4729bc939e6e9c4523f623ba742fd865bde1bf57827c5c",
+        "dimassoc-opaque-8-True.dxf": "f9b92347855cafd844e52d5c2cbb631768530bd29e8da8249c1ac8e4403fc7df",
+        "dimassoc-opaque-9-False.dxf": "2c607e7dc964521d4f5a5d4b1e08955aab6ed4245c1ff9ce1c42d1c03bfb1219",
+        "dimassoc-opaque-9-True.dxf": "182a05b8a907a94688a06ec12f41f68b6aaafcc2b0afcb5260bf3d5ae0586a9e"
+      }
+    }
+  },
+  "builds": {
+    "Release/netstandard2.0": {
+      "library_sha256": "0afc8e10806649234152e81657178a5cb61d31ff5e9b56b0cd2f16fd57bf5a5d",
+      "errors": 0,
+      "baseline_CS1591_warnings": 561
+    },
+    "Release/net471": {
+      "library_sha256": "7f7937eac9ff4372fdb9d1637395ad5bfbdcd46c4642ef3534633e4d9ddda6d1",
+      "errors": 0,
+      "baseline_CS1591_warnings": 561
+    },
+    "Release/net48": {
+      "library_sha256": "8a08ec850aa195f3bcda53afd80824e5bcdae16561b5eea88304fbd458e8ea0d",
+      "errors": 0,
+      "baseline_CS1591_warnings": 561
+    },
+    "Release/net6.0": {
+      "library_sha256": "4275b2911d38e38d1b751e7fb27391b4b1ee7ee087eed56fdad2dd3308e3dd93",
+      "errors": 0,
+      "baseline_CS1591_warnings": 561
+    },
+    "Release/net8.0": {
+      "library_sha256": "836762b098b4d59b416a37d1d382c25d26348bdfa58a66607727e365eed9d43a",
+      "errors": 0,
+      "baseline_CS1591_warnings": 561
+    },
+    "Debug/netstandard2.0": {
+      "library_sha256": "b46b10575dbb5dfeb1341f6e68c29af0a74490584783828ef62d0479a2a6413f",
+      "errors": 0,
+      "baseline_CS1591_warnings": 561
+    }
+  },
+  "independent_review": {
+    "scope": "Independent DIMASSOC source ownership, exposed geometry removal, whole-private field scope, typed round-trip and numeric duplicate owner review",
+    "old_library_sha256": "9ca0654de3550dccb8efee944e0e5c2e0036a16a944910ae17f8baa19232b857",
+    "fixed_library_sha256": "1309eaa6408c5d74c007ac9f1228355dd6482a2ca525cbd4683e7488a9b83346",
+    "old_passed": 24,
+    "old_failed": 48,
+    "fixed_passed": 72,
+    "fixed_failed": 0,
+    "source_sha256": "af1e9752d6400aaa3c82717023984bb4f2604d4500152173e4dcb97962f2849b",
+    "red_results_sha256": "48cf57c3d3c57ff2ee4c786815b83aee1927ce67e860f45f59d2da77ddf2738a",
+    "fixed_results_sha256": "5bf10ec8a1ffcc1844d074b5c05d5fbdc105103cf65deac6a108e7f0e521598a",
+    "profiles": [
+      2000,
+      2004,
+      2007,
+      2010,
+      2013,
+      2018
+    ],
+    "output_transports": [
+      "ascii",
+      "binary"
+    ],
+    "notes": [
+      "Native scoped extraction source identity remains separate from whole-original interoperability.",
+      "Both configurations of each review case start from ASCII producer extraction; wire cases separately save and reload requested ASCII/binary output.",
+      "Same harness explicitly executes frozen old and corrected runtime binaries."
+    ]
+  },
+  "native_boundaries": [
+    "Six unchanged ASCII native originals are pinned; binary inputs are raw-codec transport equivalents of exact extracted ASCII packets.",
+    "Each extraction retains 32 selected packets modulo only its declared handles, with synthetic named layer/style resources and empty display blocks.",
+    "Seven typed associations per profile; one repeated POLYLINE-to-VERTEX path remains opaque.",
+    "Opaque path packet retention does not preserve the separate VERTEX identity through the existing typed POLYLINE reader.",
+    "Complete original drawing imports and AutoCAD evaluation/AUDIT are not qualified."
+  ]
+}

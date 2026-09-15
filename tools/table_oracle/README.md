@@ -55,5 +55,6 @@ summarized in [qualification.json](qualification.json).
 
 The R2004 samples have additional `ACAD_ROUNDTRIP_PRE2007_TABLE` and
 `ACAD_ROUNDTRIP_PRE2007_TABLECELL` sections with a third owned `DATATABLE` object.
-The exact packets are recorded in `fixtures.json`; they must remain unbound until
-that composite schema is implemented.
+The exact packets are recorded in `fixtures.json`. The bounded
+[composite ownership module](../../doc/dxf-conformance/composite-table-ownership.md)
+now binds this complete observed grammar; unknown composite variants remain unbound.

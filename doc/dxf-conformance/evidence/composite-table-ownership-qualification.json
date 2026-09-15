@@ -1,0 +1,126 @@
+{
+  "module": "Native R2004 composite TABLE ownership",
+  "qualifiedSourceRevision": "9eda4c6ce125fbf6cddb41bd61d5824034ce4a33",
+  "sourceProfile": "AC1018",
+  "sourceDrawing": "sample_AC1018_ascii.dxf",
+  "sourceSha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+  "producerRepositoryRevision": "f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11",
+  "registrationMethods": [
+    "RegisterCompositeTableOwnershipTests",
+    "RegisterDeclaredOwnershipTests"
+  ],
+  "newCases": 49,
+  "regressionCases": 35,
+  "configurations": {
+    "Debug": {
+      "passed": 84,
+      "failed": 0,
+      "librarySha256": "f56dda9371f5c2760c6acad94a026c11dc11d80bc2b47c851e7ff8cdbd8f72dc",
+      "newMandatoryDrawings": 8,
+      "newMandatoryOwnerMaps": 4,
+      "nativeRowXRecords": 41,
+      "independentCorruptionControls": 80,
+      "priorMandatoryOwnershipDrawings": 28
+    },
+    "Release": {
+      "passed": 84,
+      "failed": 0,
+      "librarySha256": "39d8390513d4da18ef95b244069c2421f040a362e7cc2e3a835b9917162289e6",
+      "newMandatoryDrawings": 8,
+      "newMandatoryOwnerMaps": 4,
+      "nativeRowXRecords": 41,
+      "independentCorruptionControls": 80,
+      "priorMandatoryOwnershipDrawings": 28
+    }
+  },
+  "fileLevelNegativeControls": [
+    {
+      "case": "missing DXF",
+      "exitCode": 1,
+      "lastError": "ValueError: All eight composite TABLE drawings are mandatory"
+    },
+    {
+      "case": "missing map",
+      "exitCode": 1,
+      "lastError": "ValueError: All four composite TABLE maps are mandatory"
+    },
+    {
+      "case": "actual native marker corruption",
+      "exitCode": 1,
+      "lastError": "ValueError: Native composite subclass packet differs: 13DF"
+    }
+  ],
+  "nativeGraphs": [
+    {
+      "wrapper": "13DF",
+      "sourceOwner": "13DE",
+      "content": "747",
+      "geometry": "748",
+      "dataTable": "143D",
+      "rowXRecords": [
+        "143E",
+        "143F",
+        "1440",
+        "1441",
+        "1442",
+        "1443",
+        "1444",
+        "1445",
+        "1446",
+        "1447",
+        "1448",
+        "1449",
+        "144A",
+        "144B",
+        "144C",
+        "144D",
+        "144E",
+        "144F",
+        "1450",
+        "1451",
+        "1452"
+      ]
+    },
+    {
+      "wrapper": "13F2",
+      "sourceOwner": "13F1",
+      "content": "13EF",
+      "geometry": "13F0",
+      "dataTable": "145B",
+      "rowXRecords": [
+        "145C",
+        "145D",
+        "145E",
+        "145F",
+        "1460",
+        "1461",
+        "1462",
+        "1463",
+        "1464",
+        "1465",
+        "1466",
+        "1467",
+        "1468",
+        "1469",
+        "146A",
+        "146B",
+        "146C",
+        "146D",
+        "146E",
+        "146F"
+      ]
+    }
+  ],
+  "sourceReview": {
+    "reviewedRevision": "3b1b188bb8b36a0ea17d66bed743ce694fb96023",
+    "independentReadOnlyReview": true,
+    "blockersFound": 0
+  },
+  "boundaries": [
+    "Only the exact observed three-marker, 15-code ownership grammar becomes schema-managed; unknown variants remain unbound.",
+    "All wrapper and descendant subclass packets are exact typed group/value comparisons to the hashed source; wrapper external owner and reactor are explicitly mapped to a carrier dictionary.",
+    "TABLECONTENT and TABLEGEOMETRY remain opaque at this checkpoint; clone and complete-subtree erasure reject before allocation or mutation.",
+    "No new cell editing, backing agreement, private scalar evaluation, display regeneration, cross-profile backing conversion or AutoCAD AUDIT claim.",
+    "Scoped extracted ownership graphs do not qualify complete original source document import."
+  ]
+}

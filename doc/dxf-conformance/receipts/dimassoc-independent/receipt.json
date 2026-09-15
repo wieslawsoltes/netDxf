@@ -1,0 +1,29 @@
+{
+  "scope": "Independent DIMASSOC source ownership, exposed geometry removal, whole-private field scope, typed round-trip and numeric duplicate owner review",
+  "old_library_sha256": "9ca0654de3550dccb8efee944e0e5c2e0036a16a944910ae17f8baa19232b857",
+  "fixed_library_sha256": "1309eaa6408c5d74c007ac9f1228355dd6482a2ca525cbd4683e7488a9b83346",
+  "old_passed": 24,
+  "old_failed": 48,
+  "fixed_passed": 72,
+  "fixed_failed": 0,
+  "source_sha256": "af1e9752d6400aaa3c82717023984bb4f2604d4500152173e4dcb97962f2849b",
+  "red_results_sha256": "48cf57c3d3c57ff2ee4c786815b83aee1927ce67e860f45f59d2da77ddf2738a",
+  "fixed_results_sha256": "5bf10ec8a1ffcc1844d074b5c05d5fbdc105103cf65deac6a108e7f0e521598a",
+  "profiles": [
+    2000,
+    2004,
+    2007,
+    2010,
+    2013,
+    2018
+  ],
+  "output_transports": [
+    "ascii",
+    "binary"
+  ],
+  "notes": [
+    "Native scoped extraction source identity remains separate from whole-original interoperability.",
+    "Both configurations of each review case start from ASCII producer extraction; wire cases separately save and reload requested ASCII/binary output.",
+    "Same harness explicitly executes frozen old and corrected runtime binaries."
+  ]
+}

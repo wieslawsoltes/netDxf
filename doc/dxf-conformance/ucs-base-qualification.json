@@ -1,0 +1,75 @@
+{
+  "source_commit": "5ec34ed38bd41d120dadd6b48ebbe476ab7c2839",
+  "source_tree": "309417dbbe36a37426caecea5553622156a4392d",
+  "production_commit": "3f0d670",
+  "scope": "Stored UCS-record79/346 identity and lifecycle; no coordinate evaluation or native CAD execution.",
+  "sdk": "8.0.408",
+  "target_framework": "net8.0",
+  "configurations": {
+    "Debug": {
+      "passed": 766,
+      "failed": 0,
+      "inventory": {
+        "ucs-base": 242,
+        "view-ucs": 355,
+        "ucs": 169
+      },
+      "results_sha256": "367c55cd56152277526b5af4502edccc040356863ec57a0a60f3a3251a312dce",
+      "log_sha256": "21b59ccdf7abca871d3402135c5436c798cc05b8888a0bae24413c97a941ff53",
+      "production_dll_sha256": "5180ade78791ff4046018c029849ee8b4eb88824912e2e3c9489d063caadffc0",
+      "tests_dll_sha256": "ed4e71058269e1394edfec1295df842fe4f7ebaad3ebabfcee16dbd89b29a213",
+      "independent_gate": {
+        "ancillary_line_transparency_repairs": 20,
+        "audit_errors": 0,
+        "coordinate_evaluation": false,
+        "exact_ucs_carriers": 12,
+        "independent_producer_inputs": 12,
+        "native_cad_execution": false,
+        "negative_controls": 3,
+        "outputs": 24,
+        "ucs_audit_fixes": 0
+      },
+      "gate_sha256": "41466595b85d59ef21bf667d66da6bbf99a57e58fe36ada46242da6c23dbba60"
+    },
+    "Release": {
+      "passed": 766,
+      "failed": 0,
+      "inventory": {
+        "ucs-base": 242,
+        "view-ucs": 355,
+        "ucs": 169
+      },
+      "results_sha256": "367c55cd56152277526b5af4502edccc040356863ec57a0a60f3a3251a312dce",
+      "log_sha256": "21b59ccdf7abca871d3402135c5436c798cc05b8888a0bae24413c97a941ff53",
+      "production_dll_sha256": "43008bb0c5c26380fd70169672066619dbfd7034b30bd8a8a29593ed815ca4be",
+      "tests_dll_sha256": "da4eb5bfa16bdf030f9795a995ba00f757b3b14b6aeae216502be4ff1627e1f4",
+      "independent_gate": {
+        "ancillary_line_transparency_repairs": 20,
+        "audit_errors": 0,
+        "coordinate_evaluation": false,
+        "exact_ucs_carriers": 12,
+        "independent_producer_inputs": 12,
+        "native_cad_execution": false,
+        "negative_controls": 3,
+        "outputs": 24,
+        "ucs_audit_fixes": 0
+      },
+      "gate_sha256": "41466595b85d59ef21bf667d66da6bbf99a57e58fe36ada46242da6c23dbba60"
+    }
+  },
+  "independent_review": {
+    "passed": 42,
+    "failed": 0,
+    "results_sha256": "69d9de740669b88ac76e776311af9bbd15309aaccbf39cd40dc760fdd041e337",
+    "log_sha256": "65d36c2efbec5d83210332af6954f60ed1fbc8a6b0eb88bde12a2573853f4d08",
+    "baseline_failures": "Four private1001 shadowing cases failed on95b0c6c; all pass on3f0d670. Invalid-name rejection no longer terminates Debug hosts."
+  },
+  "limits": [
+    "No positive native UCS base packet found in the pinned217-file repository or67-file LibreDWG corpus.",
+    "The published group79 always-zero description conflicts with its conditional346 definition; positive evidence comes from12 actual IxMilia producer files.",
+    "Carriers delete only10 empty DIMSTYLE pointers and, forR2010+,2 orphan STYLE1071 values. Every remaining producer byte is unchanged.",
+    "Ezdxf1.4.4 does not model UCS79/346; the gate uses raw tags for those fields.",
+    "The20 R2004+ output drawings each retain producer LINE20 transparency440=0; exactly that ancillary validator repair is reported separately. Any other repair fails.",
+    "Combined integration qualification remains separate from this isolated source receipt."
+  ]
+}

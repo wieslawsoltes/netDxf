@@ -1,0 +1,60 @@
+{
+  "repository": "LibreDWG/libredwg",
+  "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+  "sources": [
+    {
+      "year": 2000,
+      "repository_path": "test/test-data/example_2000.dxf",
+      "gzip_file": "example_2000.dxf.gz",
+      "gzip_sha256": "c8047efbb62878b28d4e217373765ebb91229009eca0813644228ba5c740aaca",
+      "source_sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+      "git_blob_sha": "70a2c625227cae86ab28254f0754538a7259cb16",
+      "bytes": 1387952
+    },
+    {
+      "year": 2004,
+      "repository_path": "test/test-data/example_2004.dxf",
+      "gzip_file": "example_2004.dxf.gz",
+      "gzip_sha256": "6ff1fc0dcb27a5f246f1ee03a952dc6a69eefa8266afb1fd6c1f3ab611fb8448",
+      "source_sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+      "git_blob_sha": "f411d9efb8cf774bdc44eee005dfc5bae47fffca",
+      "bytes": 922305
+    },
+    {
+      "year": 2007,
+      "repository_path": "test/test-data/example_2007.dxf",
+      "gzip_file": "example_2007.dxf.gz",
+      "gzip_sha256": "0feafb9e31aac2ba2f67b2b602cd291a85c88f5a629c5a586580c8f3bfa7a12d",
+      "source_sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+      "git_blob_sha": "ffdebb6b93cd08f3e29c64b09915b1563fed0a4d",
+      "bytes": 925472
+    },
+    {
+      "year": 2010,
+      "repository_path": "test/test-data/example_2010.dxf",
+      "gzip_file": "example_2010.dxf.gz",
+      "gzip_sha256": "594c49a56335e40a577bdbdb6faa2590efdc57580888b00f33b6b287de675535",
+      "source_sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+      "git_blob_sha": "45a47fd6b6ef65dde6bd70fd1df6445ceeb9cc1b",
+      "bytes": 879558
+    },
+    {
+      "year": 2013,
+      "repository_path": "test/test-data/example_2013.dxf",
+      "gzip_file": "example_2013.dxf.gz",
+      "gzip_sha256": "784141c23a44adade7ea99f0611caabc6501cb33d4558d582e0e642226e21850",
+      "source_sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+      "git_blob_sha": "e8c0f7254b02c3e036d6ceacbbbfaa60b9d06563",
+      "bytes": 850618
+    },
+    {
+      "year": 2018,
+      "repository_path": "test/test-data/example_2018.dxf",
+      "gzip_file": "example_2018.dxf.gz",
+      "gzip_sha256": "60be0aed8aa68546cafd1c7f44d44f7a5c45cb3da10c99e258e0254df2ed45e8",
+      "source_sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+      "git_blob_sha": "589fbe42143b6d3e6796c9fc389c521f5d346ad2",
+      "bytes": 845818
+    }
+  ]
+}

@@ -102,8 +102,8 @@ internal static partial class Program
         var raw = DxfRawDocument.Load(saved);
         var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "XRECORD");
         // The native R2004 corpus carries these additional sections and another 360 slot.
-        // Reuse a structural carrier target here; actual native DATATABLE packets are pinned separately.
-        var tags = record.Tags.Concat(new DxfTag[] { new(102, "ACAD_ROUNDTRIP_PRE2007_TABLE"), new(90, 7), new(91, 3),
+        // An unknown marker keeps this structural carrier outside the exact native composite grammar.
+        var tags = record.Tags.Concat(new DxfTag[] { new(102, "PRIVATE_PRE2007_TABLE"), new(90, 7), new(91, 3),
             new(102, "ACAD_ROUNDTRIP_PRE2007_TABLECELL"), new(360, graph.Content.Handle) }).ToArray();
         raw = raw.WithRecord(record, tags);
         using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
@@ -160,8 +160,7 @@ internal static partial class Program
             using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
             var loaded = DxfDocument.Load(input) ?? throw new Exception("Native owning packet load failed.");
             var record = (DxfXRecord)loaded.GetObjectByHandle(wrapperHandle);
-            bool composite = file == "sample_AC1018_ascii.dxf";
-            Equal(!composite, record.IsSchemaManaged, "native envelope management policy");
+            Check(record.IsSchemaManaged, "native envelope management policy");
             int payloadStart = wrapper.Tags.ToList().FindIndex(t => t.Code == 100 && (string)t.Value == "AcDbXrecord") + 1;
             if (wrapper.Tags[payloadStart].Code == 280) payloadStart++;
             Check(wrapper.Tags.Skip(payloadStart).Select(t => (t.Code, t.Value)).SequenceEqual(record.Data.Select(t => (t.Code, t.Value))), "Native owning payload changed on input");

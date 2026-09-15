@@ -6,6 +6,7 @@ using System.Linq;
 using netDxf.Blocks;
 using netDxf.Entities;
 using netDxf.Objects;
+using netDxf.IO;
 
 namespace netDxf
 {
@@ -60,12 +61,31 @@ namespace netDxf
             }
             if (this.SectionReferencesRemoval(removed)) return true;
             foreach (DxfObject item in removed) if (SunReferences.Get(item) != null) return true;
+            foreach (DxfDatabaseObject content in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "TABLECONTENT"))
+            {
+                if (content is DxfStoredTableContent stored && stored.References.Any(removed.Contains)) return true;
+                if (content is DxfOpaqueObject opaque)
+                    foreach (DxfTag tag in opaque.Tags)
+                        if (DxfObjectDatabase.IsReference(tag) && removed.Contains(this.StoredTableHandleTarget((string)tag.Value))) return true;
+                var owners = new HashSet<DxfObject>(new MetadataIdentityComparer());
+                for (DxfObject owner = content.Owner; owner != null && owners.Add(owner); owner = owner.Owner)
+                    if (removed.Contains(owner)) return true;
+            }
             foreach (DxfStoredField field in this.AddedObjects.Values.OfType<DxfStoredField>())
             {
                 if (field.References.Any(removed.Contains)) return true;
                 var ancestors = new HashSet<DxfObject>(new MetadataIdentityComparer());
                 for (DxfObject owner = field.Owner; owner != null; owner = owner.Owner)
                     if (!ancestors.Add(owner) || removed.Contains(owner)) return true;
+            }
+            foreach (DxfDatabaseObject association in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "DIMASSOC"))
+            {
+                if (association is DxfStoredDimAssoc typed && typed.References.Any(removed.Contains)) return true;
+                if (association is DxfOpaqueObject opaque && opaque.Tags.Where(DxfObjectDatabase.IsReference)
+                    .Select(tag => this.StoredTableHandleTarget((string)tag.Value)).Any(target => target != null && removed.Contains(target))) return true;
+                var owners = new HashSet<DxfObject>(new MetadataIdentityComparer());
+                for (DxfObject owner = association.Owner; owner != null && owners.Add(owner); owner = owner.Owner)
+                    if (removed.Contains(owner)) return true;
             }
             foreach (StoredTable table in this.AddedObjects.Values.OfType<StoredTable>())
                 if (!removed.Contains(table) && table.References.Any(removed.Contains)) return true;
