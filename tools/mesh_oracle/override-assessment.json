@@ -1,0 +1,156 @@
+{
+  "scope": "Research inventory only. No positive subentity override packet or typed override implementation is qualified.",
+  "libredwg_commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+  "libredwg_candidates": [
+    {
+      "path": "test/test-data/2010/Constraints.dxf",
+      "file": "test__test-data__2010__Constraints.dxf",
+      "sha256": "459fb35c21cf4045a207b5f2032b32dfc1031b0bbce5c40e5f705c5f8ef6485d",
+      "bytes": 173884,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2010/Leader.dxf",
+      "file": "test__test-data__2010__Leader.dxf",
+      "sha256": "2c8c4d821ab9151e3da40b12e0c1acbf716c82b0a1ad388620d068e4efb68986",
+      "bytes": 288903,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2010/gh209_1.dxf",
+      "file": "test__test-data__2010__gh209_1.dxf",
+      "sha256": "e1df4235b1f156ad1210cb32b3752952c4d677e1401e617d33cfbb637495e718",
+      "bytes": 272831,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2013/Constraints.dxf",
+      "file": "test__test-data__2013__Constraints.dxf",
+      "sha256": "da88787541f0d34fc1654567326ec5715131af9bf8467c52db32f531e162c59c",
+      "bytes": 128076,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2013/Leader.dxf",
+      "file": "test__test-data__2013__Leader.dxf",
+      "sha256": "7e7a724c833667fcc114bdbd16068bc19ea3c76d5c61b17f446b776fa5a210ca",
+      "bytes": 143555,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2013/gh109_1.dxf",
+      "file": "test__test-data__2013__gh109_1.dxf",
+      "sha256": "d9bc12c75492edf3f4334a44c0138efee8fa6c441c14fab967493f67c7ce8139",
+      "bytes": 421428,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2018/Constraints.dxf",
+      "file": "test__test-data__2018__Constraints.dxf",
+      "sha256": "6f81984ffe6ca3e69281afec323335dcf1d8368a03bde1f0dcfadfa0fb97aff8",
+      "bytes": 127870,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2018/Leader.dxf",
+      "file": "test__test-data__2018__Leader.dxf",
+      "sha256": "8028ce0245c633fc07fcc676c6cc6445748d42ef0aee4a2b43bdb5f1e14ee86d",
+      "bytes": 143348,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2018/LiveSection1.dxf",
+      "file": "test__test-data__2018__LiveSection1.dxf",
+      "sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+      "bytes": 146350,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/2018/TS1.dxf",
+      "file": "test__test-data__2018__TS1.dxf",
+      "sha256": "ef795fb7c4c9cfc4486ff3cc0254d38cbdb870a326e7e8cccd78b0e046868d14",
+      "bytes": 969243,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/example_2010.dxf",
+      "file": "test__test-data__example_2010.dxf",
+      "sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+      "bytes": 879558,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/example_2013.dxf",
+      "file": "test__test-data__example_2013.dxf",
+      "sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+      "bytes": 850618,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/example_2018.dxf",
+      "file": "test__test-data__example_2018.dxf",
+      "sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+      "bytes": 845818,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/sample_2010.dxf",
+      "file": "test__test-data__sample_2010.dxf",
+      "sha256": "fff9fd8a65cc62d72e3b16ce58797f6d8fa113fe49bd2b6293f1d2aac293fc4a",
+      "bytes": 136150,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/sample_2013.dxf",
+      "file": "test__test-data__sample_2013.dxf",
+      "sha256": "99a27a2891d183b794960ecb44478851bc8eabfe0681d51bb76684b90f5f8d9d",
+      "bytes": 93511,
+      "has_mesh": false
+    },
+    {
+      "path": "test/test-data/sample_2018.dxf",
+      "file": "test__test-data__sample_2018.dxf",
+      "sha256": "9618b5cef57867bee4c5b23898e653f0c5f2ba04c0ec729eb3dec73bb7175410",
+      "bytes": 89031,
+      "has_mesh": false
+    }
+  ],
+  "shared_acadsharp_commit": "f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11",
+  "shared_mesh_packets": [
+    {
+      "source_file": "sample_AC1024_ascii.dxf",
+      "handles": [
+        "343",
+        "380"
+      ],
+      "override_counts": [
+        0,
+        0
+      ]
+    },
+    {
+      "source_file": "sample_AC1018_ascii.dxf",
+      "handles": [
+        "343",
+        "380"
+      ],
+      "override_counts": [
+        0,
+        0
+      ]
+    },
+    {
+      "source_file": "sample_AC1021_ascii.dxf",
+      "handles": [
+        "343",
+        "380"
+      ],
+      "override_counts": [
+        0,
+        0
+      ]
+    }
+  ],
+  "primary_schema": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-4B9ADA67-87C8-4673-A579-6E4C76FF7025.htm",
+  "independent_limit": "https://ezdxf.readthedocs.io/en/stable/dxfinternals/entities/mesh.html"
+}

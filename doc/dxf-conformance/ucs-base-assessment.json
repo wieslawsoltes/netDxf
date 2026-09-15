@@ -1,0 +1,1510 @@
+{
+  "source_base": "6c75686",
+  "repository": {
+    "files": 217,
+    "parsed": 217,
+    "ucs_records": 12,
+    "nonzero_79_or_346": 0,
+    "file_hashes": [
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2000-ascii.dxf",
+        "sha256": "2311278278dd63323e5b1feecbd37aa8fe3facb6073121d0d1d81f891e957aea",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2000-binary.dxf",
+        "sha256": "5093eef3a84250e509e05c32bf60de065da1ddca88aa04444d1f49c49ca4bc4b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2004-ascii.dxf",
+        "sha256": "c9868e901a12654e1368c069c21e0e0243a412dc98f465662239fe88bbb8c039",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2004-binary.dxf",
+        "sha256": "35cc6dabb68630ccf600b861ba6d1406f6b340f44961e35b3c016b432b10031d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2007-ascii.dxf",
+        "sha256": "cf549d64050ea9e7b4f02eda71edf983d99f1ee77db5dffc9baa13bb4959d718",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2007-binary.dxf",
+        "sha256": "63755dc476308cd19846179d6edb7ae3dfe276ad627ddc5a73d8e2232bf6652e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2010-ascii.dxf",
+        "sha256": "c54b57114d524840aa5a570ef8cd11183f90d49dce0e9d9e5368399dbe2a5228",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2010-binary.dxf",
+        "sha256": "dd00f224c10bdcd1f48f5e1cf70ba31fc3559254a38a9090e470ba1406f470fd",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2000-ascii.dxf",
+        "sha256": "6b42bc8ce8dba4bc0a4443482c8c0a4d45db0aadad8f1a9a24d71b9234c01130",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2000-binary.dxf",
+        "sha256": "c0ec9748938efb9e8fd424f16285f98be39085cbc0d16da6b248d638a60f04f3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2004-ascii.dxf",
+        "sha256": "a3afcd093e03ac0ce5c005ca81e5a2563b0b36ebc1da3f0e3a7808c833358692",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2004-binary.dxf",
+        "sha256": "5e5f492bfd36faded5513a47374d75a3f4fe9ed5d37abfd44cb1f8392b68b86b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2007-ascii.dxf",
+        "sha256": "f67d1040bc77bbc357e94b378ba34599f611be62f6fd6ecb34b51de3ca041270",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2007-binary.dxf",
+        "sha256": "5e0181d85e1d87af7d3b81d14a9cd94dc409d9d4a58e88bc49a694800293d913",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2010-ascii.dxf",
+        "sha256": "d3375d8e62f2df57d107e5b6b7c3919dc9b12cb11e28212e39a0176fc20d4e2d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-body-R2010-binary.dxf",
+        "sha256": "3d725812f87cd4b0614c696f7646ebc44a4def43c189207fa8f700f886467497",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2000-ascii.dxf",
+        "sha256": "a6800952dfc9b7fc9acef5f85910abfd433d02d87e4a2a75a85a3269f278e77b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2000-binary.dxf",
+        "sha256": "4a08e60402d5e3c96c676b0f86041d95c58eca0a4ed27cf886aeb82d0d1c507b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2004-ascii.dxf",
+        "sha256": "64265e6d5cd9012d1e6c7331f9170b02824ed80a85d2d4b5c5e72fcccfb4cb09",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2004-binary.dxf",
+        "sha256": "7a3e861e1efcd030ae7c54dbe875bc877c9482be148905ad81788a8131c88933",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2007-ascii.dxf",
+        "sha256": "e49461ef8fcab6e5dc8a970d0aca16da1b92213d9bbd43315d4a61b6ccef38da",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2007-binary.dxf",
+        "sha256": "e1824c36b6953c9edccc37e7eb25d47ea76b3c83eb320a891d32a139f68abd8a",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2010-ascii.dxf",
+        "sha256": "1d38e5b26789b700d5da2c6362195518ea61cae761ca8f35df8858be7611b356",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/acis-sat/independent-acis-region-R2010-binary.dxf",
+        "sha256": "c30b61aae191087a3a0a82ca2f7a2bc3c4c934b6cfc5dc61a7e5f2a273a785bb",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2000-False.dxf",
+        "sha256": "66d3c484987563044880fa4719ba6f9f7c6e768964cd0c42636fa9a526372639",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2000-True.dxf",
+        "sha256": "9c9d86453b7c4f22d58270fdbfc93cddb21ecd5de9c85d0c03ba7189513e9c0c",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2004-False.dxf",
+        "sha256": "7a891a481110de1b4b020b2a49a27fbec9a14b46755d7aa292b150236d358b24",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2004-True.dxf",
+        "sha256": "32a1f38d5b099b0e2aba926c8630fe0b783c5e38d257eec4298c5bed6167a6d2",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2007-False.dxf",
+        "sha256": "926e2fc99acf7cb7253c3e642da22b7973f505440643ca4589e22bce9cad13e7",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2007-True.dxf",
+        "sha256": "6908d80536a1ad2412713726e28184e19e0c03a5def0349b4071b6e3c0ee3b8b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2010-False.dxf",
+        "sha256": "9c9335e21e6f2a9046bdb137881ded96cd136581df1c79e5afc10c1cd90f7f99",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2010-True.dxf",
+        "sha256": "0d87aa80e2f86834f8cd4ba82ed8ff9c830982313fb9ab88d4ef8081556e2cbc",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2013-False.dxf",
+        "sha256": "6d1c81b7fd570a2cbbfa0ab0ba1b5aad2ed30d6680c563bc9d579ba71a0c7846",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2013-True.dxf",
+        "sha256": "e7190d33578d2c6d4c58cfad823db5183314d43de6c39d9e0ec2e34bad2c60b5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2018-False.dxf",
+        "sha256": "1e55878e19c037a544bf5309cf69f48e483e2be5ea130f989e27370b55c50b5a",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/common-entity-data/ezdxf-common-R2018-True.dxf",
+        "sha256": "9b22a6a52f42e74a2e5b7a929e523f33851ed5910958fff57fd7266e296b7431",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2000.dxf",
+        "sha256": "a666edfe32f4ef3dd9f03335d7f2be1242ed3f895f30e3b9748535a3c1745f49",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2004.dxf",
+        "sha256": "3358eec5e0fca86e69de306988665982994aeba580c2e79c0655bfe9cfcd4004",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2007.dxf",
+        "sha256": "9051fc61f6d4fcf1d16e8c40dfedf647a9458f1a10f411f0b94b507e50f3245f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2010.dxf",
+        "sha256": "257d0bef069e06b36c9e4840d8e0f19ff4ed2f25fcca55f9e54f8aa8b1ba0ddf",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2013.dxf",
+        "sha256": "1c5773ac732d837a60d4a058b6776facb431bd744effbb9ad62f2d68336e6cd2",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2018.dxf",
+        "sha256": "f518b21acb7db6a0cd10f31a0f1c438082191e1d9673338afd749cfa041204de",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/geodata/independent-geodata-R2010.dxf",
+        "sha256": "13dc5c813acb7ad7e899cae726a19fd750f7d0cfa8e045843009eca639363d77",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/geodata/independent-geodata-R2013.dxf",
+        "sha256": "11bb02f9d0a4f02550057adcdc647a6a79db758059242bcd857da7d197d970a5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/geodata/independent-geodata-R2018.dxf",
+        "sha256": "eaf905dcb1c6177cb91c80d9f6d5cc53b45dd2b3b5f3eb7b976402064492cf69",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2000.dxf",
+        "sha256": "58e72a9c33a0ab37a7eddca4b98e6a6cdbde875510452655c866333f1eb249a6",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2004.dxf",
+        "sha256": "64f17fb5a09fe9821ffd34c0fffbff3bc6c9ac83efbb37ec64523495a87bf650",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2007.dxf",
+        "sha256": "366100fcea7c9a294ff04f66fe397ca61cfdad88f5555b2301af120ffb710fa0",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2010.dxf",
+        "sha256": "d33a75f5c581b9769b51c4312e7ad81feeabb797109018f382a766ca44d4f3ad",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2013.dxf",
+        "sha256": "43660f7fb60f11604932c1b93812cfe24c4b3203b4cdbc2e87730f062b0871cb",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2018.dxf",
+        "sha256": "e2c7abef442e576295b55b286fa4cb9b4a870defc0d5c65267dea35d62aa2ed5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2000-ascii.dxf",
+        "sha256": "1a0ea250b4098344b0ca8cc1ee9926d676d3e65a47a4cc3afc3631e9967c6050",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2000-binary.dxf",
+        "sha256": "63374dab2e2b1b32a8db61816cc787c64b60a3859b0a69218bdc3dcf13ab222b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2004-ascii.dxf",
+        "sha256": "752810b7c5c37ed6fdc825baa1ed07eee066abd3dbe82e654c4bc3b219b7e538",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2004-binary.dxf",
+        "sha256": "c71c3619fba0c532e037f40bb22548971b7bbd4d165cba1aa86bd494049b1ba3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2007-ascii.dxf",
+        "sha256": "cda684e10ebc502ea9ff0c2a42a38e00537f6c92b1cc581b14a68abac392b085",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2007-binary.dxf",
+        "sha256": "9f53f3695b0f372df583448dfe71ed90f65803ed02ae10e84283a11a35800914",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2010-ascii.dxf",
+        "sha256": "b01d3a0a5cca9b0ab281073d6e9f346b09e28f11ae20168bb613615b914d8658",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2010-binary.dxf",
+        "sha256": "f428592ee2dddca1ebbc84e51c4d0e6f4bc940d3ccefbf941e5e641724867300",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2013-ascii.dxf",
+        "sha256": "7920f1dc47f0a9bf4584b18e3967c46c4cbb73cbc29bc21caaf7183c24f7a9f3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2013-binary.dxf",
+        "sha256": "bf24f2ae7230a459c8c7fc03f83f1f924001f0a05a257f73681d161afb811e73",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2018-ascii.dxf",
+        "sha256": "a29c9db33decef6dc174c156c03119d7bc11f615f0f27ce76d0432dadb998be4",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/extracted-layer-index-R2018-binary.dxf",
+        "sha256": "0d5b7181955fd27ab784a391e0897900e9683bd7966f4851b50ee0a89c9c7712",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2000-ascii.dxf.gz",
+        "sha256": "fb03dafe0333f44ca5bc4e5c3b9c7860cc0b4613540bf4dbea99857d24e34cf0",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2000-binary.dxf.gz",
+        "sha256": "b205789e793173070e75dacdac85312387137883af45d6bd2ed044e3062823fb",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2004-ascii.dxf.gz",
+        "sha256": "cbfc9e08d1cbac1d8998773e0f295e83b6227ac62547421f7e6ffc4e73f499b8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2004-binary.dxf.gz",
+        "sha256": "3d7170ad0bfe106d34fc4df9edb5df2a7ff09fee530f5e22d52336daaf1f970c",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2007-ascii.dxf.gz",
+        "sha256": "01c03f3bf4bc258569261cde9f49be513e1edee0221f084ad675dbbba3a3b9a4",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2007-binary.dxf.gz",
+        "sha256": "fb536ba1c14e37ba8305b4ca0af0ed8dc64017a4a97cb71a09836a5547830dad",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2010-ascii.dxf.gz",
+        "sha256": "ada615407fda379bb99b802f495cbad4c1a41aea9c1fc78a7467cc81ced02d94",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2010-binary.dxf.gz",
+        "sha256": "94b6a59e07547841ee979cd6730984797d35a1c7b54c9f5d04831cef25085ea3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2013-ascii.dxf.gz",
+        "sha256": "77068fed2e330683d1da128d300d35b15603d487b0209af29b7c7efb58c05007",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2013-binary.dxf.gz",
+        "sha256": "80431fb79cd87803edeae8ed58bad83df991152cca7357154910da84655f1ee2",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2018-ascii.dxf.gz",
+        "sha256": "4f87d642d486f722ff393297e8fbd6077e21e71005b8666694d0a2a325d561d9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/layer-index/ixmilia-layer-index-R2018-binary.dxf.gz",
+        "sha256": "0fcaae62b9f233641d431b151a5f195f3acd1c50a8b13a0e76399e8966e641b5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/legacy/ASCII_R12.dxf",
+        "sha256": "b476d3e53fe24c1db3c701d20b2bebd774f7bd7966b12d81891505b9b29e4d21",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/legacy/bin_dxf_r12.dxf",
+        "sha256": "1e7a904d67bc7036bd3f78a6273cdf28124ba7e8b731604c0593288182f2aa0e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/legacy/bin_dxf_r13.dxf",
+        "sha256": "c65782683815ff0f1680d26207da1637a486f96b30bc215685e26cf7adee8464",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/legacy/bin_dxf_r14.dxf",
+        "sha256": "177a97e5dc86ca106d0dd6365d139122fc54ff78df87670847eb7174a8bbd5eb",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/legacy/small_r13.dxf",
+        "sha256": "a1007452f8ada2e71fdef60f79923924045cb371f37eeab896a61f5628573d0b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/legacy/small_r14.dxf",
+        "sha256": "92e792f8f9169e4226c9b7dbe848ba9afb96d3e388e6297c55481e1941c65fb0",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2007-ascii.dxf",
+        "sha256": "502fe86d6cec9a42b8e6f9798d5258263ceb1e9658b91bc80d30b693e251c545",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2007-binary.dxf",
+        "sha256": "641be2ad6370421bb6f0824fffd04f93784a28b6338ab66341cb0cb52e80417a",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2010-ascii.dxf",
+        "sha256": "060b16d06e15bdd35e60c544d0136af5628cb130b481250c297c0fd9d72ce290",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2010-binary.dxf",
+        "sha256": "d5c3f54ced1f33e6893fdd8ec7da242be48485ccf8c0044ef998b5e9de80c8d5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2013-ascii.dxf",
+        "sha256": "8f3b40af844aa92c2df015145144fcd93a507cec4b9e10ac10e35098a2ae60ab",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2013-binary.dxf",
+        "sha256": "07dd1813ade4457c3ac87d231f018a770d02627fd70477df395092e4605e90a5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2018-ascii.dxf",
+        "sha256": "a60b00ca73ea25919907c5886ef8060fa5b85a911206787724e29c3250708cf8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lightlist/independent-lightlist-R2018-binary.dxf",
+        "sha256": "1f73423cabb6832cfcfe9876d43d02033258a4aa37fd6babb5f9e6c48c0ffcb8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-absent.dxf",
+        "sha256": "b979185f0ef6d0bf484c9c5ac08be3fcaa0c95e143ac95dbc4ec2af6ef6a31ec",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-positive.dxf",
+        "sha256": "a982d3f966498b5d164ed9c51c12bf6ccc24dff453eb62f53fc3fbcfa7c42771",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-zero.dxf",
+        "sha256": "fa9cdc69c318b47d3f739d63288c0deef423af88b1979598ea4c22518834623b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-absent.dxf",
+        "sha256": "e959e64724cb8bad54573fc459505026fbdd2d6a22ee3fa4d590b49f4f325edc",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-positive.dxf",
+        "sha256": "ce092d17fddb68c86d53dca6f285b74c2cd8073a1585aa940bbd1b4d84e6b689",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-zero.dxf",
+        "sha256": "119b0f92ae6fb1a4ae2d378555595aeda0f0c6608c6ac323793175098000c1ed",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mleader/independent-mleader-R2007.dxf",
+        "sha256": "413766dae4d16e60e1f1ad509f1c0d997173128c84799aa3c6a5b1802bf39fa0",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mleader/independent-mleader-R2010.dxf",
+        "sha256": "aa64de7f72161558ed60b663ddda3cb58dc0c3696e1093b876f09513a124dcf9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mleader/independent-mleader-R2013.dxf",
+        "sha256": "e165c1340eca1440549548acc256cf4e9c00dbbaaea788bc7aa8e1a62b0587f6",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mleader/independent-mleader-R2018.dxf",
+        "sha256": "70db668b4c3bd1324e9a857f58676c7697b79fcd22815a94f62ae96d645df786",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mleader-native/native-mleader-R2007.dxf.gz",
+        "sha256": "5e57fbcb9bbf326de7bbcdc9951e51c1d52834ae4f6117c0e3f95fdda09474ab",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/conflicting/independent-mtext-static-R2018.dxf",
+        "sha256": "c32cd080274b701c7778fa79c14d4e4b30be8fef482c448ccafc72278e311bb2",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2000.dxf",
+        "sha256": "e50d1d0c2afb92546aeb83bc08ecea594ece01d755e80e5f5679272fa6ef08f5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2013.dxf",
+        "sha256": "9ce220643b3c82d235c777bca2787bbc18e1e8878f8d015975a17d32d9157be6",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2018.dxf",
+        "sha256": "4e52b04d25b48c927c6e3796a7bb9d87fb6ab5af1b71573891b0f3a959d36a96",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2000.dxf",
+        "sha256": "dd17a5cf0de5df0695501549ef0a55b1f06f2f8fb13479d028addc08aa2b10e6",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2013.dxf",
+        "sha256": "e7033abb5a6fabf7c7d238cf1313ef49f30ef78d537473a8f4230ee466fdd118",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2018.dxf",
+        "sha256": "be681369e45190ef26ac01ea3b191a88b7150a5ad5ebc8c0d63c852191023dfe",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-static-R2000.dxf",
+        "sha256": "80f56b71dca0828f3c170cbd7cbc2e73014732c187d991309c098148840dd4f8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-static-R2013.dxf",
+        "sha256": "82f563edf1c7dbcb3b5f8e90ef0ba60fde40c734a54342a1fe6e1731976e8389",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-static-R2018.dxf",
+        "sha256": "c0cc69229846dfdf57d2b352b85c47f09857d9c1145db9f3b89a45b614afd2de",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/mtext-columns/independent-mtext-static_reordered-R2013.dxf",
+        "sha256": "ca392e1b016e9310d30ff00757e84b599a7e6c03a47772670aae55dfaf0bdd06",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/output-settings/independent-output-settings-R2000.dxf",
+        "sha256": "92e617e16709e64ce837606ab35ebec98dd00c9fb0555b351800fbc0ecf7a45f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/output-settings/independent-output-settings-R2004.dxf",
+        "sha256": "56a6363bde968f48f97fdc91cb7809337d56196e1e984b8726726d1453ec7d96",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/output-settings/independent-output-settings-R2007.dxf",
+        "sha256": "9a3711d2d312725ef9a418bc72201328d3e70509b37c784f6025aebab690d0ad",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/output-settings/independent-output-settings-R2010.dxf",
+        "sha256": "4627c47d62400a41aa065a03549654f5479854c9f657d87caa4fe2d365295602",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/output-settings/independent-output-settings-R2013.dxf",
+        "sha256": "5aeaba4c3ffff9236e1ad23dcc1a78d80fe014d4ab214e5022fd9639b152402b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/output-settings/independent-output-settings-R2018.dxf",
+        "sha256": "a437c9d728c9b8211944dd37dd3d3e25b6fe572fee7dd772a6c1b8844c1b7027",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/raw-objects-R2000.dxf",
+        "sha256": "308c500a530feddca2d2f01691faac2efed871bdf4fc708e0af149d0c1702e98",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/raw-objects-R2018.dxf",
+        "sha256": "0631df37e447399011c67a9650967995052bbe9f74a78bd5d65da7b06fa3eeee",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section/LiveSection1.dxf.gz",
+        "sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2007-ascii.dxf",
+        "sha256": "991871d8c1c12b7a995ffde7e6d9415915eef40a9aa774c502c5a6adb45bab64",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2007-binary.dxf",
+        "sha256": "8d384dfbd12bc0e13e377deef97c72caf65c900f692a50c23249468eede4286b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2010-ascii.dxf",
+        "sha256": "c5118142e474e0d5cbafb957d66c061c36ce14d451bc3c376d57243ecece8f99",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2010-binary.dxf",
+        "sha256": "5bda41fa5a4a4bfdd9c58b4766e98235f905d9f8d465548aa7bfb579f8e0773c",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2013-ascii.dxf",
+        "sha256": "409f6b2956af1711d5439eed435068a0d928721d96f6a2e3ec30352f9716d79d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2013-binary.dxf",
+        "sha256": "349ec8ce25e08e73e03cb032b2f839007fdaa397dd636bdcef2af886ea9c19ba",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2018-ascii.dxf",
+        "sha256": "ddb7e8200c31ab06f5bdc2230e133e126d0866ba75f84e0121484c92792c7a13",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/extracted/extracted-section-R2018-binary.dxf",
+        "sha256": "e5380662da814fabbfae761b01c687a39d9b959d5d95890c4f3ca3d7983525a8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2007-ascii.dxf.gz",
+        "sha256": "4dcd0385063b959bb88f5637034ff4d49be56f2277e42af29d5673d34b2f86ba",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2007-binary.dxf.gz",
+        "sha256": "3990b4c79e13dce5d613805fc6964b6e389ff0cb1de3518ace4fec65b870a65a",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2010-ascii.dxf.gz",
+        "sha256": "e046c119bf199219e1594df34ef2a69421dcd8b92d58c2ac0acce756264d6141",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2010-binary.dxf.gz",
+        "sha256": "7e99455e8f4f8e745f9e07a19912ecb5112effc75939b7346daff9073a61eb5d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2013-ascii.dxf.gz",
+        "sha256": "6196a4870854a1f9d62bf91585c265ea931407bdca57e6ca191f6ec31fc9a8b6",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2013-binary.dxf.gz",
+        "sha256": "db60db602cb25f55e2051396eb442a26dabf9d119463ec534557f5b44fa6eef9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2018-ascii.dxf.gz",
+        "sha256": "26c1ae6252545b6285617ebcc1955b98a795d73b078d462772286351297783a1",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2018-binary.dxf.gz",
+        "sha256": "36bc52d170775f068716e6a758d272e1522c53aff11d6a6cce74b1445ca410d8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2007-ascii.dxf",
+        "sha256": "016a8e8e800dadb3e22ee492c54b313a71f8706c3b73775b5575d7ffe0423257",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2007-binary.dxf",
+        "sha256": "f38839e20be3bdb132728f68b3056f98cd00589636de90f7f788861ef06b1cfa",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2010-ascii.dxf",
+        "sha256": "faa9be7a5f325401272bbae13e5da4b2b5b3c2618c7e5c5259bf514a0aff154e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2010-binary.dxf",
+        "sha256": "85a81a7d3bdc7da0c3d0bab61822f4acf05ce8b2fabd677f7bfab0182dbeb48c",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2013-ascii.dxf",
+        "sha256": "d88bfe4f17d8f6b6833a9ee0d69c2b2dc2b7e4f40e99bf408689e45fdae17f64",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2013-binary.dxf",
+        "sha256": "015389640312be39a8a056c219ef4fd6b2c0dbb4c36a1f1ec38d7afd7c5663df",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2018-ascii.dxf",
+        "sha256": "5320c1c1905492e292ea4b81ed79cff8faa4c85223c0b50bc42bb34f457680fd",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/extracted-section-settings-R2018-binary.dxf",
+        "sha256": "392043ab76a78df5bb3f462e68e1912572e500019deebbb22d7de273f79f3529",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2007-ascii.dxf.gz",
+        "sha256": "0d5a607a49a83c9707a6d3928364ecd4aef0bf4ed7c45141922f771cc4fbc48b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2007-binary.dxf.gz",
+        "sha256": "87455c9979349a7b7c8a96a2504b03b377ab72c979bf52d84bc2bc7ee361d8ea",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2010-ascii.dxf.gz",
+        "sha256": "7265e42981ecf0c22d1646f7713d2ad8a2ee5024eb8bf3d9afbb40c463343d49",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2010-binary.dxf.gz",
+        "sha256": "984c86a416c5c408cbe0ecdd309e7ba5bb7831d74396f8d59868295a567af81e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2013-ascii.dxf.gz",
+        "sha256": "656d5197c02db96598a2103b93cb4f46eec19c17fe4678b8ff462dcc9927eb7d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2013-binary.dxf.gz",
+        "sha256": "93caf0a0063a19436dc1f8c6f1982d2667ea835d5928f723e8d59a09748b7420",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2018-ascii.dxf.gz",
+        "sha256": "7ca01795c7e59bf3d3c66c03cae30d2b9f87118919c03c854ae4c7234175b97f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/section-settings/ixmilia-section-settings-R2018-binary.dxf.gz",
+        "sha256": "c052ddc7a1ffe805165fe0c4b5b218bf55a02a1a4369c4da7d1d7b8b5259528f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2000-ascii.dxf",
+        "sha256": "707f47d7647335b5c9bd210927e1c5fffb5f40f5aa0cf07ce9dff6b59b6fffee",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2000-binary.dxf",
+        "sha256": "561e5ffadb364dc562239dff592b2cd5b1e145809d062393496104146e9e277e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2004-ascii.dxf",
+        "sha256": "73a6449fc3dada2ba69a7974849ac969cf6485a3c92698c1c899c9cba7069d19",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2004-binary.dxf",
+        "sha256": "400673ea99f74ae865369f0eb21fde7341b5a99030a0233d397365e16a65039e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2007-ascii.dxf",
+        "sha256": "e45c25a228d4ad88e7f18fa63b802a3f9eabbbe5b3171b7525f15949fec8d0db",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2007-binary.dxf",
+        "sha256": "3b49756e894e0b1737284ed88d3bb61b44f144052922920b70538d03e2f5ba6d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2010-ascii.dxf",
+        "sha256": "efc41fa2316232e8b3066126342a7f3b90ce620f7837a6b162a6e2bab59c3c62",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2010-binary.dxf",
+        "sha256": "233a009f243c1ef82d4272a547f5f3033439464460b5119f3f32619a11074094",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2013-ascii.dxf",
+        "sha256": "5c8ae2d3c93683386fed65987bf1cafe829f3c2d78b0a285d0b3492cde419048",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2013-binary.dxf",
+        "sha256": "1713b3202aa04cf51c44002a791ca9b1abe1357fbdbd6e687af4468a55c07308",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2018-ascii.dxf",
+        "sha256": "1871c55add58a7ea296a2976f99d58ec3b8a588804e8886a4b99753478da2c8e",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2018-binary.dxf",
+        "sha256": "6e61c3ecf72ef521883af8ff2e465df4187431188feb2228501f5eb9fefad5a5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2000-ascii.dxf",
+        "sha256": "ffc640f4a2facf6526f76f484ed8ea3770dd15bb5a83059a636b73967ed6267c",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2000-binary.dxf",
+        "sha256": "962e9a7044be4db8aefde05d0a2260d119cf5a7e1669fc1145a17ca96f2020e7",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2004-ascii.dxf",
+        "sha256": "b8a76937e8041ee27260a0b420ee5464a65882c3d17ad9e60d544ef1d5a0627f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2004-binary.dxf",
+        "sha256": "882c3206f439f6b0ced794edd0c13fa2736fe3ec07d7a7028ee3fc8d7fbfe955",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2007-ascii.dxf",
+        "sha256": "5f2bbcc886b964cf340541f446d2e5c1c59f2d4386761154b46503d52af8cecb",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2007-binary.dxf",
+        "sha256": "eec6e8e76abaacbc0c7a8d30c8b3319faef51d2fc795cdfeb3ce93655dedda50",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2010-ascii.dxf",
+        "sha256": "ea3328fb8e1512c7b7ef3eb25074876b8219fd3c59f367b99beb54bcd128a15f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2010-binary.dxf",
+        "sha256": "cbc4d2508e155a6b833634886094d2ed4100f8421b2a8b429fd9e35ac9befcf7",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2013-ascii.dxf",
+        "sha256": "fc0263d07abe8ab84775f3425ea4fadf80e3cc09f2ebb7398026a15524e24346",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2013-binary.dxf",
+        "sha256": "09fd1dea77cc70d10089e4ee2f1b87a3b0c2e95cfd8e348945a97bd8c984875a",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2018-ascii.dxf",
+        "sha256": "ca497007b1b552aba1753b995e81db2296731214ecfd4ff0d0e3b6ffde01090a",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/stored-envelopes/independent-stored-vba-R2018-binary.dxf",
+        "sha256": "978c325eb8607895ea0a593ad9ad3329edc0924e070d2ad8aecfb15a8fdac589",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2000-False.dxf",
+        "sha256": "209bffda1c8419700f517e86dad064f88ad926d6464094b619b227ff035d65ff",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2000-True.dxf",
+        "sha256": "0cb29889524a1f5e9918ee1384df89d66f52de8780fad5047f52ce35c0d4124f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2004-False.dxf",
+        "sha256": "6fad3b47f19a49ab127a948ba14a82a83f3d5c0db8951b5ffcba7794c8a6b1a8",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2004-True.dxf",
+        "sha256": "b0038313976940cc0b8566c93b62d2e4cc68525d78d4006c611eea6f5c60b144",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2007-False.dxf",
+        "sha256": "3bc53d3a8c3ec6d76c5aceaa061182e5bcf1c25dacd6fb967859370d502a7fdd",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2007-True.dxf",
+        "sha256": "eb7256f697476bb8b3c704cefd3a307b9ff91415c98c6136f9a9129405882c55",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2010-False.dxf",
+        "sha256": "47022c1717844fadd7f7bc24aada9e3cc4437f17dd706f6b8a56f6ac3ea0a0e9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2010-True.dxf",
+        "sha256": "ff7285528a4497eff19dc80736d007848b29f0734868952de5fcf9ee36c265cd",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2013-False.dxf",
+        "sha256": "777434cbe3a8391698b202a866bdc2d6e14b95fd63b21e8e2fc61f3384ffa1f3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2013-True.dxf",
+        "sha256": "2a054fd5b33879a013d1c21af2b22de1943543fabc15267f043e8fa79cb7c0ba",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2018-False.dxf",
+        "sha256": "f51d7b992bb7a72f89c582027dd61502c75ac0594c71c83afba496f9847addb3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/style-fidelity/ezdxf-style-R2018-True.dxf",
+        "sha256": "a9e72c45c9f3221db3907dfd7dee749b9cc0784209ed0b21e50265d04643e17b",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-oracle/acad_table_simple.dxf.gz",
+        "sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-oracle/acad_table_with_blk_ref.dxf.gz",
+        "sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-oracle/sample_AC1018_ascii.dxf.gz",
+        "sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-oracle/sample_AC1021_ascii.dxf.gz",
+        "sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-oracle/sample_AC1024_ascii.dxf.gz",
+        "sha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-style-oracle/acad_table_simple.dxf.records.dxf.gz",
+        "sha256": "60ace80990ae6cf3254e3de774016a041fc9e7becf54dec0bab3e9b69b5609dc",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-style-oracle/acad_table_with_blk_ref.dxf.records.dxf.gz",
+        "sha256": "a97fa91b533bb76794a4d488e215d65164b16bce4f58bf3998784fd7726c6667",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-style-oracle/sample_AC1018_ascii.dxf.records.dxf.gz",
+        "sha256": "ddf03cb52d1252f2e47a6714440f3a3fe6b8a74a84be92ed1be00f4bb504c73d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-style-oracle/sample_AC1021_ascii.dxf.records.dxf.gz",
+        "sha256": "bd697c3dc984d95653dccab4ef580936cf7227067ad94f50b95a89210651252d",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/table-style-oracle/sample_AC1024_ascii.dxf.records.dxf.gz",
+        "sha256": "c40d125a46ee839c12e939a9a7a7fa6ef7238c5ad4f0a80c13b7303b46a0c6a9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/compatibility-probe/sortentstable-R2000.dxf",
+        "sha256": "f8ed92a1036f839cef9955c4284c1da1a2ca3d70e9056998edc90112c4ba235c",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/independent-typed-containers-R2000.dxf",
+        "sha256": "09df6e3a24b774efdf91cc88078816687ef6574f0239e3e42dbd2aaa96431c2f",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/independent-typed-containers-R2004.dxf",
+        "sha256": "a854c9333a5429c4f7f02477709e89d364553da827aa1946eb9b76512d28b7da",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/independent-typed-containers-R2007.dxf",
+        "sha256": "1ab464e40d07a2ef442f7aaae1115b74a5d19e7164d92c8472eb3e159c4dce24",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/independent-typed-containers-R2010.dxf",
+        "sha256": "bf5d41a384ca4fbc37c5a7ca884a42525083814e781ef7fde1967132dd0924d9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/independent-typed-containers-R2013.dxf",
+        "sha256": "84f114cb352c61df2ff7f7e095e576dca3004ebb4966dad1d42a979081c41b52",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-containers/independent-typed-containers-R2018.dxf",
+        "sha256": "e19ddd47cfcd394a85ca7ee8be03a26c0e9c91e68fa46f241339e1fef59a0003",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-erasure/independent-typed-erasure-R2000.dxf",
+        "sha256": "267855abfccbe49bca4a3d559796d1187eec5f94cf8ced3f2d4f7d81727dc6d9",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-erasure/independent-typed-erasure-R2004.dxf",
+        "sha256": "f7328a42be28d9189d35a8dc23dcfa40bef7f341366ef2d195d45d47a5e17efb",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-erasure/independent-typed-erasure-R2007.dxf",
+        "sha256": "ee9a5fd6945b9ea42ab8f060c2882da16e6715cc4740b6ec3d832a0084192b45",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-erasure/independent-typed-erasure-R2010.dxf",
+        "sha256": "50dc6d1b5b5fedc953871f5553e82d61933d7da7e3c1b7a584b7409cf42806a5",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-erasure/independent-typed-erasure-R2013.dxf",
+        "sha256": "335a55f1ae509f41722810fb468a8fa8661662f9126b444acbfa5cd1a4c8e3f3",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/typed-erasure/independent-typed-erasure-R2018.dxf",
+        "sha256": "a682fa977b16e89c49320b570d260fff188022f27da3e48b2f8ce9b711f25848",
+        "ucs_records": 0
+      },
+      {
+        "path": "tests/fixtures/view-ucs/independent-view-ucs-R2000.dxf",
+        "sha256": "a6eb5841244161feabc11645728ab35ca375795852ef72ec07cd6de94a0f736b",
+        "ucs_records": 2
+      },
+      {
+        "path": "tests/fixtures/view-ucs/independent-view-ucs-R2004.dxf",
+        "sha256": "a6cb597606df88b9a01b655fdf8c7d1734baaf77f58ae1529c6dfb7f70b0ed98",
+        "ucs_records": 2
+      },
+      {
+        "path": "tests/fixtures/view-ucs/independent-view-ucs-R2007.dxf",
+        "sha256": "e4a7055e76121f96bed5c26fccd90b919bd690493bd2726b870a3fb78c7f845a",
+        "ucs_records": 2
+      },
+      {
+        "path": "tests/fixtures/view-ucs/independent-view-ucs-R2010.dxf",
+        "sha256": "4a8ff22c36f3f79a864914e99fa92bf5fe8babd1d58d50ea1467eb4a469f376a",
+        "ucs_records": 2
+      },
+      {
+        "path": "tests/fixtures/view-ucs/independent-view-ucs-R2013.dxf",
+        "sha256": "09e8939702b577e3fa233c3b77612eb0ad9cce4b06f503e8a66fffda4bcb009f",
+        "ucs_records": 2
+      },
+      {
+        "path": "tests/fixtures/view-ucs/independent-view-ucs-R2018.dxf",
+        "sha256": "640b5b2809ac094b5eff0ab8783bf31425a7727686d1b4e6e4080333bd0e188d",
+        "ucs_records": 2
+      }
+    ]
+  },
+  "libredwg": {
+    "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+    "files": 67,
+    "parsed": 66,
+    "ucs_records": 0,
+    "file_hashes": [
+      {
+        "path": "test/test-data/2000/Constraints.dxf",
+        "sha256": "09beca558029b4c3a50f999cd1e90348902250fd565bcb50dcbccf91cdea654c",
+        "git_blob_sha": "9bb6c4fc8c48d09d3d67c367699a98148cd7ec50",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2000/Leader.dxf",
+        "sha256": "12d6239782221ef8534ebd0e659c8eaeb5b5353e24a5774dc38f43416b8ad5bb",
+        "git_blob_sha": "3456b89af4287a8327000787fbc13901f7620707",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2000/PolyLine2D.dxf",
+        "sha256": "e74f03a383593ef96d5a349618390a393e8c5697e253014d4218fd40e3f37250",
+        "git_blob_sha": "514f945a48e8a9854797b317764ce5781a9e20c7",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2000/PolyLine3D.dxf",
+        "sha256": "a869cf5e71afdf98ea1fdb261bfaf4d3e6a565dd3f387e6484ae40c024705fd2",
+        "git_blob_sha": "a300cd43375f2c927e746d8476fd8f24de3e7a1d",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2000/TS1.dxf",
+        "sha256": "d55726ba862a45572a6b72493e3139b809d0a806e7eba6e4cae578a1a4227303",
+        "git_blob_sha": "f32983e03c4823c2c6039c34bfc1b42befa9c7ef",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2000/entities-2d.dxf",
+        "sha256": "6487cde42549f84eaf9ef377c9bc33e4d0a25047d733ef65df33b9bd02987bb4",
+        "git_blob_sha": "6f210c7a6b1afd70ce3da7c38e3585b688169eee",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2000/entities-3d.dxf",
+        "sha256": "65d07b7afd3b3a51fc4f9a25ea91c67451157d68f614791f3c4fa64094e95162",
+        "git_blob_sha": "6515b8c0e1c79de97d68d64f3d247c89a97624c8",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2004/Constraints.dxf",
+        "sha256": "6501eed5e754cea1583fb6ee9523c0a0f25c4dae7ca7e88d4a5380e7a19b5073",
+        "git_blob_sha": "443c9e92ebae48d29f889e440ea5ece9393c4e75",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2004/Leader.dxf",
+        "sha256": "5cc97ba5ba48b2feb2e05a28c67b43aa421162376fb32a00ffd9e58df3523019",
+        "git_blob_sha": "3c2468d031c68b842bc61568b78d7b9c731f0fc5",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2004/Surface.dxf",
+        "sha256": "aa4204cc64cde5867b4ac922a9356e02c091bcf8e0fec636252f06ed4ebe5c60",
+        "git_blob_sha": "cf8c6734602eff261b7599f103d03c10459218ba",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2004/Underlay.dxf",
+        "sha256": "a95202c3425e8d3028abf6b762cd0bfcd66c755607b4da3d3cd398cbf3886637",
+        "git_blob_sha": "df69b813bdd83004ff33c1dbc898b6bc5292a1a0",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2004/material.dxf",
+        "sha256": "388d2fda230cb25f497bcdc41a15aae66fb10fc509e7f8f372eb62b0ed5f30c2",
+        "git_blob_sha": "724b95b0fc495905264e0856e0a66704e527a7e9",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Arc.dxf",
+        "sha256": "51f54b2e0e0cf67b9fb423b34c2c59c45ba12ebecc515504e218905ec06236c5",
+        "git_blob_sha": "6eb277689d0213e88f892c1703047c6aca182f62",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Constraints.dxf",
+        "sha256": "d8e72bec4ebbb54e2255c6895928f633fddecf6d4ca21e8267e3395a096cbde1",
+        "git_blob_sha": "31eaeda497d8038153fcf4e7510d3afc20d98bf1",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/ConstructionLine.dxf",
+        "sha256": "92e74dd3163533488771b793b0dc160075f8d28871e98ac0545f95e81bf96482",
+        "git_blob_sha": "3b72288d69ae2ecdb0b7ad0a9fa8ea98c60972bd",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Donut.dxf",
+        "sha256": "0884310ba35704392c2efb78fe8d3515d3f76829245aabd2e1b046d2f69eb5c3",
+        "git_blob_sha": "0b10c9ba40350c09592a3c78ad01704c36eb1d9b",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Ellipse.dxf",
+        "sha256": "79cac0a209db9101111260e9102288147d7c5b61bc0f341622063a4c25ed4f39",
+        "git_blob_sha": "86b1f1e7d9708b670f16d192bffbba289c914d1d",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Helix.dxf",
+        "sha256": "0370919383dc58d0b3d0c3c75e9993fb58cb4bf76083fa44a205864ede42c3b1",
+        "git_blob_sha": "2033e62ab8a65c1f431cd577e436405f527586f2",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Leader.dxf",
+        "sha256": "4ab43c49dceb119d8e666a169faa87f6bbfa72f345ac109397752286a3676171",
+        "git_blob_sha": "95adfe7f1c07c74bff29aa965a9e50d12c0b5ed5",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Line.dxf",
+        "sha256": "5e5e75b41b4de51cd31a9f11e3174eb59d9363b4963b4b0431d3432d4ec38e73",
+        "git_blob_sha": "232de11b9eee4b1b41b33ed281260b539b094101",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Polygon.dxf",
+        "sha256": "50a914162a4da7411e8e8a0bb8c779cb1dbb74c5c89bf3689478746b757954dc",
+        "git_blob_sha": "6845e0f6843303dce6ae621406531ace294908ab",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Polyline.dxf",
+        "sha256": "1583874360c485caeee32269cb0019c07329c6d21bcc4d0a4a201a6f68ca134a",
+        "git_blob_sha": "c853bdd43df41277df6bf25dbc0c032e63f3f5e6",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/RAY.dxf",
+        "sha256": "53e00bc997bc40e986bfaafcec35a77efefaaf2b04a08a0715df1886013ebf7f",
+        "git_blob_sha": "80476784dbfa7bd60bc3340a4a67ce9f69c2184a",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/Text.dxf",
+        "sha256": "fe5c497429da0d81f788684757e12334fda95a108118db11afe1c58a6ee51a41",
+        "git_blob_sha": "3a4583e4d2f16b6f673876e99d9cd4c917fe6288",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2007/circle.dxf",
+        "sha256": "965996b659a8287302cc72c2ddb70ed8b986a6e2d7dff4166da23c8d96e34a39",
+        "git_blob_sha": "01eabc3632328cf4c3d428228b1f9b344a209840",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2010/Constraints.dxf",
+        "sha256": "459fb35c21cf4045a207b5f2032b32dfc1031b0bbce5c40e5f705c5f8ef6485d",
+        "git_blob_sha": "68d97a069ad1ea5c2cfdf9d5d0d9f14a991bdcc7",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2010/Leader.dxf",
+        "sha256": "2c8c4d821ab9151e3da40b12e0c1acbf716c82b0a1ad388620d068e4efb68986",
+        "git_blob_sha": "1d370acbff3bf2f69a3c979ca40d2deb2c50906e",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2010/gh209_1.dxf",
+        "sha256": "e1df4235b1f156ad1210cb32b3752952c4d677e1401e617d33cfbb637495e718",
+        "git_blob_sha": "71f4fe845b607262ff4bdb5f31060d3320413f8e",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2013/Constraints.dxf",
+        "sha256": "da88787541f0d34fc1654567326ec5715131af9bf8467c52db32f531e162c59c",
+        "git_blob_sha": "c746c9ef529911e400ab8cbe30c085cc875234f0",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2013/Leader.dxf",
+        "sha256": "7e7a724c833667fcc114bdbd16068bc19ea3c76d5c61b17f446b776fa5a210ca",
+        "git_blob_sha": "b60c751ee8c5af1eaff9e77dfb025698ed1ef0d6",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2013/gh109_1.dxf",
+        "sha256": "d9bc12c75492edf3f4334a44c0138efee8fa6c441c14fab967493f67c7ce8139",
+        "git_blob_sha": "2edc805ab5a09dad65b1fbaaed4455fa196f3888",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2018/Constraints.dxf",
+        "sha256": "6f81984ffe6ca3e69281afec323335dcf1d8368a03bde1f0dcfadfa0fb97aff8",
+        "git_blob_sha": "c09baaf8ece066b69e9e5c05131520509a756665",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2018/Dynblocks.dxf",
+        "sha256": "3320aac4a5b8128d58f9a7a28d013c6d06b1f7785d00884a7c952b58afdb13cc",
+        "git_blob_sha": "4e40965ea8c879ceb4b05602bdb51da50353fcdb",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2018/Leader.dxf",
+        "sha256": "8028ce0245c633fc07fcc676c6cc6445748d42ef0aee4a2b43bdb5f1e14ee86d",
+        "git_blob_sha": "8e49a6719470745a2864a754f10cb465411aa4d6",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2018/LiveSection1.dxf",
+        "sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+        "git_blob_sha": "dca7288f9ed9a2b1b17aa95d80759f5c82b8e6c9",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/2018/TS1.dxf",
+        "sha256": "ef795fb7c4c9cfc4486ff3cc0254d38cbdb870a326e7e8cccd78b0e046868d14",
+        "git_blob_sha": "d6075cda476367dc0ce51d481966e1c40a6ab14a",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_2000.dxf",
+        "sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+        "git_blob_sha": "70a2c625227cae86ab28254f0754538a7259cb16",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_2004.dxf",
+        "sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+        "git_blob_sha": "f411d9efb8cf774bdc44eee005dfc5bae47fffca",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_2007.dxf",
+        "sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+        "git_blob_sha": "ffdebb6b93cd08f3e29c64b09915b1563fed0a4d",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_2010.dxf",
+        "sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+        "git_blob_sha": "45a47fd6b6ef65dde6bd70fd1df6445ceeb9cc1b",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_2013.dxf",
+        "sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+        "git_blob_sha": "e8c0f7254b02c3e036d6ceacbbbfaa60b9d06563",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_2018.dxf",
+        "sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+        "git_blob_sha": "589fbe42143b6d3e6796c9fc389c521f5d346ad2",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_r12.dxf",
+        "sha256": "89461b11cb6c683f535d208c135aeaa22a844ac628565907a8572208a92d5aa1",
+        "git_blob_sha": "bd962e9404dabe325f0f350acd8acd3f5dc63c01",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_r13.dxf",
+        "sha256": "2c573c70495850f301710ebfb26bd5e6eda4646d2f4ab657fdfd7bb2972faae4",
+        "git_blob_sha": "747959fd8e28773a743d8cefe3fdb02b2eed640f",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/example_r14.dxf",
+        "sha256": "b5db43eb376b8e6a11fc1596945baf538b67448d87e73840f6347007ea0035ed",
+        "git_blob_sha": "6c7f22629b594b572287fed53adf732fc9ead0d9",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r1.4/entities.dxf",
+        "sha256": "734c9c5ae02443ed2125b857afadef0ca60665b1370a62a2f6c5b24f9710305f",
+        "git_blob_sha": "eeb0188c80cfb8d90b98c487c7314e51fc2c1b33",
+        "ucs_records": 0,
+        "parse_error": "Invalid group code \"EXTENTS,1\n\" at line 1."
+      },
+      {
+        "path": "test/test-data/r10/entities.dxf",
+        "sha256": "6579b1e6e8b39e254012ff323a0bf0d7304e2977cf54eac0dc6f5cbf2270a594",
+        "git_blob_sha": "31e1190e3acb5cc94b79b365be424aeb48ebe6cb",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r10/tmp_line.dxf",
+        "sha256": "1cbff2c6bb12aac797e962df33af7b86d84d7975e7bd9258c732d66514d99ead",
+        "git_blob_sha": "7756eb3afc1082e4853a27b1fdf7d5209c5ee9a9",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r11/Constraints_12.dxf",
+        "sha256": "59c75e95f1fac57b1555a09983def233c2073b81e6e29f917fccc6a0a7930f3e",
+        "git_blob_sha": "c90829e1db58eed5d4ab1096e999a5b05c0defe5",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r11/entities-2d.dxf",
+        "sha256": "2c8bc7de7ab95a27cde449d73c1d2a34bcf038bd17255d2c0c40fbe704792828",
+        "git_blob_sha": "4048b61051c266dfe875e1098875d09a8d7357c3",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r11/entities-3d.dxf",
+        "sha256": "862634382f4d0cc292ce5e389f16eeb78cd1520081bcf4d1c56df428cc848080",
+        "git_blob_sha": "6bf3331366c038e4364dadd525610732c114d44f",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r12/Constraints.dxf",
+        "sha256": "59c75e95f1fac57b1555a09983def233c2073b81e6e29f917fccc6a0a7930f3e",
+        "git_blob_sha": "c90829e1db58eed5d4ab1096e999a5b05c0defe5",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r12/Leader.dxf",
+        "sha256": "9d3ff6a3651915ef851bd4a29910dfbdac566260e52df53c7ac6000b20256cc2",
+        "git_blob_sha": "6c5a54777d65289247c198a165a322fb07e5c79e",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r13/v.dxf",
+        "sha256": "86531656820742506d5964333c3a82d4554e649174ee67877b3f876f252aa0a1",
+        "git_blob_sha": "3a80ba81345eb82c93b1df504bce61d68516101b",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r14/Leader.dxf",
+        "sha256": "dc9e77c88cfe0b6b234e4eb051419b1d1b33bc105771048e9163ce562d3aed87",
+        "git_blob_sha": "9a4f379e732e4a78d49e737e51eb3405ad40fbfe",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r2.10/block.dxf",
+        "sha256": "4079edb4685427148aa4572af51e756a3550b3b677b9b8541396424edfb3109e",
+        "git_blob_sha": "88a45e8fc392a9e314959da0ff247b64266078d8",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r2.10/entities.dxf",
+        "sha256": "df3755ce1ab559e28f6ec005b6fd868970f879e365604ec2e960118e725ba218",
+        "git_blob_sha": "458ecb6daff069e0bad5b80e1799925e62cc217f",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r2.6/dim.dxf",
+        "sha256": "0eca2a49dec7fcf7c0c6fb8e847e8d023ea08979b15640541e37754bab28fd33",
+        "git_blob_sha": "aab57975a07c42562f4863107564f261a5ec098e",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r2.6/entities.dxf",
+        "sha256": "d626dc92f34012d60fdbcad940b37d8a59297b7d94db0741f9cca20946d7be70",
+        "git_blob_sha": "70d5eb7f80d5a8e496104560fac752cd868cff6b",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/r9/entities.dxf",
+        "sha256": "b37fb624d442182e49698bff40bafdfe44040a51af0307d3a5d7e5d66d24d6ba",
+        "git_blob_sha": "5236b8f248a0a043d6d33ac66871fc3166520280",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_2000.dxf",
+        "sha256": "4b81b4de8331c808495b1ea42754986207a4e16256750d334dd54f96b9762feb",
+        "git_blob_sha": "b4646a16b0cd315bff3988188498472757fb7f9a",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_2004.dxf",
+        "sha256": "544b707b9c2b1d1f14a72579e7f614846af1d3f855d518c188c19bbe25417dac",
+        "git_blob_sha": "c646a65458311f4ad7f0e959243ed0433ed3e06c",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_2007.dxf",
+        "sha256": "b29e7767e1f0bf0e8a985bbb7c3b03bb85e907322b894b0171a9364c2a21d5f6",
+        "git_blob_sha": "569ab68826f5201158e1b7cf0a0654f16d767cbb",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_2010.dxf",
+        "sha256": "fff9fd8a65cc62d72e3b16ce58797f6d8fa113fe49bd2b6293f1d2aac293fc4a",
+        "git_blob_sha": "3d20839cc59a63d7d8d01cc6d152224029213d1e",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_2013.dxf",
+        "sha256": "99a27a2891d183b794960ecb44478851bc8eabfe0681d51bb76684b90f5f8d9d",
+        "git_blob_sha": "cbd3fc737503fb5b425905d87f24c6a299237f20",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_2018.dxf",
+        "sha256": "9618b5cef57867bee4c5b23898e653f0c5f2ba04c0ec729eb3dec73bb7175410",
+        "git_blob_sha": "bd077e01222e1ab1a80b009f8739e259d814c4eb",
+        "ucs_records": 0
+      },
+      {
+        "path": "test/test-data/sample_r14.dxf",
+        "sha256": "5a735ce3f83328e8571a5d2007da4933310ade5d20acc23d01dd35d3c93533e8",
+        "git_blob_sha": "018abeff41c25f29c082b5af1328a291a51b06ed",
+        "ucs_records": 0
+      }
+    ]
+  },
+  "producer_outputs": 12,
+  "native_positive_packets": 0,
+  "native_cad_execution": false
+}

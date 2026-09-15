@@ -2688,6 +2688,8 @@ namespace netDxf.IO
             Debug.Assert(this.chunk.ReadString() == SubclassMarker.Ucs);
 
             string name = string.Empty;
+            short orthographicViewType = 0; string baseUcsHandle = null;
+            var baseContext = new UcsBaseContext();
             Vector3 origin = Vector3.Zero;
             Vector3 xDir = Vector3.UnitX;
             Vector3 yDir = Vector3.UnitY;
@@ -2704,6 +2706,7 @@ namespace netDxf.IO
 
             while (this.chunk.Code != 0)
             {
+                baseContext.Observe(this.chunk.Code, this.chunk.Value);
                 switch (this.chunk.Code)
                 {
                     case 2:
@@ -2750,7 +2753,19 @@ namespace netDxf.IO
                         if (!relationshipCodes.Add(70)) throw new InvalidDataException("Duplicate UCS flags.");
                         flags = (UcsFlags)this.chunk.ReadShort(); this.chunk.Next(); break;
                     case 79:
-                        if (!relationshipCodes.Add(79) || this.chunk.ReadShort() != 0) throw new InvalidDataException("UCS table group 79 is reserved and must be zero.");
+                        if (baseContext.IsPublic)
+                        {
+                            if (!relationshipCodes.Add(79)) throw new InvalidDataException("Duplicate UCS orthographic view type.");
+                            orthographicViewType = this.chunk.ReadShort();
+                            if (orthographicViewType < 0 || orthographicViewType > 6) throw new InvalidDataException("Unsupported UCS orthographic view type outside 0 through 6.");
+                        }
+                        this.chunk.Next(); break;
+                    case 346:
+                        if (baseContext.IsPublic)
+                        {
+                            if (baseUcsHandle != null) throw new InvalidDataException("Duplicate UCS base-reference group 346.");
+                            baseUcsHandle = this.chunk.ReadHex();
+                        }
                         this.chunk.Next(); break;
                     case 71:
                         CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
@@ -2796,13 +2811,15 @@ namespace netDxf.IO
 
             CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
 
-            Debug.Assert(TableObject.IsValidName(name), "Table object name is not valid.");
+
             if (!TableObject.IsValidName(name))
             {
+                if (orthographicViewType != 0 || baseUcsHandle != null) throw new InvalidDataException("A UCS base relationship requires a retained, valid UCS name.");
                 return null;
             }
 
             UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation, Flags = flags };
+            this.CompleteUcsBase(ucs, orthographicViewType, baseUcsHandle);
             foreach (KeyValuePair<UcsOrthographicType, Vector3> pair in orthographicOrigins)
             {
                 ucs.SetOrthographicOrigin(pair.Key, pair.Value);
@@ -4482,6 +4499,8 @@ namespace netDxf.IO
         {
             int subdivisionLevel = 0;
             bool blendCrease = false;
+            bool creaseListRead = false, publicSubclass = true, xdataStarted = false;
+            int privateDepth = 0;
             List<Vector3> vertexes = null;
             List<int[]> faces = null;
             List<MeshEdge> edges = null;
@@ -4489,8 +4508,36 @@ namespace netDxf.IO
 
             while (this.chunk.Code != 0)
             {
+                // The public override declaration follows the counted crease list.
+                // Private packets and XData must not reuse its codes as mesh fields.
+                if (this.chunk.Code == 102)
+                {
+                    string control = this.chunk.ReadString();
+                    if (control.StartsWith("{", StringComparison.Ordinal)) privateDepth++;
+                    else if (control == "}" && privateDepth > 0) privateDepth--;
+                    this.ReadNextMeshTag();
+                    continue;
+                }
+                if (privateDepth > 0) { this.ReadNextMeshTag(); continue; }
+                if (this.chunk.Code == 100)
+                {
+                    publicSubclass = this.chunk.ReadString() == SubclassMarker.Mesh;
+                    this.ReadNextMeshTag();
+                    continue;
+                }
+                if (this.chunk.Code == 1001) xdataStarted = true;
+                else if (!publicSubclass || xdataStarted) { this.ReadNextMeshTag(); continue; }
                 switch (this.chunk.Code)
                 {
+                    case 90:
+                        if (creaseListRead || (faces != null && edges == null))
+                        {
+                            int overrides = this.chunk.ReadInt();
+                            if (overrides < 0) throw this.MeshReadError(90, "The subentity override count cannot be negative.");
+                            if (overrides != 0) throw this.MeshReadError(90, "Subentity property overrides are not supported.");
+                        }
+                        this.ReadNextMeshTag();
+                        break;
                     case 72:
                         short blend = this.chunk.ReadShort();
                         if (blend != 0 && blend != 1)
@@ -4525,6 +4572,7 @@ namespace netDxf.IO
                         if (numCrease < 0 || edges == null || numCrease != edges.Count)
                             throw this.MeshReadError(95, "The crease count must match an existing edge list.");
                         this.ReadMeshEdgeCreases(edges);
+                        creaseListRead = true;
                         break;
                     case 1001:
                         string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());

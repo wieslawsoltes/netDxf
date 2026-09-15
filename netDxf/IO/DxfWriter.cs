@@ -1740,8 +1740,9 @@ namespace netDxf.IO
             this.chunk.Write(22, ucs.YAxis.Y);
             this.chunk.Write(32, ucs.YAxis.Z);
 
-            this.chunk.Write(79, (short) 0);
+            this.chunk.Write(79, ucs.OrthographicViewType);
             this.chunk.Write(146, ucs.Elevation);
+            if (ucs.BaseUcsHandlePresent) this.chunk.Write(346, ucs.BaseUcs?.Handle ?? "0");
 
             // Canonical order is independent of insertion order and Dictionary implementation.
             for (short value = 1; value <= 6; value++)

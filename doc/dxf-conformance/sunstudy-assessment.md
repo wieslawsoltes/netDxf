@@ -1,0 +1,20 @@
+# SUNSTUDY evidence assessment
+
+SUNSTUDY remains an open typed-object gap. A primary DXF schema exists, but this assessment found no positive producer packet in the checked corpora. No production model, profile threshold, authoring API or evaluation behavior is introduced. Existing opaque preservation remains the appropriate boundary until an actual stored instance and its dependency graph are available.
+
+The [Autodesk SUNSTUDY reference](https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-1C7C073F-4CFD-4939-97D9-7AB0C1E163A3.htm) identifies `AcDbSunStudy`, descriptive strings, output settings, selected dates and viewport arrangement. The schema reuses group 90 for version and date/time pairs, and group 290 for subset selection and repeated hour data. It lists four pointers, groups 340–343, for page setup, view, visual style and text style. These descriptions support a future stored-packet proposal; they do not establish concrete output-type enum values, a minimum accepted profile, precise target classes or scheduling/solar evaluation.
+
+| Corpus | Candidate files | Parsed | SUNSTUDY objects | CLASS declarations | Dictionary mentions |
+|---|---:|---:|---:|---:|---:|
+| Repository fixtures at `54e3132` | 219 | 219 | 0 | 0 | 0 |
+| LibreDWG at `34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43` | 67 | 66 | 0 | 0 | 0 |
+
+The repository collection includes both synthetic and producer-derived drawings. The two corpora overlap, so these file counts are not a count of independent producers. All 67 LibreDWG files match their pinned Git blob identities. Its early R1.4 `entities.dxf` begins with a legacy `EXTENTS` representation and remains an explicit parser failure; it is not included in the zero-object count for parsed documents.
+
+`tools/assess_sunstudy.py` reads raw text, binary and gzip-wrapped DXF. It distinguishes actual records in OBJECTS from class names, dictionary mentions, ordinary payload strings and the separately implemented SUN object. Six synthetic scanner controls exercise LF text, CRLF text and binary, both with and without an actual SUNSTUDY record. These controls validate inventory mechanics and provide no interoperability evidence. The complete per-file hashes, profiles, counts and retained failure are recorded in [sunstudy-corpus-assessment.json](evidence/sunstudy-corpus-assessment.json).
+
+Other implementations expose useful storage hypotheses but do not supply a native instance here. The pinned [LibreDWG SUNSTUDY unit probe](https://github.com/LibreDWG/libredwg/blob/34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43/test/unit-testing/sunstudy.c) checks corresponding members only under `DEBUG_CLASSES`. The pinned [IxMilia reader](https://github.com/ixmilia/dxf/blob/3ab0f9d6d3f14a6f6fa924e111e8e3af1065c567/src/IxMilia.Dxf/Objects/DxfSunStudy.cs) treats subsequent group-90 values as date/time pairs; its [generator specification](https://github.com/ixmilia/dxf/blob/3ab0f9d6d3f14a6f6fa924e111e8e3af1065c567/src/IxMilia.Dxf.Generator/Specs/ObjectsSpec.xml) declares R2013 as a minimum. These are implementation decisions, not a verified producer-profile boundary. [ezdxf 1.4.4](https://github.com/mozman/ezdxf/blob/v1.4.4/src/ezdxf/entities/sun.py) leaves SUNSTUDY as an incomplete subclass declaration rather than a registered object implementation, so it cannot serve as the required producer round-trip oracle.
+
+The next concrete prerequisite is a hash-pinned drawing containing an actual SUNSTUDY object, its owner dictionary, and its referenced page setup/view/style resources. A proposed initial API should retain raw date/time numbers, ordered repeated fields and exact source identities without executing a study. Complete source extraction, scoped carriers and any whole-file import result must remain separate qualification claims.
+
+Reproduce the repository scan with `python tools/assess_sunstudy.py tests/fixtures --output repository-sunstudy.json`. For the pinned flattened LibreDWG directory, pass its path and `--libredwg-tree` pointing to the complete pinned Git tree inventory. A corpus parse failure produces a report and a nonzero exit code.
