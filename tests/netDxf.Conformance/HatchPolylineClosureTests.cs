@@ -104,15 +104,9 @@ internal static partial class Program
         var clonedInsert = (Insert)insert.Clone();
         CheckClosure(ClosureEdge(clonedInsert.Block.Entities.OfType<Hatch>().Single()), closed);
         var exploded = insert.Explode().OfType<Hatch>().Single();
-        if (closed) CheckClosure(ClosureEdge(exploded), true);
-        else
-        {
-            // Existing TransformBy intentionally expands open polylines to edge segments.
-            var edges = exploded.BoundaryPaths.Single().Edges;
-            Equal(3, edges.Count, "Open exploded path acquired a closing segment");
-            Check(edges.All(e => e is HatchBoundaryPath.Line), "Open polyline transformation changed straight edges.");
-            Equal(new Vector2(0, 10), ((HatchBoundaryPath.Line)edges[^1]).End, "Open path endpoint");
-        }
+        // A similarity preserves the stored open/closed polyline representation.
+        CheckClosure(ClosureEdge(exploded), closed);
+        if (!closed) Equal(new Vector3(0, 10, 0), ClosureEdge(exploded).Vertexes[^1], "Open path endpoint");
         var doc = new DxfDocument(version); doc.Entities.Add((Hatch)original.Clone());
         using var output = new MemoryStream(); Check(doc.Save(output, binary), "Authored closure save failed.");
         output.Position = 0;

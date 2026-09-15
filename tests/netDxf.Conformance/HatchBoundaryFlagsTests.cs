@@ -95,20 +95,21 @@ internal static partial class Program
 
     private static void HatchFlagsOpenPolyline(DxfVersion version, bool binary)
     {
-        // TransformBy converts an open polyline to individual edges: only bit 2 must change.
+        // A similarity can retain an open polyline and all its stored path flags.
         var original = ReadFlagsHatch(version, binary, 26, false);
         Equal((HatchBoundaryPathTypeFlags)26, original.BoundaryPaths.Single().PathType, "Open input flags");
         var copy = (Hatch)original.Clone();
         copy.TransformBy(Matrix3.Identity, new Vector3(1, 2, 0));
         var path = copy.BoundaryPaths.Single();
-        Equal((HatchBoundaryPathTypeFlags)24, path.PathType, "Representation change altered classification bits");
-        Equal(3, path.Edges.Count, "Open transformed boundary acquired a closing edge");
-        Check(path.Edges.All(e => e is HatchBoundaryPath.Line), "Open boundary was not converted to line edges.");
+        Equal((HatchBoundaryPathTypeFlags)26, path.PathType, "Similarity altered stored classification bits");
+        var polyline = (HatchBoundaryPath.Polyline)path.Edges.Single();
+        Equal(4, polyline.Vertexes.Length, "Open transformed vertex count");
+        Check(!polyline.IsClosed, "Open transformed boundary acquired a closing segment.");
         var doc = new DxfDocument(version); doc.Entities.Add(copy);
         using var output = new MemoryStream(); Check(doc.Save(output, !binary), "Transformed edge-path save failed.");
         output.Position = 0;
         var loaded = DxfDocument.Load(output) ?? throw new InvalidOperationException("Transformed edge-path reload failed.");
-        Equal((HatchBoundaryPathTypeFlags)24, loaded.Entities.Hatches.Single().BoundaryPaths.Single().PathType, "Transformed flags lost on reload");
+        Equal((HatchBoundaryPathTypeFlags)26, loaded.Entities.Hatches.Single().BoundaryPaths.Single().PathType, "Transformed flags lost on reload");
         Equal((HatchBoundaryPathTypeFlags)26, original.BoundaryPaths.Single().PathType, "Transform changed source flags");
     }
 

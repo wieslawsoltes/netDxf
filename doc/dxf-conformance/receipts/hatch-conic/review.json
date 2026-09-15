@@ -1,0 +1,22 @@
+{
+  "review": "Independent final HATCH conic output geometry replay",
+  "source_commit": "5166bcdf7ad8d1c728f30122570b5fd82ad2f0d1",
+  "generating_library_sha256": "980cfd79e6737439a32568bc1da0814be7444d19952daa745ebcbccec0396e15",
+  "generation_provenance": "Owner final Debug conformance outputs; root independently parses the resulting files and computes expected world geometry from the pinned original producer fixtures. This review does not re-execute the library.",
+  "parser": "ezdxf 1.4.4",
+  "numeric_library": "numpy 2.3.5",
+  "harness": "review.py",
+  "harness_sha256": "84f9e33ff9e998189d28dc1ea6def7b74280f97057a01720cba9108c8db1f2d8",
+  "result": "final-result.json",
+  "result_sha256": "6821987bde97309095847444e2c1002d1db92dcaea4905eca9f22ae3e63a0b41",
+  "fixture_manifest_sha256": "53181a352f9766e459edaaef941f8e9e441d6b06786db51453705bebdf753092",
+  "outputs": 168,
+  "segments": 6216,
+  "sampled_world_points": 254856,
+  "maximum_world_error": 1.3191085866178993e-09,
+  "relative_error_contract": "Each sample error <= 2e-10 * max(1, expected magnitude, actual magnitude).",
+  "audit_errors": 0,
+  "audit_repairs": 0,
+  "scope": "Ordered endpoints and intermediate samples of actual conic/line segments across both transports, six profiles, seven affine maps and two source planes. Uses independent construction primitives and OCS; full/zero turns remain distinct. No native CAD qualification or mathematical exactness beyond the stated numeric contract.",
+  "prior_candidate_result": "provisional-result.json is superseded by this final-source replay; sample counts are not additive."
+}

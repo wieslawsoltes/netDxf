@@ -1,0 +1,79 @@
+{
+  "outputs": 12,
+  "errors": 0,
+  "repairs": 0,
+  "results": [
+    {
+      "file": "AutoCad2013-SECTIONMANAGER-False.dxf",
+      "sha256": "cb8411a2e90863177d041048f7eff3a654ef8b2038489e98a0d50d708cdb78fc",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2013-SECTIONMANAGER-True.dxf",
+      "sha256": "d79951ff1a8ea4946cdaa53dcda228d673c23b851888204633c32e27140a77c1",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2013-SECTION_MANAGER-False.dxf",
+      "sha256": "b1c2a442bb82b5dcfdac5111908325fdb190a414cce97c797f1a968e920f6d8d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2013-SECTION_MANAGER-True.dxf",
+      "sha256": "bc529856bae0347ce2dda3a7a98cc02c34e50fdbb60e0542aa3621ea465c70b6",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-SECTIONMANAGER-False.dxf",
+      "sha256": "76a3844fc45064f0a8aead145fa5a49f8f440a91110bf444434b96332bc860a0",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-SECTIONMANAGER-True.dxf",
+      "sha256": "1e9ff6ec719024244a5eef5bf47ddeacdbce4afa58ff1b8a5bd69342c62fefc9",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-SECTION_MANAGER-False.dxf",
+      "sha256": "4a7fca2c5ff4d94a4391e075651cac34f9bb488558e3a5c0c4661b77d4ccc872",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "AutoCad2018-SECTION_MANAGER-True.dxf",
+      "sha256": "1d7bb5ced926e44462e9da4eb78782428feae836a6779d04e3296054163602e5",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-False-False.dxf",
+      "sha256": "bb0a5552bcdcf25371222b1269e51dbe079831405d8365b34f70b3ccecc78f86",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-False-True.dxf",
+      "sha256": "6c5b4164c6ab713d9846844ca8b713991ae61462c699863768fd86f1113a1044",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-True-False.dxf",
+      "sha256": "bb0a5552bcdcf25371222b1269e51dbe079831405d8365b34f70b3ccecc78f86",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "native-True-True.dxf",
+      "sha256": "6c5b4164c6ab713d9846844ca8b713991ae61462c699863768fd86f1113a1044",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

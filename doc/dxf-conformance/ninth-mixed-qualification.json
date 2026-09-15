@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "module": "Ninth mixed native map / SECTION / retained PolygonMesh graph",
+  "qualified_source_commit": "5856634920ce54d43d6d4571eafcae27f448ec2d",
+  "qualified_source_tree": "204b1cffdd3c7ddb13488bec5cf1e8a61698ecba",
+  "mixed_test_commit": "023959034fa0da87b10c2ae152b87c1e2904c92c",
+  "gate_identity_review_fix_commit": "5856634920ce54d43d6d4571eafcae27f448ec2d",
+  "csharp_build_revision": "f53eff25d1496daf310a31e6512c63033b4b91db",
+  "revision_note": "The later gate-only/doc commit does not change C# source; assemblies retain the prior build revision in AssemblyInformationalVersion.",
+  "sdk": "8.0.408",
+  "qualified_library_target": "net8.0",
+  "independent_reader": "ezdxf 1.4.4",
+  "profiles": [
+    "AC1027",
+    "AC1032"
+  ],
+  "transports": [
+    "ASCII",
+    "binary"
+  ],
+  "source_sha256": {
+    "netDxf/DxfDocument.MetadataReferences.cs": "eea9093bccd57c133008481936ab588b5dfcc065f4f85b32c9bc8aa9e2497b2e",
+    "netDxf/DxfDocument.MultiLeader.cs": "b4f64a8a74e2d619377da6295264d43c3a73723426cf449b79858a8f7b229b2e",
+    "netDxf/DxfDocument.PolygonMeshRecords.cs": "752523dffea417be7541b50047ad392cb65771ffa5f4f4793c9940168cc08eb4",
+    "netDxf/DxfDocument.PolylineRecords.cs": "1765c2279d8520923976609bb90b27ea6b34f2ef5e9a84f267a82048be1754a1",
+    "netDxf/DxfDocument.PolylineTopology.cs": "3566d98fb5c1aa41f7c6a0030e65475030e833c1e3e1040217700eabc1366aaa",
+    "netDxf/DxfDocument.StoredTable.cs": "d578c1a8311cafe335bc652673bc6e96dfa48c2a10eb9d7ce115942b4d0a2cc6",
+    "netDxf/DxfDocument.VersionCompatibility.cs": "c1994c880e00d3b997d5f25f7687f0e1a11aa84c438293fa72033b82a3273ee2",
+    "netDxf/DxfDocument.cs": "fd162baa5fd4faf2ab32e935f82dfe3c7f97fbb6a765f09f06838db2790994e7",
+    "netDxf/DxfVersionCompatibilityReport.cs": "0683bc03cf6dc004903d87410fb2916bc83a3cf395ebf49b4e3f28cf51a04785",
+    "netDxf/Entities/PolygonMesh.StoredRecords.cs": "b9dbfeff0badc26331f9bb333b0212cafb5d468f5f76c5800ebceaf176d57fc2",
+    "netDxf/Entities/PolygonMesh.cs": "0128c5012ae66e8d2bab707c7f752cfdda67f17221234afa7503b18832e0633c",
+    "netDxf/Entities/PolygonMeshRecord.cs": "53c5365783e5ff4cfbfb1fcf4a533d34682f284ffbcab382c2ded0d6f97650d7",
+    "netDxf/Entities/Polyline.cs": "5c9babf4b8d33647c2f3a3773facf016c8c08270b823100b0371be2cc9ccfdc6",
+    "netDxf/Entities/Polyline3D.StoredRecords.cs": "98f734180ff583ed9b373208557c26eaebb637f2f909886dfef4c9004a22add1",
+    "netDxf/IO/DxfReader.Objects.cs": "3f589b95e1a600e2d5e83cafb0a92b5ab3893feefe2dd050d4384a5d38d41059",
+    "netDxf/IO/DxfReader.PolygonMeshRecords.cs": "81662bfa97c67926a7b9d956d702088e34fc8f2111ebc33d2990f91dd9b544b7",
+    "netDxf/IO/DxfReader.StoredCellStyleMap.cs": "c0c32fd0120b672ff3535a89371cba6048facc768c3696963e0085be08947a52",
+    "netDxf/IO/DxfReader.cs": "8259b100f81964f60024ed9f4a2373c7a0f5e12beda697fea51a9fcc66f782c1",
+    "netDxf/IO/DxfWriter.Objects.cs": "78389c74d74cc3e999c7803152316934214430ec36d0c1548498188e74cc15e6",
+    "netDxf/IO/DxfWriter.PolygonMeshRecords.cs": "987ba707ce3e19011c81ec24f2b551bbfea433663eb8a5a47c2b33785ed2918d",
+    "netDxf/IO/DxfWriter.StoredCellStyleMap.cs": "2ecd20311b4023263f04f5e18bc7070bfe6a049994588716f8cbc71a9830c3c8",
+    "netDxf/IO/DxfWriter.cs": "5b1dc304333ac9e2754c5f61ec2e0e7567d4d1a9b7a04b21f2d6924f669ddf68",
+    "netDxf/Objects/DxfObjectDatabase.Erase.cs": "7d215545e585e97c74b944e59af1b679b3bfb93023259c220afc93d25eb059d7",
+    "netDxf/Objects/DxfObjectDatabase.Section.cs": "055a6285e4ad41bc4409b67c661104ece7b1c19fb7d443ddf4b18b37100d6956",
+    "netDxf/Objects/DxfStoredCellStyleMap.cs": "23511b45ca4541a104606937f74542fc731d122e444976e50f8b364a27c4ad0f",
+    "netDxf/Objects/DxfStoredSectionManager.cs": "30c382d4ac8fb4357b4293613278cb9d93970448c3ad0ea75ae4dc07fc8b48c7",
+    "netDxf/Objects/DxfTableStyle.cs": "b7b4026996df2551d98f1caa2f8b2c6175a115fc80e79f4a0104328ee245529f",
+    "tests/netDxf.Conformance/Program.cs": "3edf3957c577b3bb90bf35b53726b415d3fe8834229120d0d8cd39570460f9a6",
+    "tests/netDxf.Conformance/NinthMixedModuleTests.cs": "f80d837e83579375d3cc18490a0a92e64689e4ce8fa0c8f7fbed077d8751e452",
+    "tools/verify_ninth_mixed.py": "dcd5f53f94474d3efe6c7653cd7edd4d460845d93694193bd82ec4844d3f2cad"
+  },
+  "native_sources": [
+    {
+      "file": "acad_table_simple.dxf",
+      "source_sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "profile": "AC1027",
+      "scope": "whole unchanged original",
+      "fixture": "../table-oracle/acad_table_simple.dxf.gz"
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "source_sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "profile": "AC1032",
+      "scope": "whole unchanged original",
+      "fixture": "../table-oracle/acad_table_with_blk_ref.dxf.gz"
+    }
+  ],
+  "native_style_normalization": {
+    "source_public_codes": [
+      2,
+      70,
+      40,
+      41,
+      50,
+      71,
+      42,
+      3,
+      4
+    ],
+    "output_public_codes": [
+      2,
+      3,
+      70,
+      71,
+      40,
+      41,
+      42,
+      50
+    ],
+    "omission": "Only original empty group 4",
+    "values_and_trailing_acad_xdata": "exact"
+  },
+  "configurations": {
+    "Debug": {
+      "passed": 8,
+      "failed": 0,
+      "library_sha256": "768b183dfb37097d37a63642e5ae9584baa9522beb5426305ae1993724648be4",
+      "conformance_sha256": "c43b2e40722a7f54045c9cd1980fbf95bbe5356ffc4b60564e1842dc0950b91d",
+      "build_log_sha256": "f6406fa80a9b8d816b8a70dde6ce3ba3ff8f4aa89af0bcf5fd80d3753449313b",
+      "normal_cs1591_warning_count": 561,
+      "results_sha256": "0e2c16ce36e5dc26f5364b06b0094f65ebb1a22865ab6e48ffb2d058ec0b22fa",
+      "test_log_sha256": "56ada084c691ded566fdf20e53055a22369e074c58e79b7d23df481e80f96161",
+      "independent_gate": {
+        "actual_output_corruptions_rejected": 300,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "native_cad_execution": false,
+        "native_linetype_packet_comparisons": 16,
+        "native_map_packet_comparisons": 16,
+        "native_style_comparisons_with_declared_normalization": 16,
+        "outputs": 16,
+        "section_evaluation": false,
+        "section_source_links": "explicitly authored generic pointer storage"
+      },
+      "independent_gate_sha256": "9f6603f9fcee5d3183e296d7c49ef521cecec7989b7756e0da70974c1d464352",
+      "output_sha256": {
+        "ninth-mixed-acad_table_simple.dxf-False-edited.dxf": "26c7c213506261d9b6628b607447966ca065638b7541923784d871bc673427b9",
+        "ninth-mixed-acad_table_simple.dxf-False-input.dxf": "e2de29681f26727db2325879edf5e70f1ec8612206874ed8f3270a918bd35709",
+        "ninth-mixed-acad_table_simple.dxf-False-released.dxf": "a8bb18070958db75babd01f144f853d75415e9f40bbc81c30108d8c9ea036cbb",
+        "ninth-mixed-acad_table_simple.dxf-False-retry.dxf": "e2de29681f26727db2325879edf5e70f1ec8612206874ed8f3270a918bd35709",
+        "ninth-mixed-acad_table_simple.dxf-True-edited.dxf": "865e0086957993e233ec2e8f5de385a314d9766b72bb6e677bfd97dc6f75b53f",
+        "ninth-mixed-acad_table_simple.dxf-True-input.dxf": "7512d71a8ffe02b8e1903d4345bba251298ff8130245f5126cfacd3cdde87960",
+        "ninth-mixed-acad_table_simple.dxf-True-released.dxf": "49e05e793f0cdc029dadae0b0edcdd1fe3b8ecafb882f60e2db9364c718d578c",
+        "ninth-mixed-acad_table_simple.dxf-True-retry.dxf": "7512d71a8ffe02b8e1903d4345bba251298ff8130245f5126cfacd3cdde87960",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-edited.dxf": "4c870075fab0b6af5409715e1767b5f8a217d9ea30e7deba0e6861e0f3d47705",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-input.dxf": "9252de9ab2f1831c3fc27941e32f84712a849feafa6063539615853a71d47ddf",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-released.dxf": "0a6fde043a6debe71d6e709f58d992212d87eed457271900fa0dd5ebadab1fa1",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-retry.dxf": "9252de9ab2f1831c3fc27941e32f84712a849feafa6063539615853a71d47ddf",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-edited.dxf": "f7d75211093c3d539b3ef419f1e37fcc3110bfed0d8804812f88ae1ce4039693",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-input.dxf": "6935cff93c9ff7c01c53fa8344103b4fe6406db8bcac71103fdd64d17b42088e",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-released.dxf": "b5434d476c99557d3511fd6777b69c666e0977b58084476a3ff35b2928215cbe",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-retry.dxf": "6935cff93c9ff7c01c53fa8344103b4fe6406db8bcac71103fdd64d17b42088e"
+      }
+    },
+    "Release": {
+      "passed": 8,
+      "failed": 0,
+      "library_sha256": "4a001d1c73cfe464b10a086968715e5d2c38acf7779a3c59384e36ae771589d8",
+      "conformance_sha256": "69bca3e0b603036abd33f30ceec2f8d226977af9b44029c9653d810ecce13971",
+      "build_log_sha256": "f237cc1587d0a1b035c5c33f11108584083a1e2122cf14b9a263bf2520274973",
+      "normal_cs1591_warning_count": 561,
+      "results_sha256": "0e2c16ce36e5dc26f5364b06b0094f65ebb1a22865ab6e48ffb2d058ec0b22fa",
+      "test_log_sha256": "56ada084c691ded566fdf20e53055a22369e074c58e79b7d23df481e80f96161",
+      "independent_gate": {
+        "actual_output_corruptions_rejected": 300,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "native_cad_execution": false,
+        "native_linetype_packet_comparisons": 16,
+        "native_map_packet_comparisons": 16,
+        "native_style_comparisons_with_declared_normalization": 16,
+        "outputs": 16,
+        "section_evaluation": false,
+        "section_source_links": "explicitly authored generic pointer storage"
+      },
+      "independent_gate_sha256": "9f6603f9fcee5d3183e296d7c49ef521cecec7989b7756e0da70974c1d464352",
+      "output_sha256": {
+        "ninth-mixed-acad_table_simple.dxf-False-edited.dxf": "26c7c213506261d9b6628b607447966ca065638b7541923784d871bc673427b9",
+        "ninth-mixed-acad_table_simple.dxf-False-input.dxf": "e2de29681f26727db2325879edf5e70f1ec8612206874ed8f3270a918bd35709",
+        "ninth-mixed-acad_table_simple.dxf-False-released.dxf": "a8bb18070958db75babd01f144f853d75415e9f40bbc81c30108d8c9ea036cbb",
+        "ninth-mixed-acad_table_simple.dxf-False-retry.dxf": "e2de29681f26727db2325879edf5e70f1ec8612206874ed8f3270a918bd35709",
+        "ninth-mixed-acad_table_simple.dxf-True-edited.dxf": "865e0086957993e233ec2e8f5de385a314d9766b72bb6e677bfd97dc6f75b53f",
+        "ninth-mixed-acad_table_simple.dxf-True-input.dxf": "7512d71a8ffe02b8e1903d4345bba251298ff8130245f5126cfacd3cdde87960",
+        "ninth-mixed-acad_table_simple.dxf-True-released.dxf": "49e05e793f0cdc029dadae0b0edcdd1fe3b8ecafb882f60e2db9364c718d578c",
+        "ninth-mixed-acad_table_simple.dxf-True-retry.dxf": "7512d71a8ffe02b8e1903d4345bba251298ff8130245f5126cfacd3cdde87960",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-edited.dxf": "4c870075fab0b6af5409715e1767b5f8a217d9ea30e7deba0e6861e0f3d47705",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-input.dxf": "9252de9ab2f1831c3fc27941e32f84712a849feafa6063539615853a71d47ddf",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-released.dxf": "0a6fde043a6debe71d6e709f58d992212d87eed457271900fa0dd5ebadab1fa1",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-False-retry.dxf": "9252de9ab2f1831c3fc27941e32f84712a849feafa6063539615853a71d47ddf",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-edited.dxf": "f7d75211093c3d539b3ef419f1e37fcc3110bfed0d8804812f88ae1ce4039693",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-input.dxf": "6935cff93c9ff7c01c53fa8344103b4fe6406db8bcac71103fdd64d17b42088e",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-released.dxf": "b5434d476c99557d3511fd6777b69c666e0977b58084476a3ff35b2928215cbe",
+        "ninth-mixed-acad_table_with_blk_ref.dxf-True-retry.dxf": "6935cff93c9ff7c01c53fa8344103b4fe6406db8bcac71103fdd64d17b42088e"
+      }
+    }
+  },
+  "independent_review_changes": [
+    "Require input manager, surviving SECTION and owned settings identities and complete common prefixes.",
+    "Require removed mesh/child identities absent and reject any replacement NINTH_GRAPH mesh.",
+    "Corruption controls consistently rename all incoming semantic handles for three retained identity classes; replacement mesh control uses entirely fresh identities."
+  ],
+  "limits": [
+    "SECTION/settings/map/mesh links are explicitly authored generic source-pointer storage, with no rendering or generation interpretation.",
+    "No native CAD execution, automatic membership, manager construction or mesh topology editing.",
+    "No complete-drawing byte identity; native STYLE field order and empty group 4 normalization are explicit.",
+    "Known-version diagnostics are snapshots and do not establish complete DXF legality or guarantee Save.",
+    "Only this 8-case mixed scope and its 16-output independent gate are qualified here on net8.0 Debug/Release; root integration owns the full suite and all targets."
+  ]
+}

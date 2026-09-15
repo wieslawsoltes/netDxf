@@ -74,8 +74,9 @@ internal static partial class Program
         return DxfRawDocument.Load(output);
     }
     private static DxfRawRecord TableStyleRaw(DxfRawDocument doc, string name = "TABLESTYLE") => doc.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == name);
-    // Keep the four native object records intact. External entity reactors use explicit
-    // placeholders; complete drawings are qualified separately by the full-native cases.
+    // Keep native object and formatting resource records intact. The source STYLE/LTYPE
+    // common owners are mapped to their carrier tables. External entity reactors use
+    // explicit placeholders; complete drawings are qualified separately.
     private static DxfRawDocument TableStyleNativeCarrier(DxfRawDocument source)
     {
         var native = TableStyleRaw(source); var map = TableStyleRaw(source, "CELLSTYLEMAP");
@@ -88,15 +89,25 @@ internal static partial class Program
         var external = nativeRecords.SelectMany(r => r.Tags.TakeWhile(t => t.Code != 100)).Where(t => t.Code == 330)
             .Select(t => (string)t.Value).Where(h => h != "0" && !identities.Contains(h)).Distinct().ToArray();
         var seed = new DxfDocument(source.Version); seed.Comments.Clear(); string root = seed.Objects.Root.Handle, standard = seed.TextStyles["Standard"].Handle;
+        var sourceLinetypes = map.Tags.Where(t => t.Code == 340 && Convert.ToUInt64((string)t.Value, 16) != 0)
+            .Select(t => SourceReferenceRecord(source, (string)t.Value)).Where(r => r.Name == "LTYPE").Distinct().ToArray();
+        var linetypeHandles = sourceLinetypes.ToDictionary(r => seed.Linetypes[(string)r.Tags.Single(t => t.Code == 2).Value].Handle,
+            r => (string)r.Tags.Single(t => t.Code == 5).Value, StringComparer.OrdinalIgnoreCase);
         using var bytes = new MemoryStream(); Check(seed.Save(bytes), "native TABLESTYLE extraction seed"); bytes.Position = 0;
         var raw = DxfRawDocument.Load(bytes);
         var handles = raw.Sections.Where(s => s.Name != "HEADER").SelectMany(s => s.Records).SelectMany(r => r.Tags.TakeWhile(t => t.Code != 100))
             .Where(t => t.Code is 5 or 105).Select(t => (string)t.Value).Distinct().ToDictionary(h => h,
-                h => h == root ? "C" : h == standard ? "11" : (Convert.ToInt64(h, 16) + 0x10000).ToString("X"), StringComparer.OrdinalIgnoreCase);
+                h => h == root ? "C" : h == standard ? "11" : linetypeHandles.TryGetValue(h, out string? nativeHandle) ? nativeHandle : (Convert.ToInt64(h, 16) + 0x10000).ToString("X"), StringComparer.OrdinalIgnoreCase);
         raw = raw.WithTags(raw.Tags.Select(t => t.ValueType == DxfTagValueType.Handle && handles.TryGetValue((string)t.Value, out string? h) ? new DxfTag(t.Code, h) : t));
         var resource = SourceReferenceRecord(raw, "11"); string resourceOwner = (string)resource.Tags.First(t => t.Code == 330).Value;
         var nativeResource = SourceReferenceRecord(source, "11");
         raw = raw.WithRecord(resource, nativeResource.Tags.Select(t => t.Code == 330 ? new DxfTag(330, resourceOwner) : t));
+        foreach (var sourceLinetype in sourceLinetypes)
+        {
+            var carrierLinetype = SourceReferenceRecord(raw, (string)sourceLinetype.Tags.Single(t => t.Code == 5).Value);
+            string tableOwner = (string)carrierLinetype.Tags.First(t => t.Code == 330).Value;
+            raw = raw.WithRecord(carrierLinetype, sourceLinetype.Tags.Select(t => t.Code == 330 ? new DxfTag(330, tableOwner) : t));
+        }
         var rootRecord = SourceReferenceRecord(raw, "C");
         var entries = new List<DxfTag> { new(3, "ACAD_TABLESTYLE"), new(360, ownerHandle) };
         foreach (string handle in external) entries.AddRange(new DxfTag[] { new(3, "NATIVE_EXTERNAL_" + handle), new(360, handle) });
@@ -117,7 +128,7 @@ internal static partial class Program
         if (style.Header != null) Equal(file.StartsWith("acad_table_") ? 1.5 : 0.06, style.Header.HorizontalCellMargin, "native header margin");
         Check(style.Rows.All(r => r.Values != null && ReferenceEquals(r.TextStyle, doc.GetObjectByHandle("11"))), "native exact STYLE identity and row scalars");
         Equal(file.StartsWith("acad_table_") ? 6.0 : 0.25, style.Rows[1].Values!.TextHeight, "native second ordered row height");
-        Check(style.CellStyleMap != null && ReferenceEquals(style.CellStyleMap.Owner, style.ExtensionDictionary), "native opaque map ownership");
+        Check(style.CellStyleMap != null && ReferenceEquals(style.CellStyleMap.Owner, style.ExtensionDictionary), "native stored map ownership");
         Check(ReferenceEquals(style.ExtensionDictionary!["ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP"], style.CellStyleMap), "native map dictionary slot");
         var original = TableStyleRaw(raw); int first = original.Tags.ToList().FindIndex(t => t.Code == 100);
         Check(OwnershipTagValues(original.Tags.Skip(first)).SequenceEqual(OwnershipTagValues(style.Tags)), "complete native style packet loaded");

@@ -1,0 +1,35 @@
+{
+  "module": "SECTION_MANAGER explicit membership replacement",
+  "production_commit": "9fc30e0ec50903a00a19211a6d2226db24336964",
+  "harness_sha256": "1538e78d834a8f04b9ecfb91cdc8f36a54a2b48742da82a7345acdbae607d8af",
+  "configurations": {
+    "debug": {
+      "cases": 44,
+      "failed": 0,
+      "library_sha256": "8481162971886bd085e189e0642d3d21735a54a6e8aff929aae61782e5de6eff",
+      "audit_outputs": 12,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "results_sha256": "9f0541c824680d9fea7cdca0c48044eb40b570c35d43a6d9e48976164f65fb9a",
+      "audit_sha256": "ec0d5a23d1da1105c633d3390fa9aa4ccb72bc32f661a8fb67eb0ac39382cd7c"
+    },
+    "release": {
+      "cases": 44,
+      "failed": 0,
+      "library_sha256": "a38ae13fe858ddbda02fc2b23912438c7d86b4bf90b9a3b57bf5f0db51106808",
+      "audit_outputs": 12,
+      "audit_errors": 0,
+      "audit_repairs": 0,
+      "results_sha256": "f0ffc6332b65a4946df6b0a0e690452128b3f5ca8a7e31e621f7b8087d286d2c",
+      "audit_sha256": "e7e681b8d31bdd2a33352df1560085aca764463827d8b4ad6078fce63f5ff1eb"
+    }
+  },
+  "coverage": [
+    "Both spellings, R2013/R2018, both transports; actual native source across four input/output transport combinations.",
+    "Replacement retains requested order, duplicate identity and independent flag; caller list mutation does not affect committed membership; prior Sections and Tags snapshots remain unchanged.",
+    "Old dependency release and current dependency removal guards follow replacement; empty list releases membership dependencies.",
+    "Iterator MoveNext and Dispose failures are atomic; both uncaught and caller-caught reentry behave correctly and failures release the edit lock.",
+    "Foreign same-handle objects, detached/null/excessive membership and profile/root-anchor violations reject without changing manager packet, membership, flag or handle seed.",
+    "No source production changes requested. Scope is packet and source-identity management; no native live-section regeneration claim."
+  ]
+}

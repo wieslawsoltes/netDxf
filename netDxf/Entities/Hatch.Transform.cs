@@ -9,12 +9,14 @@ namespace netDxf.Entities
         /// <param name="transformation">Linear transformation, using column vectors.</param>
         /// <param name="translation">Translation in world coordinates.</param>
         /// <remarks>
-        /// Line, closed straight-polyline and spline boundaries in solid fills support
+        /// Line, polyline, conic and spline boundaries in solid fills support
         /// finite affine transformations that preserve a two-dimensional plane. Spline
         /// knots, weights, rationality, periodicity and optional fit metadata retain
         /// their stored meanings; this operation does not evaluate or refit a curve.
-        /// Nonuniform or shearing changes to patterns, gradients and curved boundary
-        /// representations are rejected. A successful transform unlinks associative
+        /// Circular boundaries become ellipse edges when required. Conic results whose
+        /// stored angles cannot preserve their endpoints within relative tolerance
+        /// 1e-10 are rejected. Nonuniform or shearing changes to patterns and gradients
+        /// are rejected. A successful transform unlinks associative
         /// sources without transforming or removing those source entities. Validation
         /// completes before unlinking or changing stored state.
         /// </remarks>
@@ -45,18 +47,8 @@ namespace netDxf.Entities
             RequireAffineFinite(xLength); RequireAffineFinite(yLength);
             bool similarity = Math.Abs(Vector3.DotProduct(xUnit, yUnit)) <= 1e-12
                 && Math.Abs(xLength - yLength) <= 1e-12 * Math.Max(xLength, yLength);
-            bool direct = this.HasDirectAffineBoundary();
-            if (!similarity && (!direct || this.Pattern.Fill != HatchFillType.SolidFill || this.Pattern is HatchGradientPattern))
-                throw new NotSupportedException("Nonuniform HATCH transforms require a solid fill with line, straight closed-polyline or spline boundaries.");
-            if (!direct)
-            {
-                // The legacy conic conversion also transforms entity normals. Do not
-                // use it when that direction disagrees with the actual image plane.
-                if (Vector3.CrossProduct(AffineUnit(normalHint), normal).Modulus() > 1e-12)
-                    throw new NotSupportedException("This HATCH boundary representation does not support the requested affine plane change.");
-                this.TransformCurvedBoundary(transformation, translation, normal);
-                return;
-            }
+            if (!similarity && (this.Pattern.Fill != HatchFillType.SolidFill || this.Pattern is HatchGradientPattern))
+                throw new NotSupportedException("Nonuniform HATCH transforms require a solid fill.");
 
             Vector3 position = newOcs * (transformation * (oldOcs * new Vector3(0, 0, this.Elevation)) + translation);
             RequireAffineFinite(position);
@@ -79,20 +71,20 @@ namespace netDxf.Entities
                     {
                         edges.Add(TransformAffineSpline(spline, map));
                     }
+                    else if (edge is HatchBoundaryPath.Arc arc)
+                        edges.Add(TransformAffineArc(arc, map, similarity));
+                    else if (edge is HatchBoundaryPath.Ellipse ellipse)
+                        edges.Add(TransformAffineConic(ellipse.Center, ellipse.EndMajorAxis, ellipse.MinorRatio, ellipse.StartAngle, ellipse.EndAngle, ellipse.IsCounterclockwise, map));
                     else
-                    {
-                        var polyline = (HatchBoundaryPath.Polyline)edge;
-                        var copy = new HatchBoundaryPath.Polyline { IsClosed = polyline.IsClosed, Vertexes = new Vector3[polyline.Vertexes.Length] };
-                        for (int i = 0; i < copy.Vertexes.Length; i++)
-                        {
-                            Vector3 value = polyline.Vertexes[i]; Vector2 point = map(new Vector2(value.X, value.Y), false);
-                            copy.Vertexes[i] = new Vector3(point.X, point.Y, value.Z);
-                        }
-                        edges.Add(copy);
-                    }
+                        TransformAffinePolyline((HatchBoundaryPath.Polyline)edge, map, similarity,
+                            AffineCross(map(Vector2.UnitX, true), map(Vector2.UnitY, true)) < 0, edges);
                 }
-                paths.Add(new HatchBoundaryPath(edges) { PathType = path.PathType });
+                var transformedPath = new HatchBoundaryPath(edges);
+                transformedPath.PathType = (path.PathType & ~HatchBoundaryPathTypeFlags.Polyline)
+                    | (transformedPath.PathType & HatchBoundaryPathTypeFlags.Polyline);
+                paths.Add(transformedPath);
             }
+            ValidateAffinePathData(paths);
             var seeds = new List<Vector2>();
             foreach (Vector2 seed in this.seedPoints) seeds.Add(map(seed, false));
             Vector2 direction = this.Pattern.Scale * Vector2.Rotate(Vector2.UnitX, this.Pattern.Angle * MathHelper.DegToRad);
@@ -162,17 +154,6 @@ namespace netDxf.Entities
                 }
         }
 
-        private bool HasDirectAffineBoundary()
-        {
-            foreach (HatchBoundaryPath path in this.BoundaryPaths)
-                foreach (HatchBoundaryPath.Edge edge in path.Edges)
-                {
-                    if (edge is HatchBoundaryPath.Line || edge is HatchBoundaryPath.Spline) continue;
-                    if (!(edge is HatchBoundaryPath.Polyline polyline) || !polyline.IsClosed || polyline.Vertexes == null) return false;
-                    foreach (Vector3 vertex in polyline.Vertexes) if (vertex.Z != 0) return false;
-                }
-            return true;
-        }
         private static Vector3 AffineUnit(Vector3 value)
         {
             double largest = Math.Max(Math.Abs(value.X), Math.Max(Math.Abs(value.Y), Math.Abs(value.Z)));

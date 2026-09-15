@@ -1,0 +1,70 @@
+{
+  "module_gate": {
+    "actual_output_corruptions_rejected": 300,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "native_cad_execution": false,
+    "native_linetype_packet_comparisons": 16,
+    "native_map_packet_comparisons": 16,
+    "native_style_comparisons_with_declared_normalization": 16,
+    "outputs": 16,
+    "section_evaluation": false,
+    "section_source_links": "explicitly authored generic pointer storage"
+  },
+  "additional_actual_wire_identity_controls": 4,
+  "controls": [
+    {
+      "mutation": "manager-identity",
+      "file": "manager-identity.dxf",
+      "sha256": "6e826b420d8f52c8a87f89dd38e5954550dbf106562890d203a31e238092d5bd",
+      "rejected": "ValueError: Retained manager identity was rewritten",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "mutation": "section-identity",
+      "file": "section-identity.dxf",
+      "sha256": "3859abf7b97f500aba3aadab074a3c4b1df85516de586be2ae3a6821bf50d25e",
+      "rejected": "ValueError: Retained SECTION or owned settings identity was rewritten",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "mutation": "settings-identity",
+      "file": "settings-identity.dxf",
+      "sha256": "877eb88fc30b485184b5874aee644aaeb29d4f4ebfd6ce7725908e8173edd097",
+      "rejected": "ValueError: Retained SECTION or owned settings identity was rewritten",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "mutation": "replacement-mesh",
+      "file": "replacement-mesh.dxf",
+      "sha256": "1d918f0fd9423373e7013a02839e7b78c415786246335676ed11261003dcfbbe",
+      "rejected": "ValueError: Released mesh was replaced under a fresh identity",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    }
+  ],
+  "harness_sha256": "2e3c629c314d099328ecc95f54b720712888ee26f9d0ac7360f797c99da38444",
+  "gate_sha256": "dcd5f53f94474d3efe6c7653cd7edd4d460845d93694193bd82ec4844d3f2cad",
+  "outputs_sha256": {
+    "ninth-mixed-acad_table_simple.dxf-False-edited.dxf": "26c7c213506261d9b6628b607447966ca065638b7541923784d871bc673427b9",
+    "ninth-mixed-acad_table_simple.dxf-False-input.dxf": "e2de29681f26727db2325879edf5e70f1ec8612206874ed8f3270a918bd35709",
+    "ninth-mixed-acad_table_simple.dxf-False-released.dxf": "a8bb18070958db75babd01f144f853d75415e9f40bbc81c30108d8c9ea036cbb",
+    "ninth-mixed-acad_table_simple.dxf-False-retry.dxf": "e2de29681f26727db2325879edf5e70f1ec8612206874ed8f3270a918bd35709",
+    "ninth-mixed-acad_table_simple.dxf-True-edited.dxf": "865e0086957993e233ec2e8f5de385a314d9766b72bb6e677bfd97dc6f75b53f",
+    "ninth-mixed-acad_table_simple.dxf-True-input.dxf": "7512d71a8ffe02b8e1903d4345bba251298ff8130245f5126cfacd3cdde87960",
+    "ninth-mixed-acad_table_simple.dxf-True-released.dxf": "49e05e793f0cdc029dadae0b0edcdd1fe3b8ecafb882f60e2db9364c718d578c",
+    "ninth-mixed-acad_table_simple.dxf-True-retry.dxf": "7512d71a8ffe02b8e1903d4345bba251298ff8130245f5126cfacd3cdde87960",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-False-edited.dxf": "4c870075fab0b6af5409715e1767b5f8a217d9ea30e7deba0e6861e0f3d47705",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-False-input.dxf": "9252de9ab2f1831c3fc27941e32f84712a849feafa6063539615853a71d47ddf",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-False-released.dxf": "0a6fde043a6debe71d6e709f58d992212d87eed457271900fa0dd5ebadab1fa1",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-False-retry.dxf": "9252de9ab2f1831c3fc27941e32f84712a849feafa6063539615853a71d47ddf",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-True-edited.dxf": "f7d75211093c3d539b3ef419f1e37fcc3110bfed0d8804812f88ae1ce4039693",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-True-input.dxf": "6935cff93c9ff7c01c53fa8344103b4fe6406db8bcac71103fdd64d17b42088e",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-True-released.dxf": "b5434d476c99557d3511fd6777b69c666e0977b58084476a3ff35b2928215cbe",
+    "ninth-mixed-acad_table_with_blk_ref.dxf-True-retry.dxf": "6935cff93c9ff7c01c53fa8344103b4fe6406db8bcac71103fdd64d17b42088e"
+  },
+  "scope": "Coherent handle remapping and extra replacement mesh, applied to actual ASCII output bytes. Native CAD application execution is not claimed."
+}

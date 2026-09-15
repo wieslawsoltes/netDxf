@@ -1,0 +1,43 @@
+{
+  "librarySha256": "8f937a30d3229ffe8b5f7a68e57166746edd7b969dcd8e1b90f18d0a1cb413ed",
+  "assemblyRevision": "3.0.1\u002B2d9b231d2568e92887c6ec9164a7ad667216ee61",
+  "expected": "fixed",
+  "results": [
+    {
+      "binary": false,
+      "sequenceEnd": false,
+      "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+      "reloadResult": "not attempted",
+      "outputBytes": 0,
+      "seedDelta": 0,
+      "expectedOutcome": true
+    },
+    {
+      "binary": false,
+      "sequenceEnd": true,
+      "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+      "reloadResult": "not attempted",
+      "outputBytes": 0,
+      "seedDelta": 0,
+      "expectedOutcome": true
+    },
+    {
+      "binary": true,
+      "sequenceEnd": false,
+      "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+      "reloadResult": "not attempted",
+      "outputBytes": 0,
+      "seedDelta": 0,
+      "expectedOutcome": true
+    },
+    {
+      "binary": true,
+      "sequenceEnd": true,
+      "saveResult": "NotSupportedException: A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.",
+      "reloadResult": "not attempted",
+      "outputBytes": 0,
+      "seedDelta": 0,
+      "expectedOutcome": true
+    }
+  ]
+}

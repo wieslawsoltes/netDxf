@@ -1,0 +1,163 @@
+{
+  "outputs": 26,
+  "errors": 0,
+  "repairs": 0,
+  "results": [
+    {
+      "file": "map-duplicates-False.dxf",
+      "sha256": "089ca52fe43d0183c1338319e1bf1eb49447361a565008564ba4a0f39a502d26",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-duplicates-True.dxf",
+      "sha256": "d69fc0a2c7cfe3c3ebe5fc882b3ff09f54911197d2bcfa2ef7bdc0cbcdb2f9fd",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-empty-False.dxf",
+      "sha256": "a1738a8e05d906009182894f0de4c836f89128e8c8d37f722d3fce07f21f6b39",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-empty-True.dxf",
+      "sha256": "17f7ea4d0e02659cd24be92d4a6510fcbccebc2b8edc12f8e47accda9afacc98",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-acad_table_simple-False.dxf",
+      "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-acad_table_simple-True.dxf",
+      "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-acad_table_with_blk_ref-False.dxf",
+      "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-acad_table_with_blk_ref-True.dxf",
+      "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-sample_AC1018_ascii-False.dxf",
+      "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-sample_AC1018_ascii-True.dxf",
+      "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-sample_AC1021_ascii-False.dxf",
+      "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-sample_AC1021_ascii-True.dxf",
+      "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-sample_AC1024_ascii-False.dxf",
+      "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-native-sample_AC1024_ascii-True.dxf",
+      "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-private-context-False.dxf",
+      "sha256": "a24a447506941e5c4845c556e4fa0bcad228b82ae3b46ff7f10ff554fcb8f81d",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-private-context-True.dxf",
+      "sha256": "b986f483bd4c95c43eeb5c4114786b7047e54e543f3a26e906fc53037a0f6e04",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-raw-entry-300-False.dxf",
+      "sha256": "d91e9a4addba1413bd1ccfe4bbbe47116fe5c2b3eb750a633281771dc1a406e7",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-raw-entry-300-True.dxf",
+      "sha256": "ee9e7f4c708001f38ed55ffe742b4af1e0a5a2c347f9d40f2bbdf7ebebd376e2",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-raw-entry-90-False.dxf",
+      "sha256": "ad49ef7e37a5b8d7a38f3af66ccf7e3bf5281951f5e4268aa1c8bbd548079013",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-raw-entry-90-True.dxf",
+      "sha256": "81aacc9263760d233bd6b440348f35112d8feba9a1b718946b44037ef64f6883",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-raw-entry-91-False.dxf",
+      "sha256": "9e776ea887fee3b3ae0879a60de488b1a22dd50519e19032e89c0d715bedad29",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-raw-entry-91-True.dxf",
+      "sha256": "cfcb252bed82ce0c02b43b339a06abaaf05e13ae7f91824bf9b5e01a2a044f60",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-unknown-False.dxf",
+      "sha256": "eb8506383146e2b648b37d6963095a96b9e99bd1a5d143d44111bd7831d14368",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-unknown-True.dxf",
+      "sha256": "fed34010730a5760b0fa1d7d6f8aa77238d0cf5147d7f4c5d54d875e1d71f484",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-xdata-False.dxf",
+      "sha256": "37c76f1c9ebf02175cf00523cb9919ba8d0bf579b999df988483e2c05b8e1424",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "map-xdata-True.dxf",
+      "sha256": "cda4e8e1e469caa63a7d7938a55e2ab2e3ca62e157ac1971696d5e7374050da2",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

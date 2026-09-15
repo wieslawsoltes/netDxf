@@ -20,6 +20,12 @@ namespace netDxf
                 if (count > 4096) throw new NotSupportedException("An existing retained polyline record exceeds its tag admission budget.");
                 retainedTags += count;
             }
+            foreach (PolygonMeshRecord record in this.AddedObjects.Values.OfType<PolygonMeshRecord>())
+            {
+                int count = record.TopologyTagCount();
+                if (count > 4096) throw new NotSupportedException("An existing retained polygon mesh record exceeds its tag admission budget.");
+                retainedTags += count;
+            }
             if (retainedTags > 1048576) throw new NotSupportedException("The inserted VERTEX exceeds the document's retained polyline tag admission budget.");
             var occupied = new HashSet<ulong>();
             foreach (DxfObject item in this.RetainedMetadataObjects())

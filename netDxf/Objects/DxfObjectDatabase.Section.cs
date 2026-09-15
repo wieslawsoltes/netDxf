@@ -161,6 +161,7 @@ namespace netDxf.Objects
                 if (item is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
                 if (item is DxfStoredSunStudy) throw new NotSupportedException("Stored SUNSTUDY erasure requires its complete application lifecycle.");
                 if (item is DxfStoredTableGeometry) throw new NotSupportedException("Stored TABLEGEOMETRY erasure requires its complete application schema.");
+                if (item is DxfStoredCellStyleMap) throw new NotSupportedException("Stored CELLSTYLEMAP erasure requires its complete application schema.");
                 if (item is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (item is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (item is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");
@@ -191,6 +192,11 @@ namespace netDxf.Objects
                 {
                     foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");
                     foreach (DxfTag tag in polylineRecord.OpaqueHandleTags) handle((string)tag.Value, "polyline record handle");
+                }
+                if (item is PolygonMeshRecord meshRecord)
+                {
+                    foreach (DxfObject target in meshRecord.References) reference(target, "polygon mesh record reference");
+                    foreach (DxfTag tag in meshRecord.OpaqueHandleTags) handle((string)tag.Value, "polygon mesh record handle");
                 }
                 if (item is StoredTable table) foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader) foreach (MLeaderData data in leader.Data) foreach (DxfObject target in data.References) reference(target, "MULTILEADER reference");

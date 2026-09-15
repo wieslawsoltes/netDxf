@@ -1,9 +1,11 @@
-# Immutable stored section manager
+# Stored section manager
 
 `DxfStoredSectionManager` exposes a loaded section manager's stored update flag
 and exact ordered section identities. It preserves the original `SECTION_MANAGER`
 or `SECTIONMANAGER` spelling and the complete subclass packet through ASCII and
-binary saves. There is no public constructor or editable section collection.
+binary saves. There is no public constructor or mutable section collection.
+An already loaded typed manager supports the explicit, atomic `ReplaceSections`
+operation described in [membership editing](section-manager-membership.md).
 
 The [Autodesk Section Manager DXF reference](https://help.autodesk.com/cloudhelp/2015/ENU/AutoCAD-DXF/files/GUID-C1C9B840-F291-4CB2-8EBA-A94BC27DC46D.htm)
 identifies the `AcDbSectionManager` subclass, its group-70 update flag,
@@ -54,7 +56,7 @@ if (document.Objects.Root.TryGetValue("ACAD_SECTION_MANAGER", out var stored)
 }
 ```
 
-The focused tests distinguish evidence sources. Four native cases load the
+The original stored-manager qualification tests distinguish evidence sources. Four native cases load the
 unchanged original or its field-preserving binary transport conversion and emit
 both transports. Thirty-two explicitly synthetic schema cases cover the four
 supported profiles, both object spellings, empty lists and repeated references.
@@ -101,5 +103,5 @@ Native evidence currently covers one R2018 manager with one section and update
 flag zero. Other profiles, the documented spelling, flag one, empty lists and
 multiple pointers are qualified by schema cases, not by additional native
 drawings. This increment does not qualify live sectioning, automatic manager
-membership maintenance, section generation, editable manager lifecycles, native
+membership maintenance, section generation, complete manager creation/clone/erase lifecycles, native
 AutoCAD execution, or complete-drawing byte identity.

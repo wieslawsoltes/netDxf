@@ -1,0 +1,473 @@
+{
+  "schema_version": 1,
+  "module": "Stored CELLSTYLEMAP",
+  "base_commit": "5190451ca1de5b32300d4f9841d121855c364c0b",
+  "production_commit": "fc0fdef74dd40767340e0628ae2dbf542b228a0e",
+  "qualification_commits": [
+    "f2b10144fcbb19810ea76e9d6c68f3b4e2e77166",
+    "d72af268502fc12fed7814838f59a59a047e38c5",
+    "4f5fbc12625c2e1944fa1981b8d7a1af2ac15e2b"
+  ],
+  "production_changes_after_independent_freeze": false,
+  "build": {
+    "sdk": "8.0.408",
+    "target": "net8.0",
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "library_errors": 0,
+    "library_warnings_per_configuration": 562,
+    "diagnostic_breakdown": {
+      "existing_CS1591": 561,
+      "inherited_CS1573": 1,
+      "CELLSTYLEMAP_new_warnings": 0
+    },
+    "inherited_warning": "Hatch.TransformCurvedBoundary missing XML param newNormal on base 5190451; outside this module.",
+    "conformance_errors": 0,
+    "conformance_warnings": 0,
+    "diagnostics_suppressed": false
+  },
+  "configs": [
+    {
+      "configuration": "Debug",
+      "runtime_cases": 636,
+      "runtime_failures": 0,
+      "runtime_unique_cases": 636,
+      "prefix_counts": {
+        "cell-style-map": 160,
+        "table-style": 89,
+        "table-geometry": 142,
+        "declared-ownership": 35,
+        "composite-table": 49,
+        "erasure-declared-ownership": 7,
+        "seventh-mixed": 8,
+        "table-content": 146
+      },
+      "results_sha256": "eb4bba2bc1dafcaa0e44431e29c104d4d8b4bb4f2ee98d410a0b019cae7c8eba",
+      "library_sha256": "ba0f8cf38043c80585da9d053c430458c00e764102d03c76c770f1feaf9f7a27",
+      "conformance_sha256": "759a1d5978513b274133b6941d2b2e2ba97057addd4555fde09ae8ab50322b14",
+      "gates": [
+        {
+          "gate": "tools/verify_stored_cell_style_map.py",
+          "result": "PASS 36 outputs, 10 native map packets, 632 carrier record appearances, 212 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "ff0c505ef5aea0817bb6c0740c22effadff7a8dbf46771883e16175a520a48a0"
+        },
+        {
+          "gate": "tools/verify_table_styles.py",
+          "result": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim",
+          "log_sha256": "70d4459585d0f7ff1c6a7915107d95157daf97a3c9f309f5fb9a62136582909e"
+        },
+        {
+          "gate": "tools/verify_stored_table_geometry.py",
+          "result": "PASS 36 outputs, 16 native geometry packets, 632 carrier record appearances, 192 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "d543ad41b82eef53d5a1368cec639c991e86a36a22421a27414ed16104d3c8e5"
+        },
+        {
+          "gate": "tools/verify_declared_ownership.py",
+          "result": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation",
+          "log_sha256": "1e12ee1ac14d5c07c4b902cc2fe6dd6b002d99e1d0d672c3d8d691e298f6e041"
+        },
+        {
+          "gate": "tools/verify_composite_table_ownership.py",
+          "result": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls",
+          "log_sha256": "ebde3edfc2d70f68328122c57a50eac5768db2d31d123a9247495d516e47cc8e"
+        },
+        {
+          "gate": "tools/verify_seventh_mixed.py",
+          "result": "{\"audit_errors\": 0, \"audit_repairs\": 0, \"evaluation\": false, \"native_cad_execution\": false, \"native_packet_comparisons\": 970, \"negative_controls\": 40, \"outputs\": 20, \"profiles\": [2004, 2018]}",
+          "log_sha256": "33c43cb81b5604b1afafbd9822fc40a4556364cca959b675375fd2aa68720b6e"
+        },
+        {
+          "gate": "tools/verify_stored_table_content.py",
+          "result": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls",
+          "log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3"
+        }
+      ],
+      "cell_style_map_outputs": [
+        {
+          "file": "cell-style-map-native-acad_table_simple.dxf-False.dxf",
+          "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37"
+        },
+        {
+          "file": "cell-style-map-native-acad_table_simple.dxf-True.dxf",
+          "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9"
+        },
+        {
+          "file": "cell-style-map-native-acad_table_with_blk_ref.dxf-False.dxf",
+          "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924"
+        },
+        {
+          "file": "cell-style-map-native-acad_table_with_blk_ref.dxf-True.dxf",
+          "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1018_ascii.dxf-False.dxf",
+          "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1018_ascii.dxf-True.dxf",
+          "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1021_ascii.dxf-False.dxf",
+          "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1021_ascii.dxf-True.dxf",
+          "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1024_ascii.dxf-False.dxf",
+          "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1024_ascii.dxf-True.dxf",
+          "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97"
+        },
+        {
+          "file": "cell-style-map-opaque-0-False.dxf",
+          "sha256": "bcf2732d9f115a91a89f52888a6de1dce6c9fa110819e63acc11dcc23104c993"
+        },
+        {
+          "file": "cell-style-map-opaque-0-True.dxf",
+          "sha256": "d443c9053bcff9f5efe1307c12d57fc6de839ab9fbcf3f9ffe270c8bec8426ba"
+        },
+        {
+          "file": "cell-style-map-opaque-1-False.dxf",
+          "sha256": "4dff49485c36afd1e323dade0e4b5d46c713ca27b5d34c592821b982e5e5ae57"
+        },
+        {
+          "file": "cell-style-map-opaque-1-True.dxf",
+          "sha256": "16c686510079d8a80c42749d4bf1fb964ba6b5e300ec8ceecf6ab8e689bc1ad4"
+        },
+        {
+          "file": "cell-style-map-opaque-2-False.dxf",
+          "sha256": "618133cb2c3bcc7ae7a9c873b530a0094c18509d765d517323cdba31cf668a00"
+        },
+        {
+          "file": "cell-style-map-opaque-2-True.dxf",
+          "sha256": "c588948a1ee4afb4584511fef3a52036b2e894c18886975a40e814ced1425333"
+        },
+        {
+          "file": "cell-style-map-opaque-3-False.dxf",
+          "sha256": "79ce08ad03ca05748877da426ef481721c2bc184aaf10ce8d98256ac79744e99"
+        },
+        {
+          "file": "cell-style-map-opaque-3-True.dxf",
+          "sha256": "a2930be29385a47a8a79b9e468fd91fcdd357da8c13310819c6077d00931d524"
+        },
+        {
+          "file": "cell-style-map-opaque-4-False.dxf",
+          "sha256": "28dbdf5592b028d05ae6dda167730b9d5901b79c39eb3b0188a064b59b16d9be"
+        },
+        {
+          "file": "cell-style-map-opaque-4-True.dxf",
+          "sha256": "5edbffa6c5b2c9b2af8e7286025044e17675a9cee2e2069a414d5d9c9f598fd6"
+        },
+        {
+          "file": "cell-style-map-opaque-5-False.dxf",
+          "sha256": "a02268ca71470fd09146be30ecb51bd2c579cbde6b69548e14bb6453aea5334e"
+        },
+        {
+          "file": "cell-style-map-opaque-5-True.dxf",
+          "sha256": "c02037c6815848ad96117de050a28fea4ab6b559621c2c00e20485369dc00ee1"
+        },
+        {
+          "file": "cell-style-map-opaque-6-False.dxf",
+          "sha256": "446ba0f82681ec5948558e95685fcb5855841249c51719cc5187f74009b7312d"
+        },
+        {
+          "file": "cell-style-map-opaque-6-True.dxf",
+          "sha256": "bfb9f1d9ccfad39e860b201f1181ca72abf628a6f2c2a59f1557a2ab16d2e1bf"
+        },
+        {
+          "file": "cell-style-map-opaque-7-False.dxf",
+          "sha256": "f7c104ee7cc50d2ad023be21c2e2fc82c3ecb00ff0b137b87b1970b62a73ec45"
+        },
+        {
+          "file": "cell-style-map-opaque-7-True.dxf",
+          "sha256": "1940275b8ba56c051b3a40427f6ca3dfc5bea210088ca069ae71dee92509b531"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2004-False.dxf",
+          "sha256": "5248b49f4e528062866d9ad3757d583ea71abccd145dbe86f9c47e92c875be89"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2004-True.dxf",
+          "sha256": "8c375b9404923848750ffa88ac230bc7085506c1028fdb5c4484a2733f002685"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2007-False.dxf",
+          "sha256": "fbc4148b25b31970283de5c97f3e1a7881b848676ec88a324715afe880dab2f1"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2007-True.dxf",
+          "sha256": "48cc495b89aeadf697431faffbca6471dfc2b89c313ea81fdb9b2b84b703cc49"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2010-False.dxf",
+          "sha256": "5db75a73bed4c3a9d7d7bdd8cd82c829392bec683d4ce1f4cc632680b3e88861"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2010-True.dxf",
+          "sha256": "1f614c339e981b160e7df710d9a9c7d0150f3476821cbe96171f3c3ed41d8461"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2013-False.dxf",
+          "sha256": "324c00b2df94e1ca0df0246df6ef1cc8b5b1ed03268dd1254c5364662d4f8aaf"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2013-True.dxf",
+          "sha256": "abea378470d253b8fdac4929cb773ae29ee8fcc48d87f54bd04c8ed3374f36b2"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2018-False.dxf",
+          "sha256": "cab9a2ee98fe94d049c6d5135da3c968d1b91e4a64f6ebb611719db0b8ccf1ab"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2018-True.dxf",
+          "sha256": "838833c3c1bacb021e6ee61dd551c14f256256e1a3273a9f34fb5916af92cc1b"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "runtime_cases": 636,
+      "runtime_failures": 0,
+      "runtime_unique_cases": 636,
+      "prefix_counts": {
+        "cell-style-map": 160,
+        "table-style": 89,
+        "table-geometry": 142,
+        "declared-ownership": 35,
+        "composite-table": 49,
+        "erasure-declared-ownership": 7,
+        "seventh-mixed": 8,
+        "table-content": 146
+      },
+      "results_sha256": "eb4bba2bc1dafcaa0e44431e29c104d4d8b4bb4f2ee98d410a0b019cae7c8eba",
+      "library_sha256": "0957424031525e78f37b56d9e21a9c6bd6b51466f2bd1b0ec983f87c8acace19",
+      "conformance_sha256": "69be6dc59f237bce19b87e79452633348402dc48564d1efc8263731b0b3b2723",
+      "gates": [
+        {
+          "gate": "tools/verify_stored_cell_style_map.py",
+          "result": "PASS 36 outputs, 10 native map packets, 632 carrier record appearances, 212 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "ff0c505ef5aea0817bb6c0740c22effadff7a8dbf46771883e16175a520a48a0"
+        },
+        {
+          "gate": "tools/verify_table_styles.py",
+          "result": "PASS 70 TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and 98 corruption controls; no map semantics or regeneration claim",
+          "log_sha256": "70d4459585d0f7ff1c6a7915107d95157daf97a3c9f309f5fb9a62136582909e"
+        },
+        {
+          "gate": "tools/verify_stored_table_geometry.py",
+          "result": "PASS 36 outputs, 16 native geometry packets, 632 carrier record appearances, 192 actual corruptions rejected; zero audit errors or repairs",
+          "log_sha256": "d543ad41b82eef53d5a1368cec639c991e86a36a22421a27414ed16104d3c8e5"
+        },
+        {
+          "gate": "tools/verify_declared_ownership.py",
+          "result": "PASS16 native owning envelopes and unchanged stored child records; actual source dependencies are retained without evaluation",
+          "log_sha256": "1e12ee1ac14d5c07c4b902cc2fe6dd6b002d99e1d0d672c3d8d691e298f6e041"
+        },
+        {
+          "gate": "tools/verify_composite_table_ownership.py",
+          "result": "PASS eight native composite TABLE drawings, four explicit owner maps, 41 source XRECORD descendants, 80 corruption controls",
+          "log_sha256": "ebde3edfc2d70f68328122c57a50eac5768db2d31d123a9247495d516e47cc8e"
+        },
+        {
+          "gate": "tools/verify_seventh_mixed.py",
+          "result": "{\"audit_errors\": 0, \"audit_repairs\": 0, \"evaluation\": false, \"native_cad_execution\": false, \"native_packet_comparisons\": 970, \"negative_controls\": 40, \"outputs\": 20, \"profiles\": [2004, 2018]}",
+          "log_sha256": "33c43cb81b5604b1afafbd9822fc40a4556364cca959b675375fd2aa68720b6e"
+        },
+        {
+          "gate": "tools/verify_stored_table_content.py",
+          "result": "PASS 26 outputs, 16 exact native packets, 316 manifest-qualified source records retained in both transports, exact opaque variants, and 130 corruption controls",
+          "log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3"
+        }
+      ],
+      "cell_style_map_outputs": [
+        {
+          "file": "cell-style-map-native-acad_table_simple.dxf-False.dxf",
+          "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37"
+        },
+        {
+          "file": "cell-style-map-native-acad_table_simple.dxf-True.dxf",
+          "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9"
+        },
+        {
+          "file": "cell-style-map-native-acad_table_with_blk_ref.dxf-False.dxf",
+          "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924"
+        },
+        {
+          "file": "cell-style-map-native-acad_table_with_blk_ref.dxf-True.dxf",
+          "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1018_ascii.dxf-False.dxf",
+          "sha256": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1018_ascii.dxf-True.dxf",
+          "sha256": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1021_ascii.dxf-False.dxf",
+          "sha256": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1021_ascii.dxf-True.dxf",
+          "sha256": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1024_ascii.dxf-False.dxf",
+          "sha256": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b"
+        },
+        {
+          "file": "cell-style-map-native-sample_AC1024_ascii.dxf-True.dxf",
+          "sha256": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97"
+        },
+        {
+          "file": "cell-style-map-opaque-0-False.dxf",
+          "sha256": "ea91613c3eb0e930291112b6468137d3c5c4ff6beeb841bf5f333c8f1f84e79f"
+        },
+        {
+          "file": "cell-style-map-opaque-0-True.dxf",
+          "sha256": "96ae127d80177b5da383f68cf8c726c336d95bfd971f4f64bb0423fcebb2e8ef"
+        },
+        {
+          "file": "cell-style-map-opaque-1-False.dxf",
+          "sha256": "d357e3f83414756e23d6e0ed90111c987bb805773510a0f7bf8d0e343e5b2ec0"
+        },
+        {
+          "file": "cell-style-map-opaque-1-True.dxf",
+          "sha256": "e30b54ef86b884b0f22f1902ea6e943a2a4e6583ce0577dfc959b15fa6bce36b"
+        },
+        {
+          "file": "cell-style-map-opaque-2-False.dxf",
+          "sha256": "acb52900914e05b5db5eef3e627e0b84adff593d41770317ece8fff04a825cbf"
+        },
+        {
+          "file": "cell-style-map-opaque-2-True.dxf",
+          "sha256": "6c0c2c92de59796946aeaddad3cfca991af9ec0967a4313bc0906bfbf97316f3"
+        },
+        {
+          "file": "cell-style-map-opaque-3-False.dxf",
+          "sha256": "b22b01a1b05465320728d312a823a657bef1d58b23355199b7886db00895e357"
+        },
+        {
+          "file": "cell-style-map-opaque-3-True.dxf",
+          "sha256": "99f25637bcd3cd13f7150540daa21f29c75ccdfc9425488c0cb3efc483156dda"
+        },
+        {
+          "file": "cell-style-map-opaque-4-False.dxf",
+          "sha256": "410ad0d0a9dc7646558adf7d41d0eae265342a25a4377fd9342dc4dd7af50ed0"
+        },
+        {
+          "file": "cell-style-map-opaque-4-True.dxf",
+          "sha256": "87a9a90cb0c6977e80f7eb1fb2ae10a64905de6c44f2961486f4f9fec1e73405"
+        },
+        {
+          "file": "cell-style-map-opaque-5-False.dxf",
+          "sha256": "e8de875f57a9e81fb33d7db3d302f4d5e0fa080b82102f7634736fb6eee7e957"
+        },
+        {
+          "file": "cell-style-map-opaque-5-True.dxf",
+          "sha256": "4ca4fe2a0eafc596466749ae5c218dce127fe288d260ec5f7ae9af190b92b13f"
+        },
+        {
+          "file": "cell-style-map-opaque-6-False.dxf",
+          "sha256": "628ffe1dd3af7477047a97d8e47fdeae60cbacc6bc22fc4b962c870c91ccfef8"
+        },
+        {
+          "file": "cell-style-map-opaque-6-True.dxf",
+          "sha256": "868923409e54f712fcc0592fe1b57a77e541d13d13ad3755af42dde26a9eb432"
+        },
+        {
+          "file": "cell-style-map-opaque-7-False.dxf",
+          "sha256": "48181f59af12fd58ea70d3d4636e77cebf6ae9a017054dde3c13346d332589d5"
+        },
+        {
+          "file": "cell-style-map-opaque-7-True.dxf",
+          "sha256": "a01ba5b2e6acd28c5359d2f25a9b5eb37b9c3349f6603944bf6f8c06dd3d7231"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2004-False.dxf",
+          "sha256": "bd5fb0e63521bf26030fd655fd8388c9d3fc35458b8a4b3d583d21051c57095b"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2004-True.dxf",
+          "sha256": "5c28f08baeee040b80b4c656f470171e321b784c51d3c189be8e509e2d8e3939"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2007-False.dxf",
+          "sha256": "fb87c9895b416edd22abb9ac6f2c1118029d4e6faaa0bb9f279794fd6ab9ee16"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2007-True.dxf",
+          "sha256": "6b8a7f627d2e8ed6c44e852167b5fe7f57b1fd4666db56cbeec99aa6e9243c1c"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2010-False.dxf",
+          "sha256": "ac36795a80ee8ad099849855899ad2829449345a97304a845730605c022dea1a"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2010-True.dxf",
+          "sha256": "c63e2deed642678c5dc92d81a01b691bdc3b949ffd06adfee85174ac93f858f7"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2013-False.dxf",
+          "sha256": "882be2a1fb1afa5a854dfc1e7b47d26191adede06bd82bbc15a05e7f0ef9935b"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2013-True.dxf",
+          "sha256": "43047624673a61b7cebf5d4c708c0a6b8aa9a3cf598529ece294b2f103d7cb2a"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2018-False.dxf",
+          "sha256": "35ff6990192c72d460c6e52ed6213f69eebbfdf074ca8812d34a0182e414adee"
+        },
+        {
+          "file": "cell-style-map-schema-AutoCad2018-True.dxf",
+          "sha256": "b17f1e90aa93515a7a63a08233ee5e3ecd7af460fd0d4fb73d835d967b92a7c4"
+        }
+      ]
+    }
+  ],
+  "new_module_gate": {
+    "mandatory_outputs_per_configuration": 36,
+    "native_map_packet_appearances": 10,
+    "native_source_maps": 5,
+    "native_entries": 15,
+    "selected_carrier_record_appearances": 632,
+    "actual_output_corruptions_rejected": 212,
+    "ezdxf_version": "1.4.4",
+    "audit_errors": 0,
+    "audit_repairs": 0
+  },
+  "independent_review": {
+    "summary": "doc/dxf-conformance/cell-style-map-review/summary.json",
+    "summary_sha256": "50a1aa62d979a0aa80a5a6571994de7cd4a1b272dc34ab1529d618a33acbaa5c",
+    "runtime_cases": 58,
+    "runtime_failures": 0,
+    "audit_outputs": 26,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "frozen_library_sha256": "c75b2560144e1c3bd558943d9dd24d8314e04fea79fb67d5ccc24c9eccd7f94b",
+    "harness": "tools/cell_style_map_review/Program.cs",
+    "harness_sha256": "2fa516d68f898273499217334867ebc56ca5bd06f44aa603dca37d8a6692438a"
+  },
+  "source_provenance": {
+    "native_evidence": "doc/dxf-conformance/cell-style-map-native-evidence.json",
+    "native_evidence_sha256": "cd55a18e5e6f530a82c81096d80d07400b9967abbe188cf7f0633160345b7323",
+    "source_manifest_sha256": "fcbfd4fcb93529c1d74cb7368cad689b6b215e0295dbf27008666494c38a86dd",
+    "complete_carrier_manifest_sha256": "9b5cc698a55503d445c97522caa8d72b5e8047479bdbb20c5bbf73f3abb9895e"
+  },
+  "compatibility": "DxfTableStyle.CellStyleMap getter return type changes from DxfOpaqueObject to DxfDatabaseObject; source and binary consumers must rebuild. StoredCellStyleMap is the typed convenience.",
+  "limits": [
+    "Immutable outer entries and formatting packet storage only; no format evaluation, role assignment or editing.",
+    "Source document/profile retained; cloning, erasure and source dependency removal remain guarded.",
+    "R2004 positive DXF evidence qualifies observed storage; no DWG introduction-version inference.",
+    "Actual native AutoCAD open/AUDIT/save/reopen was not run."
+  ]
+}

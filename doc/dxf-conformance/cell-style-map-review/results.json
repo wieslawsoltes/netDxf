@@ -1,0 +1,297 @@
+{
+  "failed": 0,
+  "cases": 58,
+  "librarySha256": "c75b2560144e1c3bd558943d9dd24d8314e04fea79fb67d5ccc24c9eccd7f94b",
+  "results": [
+    {
+      "name": "map-native-acad_table_simple-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-acad_table_simple-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-acad_table_with_blk_ref-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-acad_table_with_blk_ref-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-sample_AC1018_ascii-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-sample_AC1018_ascii-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-sample_AC1021_ascii-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-sample_AC1021_ascii-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-sample_AC1024_ascii-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-native-sample_AC1024_ascii-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-erase-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-ancestor-erase-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-ancestor-clone-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-foreign-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-profile-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-style-typed-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-style-opaque-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-style-arbitrary-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-missing-reference-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count--1-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count-2-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count-4-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count-2147483647-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-raw-entry-90-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-raw-entry-91-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-raw-entry-300-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-unknown-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-private-context-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-xdata-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-surplus-outer-tag-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-empty-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-duplicate-entry-fields-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-missing-known-frame-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-owner-self-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-erase-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-ancestor-erase-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-ancestor-clone-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-foreign-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-profile-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-style-typed-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-style-opaque-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-style-arbitrary-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-missing-reference-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count--1-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count-2-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count-4-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-count-2147483647-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-raw-entry-90-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-raw-entry-91-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-raw-entry-300-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-unknown-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-private-context-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-xdata-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-surplus-outer-tag-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-empty-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-duplicate-entry-fields-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-missing-known-frame-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "map-owner-self-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

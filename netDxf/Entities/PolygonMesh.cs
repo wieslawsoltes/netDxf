@@ -33,7 +33,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a mesh grid <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class PolygonMesh :
+    public partial class PolygonMesh :
         EntityObject
     {
         #region private fields
@@ -650,6 +650,7 @@ namespace netDxf.Entities
         /// <returns>A new PolygonMesh that is a copy of this instance.</returns>
         public override object Clone()
         {
+            this.RejectStoredRecordClone();
             PolygonMesh entity = new PolygonMesh(this.u, this.v, this.vertexes)
             {
                 //EntityObject properties
@@ -662,9 +663,10 @@ namespace netDxf.Entities
                 Normal = this.Normal,
                 IsVisible = this.IsVisible,
                 //PolygonMesh properties
-                DensityU = this.densityU,
-                DensityV = this.densityV,
-                Flags = this.flags
+                densityU = this.densityU,
+                densityV = this.densityV,
+                smoothType = this.smoothType,
+                flags = this.flags
             };
 
             foreach (XData data in this.XData.Values)
@@ -673,6 +675,7 @@ namespace netDxf.Entities
             }
 
             this.CopyCommonDataTo(entity);
+            this.CopyStoredRecordsTo(entity);
             return entity;
         }
 

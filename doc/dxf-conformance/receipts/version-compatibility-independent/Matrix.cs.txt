@@ -1,0 +1,121 @@
+using System.Collections;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.IO;
+using netDxf.Tables;
+
+internal static partial class Program
+{
+    private sealed record Rule(string Feature, string Code, string Path, DxfVersion Threshold, bool Maximum = false);
+    private static readonly Rule[] MatrixRules = {
+        new("color", "ENTITY_COLOR_NAME_PROFILE", "ColorName", DxfVersion.AutoCad2004),
+        new("shadow", "ENTITY_SHADOW_MODE_PROFILE", "ShadowMode", DxfVersion.AutoCad2007),
+        new("mesh", "MESH_PROFILE", "Type", DxfVersion.AutoCad2010),
+        new("helix", "HELIX_PROFILE", "Type", DxfVersion.AutoCad2007),
+        new("light", "LIGHT_PROFILE", "Type", DxfVersion.AutoCad2007),
+        new("section", "SECTION_PROFILE", "Type", DxfVersion.AutoCad2007),
+        new("vertex-id", "LWPOLYLINE_VERTEX_ID_PROFILE", "Vertexes[0].VertexIdentifier", DxfVersion.AutoCad2013),
+        new("background", "MTEXT_BACKGROUND_PROFILE", "BackgroundFill", DxfVersion.AutoCad2007),
+        new("frame", "MTEXT_FRAME_PROFILE", "BackgroundFill.Flags", DxfVersion.AutoCad2018),
+        new("columns-direct", "MTEXT_DIRECT_COLUMNS_PROFILE", "Columns.Storage", DxfVersion.AutoCad2007),
+        new("columns-embedded", "MTEXT_EMBEDDED_COLUMNS_PROFILE", "Columns.Storage", DxfVersion.AutoCad2018),
+        new("columns-linked", "MTEXT_LINKED_COLUMNS_PROFILE", "Columns.Storage", DxfVersion.AutoCad2018, true),
+        new("hatch-fit", "HATCH_SPLINE_FIT_PROFILE", "BoundaryPaths[0].Edges[0].FitPoints", DxfVersion.AutoCad2010),
+        new("mleader", "MULTILEADER_PROFILE", "Type", DxfVersion.AutoCad2007),
+        new("mleader-optional", "MULTILEADER_OPTIONAL_FIELD_PROFILE", "Properties.TextAttachmentDirection", DxfVersion.AutoCad2010),
+        new("mleader-extend", "MULTILEADER_OPTIONAL_FIELD_PROFILE", "Properties.LeaderExtendToText", DxfVersion.AutoCad2013),
+        new("sat", "ACIS_SAT_PROFILE", "EncodedSatChunks", DxfVersion.AutoCad2013, true),
+        new("sat-history", "ACIS_HISTORY_PROFILE", "HistoryHandle", DxfVersion.AutoCad2007),
+        new("camera", "VIEW_CAMERA_PROFILE", "IsCameraPlottable", DxfVersion.AutoCad2007),
+        new("live-section", "VIEW_LIVE_SECTION_PROFILE", "LiveSection", DxfVersion.AutoCad2007),
+        new("live-section-null", "VIEW_LIVE_SECTION_PROFILE", "LiveSection", DxfVersion.AutoCad2007),
+        new("sun-view", "SUN_OWNER_PROFILE", "Sun", DxfVersion.AutoCad2010),
+        new("sun-vport", "SUN_OWNER_PROFILE", "Sun", DxfVersion.AutoCad2007),
+        new("sun-viewport", "SUN_OWNER_PROFILE", "Sun", DxfVersion.AutoCad2007),
+        new("shade-layout", "PLOT_SHADE_REFERENCE_PROFILE", "PlotSettings.ShadePlotObject", DxfVersion.AutoCad2007),
+        new("shade-page", "PLOT_SHADE_REFERENCE_PROFILE", "Settings.ShadePlotObject", DxfVersion.AutoCad2007),
+        new("datatable", "DATATABLE_PROFILE", "StoredVersion", DxfVersion.AutoCad2004),
+        new("geodata", "GEODATA_PROFILE", "Version", DxfVersion.AutoCad2010),
+        new("lightlist", "LIGHTLIST_PROFILE", "StoredVersion", DxfVersion.AutoCad2007),
+        new("sun", "SUN_PROFILE", "StoredVersion", DxfVersion.AutoCad2007),
+        new("mleaderstyle", "MLEADERSTYLE_PROFILE", "Properties", DxfVersion.AutoCad2007),
+        new("sectionsettings", "SECTIONSETTINGS_PROFILE", "TypeSettings", DxfVersion.AutoCad2007),
+        new("sortents", "SORTENTSTABLE_PROFILE", "Entries", DxfVersion.AutoCad2004),
+    };
+    private static readonly DxfVersion[] Targets = { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007, DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 };
+    private static Dictionary<string, DxfObject> Registered(DxfDocument document) => ((IEnumerable<KeyValuePair<string, DxfObject>>)typeof(DxfDocument).GetField("AddedObjects", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(document)!).ToDictionary(p => p.Key, p => p.Value);
+    private sealed class CallbackRegistry : ApplicationRegistry
+    {
+        internal int Calls;
+        internal CallbackRegistry() : base("INDEPENDENT_ANALYSIS_CALLBACK") { }
+        public override object Clone() { Calls++; throw new InvalidOperationException("Analysis called user Clone."); }
+    }
+    private static void RuleMatrix(string conformancePath, string repo, string output)
+    {
+        string oldDirectory = Environment.CurrentDirectory; Environment.CurrentDirectory = repo;
+        var assembly = Assembly.LoadFrom(conformancePath); var program = assembly.GetType("NetDxf.Conformance.Program")!;
+        var factory = program.GetMethod("CompatibilityFeature", BindingFlags.NonPublic | BindingFlags.Static)!; var evidence = new List<object>();
+        try
+        {
+            foreach (Rule rule in MatrixRules) foreach (DxfVersion target in Targets) foreach (bool binary in new[] { false, true })
+            Run($"rule-writer/{rule.Feature}/{target}/{binary}", () =>
+            {
+                var document = (DxfDocument)factory.Invoke(null, new object[] { rule.Feature })!;
+                var identities = Registered(document); var blocks = document.Blocks.ToArray(); var blockEntities = blocks.Select(b => (Block: b, Collection: b.Entities, Items: b.Entities.ToArray())).ToArray();
+                var apps = document.ApplicationRegistries.ToArray(); var views = document.Views.ToArray(); var classes = document.Classes.ToArray(); string headerSeed = document.DrawingVariables.HandleSeed;
+                int callbacks = 0; foreach (var block in blocks)
+                { block.Entities.BeforeAddItem += (_, _) => callbacks++; block.Entities.AddItem += (_, _) => callbacks++; block.Entities.BeforeRemoveItem += (_, _) => callbacks++; block.Entities.RemoveItem += (_, _) => callbacks++; }
+                var report = AnalyzePure(document, target);
+                Check(Registered(document).SequenceEqual(identities) && document.Blocks.SequenceEqual(blocks) && document.Views.SequenceEqual(views) && document.Classes.SequenceEqual(classes) && document.ApplicationRegistries.SequenceEqual(apps) && document.DrawingVariables.HandleSeed == headerSeed, "Analysis changed collection or registered identity snapshot.");
+                Check(blockEntities.All(b => ReferenceEquals(b.Collection, b.Block.Entities) && b.Block.Entities.SequenceEqual(b.Items)) && callbacks == 0, "Analysis changed collection identity/items or invoked mutation callbacks.");
+                bool expected = rule.Maximum ? target >= rule.Threshold : target < rule.Threshold;
+                Check(report.Diagnostics.Any(d => d.Code == rule.Code && d.PropertyPath == rule.Path) == expected, "Documented diagnostic code/property boundary differs: " + rule.Code + "/" + rule.Path);
+                if (rule.Feature is "hatch-fit" or "mleader-optional")
+                {
+                    var paths = rule.Feature == "hatch-fit" ? new[] { "BoundaryPaths[0].Edges[0].FitPoints", "BoundaryPaths[0].Edges[0].StartTangent", "BoundaryPaths[0].Edges[0].EndTangent" }
+                        : new[] { "Properties.TextAttachmentDirection", "Properties.TextBottomAttachment", "Properties.TextTopAttachment", "Context.TopAttachment", "Context.BottomAttachment", "Context.Leaders[0].AttachmentDirection" };
+                    Check(report.Diagnostics.Where(d => d.Code == rule.Code).Select(d => d.PropertyPath).OrderBy(p => p).SequenceEqual(expected ? paths.OrderBy(p => p) : Array.Empty<string>()), "Per-tangent or per-node documented paths differ.");
+                }
+                foreach (var diagnostic in report.Diagnostics)
+                {
+                    if (diagnostic.SourceObject is DxfObject item) Check(identities.Values.Contains(item) || blocks.Any(b => b.AttributeDefinitions.Values.Contains(item as AttributeDefinition)), "Diagnostic source is not an actual registered source.");
+                    Check(diagnostic.SourceHandle == (diagnostic.SourceObject as DxfObject)?.Handle, "Diagnostic handle is not the captured source handle.");
+                }
+                document.DrawingVariables.AcadVer = target; using var saved = new MemoryStream(); bool success; string failure = "";
+                try { success = document.Save(saved, binary); }
+                catch (Exception error) when (error is NotSupportedException or InvalidOperationException or ArgumentException or DxfVersionNotSupportedException or InvalidDataException) { success = false; failure = error.GetType().Name + ": " + error.Message; }
+                Check(success == !report.HasKnownRejections, "Real writer result differs from report for valid feature fixture: " + failure);
+                evidence.Add(new { feature = rule.Feature, target, binary, expectedCode = rule.Code, expectedPath = rule.Path, expectedDiagnostic = expected, report.HasKnownRejections, saved = success, failure, outputSha256 = success ? Convert.ToHexString(SHA256.HashData(saved.ToArray())).ToLowerInvariant() : null, diagnostics = report.Diagnostics.Select(d => new { d.Code, d.PropertyPath, d.SourceHandle, d.SourceCodeName, d.Kind }) });
+            });
+            Run("independent-clone-callback-purity", () =>
+            {
+                var document = new DxfDocument(DxfVersion.AutoCad2018); var registry = new CallbackRegistry(); document.ApplicationRegistries.Add(registry);
+                var text = new MText("Callback content"); text.XData.Add(new XData(registry)); document.Entities.Add(text);
+                foreach (var target in Targets) AnalyzePure(document, target); Check(registry.Calls == 0, "Analysis invoked application-registry clone callback.");
+            });
+            StoredRuleMatrix(program, evidence);
+            foreach (DxfVersion target in Targets) foreach (bool binary in new[] { false, true }) Run($"independent-physical-omissions/{target}/{binary}", () =>
+            {
+                var document = new DxfDocument(DxfVersion.AutoCad2018); document.DrawingVariables.LastSavedBy = "Independent author";
+                var definition = new DxfClass("INDEPENDENT_OMISSION", "IndependentOmission", "Review") { InstanceCount = 0 }; document.Classes.Add(definition);
+                var boundary = new HatchBoundaryPath(new[] { new HatchBoundaryPath.Polyline { IsClosed = true, Vertexes = new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY } } });
+                var hatch = new Hatch(new HatchGradientPattern(), new[] { boundary }, false); document.Entities.Add(hatch);
+                var report = AnalyzePure(document, target); bool omitted = target == DxfVersion.AutoCad2000;
+                foreach (var expected in new[] { (Code: "HEADER_LAST_SAVED_BY_OMITTED", Path: "LastSavedBy", Source: (object)document.DrawingVariables), (Code: "CLASS_INSTANCE_COUNT_OMITTED", Path: "InstanceCount", Source: (object)definition), (Code: "HATCH_GRADIENT_OMITTED", Path: "Pattern", Source: (object)hatch) })
+                    Check(report.Diagnostics.Any(d => d.Code == expected.Code && d.PropertyPath == expected.Path && ReferenceEquals(d.SourceObject, expected.Source) && d.Kind == DxfVersionCompatibilityKind.DataOmission) == omitted, "Documented omission code/path/source mismatch: " + expected.Code);
+                Check(report.HasKnownLosses == omitted && !report.HasKnownRejections, "Omission summary changed.");
+                document.DrawingVariables.AcadVer = target; using var bytes = new MemoryStream(); Check(document.Save(bytes, binary), "Omission fixture save failed."); bytes.Position = 0; var raw = DxfRawDocument.Load(bytes);
+                Check(raw.Tags.Any(t => t.Code == 9 && Equals(t.Value, "$LASTSAVEDBY")) == !omitted, "Physical header omission differs.");
+                var classRecord = raw.Sections.Single(s => s.Name == "CLASSES").Records.Single(r => r.Tags.Any(t => t.Code == 1 && Equals(t.Value, definition.Name)));
+                Check(classRecord.Tags.Any(t => t.Code == 91) == !omitted, "Physical CLASS count omission differs.");
+                var hatchRecord = raw.Sections.Single(s => s.Name == "ENTITIES").Records.Single(r => r.Name == "HATCH"); Check(hatchRecord.Tags.Any(t => t.Code == 450) == !omitted, "Physical gradient omission differs.");
+            });
+            File.WriteAllText(Path.Combine(output, "rule-writer-evidence.json"), JsonSerializer.Serialize(new { fixtureFactory = "Existing module Conformance.CompatibilityFeature; all rule, purity and writer assertions are independent", conformanceSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(conformancePath))).ToLowerInvariant(), cases = evidence.Count, results = evidence }, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        finally { Environment.CurrentDirectory = oldDirectory; }
+    }
+}

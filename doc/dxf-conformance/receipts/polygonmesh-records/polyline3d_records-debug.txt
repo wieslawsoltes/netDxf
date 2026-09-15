@@ -1,0 +1,1 @@
+VERTEX/SEQEND: 90 outputs; 6 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and six actual-output corruption controls passed; zero independent audit errors or repairs.

@@ -1,0 +1,21 @@
+{
+  "module": "CELLSTYLEMAP immutable entries",
+  "production_commit": "fc0fdef74dd40767340e0628ae2dbf542b228a0e",
+  "library_sha256": "c75b2560144e1c3bd558943d9dd24d8314e04fea79fb67d5ccc24c9eccd7f94b",
+  "runtime_cases": 58,
+  "runtime_failures": 0,
+  "audit_outputs": 26,
+  "audit_errors": 0,
+  "audit_repairs": 0,
+  "harness_sha256": "2fa516d68f898273499217334867ebc56ca5bd06f44aa603dca37d8a6692438a",
+  "results_sha256": "d132e698488f938d604318b3dc2b32c7807a6a57253eea17486fb5b65bf6a205",
+  "audit_sha256": "7168b0e97e871ed3a1ff708256c1f334b1c949353766521157ac7874e1178e96",
+  "review_boundaries": [
+    "Five native maps, both transports, exact whole payload and ordered entry/format projections; actual TABLESTYLE extension dictionary child and reference identities.",
+    "Raw duplicate IDs/types/names and negative integer extremes; zero entries; malformed counted envelope and missing framing rejected.",
+    "Unknown subclasses and private 102 groups preserve whole opaque packets; genuine trailing XData remains typed; nested format scalar semantics are deliberately unprojected.",
+    "Source version, direct/ancestor erasure, clone and foreign adoption guards; typed and opaque semantic STYLE reference removal refuses, arbitrary 320 allows removal.",
+    "Public DxfTableStyle.CellStyleMap getter returns DxfDatabaseObject now, changing source and binary compatibility; consumer recompilation is required.",
+    "No native CAD executable was available; no native rendering, style evaluation or complete application-schema qualification is claimed."
+  ]
+}

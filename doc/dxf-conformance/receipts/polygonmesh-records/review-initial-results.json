@@ -1,0 +1,257 @@
+{
+  "cases": 50,
+  "failed": 2,
+  "librarySha256": "9feb0fbb5d665daccf92d49e9d7188ef3d8050722798e8c869bd48b925416cc7",
+  "results": [
+    {
+      "name": "producer-R2000-ascii.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-ascii.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-ascii.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-ascii.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary.dxf-wire-slot-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary.dxf-clone-adoption",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary.dxf-incoming-removal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary.dxf-source-profile-and-geometry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "child-admission-budget-False",
+      "passed": false,
+      "error": "System.Exception: Save did not reject before output/allocation: refused=False, bytes=42902, seedDelta=5.\n   at Program.Check(Boolean value, String message) in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 16\n   at Program.RefuseSave(DxfDocument document, Boolean binary) in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 35\n   at Program.\u003C\u003Ec__DisplayClass13_5.\u003CMain\u003Eb__13() in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 95\n   at Program.Run(String name, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 19"
+    },
+    {
+      "name": "child-admission-budget-True",
+      "passed": false,
+      "error": "System.Exception: Save did not reject before output/allocation: refused=False, bytes=29701, seedDelta=5.\n   at Program.Check(Boolean value, String message) in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 16\n   at Program.RefuseSave(DxfDocument document, Boolean binary) in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 35\n   at Program.\u003C\u003Ec__DisplayClass13_5.\u003CMain\u003Eb__13() in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 95\n   at Program.Run(String name, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/polygon-probe/Program.cs:line 19"
+    }
+  ]
+}
