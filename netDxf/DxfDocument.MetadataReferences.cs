@@ -74,6 +74,12 @@ namespace netDxf
                 foreach (XData data in item.XData.Values) if (ReferenceEquals(data.ApplicationRegistry, registry)) uses++;
                 if (uses != 0) result.Add(new DxfObjectReference(item, uses));
             }
+            foreach (DxfObjectReference reference in this.MLeaderReferences(registry))
+            {
+                int index = result.FindIndex(r => ReferenceEquals(r.Reference, reference.Reference));
+                if (index < 0) result.Add(reference);
+                else result[index] = new DxfObjectReference(reference.Reference, result[index].Uses + reference.Uses);
+            }
             return result;
         }
     }

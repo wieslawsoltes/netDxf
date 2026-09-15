@@ -264,6 +264,11 @@ namespace netDxf.Entities
         /// </remarks>
         public void Sync()
         {
+            var document = this.Owner?.Record.Owner?.Owner;
+            if (document != null)
+                foreach (Attribute attribute in this.attributes)
+                    if (!this.block.AttributeDefinitions.ContainsTag(attribute.Tag) && document.StoredTableReferencesRemoval(attribute))
+                        throw new InvalidOperationException("A stored TABLE references an attribute that synchronization would remove.");
             List<Attribute> atts = new List<Attribute>();
 
             // remove all attributes that have no attribute definition in the block

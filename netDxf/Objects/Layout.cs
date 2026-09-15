@@ -266,6 +266,8 @@ namespace netDxf.Objects
             internal set
             {
                 Viewport previous = this.viewport;
+                if (!ReferenceEquals(previous, value) && this.Owner != null && this.Owner.Owner.StoredTableReferencesRemoval(previous))
+                    throw new InvalidOperationException("A stored TABLE references the viewport being replaced.");
                 this.viewport = value;
                 this.Owner?.Owner.ReplaceLayoutViewportMetadata(this, previous, value);
             }

@@ -75,8 +75,12 @@ namespace netDxf.Collections
                 return add;
             }
 
+            this.Owner.ValidateStoredTableBlockAdoption(block);
             foreach (EntityObject entity in block.Entities)
+            {
                 if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this.Owner);
+                if (entity is StoredTable storedTable) storedTable.ValidateIncoming(this.Owner);
+            }
 
             if (assignHandle || string.IsNullOrEmpty(block.Handle))
             {
@@ -154,6 +158,8 @@ namespace netDxf.Collections
             {
                 return false;
             }
+
+            if (this.Owner.StoredTableReferencesRemoval(item)) return false;
 
             // remove the block from the associated layer
             this.Owner.Layers.References[item.Layer.Name].Remove(item);

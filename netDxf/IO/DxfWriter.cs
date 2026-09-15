@@ -101,6 +101,7 @@ namespace netDxf.IO
             this.ValidateHelixVersions();
             this.ValidateLightVersions();
             this.ValidateMultiLeaders();
+            this.ValidateStoredTables();
             this.ValidateHatchBoundaryPresence();
             this.ValidateOutputSettings();
             IReadOnlyList<string> databaseErrors = this.doc.Objects.Validate();
@@ -1948,6 +1949,9 @@ namespace netDxf.IO
                     break;
                 case EntityType.Ole2Frame:
                     this.WriteOle2Frame((Ole2Frame) entity);
+                    break;
+                case EntityType.StoredTable:
+                    this.WriteStoredTable((StoredTable)entity);
                     break;
                 case EntityType.MultiLeader:
                     this.WriteMultiLeader((MultiLeader)entity);

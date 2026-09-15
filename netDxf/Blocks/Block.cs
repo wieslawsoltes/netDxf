@@ -739,6 +739,8 @@ namespace netDxf.Blocks
         private void Entities_BeforeAddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
             if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
+            if (e.Item is StoredTable storedTable && e.Item.Owner == null) storedTable.ValidateIncoming(this.Record.Owner?.Owner);
+            if (e.Item != null && e.Item.Owner == null && this.Record.Owner != null) this.Record.Owner.Owner.ValidateStoredTableEntityAdoption(e.Item);
             // null items, entities already owned by another Block, attribute definitions and attributes are not allowed in the entities list.
             if (e.Item == null)
             {
@@ -794,7 +796,8 @@ namespace netDxf.Blocks
         private void Entities_BeforeRemoveItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
             // only items owned by the actual block can be removed
-            if (e.Item.Reactors.Count > 0)
+            if (e.Item.Reactors.Count > 0 || (this.Record.Owner != null &&
+                this.Record.Owner.Owner.StoredTableReferencesRemoval(e.Item)))
             {
                 e.Cancel = true;
             }

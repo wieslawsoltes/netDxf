@@ -144,6 +144,12 @@ internal static partial class Program
         {
             string wrapperHandle = (string)wrapper.Tags.Single(t => t.Code == 5).Value;
             var children = wrapper.Tags.Where(t => t.Code is 360 or 361).Select(t => sourceObjects.Single(r => r.Tags.Any(h => h.Code == 5 && (string)h.Value == (string)t.Value))).ToArray();
+            // DATATABLE owner cells are now typed. Include their exact native XRecord descendants.
+            var directChildren = children;
+            children = directChildren.Concat(directChildren.Where(r => r.Name == "DATATABLE")
+                .SelectMany(table => table.Tags.Where(t => t.Code == 360 || t.Code == 350))
+                .Where(t => (string)t.Value != "0")
+                .Select(t => sourceObjects.Single(r => r.Tags.Any(h => h.Code == 5 && (string)h.Value == (string)t.Value)))).ToArray();
             var minimal = new DxfDocument(source.Version); string root = minimal.Objects.Root.Handle;
             using var setup = new MemoryStream(); Check(minimal.Save(setup, binary), "native packet setup save"); setup.Position = 0;
             var raw = DxfRawDocument.Load(setup); var dictionary = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DICTIONARY" && r.Tags.Any(t => t.Code == 5 && (string)t.Value == root));
@@ -162,7 +168,8 @@ internal static partial class Program
             foreach (var child in children)
             {
                 string handle = (string)child.Tags.Single(t => t.Code == 5).Value;
-                Check(ReferenceEquals(record, loaded.GetObjectByHandle(handle).Owner), "native child common owner changed");
+                string expectedOwner = (string)child.Tags.First(t => t.Code == 330).Value;
+                Equal(expectedOwner, loaded.GetObjectByHandle(handle).Owner.Handle, "native child common owner changed");
             }
             Equal(0, loaded.Objects.Validate().Count, "native ownership validation");
             using var output = new MemoryStream(); Check(loaded.Save(output, binary), "native owning packet save"); output.Position = 0;
