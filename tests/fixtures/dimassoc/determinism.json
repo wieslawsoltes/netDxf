@@ -1,0 +1,16 @@
+{
+  "pythonhashseed": [
+    0,
+    1,
+    17
+  ],
+  "exact_file_hashes": {
+    "tests/fixtures/dimassoc/extracted/dimassoc-R2000.dxf": "f84fc5af08ef5d4731e5320bcef182ec0b8658290726e320ad7b5762227ff928",
+    "tests/fixtures/dimassoc/extracted/dimassoc-R2004.dxf": "ede3ebb63bfa9df9ca25bbe2b60f729225b9b3342c3b00435822347c212dc202",
+    "tests/fixtures/dimassoc/extracted/dimassoc-R2007.dxf": "6cfd23e8899da8d5cde7600d1b7d719293b8d520d6e7e8cf30a9e690eb48c800",
+    "tests/fixtures/dimassoc/extracted/dimassoc-R2010.dxf": "2a7301742ae69c4515513089e6bb48de7d24d69b8fefa59c1f56ae37d5258c3c",
+    "tests/fixtures/dimassoc/extracted/dimassoc-R2013.dxf": "249bae576968df27b7a31df8f6cc0dbd135e8408108e5d4a21dfb7e621e85ea4",
+    "tests/fixtures/dimassoc/extracted/dimassoc-R2018.dxf": "b23d1ac079d9c22f92832187a995114a3aff5f93a1cc0e98b9bb93961551c370",
+    "tests/fixtures/dimassoc/manifest.json": "897dbe349e9b52f3cda5df17e394bce751b3567c5a039062f95ed3e48d1c1dc0"
+  }
+}

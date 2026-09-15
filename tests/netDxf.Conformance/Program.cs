@@ -43,6 +43,7 @@ internal static partial class Program
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();
+        RegisterStoredDimAssocTests();
         RunTypedObjectErasureTests();
         RunLightListTests();
         RunDataTableTests();

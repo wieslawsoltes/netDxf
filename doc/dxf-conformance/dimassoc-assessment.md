@@ -1,7 +1,9 @@
 # DIMASSOC stored-object assessment
 
-This is an evidence assessment. It adds no typed DIMASSOC model or evaluator.
-The current typed coverage gap remains open.
+This is the evidence assessment for the bounded [immutable stored DIMASSOC
+model](stored-dimassoc.md). The complete association schema and evaluator gaps
+remain open. The proposal below records the evidence and boundaries that led
+to the first stored slice.
 
 ## Pinned sources
 
@@ -81,34 +83,36 @@ must therefore remain distinct from complete original-file interoperability.
 
 ## Bounded implementation proposal
 
-A first stored model can admit the qualified one-main-object AcDbOsnapPointRef
+A first stored model admits the qualified one-main-object AcDbOsnapPointRef
 variant with the observed osnap types 1, 3 and 13, an explicit low-four-bit mask,
-and ordered references matching the set bits. The model would retain all
+and ordered references matching the set bits. The model retains all
 independent stored integers, finite geometry parameters and points. Dimension
-and geometry links would bind to real source identities and participate in
-same-document validation, explicit cross-document maps, incoming-reference
-erasure checks and ordinary entity/block removal guards.
+and geometry links bind to real source identities and participate in source-
+document validation, incoming-reference checks and ordinary entity/block removal
+guards. The initial API is immutable and source-version-bound. Generic cloning
+and owned-subtree erasure reject until the complete dimension association
+lifecycle is supported; explicit maps do not make a partial clone safe.
 
-The first implementation should preserve the whole object opaquely when it
+The first implementation preserves the whole object opaquely when it
 contains repeated main-object handle paths, intersection or external-reference
 variants, last-point extensions, or unqualified private classes. The current
 POLYLINE readers collapse VERTEX records into value collections and cannot bind
 the native 41E identity. Replacing it with a vertex index or a generated object
-would invent a relationship. An opaque branch must be chosen before partially
-binding references, and opaque graph cloning must remain unsupported.
+would invent a relationship. The opaque branch is chosen before partially
+binding references, and opaque graph cloning remains unsupported. Common owner
+chains and exposed standard pointer fields are still guarded during ordinary
+removal; hidden private dependencies remain unqualified.
 
-The existing generic dictionary and object graph APIs can store the native
-extension-dictionary ownership. A coherent public lifecycle needs a deliberate
-decision about the DIMENSION and source-entity reactor backlinks: they must not
-be silently added, discarded or cascaded during cloning or erasure. Ordinary
-entity/block removal currently checks individual typed families, so the new
-association references require an explicit removal-guard integration. Generic
-object cloning can remap the DIMASSOC's references through explicit maps, but
-does not by itself clone and reconnect a complete DIMENSION association graph.
+The existing generic dictionary and object graph APIs store the native
+extension-dictionary ownership. The immutable slice retains and validates the
+DIMENSION and source-entity reactor backlink state without adding, dropping or
+updating it. Ordinary entity/block removal has an explicit integration for
+typed dependencies and all DIMASSOC owner chains. Generic object cloning alone
+does not reconnect a complete DIMENSION association graph, so this slice rejects
+it before any destination registration.
 
-Before implementation, qualify complete packets and their ownership context from
-the pinned originals; use exact extraction with an explicit identity map if
-unrelated original drawing features prevent unchanged loading. Distinguish
-native-backed cases from independently authored structural tests. No geometry
-evaluation, automatic updates, external file access or invented base transforms
-are proposed.
+Qualification uses complete selected packets and ownership context from the
+pinned originals, with an explicit identity map and disclosed synthetic carrier
+resources. Native-backed cases remain distinct from independently authored
+structural mutations. No geometry evaluation, automatic updates, external file
+access or invented base transforms are provided.

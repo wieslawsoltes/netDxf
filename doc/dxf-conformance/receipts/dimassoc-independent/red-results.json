@@ -1,0 +1,342 @@
+{
+  "passed": 24,
+  "failed": 48,
+  "results": [
+    {
+      "name": "wire/2000/False",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2000/False",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2000/False",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2000/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2000/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2000/False",
+      "passed": true
+    },
+    {
+      "name": "wire/2000/True",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2000/True",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2000/True",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2000/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2000/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2000/True",
+      "passed": true
+    },
+    {
+      "name": "wire/2004/False",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2004/False",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2004/False",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2004/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2004/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2004/False",
+      "passed": true
+    },
+    {
+      "name": "wire/2004/True",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2004/True",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2004/True",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2004/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2004/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2004/True",
+      "passed": true
+    },
+    {
+      "name": "wire/2007/False",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2007/False",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2007/False",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2007/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2007/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2007/False",
+      "passed": true
+    },
+    {
+      "name": "wire/2007/True",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2007/True",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2007/True",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2007/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2007/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2007/True",
+      "passed": true
+    },
+    {
+      "name": "wire/2010/False",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2010/False",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2010/False",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2010/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2010/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2010/False",
+      "passed": true
+    },
+    {
+      "name": "wire/2010/True",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2010/True",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2010/True",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2010/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2010/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2010/True",
+      "passed": true
+    },
+    {
+      "name": "wire/2013/False",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2013/False",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2013/False",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2013/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2013/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2013/False",
+      "passed": true
+    },
+    {
+      "name": "wire/2013/True",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2013/True",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2013/True",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2013/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2013/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2013/True",
+      "passed": true
+    },
+    {
+      "name": "wire/2018/False",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2018/False",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2018/False",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2018/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2018/False",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2018/False",
+      "passed": true
+    },
+    {
+      "name": "wire/2018/True",
+      "passed": true
+    },
+    {
+      "name": "opaque-owner-removal/2018/True",
+      "passed": false,
+      "error": "ordinary removal detached the dimension owning opaque DIMASSOC"
+    },
+    {
+      "name": "opaque-geometry-removal/2018/True",
+      "passed": false,
+      "error": "ordinary removal detached opaque DIMASSOC geometry"
+    },
+    {
+      "name": "private-later-subclass-range/2018/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "private-point-range/2018/True",
+      "passed": false,
+      "error": "DIMASSOC osnap type is outside the public range."
+    },
+    {
+      "name": "numeric-duplicate-owner/2018/True",
+      "passed": true
+    }
+  ]
+}

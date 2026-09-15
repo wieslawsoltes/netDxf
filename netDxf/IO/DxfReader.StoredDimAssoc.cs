@@ -21,10 +21,11 @@ namespace netDxf.IO
             int mainHandles = 0;
             foreach (DxfTag tag in body.Skip(1))
             {
+                if (tag.Code == 100 && (string)tag.Value == "AcDbDimAssoc") throw new FormatException("DIMASSOC repeats its public subclass marker.");
                 if (tag.Code == 1) { mainHandles = 0; if ((string)tag.Value != "AcDbOsnapPointRef") unknown = true; }
                 else if (tag.Code == 331) { if (++mainHandles > 1) unknown = true; }
-                else if (tag.Code == 72 && (short)tag.Value != 1 && (short)tag.Value != 3 && (short)tag.Value != 13) unknown = true;
-                else if (tag.Code == 75 && (short)tag.Value != 0) unknown = true;
+                else if (tag.Code == 72 && (short)tag.Value >= 0 && (short)tag.Value <= 13 && (short)tag.Value != 1 && (short)tag.Value != 3 && (short)tag.Value != 13) unknown = true;
+                else if (tag.Code == 75 && (short)tag.Value == 1) unknown = true;
                 else if (!new short[] { 330, 90, 70, 71, 72, 73, 91, 40, 10, 20, 30, 75 }.Contains(tag.Code)) unknown = true;
             }
             if (unknown)
@@ -33,6 +34,8 @@ namespace netDxf.IO
                 record.Object = new DxfOpaqueObject("DIMASSOC", opaque) { Handle = handle };
                 return record;
             }
+            if (record.Metadata.Reactors.Select(value => Convert.ToUInt64(value, 16)).Distinct().Count() != record.Metadata.Reactors.Count)
+                throw new FormatException("DIMASSOC repeats a persistent-reactor identity.");
             int index = 1;
             Func<short, DxfTag> take = code =>
             {
@@ -50,12 +53,13 @@ namespace netDxf.IO
                 if ((mask & (1 << slot)) == 0) continue;
                 take(1);
                 short osnap = (short)take(72).Value;
+                if (osnap != 1 && osnap != 3 && osnap != 13) throw new FormatException("DIMASSOC osnap type is outside the qualified public range.");
                 string geometry = (string)take(331).Value;
                 short subentity = (short)take(73).Value;
                 int marker = (int)take(91).Value;
                 double parameter = (double)take(40).Value;
                 var point = new Vector3((double)take(10).Value, (double)take(20).Value, (double)take(30).Value);
-                take(75);
+                if ((short)take(75).Value != 0) throw new FormatException("DIMASSOC last-point flag must be zero or one.");
                 points.Add(new DxfStoredDimAssocPoint(slot, osnap, geometry, subentity, marker, parameter, point));
             }
             if (index != body.Count) throw new FormatException("DIMASSOC point-reference count does not match its mask.");

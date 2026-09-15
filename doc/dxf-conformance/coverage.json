@@ -571,6 +571,10 @@
     "SOURCEID": {
       "label": "Retained source identities and numeric handle semantics",
       "path": "doc/dxf-conformance/source-reference-identity.md"
+    },
+    "DIMASSOC": {
+      "label": "immutable native DIMASSOC packets and conservative lifecycle",
+      "path": "doc/dxf-conformance/stored-dimassoc.md"
     }
   },
   "features": [
@@ -2430,16 +2434,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Associative dimension records/links.",
+      "scope": "Immutable source-version DIMASSOC with qualified direct geometry references, native DIMENSION extension ownership and reactor state. Seven native associations/profile; repeated VERTEX paths and private variants remain opaque. Clone/owned erasure reject; exposed dependencies and all DIMASSOC owner chains guard removal. No evaluation, complete private graph or whole-original-drawing claim.",
       "evidence": [
-        "B"
+        "DIMASSOC"
       ]
     },
     {
