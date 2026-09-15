@@ -1,0 +1,24 @@
+{
+  "commit": "133747c78d4477ebff865e15c757e07265ac062c",
+  "files": {
+    "netDxf/DxfDocument.MetadataReferences.cs": "9f54d4a02fe2cb75e024adf60b6b82b2f3064b3527520f2ea19bc5e572b7bad5",
+    "netDxf/DxfDocument.MultiLeader.cs": "7154862146155d826200a363a00a321bc34cba8ea4fd2e182d07758da66b4ef7",
+    "netDxf/DxfDocument.PolyfaceMeshRecords.cs": "5bf23786fc739a587f2df126a7c09d4ecfd7debad8147ca78c41f64bcf739a99",
+    "netDxf/DxfDocument.PolylineRecords.cs": "49b1c8ce475f03002ec26b4b17be635c24442346575a5ff4c41ad9c8d040fda2",
+    "netDxf/DxfDocument.PolylineTopology.cs": "d80003566d2d293d3a8c1b4af6112705e509c9c2ca177f958849e9ab27e6c5c9",
+    "netDxf/DxfDocument.StoredTable.cs": "01c68f982c781a5da2d40d6e816d3d2278c85fefc76d9c06ec5aaa705eab30f6",
+    "netDxf/DxfDocument.cs": "12477cfad5a1d40d4bc0c7331dcc32391f53ecc1e0ad7b9b9b5c57091d59b090",
+    "netDxf/Entities/PolyfaceMesh.StoredRecords.cs": "3c2a167f89a7e1b2ba7c4098466cccc7825618f68d7dd7afd2e91bdf712049e0",
+    "netDxf/Entities/PolyfaceMesh.cs": "ac902f6e7e394eb8bd630214cdc1d282f91de7a1c3a06611af047ac4fedb311a",
+    "netDxf/Entities/PolyfaceMeshRecord.cs": "c762803542597bf0f0d3e4b1cfd476af2b2f1c58b5921a6190d644f0b284b2fe",
+    "netDxf/Entities/Polyline.cs": "686cbe0dfb7350b06c186f8ebfc84f59903b779680adc0f39cf0947a677acd62",
+    "netDxf/Entities/Polyline3D.StoredRecords.cs": "7422a1981468ec8092e87eeedaddc10899ae178a2a8f5e2bf2602c8aed898135",
+    "netDxf/IO/DxfReader.PolyfaceMeshRecords.cs": "5393cc1e102187fe480832c8afa2965fca92a5c9ac8e9626eabd02bd7ca4ecf0",
+    "netDxf/IO/DxfReader.cs": "1122b77cc414e6f89fb2c6e74dedd372e28745fb269d0d39ff0867afcdae6539",
+    "netDxf/IO/DxfWriter.PolyfaceMeshRecords.cs": "7fbd682c1038033e4260fe39898cd2425875d72d956bfa6fa5c60da249475344",
+    "netDxf/IO/DxfWriter.PolygonMeshRecords.cs": "30f227159376d5af8bbf4b5defcadb2518a8c53e708779801c9d6fb0926f9f69",
+    "netDxf/IO/DxfWriter.cs": "76db39a8bfa6492859ecf33a640c47fd973a205671eb38d735dca95e292b69b8",
+    "netDxf/Objects/DxfObjectDatabase.Erase.cs": "cd8e80f80fcd56429b637969397dd01cbfc3dc2f6ce2720897ad9abf89f1bf25",
+    "netDxf/Objects/DxfObjectDatabase.Section.cs": "15c5f405c68296a15736f6ba1a105344977f340a06f9f1c193553d785c37c6be"
+  }
+}

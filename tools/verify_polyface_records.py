@@ -23,6 +23,11 @@ POINTS = [(1., 2., 3.), (4., 7., 11.), (8., 12., 17.), (13., 19., 23.), (29., 31
 def source_inputs():
     folder = ROOT / 'tests/fixtures/polyface-records'
     producer = {}
+    negatives = json.loads((folder / 'negative-manifest.json').read_text())['fixtures']
+    check(len(negatives) == 2, 'Pinned malformed XData fixture inventory')
+    for item in negatives:
+        data = (folder / item['file']).read_bytes()
+        check(hashlib.sha256(data).hexdigest() == item['sha256'], 'Pinned malformed XData bytes changed')
     manifest = json.loads((folder / 'manifest.json').read_text())
     check(manifest['producer'] == 'ezdxf 1.4.4' and len(manifest['fixtures']) == 12, 'Producer inventory')
     for item in manifest['fixtures']:

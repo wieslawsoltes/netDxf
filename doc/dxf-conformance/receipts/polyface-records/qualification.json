@@ -1,0 +1,213 @@
+{
+  "module": "PolyfaceMesh retained coordinate/face/SEQEND and subclass-header records",
+  "base_commit": "b2338cf794f1272d9a21394dccd23c3c58a30602",
+  "production_commit": "133747c78d4477ebff865e15c757e07265ac062c",
+  "qualified_test_commit": "c96324c426d76ae89acce520e43a304031bf3f63",
+  "published_source_checkpoint": "609509b502cddf41ab6e88d320753240933a590e",
+  "published_source_tree": "071ed2e24231ccb2d3f315c201a97b78c51922bd",
+  "sdk": "8.0.408",
+  "runtime": "8.0.15",
+  "ezdxf": "1.4.4",
+  "target_framework": "net8.0",
+  "source_hash_manifest": "production-source-hashes.json",
+  "configurations": {
+    "debug": {
+      "cases": 2578,
+      "failed": 0,
+      "groups": {
+        "polygonmesh": 727,
+        "polyline-records": 382,
+        "polygonmesh-records": 387,
+        "polyface-records": 568,
+        "polyline-topology": 169,
+        "polyface": 345
+      },
+      "results": "debug-results.json",
+      "results_sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+      "library_sha256": "04cf0c697b1c768cf5a7a4a030e2b637655b381604c4a8801da5cd8cbe621752",
+      "test_assembly_sha256": "4aeecaffa3580c2e58025aa7c663bba3dbe08115a9ee803355b1252983de2a45",
+      "output_manifest": "debug-output-manifest.json",
+      "positive_outputs": 612,
+      "negative_input_outputs": 12,
+      "build_errors": 0,
+      "existing_CS1591_warnings": 561,
+      "tests_rebuild_errors": 0,
+      "tests_rebuild_warnings": 0,
+      "gates": [
+        {
+          "command": "python tools/verify_polyface_records.py {artifacts}",
+          "outputs": 142,
+          "corruption_controls": 240,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "debug-verify_polyface_records.txt",
+          "sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac",
+          "conclusion": "PASS 142 outputs, 240 actual corruption controls, zero audit errors or repairs"
+        },
+        {
+          "command": "python tools/verify_polyface_grammar.py {artifacts}",
+          "outputs": 96,
+          "corruption_controls": 576,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "debug-verify_polyface_grammar.txt",
+          "sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+          "conclusion": "PASS 96 explicit schema drawings, 576 corruption controls, zero audit errors or repairs"
+        },
+        {
+          "command": "python tools/verify_polygonmesh_records.py {artifacts}",
+          "outputs": 70,
+          "corruption_controls": 8,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "debug-verify_polygonmesh_records.txt",
+          "sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3",
+          "conclusion": "POLYGONMESH VERTEX/SEQEND: 70 outputs; 2 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and eight actual-output corruption controls passed; zero independent audit errors or repairs."
+        },
+        {
+          "command": "python tools/verify_polygonmesh_cardinality.py {artifacts}",
+          "outputs": 116,
+          "corruption_controls": 12,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "debug-verify_polygonmesh_cardinality.txt",
+          "sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba",
+          "conclusion": "PolygonMesh: 116 required outputs, 12 physical corruption controls, 2 native packet chains; all passed"
+        },
+        {
+          "command": "python tools/verify_polyline3d_records.py {artifacts}",
+          "outputs": 90,
+          "corruption_controls": 6,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "debug-verify_polyline3d_records.txt",
+          "sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+          "conclusion": "VERTEX/SEQEND: 90 outputs; 6 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and six actual-output corruption controls passed; zero independent audit errors or repairs."
+        },
+        {
+          "command": "python tools/verify_polyline_topology.py {artifacts}",
+          "outputs": 98,
+          "corruption_controls": 8,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "debug-verify_polyline_topology.txt",
+          "sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+          "conclusion": "Polyline topology: 98 outputs; all six profiles and both transports; exact native/producer child packets, metadata, insertion, final-index movement, deletion, clones, Unicode resources and eight actual-output corruption controls; zero independent audit errors or repairs."
+        }
+      ]
+    },
+    "release": {
+      "cases": 2578,
+      "failed": 0,
+      "groups": {
+        "polygonmesh": 727,
+        "polyline-records": 382,
+        "polygonmesh-records": 387,
+        "polyface-records": 568,
+        "polyline-topology": 169,
+        "polyface": 345
+      },
+      "results": "release-results.json",
+      "results_sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+      "library_sha256": "036e4006368afb2a1f084b9874cf822f4832b62ce02862f7664ab4e52da04c24",
+      "test_assembly_sha256": "46c3cd89d5640e4b5cb4f8d43d5af0ea73d5a9c2613b1d1b44f1f3666dc473a9",
+      "output_manifest": "release-output-manifest.json",
+      "positive_outputs": 612,
+      "negative_input_outputs": 12,
+      "build_errors": 0,
+      "existing_CS1591_warnings": 561,
+      "tests_rebuild_errors": 0,
+      "tests_rebuild_warnings": 0,
+      "gates": [
+        {
+          "command": "python tools/verify_polyface_records.py {artifacts}",
+          "outputs": 142,
+          "corruption_controls": 240,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "release-verify_polyface_records.txt",
+          "sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac",
+          "conclusion": "PASS 142 outputs, 240 actual corruption controls, zero audit errors or repairs"
+        },
+        {
+          "command": "python tools/verify_polyface_grammar.py {artifacts}",
+          "outputs": 96,
+          "corruption_controls": 576,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "release-verify_polyface_grammar.txt",
+          "sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674",
+          "conclusion": "PASS 96 explicit schema drawings, 576 corruption controls, zero audit errors or repairs"
+        },
+        {
+          "command": "python tools/verify_polygonmesh_records.py {artifacts}",
+          "outputs": 70,
+          "corruption_controls": 8,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "release-verify_polygonmesh_records.txt",
+          "sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3",
+          "conclusion": "POLYGONMESH VERTEX/SEQEND: 70 outputs; 2 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and eight actual-output corruption controls passed; zero independent audit errors or repairs."
+        },
+        {
+          "command": "python tools/verify_polygonmesh_cardinality.py {artifacts}",
+          "outputs": 116,
+          "corruption_controls": 12,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "release-verify_polygonmesh_cardinality.txt",
+          "sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba",
+          "conclusion": "PolygonMesh: 116 required outputs, 12 physical corruption controls, 2 native packet chains; all passed"
+        },
+        {
+          "command": "python tools/verify_polyline3d_records.py {artifacts}",
+          "outputs": 90,
+          "corruption_controls": 6,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "release-verify_polyline3d_records.txt",
+          "sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+          "conclusion": "VERTEX/SEQEND: 90 outputs; 6 pinned native originals/extractions; 12 unchanged producer fixtures; exact child packets, source identities, both owner forms, owned metadata, clones, moves with parent-reactor rebinding, coordinate edits, private groups and six actual-output corruption controls passed; zero independent audit errors or repairs."
+        },
+        {
+          "command": "python tools/verify_polyline_topology.py {artifacts}",
+          "outputs": 98,
+          "corruption_controls": 8,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "transcript": "release-verify_polyline_topology.txt",
+          "sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+          "conclusion": "Polyline topology: 98 outputs; all six profiles and both transports; exact native/producer child packets, metadata, insertion, final-index movement, deletion, clones, Unicode resources and eight actual-output corruption controls; zero independent audit errors or repairs."
+        }
+      ]
+    }
+  },
+  "commands": {
+    "build": "dotnet MSBuild.dll tests/netDxf.Conformance/netDxf.Conformance.csproj /t:Restore,Build /p:Configuration={Debug|Release} /m:1 /nr:false /p:UseSharedCompilation=false /v:minimal",
+    "tests": "DXF_TEST_FILTER=poly DXF_TEST_ARTIFACTS={empty-directory} dotnet tests/netDxf.Conformance/bin/{Debug|Release}/net8.0/netDxf.Conformance.dll"
+  },
+  "independent_summary": {
+    "path": "independent/polyface-review-summary.json",
+    "sha256": "68e2a971b2cc0efa86a521d5a94ac3f40359e2eb64156a762b4699b61a993fc5"
+  },
+  "validation_tools": {
+    "tools/verify_polyface_records.py": "cee766bef8db8a7b77f63a415c63fdf34f7082033fd9baf35f6755872679847b",
+    "tools/verify_polyface_grammar.py": "efd49fd2a9e3805aaeaaeb404d50252d355f06ebfde1b7e56ec5ef88a0063909",
+    "tools/verify_polygonmesh_records.py": "2644acfb2f3aeba40c4dd24552d59f487453041f3bf785e06c10263bf965a80d",
+    "tools/verify_polygonmesh_cardinality.py": "f5fd7fdeff13bc10ccdb4c41833b04236d22b4d6dc8875c7746eb49a50749fed",
+    "tools/verify_polyline3d_records.py": "01cbe104712ff064f7100f8b5403a6e63b2236e2b274064e3c69bdbd42c6fc0c",
+    "tools/verify_polyline_topology.py": "0fe70a001dad2e8ac3b4bee72f7fd6d2d7c524d022cbdbb8a5c345b1d047e939"
+  },
+  "tests": {
+    "PolyfaceRecordAdvancedTests.cs": "2da4705d36c8a4c9c49c5c457b150770b9598a2dab3a62975c8d61967448b1d0",
+    "PolyfaceRecordTests.cs": "1c673cedf981b11b23309f8d22bbea505f638527c4416fb359311a0792b9a964",
+    "PolyfaceGrammarTests.cs": "834c904286a9940236b1065647a8d8d8967bbe066f31a0c57bdb17e62f4d1b06"
+  },
+  "normal_before_proof": "independent/polyface-normal-expanded-before/results.json",
+  "limitations": [
+    "Native source corpus and unchanged independent producer bytes were inspected; no native CAD runtime was executed.",
+    "Native carrier layers are synthetic; complete native POLYFACE parent/child packets are qualified with the declared parent-owner relocation and six named existing common-header defaults.",
+    "Original retained meshes remain source-document/profile bound; graph-mapping clones and mesh topology editing are excluded.",
+    "Root PR integration owns the full repository suite, all framework targets and target-version diagnostic integration."
+  ]
+}

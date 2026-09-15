@@ -442,7 +442,7 @@ internal static partial class Program
         var clone = (PolyfaceMesh)mesh.Clone(); Vector3 invalid = variant == 0 ? new Vector3(double.NaN, 0, 1) : variant == 1 ? new Vector3(0, double.PositiveInfinity, 1) : Vector3.Zero;
         foreach (var target in new[] { mesh, clone }) { try { target.Normal = invalid; } catch (ArgumentException) { } }
         Throws<InvalidOperationException>(() => mesh.Clone());
-        var destination = new DxfDocument(DxfVersion.AutoCad2018); long targetSeed = OwnershipSeed(destination); var objects = destination.Objects.Items.ToArray();
+        var destination = new DxfDocument(DxfVersion.AutoCad2018); var objects = destination.Objects.Items.ToArray(); long targetSeed = OwnershipSeed(destination);
         Throws<InvalidOperationException>(() => destination.Entities.Add(clone));
         Check(clone.Owner == null && clone.RecordSequence.All(r => r.Handle == null) && targetSeed == OwnershipSeed(destination) && objects.SequenceEqual(destination.Objects.Items), "invalid normal adoption changed destination before validation");
         long seed = OwnershipSeed(doc); using var output = new MemoryStream(); output.WriteByte(91); bool rejected = false;

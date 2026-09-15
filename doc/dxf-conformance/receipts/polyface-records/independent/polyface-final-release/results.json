@@ -1,0 +1,307 @@
+{
+  "cases": 60,
+  "failed": 0,
+  "librarySha256": "036e4006368afb2a1f084b9874cf822f4832b62ce02862f7664ab4e52da04c24",
+  "results": [
+    {
+      "name": "producer-R2000-ascii-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-ascii-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-ascii-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-ascii-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2000-binary-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-ascii-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2004-binary-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-ascii-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2007-binary-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-ascii-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2010-binary-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-ascii-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2013-binary-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-ascii-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary-wire-edit",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary-layer-and-detach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary-clone",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "producer-R2018-binary-invalid-save",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2000-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2000-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2004-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2004-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-2018-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}
