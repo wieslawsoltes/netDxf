@@ -91,7 +91,7 @@ internal static partial class Program
             Throws<InvalidOperationException>(change);
         Equal(seed, OwnershipSeed(doc), "composite rejected edit reserved handle");
         Throws<NotSupportedException>(() => doc.Objects.EraseOwnedTree(wrapper));
-        var destination = new DxfDocument(DxfVersion.AutoCad2004); long destinationSeed = OwnershipSeed(destination); int destinationCount = destination.Objects.Items.Count();
+        var destination = new DxfDocument(DxfVersion.AutoCad2004); int destinationCount = destination.Objects.Items.Count(); long destinationSeed = OwnershipSeed(destination);
         Throws<NotSupportedException>(() => destination.Objects.Clone((DxfDictionary)doc.GetObjectByHandle(fixture.Root), destination.Objects.Root, "COPY"));
         Equal(destinationSeed, OwnershipSeed(destination), "opaque descendant clone allocated"); Equal(destinationCount, destination.Objects.Items.Count(), "opaque descendant clone registered objects");
         Throws<ArgumentException>(() => destination.Objects.Root.Add("FOREIGN", wrapper));
