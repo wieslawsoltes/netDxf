@@ -1,0 +1,1589 @@
+{
+  "summary": {
+    "VERTEX": 8379,
+    "VERTEX/identity": 8355,
+    "VERTEX/owner": 3850,
+    "VERTEX/common_overrides": 4,
+    "SEQEND": 91,
+    "SEQEND/identity": 77,
+    "SEQEND/owner": 55,
+    "SEQEND/common_overrides": 2,
+    "VERTEX/reactors": 8
+  },
+  "profiles": {
+    "('AC1015', 'VERTEX')": 35,
+    "('AC1015', 'SEQEND')": 11,
+    "('AC1024', 'SEQEND')": 7,
+    "('AC1032', 'SEQEND')": 6,
+    "('AC1032', 'VERTEX')": 25,
+    "('AC1018', 'SEQEND')": 4,
+    "('AC1018', 'VERTEX')": 13,
+    "('AC1021', 'SEQEND')": 4,
+    "('AC1021', 'VERTEX')": 13,
+    "('AC1024', 'VERTEX')": 13,
+    "('AC1027', 'SEQEND')": 4,
+    "('AC1027', 'VERTEX')": 13,
+    "('AC1009', 'VERTEX')": 4511,
+    "('AC1009', 'SEQEND')": 26,
+    "('AC1012', 'VERTEX')": 3725,
+    "('AC1012', 'SEQEND')": 15,
+    "('AC1014', 'SEQEND')": 4,
+    "('AC1014', 'VERTEX')": 13,
+    "('AC1006', 'SEQEND')": 3,
+    "('AC1006', 'VERTEX')": 6,
+    "('AC2.10', 'SEQEND')": 2,
+    "('AC2.10', 'VERTEX')": 3,
+    "('AC1003', 'SEQEND')": 2,
+    "('AC1003', 'VERTEX')": 3,
+    "('AC1004', 'SEQEND')": 3,
+    "('AC1004', 'VERTEX')": 6
+  },
+  "vertex_flags": {
+    "0": 7463,
+    "32": 811,
+    "64": 24,
+    "192": 54,
+    "128": 27
+  },
+  "vertex_subclasses": {
+    "('AcDbEntity', 'AcDbVertex', 'AcDb2dVertex')": 3716,
+    "('AcDbEntity', 'AcDbVertex', 'AcDb3dPolylineVertex')": 38,
+    "('AcDbEntity', 'AcDbVertex', 'AcDbPolygonMeshVertex')": 24,
+    "('AcDbEntity', 'AcDbVertex', 'AcDbPolyFaceMeshVertex')": 48,
+    "('AcDbEntity', 'AcDbFaceRecord')": 24,
+    "()": 4529
+  },
+  "files": [
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__Constraints.dxf",
+      "sha256": "09beca558029b4c3a50f999cd1e90348902250fd565bcb50dcbccf91cdea654c",
+      "profile": "AC1015",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__Leader.dxf",
+      "sha256": "12d6239782221ef8534ebd0e659c8eaeb5b5353e24a5774dc38f43416b8ad5bb",
+      "profile": "AC1015",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__PolyLine2D.dxf",
+      "sha256": "e74f03a383593ef96d5a349618390a393e8c5697e253014d4218fd40e3f37250",
+      "profile": "AC1015",
+      "summary": {
+        "VERTEX": 4,
+        "VERTEX/identity": 4,
+        "VERTEX/owner": 4,
+        "VERTEX/common_overrides": 4,
+        "SEQEND": 2,
+        "SEQEND/identity": 2,
+        "SEQEND/owner": 2,
+        "SEQEND/common_overrides": 2
+      },
+      "metadata": [
+        {
+          "handle": "1F0",
+          "kind": "VERTEX",
+          "owner": [
+            "1EF"
+          ],
+          "reactors": [],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [
+            6,
+            62
+          ],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "1F0"
+            ],
+            [
+              330,
+              "1EF"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "0"
+            ],
+            [
+              6,
+              "ByBlock"
+            ],
+            [
+              62,
+              "     0"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb2dVertex"
+            ],
+            [
+              10,
+              "-0.5"
+            ],
+            [
+              20,
+              "-0.5"
+            ],
+            [
+              30,
+              "0.0"
+            ]
+          ]
+        },
+        {
+          "handle": "1F1",
+          "kind": "VERTEX",
+          "owner": [
+            "1EF"
+          ],
+          "reactors": [],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [
+            6,
+            62
+          ],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "1F1"
+            ],
+            [
+              330,
+              "1EF"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "0"
+            ],
+            [
+              6,
+              "ByBlock"
+            ],
+            [
+              62,
+              "     0"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb2dVertex"
+            ],
+            [
+              10,
+              "0.5"
+            ],
+            [
+              20,
+              "0.5"
+            ],
+            [
+              30,
+              "0.0"
+            ]
+          ]
+        },
+        {
+          "handle": "1F2",
+          "kind": "SEQEND",
+          "owner": [
+            "1EF"
+          ],
+          "reactors": [],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [
+            6,
+            62
+          ],
+          "packet": [
+            [
+              0,
+              "SEQEND"
+            ],
+            [
+              5,
+              "1F2"
+            ],
+            [
+              330,
+              "1EF"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "0"
+            ],
+            [
+              6,
+              "ByBlock"
+            ],
+            [
+              62,
+              "     0"
+            ]
+          ]
+        },
+        {
+          "handle": "201",
+          "kind": "VERTEX",
+          "owner": [
+            "1FF"
+          ],
+          "reactors": [],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [
+            6,
+            62
+          ],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "201"
+            ],
+            [
+              330,
+              "1FF"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "0"
+            ],
+            [
+              6,
+              "ByBlock"
+            ],
+            [
+              62,
+              "     0"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb2dVertex"
+            ],
+            [
+              10,
+              "-0.25"
+            ],
+            [
+              20,
+              "0.0"
+            ],
+            [
+              30,
+              "0.0"
+            ],
+            [
+              42,
+              "1.0"
+            ]
+          ]
+        },
+        {
+          "handle": "202",
+          "kind": "VERTEX",
+          "owner": [
+            "1FF"
+          ],
+          "reactors": [],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [
+            6,
+            62
+          ],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "202"
+            ],
+            [
+              330,
+              "1FF"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "0"
+            ],
+            [
+              6,
+              "ByBlock"
+            ],
+            [
+              62,
+              "     0"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb2dVertex"
+            ],
+            [
+              10,
+              "0.25"
+            ],
+            [
+              20,
+              "0.0"
+            ],
+            [
+              30,
+              "0.0"
+            ],
+            [
+              42,
+              "1.0"
+            ]
+          ]
+        },
+        {
+          "handle": "203",
+          "kind": "SEQEND",
+          "owner": [
+            "1FF"
+          ],
+          "reactors": [],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [
+            6,
+            62
+          ],
+          "packet": [
+            [
+              0,
+              "SEQEND"
+            ],
+            [
+              5,
+              "203"
+            ],
+            [
+              330,
+              "1FF"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "0"
+            ],
+            [
+              6,
+              "ByBlock"
+            ],
+            [
+              62,
+              "     0"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__PolyLine3D.dxf",
+      "sha256": "a869cf5e71afdf98ea1fdb261bfaf4d3e6a565dd3f387e6484ae40c024705fd2",
+      "profile": "AC1015",
+      "summary": {
+        "VERTEX": 6,
+        "VERTEX/identity": 6,
+        "VERTEX/owner": 6,
+        "SEQEND": 1,
+        "SEQEND/identity": 1,
+        "SEQEND/owner": 1
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__TS1.dxf",
+      "sha256": "d55726ba862a45572a6b72493e3139b809d0a806e7eba6e4cae578a1a4227303",
+      "profile": "AC1015",
+      "summary": {
+        "SEQEND": 2,
+        "SEQEND/identity": 2,
+        "SEQEND/owner": 2,
+        "VERTEX": 12,
+        "VERTEX/identity": 12,
+        "VERTEX/owner": 12
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__entities-2d.dxf",
+      "sha256": "6487cde42549f84eaf9ef377c9bc33e4d0a25047d733ef65df33b9bd02987bb4",
+      "profile": "AC1015",
+      "summary": {
+        "SEQEND": 1,
+        "SEQEND/identity": 1,
+        "SEQEND/owner": 1
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2000__entities-3d.dxf",
+      "sha256": "65d07b7afd3b3a51fc4f9a25ea91c67451157d68f614791f3c4fa64094e95162",
+      "profile": "AC1015",
+      "summary": {
+        "SEQEND": 1,
+        "SEQEND/identity": 1,
+        "SEQEND/owner": 1
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2004__Constraints.dxf",
+      "sha256": "6501eed5e754cea1583fb6ee9523c0a0f25c4dae7ca7e88d4a5380e7a19b5073",
+      "profile": "AC1018",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2004__Leader.dxf",
+      "sha256": "5cc97ba5ba48b2feb2e05a28c67b43aa421162376fb32a00ffd9e58df3523019",
+      "profile": "AC1018",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2004__Surface.dxf",
+      "sha256": "aa4204cc64cde5867b4ac922a9356e02c091bcf8e0fec636252f06ed4ebe5c60",
+      "profile": "AC1018",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2004__Underlay.dxf",
+      "sha256": "a95202c3425e8d3028abf6b762cd0bfcd66c755607b4da3d3cd398cbf3886637",
+      "profile": "AC1018",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2004__material.dxf",
+      "sha256": "388d2fda230cb25f497bcdc41a15aae66fb10fc509e7f8f372eb62b0ed5f30c2",
+      "profile": "AC1018",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Arc.dxf",
+      "sha256": "51f54b2e0e0cf67b9fb423b34c2c59c45ba12ebecc515504e218905ec06236c5",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Constraints.dxf",
+      "sha256": "d8e72bec4ebbb54e2255c6895928f633fddecf6d4ca21e8267e3395a096cbde1",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__ConstructionLine.dxf",
+      "sha256": "92e74dd3163533488771b793b0dc160075f8d28871e98ac0545f95e81bf96482",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Donut.dxf",
+      "sha256": "0884310ba35704392c2efb78fe8d3515d3f76829245aabd2e1b046d2f69eb5c3",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Ellipse.dxf",
+      "sha256": "79cac0a209db9101111260e9102288147d7c5b61bc0f341622063a4c25ed4f39",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Helix.dxf",
+      "sha256": "0370919383dc58d0b3d0c3c75e9993fb58cb4bf76083fa44a205864ede42c3b1",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Leader.dxf",
+      "sha256": "4ab43c49dceb119d8e666a169faa87f6bbfa72f345ac109397752286a3676171",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Line.dxf",
+      "sha256": "5e5e75b41b4de51cd31a9f11e3174eb59d9363b4963b4b0431d3432d4ec38e73",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Polygon.dxf",
+      "sha256": "50a914162a4da7411e8e8a0bb8c779cb1dbb74c5c89bf3689478746b757954dc",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Polyline.dxf",
+      "sha256": "1583874360c485caeee32269cb0019c07329c6d21bcc4d0a4a201a6f68ca134a",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__RAY.dxf",
+      "sha256": "53e00bc997bc40e986bfaafcec35a77efefaaf2b04a08a0715df1886013ebf7f",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__Text.dxf",
+      "sha256": "fe5c497429da0d81f788684757e12334fda95a108118db11afe1c58a6ee51a41",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2007__circle.dxf",
+      "sha256": "965996b659a8287302cc72c2ddb70ed8b986a6e2d7dff4166da23c8d96e34a39",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2010__Constraints.dxf",
+      "sha256": "459fb35c21cf4045a207b5f2032b32dfc1031b0bbce5c40e5f705c5f8ef6485d",
+      "profile": "AC1024",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2010__Leader.dxf",
+      "sha256": "2c8c4d821ab9151e3da40b12e0c1acbf716c82b0a1ad388620d068e4efb68986",
+      "profile": "AC1024",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2010__gh209_1.dxf",
+      "sha256": "e1df4235b1f156ad1210cb32b3752952c4d677e1401e617d33cfbb637495e718",
+      "profile": "AC1024",
+      "summary": {
+        "SEQEND": 3,
+        "SEQEND/identity": 3,
+        "SEQEND/owner": 3
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2013__Constraints.dxf",
+      "sha256": "da88787541f0d34fc1654567326ec5715131af9bf8467c52db32f531e162c59c",
+      "profile": "AC1027",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2013__Leader.dxf",
+      "sha256": "7e7a724c833667fcc114bdbd16068bc19ea3c76d5c61b17f446b776fa5a210ca",
+      "profile": "AC1027",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2013__gh109_1.dxf",
+      "sha256": "d9bc12c75492edf3f4334a44c0138efee8fa6c441c14fab967493f67c7ce8139",
+      "profile": "AC1027",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2018__Constraints.dxf",
+      "sha256": "6f81984ffe6ca3e69281afec323335dcf1d8368a03bde1f0dcfadfa0fb97aff8",
+      "profile": "AC1032",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2018__Dynblocks.dxf",
+      "sha256": "3320aac4a5b8128d58f9a7a28d013c6d06b1f7785d00884a7c952b58afdb13cc",
+      "profile": "AC1032",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2018__Leader.dxf",
+      "sha256": "8028ce0245c633fc07fcc676c6cc6445748d42ef0aee4a2b43bdb5f1e14ee86d",
+      "profile": "AC1032",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2018__LiveSection1.dxf",
+      "sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+      "profile": "AC1032",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__2018__TS1.dxf",
+      "sha256": "ef795fb7c4c9cfc4486ff3cc0254d38cbdb870a326e7e8cccd78b0e046868d14",
+      "profile": "AC1032",
+      "summary": {
+        "SEQEND": 2,
+        "SEQEND/identity": 2,
+        "SEQEND/owner": 2,
+        "VERTEX": 12,
+        "VERTEX/identity": 12,
+        "VERTEX/owner": 12
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_2000.dxf",
+      "sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+      "profile": "AC1015",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "Tavolo 3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_2004.dxf",
+      "sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+      "profile": "AC1018",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "Tavolo 3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_2007.dxf",
+      "sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+      "profile": "AC1021",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "Tavolo 3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_2010.dxf",
+      "sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+      "profile": "AC1024",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "Tavolo 3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_2013.dxf",
+      "sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+      "profile": "AC1027",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "Tavolo 3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_2018.dxf",
+      "sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+      "profile": "AC1032",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "Tavolo 3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_r12.dxf",
+      "sha256": "89461b11cb6c683f535d208c135aeaa22a844ac628565907a8572208a92d5aa1",
+      "profile": "AC1009",
+      "summary": {
+        "VERTEX": 4336,
+        "VERTEX/identity": 4336,
+        "SEQEND": 19,
+        "SEQEND/identity": 19
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_r13.dxf",
+      "sha256": "2c573c70495850f301710ebfb26bd5e6eda4646d2f4ab657fdfd7bb2972faae4",
+      "profile": "AC1012",
+      "summary": {
+        "VERTEX": 3725,
+        "VERTEX/identity": 3725,
+        "VERTEX/owner": 3725,
+        "SEQEND": 15,
+        "SEQEND/identity": 15,
+        "SEQEND/owner": 15,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "TAVOLO_3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__example_r14.dxf",
+      "sha256": "b5db43eb376b8e6a11fc1596945baf538b67448d87e73840f6347007ea0035ed",
+      "profile": "AC1014",
+      "summary": {
+        "SEQEND": 4,
+        "SEQEND/identity": 4,
+        "SEQEND/owner": 4,
+        "VERTEX": 13,
+        "VERTEX/identity": 13,
+        "VERTEX/owner": 13,
+        "VERTEX/reactors": 1
+      },
+      "metadata": [
+        {
+          "handle": "41E",
+          "kind": "VERTEX",
+          "owner": [
+            "41A"
+          ],
+          "reactors": [
+            "42F"
+          ],
+          "extension": [],
+          "xdata": [],
+          "common_override_codes": [],
+          "packet": [
+            [
+              0,
+              "VERTEX"
+            ],
+            [
+              5,
+              "41E"
+            ],
+            [
+              102,
+              "{ACAD_REACTORS"
+            ],
+            [
+              330,
+              "42F"
+            ],
+            [
+              102,
+              "}"
+            ],
+            [
+              330,
+              "41A"
+            ],
+            [
+              100,
+              "AcDbEntity"
+            ],
+            [
+              8,
+              "TAVOLO_3"
+            ],
+            [
+              100,
+              "AcDbVertex"
+            ],
+            [
+              100,
+              "AcDb3dPolylineVertex"
+            ],
+            [
+              10,
+              "4263.008982973159"
+            ],
+            [
+              20,
+              "5198.776713909552"
+            ],
+            [
+              30,
+              "5.0"
+            ],
+            [
+              70,
+              "    32"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r10__entities.dxf",
+      "sha256": "6579b1e6e8b39e254012ff323a0bf0d7304e2977cf54eac0dc6f5cbf2270a594",
+      "profile": "AC1006",
+      "summary": {
+        "SEQEND": 3,
+        "VERTEX": 6
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r10__tmp_line.dxf",
+      "sha256": "1cbff2c6bb12aac797e962df33af7b86d84d7975e7bd9258c732d66514d99ead",
+      "profile": "AC1006",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r11__Constraints_12.dxf",
+      "sha256": "59c75e95f1fac57b1555a09983def233c2073b81e6e29f917fccc6a0a7930f3e",
+      "profile": "AC1009",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r11__entities-2d.dxf",
+      "sha256": "2c8bc7de7ab95a27cde449d73c1d2a34bcf038bd17255d2c0c40fbe704792828",
+      "profile": "AC1009",
+      "summary": {
+        "SEQEND": 2,
+        "VERTEX": 3
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r11__entities-3d.dxf",
+      "sha256": "862634382f4d0cc292ce5e389f16eeb78cd1520081bcf4d1c56df428cc848080",
+      "profile": "AC1009",
+      "summary": {
+        "SEQEND": 2,
+        "VERTEX": 3
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r12__Constraints.dxf",
+      "sha256": "59c75e95f1fac57b1555a09983def233c2073b81e6e29f917fccc6a0a7930f3e",
+      "profile": "AC1009",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r12__Leader.dxf",
+      "sha256": "9d3ff6a3651915ef851bd4a29910dfbdac566260e52df53c7ac6000b20256cc2",
+      "profile": "AC1009",
+      "summary": {
+        "VERTEX": 169,
+        "VERTEX/identity": 169,
+        "SEQEND": 3,
+        "SEQEND/identity": 3
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r13__v.dxf",
+      "sha256": "86531656820742506d5964333c3a82d4554e649174ee67877b3f876f252aa0a1",
+      "profile": "AC1012",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r14__Leader.dxf",
+      "sha256": "dc9e77c88cfe0b6b234e4eb051419b1d1b33bc105771048e9163ce562d3aed87",
+      "profile": "AC1014",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r2.10__block.dxf",
+      "sha256": "4079edb4685427148aa4572af51e756a3550b3b677b9b8541396424edfb3109e",
+      "profile": "AC2.10",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r2.10__entities.dxf",
+      "sha256": "df3755ce1ab559e28f6ec005b6fd868970f879e365604ec2e960118e725ba218",
+      "profile": "AC2.10",
+      "summary": {
+        "SEQEND": 2,
+        "VERTEX": 3
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r2.6__dim.dxf",
+      "sha256": "0eca2a49dec7fcf7c0c6fb8e847e8d023ea08979b15640541e37754bab28fd33",
+      "profile": "AC1003",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r2.6__entities.dxf",
+      "sha256": "d626dc92f34012d60fdbcad940b37d8a59297b7d94db0741f9cca20946d7be70",
+      "profile": "AC1003",
+      "summary": {
+        "SEQEND": 2,
+        "VERTEX": 3
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r9__entities.dxf",
+      "sha256": "b37fb624d442182e49698bff40bafdfe44040a51af0307d3a5d7e5d66d24d6ba",
+      "profile": "AC1004",
+      "summary": {
+        "SEQEND": 3,
+        "VERTEX": 6
+      },
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_2000.dxf",
+      "sha256": "4b81b4de8331c808495b1ea42754986207a4e16256750d334dd54f96b9762feb",
+      "profile": "AC1015",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_2004.dxf",
+      "sha256": "544b707b9c2b1d1f14a72579e7f614846af1d3f855d518c188c19bbe25417dac",
+      "profile": "AC1018",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_2007.dxf",
+      "sha256": "b29e7767e1f0bf0e8a985bbb7c3b03bb85e907322b894b0171a9364c2a21d5f6",
+      "profile": "AC1021",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_2010.dxf",
+      "sha256": "fff9fd8a65cc62d72e3b16ce58797f6d8fa113fe49bd2b6293f1d2aac293fc4a",
+      "profile": "AC1024",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_2013.dxf",
+      "sha256": "99a27a2891d183b794960ecb44478851bc8eabfe0681d51bb76684b90f5f8d9d",
+      "profile": "AC1027",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_2018.dxf",
+      "sha256": "9618b5cef57867bee4c5b23898e653f0c5f2ba04c0ec729eb3dec73bb7175410",
+      "profile": "AC1032",
+      "summary": {},
+      "metadata": []
+    },
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__sample_r14.dxf",
+      "sha256": "5a735ce3f83328e8571a5d2007da4933310ade5d20acc23d01dd35d3c93533e8",
+      "profile": "AC1014",
+      "summary": {},
+      "metadata": []
+    }
+  ],
+  "failures": [
+    {
+      "file": "ucs-base-research/libredwg/test__test-data__r1.4__entities.dxf",
+      "error": "Invalid group code \"EXTENTS,1\n\" at line 1."
+    }
+  ]
+}

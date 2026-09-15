@@ -76,7 +76,7 @@ namespace netDxf.Objects
 
         internal override IEnumerable<DxfDatabaseObject> DeclaredOwnedObjects
         {
-            get { if (this.IsSchemaManaged) { yield return this.tableContent; yield return this.tableGeometry; } }
+            get { if (this.IsSchemaManaged) { yield return this.tableContent; yield return this.tableGeometry; if (this.tableCellData != null) yield return this.tableCellData; } }
         }
 
         internal override IEnumerable<DxfObject> DatabaseReferences
@@ -86,7 +86,9 @@ namespace netDxf.Objects
 
         internal override void CopyDatabaseReferencesTo(DxfDatabaseObject target, Func<DxfObject, DxfObject> resolve)
         {
-            if (this.IsSchemaManaged)
+            if (this.tableCellData != null)
+                ((DxfXRecord)target).BindCompositeTableRoundtripChildren((DxfDatabaseObject)resolve(this.tableContent), (DxfDatabaseObject)resolve(this.tableGeometry), (DxfDataTable)resolve(this.tableCellData));
+            else if (this.IsSchemaManaged)
                 ((DxfXRecord)target).BindTableRoundtripChildren((DxfDatabaseObject)resolve(this.tableContent), (DxfDatabaseObject)resolve(this.tableGeometry));
         }
 
@@ -95,11 +97,13 @@ namespace netDxf.Objects
             if (!this.IsSchemaManaged) return;
             this.ReplaceLoadedData(this.tableContentSlot, new DxfTag(360, this.tableContent.Handle));
             this.ReplaceLoadedData(this.tableGeometrySlot, new DxfTag(361, this.tableGeometry.Handle));
+            if (this.tableCellData != null) this.ReplaceLoadedData(14, new DxfTag(360, this.tableCellData.Handle));
         }
 
         internal override void ValidateDatabaseSchema(DxfObjectDatabase database, List<string> errors)
         {
             if (!this.IsSchemaManaged) return;
+            this.ValidateCompositeTableOwnership(errors);
             if (!this.IsTableRoundtripRecord || this.tableContentSlot >= this.Data.Count || this.tableGeometrySlot >= this.Data.Count)
             { errors.Add("Invalid TABLE roundtrip ownership envelope: " + this.Handle); return; }
             if (this.Data[this.tableContentSlot].Code != 360 || this.Data[this.tableGeometrySlot].Code != 361)

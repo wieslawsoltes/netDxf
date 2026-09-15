@@ -43,10 +43,12 @@ internal static partial class Program
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();
+        RegisterStoredDimAssocTests();
         RunTypedObjectErasureTests();
         RunLightListTests();
         RunDataTableTests();
         RunSunTests();
+        RunUcsBaseTests();
         RegisterStoredTableTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
@@ -55,6 +57,7 @@ internal static partial class Program
         RegisterStoredFieldTests();
         RegisterFifthMixedModuleTests();
         RegisterSixthMixedModuleTests();
+        RegisterCompositeTableOwnershipTests();
         RunSourceReferenceIdentityTests();
         RunNumericHandleTests();
         RegisterSectionTests();

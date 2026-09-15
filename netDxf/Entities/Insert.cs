@@ -689,6 +689,7 @@ namespace netDxf.Entities
         /// <returns>A new Insert that is a copy of this instance.</returns>
         public override object Clone()
         {
+            Polyline3D.RejectStoredRecordBlockClone(this.Block);
             // copy attributes
             List<Attribute> copyAttributes = new List<Attribute>();
             foreach (Attribute att in this.attributes)

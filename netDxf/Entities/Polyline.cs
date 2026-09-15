@@ -39,6 +39,8 @@ namespace netDxf.Entities
     internal class Polyline :
         DxfObject
     {
+        internal Polyline3D StoredSource;
+
         #region private fields
 
         private string subclassMarker;

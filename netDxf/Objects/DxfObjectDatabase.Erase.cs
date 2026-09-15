@@ -49,7 +49,9 @@ namespace netDxf.Objects
                     throw new NotSupportedException("An ownership subtree containing a managed legacy object cannot be erased.");
                 if (value.IsErased || value.Database != this || !this.IsRegistered(value))
                     throw new InvalidOperationException("The erased ownership subtree has inconsistent registration.");
+                if (value is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
                 if (value is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
+                if (value is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (value is DxfOpaqueObject) throw new NotSupportedException("An opaque object requires its application schema before erasure: " + value.CodeName);
                 tree.Add(value);
                 if (children.TryGetValue(item, out List<DxfObject> next)) foreach (DxfObject child in next) pending.Enqueue(child);
@@ -108,6 +110,11 @@ namespace netDxf.Objects
                     foreach (DxfTag tag in opaque.Tags)
                         if (tag.ValueType == DxfTagValueType.Handle) handle((string)tag.Value, "opaque handle " + tag.Code);
                 if (item is Section section) reference(section.GeometrySettings, "section settings");
+                if (item is Polyline3DRecord polylineRecord)
+                {
+                    foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");
+                    foreach (DxfTag tag in polylineRecord.Tags) if (IsReference(tag)) handle((string)tag.Value, "polyline record handle");
+                }
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)

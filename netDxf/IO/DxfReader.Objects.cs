@@ -45,6 +45,13 @@ namespace netDxf.IO
                 this.databaseRecords.Add(style);
                 return style;
             }
+            if (codeName == "TABLECONTENT")
+            {
+                DatabaseRecord content = this.ReadStoredTableContentRecord(tags);
+                content.SourceIdentity = source;
+                this.databaseRecords.Add(content);
+                return content;
+            }
             if (codeName == "SUN")
             {
                 DatabaseRecord sun = this.ReadSunRecord(tags);
@@ -56,6 +63,13 @@ namespace netDxf.IO
             {
                 DatabaseRecord field = this.ReadStoredFieldRecord(codeName, tags);
                 field.SourceIdentity = source; this.databaseRecords.Add(field); return field;
+            }
+            if (codeName == "DIMASSOC")
+            {
+                DatabaseRecord association = this.ReadStoredDimAssocRecord(tags);
+                association.SourceIdentity = source;
+                this.databaseRecords.Add(association);
+                return association;
             }
             if (codeName == "DATATABLE")
             {
@@ -218,6 +232,7 @@ namespace netDxf.IO
             {
                 if (record.Object is DxfXRecord xrecord) foreach (DxfTag tag in xrecord.Data) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfStoredTableContent content) foreach (DxfTag tag in content.Payload) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfTableStyle style) foreach (DxfTag tag in style.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredField field) foreach (DxfTag tag in field.Payload) database.ReserveUnresolvedReference(tag);
                 foreach (XData data in record.Object.XData.Values)
@@ -297,7 +312,9 @@ namespace netDxf.IO
                 DxfObject target = this.GetObjectBySourceHandle(pair.Key);
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
+            this.ResolveStoredDimAssocReferences();
             this.ResolveTableStyleReferences();
+            this.ResolveStoredTableContentReferences();
             this.ResolveSunReferences();
             this.ResolveStoredFields();
             this.ResolveDataTableReferences();

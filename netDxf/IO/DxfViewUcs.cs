@@ -15,6 +15,7 @@ namespace netDxf.IO
         }
         private void ResolveUcsReferences()
         {
+            this.ResolveUcsBaseReferences();
             foreach (var reference in this.ucsReferences)
             {
                 UCS target = this.doc.GetObjectByHandle(reference.Item3) as UCS;
@@ -103,6 +104,7 @@ namespace netDxf.IO
     {
         private void ValidateUcsReferences()
         {
+            foreach (UCS ucs in this.doc.UCSs) UcsReferences.Validate(ucs, this.doc);
             foreach (View view in this.doc.Views) UcsReferences.Validate(view, this.doc);
             foreach (VPort port in this.doc.VPorts.Records) UcsReferences.Validate(port, this.doc);
         }
