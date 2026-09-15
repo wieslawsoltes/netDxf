@@ -35,6 +35,12 @@ namespace netDxf.IO
                 if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
                 this.chunk.Next();
             }
+            if (codeName == "DATATABLE")
+            {
+                DatabaseRecord table = this.ReadDataTableRecord(tags);
+                this.databaseRecords.Add(table);
+                return table;
+            }
             if (codeName == "LAYER_FILTER" || codeName == "OBJECT_PTR")
             {
                 DatabaseRecord envelope = this.ReadLayerFilterPointerRecord(codeName, tags);
@@ -237,6 +243,7 @@ namespace netDxf.IO
                 DxfObject target = this.doc.GetObjectByHandle(pair.Key);
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
+            this.ResolveDataTableReferences();
             this.ResolveDeclaredOwnership();
             this.ResolveGeoDataHosts();
             this.ResolveOutputSettingsReferences();

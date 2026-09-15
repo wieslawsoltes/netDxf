@@ -75,6 +75,7 @@ namespace netDxf.IO
             this.PrepareLayerFilterPointerClasses(definitions);
             this.PrepareMultiLeaderClasses(definitions);
             this.PrepareLightListClass(definitions);
+            this.PrepareDataTableClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -124,6 +125,7 @@ namespace netDxf.IO
             else if (this.WriteMLeaderStylePayload(item)) { }
             else if (this.WriteLayerFilterPointerPayload(item)) { }
             else if (this.WriteLightListPayload(item)) { }
+            else if (this.WriteDataTablePayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);
