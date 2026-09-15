@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "a0b9fdb350988c456f9717dfe89dce62ffb77109",
-    "tree": "83299c4ff79430bd4232ff258345e751a88f1c7b"
+    "commit": "b77d731ef874fc21b594ffc208d30b92e7f48db6",
+    "tree": "27b6fa0145322aa5af26e486e6232486ce08d540"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 27555,
+    "test_cases": 28627,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 90,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/90/checks"
+    "last_implementation_pr": 91,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/91/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",

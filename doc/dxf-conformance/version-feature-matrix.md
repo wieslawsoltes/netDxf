@@ -2,8 +2,8 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-15**. Implementation snapshot for PR **#90**: [`a0b9fdb350988c456f9717dfe89dce62ffb77109`](https://github.com/wieslawsoltes/netDxf/tree/a0b9fdb350988c456f9717dfe89dce62ffb77109).
-Source tree: `83299c4ff79430bd4232ff258345e751a88f1c7b`. Branch: `netstandard`.
+Audit date: **2026-09-15**. Implementation snapshot for PR **#91**: [`b77d731ef874fc21b594ffc208d30b92e7f48db6`](https://github.com/wieslawsoltes/netDxf/tree/b77d731ef874fc21b594ffc208d30b92e7f48db6).
+Source tree: `27b6fa0145322aa5af26e486e6232486ce08d540`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
@@ -413,7 +413,7 @@ Feature changes require reviewable PRs, independently authored positive and malf
 
 ## 17. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **27,555 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **28,627 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 
