@@ -63,8 +63,9 @@ namespace netDxf
             foreach (DxfStoredField field in this.AddedObjects.Values.OfType<DxfStoredField>())
             {
                 if (field.References.Any(removed.Contains)) return true;
+                var ancestors = new HashSet<DxfObject>(new MetadataIdentityComparer());
                 for (DxfObject owner = field.Owner; owner != null; owner = owner.Owner)
-                    if (removed.Contains(owner)) return true;
+                    if (!ancestors.Add(owner) || removed.Contains(owner)) return true;
             }
             foreach (StoredTable table in this.AddedObjects.Values.OfType<StoredTable>())
                 if (!removed.Contains(table) && table.References.Any(removed.Contains)) return true;

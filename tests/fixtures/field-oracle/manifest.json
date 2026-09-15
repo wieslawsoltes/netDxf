@@ -62,5 +62,39 @@
       },
       "sourceScope": "Complete published source drawing. Qualification extracts exact FIELD, FIELDLIST and owner dictionary packets into a scoped carrier with synthetic LINE hosts replacing ATTDEF identities; full source loading has separate unrelated blockers. No evaluator execution or external sheet-set resolution."
     }
-  ]
+  ],
+  "carrierMapping": {
+    "syntheticHosts": [
+      {
+        "sourceHandle": "14B",
+        "sourceType": "ATTDEF",
+        "carrierHandle": "14B",
+        "carrierType": "LINE"
+      },
+      {
+        "sourceHandle": "15B",
+        "sourceType": "ATTDEF",
+        "carrierHandle": "15B",
+        "carrierType": "LINE"
+      }
+    ],
+    "retainedNativeRecordHandles": [
+      "14C",
+      "14D",
+      "14E",
+      "14F",
+      "15C",
+      "15D",
+      "15E",
+      "15F",
+      "150"
+    ],
+    "modifiedCommonMetadata": {
+      "150": {
+        "sourceOwnerAndReactor": "C",
+        "carrierOwnerAndReactor": "emitted named dictionary root"
+      }
+    },
+    "payloadModifications": "none"
+  }
 }

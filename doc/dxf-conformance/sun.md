@@ -49,7 +49,7 @@ var copy = document.Objects.CloneSun(sun, destination);
 document.Objects.EraseOwnedTree(copy); // Also clears destination.Sun.
 ```
 
-Only physical hosts registered in the document object registry are admitted. In particular, a paper-space layout’s retained-only overall viewport (`Layout.Viewport`, typically Id1) is outside this increment when it is absent from that registry; typed SUN source ownership by such an unregistered carrier is rejected. The reader recognizes group361 only in the public host subclass, outside private control groups and before XData.
+Only physical hosts registered in the document object registry are admitted. In particular, a paper-space layout’s retained-only overall viewport (`Layout.Viewport`, typically Id1) is outside this increment when it is absent from that registry; typed SUN source ownership by such an unregistered carrier is rejected. The reader recognizes group 361 only in the public host subclass, outside private control groups and before XData.
 
 `SetSun` requires a registered eligible owner with an empty slot and a detached, unerased typed SUN. `CloneSun` copies the entire typed ownership subtree, including extension dictionaries, XRECORDs and common metadata. It automatically maps the source owner to the registered destination owner. Other cross-document references require an explicit mapping; mapping enumeration and validation finish before handle allocation. Stored APPID metadata copying does not call overridable public cloning methods.
 
@@ -59,8 +59,10 @@ Ordinary `owner.Clone()` rejects an attached SUN, because it cannot return a det
 
 ## Fixtures and qualification
 
-The pinned `acad_table_simple.dxf.gz` and `acad_table_with_blk_ref.dxf.gz` inputs use the source hashes already recorded in `tools/table_oracle/fixtures.json`. Each contains SUN23 with common owner22, VPORT22 with group361→23, raw time54000000, shadow type2 and RGB16777215. Their native CLASS is `SUN / AcDbSun / SCENEOE`, flags1153, non-graphical. The writer retains compatible class metadata and updates the physical instance count.
+The pinned `acad_table_simple.dxf.gz` and `acad_table_with_blk_ref.dxf.gz` inputs use the source hashes already recorded in `tools/table_oracle/fixtures.json`. Each contains SUN23 with common owner22, VPORT22 with group 361→23, raw time 54000000, shadow type 2 and RGB 16777215. Their native CLASS is `SUN / AcDbSun / SCENEOE`, flags 1153, non-graphical. The writer retains compatible class metadata and updates the physical instance count.
 
-The focused fixtures extract each SUN packet into an otherwise controlled R2007 document. They disclose the SUN identity relocation to7F000 and external common-owner relocation to the controlled VPORT; every subclass field, ordering and floating-point bit pattern remains exact. These extractions qualify the SUN body and reciprocal relationship, not all unrelated fields of the original drawing.
+The focused fixtures extract each SUN packet into an otherwise controlled R2007 document. They disclose the SUN identity relocation to 7F000 and external common-owner relocation to the controlled VPORT; every subclass field, ordering and floating-point bit pattern remains exact. These extractions qualify the SUN body and reciprocal relationship, not all unrelated fields of the original drawing.
 
 The mandatory independent output inventory is 22 authored profile/owner/transport files plus four native files. Tests also cover scalar boundaries, optional truecolor, all three owner families, reciprocal lookup, null and normalized identities, private fallback, malformed public fields, profile rejection, explicit clone/remap, incoming-reference protection, terminal erasure and attachment atomicity. No native CAD execution or all-values native acceptance is claimed.
+
+The exact focused receipt is recorded in [sun-qualification.json](sun-qualification.json): final source 4a1b7e9 passes 867 Debug cases, including 300 SUN tests and 66 private host context assertions, with 26 independent outputs and zero audits or repairs. The separately pinned earlier Release checkpoint passed 313 focused cases; the integration branch records the final combined Release matrix.

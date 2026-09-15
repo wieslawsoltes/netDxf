@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "scope": "Focused SUN storage and registered-host ownership qualification; combined cross-module CI is recorded separately by the integration branch.",
+  "source_commit": "4a1b7e9d15d82dd1aaf56ef09976f35e77bed309",
+  "source_tree": "2e215cd306cb7d9800cd2f03672c7a73b06bf4b0",
+  "debug": {
+    "target": "net8.0",
+    "production_dll_sha256": "87aeea632aa008db12f7d13d8435e3e6c674dc7116485cfd69d0d07d5a7edc40",
+    "tests_dll_sha256": "f87bb51a94a1af180a98467b6c9e90da8934db1a44ce331d4679c7a0ca38554f",
+    "tests_passed": 867,
+    "tests_failed": 0,
+    "groups": {
+      "sun": 300,
+      "datatable": 467,
+      "typed_erasure": 87,
+      "stored_metadata": 13
+    },
+    "host_private_context_assertions": 66,
+    "results_sha256": "52a2acb921d25af2f96483282c4bbe01fad4745f9cb6d306b5f49a7f363ff506",
+    "independent_gate": {
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "native_cad_execution": false,
+      "native_packets": 4,
+      "native_source_files": 2,
+      "negative_controls": 4,
+      "outputs": 26,
+      "solar_or_render_evaluation": false
+    },
+    "gate_sha256": "3b4a1cee59e0295d8e3a0c0c8819d36a4c2f7aa08ff534287cd394825986d052"
+  },
+  "earlier_release": {
+    "source_commit": "e792fa670aafa5f82ff2979855c6be25283b55dc",
+    "target": "net8.0",
+    "production_dll_sha256": "c1193dd40afde2d1b95dd2c1b9a02e18a0ae92abbfbce4840aa799aeb622e411",
+    "tests_passed": 313,
+    "tests_failed": 0,
+    "groups": {
+      "sun": 300,
+      "stored_metadata": 13
+    },
+    "results_sha256": "3b2a9e7ffa6a94eb09e6c002285d9f6adfedcbd31d3d30a842607315d186a983",
+    "independent_gate": {
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "native_cad_execution": false,
+      "native_packets": 4,
+      "native_source_files": 2,
+      "negative_controls": 4,
+      "outputs": 26,
+      "solar_or_render_evaluation": false
+    },
+    "limit": "Before the final host-XData admission guard; do not treat as final-source Release qualification."
+  },
+  "limitations": [
+    "Stored metadata only; no solar-position or render evaluation.",
+    "Explicit registered VPORT/VIEWPORT owners from R2007; VIEW owner from R2010.",
+    "Retained-only Layout.Viewport Id1 carriers without object-registry entries are outside the typed ownership scope.",
+    "Whole opaque private SUN payloads are retained; private ownership subtrees cannot be cloned or erased without a schema.",
+    "Native extraction relocates SUN identity and its external common owner only; native subclass bodies remain exact.",
+    "No native CAD execution."
+  ],
+  "documentation": "doc/dxf-conformance/sun.md",
+  "test_entry_point": "RunSunTests",
+  "independent_verifier": "tools/verify_sun.py"
+}

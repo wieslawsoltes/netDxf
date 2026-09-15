@@ -15,6 +15,11 @@ namespace netDxf.Objects
     /// and subtree erasure. Common object metadata and XData retain their ordinary interfaces.</remarks>
     public sealed class DxfStoredField : DxfDatabaseObject
     {
+        private sealed class IdentityComparer : IEqualityComparer<DxfObject>
+        {
+            public bool Equals(DxfObject first, DxfObject second) { return ReferenceEquals(first, second); }
+            public int GetHashCode(DxfObject item) { return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(item); }
+        }
         private readonly DxfDocument source;
         private readonly List<DxfStoredField> children = new List<DxfStoredField>();
         private readonly List<DxfObject> objects = new List<DxfObject>();
@@ -96,6 +101,9 @@ namespace netDxf.Objects
         {
             if (!this.resolved || database == null || !ReferenceEquals(database.Document, this.source))
             { errors.Add("Stored FIELD requires its registered source document: " + this.Handle); return; }
+            var ancestors = new HashSet<DxfObject>(new IdentityComparer());
+            for (DxfObject owner = this; owner != null; owner = owner.Owner)
+                if (!ancestors.Add(owner)) { errors.Add("FIELD source ownership contains a cycle: " + this.Handle); break; }
             if (this.source.DrawingVariables.AcadVer != this.SourceVersion) errors.Add("Stored FIELD source profile changed: " + this.Handle);
             foreach (var pair in this.identities)
                 if (!ReferenceEquals(this.source.GetObjectByHandle(pair.Key), pair.Value))

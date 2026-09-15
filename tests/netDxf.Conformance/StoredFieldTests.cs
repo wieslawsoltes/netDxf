@@ -21,7 +21,7 @@ internal static partial class Program
                 Run($"stored-field/graph/{version}/{binary}", () => StoredFieldGraph(version, binary));
         foreach (bool binary in new[] { false, true })
         {
-            foreach (string variant in new[] { "negative-child", "large-child", "missing-child", "wrong-owner", "wrong-child-type", "duplicate-child", "null-child", "negative-objects", "object-count", "unresolved", "cycle" })
+            foreach (string variant in new[] { "negative-child", "large-child", "missing-child", "wrong-owner", "wrong-child-type", "duplicate-child", "null-child", "negative-objects", "object-count", "unresolved", "cycle", "owner-cycle" })
                 Run($"stored-field/malformed/{variant}/{binary}", () => StoredFieldMalformed(variant, binary));
             foreach (string variant in new[] { "alias", "private-subclass", "private-control", "private-header", "unrecognized-prefix" })
                 Run($"stored-field/opaque/{variant}/{binary}", () => StoredFieldOpaque(variant, binary));
@@ -49,7 +49,27 @@ internal static partial class Program
     private static string StoredFieldHandle(DxfRawRecord record) => (string)record.Tags.First(t => t.Code == 5).Value;
     private static DxfRawRecord StoredFieldRecord(DxfRawDocument raw, string handle) => raw.Sections.SelectMany(s => s.Records).Single(r => r.Tags.TakeWhile(t => t.Code != 100).Any(t => t.Code == 5 && (string)t.Value == handle));
     private static DxfDocument StoredFieldLoad(DxfRawDocument raw, bool binary)
-    { using var bytes = new MemoryStream(); DxfRawDocument.Create(raw.Tags, binary).Save(bytes); bytes.Position = 0; return DxfDocument.Load(bytes) ?? throw new Exception("FIELD carrier failed to load."); }
+    { return StoredFieldTryLoad(raw, binary) ?? throw new Exception("FIELD carrier failed to load."); }
+    private static DxfDocument? StoredFieldTryLoad(DxfRawDocument raw, bool binary)
+    { using var bytes = new MemoryStream(); DxfRawDocument.Create(raw.Tags, binary).Save(bytes); bytes.Position = 0; return DxfDocument.Load(bytes); }
+    private static void StoredFieldRejectLoad(DxfRawDocument raw, bool binary, string? message = null)
+    {
+        bool rejected;
+        try { rejected = StoredFieldTryLoad(raw, binary) == null; }
+        catch (FormatException error)
+        {
+            if (message != null) Check(error.Message.Contains(message), "source rejection must identify FIELD dependency");
+            rejected = true;
+        }
+        Check(rejected, "FIELD accepted malformed or discarded source identity");
+    }
+    private static void StoredFieldRejectSave(DxfDocument doc, Stream output, bool binary)
+    {
+        bool rejected;
+        try { rejected = !doc.Save(output, binary); }
+        catch (InvalidOperationException) { rejected = true; }
+        Check(rejected, "FIELD accepted an invalid source/profile graph");
+    }
     private static DxfDocument StoredFieldCarrier(DxfVersion version, bool binary, out DxfRawDocument native)
     {
         native = StoredFieldSource(version);
@@ -158,7 +178,10 @@ internal static partial class Program
         var snapshot = OwnershipTagValues(field.Payload).ToArray(); doc.Layers["FIELD_LAYER"].Name = "FIELD_LAYER_RENAMED"; doc.TextStyles["FIELD_STYLE"].Name = "FIELD_STYLE_RENAMED"; doc.ApplicationRegistries["FIELD_REGISTRY"].Name = "FIELD_REGISTRY_RENAMED";
         Check(OwnershipTagValues(field.Payload).SequenceEqual(snapshot), "resource rename rewrote evaluator/cache data"); Equal(0, doc.Objects.Validate().Count, "FIELD identity after resource rename");
         var other = version == DxfVersion.AutoCad2000 ? DxfVersion.AutoCad2018 : DxfVersion.AutoCad2000; doc.DrawingVariables.AcadVer = other; using var invalid = new MemoryStream();
-        Throws<InvalidOperationException>(() => doc.Save(invalid, binary)); Equal(0L, invalid.Length, "FIELD profile conversion wrote output"); doc.DrawingVariables.AcadVer = version;
+        StoredFieldRejectSave(doc, invalid, binary); Equal(0L, invalid.Length, "FIELD profile conversion wrote output"); doc.DrawingVariables.AcadVer = version;
+        Check(graph.Remove("FIELD"), "remove owning alias");
+        using var orphan = new MemoryStream(); StoredFieldRejectSave(doc, orphan, binary); Equal(0L, orphan.Length, "orphan FIELD emitted output");
+        Check(ReferenceEquals(doc.GetObjectByHandle(field.Handle), field), "alias removal erased FIELD identity"); graph.Add("FIELD", field);
         StoredFieldSave(doc, version, binary, "graph", null);
         File.WriteAllText(Path.Combine(ArtifactDirectory, $"stored-field-{version}-{binary}-map.json"), JsonSerializer.Serialize(handles));
     }
@@ -189,7 +212,8 @@ internal static partial class Program
         if (variant == "cycle") { tags[child] = new DxfTag(360, handles["parent"]); tags[tags.FindIndex(t => t.Code == 330)] = new DxfTag(330, handles["parent"]); }
         raw = raw.WithRecord(record, tags);
         if (variant == "wrong-owner") { record = StoredFieldRecord(raw, handles["child"]); raw = raw.WithRecord(record, record.Tags.Select(t => t.Code == 330 ? new DxfTag(330, handles["graph"]) : t)); }
-        Throws<FormatException>(() => StoredFieldLoad(raw, binary));
+        if (variant == "owner-cycle") { record = StoredFieldRecord(raw, handles["graph"]); raw = raw.WithRecord(record, record.Tags.Select(t => t.Code == 330 ? new DxfTag(330, handles["graph"]) : t)); }
+        StoredFieldRejectLoad(raw, binary);
     }
     private static void StoredFieldOpaque(string variant, bool binary)
     {
@@ -225,10 +249,7 @@ internal static partial class Program
         string missing = (string)raw.Sections.Single(s => s.Name == "HEADER").Records.Single(r => r.Name == "$HANDSEED").Tags.Single(t => t.Code == 5).Value;
         var record = StoredFieldRecord(raw, handles["parent"]); var tags = record.Tags.ToList(); int slot = tags.FindIndex(t => t.Code == 331); tags[slot] = new DxfTag(331, missing);
         raw = SourceReferenceDecoy(raw.WithRecord(record, tags), missing, decoy);
-        bool rejected = false;
-        try { StoredFieldLoad(raw, binary); }
-        catch (FormatException error) { Check(error.Message.Contains("FIELD dependency"), "source rejection must identify FIELD dependency"); rejected = true; }
-        Check(rejected, "FIELD accepted generated or discarded source identity");
+        StoredFieldRejectLoad(raw, binary, "FIELD dependency");
     }
     private static void StoredFieldSemantic(short code)
     {

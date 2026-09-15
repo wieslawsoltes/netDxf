@@ -54,6 +54,7 @@ internal static partial class Program
         RegisterTableStyleTests();
         RegisterStoredFieldTests();
         RegisterFifthMixedModuleTests();
+        RegisterSixthMixedModuleTests();
         RunSourceReferenceIdentityTests();
         RunNumericHandleTests();
         RegisterSectionTests();
