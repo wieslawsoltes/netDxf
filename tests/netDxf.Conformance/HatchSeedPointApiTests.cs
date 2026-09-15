@@ -143,7 +143,7 @@ internal static partial class Program
 
     private static void HatchSeedInsert()
     {
-        Hatch hatch = NewSeedHatch();
+        Hatch hatch = NewSeedHatch(); hatch.Pattern = HatchPattern.Solid;
         var block = new Block("SeedBlock"); block.Entities.Add((Hatch)hatch.Clone());
         var insert = new Insert(block, new Vector3(10, 20, 30)) { Scale = new Vector3(2, 3, 1), Rotation = 30 };
         var clone = (Insert)insert.Clone();

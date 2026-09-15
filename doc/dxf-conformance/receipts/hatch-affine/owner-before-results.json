@@ -1,0 +1,667 @@
+[
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/0/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/0/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/1/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/1/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/2/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/2/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/3/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/3/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/4/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/4/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Affine rational flag: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineGeometry(DxfVersion version, Boolean binary, Int32 operation, Int32 plane) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_3.\u003CRegisterHatchAffineTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 10\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/False/nan-matrix",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/infinite-matrix",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/nan-translation",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/collapsed-plane",
+    "passed": false,
+    "error": "System.InvalidOperationException: Invalid affine transform rejected\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/False/overflow",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/invalid-spline",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/nan-matrix",
+    "passed": false,
+    "error": "System.InvalidOperationException: Failed transform retains associativity: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/True/infinite-matrix",
+    "passed": false,
+    "error": "System.InvalidOperationException: Failed transform retains associativity: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/True/nan-translation",
+    "passed": false,
+    "error": "System.InvalidOperationException: Failed transform retains associativity: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/True/collapsed-plane",
+    "passed": false,
+    "error": "System.InvalidOperationException: Invalid affine transform rejected\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/True/overflow",
+    "passed": false,
+    "error": "System.InvalidOperationException: Failed transform retains associativity: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/atomic/True/invalid-spline",
+    "passed": false,
+    "error": "System.InvalidOperationException: Failed transform retains associativity: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchAffineAtomic(Boolean associative, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass266_5.\u003CRegisterHatchAffineTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/HatchAffineTests.cs:line 12\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-affine/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-affine/association/success",
+    "passed": true,
+    "error": null
+  }
+]

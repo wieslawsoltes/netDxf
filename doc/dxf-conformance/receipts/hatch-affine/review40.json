@@ -1,0 +1,19 @@
+{
+  "baseline40-results.json": {
+    "cases": 40,
+    "passed": 4,
+    "failed": 36,
+    "max_world_error": 8.455201516589062,
+    "sha256": "a24eba547e27e1e921d6440001a0615319c1f33409b91fd6032525b7d21f7d9c"
+  },
+  "final40-results.json": {
+    "cases": 40,
+    "passed": 40,
+    "failed": 0,
+    "max_world_error": 6.6018607235733855e-15,
+    "sha256": "7733530ce7f9d645f19b9e02a26819b8082ce59e55ed0194f5c62974ee111437"
+  },
+  "harness_sha256": "7ee6dae6704f517b4f40b6fe1db67c8da293028bb72f58695f93391e7b4622ee",
+  "baseline_dll_sha256": "70200902616ba0cadb7c89189f97f4f70da4156b54149d8a2c19de51e72befb9",
+  "fixed_dll_sha256": "46ba95c01e1a3915f5cc51866611dafdf8162019a2bd1b82a604095127ccee3e"
+}

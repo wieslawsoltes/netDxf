@@ -31,11 +31,11 @@ internal static partial class Program
         Run("declared-ownership/registered-reciprocity", DeclaredOwnershipRegisteredReciprocity);
     }
 
-    // These explicitly private opaque bodies test ownership without claiming the public TABLECONTENT grammar.
+    // These explicitly private opaque bodies test ownership without claiming the public TABLECONTENT or TABLEGEOMETRY grammar.
     // The ownership marker and 360/361 relationships come from the frozen native TABLE fixtures.
     private static DxfDatabaseObject OwnershipChild(string kind)
     {
-        var tags = new List<DxfTag> { new(100, kind == "TABLECONTENT" ? "PrivateOwnershipTableContent" : "AcDbTableGeometry"), new(90, 0) };
+        var tags = new List<DxfTag> { new(100, kind == "TABLECONTENT" ? "PrivateOwnershipTableContent" : "PrivateOwnershipTableGeometry"), new(90, 0) };
         return (DxfDatabaseObject)Activator.CreateInstance(typeof(DxfOpaqueObject), BindingFlags.Instance | BindingFlags.NonPublic,
             null, new object[] { kind, tags }, null)!;
     }

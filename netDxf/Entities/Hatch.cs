@@ -33,7 +33,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a hatch <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class Hatch :
+    public partial class Hatch :
         EntityObject
     {
         #region delegates and events
@@ -458,18 +458,8 @@ namespace netDxf.Entities
         /// <param name="transformation">Transformation matrix.</param>
         /// <param name="translation">Translation vector.</param>
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
-        public override void TransformBy(Matrix3 transformation, Vector3 translation)
+        private void TransformCurvedBoundary(Matrix3 transformation, Vector3 translation, Vector3 newNormal)
         {
-            if (this.associative)
-            {
-                this.UnLinkBoundary();
-            }
-
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
 
             Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
             Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
@@ -488,10 +478,20 @@ namespace netDxf.Entities
 
             foreach (HatchBoundaryPath path in this.BoundaryPaths)
             {
-                List<EntityObject> data = new List<EntityObject>();
+                List<HatchBoundaryPath.Edge> data = new List<HatchBoundaryPath.Edge>();
 
                 foreach (HatchBoundaryPath.Edge edge in path.Edges)
                 {
+                    if (edge is HatchBoundaryPath.Spline spline)
+                    {
+                        data.Add(TransformAffineSpline(spline, (value, vector) =>
+                        {
+                            Vector3 point = transWO * (transformation * (transOW * new Vector3(value.X, value.Y, vector ? 0 : this.Elevation)) + (vector ? Vector3.Zero : translation));
+                            RequireAffineFinite(point);
+                            return new Vector2(point.X, point.Y);
+                        }));
+                        continue;
+                    }
                     EntityObject entity = edge.ConvertTo();
 
                     switch (entity.Type)
@@ -516,7 +516,7 @@ namespace netDxf.Entities
                             break;
                     }
                     entity.TransformBy(transformation, translation);
-                    data.Add(entity);
+                    data.AddRange(new HatchBoundaryPath(new[] { entity }).Edges);
                 }
                 HatchBoundaryPath transformedPath = new HatchBoundaryPath(data);
                 // Classification survives a transform; bit 2 describes the resulting
@@ -540,6 +540,11 @@ namespace netDxf.Entities
             double newScale = axis.Modulus();
             newScale = MathHelper.IsZero(newScale) ? MathHelper.Epsilon : newScale;
 
+            ValidateAffinePathData(paths);
+            RequireAffineFinite(position);
+            RequireAffineFinite(newScale);
+            RequireAffineFinite(newAngle);
+            if (this.associative) this.UnLinkBoundary();
             this.Pattern.Scale = newScale;
             this.Pattern.Angle = newAngle;
             this.Elevation = position.Z;

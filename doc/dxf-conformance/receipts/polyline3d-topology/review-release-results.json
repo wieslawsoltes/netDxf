@@ -1,0 +1,307 @@
+{
+  "cases": 60,
+  "failed": 0,
+  "librarySha256": "c62000c9741720a6c604b6d722450c8e1d3c29fd7e9e875ddbd71834d39746bb",
+  "results": [
+    {
+      "name": "edit-identity-AutoCad2000-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2000-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2000-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2000-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2000-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2000-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2000-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2000-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2000-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2000-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2004-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2004-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2004-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2004-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2004-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2004-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2004-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2004-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2004-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2004-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2007-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2007-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2010-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2010-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2013-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2013-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2018-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "edit-identity-AutoCad2018-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "incoming-pointer-AutoCad2018-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "owned-metadata-AutoCad2018-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-state-AutoCad2018-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "profile-AutoCad2018-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}
