@@ -41,6 +41,7 @@ namespace netDxf.Entities
     {
         internal Polyline3D StoredSource;
         internal PolygonMesh StoredMeshSource;
+        internal PolyfaceMesh StoredPolyfaceSource;
 
         #region private fields
 

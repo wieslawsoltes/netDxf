@@ -89,6 +89,7 @@ namespace netDxf.IO
 
             this.ValidateStoredPolylineRecords();
             this.ValidateStoredPolygonMeshRecords();
+            this.ValidateStoredPolyfaceMeshRecords();
             this.ValidateStoredDimensionHeaders();
             this.ValidateTextStyleStrings();
             this.ValidateAcisEntities();
@@ -2774,6 +2775,11 @@ namespace netDxf.IO
 
         private void WritePolyline(Polyline polyline)
         {
+            if (polyline.StoredPolyfaceSource != null)
+            {
+                this.WriteStoredPolyfaceMeshHeader(polyline.StoredPolyfaceSource);
+                this.WriteStoredPolyfaceMeshRecords(polyline.StoredPolyfaceSource); return;
+            }
             this.chunk.Write(100, polyline.SubclassMarker);
 
             //dummy point
@@ -5165,6 +5171,12 @@ namespace netDxf.IO
 
         private void PreProcessPolyfaceMesh(PolyfaceMesh pMesh)
         {
+            if (pMesh.HasStoredRecords)
+            {
+                this.polylines.Add(pMesh.Handle, new Polyline { Handle = pMesh.Handle, StoredPolyfaceSource = pMesh,
+                    SubclassMarker = SubclassMarker.PolyfaceMesh, Layer = pMesh.Layer, Normal = pMesh.Normal, Color = pMesh.Color, Flags = pMesh.Flags });
+                return;
+            }
             List<Vertex> vertexes = new List<Vertex>();
 
             // first create the polyface mesh vertexes

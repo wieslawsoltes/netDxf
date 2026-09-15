@@ -121,6 +121,13 @@ namespace netDxf.Objects
                     foreach (DxfObject target in meshRecord.References) reference(target, "polygon mesh record reference");
                     foreach (DxfTag tag in meshRecord.OpaqueHandleTags) handle((string)tag.Value, "polygon mesh record handle");
                 }
+                if (item is PolyfaceMeshRecord polyfaceRecord)
+                {
+                    foreach (DxfObject target in polyfaceRecord.References) reference(target, "polyface record reference");
+                    foreach (DxfTag tag in polyfaceRecord.OpaqueHandleTags) handle((string)tag.Value, "polyface record handle");
+                }
+                if (item is PolyfaceMesh polyface)
+                    foreach (DxfTag tag in polyface.StoredHeaderReferences) handle((string)tag.Value, "polyface header handle");
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)

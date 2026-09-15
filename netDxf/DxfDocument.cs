@@ -1049,6 +1049,7 @@ namespace netDxf
             this.AddedObjects.Add(entity.Handle, entity);
             this.RegisterStoredPolylineRecords(entity as Polyline3D);
             this.RegisterStoredPolygonMeshRecords(entity as PolygonMesh);
+            this.RegisterStoredPolyfaceMeshRecords(entity as PolyfaceMesh);
 
             entity.LayerChanged += this.Entity_LayerChanged;
             entity.LinetypeChanged += this.Entity_LinetypeChanged;
@@ -1262,6 +1263,7 @@ namespace netDxf
             this.AddedObjects.Remove(entity.Handle);
             this.UnregisterStoredPolylineRecords(entity as Polyline3D);
             this.UnregisterStoredPolygonMeshRecords(entity as PolygonMesh);
+            this.UnregisterStoredPolyfaceMeshRecords(entity as PolyfaceMesh);
 
             entity.LayerChanged -= this.Entity_LayerChanged;
             entity.LinetypeChanged -= this.Entity_LinetypeChanged;
