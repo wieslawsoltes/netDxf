@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using netDxf.Entities;
 using netDxf.IO;
 
@@ -12,8 +13,16 @@ namespace netDxf
         {
             if (parent.Layer == null || !ReferenceEquals(this.GetObjectByHandle(parent.Layer.Handle), parent.Layer))
                 throw new InvalidOperationException("The inserted VERTEX requires the parent's registered layer.");
+            long retainedTags = 10;
+            foreach (Polyline3DRecord record in this.AddedObjects.Values.OfType<Polyline3DRecord>())
+            {
+                int count = record.TopologyTagCount();
+                if (count > 4096) throw new NotSupportedException("An existing retained polyline record exceeds its tag admission budget.");
+                retainedTags += count;
+            }
+            if (retainedTags > 1048576) throw new NotSupportedException("The inserted VERTEX exceeds the document's retained polyline tag admission budget.");
             long number = this.NumHandles;
-            while (number > 0 && number < long.MaxValue && this.GetObjectByHandle(number.ToString("X", CultureInfo.InvariantCulture)) != null) number++;
+            while (number > 0 && number < long.MaxValue && this.StoredTableHandleTarget(number.ToString("X", CultureInfo.InvariantCulture)) != null) number++;
             if (number <= 0 || number == long.MaxValue) throw new InvalidOperationException("No VERTEX identity can be allocated from the current handle seed.");
             string handle = number.ToString("X", CultureInfo.InvariantCulture);
             var tags = new List<DxfTag>

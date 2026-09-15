@@ -46,6 +46,7 @@ internal static partial class Program
         RunLayerIndexTests();
         RegisterStoredDimAssocTests();
         RegisterPolyline3DRecordTests();
+        RegisterPolylineTopologyTests();
         RegisterPolyfaceGrammarTests();
         RunTypedObjectErasureTests();
         RunLightListTests();
