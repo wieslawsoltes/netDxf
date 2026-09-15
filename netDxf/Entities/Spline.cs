@@ -617,6 +617,12 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="precision">Number of vertexes generated.</param>
         /// <returns>A list vertexes that represents the spline.</returns>
+        /// <remarks>
+        /// Periodic evaluation uses the stored active knot domain and requires
+        /// positive finite weights and cyclic strictly increasing knot spans.
+        /// Temporary weight scaling leaves the stored arrays unchanged; unrepresentable
+        /// periodic samples throw instead of returning an artificial origin point.
+        /// </remarks>
         public List<Vector3> PolygonalVertexes(int precision)
         {
             return NurbsEvaluator(this.controlPoints.ToArray(), this.weights.ToArray(), this.knots, this.degree, this.IsClosed, this.isClosedPeriodic, precision);
@@ -746,6 +752,7 @@ namespace netDxf.Entities
                 }
             }
 
+            if (isClosedPeriodic) PeriodicSplineData.Validate(controls, weights, knots, degree);
             Vector3[] ctrl;
             double[] w;
             if (isClosedPeriodic)
@@ -761,6 +768,8 @@ namespace netDxf.Entities
 
                 controls.CopyTo(ctrl, degree);
                 weights.CopyTo(w, degree);
+                double largestWeight = weights.Max();
+                for (int i = 0; i < w.Length; i++) w[i] /= largestWeight;
             }
             else
             {
@@ -772,15 +781,15 @@ namespace netDxf.Entities
             double uEnd;
             List<Vector3> vertexes = new List<Vector3>();
 
-            if (isClosed)
-            {
-                uStart = knots[0];
-                uEnd = knots[knots.Length - 1];
-            }
-            else if (isClosedPeriodic)
+            if (isClosedPeriodic)
             {
                 uStart = knots[degree];
                 uEnd = knots[knots.Length - degree - 1];
+            }
+            else if (isClosed)
+            {
+                uStart = knots[0];
+                uEnd = knots[knots.Length - 1];
             }
             else
             {
@@ -790,11 +799,16 @@ namespace netDxf.Entities
             }
 
             double uDelta = (uEnd - uStart) / precision;
-
+            if (isClosedPeriodic && (uDelta <= 0 || uStart + uDelta <= uStart || uEnd - uDelta >= uEnd))
+                throw new ArgumentException("The requested periodic SPLINE sampling parameters cannot be represented.");
+            double previous = uStart;
             for (int i = 0; i < precision; i++)
             {
                 double u = uStart + uDelta * i;
-                vertexes.Add(C(ctrl, w, knots, degree, u));
+                if (isClosedPeriodic && (i > 0 && u <= previous || u >= uEnd))
+                    throw new ArgumentException("The requested periodic SPLINE sampling parameters cannot be represented.");
+                previous = u;
+                vertexes.Add(C(ctrl, w, knots, degree, u, isClosedPeriodic));
             }
 
             if (!(isClosed || isClosedPeriodic))
@@ -892,7 +906,7 @@ namespace netDxf.Entities
             return knots;
         }
 
-        private static Vector3 C(Vector3[] ctrlPoints, double[] weights, double[] knots, int degree, double u)
+        private static Vector3 C(Vector3[] ctrlPoints, double[] weights, double[] knots, int degree, double u, bool strictPeriodic)
         {
             Vector3 vectorSum = Vector3.Zero;
             double denominatorSum = 0.0;
@@ -905,6 +919,15 @@ namespace netDxf.Entities
                 vectorSum += weights[i] * n * ctrlPoints[i];
             }
 
+            if (strictPeriodic)
+            {
+                PeriodicSplineData.Finite(denominatorSum);
+                PeriodicSplineData.Finite(vectorSum);
+                if (denominatorSum <= 0) throw new ArgumentException("The periodic SPLINE evaluation denominator is not representable.");
+                Vector3 point = vectorSum / denominatorSum;
+                PeriodicSplineData.Finite(point);
+                return point;
+            }
             // avoid possible divided by zero error, this should never happen
             if (Math.Abs(denominatorSum) < double.Epsilon)
             {
