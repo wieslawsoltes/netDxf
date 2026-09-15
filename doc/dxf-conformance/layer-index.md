@@ -37,8 +37,8 @@ execution and historical native interoperability are not qualified.
 
 ## Qualification
 
-The focused Debug suite passes 140 LAYER_INDEX cases and 289 related regression
-cases. An independently written adversarial probe passes 182 cases, including
+The focused Debug and Release suites each pass 140 LAYER_INDEX cases and 289
+related regression cases (429 total per configuration). An independently written adversarial probe passes 182 cases, including
 all six versions and both transports. These checks cover grouped and interleaved
 fields, complete ownership and count validation, private fallback, entry changes,
 explicit clone mappings, binary/XData independence, and erasure preflight.
@@ -63,7 +63,25 @@ found no actual LAYER_INDEX objects in six pinned LibreDWG Leader drawings and
 five shared TABLE corpus drawings. Some contain CLASS declarations; those are
 not native application-object qualification.
 
-The conformance suite emits 72 drawings: 12 authored, 24 extracted-producer
-roundtrips, 12 graph clones, 12 erased graphs and 12 opaque variants. The mandatory
-independent verifier is being finalized for those outputs; Release qualification
-is still in progress at this checkpoint.
+The conformance suite emits 72 drawings per configuration: 12 authored, 24
+extracted-producer roundtrips, 12 graph clones, 12 erased graphs and 12 opaque
+variants. The mandatory [independent verifier](../../tools/verify_layer_index.py)
+passes those outputs in both configurations. It verifies pinned original and
+extracted input hashes, all 72 exactly mapped source packets, output counts and
+reciprocal ownership, internal references, XData, persistent reactors, extension
+dictionaries, aliases, fresh clone identities, terminal erasure, and exact private
+variants. Every output has zero independent audit errors or repairs. Three
+corrupted-output controls exercise count, ownership, and literal-escape failures.
+
+All five library targets build in Release: netstandard2.0, net471, net48, net6.0
+and net8.0. The netstandard2.0 Debug build also passes. The builds retain the
+existing 561 CS1591 XML-documentation warnings per target and introduce no other
+warning categories.
+
+To verify an emitted artifact directory independently, run:
+
+```sh
+python tools/verify_layer_index.py /path/to/artifacts
+```
+
+The full mandatory-verifier runner discovers this script automatically.

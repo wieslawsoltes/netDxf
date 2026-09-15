@@ -44,6 +44,14 @@ Null references encode `0`. A non-null owner target cannot occupy two owner
 slots, belong to another owner, form an ownership cycle or reference an erased
 object. Existing object identity is required for live table references.
 
+Imported references resolve only to the actual object accepted from a physical
+source record, including explicit source dictionary mappings to managed
+collections. Matching a generated object's handle number is insufficient. An
+absent target, a discarded entity, an ignored section, a CLASS field, a private
+control-group field or a payload handle cannot authorize an unrelated runtime
+default. Handles normalize hexadecimal case and leading zeroes; forward
+references and the distinct DIMSTYLE group 105 identity remain supported.
+
 `SetColumns` snapshots caller enumerators before validating current graph state.
 Failed validation leaves the table, children, handles and database unchanged.
 A detached table can acquire and release children. A registered table may edit
@@ -77,6 +85,9 @@ native object-subgraph tests, not full original-file compatibility claims.
 Authored tests exercise all 11 types, mixed null/reference cells, independent
 names, aliases, reactors, extension dictionaries, XData, cross-document clone
 maps, erasure protection, zero dimensions, malformed packets and opaque input.
+Source-identity cases include missing and discarded targets, lexical decoys,
+ignored sections, normalized forward references, null references, symbol tables
+and 21 retained entity, resource and managed-collection identities.
 `tools/verify_datatable.py` requires every output and reads it independently with
 ezdxf 1.4.4. It checks raw column packets, actual object graph identities, native
 record fidelity, CLASS counts and ancillary audits. Ezdxf has no typed DATATABLE

@@ -104,6 +104,7 @@ namespace netDxf.Entities
                 this.displayBlock = block;
                 this.references.Add(block.Record);
             }
+            this.ResolveNamedStyles();
             this.pending = false;
             this.ResolveBacking();
         }
@@ -121,14 +122,17 @@ namespace netDxf.Entities
                 throw new InvalidOperationException("The stored TABLE is detached or has unresolved input state.");
             if (document.DrawingVariables.AcadVer != this.SourceVersion)
                 throw new NotSupportedException("Stored TABLE conversion between DXF versions requires schema regeneration.");
+            this.ValidateNamedStyles();
             foreach (var pair in this.handles)
                 if (!ReferenceEquals(document.StoredTableHandleTarget(pair.Key), pair.Value))
                     throw new InvalidOperationException("A stored TABLE dependency is no longer registered: " + pair.Key);
             if (this.displayBlock != null && !ReferenceEquals(document.GetObjectByHandle(this.displayBlock.Record.Handle), this.displayBlock.Record))
                 throw new InvalidOperationException("The stored TABLE display block is no longer registered.");
         }
-        internal string ChangedDisplayName(DxfTag tag)
+        internal string ChangedResourceName(DxfTag tag)
         {
+            string style = this.ChangedTextStyleName(tag);
+            if (style != null) return style;
             if (tag.Code != 2 || this.displayBlock == null || this.displayBlock.Name == this.displayName) return null;
             // Group 2 belongs to the first block-reference subclass only; later private names are left intact.
             int index = this.payload.IndexOfReference(tag);

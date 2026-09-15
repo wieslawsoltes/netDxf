@@ -212,7 +212,7 @@ namespace netDxf.IO
             }
 
             
-            this.chunk = new DatabaseMetadataReader(this.chunk, this.entityDatabaseMetadata);
+            this.chunk = new DatabaseMetadataReader(this.chunk, this.entityDatabaseMetadata, this.sourceObjectIdentities);
 
             this.doc = new DxfDocument(new HeaderVariables(), false, supportFolders);
             this.shapeStyleCounter = 0;
@@ -979,10 +979,13 @@ namespace netDxf.IO
                         }
                         break;
                     case DxfObjectCode.RasterVariables:
-                        this.doc.RasterVariables = this.ReadRasterVariables();
+                        RasterVariables rasterVariables = this.ReadRasterVariables();
+                        this.RecordSourceObject(rasterVariables);
+                        this.doc.RasterVariables = rasterVariables;
                         break;
                     case DxfObjectCode.ImageDef:
                         ImageDefinition imageDefinition = this.ReadImageDefinition();
+                        this.RecordSourceObject(imageDefinition);
                         Debug.Assert(imageDefinition != null, "ImageDefinition cannot be null");
                         if (imageDefinition != null)
                         {
@@ -996,6 +999,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.MLineStyle:
                         MLineStyle style = this.ReadMLineStyle();
+                        this.RecordSourceObject(style);
                         Debug.Assert(style != null, "MLineStyle cannot be null");
                         if (style != null)
                         {
@@ -1004,6 +1008,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.Group:
                         Group group = this.ReadGroup();
+                        this.RecordSourceObject(group);
                         Debug.Assert(group != null, "Group cannot be null");
                         if (group != null)
                         {
@@ -1012,6 +1017,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.Layout:
                         Layout layout = this.ReadLayout();
+                        this.RecordSourceObject(layout);
                         Debug.Assert(layout != null, "Layout cannot be null");
                         if (layout.AssociatedBlock == null)
                         {
@@ -1024,6 +1030,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.UnderlayDgnDefinition:
                         UnderlayDgnDefinition underlayDgnDef = (UnderlayDgnDefinition) this.ReadUnderlayDefinition(UnderlayType.DGN);
+                        this.RecordSourceObject(underlayDgnDef);
                         Debug.Assert(underlayDgnDef != null, "UnderlayDgnDefinition cannot be null");
                         if (underlayDgnDef != null)
                         {
@@ -1032,6 +1039,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.UnderlayDwfDefinition:
                         UnderlayDwfDefinition underlayDwfDef = (UnderlayDwfDefinition) this.ReadUnderlayDefinition(UnderlayType.DWF);
+                        this.RecordSourceObject(underlayDwfDef);
                         Debug.Assert(underlayDwfDef != null, "UnderlayDwfDefinition cannot be null");
                         if (underlayDwfDef != null)
                         {
@@ -1040,6 +1048,7 @@ namespace netDxf.IO
                         break;
                     case DxfObjectCode.UnderlayPdfDefinition:
                         UnderlayPdfDefinition underlayPdfDef = (UnderlayPdfDefinition) this.ReadUnderlayDefinition(UnderlayType.PDF);
+                        this.RecordSourceObject(underlayPdfDef);
                         Debug.Assert(underlayPdfDef != null, "UnderlayPdfDefinition cannot be null");
                         if (underlayPdfDef != null)
                         {
@@ -1156,6 +1165,7 @@ namespace netDxf.IO
             {
                 case DxfObjectCode.ApplicationIdTable:
                     this.doc.ApplicationRegistries = new ApplicationRegistries(this.doc, handle);
+                    this.RecordSourceObject(this.doc.ApplicationRegistries, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.ApplicationRegistries, xData);
@@ -1163,6 +1173,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.BlockRecordTable:
                     this.doc.Blocks = new BlockRecords(this.doc, handle);
+                    this.RecordSourceObject(this.doc.Blocks, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.Blocks, xData);
@@ -1170,6 +1181,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.DimensionStyleTable:
                     this.doc.DimensionStyles = new DimensionStyles(this.doc, handle);
+                    this.RecordSourceObject(this.doc.DimensionStyles, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.DimensionStyles, xData);
@@ -1177,6 +1189,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.LayerTable:
                     this.doc.Layers = new Layers(this.doc, handle);
+                    this.RecordSourceObject(this.doc.Layers, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.Layers, xData);
@@ -1184,6 +1197,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.LinetypeTable:
                     this.doc.Linetypes = new Linetypes(this.doc, handle);
+                    this.RecordSourceObject(this.doc.Linetypes, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.Linetypes, xData);
@@ -1191,6 +1205,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.TextStyleTable:
                     this.doc.TextStyles = new TextStyles(this.doc, handle);
+                    this.RecordSourceObject(this.doc.TextStyles, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.TextStyles, xData);
@@ -1199,6 +1214,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.UcsTable:
                     this.doc.UCSs = new UCSs(this.doc, handle);
+                    this.RecordSourceObject(this.doc.UCSs, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.UCSs, xData);
@@ -1206,6 +1222,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.ViewTable:
                     this.doc.Views = new Views(this.doc, handle);
+                    this.RecordSourceObject(this.doc.Views, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.Views, xData);
@@ -1213,6 +1230,7 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.VportTable:
                     this.doc.VPorts = new VPorts(this.doc, handle, false);
+                    this.RecordSourceObject(this.doc.VPorts, handle);
                     if (xData.Count > 0)
                     {
                         this.tableXData.Add(this.doc.VPorts, xData);
@@ -1278,6 +1296,7 @@ namespace netDxf.IO
                         if (appReg != null)
                         {
                             appReg.Handle = handle;
+                            this.RecordSourceObject(appReg);
                             this.doc.ApplicationRegistries.Add(appReg, false);
                         }
                         break;
@@ -1286,6 +1305,7 @@ namespace netDxf.IO
                         if (record != null)
                         {
                             record.Handle = handle;
+                            this.RecordSourceObject(record);
                             this.blockRecords.Add(record.Name, record);
                         }
                         break;
@@ -1294,6 +1314,7 @@ namespace netDxf.IO
                         if (dimStyle != null)
                         {
                             dimStyle.Handle = handle;
+                            this.RecordSourceObject(dimStyle);
                             this.doc.DimensionStyles.Add(dimStyle, false);
                         }
                         break;
@@ -1302,6 +1323,7 @@ namespace netDxf.IO
                         if (layer != null)
                         {
                             layer.Handle = handle;
+                            this.RecordSourceObject(layer);
                             this.layers.Add(layer);
                         }
                         break;
@@ -1310,6 +1332,7 @@ namespace netDxf.IO
                         if (linetype != null)
                         {
                             linetype.Handle = handle;
+                            this.RecordSourceObject(linetype);
                             // complex linetypes will be added after reading the style table
                             // they depend on TextStyles and/or ShapeStyles
                             if (isComplex)
@@ -1328,6 +1351,7 @@ namespace netDxf.IO
                         if (style != null)
                         {
                             style.Handle = handle;
+                            this.RecordSourceObject(style);
                             if (style is TextStyle textStyle)
                             {
                                 this.doc.TextStyles.Add(textStyle, false);
@@ -1343,6 +1367,7 @@ namespace netDxf.IO
                         if (ucs != null)
                         {
                             ucs.Handle = handle;
+                            this.RecordSourceObject(ucs);
                             this.doc.UCSs.Add(ucs, false);
                         }
                         break;
@@ -1351,12 +1376,14 @@ namespace netDxf.IO
                         if (view != null)
                         {
                             view.Handle = handle;
+                            this.RecordSourceObject(view);
                             this.doc.Views.Add(view, false);
                         }
                         break;
                     case DxfObjectCode.VportTable:
                         VPort vport = this.ReadVPort();
                         vport.Handle = handle;
+                        this.RecordSourceObject(vport);
                         this.doc.VPorts.AddRecord(vport, false);
                         break;
                     default:
@@ -2977,6 +3004,8 @@ namespace netDxf.IO
             }
 
             block.End.Handle = endBlockHandle;
+            this.RecordSourceObject(block);
+            this.RecordSourceObject(block.End);
             block.XData.AddRange(xData);
             block.End.XData.AddRange(endBlockXData);
 
@@ -3502,6 +3531,7 @@ namespace netDxf.IO
             attribute.ProxyGraphics = commonData.ProxyGraphics;
             attribute.XData.AddRange(xData);
 
+            this.RecordSourceObject(attribute);
             return attribute;
         }
 
@@ -3771,6 +3801,7 @@ namespace netDxf.IO
             
             Debug.Assert(!string.IsNullOrEmpty(handle), "Entity without handle.");
             dxfObject.Handle = handle;
+            this.RecordSourceObject(dxfObject);
 
             if (dxfObject is EntityObject entity)
             {

@@ -116,17 +116,17 @@ namespace netDxf.IO
             {
                 foreach (string handle in record.ContainerReferences)
                 {
-                    DxfObject target = handle == "0" ? null : this.doc.GetObjectByHandle(handle);
+                    DxfObject target = handle == "0" ? null : this.GetObjectBySourceHandle(handle);
                     if (target == null && handle != "0") throw new FormatException("Unresolved IDBUFFER reference: " + handle);
                     buffer.References.Add(target);
                 }
             }
             else if (record.Object is DxfSortentsTable table)
             {
-                table.BlockRecord = this.doc.GetObjectByHandle(record.ContainerReferences[0]) as BlockRecord ?? throw new FormatException("SORTENTSTABLE block pointer does not identify a block record.");
+                table.BlockRecord = this.GetObjectBySourceHandle(record.ContainerReferences[0]) as BlockRecord ?? throw new FormatException("SORTENTSTABLE block pointer does not identify a block record.");
                 for (int i = 1; i < record.ContainerReferences.Count; i++)
                 {
-                    EntityObject entity = this.doc.GetObjectByHandle(record.ContainerReferences[i]) as EntityObject ?? throw new FormatException("SORTENTSTABLE reference does not identify a graphical entity.");
+                    EntityObject entity = this.GetObjectBySourceHandle(record.ContainerReferences[i]) as EntityObject ?? throw new FormatException("SORTENTSTABLE reference does not identify a graphical entity.");
                     table.Entries.Add(new DxfSortOrderEntry(entity, record.SortKeys[i - 1]));
                 }
             }

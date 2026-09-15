@@ -73,6 +73,25 @@ namespace netDxf.Entities
             this.Tags = new ReadOnlyCollection<DxfTag>(body);
             this.StoredType = (short)body[0].Value;
             if (this.StoredType != 1) return;
+            bool valueScope = false;
+            int fieldApplicationDepth = 0;
+            foreach (DxfTag tag in body)
+            {
+                if (tag.Code == 102)
+                {
+                    string control = (string)tag.Value;
+                    if (control.StartsWith("{", StringComparison.Ordinal)) fieldApplicationDepth++;
+                    else if (control == "}" && fieldApplicationDepth > 0) fieldApplicationDepth--;
+                    continue;
+                }
+                if (fieldApplicationDepth > 0) continue;
+                if (tag.Code == 301 && (string)tag.Value == "CELL_VALUE") { valueScope = true; continue; }
+                if (tag.Code == 304 && (string)tag.Value == "ACVALUE_END") { valueScope = false; continue; }
+                if (!valueScope && tag.Code == 344 &&
+                    ulong.Parse((string)tag.Value, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture) != 0)
+                    this.HasFieldReference = true;
+            }
+            if (this.HasFieldReference) return;
             int marker = body.FindIndex(t => t.Code == 301 && (string)t.Value == "CELL_VALUE");
             if (marker >= 0)
             {
@@ -99,13 +118,28 @@ namespace netDxf.Entities
             }
             else if (version == DxfVersion.AutoCad2004)
             {
-                var values = body.Where(t => t.Code == 1).ToList();
-                if (values.Count != 1) return;
-                this.ValueType = 4; this.LiteralValue = decode((string)values[0].Value); this.HasLiteralValue = true;
+                var text = new List<DxfTag>(); int applicationDepth = 0;
+                foreach (var tag in body)
+                {
+                    if (tag.Code == 102)
+                    {
+                        string markerText = (string)tag.Value;
+                        if (markerText.StartsWith("{", StringComparison.Ordinal)) applicationDepth++;
+                        else if (markerText == "}" && applicationDepth > 0) applicationDepth--;
+                        continue;
+                    }
+                    if (applicationDepth == 0 && (tag.Code == 1 || tag.Code == 2)) text.Add(tag);
+                }
+                if (text.Count == 0 || text[text.Count - 1].Code != 1 || text.Count(t => t.Code == 1) != 1) return;
+                if (text.Any(t => t.Code == 2 && ((string)t.Value).Length != 250) ||
+                    ((string)text[text.Count - 1].Value).Length >= 250) return;
+                this.ValueType = 4; this.LiteralValue = decode(string.Concat(text.Select(t => (string)t.Value))); this.HasLiteralValue = true;
             }
         }
         /// <summary>Gets the independent stored cell type; block and private content are not coerced to text.</summary>
         public short StoredType { get; }
+        /// <summary>Gets whether a non-null stored FIELD handle takes precedence over literal text.</summary>
+        public bool HasFieldReference { get; }
         /// <summary>Gets the optional ACVALUE data type: 0 empty, 1 integer, 2 real, or 4 string.</summary>
         public int? ValueType { get; }
         /// <summary>Gets the independent stored ACVALUE flags, when present.</summary>

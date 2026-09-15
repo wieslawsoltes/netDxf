@@ -31,7 +31,7 @@ namespace netDxf.IO
         {
             foreach (DxfTag tag in table.Payload)
             {
-                string name = table.ChangedDisplayName(tag);
+                string name = table.ChangedResourceName(tag);
                 this.chunk.Write(tag.Code, name == null ? tag.Value : this.EncodeDatabaseString(name));
             }
             this.WriteXData(table.XData);

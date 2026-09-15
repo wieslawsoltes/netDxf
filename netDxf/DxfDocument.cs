@@ -804,7 +804,12 @@ namespace netDxf
                 return null;
             }
 
-            this.AddedObjects.TryGetValue(objectHandle, out DxfObject o);
+            // Object identities are hexadecimal numbers; leading zeroes and case do not
+            // select a different object. Stored reference strings retain their own spelling.
+            if (objectHandle.Length > 16 || !ulong.TryParse(objectHandle, System.Globalization.NumberStyles.AllowHexSpecifier,
+                System.Globalization.CultureInfo.InvariantCulture, out ulong identity)) return null;
+            string canonical = identity.ToString("X", System.Globalization.CultureInfo.InvariantCulture);
+            this.AddedObjects.TryGetValue(canonical, out DxfObject o);
             return o;
         }
 

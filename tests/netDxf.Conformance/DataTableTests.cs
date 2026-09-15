@@ -18,6 +18,11 @@ internal static partial class Program
             {
                 Run($"datatable/all-types/{version}/{binary}", () => DataTableAuthored(version, binary));
                 Run($"datatable/clone-erase/{version}/{binary}", () => DataTableCloneErase(version, binary));
+                foreach (string decoy in new[] { "none", "class", "payload", "control", "unknown-entity", "discarded-entity", "dictionary-entity", "ignored-section", "missing-table-identity", "missing-raster-identity" })
+                    Run($"datatable/source-identity/{version}/{binary}/{decoy}", () => DataTableSourceIdentity(version, binary, decoy));
+                Run($"datatable/canonical-forward-identity/{version}/{binary}", () => DataTableCanonicalIdentity(version, binary));
+                Run($"datatable/symbol-table-identities/{version}/{binary}", () => DataTableSymbolTableIdentity(version, binary));
+                Run($"datatable/retained-resource-identities/{version}/{binary}", () => DataTableRetainedIdentities(version, binary));
                 foreach (string defect in new[] { "missing-version", "duplicate-version", "missing-columns", "negative-columns", "huge-columns", "negative-rows", "huge-rows", "missing-name", "missing-column-name", "wrong-type-code", "missing-value", "extra-value", "duplicate-marker", "bool-range", "point-missing-z", "vector-order", "unresolved-reference", "wrong-owner", "duplicate-owner", "foreign-owner", "nonfinite", "surrogate" })
                     Run($"datatable/malformed/{version}/{binary}/{defect}", () => DataTableMalformed(version, binary, defect));
                 foreach (string variant in new[] { "version", "type", "field", "subclass", "header" })
@@ -170,6 +175,113 @@ internal static partial class Program
         IEnumerable<DxfDataColumn> ForeignOwnerEnumerator()
         { yield return new DxfDataColumn(DxfDataCellType.HardOwner, "", new object[] { child }); var dictionary = new DxfDictionary(); dictionary.Add("NOW_OWNED", child); }
         DataTableReject(() => owner.SetColumns(1, ForeignOwnerEnumerator())); Check(owner.Columns.Count == 0 && child.Owner is DxfDictionary, "Enumerator owner change rechecked before adoption");
+    }
+    private static void DataTableSourceIdentity(DxfVersion version, bool binary, string decoy)
+    {
+        var raw = DataTableRaw(version, binary); string seed = (string)raw.Tags[raw.Tags.ToList().FindIndex(t => t.Code == 9 && (string)t.Value == "$HANDSEED") + 1].Value;
+        var original = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DATATABLE" && r.Tags.Any(t => t.Code == 90 && (int)t.Value == 11));
+        string originalHandle = (string)original.Tags.Single(t => t.Code == 5).Value;
+        var source = original.Tags.ToList(); int slot = source.FindIndex(t => t.Code == 331); source[slot] = new DxfTag(331, seed); raw = raw.WithRecord(original, source);
+        if (decoy == "class")
+        {
+            var definition = raw.Sections.Single(s => s.Name == "CLASSES").Records.Single(r => r.Name == "CLASS" && r.Tags.Any(t => t.Code == 1 && (string)t.Value == "DATATABLE"));
+            raw = raw.WithRecord(definition, definition.Tags.Concat(new[] { new DxfTag(5, seed) }));
+        }
+        else if (decoy == "payload" || decoy == "control")
+        {
+            var other = raw.Sections.Single(s => s.Name == "OBJECTS").Records.First(r => r.Name == "DATATABLE" && r.Tags.Any(t => t.Code == 90 && (int)t.Value == 0));
+            var tags = other.Tags.ToList(); int at = tags.FindIndex(t => t.Code == 100);
+            if (decoy == "payload") tags.Add(new DxfTag(5, seed));
+            else tags.InsertRange(at, new[] { new DxfTag(102, "{PRIVATE_ID_DECOY"), new DxfTag(5, seed), new DxfTag(102, "}") });
+            raw = raw.WithRecord(other, tags);
+        }
+        else if (decoy == "unknown-entity" || decoy == "discarded-entity" || decoy == "dictionary-entity" || decoy == "ignored-section" || decoy == "missing-table-identity" || decoy == "missing-raster-identity")
+        {
+            string kind = decoy == "unknown-entity" || decoy.StartsWith("missing-", StringComparison.Ordinal) ? "FUTURE_ENTITY" : decoy == "discarded-entity" ? "PDFUNDERLAY" : "DICTIONARY";
+            var packet = new List<DxfTag> { new DxfTag(0, kind), new DxfTag(5, seed), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"), new DxfTag(100, kind == "PDFUNDERLAY" ? "AcDbUnderlayReference" : kind == "DICTIONARY" ? "AcDbDictionary" : "FutureEntity") };
+            if (kind == "PDFUNDERLAY") packet.AddRange(new[] { new DxfTag(340, "0"), new DxfTag(10, 0.0), new DxfTag(20, 0.0), new DxfTag(30, 0.0) });
+            if (decoy == "ignored-section")
+            {
+                packet.InsertRange(0, new[] { new DxfTag(0, "SECTION"), new DxfTag(2, "FUTURE_SECTION") });
+                packet.Add(new DxfTag(0, "ENDSEC"));
+                int eof = raw.Tags.Count - 1; raw = raw.WithTags(raw.Tags.Take(eof).Concat(packet).Concat(raw.Tags.Skip(eof)));
+            }
+            else
+            {
+                if (decoy == "missing-table-identity")
+                {
+                    var layerTable = raw.Sections.Single(section => section.Name == "TABLES").Records.Single(record => record.Name == "TABLE" && record.Tags.Any(tag => tag.Code == 2 && (string)tag.Value == "LAYER"));
+                    raw = raw.WithRecord(layerTable, layerTable.Tags.Where(tag => tag.Code != 5));
+                }
+                else if (decoy == "missing-raster-identity")
+                {
+                    int objectEnd = raw.Sections.Single(section => section.Name == "OBJECTS").EndTagIndex - 1;
+                    var raster = new[] { new DxfTag(0, "RASTERVARIABLES"), new DxfTag(100, "AcDbRasterVariables"), new DxfTag(90, 0), new DxfTag(70, (short)1), new DxfTag(71, (short)1), new DxfTag(72, (short)0) };
+                    raw = raw.WithTags(raw.Tags.Take(objectEnd).Concat(raster).Concat(raw.Tags.Skip(objectEnd)));
+                }
+                int end = raw.Sections.Single(section => section.Name == "ENTITIES").EndTagIndex - 1;
+                raw = raw.WithTags(raw.Tags.Take(end).Concat(packet).Concat(raw.Tags.Skip(end)));
+            }
+        }
+        using var input = new MemoryStream(); raw.Save(input); input.Position = 0; bool rejected = false;
+        try { rejected = DxfDocument.Load(input) == null; } catch (FormatException) { rejected = true; }
+        Check(rejected, "Missing or discarded source target must not alias a synthesized runtime collection: " + seed + "/" + decoy);
+    }
+    private static void DataTableCanonicalIdentity(DxfVersion version, bool binary)
+    {
+        var raw = DataTableRaw(version, binary); var records = raw.Sections.Single(s => s.Name == "OBJECTS").Records;
+        var table = records.Single(r => r.Name == "DATATABLE" && r.Tags.Any(t => t.Code == 90 && (int)t.Value == 11));
+        string pointer = (string)table.Tags.First(t => t.Code == 331).Value;
+        var target = records.Single(r => r.Tags.Any(t => t.Code == 5 && (string)t.Value == pointer));
+        var moved = target.Tags.Select(t => t.Code == 5 ? new DxfTag(5, "000" + pointer.ToLowerInvariant()) : t).ToArray();
+        raw = raw.WithoutRecord(target); int end = raw.Sections.Single(s => s.Name == "OBJECTS").EndTagIndex - 1;
+        raw = raw.WithTags(raw.Tags.Take(end).Concat(moved).Concat(raw.Tags.Skip(end)));
+        table = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DATATABLE" && r.Tags.Any(t => t.Code == 90 && (int)t.Value == 11));
+        raw = raw.WithRecord(table, table.Tags.Select(t => (t.Code == 331 || t.Code == 340 || t.Code == 330) && (string)t.Value == pointer ? new DxfTag(t.Code, "00" + pointer.ToLowerInvariant()) : t));
+        using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
+        var doc = DxfDocument.Load(input) ?? throw new Exception("Numeric canonical forward reference rejected.");
+        var loaded = DataTableAssert(doc); Check(ReferenceEquals(loaded.Columns[4].Values[0], doc.GetObjectByHandle(pointer)), "Forward target identity canonicalized");
+    }
+    private static void DataTableSymbolTableIdentity(DxfVersion version, bool binary)
+    {
+        var raw = DataTableRaw(version, binary);
+        var symbols = raw.Sections.Single(s => s.Name == "TABLES").Records;
+        string collection = (string)symbols.Single(r => r.Name == "TABLE" && r.Tags.Any(t => t.Code == 2 && (string)t.Value == "DIMSTYLE")).Tags.Single(t => t.Code == 5).Value;
+        string style = (string)symbols.First(r => r.Name == "DIMSTYLE").Tags.Single(t => t.Code == 105).Value;
+        var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DATATABLE" && r.Tags.Any(t => t.Code == 90 && (int)t.Value == 11));
+        int index = 0; var references = new[] { collection, style, "0" };
+        raw = raw.WithRecord(record, record.Tags.Select(t => t.Code == 331 ? new DxfTag(331, references[index++]) : t));
+        using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
+        var doc = DxfDocument.Load(input) ?? throw new Exception("Real symbol table source identities rejected.");
+        var table = (DxfDataTable)((DxfDictionary)doc.NamedObjects["DATA_TABLES"])["TABLE"];
+        Check(ReferenceEquals(table.Columns[4].Values[0], doc.DimensionStyles), "Actual TABLE collection identity admitted");
+        Check(ReferenceEquals(table.Columns[4].Values[1], doc.GetObjectByHandle(style)), "Actual DIMSTYLE group105 identity admitted");
+        Check(table.Columns[4].Values[2] == null, "Source handle0 remains null");
+        Equal(0, doc.Objects.Validate().Count, "Source symbol references validate");
+    }
+    private static void DataTableRetainedIdentities(DxfVersion version, bool binary)
+    {
+        var seedDocument = DataTableDocument(version); using var seed = new MemoryStream(); Check(seedDocument.Save(seed, binary), "Canonical source seed"); seed.Position = 0;
+        var doc = DxfDocument.Load(seed) ?? throw new Exception("Canonical source seed rejected."); var line = doc.Entities.Lines.Single();
+        var group = new Group("SOURCE_IDENTITY_GROUP"); group.Entities.Add(line); doc.Groups.Add(group);
+        DxfObject[] targets = { doc.NamedObjects, line, line.Owner, line.Owner.Record, line.Layer, line.Linetype,
+            doc.Layers, doc.Linetypes, doc.Blocks, doc.ApplicationRegistries, doc.ApplicationRegistries["DATATABLE_APP"],
+            doc.DimensionStyles, doc.DimensionStyles.First(), doc.TextStyles, doc.TextStyles.First(),
+            doc.Groups, group, doc.Layouts, doc.Layouts.First(), doc.MlineStyles, doc.MlineStyles.First() };
+        foreach (var target in targets) Check(target != null && ReferenceEquals(doc.GetObjectByHandle(target.Handle), target), "Positive fixture target must already be registered: " + target?.GetType().Name + "/" + target?.Handle);
+        var references = new DxfDataTable(); references.SetColumns(targets.Length, new[] { new DxfDataColumn(DxfDataCellType.ObjectId, "Retained identities", targets) });
+        doc.NamedObjects.Add("SOURCE_REFERENCES", references);
+        using var output = new MemoryStream(); Check(doc.Save(output, binary), "Retained resources seed"); output.Position = 0;
+        var loaded = DxfDocument.Load(output) ?? throw new Exception("Retained source resources rejected.");
+        var actual = (DxfDataTable)loaded.NamedObjects["SOURCE_REFERENCES"];
+        for (int i = 0; i < targets.Length; i++)
+        {
+            DxfObject target = (DxfObject)actual.Columns[0].Values[i];
+            Equal(targets[i].Handle, target.Handle, "Source identity retained: " + targets[i].CodeName);
+            Equal(targets[i].GetType(), target.GetType(), "Source object type retained");
+            Check(ReferenceEquals(loaded.GetObjectByHandle(target.Handle), target), "Retained resource is canonical");
+        }
+        Equal(0, loaded.Objects.Validate().Count, "Retained source resources validate");
     }
     private static DxfRawDocument DataTableRaw(DxfVersion version, bool binary)
     { using var output = new MemoryStream(); Check(DataTableDocument(version).Save(output, binary), "Malformed seed"); output.Position = 0; return DxfRawDocument.Load(output); }

@@ -14,7 +14,7 @@ internal static partial class Program
     private static List<DxfTag> ReviewTablePayload() => new() { new(100,"AcDbBlockReference"),new(2,"DISPLAY"),new(10,1.0),new(20,2.0),new(30,3.0),
     new(100,"AcDbTable"),new(90,22),new(91,1),new(92,1),new(141,4.0),new(142,5.0),new(171,(short)1),
     new(301,"CELL_VALUE"),new(93,2),new(90,4),new(1,"value"),new(304,"ACVALUE_END") };
-    private static DxfDocument ReviewTableLoad(List<DxfTag> payload, bool binary, bool nested = false, DxfVersion version = DxfVersion.AutoCad2018, string targetKind = "xrecord")
+    private static DxfDocument ReviewTableLoad(List<DxfTag> payload, bool binary, bool nested = false, DxfVersion version = DxfVersion.AutoCad2018, string targetKind = "xrecord", Action<DxfDocument>? configure = null)
 {
     var doc = new DxfDocument(version); doc.Blocks.Add(new Block("DISPLAY"));
     DxfObject target;
@@ -34,6 +34,7 @@ internal static partial class Program
         target=(DxfObject)typeof(Block).GetProperty("End",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)!.GetValue(host)!;
     }
     else { var xrecord=new DxfXRecord();doc.Objects.Root.Add("TARGET",xrecord);target=xrecord; }
+    configure?.Invoke(doc);
     var point = new Point(Vector3.Zero);
     if (nested) { var host = new Block("HOST"); host.Entities.Add(point); doc.Blocks.Add(host); }
     else doc.Entities.Add(point);

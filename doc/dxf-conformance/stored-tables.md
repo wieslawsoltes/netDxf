@@ -52,3 +52,27 @@ they qualify exact packet preservation, not complete native drawing semantics.
 Full native document cases are reported separately. No AutoCAD execution,
 regeneration, rendering, cell editing engine, formula evaluation, cross-version
 conversion, or application-defined graph cloning is claimed by this feature.
+
+## Named styles, fields and legacy text
+
+The recognized AcDbTable representation resolves documented group-7 text-style
+names to their exact registered STYLE objects. Resource removal is protected,
+and renaming that object updates its bound name fields. Unchanged wire spelling
+is retained. Group-7 strings in unknown subclasses, application control groups
+or ACVALUE envelopes are preserved without name binding.
+
+A non-null group-344 FIELD reference in direct cell scope (outside application
+control groups and ACVALUE envelopes) sets `StoredTableCell.HasFieldReference`
+and prevents literal projection. The stored text and field handle remain in
+the packet; no FIELD result is evaluated. In R2004 text cells, ordered group-2
+continuations of exactly 250 characters followed by one terminal group 1 of
+fewer than 250 characters form the literal text. Decoding
+happens after concatenation, and every raw chunk remains unchanged. Block-cell,
+modern and ambiguous/out-of-order occurrences are not interpreted this way.
+
+These variants are based on Autodesk's
+[TABLE group-code reference](https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-D8CCD2F0-18A3-42BB-A64D-539114A07DA0.htm).
+The pinned native corpus contains none of these three variants. Their focused
+regressions and `verify_stored_table_fields.py` therefore qualify explicitly
+synthetic public-schema carriers, without adding a native rendering or FIELD
+schema qualification claim.

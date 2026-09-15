@@ -106,7 +106,7 @@ namespace netDxf.IO
                 var entries = new List<DxfLayerIndexEntry>();
                 foreach (Tuple<string, string, int> item in pending.Value)
                 {
-                    DxfIdBuffer buffer = this.doc.GetObjectByHandle(item.Item2) as DxfIdBuffer;
+                    DxfIdBuffer buffer = this.GetObjectBySourceHandle(item.Item2) as DxfIdBuffer;
                     if (buffer == null || !ReferenceEquals(buffer.Owner, pending.Key))
                         throw new FormatException("LAYER_INDEX ownership target must be a reciprocally owned IDBUFFER: " + item.Item2);
                     if (buffer.References.Count != item.Item3)

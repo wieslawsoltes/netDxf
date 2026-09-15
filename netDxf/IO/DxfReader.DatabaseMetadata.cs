@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace netDxf.IO
 {
@@ -11,12 +12,15 @@ namespace netDxf.IO
         {
             private readonly ICodeValueReader inner;
             private readonly Dictionary<string, DatabaseMetadata> records;
+            private readonly HashSet<ulong> sourceIdentities;
             private DatabaseMetadata current = new DatabaseMetadata();
             private string handle;
             private string group;
             private bool common;
-            internal DatabaseMetadataReader(ICodeValueReader inner, Dictionary<string, DatabaseMetadata> records)
-            { this.inner = inner; this.records = records; }
+            private string recordType;
+            private string section;
+            internal DatabaseMetadataReader(ICodeValueReader inner, Dictionary<string, DatabaseMetadata> records, HashSet<ulong> sourceIdentities)
+            { this.inner = inner; this.records = records; this.sourceIdentities = sourceIdentities; }
             public short Code { get { return this.inner.Code; } }
             public object Value { get { return this.inner.Value; } }
             public long CurrentPosition { get { return this.inner.CurrentPosition; } }
@@ -28,10 +32,13 @@ namespace netDxf.IO
                 if (this.Code == 0)
                 {
                     if (this.group != null) throw new FormatException("Unterminated common object control group.");
-                    this.Flush(); this.current = new DatabaseMetadata(); this.handle = null; this.common = true; return;
+                    this.Flush(); this.current = new DatabaseMetadata(); this.handle = null; this.common = true; this.recordType = this.ReadString();
+                    if (this.recordType == "SECTION" || this.recordType == "ENDSEC") this.section = null;
+                    return;
                 }
+                if (this.recordType == "SECTION" && this.Code == 2) this.section = this.ReadString();
                 if (!this.common) return;
-                if (this.Code == 100) { this.Flush(); this.common = false; return; }
+                if (this.Code == 100 || this.Code == 1001) { this.Flush(); this.common = false; return; }
                 if (this.Code == 102)
                 {
                     string value = this.ReadString();
@@ -45,10 +52,15 @@ namespace netDxf.IO
                     else if (this.group == "{ACAD_REACTORS" && this.Code == 330) this.current.Reactors.Add(this.ReadHex());
                     return;
                 }
-                if (this.Code == 5 || this.Code == 105) this.handle = this.ReadHex();
+                if (this.Code == 5 && this.recordType != "DIMSTYLE" || this.Code == 105 && this.recordType == "DIMSTYLE") this.handle = this.ReadHex();
             }
             private void Flush()
             {
+                if ((this.section == "TABLES" || this.section == "BLOCKS" || this.section == "ENTITIES" || this.section == "OBJECTS")
+                    && this.recordType != null && this.recordType != "SECTION" && this.recordType != "ENDSEC"
+                    && this.recordType != "EOF" && this.recordType != "ENDTAB" && this.recordType != "CLASS"
+                    && ulong.TryParse(this.handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong identity)
+                    && identity != 0) this.sourceIdentities.Add(identity);
                 if (this.handle != null && (this.current.Extension != null || this.current.Reactors.Count > 0)) this.records[this.handle] = this.current;
             }
             public byte ReadByte() { return this.inner.ReadByte(); }

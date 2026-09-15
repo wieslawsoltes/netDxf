@@ -151,7 +151,7 @@ namespace netDxf.IO
                         {
                             if (column.Type < DxfDataCellType.ObjectId || column.Type > DxfDataCellType.SoftPointer) { values.Add(input); continue; }
                             string handle = (string)input;
-                            DxfObject target = handle == "0" ? null : this.doc.GetObjectByHandle(handle);
+                            DxfObject target = handle == "0" ? null : this.GetObjectBySourceHandle(handle);
                             if (target == null && handle != "0") throw new FormatException("Unresolved DATATABLE cell reference: " + handle);
                             values.Add(target);
                         }
