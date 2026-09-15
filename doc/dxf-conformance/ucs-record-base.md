@@ -1,6 +1,6 @@
-# UCS record orthographic base: evidence and proposed scope
+# UCS record orthographic base: stored identity support
 
-The published UCS-record schema describes group79 as always zero and also defines a base-UCS handle346 that only applies when79 is nonzero. The existing reader follows the reserved-zero description and discards346. This assessment concerns the UCS table record itself; the implemented VIEW/VPORT345/346 relationships and repeated UCS71/13/23/33 origin overrides are separate.
+The published UCS-record schema describes group79 as always zero and also defines a base-UCS handle346 that only applies when79 is nonzero. The former reader followed the reserved-zero description and discarded346. This assessment concerns the UCS table record itself; the implemented VIEW/VPORT345/346 relationships and repeated UCS71/13/23/33 origin overrides are separate.
 
 The [Autodesk UCS schema](https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-1906E8A7-3393-4BF9-BD27-F9AE4352FB8B.htm) says that a missing346 with a nonzero79 uses WORLD. Its description of71 identifies per-orthographic origin overrides, rather than the record's own base relation. The public [AcDbUCSTableRecord methods](https://help.autodesk.com/cloudhelp/2018/ENU/OARX-RefGuide/files/OREF-__MEMBERTYPE_Methods_AcDbUCSTableRecord.html) provide the axes, origin and per-view origin overrides, without a documented base-object assignment method. This contradiction prevents claiming native CAD support from the documentation alone.
 
@@ -13,4 +13,25 @@ IxMilia.Dxf0.8.4 generated and reloaded the twelve committed files under `tests/
 
 No positive native UCS base packet was found. All217 repository fixtures parsed and contained12 UCS records, all without a nonzero79 or346. All67 files in the pinned LibreDWG corpus were downloaded and Git-blob verified;66 parse and contain no UCS records. The remaining R1.4 file starts with `EXTENTS,1` and is recorded as unparsed, not counted as a negative result. The detailed hashes and counts are in [ucs-base-assessment.json](ucs-base-assessment.json). This is evidence about the inspected corpus only.
 
-The proposed implementation is bounded stored identity support: expose a read-only orthographic type0–6 and nullable base-UCS object, edit the pair atomically, resolve346 to an actual retained UCS source object, extend existing UCS reference counts and removal protection, and retain actual base identities in detached clones for explicit destination remapping. A nonzero type with no base represents the documented WORLD default. No coordinate-system activation, orthographic calculation, transformation, ownership cascade or licensed native CAD acceptance would be implied. The proposed API and typed behavior are not yet implemented at this assessment checkpoint.
+The implementation exposes `UCS.OrthographicViewType` (group79, zero through six) and `UCS.BaseUcs` (nullable group346). `SetOrthographicBase(short viewType, UCS baseUcs = null)` changes the pair atomically. Zero clears the relationship and cannot accompany a target. Types one through six represent Top, Bottom, Front, Back, Left and Right. A nonzero type with no base uses the documented WORLD default; a physically present numeric-null346 survives load, save and clone until an explicit edit clears its presence.
+
+A registered referring UCS can target only the actual registered UCS in the same document. The reader resolves canonical numeric source handles after table loading and checks the retained source instance, so forward references work and absent, discarded, wrong-kind or generated substitute targets fail. Unknown types outside zero through six and invalid conditional pairs reject clearly. Private102 groups, unknown later100 subclasses and data after the XData boundary do not supply the new relationship fields. A private1001 inside102 does not terminate subsequent public79/346 capture.
+
+Existing UCS reference counts now include UCS-record dependencies alongside VIEW and VPORT users. A referenced target cannot be removed; removing the referring record releases its outgoing reference. Self references and cycles remain explicit stored pointers and do not trigger recursive evaluation or cascading deletion. Save preflight validates registered target identities and the stored pair before writing.
+
+Detached UCS clones retain the actual base identity, type and physical-null presence. Adoption by another document rejects foreign targets before allocating a handle or changing collections. Map explicitly before adoption:
+
+```csharp
+var copy = (UCS)sourceUcs.Clone("COPY");
+copy.SetOrthographicBase(copy.OrthographicViewType, destination.UCSs["SURVEY_BASE"]);
+destination.UCSs.Add(copy);
+```
+
+This module stores identity and reference data. It does not activate a coordinate system, calculate an orthographic frame, transform coordinates, change existing axis normalization, or claim licensed native CAD acceptance. Group71 origin overrides remain distinct from group79.
+
+The original producer drawings contain ten empty optional DIMSTYLE pointers340–344, which are not valid hexadecimal DXF handles. R2010 and later also contain two orphan STYLE1071=0 tags without the required application marker. `prepare_carriers.py` deletes exactly those ten empty pointer fields and the two orphan STYLE tags where present, preserving every remaining source byte, including complete UCS and LINE records. The twelve carrier files have separate pinned hashes; original producer files remain unchanged. The independent gate reconstructs each carrier from its original and rejects any additional byte change. This adaptation does not qualify unrelated producer DIMSTYLE or STYLE behavior.
+
+
+The independent output gate reads the new UCS fields from raw tags because ezdxf1.4.4 does not model group79/346. It also runs an ancillary whole-file audit. Across the twenty R2004+ output drawings, that audit reports one repair per drawing for the original producer LINE20's transparency440=0; netDxf retains that stored value. The gate accepts only that exact entity, value and diagnostic, and reports the twenty repairs separately. It requires zero audit errors and zero UCS repairs. Any other repair fails. This observation does not establish new transparency behavior or native CAD acceptance.
+
+Final isolated qualification at source`5ec34ed`: Debug and Release each pass766 focused cases (242 new UCS-base,355 VIEW/UCS and169 existing UCS origin-override cases), and each passes the24-output independent gate. A separate reviewer passes42 independent cases on production`3f0d670`. [ucs-base-qualification.json](ucs-base-qualification.json) records exact source, runtime and evidence hashes. The combined integration run is a separate qualification.

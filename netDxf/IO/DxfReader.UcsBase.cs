@@ -14,7 +14,7 @@ namespace netDxf.IO
             private bool publicSubclass = true, xdata;
             internal void Observe(short code, object value)
             {
-                if (code == 1001) this.xdata = true;
+                if (code == 1001 && this.controls == 0) this.xdata = true;
                 if (code == 102)
                 {
                     string text = (string)value;

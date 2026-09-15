@@ -571,6 +571,10 @@
     "SOURCEID": {
       "label": "Retained source identities and numeric handle semantics",
       "path": "doc/dxf-conformance/source-reference-identity.md"
+    },
+    "UCSBASE": {
+      "label": "UCS-record orthographic base identities",
+      "path": "doc/dxf-conformance/ucs-record-base.md"
     }
   },
   "features": [
@@ -2073,12 +2077,13 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Origin/axes, elevation, orthographic origin pairs, XData and raw table flags retained. UCS records referenced by VIEW/VPORT have identity-aware lifecycle tracking. The ambiguous UCS-record group 346/79 schema remains unqualified.",
+      "scope": "Origin/axes, elevation, orthographic origin pairs, XData and raw table flags retained. UCS-record79/346 stored references join VIEW/VPORT identity-aware lifecycle tracking. The public schema contradiction and absence of positive native UCS base packets remain explicit limitations.",
       "evidence": [
         "UCS",
         "ORTHO",
         "UCSX",
-        "VIEWUCS"
+        "VIEWUCS",
+        "UCSBASE"
       ]
     },
     {
@@ -5247,6 +5252,27 @@
       ]
     },
     {
+      "id": "ucs-record-base-reference",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "UCS-record orthographic base identity",
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      },
+      "scope": "Stored79 types0–6 and conditional346 resolve actual retained UCS identities, preserve explicit numeric-null presence, edit atomically, protect referenced records from removal and require explicit foreign clone remapping. Pinned independent producer packets; no orthographic evaluation or native CAD acceptance. Distinct from group71 origin overrides.",
+      "evidence": [
+        "UCSBASE"
+      ]
+    },
+    {
       "id": "ucs-table-flags",
       "area": "Implemented field-level increments",
       "pipeline": "typed",
@@ -5952,7 +5978,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in."
+      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in."
     },
     {
       "id": "new-entities",

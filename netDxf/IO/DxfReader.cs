@@ -2811,9 +2811,10 @@ namespace netDxf.IO
 
             CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
 
-            Debug.Assert(TableObject.IsValidName(name), "Table object name is not valid.");
+
             if (!TableObject.IsValidName(name))
             {
+                if (orthographicViewType != 0 || baseUcsHandle != null) throw new InvalidDataException("A UCS base relationship requires a retained, valid UCS name.");
                 return null;
             }
 

@@ -47,6 +47,7 @@ internal static partial class Program
         RunLightListTests();
         RunDataTableTests();
         RunSunTests();
+        RunUcsBaseTests();
         RegisterStoredTableTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
