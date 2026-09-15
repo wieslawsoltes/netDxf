@@ -6,6 +6,7 @@ import numpy as np
 import ezdxf
 from verify_datatable import records, first, check, audit
 from verify_hatch_affine import transform
+from verify_hatch_spline_relations import packet as spline_packet, scalar
 ROOT=Path(__file__).resolve().parents[1]
 TAU=2*math.pi
 
@@ -75,6 +76,8 @@ def check_output(data,source,operation,plane):
             check(np.isfinite(observed).all() and np.all(error<=2e-10*scales),'World curve differs '+name)
             maximum=max(maximum,float(error.max()));count+=1
             if wanted['kind'] in (2,3):
+                reverses=np.linalg.det((ocs.T@a@old)[:2,:2])<0
+                check(edge['ccw']==(wanted['ccw']!=reverses),'Stored conic direction changed, including zero interval')
                 zero=wanted['start']==wanted['end'];full=abs(wanted['end']-wanted['start'])==360
                 check((edge['start']==edge['end'])==zero,'Zero interval changed')
                 check((abs(abs(edge['end']-edge['start'])-360)<1e-10)==full,'Full interval changed')
@@ -86,18 +89,18 @@ def check_output(data,source,operation,plane):
 
 def corrupt(data,defect):
     lines=data.decode().splitlines();pairs=[(int(lines[i]),lines[i+1]) for i in range(0,len(lines),2)]
-    at=next(i for i,p in enumerate(pairs) if p==(8,'ELLIPSE_0_FULL' if defect=='full' else 'ELLIPSE_0_SHORT'))
-    code={'ratio':40,'direction':73,'angle':50,'full':51,'normal':210,'axis':11}[defect]
+    at=next(i for i,p in enumerate(pairs) if p==(8,'ELLIPSE_0_FULL' if defect=='full' else 'ELLIPSE_0_ZERO' if defect=='zero-direction' else 'ELLIPSE_0_SHORT'))
+    code={'ratio':40,'direction':73,'zero-direction':73,'angle':50,'full':51,'normal':210,'axis':11}[defect]
     i=next(i for i in range(at+1,len(pairs)) if pairs[i][0]==code)
     if defect=='full':value=next(v for c,v in pairs[at:i] if c==50)
-    elif defect=='direction':value=str(1-int(pairs[i][1]))
+    elif defect in ('direction','zero-direction'):value=str(1-int(pairs[i][1]))
     else:value=str(float(pairs[i][1])+.1)
     pairs[i]=(code,value);return ''.join(f'{c}\n{v}\n' for c,v in pairs).encode()
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('artifacts',type=Path);args=parser.parse_args()
     fixture=ROOT/'tests/fixtures/hatch-conic-affine';manifest=json.loads((fixture/'manifest.json').read_text());check(manifest['producer']=='ezdxf' and manifest['version']=='1.4.4','Producer pin')
-    outputs=edges=negative=0;maximum=0;sample=None
+    outputs=edges=negative=0;maximum=0;sample=None;zero_sample=None
     for item in manifest['files']:
         data=(fixture/item['file']).read_bytes();check(hashlib.sha256(data).hexdigest()==item['sha256'],'Pinned producer changed')
         source={first(t,8):t for t in records(data).values() if t[0]==(0,'HATCH')};check(len(source)==25,'Producer HATCH inventory')
@@ -114,9 +117,11 @@ def main():
                 count,error=check_output(output,source,operation,plane);edges+=count;maximum=max(maximum,error)
                 doc=ezdxf.readfile(file);audit(doc);line=list(doc.modelspace().query('LINE'));check(len(line)==1 and tuple(line[0].dxf.start)==(1,2,3) and tuple(line[0].dxf.end)==(4,5,6),'Following LINE changed');outputs+=1
                 if item['year']==2018 and not item['binary'] and operation==3 and plane==1:sample=(output,source,operation,plane)
+                if item['year']==2018 and not item['binary'] and operation==0 and plane==0:zero_sample=(output,source,operation,plane)
     check(outputs==168 and edges==6216,'Mandatory actual-output inventory')
-    for defect in ('ratio','direction','angle','full','normal','axis'):
-        try:check_output(corrupt(sample[0],defect),*sample[1:])
+    for defect in ('ratio','direction','zero-direction','angle','full','normal','axis'):
+        candidate=zero_sample if defect=='zero-direction' else sample
+        try:check_output(corrupt(candidate[0],defect),*candidate[1:])
         except (ValueError,AssertionError):negative+=1
         else:raise ValueError('Accepted actual-output corruption '+defect)
     conditioning=json.loads((args.artifacts/'hatch-conic-conditioning.json').read_text());check(len(conditioning)==56,'Conditioning probe inventory')
@@ -132,5 +137,30 @@ def main():
         scale=max(1,float(np.abs(expected).max()));check(np.all(np.abs(actual-expected)<=2e-10*scale),'Conditioned conic endpoints changed')
         conditioning_outputs+=1
     check(0<conditioning_outputs<56,'Conditioning did not cover both outcomes')
-    print(json.dumps({'outputs':outputs,'conditioning_outputs':conditioning_outputs,'conditioning_rejections':56-conditioning_outputs,'conic_and_line_segments':edges,'world_curve_probes':edges*65,'maximum_world_error':maximum,'actual_output_negative_controls':negative,'raw_producer_convention':True,'audit_errors':0,'audit_fixes':0,'native_cad_execution':False},sort_keys=True))
+    mixed_packets=0
+    for binary in (False,True):
+        raw=(ROOT/'tests/fixtures/hatch-spline-relations'/f'ezdxf-hatch-spline-R2018-{"binary" if binary else "ascii"}.dxf').read_bytes()
+        source={first(t,1000):t for t in records(raw).values() if t[0]==(0,'HATCH')}
+        file=args.artifacts/f'hatch-conic-mixed-{binary}.dxf';data=file.read_bytes();check(data.startswith(b'AutoCAD Binary DXF')==binary,'Mixed output transport');audit(ezdxf.readfile(file))
+        actual={first(t,1000):t for t in records(data).values() if t[0]==(0,'HATCH')};check(actual.keys()==source.keys(),'Mixed spline inventory')
+        for name,tags in actual.items():
+            check(first(tags,91)==2 and any(t==(72,3) for t in tags),'Mixed conic boundary absent')
+            original=copy.deepcopy(spline_packet(source[name],2018));edge=spline_packet(tags,2018)
+            if not original['rational']:original['controls'][0][2]=-2.5
+            for field in ('degree','rational','periodic','knots'):check(scalar(original[field])==scalar(edge[field]),'Mixed stored '+field)
+            ocs=basis(first(tags,210));elevation=first(tags,10)[2]
+            for field in ('controls','fits'):
+                check(len(original[field])==len(edge[field]),'Mixed '+field+' count')
+                for wanted,point in zip(original[field],edge[field]):
+                    expected=np.array([*wanted[:2],0.])@matrix(3).T+np.array([7,-11,13]);observed=world(ocs,np.array([point[:2]]),elevation)[0]
+                    check(np.linalg.norm(expected-observed)<=2e-10*max(1,np.linalg.norm(expected)),'Mixed world '+field)
+                    if field=='controls':check(scalar(wanted[2])==scalar(point[2]),'Mixed stored weight')
+            for field in ('start','end'):
+                check((original[field] is None)==(edge[field] is None),'Mixed tangent presence')
+                if original[field] is not None:
+                    expected=np.array([*original[field],0.])@matrix(3).T;observed=world(ocs,np.array([edge[field]]),0)[0]
+                    check(np.linalg.norm(expected-observed)<=2e-10*max(1,np.linalg.norm(expected)),'Mixed tangent world vector')
+            mixed_packets+=1
+    check(mixed_packets==8,'Mandatory mixed spline inventory')
+    print(json.dumps({'outputs':outputs,'mixed_spline_packets':mixed_packets,'conditioning_outputs':conditioning_outputs,'conditioning_rejections':56-conditioning_outputs,'conic_and_line_segments':edges,'world_curve_probes':edges*65,'maximum_world_error':maximum,'actual_output_negative_controls':negative,'raw_producer_convention':True,'audit_errors':0,'audit_fixes':0,'native_cad_execution':False},sort_keys=True))
 if __name__=='__main__':main()
