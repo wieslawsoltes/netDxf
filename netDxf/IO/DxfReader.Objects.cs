@@ -19,6 +19,7 @@ namespace netDxf.IO
         private sealed class DatabaseRecord
         {
             internal DxfDatabaseObject Object;
+            internal SourceRecordIdentity SourceIdentity;
             internal DatabaseMetadata Metadata = new DatabaseMetadata();
             internal readonly List<Tuple<string, string, bool>> Entries = new List<Tuple<string, string, bool>>();
             internal string Default;
@@ -27,6 +28,7 @@ namespace netDxf.IO
         }
         private DatabaseRecord ReadDatabaseRecord()
         {
+            SourceRecordIdentity source = this.CurrentSourceRecord;
             string codeName = this.chunk.ReadString();
             List<DxfTag> tags = new List<DxfTag>();
             this.chunk.Next();
@@ -35,13 +37,28 @@ namespace netDxf.IO
                 if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
                 this.chunk.Next();
             }
-            if (codeName == "LAYER_FILTER" || codeName == "OBJECT_PTR")
+            if (codeName == "DATATABLE")
             {
-                DatabaseRecord envelope = this.ReadLayerFilterPointerRecord(codeName, tags);
+                DatabaseRecord table = this.ReadDataTableRecord(tags);
+                table.SourceIdentity = source;
+                this.databaseRecords.Add(table);
+                return table;
+            }
+            if (codeName == "LAYER_INDEX")
+            {
+                DatabaseRecord envelope = this.ReadLayerIndexRecord(tags);
+                envelope.SourceIdentity = source;
                 this.databaseRecords.Add(envelope);
                 return envelope;
             }
-            DatabaseRecord result = new DatabaseRecord();
+            if (codeName == "LAYER_FILTER" || codeName == "OBJECT_PTR")
+            {
+                DatabaseRecord envelope = this.ReadLayerFilterPointerRecord(codeName, tags);
+                envelope.SourceIdentity = source;
+                this.databaseRecords.Add(envelope);
+                return envelope;
+            }
+            DatabaseRecord result = new DatabaseRecord { SourceIdentity = source };
             string handle = null;
             int payload = 0;
             for (; payload < tags.Count; payload++)
@@ -164,6 +181,7 @@ namespace netDxf.IO
         private void ImportDatabaseObjects()
         {
             if (this.databaseRecords.Count == 0) { this.ResolveOutputSettingsReferences(); return; }
+            foreach (DatabaseRecord record in this.databaseRecords) this.RecordSourceObject(record.Object, record.SourceIdentity);
             // Reserve source identities before lazily creating the document's temporary root.
             foreach (DatabaseRecord record in this.databaseRecords)
                 if (long.TryParse(record.Object.Handle, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture, out long sourceHandle) && sourceHandle >= this.doc.NumHandles && sourceHandle < long.MaxValue)
@@ -196,8 +214,21 @@ namespace netDxf.IO
                 DxfObject existing = this.doc.GetObjectByHandle(record.Object.Handle);
                 if (existing != null)
                 {
-                    bool collection = record.Object is DxfDictionary && (existing == this.doc.Groups || existing == this.doc.Layouts || existing == this.doc.MlineStyles || existing == this.doc.ImageDefinitions || existing == this.doc.UnderlayDgnDefinitions || existing == this.doc.UnderlayDwfDefinitions || existing == this.doc.UnderlayPdfDefinitions);
+                    bool collection = record.Object is DxfDictionary && root != null
+                        && record.Metadata.Owner == root.Object.Handle
+                        && this.namedDictionary.Entries.TryGetValue(record.Object.Handle, out string collectionName)
+                        && (collectionName == DxfObjectCode.GroupDictionary && existing == this.doc.Groups
+                            || collectionName == DxfObjectCode.LayoutDictionary && existing == this.doc.Layouts
+                            || collectionName == DxfObjectCode.MLineStyleDictionary && existing == this.doc.MlineStyles
+                            || collectionName == DxfObjectCode.ImageDefDictionary && existing == this.doc.ImageDefinitions
+                            || collectionName == DxfObjectCode.UnderlayDgnDefinitionDictionary && existing == this.doc.UnderlayDgnDefinitions
+                            || collectionName == DxfObjectCode.UnderlayDwfDefinitionDictionary && existing == this.doc.UnderlayDwfDefinitions
+                            || collectionName == DxfObjectCode.UnderlayPdfDefinitionDictionary && existing == this.doc.UnderlayPdfDefinitions);
                     if (!collection && !(record.Object is DxfXRecord && existing is LayerState)) throw new FormatException("Duplicate database identity: " + record.Object.Handle);
+                    // These collections were constructed from the named dictionary's
+                    // source handles and intentionally represent its DICTIONARY records.
+                    // LayerState conversions do not preserve source identity.
+                    if (collection) this.RecordSourceObject(existing, record.SourceIdentity);
                     managed.Add(record.Object.Handle); continue;
                 }
                 database.Register(record.Object, true);
@@ -208,7 +239,7 @@ namespace netDxf.IO
                 DxfDatabaseObject item = record.Object;
                 if (record != root && record.Metadata.Owner != null && record.Metadata.Owner != "0")
                 {
-                    item.Owner = this.doc.GetObjectByHandle(record.Metadata.Owner);
+                    item.Owner = this.GetObjectBySourceHandle(record.Metadata.Owner);
                     if (item.Owner == null) throw new FormatException("Unresolved database owner: " + record.Metadata.Owner);
                 }
             }
@@ -221,22 +252,24 @@ namespace netDxf.IO
                     foreach (Tuple<string, string, bool> entry in record.Entries)
                     {
                         if (record == root && DxfObjectDatabase.IsReservedName(entry.Item1)) continue;
-                        DxfObject target = this.doc.GetObjectByHandle(entry.Item2);
+                        DxfObject target = this.GetObjectBySourceHandle(entry.Item2);
                         if (target == null) throw new FormatException("Unresolved dictionary entry: " + entry.Item1 + " -> " + entry.Item2);
                         dictionary.AddLoaded(entry.Item1, target, entry.Item3);
                     }
                 if (item is DxfDictionaryWithDefault fallback && record.Default != null && record.Default != "0")
                 {
-                    fallback.Default = this.doc.GetObjectByHandle(record.Default);
+                    fallback.Default = this.GetObjectBySourceHandle(record.Default);
                     if (fallback.Default == null) throw new FormatException("Unresolved dictionary default: " + record.Default);
                 }
                 this.ApplyDatabaseMetadata(item, record.Metadata);
             }
             foreach (KeyValuePair<string, DatabaseMetadata> pair in this.entityDatabaseMetadata)
             {
-                DxfObject target = this.doc.GetObjectByHandle(pair.Key);
+                DxfObject target = this.GetObjectBySourceHandle(pair.Key);
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
+            this.ResolveDataTableReferences();
+            this.ResolveLayerIndexReferences();
             this.ResolveDeclaredOwnership();
             this.ResolveGeoDataHosts();
             this.ResolveOutputSettingsReferences();
@@ -246,18 +279,18 @@ namespace netDxf.IO
         {
             if (!string.IsNullOrEmpty(metadata.Extension) && metadata.Extension != "0")
             {
-                item.ExtensionDictionary = this.doc.GetObjectByHandle(metadata.Extension) as DxfDictionary;
+                item.ExtensionDictionary = this.GetObjectBySourceHandle(metadata.Extension) as DxfDictionary;
                 if (item.ExtensionDictionary == null)
                 {
                     // Existing layer-state collections have their own extension-dictionary writer.
-                    if (metadata.Extension == this.layerStateManagerDictionaryHandle || this.doc.GetObjectByHandle(metadata.Extension) == this.doc.Layers.StateManager) return;
-                    throw new FormatException("Unresolved extension dictionary: " + metadata.Extension);
+                    if (!ReferenceEquals(item, this.doc.Layers) || metadata.Extension != this.layerStateManagerDictionaryHandle || !this.IsAcceptedSourceDictionary(metadata.Extension))
+                        throw new FormatException("Unresolved extension dictionary: " + metadata.Extension);
                 }
-                if (item.ExtensionDictionary.Owner != item) throw new FormatException("Extension dictionary owner mismatch: " + metadata.Extension);
+                else if (item.ExtensionDictionary.Owner != item) throw new FormatException("Extension dictionary owner mismatch: " + metadata.Extension);
             }
             foreach (string handle in metadata.Reactors)
             {
-                DxfObject target = this.doc.GetObjectByHandle(handle);
+                DxfObject target = this.GetObjectBySourceHandle(handle);
                 if (target != null && !item.PersistentReactors.Contains(target)) item.PersistentReactors.Add(target);
                 else if (target == null && handle != "0" && !this.managedReactorHandles.Contains(handle))
                     throw new FormatException("Unresolved persistent reactor: " + handle);

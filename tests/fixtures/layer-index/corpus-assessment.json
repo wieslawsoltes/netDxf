@@ -1,0 +1,94 @@
+{
+  "scope": "Six pinned LibreDWG Leader drawings plus five pinned shared TABLE corpus files; declarations are not actual objects",
+  "files": [
+    {
+      "upstream": "LibreDWG/libredwg",
+      "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+      "path": "test/test-data/2000/Leader.dxf",
+      "git_blob_sha1": "3456b89af4287a8327000787fbc13901f7620707",
+      "sha256": "12d6239782221ef8534ebd0e659c8eaeb5b5353e24a5774dc38f43416b8ad5bb",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1
+    },
+    {
+      "upstream": "LibreDWG/libredwg",
+      "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+      "path": "test/test-data/2004/Leader.dxf",
+      "git_blob_sha1": "3c2468d031c68b842bc61568b78d7b9c731f0fc5",
+      "sha256": "5cc97ba5ba48b2feb2e05a28c67b43aa421162376fb32a00ffd9e58df3523019",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1
+    },
+    {
+      "upstream": "LibreDWG/libredwg",
+      "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+      "path": "test/test-data/2007/Leader.dxf",
+      "git_blob_sha1": "95adfe7f1c07c74bff29aa965a9e50d12c0b5ed5",
+      "sha256": "4ab43c49dceb119d8e666a169faa87f6bbfa72f345ac109397752286a3676171",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1
+    },
+    {
+      "upstream": "LibreDWG/libredwg",
+      "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+      "path": "test/test-data/2010/Leader.dxf",
+      "git_blob_sha1": "1d370acbff3bf2f69a3c979ca40d2deb2c50906e",
+      "sha256": "2c8c4d821ab9151e3da40b12e0c1acbf716c82b0a1ad388620d068e4efb68986",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1
+    },
+    {
+      "upstream": "LibreDWG/libredwg",
+      "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+      "path": "test/test-data/2013/Leader.dxf",
+      "git_blob_sha1": "b60c751ee8c5af1eaff9e77dfb025698ed1ef0d6",
+      "sha256": "7e7a724c833667fcc114bdbd16068bc19ea3c76d5c61b17f446b776fa5a210ca",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1
+    },
+    {
+      "upstream": "LibreDWG/libredwg",
+      "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+      "path": "test/test-data/2018/Leader.dxf",
+      "git_blob_sha1": "8e49a6719470745a2864a754f10cb465411aa4d6",
+      "sha256": "8028ce0245c633fc07fcc676c6cc6445748d42ef0aee4a2b43bdb5f1e14ee86d",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1
+    },
+    {
+      "source_fixture": "tests/fixtures/table-oracle/acad_table_simple.dxf.gz",
+      "sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "actual_layer_indexes": 0,
+      "class_declarations": 0,
+      "provenance": "tools/table_oracle/fixtures.json"
+    },
+    {
+      "source_fixture": "tests/fixtures/table-oracle/acad_table_with_blk_ref.dxf.gz",
+      "sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "actual_layer_indexes": 0,
+      "class_declarations": 0,
+      "provenance": "tools/table_oracle/fixtures.json"
+    },
+    {
+      "source_fixture": "tests/fixtures/table-oracle/sample_AC1018_ascii.dxf.gz",
+      "sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1,
+      "provenance": "tools/table_oracle/fixtures.json"
+    },
+    {
+      "source_fixture": "tests/fixtures/table-oracle/sample_AC1021_ascii.dxf.gz",
+      "sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1,
+      "provenance": "tools/table_oracle/fixtures.json"
+    },
+    {
+      "source_fixture": "tests/fixtures/table-oracle/sample_AC1024_ascii.dxf.gz",
+      "sha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+      "actual_layer_indexes": 0,
+      "class_declarations": 1,
+      "provenance": "tools/table_oracle/fixtures.json"
+    }
+  ]
+}

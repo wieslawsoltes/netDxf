@@ -7,15 +7,14 @@ namespace netDxf.IO
 {
     internal sealed partial class DxfReader
     {
-        // Preserve unknown header data in these small public envelopes without changing other parsers.
-        private DatabaseRecord ReadLayerFilterPointerRecord(string type, List<DxfTag> tags)
+        private DatabaseRecord ReadStoredObjectHeader(List<DxfTag> tags, out List<DxfTag> opaque, out int payload, out string handle)
         {
             var result = new DatabaseRecord();
-            var opaque = new List<DxfTag>();
-            string handle = null;
+            opaque = new List<DxfTag>();
+            handle = null;
             bool reactorsSeen = false;
             bool extensionSeen = false;
-            int payload = 0;
+            payload = 0;
             for (; payload < tags.Count; payload++)
             {
                 DxfTag tag = tags[payload];
@@ -61,6 +60,13 @@ namespace netDxf.IO
                 else opaque.Add(tag);
             }
             if (handle == null) throw new FormatException("A database object requires an identity.");
+            return result;
+        }
+
+        // Preserve unknown header data in these small public envelopes without changing other parsers.
+        private DatabaseRecord ReadLayerFilterPointerRecord(string type, List<DxfTag> tags)
+        {
+            DatabaseRecord result = this.ReadStoredObjectHeader(tags, out List<DxfTag> opaque, out int payload, out string handle);
             int xdata = tags.FindIndex(payload, value => value.Code == 1001);
             if (xdata < 0) xdata = tags.Count;
             bool known = opaque.Count == 0;

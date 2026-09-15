@@ -104,6 +104,8 @@ namespace netDxf.Objects
                 if (item is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags)
                         if (tag.ValueType == DxfTagValueType.Handle) handle((string)tag.Value, "opaque handle " + tag.Code);
+                if (item is StoredTable table)
+                    foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)
                     foreach (MLeaderData data in leader.Data)
                         foreach (DxfObject target in data.References) reference(target, "MULTILEADER reference");

@@ -75,7 +75,7 @@ namespace netDxf.Objects
                 if (item is DxfDictionaryWithDefault fallback && fallback.Default != null && !this.IsRegistered(fallback.Default)) errors.Add("Unregistered dictionary default: " + item.Handle);
                 if (item is DxfXRecord record)
                     foreach (DxfTag tag in record.Data)
-                        if (IsReference(tag) && (string)tag.Value != "0" && this.Document.GetObjectByHandle((string)tag.Value) == null)
+                        if (IsReference(tag) && !IsNullHandle((string)tag.Value) && this.Document.GetObjectByHandle((string)tag.Value) == null)
                             errors.Add("Unresolved XRECORD reference " + tag.Code + ": " + tag.Value);
             }
             foreach (DxfObject item in this.Document.AddedObjects.Values)
@@ -86,7 +86,7 @@ namespace netDxf.Objects
                 if (item is DxfDatabaseObject)
                     foreach (XData data in item.XData.Values)
                         foreach (XDataRecord tag in data.XDataRecord)
-                            if (tag.Code == XDataCode.DatabaseHandle && (string)tag.Value != "0" && this.Document.GetObjectByHandle((string)tag.Value) == null) errors.Add("Unresolved XData reference: " + tag.Value);
+                            if (tag.Code == XDataCode.DatabaseHandle && !IsNullHandle((string)tag.Value) && this.Document.GetObjectByHandle((string)tag.Value) == null) errors.Add("Unresolved XData reference: " + tag.Value);
             }
             return errors.AsReadOnly();
         }
@@ -157,7 +157,7 @@ namespace netDxf.Objects
                 {
                     clone.XData.Add((XData)data.Clone());
                     foreach (XDataRecord tag in data.XDataRecord)
-                        if (tag.Code == XDataCode.DatabaseHandle && (string)tag.Value != "0")
+                        if (tag.Code == XDataCode.DatabaseHandle && !IsNullHandle((string)tag.Value))
                         {
                             DxfObject target = source.Database.Document.GetObjectByHandle((string)tag.Value);
                             if (target == null) throw new InvalidOperationException("Cannot clone an unresolved XData reference: " + tag.Value);
@@ -166,7 +166,7 @@ namespace netDxf.Objects
                 }
                 if (original is DxfXRecord record)
                     foreach (DxfTag tag in record.Data)
-                        if (IsReference(tag) && (string)tag.Value != "0")
+                        if (IsReference(tag) && !IsNullHandle((string)tag.Value))
                         {
                             DxfObject target = source.Database.Document.GetObjectByHandle((string)tag.Value);
                             if (target == null) throw new InvalidOperationException("Cannot clone an unresolved XRECORD reference: " + tag.Value);
@@ -185,7 +185,7 @@ namespace netDxf.Objects
                 for (int i = 0; i < original.Data.Count; i++)
                 {
                     DxfTag tag = original.Data[i];
-                    if (IsReference(tag) && (string)tag.Value != "0") clone.ReplaceLoadedData(i, new DxfTag(tag.Code, resolve(source.Database.Document.GetObjectByHandle((string)tag.Value)).Handle));
+                    if (IsReference(tag) && !IsNullHandle((string)tag.Value)) clone.ReplaceLoadedData(i, new DxfTag(tag.Code, resolve(source.Database.Document.GetObjectByHandle((string)tag.Value)).Handle));
                 }
             }
             foreach (DxfDatabaseObject original in originals)
@@ -195,7 +195,7 @@ namespace netDxf.Objects
                     for (int i = 0; i < data.XDataRecord.Count; i++)
                     {
                         XDataRecord tag = data.XDataRecord[i];
-                        if (tag.Code == XDataCode.DatabaseHandle && (string)tag.Value != "0")
+                        if (tag.Code == XDataCode.DatabaseHandle && !IsNullHandle((string)tag.Value))
                             clone.XData[data.ApplicationRegistry.Name].XDataRecord[i] = new XDataRecord(XDataCode.DatabaseHandle, resolve(source.Database.Document.GetObjectByHandle((string)tag.Value)).Handle);
                     }
             }
@@ -204,6 +204,8 @@ namespace netDxf.Objects
             else ((DxfDictionary)destination).AddLoaded(name, result, true);
             return result;
         }
+        private static bool IsNullHandle(string handle)
+        { return handle != null && handle.Length >= 1 && handle.Length <= 16 && ulong.TryParse(handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong value) && value == 0; }
         internal static bool IsReference(DxfTag tag) { return tag.HandleKind == DxfHandleKind.SoftPointer || tag.HandleKind == DxfHandleKind.HardPointer || tag.HandleKind == DxfHandleKind.SoftOwner || tag.HandleKind == DxfHandleKind.HardOwner; }
         internal static bool IsAncestor(DxfObject possibleAncestor, DxfObject item)
         {
@@ -281,7 +283,7 @@ namespace netDxf.Objects
         }
         private long GetReservedSeed(DxfTag tag, long current)
         {
-            if (tag.ValueType != DxfTagValueType.Handle || tag.HandleKind == DxfHandleKind.ObjectIdentity || (string)tag.Value == "0" || this.Document.GetObjectByHandle((string)tag.Value) != null) return current;
+            if (tag.ValueType != DxfTagValueType.Handle || tag.HandleKind == DxfHandleKind.ObjectIdentity || IsNullHandle((string)tag.Value) || this.Document.GetObjectByHandle((string)tag.Value) != null) return current;
             if (!long.TryParse((string)tag.Value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out long handle) || handle < 0) return current;
             if (handle >= long.MaxValue - 1) throw new ArgumentException("The typed database cannot allocate beyond the exposed reference handle.", nameof(tag));
             return handle >= current ? handle + 1 : current;
@@ -291,7 +293,7 @@ namespace netDxf.Objects
             if (item.IsErased) throw new InvalidOperationException("An erased object cannot be registered again.");
             if (preserveHandle)
             {
-                if (string.IsNullOrEmpty(item.Handle) || item.Handle == "0" || this.Document.GetObjectByHandle(item.Handle) != null) throw new FormatException("Duplicate or invalid database object handle: " + item.Handle);
+                if (string.IsNullOrEmpty(item.Handle) || IsNullHandle(item.Handle) || this.Document.GetObjectByHandle(item.Handle) != null) throw new FormatException("Duplicate or invalid database object handle: " + item.Handle);
                 if (!long.TryParse(item.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out long handle) || handle < 0 || handle == long.MaxValue) throw new FormatException("Unsupported object handle: " + item.Handle);
                 if (handle >= this.Document.NumHandles) this.Document.NumHandles = handle + 1;
             }

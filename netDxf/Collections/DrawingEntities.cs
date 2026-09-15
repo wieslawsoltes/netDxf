@@ -314,6 +314,12 @@ namespace netDxf.Collections
         }
 
         /// <summary>Gets MULTILEADER entities in the active layout.</summary>
+        public IEnumerable<StoredTable> StoredTables
+        {
+            get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<StoredTable>(); }
+        }
+
+        /// <summary>Gets the MULTILEADER entities in the active layout.</summary>
         public IEnumerable<MultiLeader> MultiLeaders
         {
             get { return this.document.Layouts[this.activeLayout].AssociatedBlock.Entities.OfType<MultiLeader>(); }

@@ -214,7 +214,7 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the entity <see cref="Vector3">normal</see>.
         /// </summary>
-        public Vector3 Normal
+        public virtual Vector3 Normal
         {
             get { return this.normal; }
             set

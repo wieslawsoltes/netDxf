@@ -217,6 +217,8 @@ namespace netDxf.Collections
                 return false;
             }
 
+            if (this.Owner.StoredTableReferencesRemoval(item)) return false;
+
             // remove the entities and attribute definitions from the layout
             List<EntityObject> entities = new List<EntityObject>(item.AssociatedBlock.Entities);
             foreach (EntityObject e in entities)

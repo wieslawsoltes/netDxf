@@ -1,0 +1,49 @@
+{
+  "module": "stored LAYER_INDEX",
+  "commit": "21b858dc0f9a1bc2e7a46b612839ef2c58ef3e1a",
+  "base": "9643cc48a6edc8c29ba8f78d6799c96d37e054f4",
+  "focused": {
+    "debug": {
+      "passed": 429,
+      "failed": 0,
+      "layer_index_cases": 140,
+      "output_drawings": 72,
+      "independent_gate": "PASS ezdxf 1.4.4: 72 outputs, 12 pinned originals/extractions, 72 exact mapped source packets, counts/ownership/clone/erase/opaque graphs, zero output audit repairs and 3 rejected corruptions",
+      "dll_sha256": "9380ae965a8aee626dd0b0fe5f6bc3d5e9d2c1b611cb97bb30bdc42a338db17b"
+    },
+    "release": {
+      "passed": 429,
+      "failed": 0,
+      "layer_index_cases": 140,
+      "output_drawings": 72,
+      "independent_gate": "PASS ezdxf 1.4.4: 72 outputs, 12 pinned originals/extractions, 72 exact mapped source packets, counts/ownership/clone/erase/opaque graphs, zero output audit repairs and 3 rejected corruptions",
+      "dll_sha256": "9d45a70e0245065b264b3164ea5e6366d01b591940633435f10bb201fbcbda67"
+    }
+  },
+  "independent_probe": {
+    "passed": 182,
+    "failed": 0,
+    "old_missing_subclass_red": 12
+  },
+  "release_targets": [
+    "netstandard2.0",
+    "net471",
+    "net48",
+    "net6.0",
+    "net8.0"
+  ],
+  "debug_additional_target": "netstandard2.0",
+  "warnings_per_release_target": {
+    "CS1591": 561
+  },
+  "original_source_fixtures": 12,
+  "exact_mapped_application_packets": 72,
+  "extraction_hash_seeds": [
+    0,
+    1,
+    17
+  ],
+  "native_actual_records_in_assessed_corpus": 0,
+  "native_execution_qualified": false,
+  "whole_original_typed_import_qualified": false
+}

@@ -73,8 +73,11 @@ namespace netDxf.IO
             this.PrepareStoredEnvelopeClasses(definitions);
             this.PrepareGeoDataClass(definitions);
             this.PrepareLayerFilterPointerClasses(definitions);
+            this.PrepareLayerIndexClass(definitions);
             this.PrepareMultiLeaderClasses(definitions);
+            this.PrepareStoredTableClasses(definitions);
             this.PrepareLightListClass(definitions);
+            this.PrepareDataTableClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -117,6 +120,7 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteLayerIndexPayload(item)) { }
             else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }
@@ -124,6 +128,7 @@ namespace netDxf.IO
             else if (this.WriteMLeaderStylePayload(item)) { }
             else if (this.WriteLayerFilterPointerPayload(item)) { }
             else if (this.WriteLightListPayload(item)) { }
+            else if (this.WriteDataTablePayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

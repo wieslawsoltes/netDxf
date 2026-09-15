@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "module": "DATATABLE",
+  "production_commit": "e9f8ead0fbadd2703b7f54786063d2db6bcc6f32",
+  "test_commit": "bf486188b418b66b20eb090f24861f1098a7da89",
+  "runtime": "net8.0 Debug",
+  "library_sha256": "056f9acae22f0ee544e442a45da55c805c7cdbbaaf40f41366b57686ede58304",
+  "focused": {
+    "passed": 502,
+    "failed": 0,
+    "datatable_cases": 467,
+    "existing_declared_ownership_cases": 35,
+    "source_identity_cases": 170,
+    "results_sha256": "0f01fa4e77bd38a563a6469a9a16e00d933a28527f978987a95f1bd4eca47e3d"
+  },
+  "profiles": [
+    "AutoCad2004",
+    "AutoCad2007",
+    "AutoCad2010",
+    "AutoCad2013",
+    "AutoCad2018"
+  ],
+  "transports": [
+    "ASCII",
+    "binary"
+  ],
+  "independent_output_gate": {
+    "command": "python tools/verify_datatable.py <focused-output-directory>",
+    "reader": "ezdxf 1.4.4 raw tags and generic object database",
+    "result": {
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "native_cad_execution": false,
+      "native_owned_xrecords": 41,
+      "native_tables": 2,
+      "negative_controls": 2,
+      "outputs": 34
+    }
+  },
+  "native_evidence": {
+    "fixture": "tests/fixtures/table-oracle/sample_AC1018_ascii.dxf.gz",
+    "decompressed_sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+    "table_handles": [
+      "143D",
+      "145B"
+    ],
+    "row_counts": [
+      21,
+      20
+    ],
+    "column_types": [
+      2,
+      1,
+      1,
+      6
+    ],
+    "owned_xrecords": 41,
+    "complete_record_comparisons_across_transports": 86,
+    "extraction_change": "Only each table external common owner is replaced with the extraction dictionary."
+  },
+  "scope": [
+    "All eleven ObjectARX cell type numbers and their explicit DXF packets.",
+    "Reciprocal owner cells, atomic replacement, clone maps, erasure and opaque fallback.",
+    "Typed DATATABLE references require an accepted object from the same physical source record.",
+    "Managed collection substitution requires the designated reserved named-dictionary entry."
+  ],
+  "limits": [
+    "Native point/vector geometric interpretation is not established by the conflicting DXF/ObjectARX labels.",
+    "All-type authored fixtures derive from documentation; ezdxf does not implement typed DATATABLE semantics.",
+    "No native CAD application execution is claimed.",
+    "Combined repository Debug/Release and all-gate receipts belong to the integration checkpoint, not this focused receipt."
+  ]
+}

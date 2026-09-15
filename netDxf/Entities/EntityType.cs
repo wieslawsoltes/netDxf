@@ -195,6 +195,9 @@ namespace netDxf.Entities
         Solid3D,
 
         /// <summary>A MULTILEADER with stored context data.</summary>
-        MultiLeader
+        MultiLeader,
+
+        /// <summary>A loaded ACAD_TABLE with preserved stored schema.</summary>
+        StoredTable
     }
 }

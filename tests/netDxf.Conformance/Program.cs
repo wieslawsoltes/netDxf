@@ -42,8 +42,16 @@ internal static partial class Program
         RunDimensionStyleParityTests();
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
+        RunLayerIndexTests();
         RunTypedObjectErasureTests();
         RunLightListTests();
+        RunDataTableTests();
+        RegisterStoredTableTests();
+        RegisterStoredTableLifecycleReviewTests();
+        RegisterStoredTableFidelityTests();
+        RegisterFifthMixedModuleTests();
+        RunSourceReferenceIdentityTests();
+        RunNumericHandleTests();
         RunAppIdXDataLifecycleTests();
         File.WriteAllText(Path.Combine(ArtifactDirectory, "results.json"),
             JsonSerializer.Serialize(Results, new JsonSerializerOptions { WriteIndented = true }));
