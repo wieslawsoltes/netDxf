@@ -34,7 +34,7 @@ internal static partial class Program
             foreach (string defect in new[] { "missing-enable", "disabled", "bad-enable", "duplicate-enable", "zero-axis",
                 "missing-110", "missing-120", "missing-130", "missing-111", "missing-121", "missing-131", "missing-112", "missing-122", "missing-132",
                 "bad-ortho", "base-without-ortho", "missing-named-target", "missing-base-target", "wrong-target-type", "duplicate-reference",
-                "ucs-reserved-type", "ucs-duplicate-flags", "vport-missing-target", "vport-wrong-target-type", "vport-base-without-ortho" })
+                "ucs-unsupported-type", "ucs-duplicate-flags", "vport-missing-target", "vport-wrong-target-type", "vport-base-without-ortho" })
             {
                 string d = defect;
                 Run($"view-ucs/invalid/{v}/{b}/{d}", () => ViewUcsMalformed(v, b, d));
@@ -161,7 +161,7 @@ internal static partial class Program
                 case "wrong-target-type": PutViewUcsTag(tags, 345, line); break;
                 case "vport-wrong-target-type": PutViewUcsTag(tags, 346, line); break;
                 case "duplicate-reference": tags.Insert(tags.FindIndex(t => t.Code == 345), new DxfTag(345, "FFFF")); break;
-                case "ucs-reserved-type": PutViewUcsTag(tags, 79, (short)1); break;
+                case "ucs-unsupported-type": PutViewUcsTag(tags, 79, (short)7); break;
                 case "ucs-duplicate-flags": tags.Insert(tags.FindIndex(t => t.Code == 70), new DxfTag(70, (short)0)); break;
                 default: throw new ArgumentException(defect);
             }

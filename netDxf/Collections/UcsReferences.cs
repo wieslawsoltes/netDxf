@@ -8,7 +8,11 @@ namespace netDxf.Collections
     {
         internal static IEnumerable<UCS> Targets(DxfObject owner)
         {
-            if (owner is View view && view.Ucs != null)
+            if (owner is UCS ucs)
+            {
+                if (ucs.BaseUcs != null) yield return ucs.BaseUcs;
+            }
+            else if (owner is View view && view.Ucs != null)
             {
                 if (view.Ucs.NamedUcs != null) yield return view.Ucs.NamedUcs;
                 if (view.Ucs.BaseUcs != null) yield return view.Ucs.BaseUcs;
@@ -37,6 +41,7 @@ namespace netDxf.Collections
         internal static void Validate(DxfObject owner, DxfDocument document)
         {
             foreach (UCS target in Targets(owner)) Check(document, target);
+            if (owner is UCS ucs) ucs.ValidateOrthographicBase();
             if (owner is View view && view.Ucs != null) view.Ucs.Validate();
             if (owner is VPort port && port.BaseUcs != null && port.UcsOrthographicType == 0)
                 throw new InvalidOperationException("A VPORT base UCS requires a nonzero orthographic type.");

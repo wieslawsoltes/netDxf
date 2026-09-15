@@ -87,6 +87,7 @@ namespace netDxf.IO
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
             }
 
+            this.ValidateStoredPolylineRecords();
             this.ValidateStoredDimensionHeaders();
             this.ValidateTextStyleStrings();
             this.ValidateAcisEntities();
@@ -97,6 +98,7 @@ namespace netDxf.IO
             this.ValidateLwPolylineFidelity();
             this.ValidateMeshVersions();
             this.ValidateMeshOutput();
+            this.ValidateHatchSplineData();
             this.ValidateHatchSplineFitVersions();
             this.ValidateHelixVersions();
             this.ValidateLightVersions();
@@ -1740,8 +1742,9 @@ namespace netDxf.IO
             this.chunk.Write(22, ucs.YAxis.Y);
             this.chunk.Write(32, ucs.YAxis.Z);
 
-            this.chunk.Write(79, (short) 0);
+            this.chunk.Write(79, ucs.OrthographicViewType);
             this.chunk.Write(146, ucs.Elevation);
+            if (ucs.BaseUcsHandlePresent) this.chunk.Write(346, ucs.BaseUcs?.Handle ?? "0");
 
             // Canonical order is independent of insertion order and Dictionary implementation.
             for (short value = 1; value <= 6; value++)
@@ -2791,6 +2794,7 @@ namespace netDxf.IO
             this.chunk.Write(230, polyline.Normal.Z);
 
             this.WriteXData(polyline.XData);
+            if (polyline.StoredSource != null) { this.WriteStoredPolylineRecords(polyline.StoredSource); return; }
 
             string layerName = this.EncodeNonAsciiCharacters(polyline.Layer.Name);
 
@@ -3246,7 +3250,7 @@ namespace netDxf.IO
                 {
                     this.chunk.Write(10, point.X);
                     this.chunk.Write(20, point.Y);
-                    if (spline.IsRational)
+                    if (spline.IsRational || point.Z != 1.0)
                     {
                         this.chunk.Write(42, point.Z);
                     }
@@ -5012,6 +5016,16 @@ namespace netDxf.IO
 
         private void PreProcessPolyline3D(Polyline3D poly3D)
         {
+            if (poly3D.HasStoredRecords)
+            {
+                var stored = new Polyline
+                {
+                    Handle = poly3D.Handle, SubclassMarker = SubclassMarker.Polyline3D,
+                    Layer = poly3D.Layer, Normal = poly3D.Normal, Color = poly3D.Color,
+                    Flags = poly3D.Flags, SmoothType = poly3D.SmoothType, StoredSource = poly3D
+                };
+                stored.XData.AddRange(poly3D.XData.Values); this.polylines.Add(poly3D.Handle, stored); return;
+            }
             List<Vertex> vertexes = new List<Vertex>();
 
             // first create the polyline vertexes

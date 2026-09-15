@@ -1,0 +1,22 @@
+using System.Text.Json;
+using netDxf;
+using netDxf.IO;
+using netDxf.Objects;
+using netDxf.Entities;
+var root="/workspace/scratch/2ec4aa26f01f/repos/netDxf-dimassoc/tests/fixtures/dimassoc/extracted";
+var results=new List<object>(); int failures=0;
+void Check(bool x,string message) { if(!x)throw new Exception(message); }
+void Run(string name,Action test) { try { test();results.Add(new{name,passed=true});}catch(Exception e){failures++;results.Add(new{name,passed=false,error=e.Message});} }
+byte[] Save(DxfDocument d,bool binary) { using var output=new MemoryStream();Check(d.Save(output,binary),"save failed");return output.ToArray(); }
+DxfDocument Load(byte[] b){using var stream=new MemoryStream(b);return DxfDocument.Load(stream)??throw new Exception("load failed");}
+byte[] Mutate(byte[] b,Action<List<DxfTag>> change) {using var input=new MemoryStream(b);var raw=DxfRawDocument.Load(input);var record=raw.Sections.Single(s=>s.Name=="OBJECTS").Records.Single(r=>r.Name=="DIMASSOC"&&r.Tags.Any(t=>t.Code==5&&(string)t.Value=="F1010"));var tags=raw.Tags.ToList();var part=record.Tags.ToList();change(part);tags.RemoveRange(record.StartTagIndex,record.Tags.Count);tags.InsertRange(record.StartTagIndex,part);using var output=new MemoryStream();DxfRawDocument.Create(tags).Save(output,false);return output.ToArray();}
+foreach(int year in new[]{2000,2004,2007,2010,2013,2018})foreach(bool binary in new[]{false,true}) {
+ var bytes=File.ReadAllBytes(Path.Combine(root,$"dimassoc-R{year}.dxf"));
+ Run($"wire/{year}/{binary}",()=>{var d=Load(bytes);var a=d.Objects.Items.OfType<DxfStoredDimAssoc>().ToArray();Check(a.Length==7,"typed count");Check(d.Objects.Validate().Count==0,"initial validation");var loaded=Load(Save(d,binary));Check(loaded.Objects.Items.OfType<DxfStoredDimAssoc>().Count()==7,"reload count");foreach(var item in a){Check(!d.Entities.Remove(item.Dimension),"typed dimension removed");foreach(var p in item.PointReferences)Check(!d.Entities.Remove(p.Geometry),"typed geometry removed");}Check(d.Objects.Validate().Count==0,"remove guards mutated graph");});
+ Run($"opaque-owner-removal/{year}/{binary}",()=>{var d=Load(bytes);var a=d.Objects.Items.OfType<DxfOpaqueObject>().Single(x=>x.CodeName=="DIMASSOC");var dim=(Dimension)a.Owner.Owner;Check(!d.Entities.Remove(dim),"ordinary removal detached the dimension owning opaque DIMASSOC");});
+ Run($"opaque-geometry-removal/{year}/{binary}",()=>{var d=Load(bytes);var a=d.Objects.Items.OfType<DxfOpaqueObject>().Single(x=>x.CodeName=="DIMASSOC");var targets=a.Tags.Where(x=>x.Code==331).Select(x=>d.GetObjectByHandle((string)x.Value)).OfType<EntityObject>().Distinct().ToArray();Check(targets.Length>0,"no retained geometry controls");foreach(var target in targets)Check(!d.Entities.Remove(target),"ordinary removal detached opaque DIMASSOC geometry");});
+ Run($"private-later-subclass-range/{year}/{binary}",()=>{var altered=Mutate(bytes,t=>t.AddRange(new[]{new DxfTag(100,"PrivateAssoc"),new DxfTag(72,(short)255),new DxfTag(75,(short)255)}));var d=Load(altered);Check(d.GetObjectByHandle("F1010") is DxfOpaqueObject,"private later class not retained opaque");});
+ Run($"private-point-range/{year}/{binary}",()=>{var altered=Mutate(bytes,t=>{int i=t.FindIndex(x=>x.Code==1);t[i]=new DxfTag(1,"PrivatePoint");i=t.FindIndex(x=>x.Code==72);t[i]=new DxfTag(72,(short)255);});var d=Load(altered);Check(d.GetObjectByHandle("F1010") is DxfOpaqueObject,"private point not retained opaque");});
+ Run($"numeric-duplicate-owner/{year}/{binary}",()=>{var altered=Mutate(bytes,t=>{int start=t.FindIndex(x=>x.Code==100);int i=t.FindLastIndex(start-1,x=>x.Code==330);t.Insert(i+1,new DxfTag(330,"000"+(string)t[i].Value));});bool rejected=false;try{Load(altered);}catch(FormatException){rejected=true;}Check(rejected,"numeric duplicate common owner fell back opaque");});
+}
+File.WriteAllText("results.json",JsonSerializer.Serialize(new{passed=results.Count-failures,failed=failures,results},new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine($"passed={results.Count-failures} failed={failures}");Environment.ExitCode=failures==0?0:1;

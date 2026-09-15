@@ -26,6 +26,8 @@ namespace netDxf.IO
                     foreach (DxfTag tag in field.Payload) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags) if (tag.Value is string text) CheckDatabaseText(text);
+                if (item is DxfStoredTableContent content)
+                    foreach (DxfTag tag in content.Payload) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfTableStyle style)
                     foreach (DxfTag tag in style.Tags) if (tag.Value is string text) CheckDatabaseText(text);
                 foreach (XData data in item.XData.Values)
@@ -84,6 +86,8 @@ namespace netDxf.IO
             this.PrepareStoredTableClasses(definitions);
             this.PrepareSectionClasses(definitions);
             this.PrepareTableStyleClass(definitions);
+            this.PrepareStoredDimAssocClass(definitions);
+            this.PrepareStoredTableContentClass(definitions);
             this.PrepareLightListClass(definitions);
             this.PrepareDataTableClass(definitions);
             this.PrepareSunClass(definitions);
@@ -141,7 +145,9 @@ namespace netDxf.IO
             else if (this.WriteLightListPayload(item)) { }
             else if (this.WriteDataTablePayload(item)) { }
             else if (this.WriteTableStylePayload(item)) { }
+            else if (this.WriteStoredTableContentPayload(item)) { }
             else if (this.WriteSunPayload(item)) { }
+            else if (this.WriteStoredDimAssocPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

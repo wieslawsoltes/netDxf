@@ -447,6 +447,7 @@ namespace netDxf.Tables
                 zAxis = this.zAxis,
             };
 
+            this.CopyOrthographicBaseTo(copy);
             foreach (KeyValuePair<UcsOrthographicType, Vector3> pair in this.orthographicOrigins)
             {
                 copy.orthographicOrigins.Add(pair.Key, pair.Value);

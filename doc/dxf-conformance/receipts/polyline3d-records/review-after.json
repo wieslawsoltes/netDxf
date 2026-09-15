@@ -1,0 +1,59 @@
+{
+  "library_sha256": "94f14189e72ab1b541992c157f2718aa1d133258b1c75d4bd8cf85c82eaeef37",
+  "results": [
+    {
+      "scenario": "parent-xdata-clone",
+      "binary": false,
+      "rejected": true,
+      "error": "NotSupportedException: Cloning retained VERTEX/SEQEND with external, owned or private dependencies requires a complete graph mapping."
+    },
+    {
+      "scenario": "header-incoming-removal",
+      "binary": false,
+      "rejected": true,
+      "target_still_registered": true
+    },
+    {
+      "scenario": "loaded-reactor-move",
+      "binary": false,
+      "rejected": false,
+      "old_handle": "3B",
+      "new_handle": "54",
+      "actual_handle": "54",
+      "correct": true
+    },
+    {
+      "scenario": "loaded-child-xdata-move",
+      "binary": false,
+      "rejected": true,
+      "old_handle": "3B"
+    },
+    {
+      "scenario": "parent-xdata-clone",
+      "binary": true,
+      "rejected": true,
+      "error": "NotSupportedException: Cloning retained VERTEX/SEQEND with external, owned or private dependencies requires a complete graph mapping."
+    },
+    {
+      "scenario": "header-incoming-removal",
+      "binary": true,
+      "rejected": true,
+      "target_still_registered": true
+    },
+    {
+      "scenario": "loaded-reactor-move",
+      "binary": true,
+      "rejected": false,
+      "old_handle": "3B",
+      "new_handle": "54",
+      "actual_handle": "54",
+      "correct": true
+    },
+    {
+      "scenario": "loaded-child-xdata-move",
+      "binary": true,
+      "rejected": true,
+      "old_handle": "3B"
+    }
+  ]
+}

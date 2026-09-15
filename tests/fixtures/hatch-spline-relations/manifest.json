@@ -1,0 +1,117 @@
+{
+  "producer": "ezdxf",
+  "version": "1.4.4",
+  "files": [
+    {
+      "file": "ezdxf-hatch-spline-R2000-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "sha256": "89edd3f13f006688cc73bc40bd0838f24a6433832ac6cb5e030483d409cf52bf",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2000-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "sha256": "ec84eeb56929e09ef5895909ecb2919fee9285701d3b448922dec2cb6072fe60",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2004-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "sha256": "dfb73a6251a2efcff75ea45030df0e94ea18e43667beb01a21581235b253f52e",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2004-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "sha256": "0e42d530649d485ad7e98f50aceba051e33baa3acc54ae8ba602fa1eb179da4d",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2007-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "sha256": "8b567f2aedf4944c01a1ffeff2cc585d72cc196ea1e6982b7afc508fb9fe24cd",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2007-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "sha256": "4acf6a67fb50e3a01ff85b5d0dce36bff69ba440afaa7d206eccb156111a52cf",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2010-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "sha256": "b8dc3a63b249a7da48ef3d55b45a05d648646d76597889eb462a74c96c6a6911",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2010-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "sha256": "1fbcca27c8a7ef5ca5f1de6f8e70ae2abb252380361b8effbf80c1400fc794f6",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2013-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "sha256": "14e089e17928eaa02a23159a81bdf8d72e44d3c6b0ad535b193767144eca0400",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2013-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "sha256": "7a726ebd954b4ae10992ba2113a2978561427bc98c0ce679845fac65dd130263",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2018-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "sha256": "fa7906fa1e0b896237d493e9e2eb894f45866dbaf0f47311a2d2c3dce4de8b8d",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    {
+      "file": "ezdxf-hatch-spline-R2018-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "sha256": "53b3a57ea75937b9f9bbac7069ca9d0ff45b233574dc4e573d188595421969cf",
+      "hatches": 4,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    }
+  ],
+  "producer_boundary_module_sha256": "5b1cd54669a0b04b3bca80e5d852b4efa5fb4e992956b1cdc3c4f270e2784618",
+  "producer_boundary_module": "ezdxf/entities/boundary_paths.py",
+  "scope": "Actual independent producer output and stored spline packets, not native CAD or periodic shape evaluation."
+}

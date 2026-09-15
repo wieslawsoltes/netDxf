@@ -1,0 +1,223 @@
+{
+  "production_commit": "57b77295fe7288aea91233840b03d516ba592be3",
+  "original_test_commit": "9adcb504f02a44295ee25fef775f3fd3ae506cb1",
+  "source_commit": "ccb703b69cb137bfbb980af1a8aaabf238a9d742",
+  "source_tree": "acb9a6f0164441125373ffd90968757f2a4c6fa2",
+  "scope": "Stored HATCH spline relation validation and nondefault weight preservation, without curve evaluation or periodic closure/count qualification.",
+  "sdk": "8.0.408",
+  "target_framework": "net8.0",
+  "configurations": {
+    "Debug": {
+      "passed": 1278,
+      "failed": 0,
+      "results_sha256": "5e45763412adbfdc23b37e67ced83c0f3b7dc139b9de494fba3890761b95ea34",
+      "inventory": {
+        "new_relation_and_weight_cases": 192,
+        "existing_fit_api_dispatch_scalar_cases": 1086
+      },
+      "log_sha256": "14bd95702864c03da3e0a24af8307d24b9021b0e24bff0717140363457ba61f9",
+      "production_dll_sha256": "1e97f6904de480f57bfa58a6853b7b9494f5e16ad9aec03c0a9b9db5f3bbf36c",
+      "tests_dll_sha256": "d4e9562cdcb0dddf7ad226f99c8a4dd76a4763452b94af569880bfbf5d6e795b",
+      "independent_gate": {
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "native_cad_execution": false,
+        "negative_controls": 4,
+        "outputs": 24,
+        "periodic_shape_evaluation": false,
+        "producer_inputs": 12,
+        "spline_packets": 96
+      },
+      "gate_sha256": "4fb24fbde0645b97754849bb548301260096346ab5d2f3a1e969a6ff5683dde3",
+      "additional_explicit_input_transport_proof": {
+        "passed": 192,
+        "failed": 0,
+        "results_sha256": "cfb0f27ebfc45b4b3a227154427a922934b7cbe93cbb9f6ee79ac20520267eae",
+        "log_sha256": "68cd501c95cf54b962d58d7e2053da6345c17278dc8fd8d4d9d21b41f0661f64",
+        "tests_dll_sha256": "0d4d9028e31ba742c17a523c91f800168b6e7a17d90b5a4fded9fd68e0d8f79f",
+        "independent_gate": {
+          "audit_errors": 0,
+          "audit_fixes": 0,
+          "native_cad_execution": false,
+          "negative_controls": 4,
+          "outputs": 24,
+          "periodic_shape_evaluation": false,
+          "producer_inputs": 12,
+          "spline_packets": 96
+        },
+        "gate_sha256": "4fb24fbde0645b97754849bb548301260096346ab5d2f3a1e969a6ff5683dde3"
+      }
+    },
+    "Release": {
+      "passed": 1278,
+      "failed": 0,
+      "results_sha256": "5e45763412adbfdc23b37e67ced83c0f3b7dc139b9de494fba3890761b95ea34",
+      "inventory": {
+        "new_relation_and_weight_cases": 192,
+        "existing_fit_api_dispatch_scalar_cases": 1086
+      },
+      "log_sha256": "14bd95702864c03da3e0a24af8307d24b9021b0e24bff0717140363457ba61f9",
+      "production_dll_sha256": "fb5206b1d4274408590051ad18a2ccd0c284ba5b5e3711ca41aa2866c6b374a1",
+      "tests_dll_sha256": "4c8556c7b440a092b8b4e72e8e0535a104e9bd96b6c595794f0d6720f3f3738d",
+      "independent_gate": {
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "native_cad_execution": false,
+        "negative_controls": 4,
+        "outputs": 24,
+        "periodic_shape_evaluation": false,
+        "producer_inputs": 12,
+        "spline_packets": 96
+      },
+      "gate_sha256": "4fb24fbde0645b97754849bb548301260096346ab5d2f3a1e969a6ff5683dde3",
+      "additional_explicit_input_transport_proof": {
+        "passed": 192,
+        "failed": 0,
+        "results_sha256": "cfb0f27ebfc45b4b3a227154427a922934b7cbe93cbb9f6ee79ac20520267eae",
+        "log_sha256": "68cd501c95cf54b962d58d7e2053da6345c17278dc8fd8d4d9d21b41f0661f64",
+        "tests_dll_sha256": "533aa2b588a7840446fb1c439cfa671d59f02a9e6bbddf795bc3b2c633772e7b",
+        "independent_gate": {
+          "audit_errors": 0,
+          "audit_fixes": 0,
+          "native_cad_execution": false,
+          "negative_controls": 4,
+          "outputs": 24,
+          "periodic_shape_evaluation": false,
+          "producer_inputs": 12,
+          "spline_packets": 96
+        },
+        "gate_sha256": "4fb24fbde0645b97754849bb548301260096346ab5d2f3a1e969a6ff5683dde3"
+      }
+    }
+  },
+  "independent_before_after_replay": {
+    "cases": 60,
+    "positive_cases": 12,
+    "malformed_rejections_fixed": 36,
+    "weight_loss_fixed": 12,
+    "profiles": 6,
+    "transports": [
+      "ASCII",
+      "binary"
+    ],
+    "mutated_inputs_and_outputs_use_named_transport": true,
+    "source": "57b77295fe7288aea91233840b03d516ba592be3",
+    "old_library_sha256": "5180ade78791ff4046018c029849ee8b4eb88824912e2e3c9489d063caadffc0",
+    "fixed_library_sha256": "1e97f6904de480f57bfa58a6853b7b9494f5e16ad9aec03c0a9b9db5f3bbf36c",
+    "old_results_sha256": "85911a1b131da01de2a2992b1f2161a76462d097b2cbdbf9b5bee031708e5a1a",
+    "fixed_results_sha256": "52b3e308c0d3e771fd26b9aa5eec95fb98a1a3151a01d258074d1635dbd559eb",
+    "harness_sha256": "737ebf653e72b3d7e3b29a8ade16bca02db9e947ea0fa87a03f2e50c7858859c",
+    "scope": "Same60 owner before observations replayed independently with explicit named transport for mutated input and output; no new curve evaluation or periodic relation claim.",
+    "review_sha256": "6f2e0b65a29cc208f79bb32d78ff9c822d08570c8402ca780ca2d7d31806c757"
+  },
+  "original_before_after_probe": {
+    "observations": 60,
+    "positive_cases": 12,
+    "malformed_cases": 36,
+    "weight_loss_cases": 12,
+    "before_results_sha256": "85911a1b131da01de2a2992b1f2161a76462d097b2cbdbf9b5bee031708e5a1a",
+    "after_results_sha256": "52b3e308c0d3e771fd26b9aa5eec95fb98a1a3151a01d258074d1635dbd559eb",
+    "transport_scope": "Raw mutated inputs already preserve IsBinary. The original ad-hoc DxfDocument roundtrip output defaults to ASCII; the separate independent replay explicitly selects both named input and output transports."
+  },
+  "assessment": {
+    "file": "hatch-spline-assessment.json",
+    "sha256": "4b55e5f0fbfd5844da7cdd1f61dc9e353f927d9b093945bb00ff7d0ebe2bfd3b",
+    "repository_inputs": 257,
+    "libredwg_inputs": 67,
+    "hatch_records": 56,
+    "spline_edge_packets": 0,
+    "unparsed_legacy_inputs": 1
+  },
+  "limits": [
+    "Positive packets come from twelve actual ezdxf 1.4.4 producer drawings; the pinned existing/native corpus contains no positive HATCH spline edge. No native CAD execution is claimed.",
+    "The count relation applies only to nonperiodic splines. Periodic packet values and flags are preserved without shape, count or closure evaluation.",
+    "Optional weight42 defaults to one. Every nondefault numeric stored weight is retained without changing rational flag73; default physical tag presence is not separately modeled.",
+    "Fit points and tangents retain the existing R2010+ profile; this correction adds no curve fitting, control regeneration or affine-transform qualification.",
+    "Invalid stream saves fail before destination writes, handle mutation or lazy OBJECTS creation. The existing path Save wrapper can truncate its file before stream preflight.",
+    "The explicit input-sentinel assertions strengthen proof; DxfRawDocument.Save(Stream) already preserved IsBinary, so no production transport change was required.",
+    "Combined integration qualification remains separate from this isolated source receipt."
+  ],
+  "recovery_extension_2026_09_15": {
+    "source_commit": "edb664db35af9351049062380c8820a571adcc23",
+    "source_tree": "b33965f2d2fb46348776d38ef8093ed523584966",
+    "scope": "Additional indexed optional rational-weight preservation: omitted weights default to one, explicit negative weights and signed zero survive without changing the rational flag. No production implementation change.",
+    "sdk": "8.0.408",
+    "target_framework": "net8.0",
+    "independent_reader": "ezdxf 1.4.4",
+    "test_file_sha256": "ff8ea33e574c93da47a58091c1a0adc209bf1ef975ee65cdb6a7fba76dbba541",
+    "verifier_sha256": "102490a49ad1a791f22e60863ecf791d80753238fa08d407affca24da0b37247",
+    "focused_runner_sha256": "9f9163c64f65315e52324f34bc6e4636ba644d00f898859859ad072204188831",
+    "registrations": [
+      "RegisterHatchSplineRelationTests",
+      "RegisterHatchSplineFitTests",
+      "RegisterHatchSplineFitApiTests",
+      "RegisterHatchEdgeDispatchTests",
+      "RegisterHatchScalarOrderTests"
+    ],
+    "configurations": {
+      "Debug": {
+        "passed": 1290,
+        "failed": 0,
+        "relation_and_weight_cases": 204,
+        "existing_fit_api_dispatch_scalar_cases": 1086,
+        "build_warnings": 561,
+        "build_errors": 0,
+        "results_sha256": "7f2ddf015056b8431d237c18d2e95a4e76b52946e67a29cb25ead74615e52c6d",
+        "build_log_sha256": "00052e153bd1a600bc7ba821696a4d1cb3e04f66e43841cf0de0c66db52c8178",
+        "test_log_sha256": "f40642fc2206b6c54ce81243b75121823f9df9484b75cc316395ce284ae7426b",
+        "production_dll_sha256": "039bf9eb124b2021d4dced61b7cdaebfb50119c172c668d8e99aa4135e47aaad",
+        "tests_dll_sha256": "8530532d632c66b92eba6a933798682141e16c2369f37109c62c3de5e016464d",
+        "independent_gate": {
+          "audit_errors": 0,
+          "audit_fixes": 0,
+          "native_cad_execution": false,
+          "negative_controls": 5,
+          "outputs": 36,
+          "periodic_shape_evaluation": false,
+          "producer_inputs": 12,
+          "spline_packets": 144
+        },
+        "gate_sha256": "fee0b8d3d67df30c48c834d89b47293035332535877d7d1d5689824c7a98f63a"
+      },
+      "Release": {
+        "passed": 1290,
+        "failed": 0,
+        "relation_and_weight_cases": 204,
+        "existing_fit_api_dispatch_scalar_cases": 1086,
+        "build_warnings": 561,
+        "build_errors": 0,
+        "results_sha256": "7f2ddf015056b8431d237c18d2e95a4e76b52946e67a29cb25ead74615e52c6d",
+        "build_log_sha256": "cdfa95430fa370e0ba5f461fbf1612d8c916e3edd340a64252ec0a5c0cf35c1b",
+        "test_log_sha256": "f40642fc2206b6c54ce81243b75121823f9df9484b75cc316395ce284ae7426b",
+        "production_dll_sha256": "ae1e32698248b679cb37cfa5c586cf5a38daf0f7e0b60d495086bd9eb9a45eac",
+        "tests_dll_sha256": "5533e714abd9ea884c985ed9b1c2a016ed4e07accdbdc0e4348fd3ac8780f2ae",
+        "independent_gate": {
+          "audit_errors": 0,
+          "audit_fixes": 0,
+          "native_cad_execution": false,
+          "negative_controls": 5,
+          "outputs": 36,
+          "periodic_shape_evaluation": false,
+          "producer_inputs": 12,
+          "spline_packets": 144
+        },
+        "gate_sha256": "fee0b8d3d67df30c48c834d89b47293035332535877d7d1d5689824c7a98f63a"
+      }
+    },
+    "actual_output_negative_controls": {
+      "rejected": [
+        "missing-mandatory-rational-output",
+        "weight-loss-in-actual-output",
+        "rational-flag-loss-in-actual-output"
+      ],
+      "receipt_sha256": "78a61ca3bb8ca2a01f35770aae45d5e86a59b6510a75200c2e99982f959c4b75",
+      "profile": "R2000 ASCII",
+      "method": "Copy all 36 outputs, remove the mandatory rational-weight output or alter a stored negative weight/rational flag in its actual DXF packet, and require the verifier to fail."
+    },
+    "limits": [
+      "Rational sparse-weight inputs are explicit mutations of pinned independent producer drawings; negative/zero-weight curve evaluation and native CAD acceptance are not qualified.",
+      "Physical presence of default weight tags is not represented; numeric indexed defaults and the rational flag are preserved.",
+      "Historical qualification above remains the receipt for the earlier 24-output gate. This extension supersedes the current gate inventory with 36 outputs and 144 spline packets."
+    ]
+  }
+}

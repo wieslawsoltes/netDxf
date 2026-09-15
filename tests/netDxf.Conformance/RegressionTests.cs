@@ -55,6 +55,7 @@ internal static partial class Program
         RegisterMeshVersionTests();
         RegisterMeshBlendCreaseTests();
         RegisterMeshReadValidationTests();
+        RegisterMeshOverrideDeclarationTests();
         RegisterMeshWriteValidationTests();
         RegisterHatchDoublePatternTests();
         RegisterHatchSeedPointTests();
@@ -102,6 +103,7 @@ internal static partial class Program
         RegisterSplineReversalTests();
         RegisterSplinePeriodicOverlapTests();
         RegisterHatchSplineFitTests();
+        RegisterHatchSplineRelationTests();
         RegisterHatchSplineFitApiTests();
         RegisterHatchPathCountTests();
         RegisterHatchGradientAciTests();

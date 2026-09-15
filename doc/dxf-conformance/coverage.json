@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "f9bf71739e7bd60d1e448848921ef153ada47294",
-    "tree": "a64cc268cd1202b44b99f1c96e342bd8db900012"
+    "commit": "ff2233122991a4454d42cc850b748dd9746a84a6",
+    "tree": "da7c6b2d62a2c593d7d24564290646d6664c39f9"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 25408,
+    "test_cases": 26980,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 88,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/88/checks"
+    "last_implementation_pr": 89,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/89/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -603,6 +603,50 @@
     "MIX6": {
       "label": "Mixed SECTION, TABLESTYLE, SUN and FIELD lifecycle",
       "path": "doc/dxf-conformance/sixth-mixed-modules.md"
+    },
+    "DIMASSOC": {
+      "label": "Immutable DIMASSOC source packets and lifecycle boundaries",
+      "path": "doc/dxf-conformance/stored-dimassoc.md"
+    },
+    "UCSBASE": {
+      "label": "UCS orthographic base identities and explicit reference edits",
+      "path": "doc/dxf-conformance/ucs-record-base.md"
+    },
+    "COMPOSITETABLE": {
+      "label": "Native composite TABLE ownership envelopes",
+      "path": "doc/dxf-conformance/composite-table-ownership.md"
+    },
+    "TABLECONTENT": {
+      "label": "Immutable TABLECONTENT payload and source dependencies",
+      "path": "doc/dxf-conformance/table-content.md"
+    },
+    "MESHOVERRIDE": {
+      "label": "MESH override schema and corpus assessment",
+      "path": "doc/dxf-conformance/mesh-override-assessment.md"
+    },
+    "MESHDECL": {
+      "label": "MESH override declaration rejection and native zero-count packets",
+      "path": "doc/dxf-conformance/mesh-override-declaration.md"
+    },
+    "HATCHREL": {
+      "label": "Nonperiodic HATCH spline validation and accepted weight retention",
+      "path": "doc/dxf-conformance/hatch-spline-relations.md"
+    },
+    "VERTEXREC": {
+      "label": "Source-bound Polyline3D child records and lifecycle guards",
+      "path": "doc/dxf-conformance/polyline3d-records.md"
+    },
+    "SUNSTUDY": {
+      "label": "SUNSTUDY schema and corpus assessment",
+      "path": "doc/dxf-conformance/sunstudy-assessment.md"
+    },
+    "PRIVATEXRECORD": {
+      "label": "Private XRECORD packet preservation and metadata boundaries",
+      "path": "doc/dxf-conformance/private-xrecords.md"
+    },
+    "MIX7": {
+      "label": "Mixed association, UCS and TABLE backing graphs",
+      "path": "doc/dxf-conformance/seventh-mixed-modules.md"
     }
   },
   "features": [
@@ -1212,9 +1256,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Polyline3D topology/flags; transform fixtures needed. `ReadPolyline/WritePolyline`.",
+      "scope": "3D polyline geometry remains editable. Loaded ordinary unsmoothed variants retain source-bound child VERTEX/SEQEND identities and qualified metadata with explicit lifecycle and source-profile limits. Fitted/smoothed vertices and complete aggregate semantics remain partial.",
       "evidence": [
-        "B"
+        "B",
+        "VERTEXREC"
       ]
     },
     {
@@ -2106,12 +2151,13 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Origin/axes, elevation, orthographic origin pairs, XData and raw table flags retained. UCS records referenced by VIEW/VPORT have identity-aware lifecycle tracking. The ambiguous UCS-record group 346/79 schema remains unqualified.",
+      "scope": "Origin/axes, elevation, orthographic origin pairs, XData and raw table flags are retained. VIEW/VPORT and UCS base pointers use exact source identity, reference counts and explicit remapping. Group79/base346 storage is tested with independently produced packets; coordinate evaluation and native acceptance remain separate.",
       "evidence": [
         "UCS",
         "ORTHO",
         "UCSX",
-        "VIEWUCS"
+        "VIEWUCS",
+        "UCSBASE"
       ]
     },
     {
@@ -2463,16 +2509,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Associative dimension records/links.",
+      "scope": "Immutable source-profile DIMASSOC exposes qualified direct geometry references, native dimension extension ownership and stored reactor state. Repeated VERTEX paths and private variants remain opaque. Complete association graphs, editing and evaluation remain open.",
       "evidence": [
-        "B"
+        "DIMASSOC"
       ]
     },
     {
@@ -2749,7 +2795,8 @@
       },
       "scope": "Stored version-one SUN values and reciprocal registered VIEW/VPORT/VIEWPORT ownership are implemented. SUNSTUDY, retained-only layout viewport owners and solar/rendering evaluation remain open. Named VIEW ownership requires R2010; other registered hosts require R2007.",
       "evidence": [
-        "SUN"
+        "SUN",
+        "SUNSTUDY"
       ]
     },
     {
@@ -3966,9 +4013,11 @@
         "AC1027": "M",
         "AC1032": "M"
       },
-      "scope": "Repeated90/91/92 need a distinct override context; current core topology checks do not implement this grammar.",
+      "scope": "Primary schema describes subentity/property counts and property kinds, but the value-packet grammar remains unqualified. The checked native MESH packets have zero overrides; no positive override packet was found in the bounded additional corpus. Nonzero public override declarations now reject before core topology fields can be reused; qualified absent and zero declarations retain their existing behavior. Typed override retention and semantics remain open.",
       "evidence": [
-        "MREAD"
+        "MREAD",
+        "MESHOVERRIDE",
+        "MESHDECL"
       ]
     },
     {
@@ -5707,9 +5756,10 @@
       "area": "Typed object lifecycle",
       "pipeline": "typed",
       "feature": "TABLE roundtrip declared ownership",
-      "scope": "Exact XRECORD 360 TABLECONTENT and 361 TABLEGEOMETRY ownership binding, adoption and clone safeguards; extracted native ownership packets retained. Composite R2004 DATATABLE envelopes stay unbound. Full TABLE cells/backing schemas remain separate.",
+      "scope": "Exact XRECORD ownership slots bind TABLECONTENT and TABLEGEOMETRY; the qualified native composite R2004 envelope additionally binds DATATABLE and its ordered row records. Unknown envelope shapes retain their complete payload unbound. Complete cell/backing schemas and editing remain separate.",
       "evidence": [
-        "TABLEOWN"
+        "TABLEOWN",
+        "COMPOSITETABLE"
       ],
       "status": {
         "AC1009": "X",
@@ -6144,6 +6194,237 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "typed-dimassoc-stored-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "DIMASSOC immutable direct-reference packets",
+      "scope": "Seven qualified native associations per source profile retain ordered point packets, exact direct geometry targets and reciprocal dimension extension ownership. Stored backlinks and all DIMASSOC owner chains guard removal. Clone and owned erasure reject; private path graphs and evaluation are not qualified.",
+      "evidence": [
+        "DIMASSOC"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "ucs-record-base-reference",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "UCS group79/346 base storage",
+      "scope": "Stored orthographic type, optional null-handle presence and exact base-UCS identity survive output and clones. Atomic edits maintain reference counts; foreign adoption requires explicit mapping. Group71 origin overrides remain independent. Evidence uses actual independent producer outputs.",
+      "evidence": [
+        "UCSBASE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-composite-ownership",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "R2004 composite TABLE ownership",
+      "scope": "Two exact native composite envelopes bind ordered TABLECONTENT, TABLEGEOMETRY and DATATABLE children plus 41 row records. Complete reciprocal ownership is checked before mutation. Unknown shapes remain unbound; opaque backing still prevents clone and erasure.",
+      "evidence": [
+        "COMPOSITETABLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
+      }
+    },
+    {
+      "id": "typed-table-content-stored-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "TABLECONTENT immutable stored payload",
+      "scope": "Complete four-subclass source packets retain conservative linked-data/count projections, exact exposed dependencies and terminal TABLESTYLE identity. Source ownership and profile remain fixed; clone and owned erasure reject. Editing, nested cell semantics and regeneration remain open.",
+      "evidence": [
+        "TABLECONTENT"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "opaque-private-xrecord-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "Private XRECORD extended-code payloads",
+      "scope": "Native XRECORD bodies with unqualified extended-code data retain their complete packet opaquely, separate from real XData and common ownership metadata. Authored XRECORD validation remains unchanged; clone and owned erasure refuse opaque subtrees. Private field meanings and legacy layer-state projection are not inferred.",
+      "evidence": [
+        "PRIVATEXRECORD"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-association-table-ucs-mixed",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Mixed DIMASSOC, UCS and TABLE backing graphs",
+      "scope": "Shared dependencies retain exact identities across independent mutable consumers and immutable stored graphs. Mapped cloneable objects and rejected ancestor/profile operations are exercised together; scoped native packets and synthetic cross-family links are identified separately.",
+      "evidence": [
+        "MIX7"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-spline-relations",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH nonperiodic spline relations",
+      "scope": "Positive degree, finite supplied arrays, nondecreasing knots and nonperiodic knot/control/degree relationships are validated on read and before export mutation. Model/paper-space and all registered blocks are checked. Periodic count/shape evaluation and associative source closure remain unqualified.",
+      "evidence": [
+        "HATCHREL"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-spline-stored-weights",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH indexed stored weight fidelity",
+      "scope": "Accepted nondefault weights survive independently of the stored rational flag. Sparse rational packets retain indexed default-one values, negative weights and signed zero through mixed-transport cycles. This is storage fidelity; omitted default tag presence, curve evaluation and native CAD acceptance are separate.",
+      "evidence": [
+        "HATCHREL"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "mesh-override-declaration-rejection",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "MESH unsupported override declaration rejection",
+      "scope": "After counted topology, a negative override count rejects as malformed and a positive count rejects as unsupported before following fields can overwrite core topology. Qualified absent/zero suffixes, private framing boundaries and exact native zero-count bodies are tested in both transports. Override value grammar and editing remain open.",
+      "evidence": [
+        "MESHDECL"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "polyline3d-child-records",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Ordinary Polyline3D VERTEX and SEQEND identities",
+      "scope": "Loaded ordinary unsmoothed 3D polylines retain physical VERTEX/SEQEND identities, common metadata, optional fields, source profiles and exact native DIMASSOC target identities. Equal-count coordinate edits and synchronized reversal preserve record slots. Qualified safe clones and parent moves retain coherent references; unsupported count/smoothing changes, foreign adoption and unmapped dependencies reject. Other POLYLINE families, fitted vertices and complete association evaluation remain separate.",
+      "evidence": [
+        "VERTEXREC"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "raw-sunstudy-producer-packets",
+      "area": "Raw record preservation",
+      "pipeline": "raw",
+      "feature": "Scoped SUNSTUDY producer packet preservation",
+      "scope": "Six disclosed R2013/R2018 carriers retain exact SUNSTUDY packets and four dependencies through exact and normalized raw writes. Original producer failures, empty unrelated DIMSTYLE pointers and corrupt binary hour payloads remain separately pinned; adapters change only listed unrelated null pointers. No typed SUNSTUDY editing or native CAD acceptance is qualified.",
+      "evidence": [
+        "SUNSTUDY"
+      ],
+      "status": {
+        "AC1009": "P",
+        "AC1012": "P",
+        "AC1014": "P",
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "O",
+        "AC1032": "O"
+      }
     }
   ],
   "next_work": [
@@ -6155,7 +6436,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. The frozen-VPORT assessment found no qualified positive packets and retains the gap. Packed transparency and declared SECTION/SUN fields now retain their scoped stored values. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
+      "scope": "HATCH periodic spline semantics, full affine geometry and associative source closure; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining internal VERTEX variants. Nonperiodic HATCH relation validation and accepted stored weight retention are implemented. UCS base-reference storage and the qualified packed transparency/SECTION/SUN fields are implemented. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
     },
     {
       "id": "new-entities",
@@ -6165,7 +6446,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD evaluator graphs, DIMASSOC, SECTION_MANAGER, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD, public SECTIONSETTINGS and registered SUN ownership are implemented with explicit source and lifecycle boundaries."
+      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, SECTION_MANAGER, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT storage, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
     },
     {
       "id": "historical-typed",

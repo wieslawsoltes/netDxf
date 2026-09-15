@@ -56,6 +56,7 @@ internal static partial class Program
 
     private static void RegisterStoredTableLifecycleReviewTests()
     {
+        RegisterOpaqueTableContentReferenceTests();
         foreach (bool binary in new[] { false, true })
         {
     Run($"stored-table/review/unknown-display-rename/{binary}",()=>{

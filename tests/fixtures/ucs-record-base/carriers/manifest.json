@@ -1,0 +1,233 @@
+{
+  "adaptation": "Delete ten empty DIMSTYLE pointers340\u2013344 and, in R2010+, two orphan STYLE1071=0 values without an application marker. Every remaining source byte, including complete UCS records and LINE, is unchanged.",
+  "files": [
+    {
+      "file": "carrier-ucs-base-R2000-ascii.dxf",
+      "sha256": "98fe907ed200da6d502d9a7b91f6a3f39d15516c7436b7ba884b47bb124cff67",
+      "source": "ixmilia-ucs-base-R2000-ascii.dxf",
+      "source_sha256": "701fdc1f648b3abf8e70ada950c92117ca8d535256d299849dc5cc37ef21b98b",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 0
+    },
+    {
+      "file": "carrier-ucs-base-R2000-binary.dxf",
+      "sha256": "e92824f9bdc6cd2a2b4d6ebf949388b865e3716ec4f8a3a68366defce54b3184",
+      "source": "ixmilia-ucs-base-R2000-binary.dxf",
+      "source_sha256": "24f2ebfe06b7e21dd98a3e9ba335daad62bef9bf7f25ee06763bdba3e95526f8",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 0
+    },
+    {
+      "file": "carrier-ucs-base-R2004-ascii.dxf",
+      "sha256": "4a46775c6d188a5c70250ca4db973987eaf4cd1fec7b228f12fd1a1d864e5bb4",
+      "source": "ixmilia-ucs-base-R2004-ascii.dxf",
+      "source_sha256": "212db63eed04e89a502718dd6a34b85884496944e7bcac326cab40affcfce001",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 0
+    },
+    {
+      "file": "carrier-ucs-base-R2004-binary.dxf",
+      "sha256": "968110cd0451670c80e95aa7c732f51309c70b805dad5020fcc2f1df5195982a",
+      "source": "ixmilia-ucs-base-R2004-binary.dxf",
+      "source_sha256": "c236c641bd52cc4cf3fa57011d95d6bed5375143f63e702316566062baadfe24",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 0
+    },
+    {
+      "file": "carrier-ucs-base-R2007-ascii.dxf",
+      "sha256": "6d257fce74678122cf6fcf521442045d1b5b35eb52289c44fea67b3c78f0e9bc",
+      "source": "ixmilia-ucs-base-R2007-ascii.dxf",
+      "source_sha256": "9ea9f8c4f93bc5fdce99cefc05100f6532cc6411d152c7503ea448ea409fa07d",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 0
+    },
+    {
+      "file": "carrier-ucs-base-R2007-binary.dxf",
+      "sha256": "e68d5134e055da92319f95c5dceed39ab335eab3055e0e14a863aaa77b9517df",
+      "source": "ixmilia-ucs-base-R2007-binary.dxf",
+      "source_sha256": "9e486ac5e1a6ab4a850b9bc64a02d130f4a0f505f82d3b678561fb959f02bf50",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 0
+    },
+    {
+      "file": "carrier-ucs-base-R2010-ascii.dxf",
+      "sha256": "5475f8c71574e44e7ec9ec907d9af3400787ae90d4d0f7aedca43caee1217354",
+      "source": "ixmilia-ucs-base-R2010-ascii.dxf",
+      "source_sha256": "1452b05c7494e3222fde3b4285664e392a37a3ac0a014fff45f79cd8729a133a",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 2
+    },
+    {
+      "file": "carrier-ucs-base-R2010-binary.dxf",
+      "sha256": "e6eb7fce4cd4f84431a35a968c1a2652a4599fb97ad4f281625e015bee64d1d3",
+      "source": "ixmilia-ucs-base-R2010-binary.dxf",
+      "source_sha256": "ccbf86c37a870f6d6a4658c1335d13ad1ed4a6f8543837d3ab027b1289181498",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 2
+    },
+    {
+      "file": "carrier-ucs-base-R2013-ascii.dxf",
+      "sha256": "8bf364052ddb42f6c792aa3fed982cb81404dd0073af8c9587e1f60c8b154109",
+      "source": "ixmilia-ucs-base-R2013-ascii.dxf",
+      "source_sha256": "69bfaec4c5a0b74e3e114a1d4f9aec65484dd69e1faba6ea2cfeb106c31162ae",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 2
+    },
+    {
+      "file": "carrier-ucs-base-R2013-binary.dxf",
+      "sha256": "e5d81f3f6f49b1e580efa421c18d37c870502c2da980662c7326e25d38d4b754",
+      "source": "ixmilia-ucs-base-R2013-binary.dxf",
+      "source_sha256": "ed45f61b721ca1da2c96791a083234f2e9ea1651e8ec299d743d8b4adc5f65ba",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 2
+    },
+    {
+      "file": "carrier-ucs-base-R2018-ascii.dxf",
+      "sha256": "ed863662df32b1cd8927cb041edd61fe0c1a084e6ec86c073e8107d7ebe2caaa",
+      "source": "ixmilia-ucs-base-R2018-ascii.dxf",
+      "source_sha256": "edd4b1e6023e1ea25c807c27ae7b5fc701c26a25ff8890afade0925d609f43c8",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 2
+    },
+    {
+      "file": "carrier-ucs-base-R2018-binary.dxf",
+      "sha256": "4f0630dfd0134900f7486f357d7bab85027f067c2acef98ed966001ea64539ff",
+      "source": "ixmilia-ucs-base-R2018-binary.dxf",
+      "source_sha256": "e95612ed14be83b2280ec15929ed36cb9a5a72f0fe5c1730a5262062edddff83",
+      "removed_empty_dimstyle_codes": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        340,
+        341,
+        342,
+        343,
+        344
+      ],
+      "removed_orphan_style1071": 2
+    }
+  ]
+}

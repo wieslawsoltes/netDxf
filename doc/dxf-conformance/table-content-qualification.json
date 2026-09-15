@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "module": "immutable TABLECONTENT stored model",
+  "source_commit": "809b0d2d6a193925c3c349e75ae90983c6a7b70e",
+  "qualified_scope": "source-bound immutable storage and conservative projections; exact native subclass packets and source resource identities; explicit private fallback and lifecycle refusal",
+  "sdk": "8.0.408",
+  "normal_diagnostics": {
+    "library_builds": {
+      "target": "net8.0",
+      "configurations": [
+        "Debug",
+        "Release"
+      ],
+      "errors": 0,
+      "existing_CS1591_warnings_per_configuration": 561
+    },
+    "conformance_builds": {
+      "configurations": [
+        "Debug",
+        "Release"
+      ],
+      "errors": 0,
+      "warnings": 0
+    },
+    "all_target_and_full_suite_qualification": "owned separately by root integration"
+  },
+  "tests": {
+    "dedicated_table_content": 134,
+    "stored_table_api_and_lifecycle_regressions": 142,
+    "private_xrecord": 25,
+    "registration_methods": [
+      "RegisterStoredTableContentTests",
+      "RegisterStoredTableTests",
+      "RegisterStoredTableLifecycleReviewTests",
+      "RegisterPrivateXRecordTests"
+    ]
+  },
+  "fixture_manifest_sha256": "9b5cc698a55503d445c97522caa8d72b5e8047479bdbb20c5bbf73f3abb9895e",
+  "fixture_determinism": {
+    "python_hash_seeds": [
+      17,
+      71
+    ],
+    "exact_fixture_and_manifest_byte_identity": true
+  },
+  "fixture_scopes": {
+    "whole_unchanged_sources": [
+      "acad_table_simple.dxf",
+      "acad_table_with_blk_ref.dxf"
+    ],
+    "scoped_exact_native_packets": {
+      "sample_AC1018_ascii.dxf": 136,
+      "sample_AC1021_ascii.dxf": 90,
+      "sample_AC1024_ascii.dxf": 90
+    },
+    "original_transformations": [],
+    "carrier_transformations": "Only common owner/reactor slots individually indexed in the manifest; no native TABLECONTENT field or owner transformation.",
+    "physical_closure": "Every retained exposed nonzero semantic reference, including common reactors and XData1005, resolves to a physical carrier record.",
+    "output_physical_closure": "All 316 selected source records and every original exposed dependency retain their physical identity and source type in both transports; every emitted exposed semantic reference on a selected record resolves physically."
+  },
+  "custom_map_same_harness_control": {
+    "test_source_sha256": "6b68c5d906e0a71f292ddaed6a66bdd547f853097f5465c98a68a4c3bc06b15d",
+    "old_library_sha256": "553647fc970ad4e344e552bebd5eef40fa6871aeec7971f353c51b4bb74a04c8",
+    "control_count": 20,
+    "old_passed": 6,
+    "old_failed": 14,
+    "final_passed": 20,
+    "final_failed": 0,
+    "red_log_sha256": "42e01d2186c38316b09b2dbda4a461972fe06c1f37dac85c88397f056bc1b4e3",
+    "scope_note": "Only the 20 map-specific controls are counted here; the old full module run also has four separate private-XRECORD 145A prerequisite failures."
+  },
+  "verifier_sha256": "4bcd9aaa92149210c6864ad4ee561265635dc7db191bba28c63df60558e3834f",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "library_target": "net8.0",
+      "library_sha256": "f07a42b3d3abc0e085380f3d53ec61bd4ca0809a106eecb35d174c8a7400db9f",
+      "conformance_sha256": "f142418e801cd3af60c65bc3afaa984568b5eafd655abe58e9625ceb0d22e332",
+      "focused_passed": 301,
+      "focused_failed": 0,
+      "focused_log_sha256": "e0c3f0d8844a8ef77a80c2a7d2f9cf95f2db6194ff1bf1980d7f6135c506fa33",
+      "mandatory_outputs": 26,
+      "native_content_packets": 16,
+      "selected_source_records": 316,
+      "output_audit_errors": 0,
+      "output_audit_repairs": 0,
+      "actual_packet_corruption_controls": 130,
+      "gate_log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3",
+      "output_sha256": {
+        "table-content-native-acad_table_simple.dxf-False.dxf": "bd6cae07fa714ff8e688359bbda8c71587d2349cdfb582e153988ea3b2c9251a",
+        "table-content-native-acad_table_simple.dxf-True.dxf": "c249a461ccd4f27d52c5f9af56cb7df89ba59476ec63f76fe76e6a40461df731",
+        "table-content-native-acad_table_with_blk_ref.dxf-False.dxf": "76216091077450d51d4a8506658dd596754475510425248f5d6ff52f24296671",
+        "table-content-native-acad_table_with_blk_ref.dxf-True.dxf": "04c8feaec6f81b73306a50b5c02338d5f48691ad2b452759343580fc9be01995",
+        "table-content-native-sample_AC1018_ascii.dxf-False.dxf": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+        "table-content-native-sample_AC1018_ascii.dxf-True.dxf": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+        "table-content-native-sample_AC1021_ascii.dxf-False.dxf": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+        "table-content-native-sample_AC1021_ascii.dxf-True.dxf": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+        "table-content-native-sample_AC1024_ascii.dxf-False.dxf": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+        "table-content-native-sample_AC1024_ascii.dxf-True.dxf": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+        "table-content-opaque-0-False.dxf": "a311e7dd6c389558cbfe477b63be0960c1a9bd8e965cf0ad2c4e174f041ebfee",
+        "table-content-opaque-0-True.dxf": "75fb5edd7b2232cd53d3e13eb10f908a4a3c1a84c3140a642757e78fe68fbfc6",
+        "table-content-opaque-1-False.dxf": "67048c4d403efb7c7ed75596db37a1539459b7b4b98a9deda47049f618692fa5",
+        "table-content-opaque-1-True.dxf": "541e75461b84d57082d99b493f872d313cdb0bdf533b88c11a2c0cf9b4da8ef6",
+        "table-content-opaque-2-False.dxf": "38e0f5a80f0ff6427a94774ffb8603b8e575e80da54d5f60da450aa29d026366",
+        "table-content-opaque-2-True.dxf": "4d8c949653017629643a8c5f056d5342dd58e306e9fdb345dfac3d2935e24511",
+        "table-content-opaque-3-False.dxf": "ef8051cc76a4fa1d2b0789273fe0ce5ef3b2504118e88ee352fd0c43cdfcd205",
+        "table-content-opaque-3-True.dxf": "95bc773c599542d49acc04b6313774568483f9c4ced4e3a24deb153a8ebcdcf8",
+        "table-content-opaque-4-False.dxf": "9eead1ca3b085eaf40803e1eff5ad7b8424abf9d6c36f8951e7f486a24403fc0",
+        "table-content-opaque-4-True.dxf": "9c5d1fe83fb44c7e5aaf5a3481e8c99da0dc7b5bba7772fa12aaf16e6787f5cb",
+        "table-content-opaque-5-False.dxf": "9fc6422e37238aa6c1f0190231e308213453039540114c7047671e2ef157cfca",
+        "table-content-opaque-5-True.dxf": "c3164b71bc8d2477ca1797294bf66f7843ecb2fc1e5606bba9a8bc7cd485337e",
+        "table-content-opaque-6-False.dxf": "7258cd12d90444704a0dae79dc823cd18ee70f37e967482cf38b016a296467eb",
+        "table-content-opaque-6-True.dxf": "ed9b35e5cc917eb97a59691760e58121268adb1e320507b05a029c200092f1eb",
+        "table-content-opaque-7-False.dxf": "821ec1de331e289ca0ef5611d46b476c0244dfad2bd2ab56d67121eb48c19b39",
+        "table-content-opaque-7-True.dxf": "26846bf8b038b2237983f75a51c3be5e39319be45119e9f6f1a9a2ef1b27568c"
+      },
+      "indirect_carrier_corruption_controls": 18,
+      "retained_source_records_across_both_transports": 632,
+      "focused_results_sha256": "3abe4bb723f7519e7dc92b3646189669b576c3fe5177fe46c45d96de73fcd1a6"
+    },
+    {
+      "configuration": "Release",
+      "library_target": "net8.0",
+      "library_sha256": "137b920af79330d767b620528f4eaec2e0b3af95517e38addf937b55622cbfdf",
+      "conformance_sha256": "70c0056e7b4d932ce62b082654d2692f88a83b10e0afd3b1dac01b495c5f3b0d",
+      "focused_passed": 301,
+      "focused_failed": 0,
+      "focused_log_sha256": "e0c3f0d8844a8ef77a80c2a7d2f9cf95f2db6194ff1bf1980d7f6135c506fa33",
+      "mandatory_outputs": 26,
+      "native_content_packets": 16,
+      "selected_source_records": 316,
+      "output_audit_errors": 0,
+      "output_audit_repairs": 0,
+      "actual_packet_corruption_controls": 130,
+      "gate_log_sha256": "1be5ec421e3c3f0be7b7f0ec92a8065103150b6b2081c66c30336ed1583169d3",
+      "output_sha256": {
+        "table-content-native-acad_table_simple.dxf-False.dxf": "bd6cae07fa714ff8e688359bbda8c71587d2349cdfb582e153988ea3b2c9251a",
+        "table-content-native-acad_table_simple.dxf-True.dxf": "c249a461ccd4f27d52c5f9af56cb7df89ba59476ec63f76fe76e6a40461df731",
+        "table-content-native-acad_table_with_blk_ref.dxf-False.dxf": "76216091077450d51d4a8506658dd596754475510425248f5d6ff52f24296671",
+        "table-content-native-acad_table_with_blk_ref.dxf-True.dxf": "04c8feaec6f81b73306a50b5c02338d5f48691ad2b452759343580fc9be01995",
+        "table-content-native-sample_AC1018_ascii.dxf-False.dxf": "67a5aa72123e7407b0fb7199de0ed687beb8559e3c6d0e1bdd635ef842416a28",
+        "table-content-native-sample_AC1018_ascii.dxf-True.dxf": "d9ac7b206bc17496ea1d77a5147617523e45ad7588e5a8bc7f0c349239604877",
+        "table-content-native-sample_AC1021_ascii.dxf-False.dxf": "a9134b49c481d54adf198aaaf26f1d718ab1c5bc7a8d25f55108e56d5d70029f",
+        "table-content-native-sample_AC1021_ascii.dxf-True.dxf": "4d7a566b8d2b86ef16d6e6fc758916090ccf7ce7ebaabc3e390eb81eba33f88d",
+        "table-content-native-sample_AC1024_ascii.dxf-False.dxf": "8bf6f870b3199c878892aaa90384defebcb173c1ae0673a66789056c3b8f741b",
+        "table-content-native-sample_AC1024_ascii.dxf-True.dxf": "de077b9df78ec87cb6effa3086f818ac6bd939e6b6a8d53ab712da3b062a7b97",
+        "table-content-opaque-0-False.dxf": "57d9be6b4cebf6666e1c43b54cbbc28b1940d606379809fbb3acb31cfe1866a8",
+        "table-content-opaque-0-True.dxf": "176990663ad4d5b58b40b2a2e0d79447c6bf6ca59083b599e0f6197a5b3f7606",
+        "table-content-opaque-1-False.dxf": "e0273bae80cc6ddeed8690fac48e9925b41b9da485c3ca4ed9fa3c0218ab4ab8",
+        "table-content-opaque-1-True.dxf": "33795bc4ef28a0151353d817edf001e07d00fae46fc722fb8b62cdbde9760257",
+        "table-content-opaque-2-False.dxf": "133ab5ae2a85927fff2125ef2c8e1be84da8f7f7b226c74d54171b49fc3c76d0",
+        "table-content-opaque-2-True.dxf": "ff0d9bd9609eea2ca3d96ad1706ade83e3f4750e0b4717cabab6842ae432e452",
+        "table-content-opaque-3-False.dxf": "0b8711fa9606d12f36f00c1a84d359480349b0cbc485ec284ebae40efeb4ee5e",
+        "table-content-opaque-3-True.dxf": "2e2d1f44b9add318d3539039f4b2ebc45b959d47d801ecb145df94e747b22643",
+        "table-content-opaque-4-False.dxf": "023aa57b9dbb45339bdb5ca108dbc79cdca2787bef4678cd3c3e78fefd7ce26e",
+        "table-content-opaque-4-True.dxf": "5e84c4d795a372b2e626026733ba1893a696f348445039e0f29614cbd08a4dc8",
+        "table-content-opaque-5-False.dxf": "4c52bbde0a883115d6ec4d5b0f8e398ffa06048dec4b2a30131275c3e577609e",
+        "table-content-opaque-5-True.dxf": "fe173a48ae5772686a62e0e7c5d1e121fdbeff28445b76c8f30a0e93a9f28606",
+        "table-content-opaque-6-False.dxf": "49544011de6487f058d32be8ad7dc6152fc8a2df1deeeb53f66f239c7fb13c16",
+        "table-content-opaque-6-True.dxf": "27963ea3ac6816399e6a49fc753f79212b9532684a6d6764f3018bcee0e7b01b",
+        "table-content-opaque-7-False.dxf": "c634997d62581ff5d6a73d498427dc21af60a14ae23b7387a7ba16478f2af0f3",
+        "table-content-opaque-7-True.dxf": "aec8365aca85907961f490ee7bc374c6c190eaa54e5b68eaa1203fd7041658b4"
+      },
+      "indirect_carrier_corruption_controls": 18,
+      "retained_source_records_across_both_transports": 632,
+      "focused_results_sha256": "3abe4bb723f7519e7dc92b3646189669b576c3fe5177fe46c45d96de73fcd1a6"
+    }
+  ],
+  "limitations": [
+    "No editable cells, formula execution, formatting regeneration, or geometry evaluation.",
+    "No native AutoCAD execution or full-drawing byte identity claim.",
+    "Unqualified inner map shapes retain packets and decline count projections.",
+    "Exposed semantic handles are resolved; dependencies hidden in private string/binary encodings are not interpreted.",
+    "The three scoped ACadSharp carriers do not qualify unrelated omitted original entity/object families.",
+    "Complete source-carrier packet equality is an extraction guarantee. Ordinary typed output may normalize optional fields, including BLOCK_RECORD group-331 backlinks; immutable TABLECONTENT and native wrapper payloads remain exact."
+  ],
+  "recovery_validation": {
+    "date": "2026-09-15",
+    "source_and_original_binary_identities_verified": true,
+    "focused_runs_per_configuration": 301,
+    "fixture_hash_seeds_repeated": [
+      17,
+      71
+    ],
+    "fixture_and_manifest_hashes_unchanged": true,
+    "independent_gate_includes_indirect_carrier_records": true,
+    "production_source_changes": false,
+    "build_note": "Recovery uses the same source and SDK as the preceding full compilation; incremental net8.0 library builds and conformance builds are also checked. Full combined target and suite qualification is owned by root integration."
+  }
+}

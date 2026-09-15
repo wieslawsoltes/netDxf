@@ -1047,6 +1047,7 @@ namespace netDxf
             this.linetypes.References[entity.Linetype.Name].Add(entity);
 
             this.AddedObjects.Add(entity.Handle, entity);
+            this.RegisterStoredPolylineRecords(entity as Polyline3D);
 
             entity.LayerChanged += this.Entity_LayerChanged;
             entity.LinetypeChanged += this.Entity_LinetypeChanged;
@@ -1258,6 +1259,7 @@ namespace netDxf
             this.layers.References[entity.Layer.Name].Remove(entity);
             this.linetypes.References[entity.Linetype.Name].Remove(entity);
             this.AddedObjects.Remove(entity.Handle);
+            this.UnregisterStoredPolylineRecords(entity as Polyline3D);
 
             entity.LayerChanged -= this.Entity_LayerChanged;
             entity.LinetypeChanged -= this.Entity_LinetypeChanged;

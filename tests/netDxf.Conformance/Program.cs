@@ -15,6 +15,7 @@ internal static partial class Program
     private static int failures;
     private static readonly string ArtifactDirectory = Path.GetFullPath(
         Environment.GetEnvironmentVariable("DXF_TEST_ARTIFACTS") ?? "artifacts/conformance");
+    private static readonly string? TestFilter = Environment.GetEnvironmentVariable("DXF_TEST_FILTER");
 
     private static int Main()
     {
@@ -43,11 +44,16 @@ internal static partial class Program
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();
+        RegisterStoredDimAssocTests();
+        RegisterPolyline3DRecordTests();
         RunTypedObjectErasureTests();
         RunLightListTests();
         RunDataTableTests();
         RunSunTests();
+        RunUcsBaseTests();
+        RunSunStudyProducerRawTests();
         RegisterStoredTableTests();
+        RegisterStoredTableContentTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
         RegisterStoredTableNameSpellingTests();
@@ -55,6 +61,9 @@ internal static partial class Program
         RegisterStoredFieldTests();
         RegisterFifthMixedModuleTests();
         RegisterSixthMixedModuleTests();
+        RegisterSeventhMixedModuleTests();
+        RegisterCompositeTableOwnershipTests();
+        RegisterPrivateXRecordTests();
         RunSourceReferenceIdentityTests();
         RunNumericHandleTests();
         RegisterSectionTests();
@@ -65,6 +74,11 @@ internal static partial class Program
         RegisterTransparencyStoredTests();
         File.WriteAllText(Path.Combine(ArtifactDirectory, "results.json"),
             JsonSerializer.Serialize(Results, new JsonSerializerOptions { WriteIndented = true }));
+        if (Results.Count == 0)
+        {
+            Console.Error.WriteLine($"No conformance tests matched DXF_TEST_FILTER={TestFilter}.");
+            return 1;
+        }
         Console.WriteLine($"Conformance: {Results.Count - failures} passed; {failures} failed.");
         return failures == 0 ? 0 : 1;
     }
@@ -80,6 +94,7 @@ internal static partial class Program
 
     private static void Run(string name, Action test)
     {
+        if (!string.IsNullOrEmpty(TestFilter) && !name.StartsWith(TestFilter, StringComparison.Ordinal)) return;
         try
         {
             test();

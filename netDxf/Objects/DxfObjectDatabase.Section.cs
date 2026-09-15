@@ -158,7 +158,9 @@ namespace netDxf.Objects
             var tree = this.objects.Values.Where(o => IsAncestor(section, o)).ToList();
             foreach (DxfDatabaseObject item in tree)
             {
+                if (item is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
                 if (item is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
+                if (item is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (item is DxfOpaqueObject) throw new NotSupportedException("An opaque section-owned object requires its application schema before erasure.");
                 this.CheckRegistered(item); deleted.Add(item);
             }
@@ -181,6 +183,11 @@ namespace netDxf.Objects
                 if (item is DxfXRecord record) foreach (DxfTag tag in record.Data) if (IsReference(tag)) handle((string)tag.Value, "XRECORD reference");
                 if (item is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) if (tag.ValueType == DxfTagValueType.Handle) handle((string)tag.Value, "opaque handle");
                 if (item is Section other) reference(other.GeometrySettings, "section settings");
+                if (item is Polyline3DRecord polylineRecord)
+                {
+                    foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");
+                    foreach (DxfTag tag in polylineRecord.OpaqueHandleTags) handle((string)tag.Value, "polyline record handle");
+                }
                 if (item is StoredTable table) foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader) foreach (MLeaderData data in leader.Data) foreach (DxfObject target in data.References) reference(target, "MULTILEADER reference");
                 if (item is Layout layout) reference(layout.PlotSettings?.ShadePlotObject, "layout shade plot");

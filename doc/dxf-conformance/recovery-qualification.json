@@ -1,0 +1,132 @@
+{
+  "source": {
+    "local_commit": "a1c83db871518b8905d0f2ebf68a55a550dafe1f",
+    "tree": "da7c6b2d62a2c593d7d24564290646d6664c39f9",
+    "published_commit": "ff2233122991a4454d42cc850b748dd9746a84a6",
+    "verification": "GitHub Git tree SHA matches local tested implementation tree"
+  },
+  "configurations": {
+    "Debug": {
+      "cases": 26980,
+      "unique_cases": 26980,
+      "failed": 0,
+      "result_sha256": "5f96fd348195f0ed99030915f34a1f43b0abacb305a6af36ab60d35cb230973c",
+      "independent_gates": 96,
+      "gates_sha256": "0400fd918def0c8a887d6b83e6a695e20f7088ec6cecede562b805109641cd5c",
+      "dxfs": 3491,
+      "las": 96,
+      "library_sha256": "47055d1ce91d300a36d594ae3db83566373a776dd4295e03078ee9b344ae9a4c",
+      "test_executable_sha256": "f32d06ea23e4230fc2e50be129d62f158e760ab6f1929ffa5968e8cb43b2c702"
+    },
+    "Release": {
+      "cases": 26980,
+      "unique_cases": 26980,
+      "failed": 0,
+      "result_sha256": "5f96fd348195f0ed99030915f34a1f43b0abacb305a6af36ab60d35cb230973c",
+      "independent_gates": 96,
+      "gates_sha256": "0020520feb0bfb12c011853a835d51cecad8531b090c9044e2f5b99688b4ac7b",
+      "dxfs": 3491,
+      "las": 96,
+      "library_sha256": "39fdf2eeaa33ccb4921633649f46732c7a470143bd7c488f2d9d702a9a418ebf",
+      "test_executable_sha256": "1831c0f56a47ac0910836e3699e81c4dea459ee74e0e5ebbc019d38a25e9fb66"
+    }
+  },
+  "same_case_outcomes": true,
+  "schema_version": 1,
+  "baseline": {
+    "pr": 88,
+    "cases": 25408,
+    "additional_cases": 1572
+  },
+  "recovery": {
+    "base_branch": "codex/dxf-association-storage",
+    "base_local_commit": "c95e973",
+    "recovered_uncommitted_groups": [
+      "Polyline3D VERTEX/SEQEND implementation, tests and producer fixtures",
+      "TABLECONTENT documentation, qualification and independent verifier",
+      "Eight generated-table source-identity regressions",
+      "SUNSTUDY producer source, fixtures and preservation evidence"
+    ],
+    "additional_branch_groups": [
+      "DIMASSOC and UCS base references",
+      "Composite TABLE and private XRECORD ownership",
+      "Seventh mixed graph qualification",
+      "HATCH spline relations and stored weights",
+      "MESH override declaration rejection"
+    ],
+    "original_source_reference_patch_retained": true,
+    "unidentified_work": false
+  },
+  "builds": {
+    "sdk": "8.0.408",
+    "release_targets": [
+      "netstandard2.0",
+      "net471",
+      "net48",
+      "net6.0",
+      "net8.0"
+    ],
+    "debug_targets": [
+      "netstandard2.0",
+      "net8.0"
+    ],
+    "errors": 0,
+    "existing_CS1591_warnings_per_target": 561
+  },
+  "audit": {
+    "self_test_passed": true,
+    "io_files": 96,
+    "methods": 695,
+    "model_header_files": 248,
+    "inventory_sha256": "94c90dfaa14e37c7d18f93639f9ec16149a74bd6a83cf32fb778174bb1f0f9fc",
+    "scope": "Source syntax and field inventory; not semantic completeness."
+  },
+  "python_tests": {
+    "passed": 18,
+    "failed": 0
+  },
+  "coverage_rows": 270,
+  "ci": {
+    "implementation_run": 34959884293,
+    "url": "https://github.com/wieslawsoltes/netDxf/actions/runs/34959884293",
+    "commit": "ff2233122991a4454d42cc850b748dd9746a84a6",
+    "jobs": [
+      {
+        "name": "windows-latest Debug",
+        "id": 104350681154,
+        "passed": 26980,
+        "failed": 0
+      },
+      {
+        "name": "ubuntu-latest Release",
+        "id": 104350681475,
+        "passed": 26980,
+        "failed": 0
+      },
+      {
+        "name": "windows-latest Release",
+        "id": 104350681479,
+        "passed": 26980,
+        "failed": 0
+      },
+      {
+        "name": "ubuntu-latest Debug",
+        "id": 104350681501,
+        "passed": 26980,
+        "failed": 0
+      }
+    ],
+    "linux_release_independent_gates": 96,
+    "source_archive_byte_verification": false,
+    "evidence": "Completed workflow status and decoded job logs; published tree equality verified separately."
+  },
+  "boundaries": [
+    "Native AutoCAD execution, regeneration and rendering are not qualified.",
+    "Immutable DIMASSOC/TABLECONTENT storage does not implement editable association/cell schemas.",
+    "Polyline child support covers ordinary unsmoothed 3D polylines; other variants and general topology remapping remain open.",
+    "HATCH periodic geometry and associative source closure are separate work.",
+    "MESH override values remain unsupported; nonzero public declarations reject explicitly.",
+    "SUNSTUDY evidence qualifies scoped raw preservation, not typed authoring or evaluation.",
+    "Historical typed R12/R13/R14, modern SAB/ACDSDATA, full private dependency graphs and production-wide qualification remain open."
+  ]
+}

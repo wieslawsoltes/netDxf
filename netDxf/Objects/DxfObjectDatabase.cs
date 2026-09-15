@@ -113,11 +113,13 @@ namespace netDxf.Objects
         { return (DxfDictionary)this.CloneOwnershipGraph(source, destination, name, extension, externalReferences); }
         private DxfDatabaseObject CloneOwnershipGraph(DxfDatabaseObject source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences, bool sun = false)
         {
+            netDxf.Entities.Polyline3D.RejectStoredRecordOwnershipClone(source);
             // Enumerating caller mappings can run application code. Snapshot it before reading
             // graph state and recheck the destination slot after the final external callback.
             var externalMap = new Dictionary<DxfObject, DxfObject>(ObjectIdentity);
             if (externalReferences != null)
                 foreach (KeyValuePair<DxfObject, DxfObject> pair in externalReferences) externalMap.Add(pair.Key, pair.Value);
+            netDxf.Entities.Polyline3D.RejectStoredRecordOwnershipClone(source);
             this.CheckRegistered(destination);
             if (sun) this.CheckSunDestination(destination);
             else if (extension)

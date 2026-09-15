@@ -11,18 +11,22 @@ namespace netDxf.Entities
     {
         private Func<string, string> decode;
         /// <summary>Gets the retained TABLECONTENT owned through this table's roundtrip extension, when uniquely identified.</summary>
-        public DxfOpaqueObject BackingContent { get; private set; }
+        public DxfDatabaseObject BackingContent { get; private set; }
+        /// <summary>Gets the typed retained backing content, or null when the unique backing object remains opaque.</summary>
+        public DxfStoredTableContent StoredBackingContent { get { return this.BackingContent as DxfStoredTableContent; } }
         /// <summary>Gets literal agreement with the recognized backing cell envelopes, or null when no complete comparison is possible.</summary>
         /// <remarks>This checks stored scalar values only. It does not qualify layout, styles, formulas, fields or regeneration.</remarks>
         public bool? BackingLiteralValuesAgree { get; private set; }
         private void ResolveBacking()
         {
-            var candidates = this.source.Objects.Items.OfType<DxfOpaqueObject>().Where(o => o.CodeName == "TABLECONTENT" &&
+            var candidates = this.source.Objects.Items.Where(o => o.CodeName == "TABLECONTENT" &&
                 o.Owner is DxfXRecord && ReferenceEquals(o.Owner.Owner, this.ExtensionDictionary)).ToList();
             if (this.ExtensionDictionary == null || candidates.Count != 1) return;
             this.BackingContent = candidates[0];
             if (this.Grid == null) return;
-            var tags = this.BackingContent.Tags.ToList();
+            IReadOnlyList<DxfTag> payload = this.BackingContent is DxfStoredTableContent stored ? stored.Payload : (this.BackingContent as DxfOpaqueObject)?.Tags;
+            if (payload == null) return;
+            var tags = payload.ToList();
             var starts = tags.Select((t, i) => new { t, i }).Where(x => x.t.Code == 1 && (string)x.t.Value == "LINKEDTABLEDATACELL_BEGIN").Select(x => x.i).ToList();
             if (starts.Count != this.Grid.Cells.Count) return;
             bool agree = true;

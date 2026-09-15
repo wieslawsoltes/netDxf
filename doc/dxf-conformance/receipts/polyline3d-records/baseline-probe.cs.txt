@@ -1,0 +1,17 @@
+using System.Text.Json;
+using netDxf;
+using netDxf.IO;
+using netDxf.Entities;
+var root="/workspace/scratch/2ec4aa26f01f/repos/netDxf-dimassoc/tests/fixtures/dimassoc";
+var result=new List<object>();
+using var manifest=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"manifest.json")));
+foreach(var fixture in manifest.RootElement.GetProperty("fixtures").EnumerateArray())foreach(bool binary in new[]{false,true}) {
+ var map=fixture.GetProperty("handle_map");string h=map.GetProperty("41E").GetString()!;string parent=map.GetProperty("41A").GetString()!;
+ using var input=File.OpenRead(Path.Combine(root,fixture.GetProperty("file").GetString()!));var d=DxfDocument.Load(input);var polyline=(Polyline3D)d.GetObjectByHandle(parent);
+ using var output=new MemoryStream();d.Save(output,binary);output.Position=0;var raw=DxfRawDocument.Load(output);
+ var vertices=raw.Sections.SelectMany(s=>s.Records).Where(r=>r.Name=="VERTEX"&&r.Tags.Any(t=>t.Code==330&&(string)t.Value==parent)).ToArray();
+ bool oldPresent=vertices.Any(r=>r.Tags.Any(t=>t.Code==5&&(string)t.Value==h));
+ bool retainedReactor=vertices.Any(r=>r.Tags.Any(t=>t.Code==102&&(string)t.Value=="{ACAD_REACTORS"));
+ result.Add(new{year=fixture.GetProperty("year").GetInt32(),binary,source_vertex=h,source_vertex_registered=d.GetObjectByHandle(h)!=null,source_vertex_written=oldPresent,retained_vertex_reactor=retainedReactor,geometry_count=polyline.Vertexes.Count,output_vertex_count=vertices.Length});
+}
+File.WriteAllText("baseline.json",JsonSerializer.Serialize(result,new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine(JsonSerializer.Serialize(result));

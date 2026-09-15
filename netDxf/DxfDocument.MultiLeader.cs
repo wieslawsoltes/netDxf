@@ -17,13 +17,19 @@ namespace netDxf
             foreach(DxfObject item in this.AddedObjects.Values)
             {
                 IEnumerable<DxfObject> references;
-                if(item is DxfStoredField field)references=field.References;
+                if(item is Polyline3DRecord polylineRecord)references=polylineRecord.References;
+                else if(item is DxfStoredField field)references=field.References;
                 else if(item is StoredTable table)references=table.References;
                 else if(item is Section section)references=section.GeometrySettings==null?new DxfObject[0]:new DxfObject[]{section.GeometrySettings};
                 else if(item is DxfSectionSettings settings)references=settings.DatabaseReferences;
                 else if(item is MultiLeader leader)references=leader.Data.SelectMany(d=>d.References);
                 else if(item is DxfMLeaderStyle style)references=style.DatabaseReferences;
+                else if(item is DxfStoredTableContent content)references=content.References;
+                else if(item is DxfOpaqueObject opaqueContent && opaqueContent.CodeName=="TABLECONTENT")
+                    references=opaqueContent.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value)).Where(value=>value!=null);
                 else if(item is DxfTableStyle tableStyle)references=tableStyle.References;
+                else if(item is DxfStoredDimAssoc association)references=association.References;
+                else if(item is DxfOpaqueObject opaque && opaque.CodeName=="DIMASSOC")references=opaque.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value));
                 else continue;
                 int count=references.Count(r=>ReferenceEquals(r,target));
                 if(count>0)result.Add(new DxfObjectReference(item,count));

@@ -84,3 +84,5 @@ unchanged. `RegisterStoredTableNameSpellingTests` covers both resource kinds and
 both transports, including opposite-transport output after rename. The independent
 `tools/verify_stored_table_name_spelling.py` checks all eight output packets and
 eight parsed-field corruption controls.
+
+`BackingContent` now returns `DxfDatabaseObject`, so it can expose the exact registered object when TABLECONTENT is promoted to the immutable stored model. `StoredBackingContent` returns that same object as `DxfStoredTableContent`, or null for a retained opaque variant. The existing literal comparison uses the same packet comparison for either representation. This changes the return type of the API introduced with stored TABLE support: callers reading the packet should use `StoredBackingContent.Payload`, or pattern-match an opaque `BackingContent` and read its `Tags`. The change does not construct compatibility copies or change object identity.

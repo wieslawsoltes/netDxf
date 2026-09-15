@@ -32,7 +32,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a generic polyline <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class Polyline3D :
+    public partial class Polyline3D :
         EntityObject
     {
         #region private fields
@@ -197,7 +197,9 @@ namespace netDxf.Entities
                 return;
             }
 
+            if (this.HasStoredRecords) this.ValidateStoredRecordGeometry();
             this.vertexes.Reverse();
+            if (this.HasStoredRecords) this.storedVertexRecords.Reverse();
         }
 
         /// <summary>
@@ -387,6 +389,7 @@ namespace netDxf.Entities
         /// <returns>A new Polyline3D that is a copy of this instance.</returns>
         public override object Clone()
         {
+            this.RejectStoredRecordClone();
             Polyline3D entity = new Polyline3D(this.vertexes)
             {
                 //EntityObject properties
@@ -408,6 +411,7 @@ namespace netDxf.Entities
             }
 
             this.CopyCommonDataTo(entity);
+            this.CopyStoredRecordsTo(entity);
             return entity;
         }
 

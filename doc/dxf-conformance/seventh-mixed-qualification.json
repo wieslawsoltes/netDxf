@@ -1,0 +1,256 @@
+{
+  "module": "Seventh mixed native DIMASSOC, UCS, TABLECONTENT and composite ownership",
+  "qualified_source_revision": "263ba22d7e09b9480e26ef5323ca7079979ee189",
+  "qualified_source_tree": "aa24e3ec6310f57f1e3c4a1ab56ff8131bf4761c",
+  "runtime": ".NET SDK 8.0.408 / net8.0",
+  "independent_reader": "ezdxf 1.4.4",
+  "registration_methods": [
+    "RegisterSeventhMixedModuleTests",
+    "RegisterStoredDimAssocTests",
+    "RunUcsBaseTests",
+    "RegisterStoredTableContentTests",
+    "RegisterCompositeTableOwnershipTests",
+    "RegisterDeclaredOwnershipTests",
+    "RunSourceReferenceIdentityTests"
+  ],
+  "module_source_sha256": {
+    "tests/netDxf.Conformance/SeventhMixedModuleTests.cs": "4424c902507cd895325227f5665f9e47d722314ecb74bdfa8b0a452c86619495",
+    "tests/netDxf.Conformance/SeventhMixedModuleGraphTests.cs": "8f897fce619318bc6d3e943a3b6870d53b8e0a5a06ee9d822acde21ef9678e93",
+    "tests/netDxf.Conformance/SeventhMixedModuleLifecycleTests.cs": "b8ff906dc1dc2beea299fe57c425b2eb1e387f4c9dbee40d0cc8e9222bcf1e3b",
+    "tools/verify_seventh_mixed.py": "9b93654b0975152c3297973389d00098df9757c07136e47a484e3e82cf9212a8"
+  },
+  "configurations": {
+    "Debug": {
+      "passed": 910,
+      "failed": 0,
+      "test_groups": {
+        "composite-table": 49,
+        "declared-ownership": 35,
+        "dimassoc": 366,
+        "seventh-mixed": 8,
+        "source-reference": 76,
+        "table-content": 134,
+        "ucs-base": 242
+      },
+      "library_sha256": "00cc58ddc2cda34ab72ac803d5779b7fe2ca46f4d372205f28e73909fe8e6d8b",
+      "conformance_sha256": "67ff6eb77ed678054d395ba93400484f269dfd55c61b3b2af8518b02fcd9e0cc",
+      "results_sha256": "4e23b8bce656432707b632ed640546305ebf2c8ce5ae134ce4341b846f102899",
+      "mixed_test_results": [
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2004/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2004/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2004/True",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2004/True",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2018/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2018/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2018/True",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2018/True",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "mixed_independent_gate": {
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "evaluation": false,
+        "native_cad_execution": false,
+        "native_packet_comparisons": 970,
+        "negative_controls": 40,
+        "outputs": 20,
+        "profiles": [
+          2004,
+          2018
+        ]
+      },
+      "additional_independent_gates": [
+        "tools/verify_dimassoc.py",
+        "tools/verify_ucs_record_base.py",
+        "tools/verify_composite_table_ownership.py",
+        "tools/verify_declared_ownership.py"
+      ],
+      "mixed_output_sha256": {
+        "seventh-mixed-cloned-AutoCad2004-False.dxf": "5624ebbb536d9073a728b46320f30a03ba470d5147c67bb3c1da47b3b83f7984",
+        "seventh-mixed-cloned-AutoCad2004-True.dxf": "fc903dfa718fab7391a37d3aa13e6857e1ea732cb19da0a07a07df8b2e05d352",
+        "seventh-mixed-cloned-AutoCad2018-False.dxf": "f46f29cafe29ac8e15bacd0bb787119c39f35743201d366c4488003472c269d5",
+        "seventh-mixed-cloned-AutoCad2018-True.dxf": "9c70b04b6ba9962bbe6cb3829bdd21bce2ebf7186c19f019336e341348637ab5",
+        "seventh-mixed-context-AutoCad2004-False.dxf": "62c9c6c362df8391fde2a5db6f55451210d4efc5821a0f5b5f4042cd0d69ded2",
+        "seventh-mixed-context-AutoCad2004-True.dxf": "bc22df88d513e2b878125a81df540e8772ef51d8674b9f08d64386ff6b815dae",
+        "seventh-mixed-context-AutoCad2018-False.dxf": "3f0eb38f8bab17bfd3a17a98bac4bb8acd01bdc6cbbdca5973b6c4f2288510a8",
+        "seventh-mixed-context-AutoCad2018-True.dxf": "aea1b1fd4c758f7082f81fa461f72938f95eaa46deda516d5ade30aea5e8a802",
+        "seventh-mixed-erased-AutoCad2004-False.dxf": "3d5cb2ad9a8078ef6a1ff40e89a116ae4f82e01313e1d5ed5537aa0ead64e2c5",
+        "seventh-mixed-erased-AutoCad2004-True.dxf": "955cfa0c6edf4cbae93ac3a39e2358992239f98d07de91ff81cf0f9b897c523a",
+        "seventh-mixed-erased-AutoCad2018-False.dxf": "992a5ab4bc9e0e79c6ef57450004eb013fca7fc50d57028a0188a0fa3eaff298",
+        "seventh-mixed-erased-AutoCad2018-True.dxf": "3ef055c7f39067bcbfdc9a4d7f0a8c0c881c71cc35b703bfbe1bcc1ab560e95c",
+        "seventh-mixed-original-AutoCad2004-False.dxf": "69a7200bc9093707cd0c1d55ee4c3f1994ba01579b2914ed4edc7d3419277bbb",
+        "seventh-mixed-original-AutoCad2004-True.dxf": "7b50a68b83f4162e75744f6a7ae651ceba1f610b22e081f8226b4b32eecb7cd2",
+        "seventh-mixed-original-AutoCad2018-False.dxf": "3e7fe0b53852331f5a8665092e1fc0210d69867af40ee5ee812265cb7a063641",
+        "seventh-mixed-original-AutoCad2018-True.dxf": "00df13bfdee1163438d3623d2cdfa37a490dad88bb0a46dc000ceb6082865cf8",
+        "seventh-mixed-released-AutoCad2004-False.dxf": "d3b985a877488cecd84d2c3f81e7c69e06fdf304393b0883a10ea1c6d178de70",
+        "seventh-mixed-released-AutoCad2004-True.dxf": "e1f63afe76d88b0d2e4641ac056e9a8259f53c8127e4372e4cbebd52f899d6d3",
+        "seventh-mixed-released-AutoCad2018-False.dxf": "ba2760f6457f2876c43835646b013f5155669b499630795717b8c4ef8606c3cd",
+        "seventh-mixed-released-AutoCad2018-True.dxf": "eb51474f9b49c577fd69944f57796a8e063b4fd46e0e2af831d5b4466b6a579e"
+      }
+    },
+    "Release": {
+      "passed": 910,
+      "failed": 0,
+      "test_groups": {
+        "composite-table": 49,
+        "declared-ownership": 35,
+        "dimassoc": 366,
+        "seventh-mixed": 8,
+        "source-reference": 76,
+        "table-content": 134,
+        "ucs-base": 242
+      },
+      "library_sha256": "c776aadaef203aede3680cb4f5726f0f03c6e1ab838998b297a4dcaf8caae802",
+      "conformance_sha256": "48335605712c18f0f9fef26a5f6e8aa4899f79a44a4e0e0f675edda1cf3d6998",
+      "results_sha256": "4e23b8bce656432707b632ed640546305ebf2c8ce5ae134ce4341b846f102899",
+      "mixed_test_results": [
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2004/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2004/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2004/True",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2004/True",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2018/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2018/False",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/lifecycle/AutoCad2018/True",
+          "passed": true,
+          "error": null
+        },
+        {
+          "name": "seventh-mixed/source-identity/AutoCad2018/True",
+          "passed": true,
+          "error": null
+        }
+      ],
+      "mixed_independent_gate": {
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "evaluation": false,
+        "native_cad_execution": false,
+        "native_packet_comparisons": 970,
+        "negative_controls": 40,
+        "outputs": 20,
+        "profiles": [
+          2004,
+          2018
+        ]
+      },
+      "additional_independent_gates": [
+        "tools/verify_dimassoc.py",
+        "tools/verify_ucs_record_base.py",
+        "tools/verify_composite_table_ownership.py",
+        "tools/verify_declared_ownership.py"
+      ],
+      "mixed_output_sha256": {
+        "seventh-mixed-cloned-AutoCad2004-False.dxf": "5624ebbb536d9073a728b46320f30a03ba470d5147c67bb3c1da47b3b83f7984",
+        "seventh-mixed-cloned-AutoCad2004-True.dxf": "fc903dfa718fab7391a37d3aa13e6857e1ea732cb19da0a07a07df8b2e05d352",
+        "seventh-mixed-cloned-AutoCad2018-False.dxf": "f46f29cafe29ac8e15bacd0bb787119c39f35743201d366c4488003472c269d5",
+        "seventh-mixed-cloned-AutoCad2018-True.dxf": "9c70b04b6ba9962bbe6cb3829bdd21bce2ebf7186c19f019336e341348637ab5",
+        "seventh-mixed-context-AutoCad2004-False.dxf": "62c9c6c362df8391fde2a5db6f55451210d4efc5821a0f5b5f4042cd0d69ded2",
+        "seventh-mixed-context-AutoCad2004-True.dxf": "bc22df88d513e2b878125a81df540e8772ef51d8674b9f08d64386ff6b815dae",
+        "seventh-mixed-context-AutoCad2018-False.dxf": "3f0eb38f8bab17bfd3a17a98bac4bb8acd01bdc6cbbdca5973b6c4f2288510a8",
+        "seventh-mixed-context-AutoCad2018-True.dxf": "aea1b1fd4c758f7082f81fa461f72938f95eaa46deda516d5ade30aea5e8a802",
+        "seventh-mixed-erased-AutoCad2004-False.dxf": "3d5cb2ad9a8078ef6a1ff40e89a116ae4f82e01313e1d5ed5537aa0ead64e2c5",
+        "seventh-mixed-erased-AutoCad2004-True.dxf": "955cfa0c6edf4cbae93ac3a39e2358992239f98d07de91ff81cf0f9b897c523a",
+        "seventh-mixed-erased-AutoCad2018-False.dxf": "992a5ab4bc9e0e79c6ef57450004eb013fca7fc50d57028a0188a0fa3eaff298",
+        "seventh-mixed-erased-AutoCad2018-True.dxf": "3ef055c7f39067bcbfdc9a4d7f0a8c0c881c71cc35b703bfbe1bcc1ab560e95c",
+        "seventh-mixed-original-AutoCad2004-False.dxf": "69a7200bc9093707cd0c1d55ee4c3f1994ba01579b2914ed4edc7d3419277bbb",
+        "seventh-mixed-original-AutoCad2004-True.dxf": "7b50a68b83f4162e75744f6a7ae651ceba1f610b22e081f8226b4b32eecb7cd2",
+        "seventh-mixed-original-AutoCad2018-False.dxf": "3e7fe0b53852331f5a8665092e1fc0210d69867af40ee5ee812265cb7a063641",
+        "seventh-mixed-original-AutoCad2018-True.dxf": "00df13bfdee1163438d3623d2cdfa37a490dad88bb0a46dc000ceb6082865cf8",
+        "seventh-mixed-released-AutoCad2004-False.dxf": "d3b985a877488cecd84d2c3f81e7c69e06fdf304393b0883a10ea1c6d178de70",
+        "seventh-mixed-released-AutoCad2004-True.dxf": "e1f63afe76d88b0d2e4641ac056e9a8259f53c8127e4372e4cbebd52f899d6d3",
+        "seventh-mixed-released-AutoCad2018-False.dxf": "ba2760f6457f2876c43835646b013f5155669b499630795717b8c4ef8606c3cd",
+        "seventh-mixed-released-AutoCad2018-True.dxf": "eb51474f9b49c577fd69944f57796a8e063b4fd46e0e2af831d5b4466b6a579e"
+      }
+    }
+  },
+  "additional_gate_scope": {
+    "DIMASSOC": {
+      "outputs": 46,
+      "mapped_native_packets": 192,
+      "negative_controls": 5,
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    "UCS": {
+      "outputs": 24,
+      "negative_controls": 3,
+      "audit_errors": 0,
+      "ucs_audit_repairs": 0,
+      "declared_ancillary_line_transparency_repairs": 20
+    },
+    "composite_TABLE": {
+      "outputs": 8,
+      "owner_maps": 4,
+      "native_XRECORD_descendants": 41,
+      "negative_controls": 80
+    },
+    "declared_ownership": {
+      "synthetic_outputs": 12,
+      "native_outputs": 16
+    }
+  },
+  "limits": [
+    "Native AutoCAD execution was not performed.",
+    "No dimension, FIELD, TABLE, SECTION, SUN or UCS evaluation/regeneration is qualified.",
+    "Mixed profiles are AC1018 and AC1032 only; other families retain their separately documented profile scope.",
+    "The complete stored opaque POLYLINE/VERTEX association packet is compared, but internal VERTEX identity retention is outside this matrix.",
+    "The UCS regression gate reports 20 explicitly identified producer LINE transparency repairs; this is separate from zero-repair mixed and DIMASSOC outputs.",
+    "Only net8.0 Debug and Release builds and the listed registrations were rerun for this receipt; this receipt is not the full integration suite."
+  ]
+}

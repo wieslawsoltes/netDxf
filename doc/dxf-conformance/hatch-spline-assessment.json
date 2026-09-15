@@ -1,0 +1,1635 @@
+{
+  "repository_source": "1a8f9e368c9c0e7add271f9729f2c9b88f64bb1b",
+  "libredwg_commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+  "inputs": [
+    {
+      "file": "TestDxfDocument/sample binary.dxf",
+      "sha256": "c073b4292103a15077da4f44c662aa066b5c12908fe729c7931353d4943b1f02",
+      "git_blob_sha1": "1ac3845fbe8e12f1b958645a6f9af4679abb8f67"
+    },
+    {
+      "file": "TestDxfDocument/sample.dxf",
+      "sha256": "d00cf10b426389adf34e339a20b5dc9613b1db1950691d7c32304fa5e04e6f6c",
+      "git_blob_sha1": "fcd8dd7ada513516332899d5e3363de849b9906f"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2000-ascii.dxf",
+      "sha256": "2311278278dd63323e5b1feecbd37aa8fe3facb6073121d0d1d81f891e957aea",
+      "git_blob_sha1": "51425ee90211f9d862aac98b0dd254815549a48d"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2000-binary.dxf",
+      "sha256": "5093eef3a84250e509e05c32bf60de065da1ddca88aa04444d1f49c49ca4bc4b",
+      "git_blob_sha1": "c0f9fbe56bd61388a9c82ecd82e6a5592bd6a51a"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2004-ascii.dxf",
+      "sha256": "c9868e901a12654e1368c069c21e0e0243a412dc98f465662239fe88bbb8c039",
+      "git_blob_sha1": "94241f93c1ef0b2605b3a38cf95844e06825e6e1"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2004-binary.dxf",
+      "sha256": "35cc6dabb68630ccf600b861ba6d1406f6b340f44961e35b3c016b432b10031d",
+      "git_blob_sha1": "45c06cc990bd3f18caa0b8a856f517cb93e610b5"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2007-ascii.dxf",
+      "sha256": "cf549d64050ea9e7b4f02eda71edf983d99f1ee77db5dffc9baa13bb4959d718",
+      "git_blob_sha1": "542aaba650793eb024ab4dd06ca7db9a7d1e2187"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2007-binary.dxf",
+      "sha256": "63755dc476308cd19846179d6edb7ae3dfe276ad627ddc5a73d8e2232bf6652e",
+      "git_blob_sha1": "ac689c647f561feb0d02be3737086d627f19f1f0"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2010-ascii.dxf",
+      "sha256": "c54b57114d524840aa5a570ef8cd11183f90d49dce0e9d9e5368399dbe2a5228",
+      "git_blob_sha1": "27e8019e14582358f4334a7571fd5c87a2432163"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-3dsolid-R2010-binary.dxf",
+      "sha256": "dd00f224c10bdcd1f48f5e1cf70ba31fc3559254a38a9090e470ba1406f470fd",
+      "git_blob_sha1": "e70f083549e49648648e0632f1c1502c7dbe3b2d"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2000-ascii.dxf",
+      "sha256": "6b42bc8ce8dba4bc0a4443482c8c0a4d45db0aadad8f1a9a24d71b9234c01130",
+      "git_blob_sha1": "c899cf931a694596b514959a45a7cae9b7dd24ca"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2000-binary.dxf",
+      "sha256": "c0ec9748938efb9e8fd424f16285f98be39085cbc0d16da6b248d638a60f04f3",
+      "git_blob_sha1": "933838a25064309e7c17d8a692528b6198d39814"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2004-ascii.dxf",
+      "sha256": "a3afcd093e03ac0ce5c005ca81e5a2563b0b36ebc1da3f0e3a7808c833358692",
+      "git_blob_sha1": "babe8840c27cd3ccde7cf3aaacfc61461de1c9bb"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2004-binary.dxf",
+      "sha256": "5e5f492bfd36faded5513a47374d75a3f4fe9ed5d37abfd44cb1f8392b68b86b",
+      "git_blob_sha1": "9e65a0af3cd7803d91742e12f276a1400a106bf4"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2007-ascii.dxf",
+      "sha256": "f67d1040bc77bbc357e94b378ba34599f611be62f6fd6ecb34b51de3ca041270",
+      "git_blob_sha1": "c64dc4f9d33d47619b49a64f9959a8f22391e1d3"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2007-binary.dxf",
+      "sha256": "5e0181d85e1d87af7d3b81d14a9cd94dc409d9d4a58e88bc49a694800293d913",
+      "git_blob_sha1": "6c70d20b69390a50a867be0df404bec9e69b6c5c"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2010-ascii.dxf",
+      "sha256": "d3375d8e62f2df57d107e5b6b7c3919dc9b12cb11e28212e39a0176fc20d4e2d",
+      "git_blob_sha1": "38f9a32f74ebd56feaecfb5940f4366322760dcc"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-body-R2010-binary.dxf",
+      "sha256": "3d725812f87cd4b0614c696f7646ebc44a4def43c189207fa8f700f886467497",
+      "git_blob_sha1": "e859a7740cdbca24468db70829245a20b6b03d1a"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2000-ascii.dxf",
+      "sha256": "a6800952dfc9b7fc9acef5f85910abfd433d02d87e4a2a75a85a3269f278e77b",
+      "git_blob_sha1": "04176e73a6878f59c3f02ea96c00dfc83137dc44"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2000-binary.dxf",
+      "sha256": "4a08e60402d5e3c96c676b0f86041d95c58eca0a4ed27cf886aeb82d0d1c507b",
+      "git_blob_sha1": "d0c35cc47f555412479217883e75d640b7f14c00"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2004-ascii.dxf",
+      "sha256": "64265e6d5cd9012d1e6c7331f9170b02824ed80a85d2d4b5c5e72fcccfb4cb09",
+      "git_blob_sha1": "fad441bc3cc71ccd4038e2ecb9353b95886444d4"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2004-binary.dxf",
+      "sha256": "7a3e861e1efcd030ae7c54dbe875bc877c9482be148905ad81788a8131c88933",
+      "git_blob_sha1": "5f9ce4a93e32d2ae6efabb880dbfc1af890df7e8"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2007-ascii.dxf",
+      "sha256": "e49461ef8fcab6e5dc8a970d0aca16da1b92213d9bbd43315d4a61b6ccef38da",
+      "git_blob_sha1": "467afa08e03f761be0918e23329917d2fca22262"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2007-binary.dxf",
+      "sha256": "e1824c36b6953c9edccc37e7eb25d47ea76b3c83eb320a891d32a139f68abd8a",
+      "git_blob_sha1": "b54e886787c41154ae141e5ff87407ef3e1e6360"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2010-ascii.dxf",
+      "sha256": "1d38e5b26789b700d5da2c6362195518ea61cae761ca8f35df8858be7611b356",
+      "git_blob_sha1": "68cebaaacdb0b27337f04b633d9bf392d42ba75f"
+    },
+    {
+      "file": "tests/fixtures/acis-sat/independent-acis-region-R2010-binary.dxf",
+      "sha256": "c30b61aae191087a3a0a82ca2f7a2bc3c4c934b6cfc5dc61a7e5f2a273a785bb",
+      "git_blob_sha1": "cd523797e809981394d9e3755baec83a54ee699b"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2000-False.dxf",
+      "sha256": "66d3c484987563044880fa4719ba6f9f7c6e768964cd0c42636fa9a526372639",
+      "git_blob_sha1": "0cdc078a1d5267e3c1e0d5aa6db55fb8cd38f93a"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2000-True.dxf",
+      "sha256": "9c9d86453b7c4f22d58270fdbfc93cddb21ecd5de9c85d0c03ba7189513e9c0c",
+      "git_blob_sha1": "54df52db0b348cad52d129864875c70bebf907e4"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2004-False.dxf",
+      "sha256": "7a891a481110de1b4b020b2a49a27fbec9a14b46755d7aa292b150236d358b24",
+      "git_blob_sha1": "fa9dd78dbd24cd1dd18d5d0ff03e40719b2e6978"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2004-True.dxf",
+      "sha256": "32a1f38d5b099b0e2aba926c8630fe0b783c5e38d257eec4298c5bed6167a6d2",
+      "git_blob_sha1": "852ba98c64bfad18921ac5ec3ce4773a128d2ab0"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2007-False.dxf",
+      "sha256": "926e2fc99acf7cb7253c3e642da22b7973f505440643ca4589e22bce9cad13e7",
+      "git_blob_sha1": "7944668fb7df0bd7d9e0702faf3506d8fbad0395"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2007-True.dxf",
+      "sha256": "6908d80536a1ad2412713726e28184e19e0c03a5def0349b4071b6e3c0ee3b8b",
+      "git_blob_sha1": "e01f44b967330805d68ad5e4ada83fc21131f9b0"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2010-False.dxf",
+      "sha256": "9c9335e21e6f2a9046bdb137881ded96cd136581df1c79e5afc10c1cd90f7f99",
+      "git_blob_sha1": "a4ab0510bf120b6df58067cbc33b220b762181fe"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2010-True.dxf",
+      "sha256": "0d87aa80e2f86834f8cd4ba82ed8ff9c830982313fb9ab88d4ef8081556e2cbc",
+      "git_blob_sha1": "8256f097b4a34ab78f955ca579a4ca2fbe74e856"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2013-False.dxf",
+      "sha256": "6d1c81b7fd570a2cbbfa0ab0ba1b5aad2ed30d6680c563bc9d579ba71a0c7846",
+      "git_blob_sha1": "caffc354e048f804da945f9e09e02d6f3f911629"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2013-True.dxf",
+      "sha256": "e7190d33578d2c6d4c58cfad823db5183314d43de6c39d9e0ec2e34bad2c60b5",
+      "git_blob_sha1": "f33e9db8cf37249144c79b20edddbb15a1230954"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2018-False.dxf",
+      "sha256": "1e55878e19c037a544bf5309cf69f48e483e2be5ea130f989e27370b55c50b5a",
+      "git_blob_sha1": "bb9b86892a1811d8065ec06f9ce1e4171cbf6fb9"
+    },
+    {
+      "file": "tests/fixtures/common-entity-data/ezdxf-common-R2018-True.dxf",
+      "sha256": "9b22a6a52f42e74a2e5b7a929e523f33851ed5910958fff57fd7266e296b7431",
+      "git_blob_sha1": "d01c90a610840e6ea8cf256449f57573c891b3de"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2000.dxf",
+      "sha256": "f84fc5af08ef5d4731e5320bcef182ec0b8658290726e320ad7b5762227ff928",
+      "git_blob_sha1": "14250234d23456fde9b1cc0ab9e8606d5e9df1c7"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2004.dxf",
+      "sha256": "ede3ebb63bfa9df9ca25bbe2b60f729225b9b3342c3b00435822347c212dc202",
+      "git_blob_sha1": "fa0a8a68d2a16c58a5d4bb9b6baec397a47b9966"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2007.dxf",
+      "sha256": "6cfd23e8899da8d5cde7600d1b7d719293b8d520d6e7e8cf30a9e690eb48c800",
+      "git_blob_sha1": "fd64c1e60a767d23caf50edab84c2e237c7d7799"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2010.dxf",
+      "sha256": "2a7301742ae69c4515513089e6bb48de7d24d69b8fefa59c1f56ae37d5258c3c",
+      "git_blob_sha1": "8593d6e85f4d0face2ae4dfd0df9326fd2578684"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2013.dxf",
+      "sha256": "249bae576968df27b7a31df8f6cc0dbd135e8408108e5d4a21dfb7e621e85ea4",
+      "git_blob_sha1": "494fe1d48b98b017455d9f5256059a05f253a4e6"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/extracted/dimassoc-R2018.dxf",
+      "sha256": "b23d1ac079d9c22f92832187a995114a3aff5f93a1cc0e98b9bb93961551c370",
+      "git_blob_sha1": "647d8ef8761ef3c59b023546d4867d10675c7acd"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2000.dxf.gz",
+      "sha256": "c8047efbb62878b28d4e217373765ebb91229009eca0813644228ba5c740aaca",
+      "git_blob_sha1": "57e9ab6388fa47902c6b4f94921d375ecdab5b70"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2004.dxf.gz",
+      "sha256": "6ff1fc0dcb27a5f246f1ee03a952dc6a69eefa8266afb1fd6c1f3ab611fb8448",
+      "git_blob_sha1": "958126ed31c641f61971d7f2a8f5c1c938a4477f"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2007.dxf.gz",
+      "sha256": "0feafb9e31aac2ba2f67b2b602cd291a85c88f5a629c5a586580c8f3bfa7a12d",
+      "git_blob_sha1": "46daa902f5094440a4fda36e9b8ece04254cada4"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2010.dxf.gz",
+      "sha256": "594c49a56335e40a577bdbdb6faa2590efdc57580888b00f33b6b287de675535",
+      "git_blob_sha1": "bb2dd133d536b235728f04eb4aa34d4746cf9e71"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2013.dxf.gz",
+      "sha256": "784141c23a44adade7ea99f0611caabc6501cb33d4558d582e0e642226e21850",
+      "git_blob_sha1": "10e14723ef45675b127b4c94e69baf44f137a781"
+    },
+    {
+      "file": "tests/fixtures/dimassoc/originals-gzip/example_2018.dxf.gz",
+      "sha256": "60be0aed8aa68546cafd1c7f44d44f7a5c45cb3da10c99e258e0254df2ed45e8",
+      "git_blob_sha1": "bf192993d97bb575228ad30ccc1453441cb71d3d"
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2000.dxf",
+      "sha256": "a666edfe32f4ef3dd9f03335d7f2be1242ed3f895f30e3b9748535a3c1745f49",
+      "git_blob_sha1": "d96c9a89bdd575a95ac27e6e751357d4ee3c3043"
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2004.dxf",
+      "sha256": "3358eec5e0fca86e69de306988665982994aeba580c2e79c0655bfe9cfcd4004",
+      "git_blob_sha1": "0083d5691fa24cc6d09b78c11d70cfbbaff22d84"
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2007.dxf",
+      "sha256": "9051fc61f6d4fcf1d16e8c40dfedf647a9458f1a10f411f0b94b507e50f3245f",
+      "git_blob_sha1": "ebf913230e4320112e1c2d804292c8508bf2a161"
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2010.dxf",
+      "sha256": "257d0bef069e06b36c9e4840d8e0f19ff4ed2f25fcca55f9e54f8aa8b1ba0ddf",
+      "git_blob_sha1": "9adec071800bc478eb1eb4d8a3e9d9b3aeb0416d"
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2013.dxf",
+      "sha256": "1c5773ac732d837a60d4a058b6776facb431bd744effbb9ad62f2d68336e6cd2",
+      "git_blob_sha1": "d4d31391c237ec37faa602994a0c27d3eecdbf03"
+    },
+    {
+      "file": "tests/fixtures/dimstyle-stored-settings/independent-dimstyle-R2018.dxf",
+      "sha256": "f518b21acb7db6a0cd10f31a0f1c438082191e1d9673338afd749cfa041204de",
+      "git_blob_sha1": "c1285ab696e637a52cf95cf04475af234858c5b0"
+    },
+    {
+      "file": "tests/fixtures/field-oracle/TS1-AC1015.dxf.gz",
+      "sha256": "766affd7cc3995aadd6221b3b6af81f7d2edef1d6e26dab904523ab62e12dbee",
+      "git_blob_sha1": "aaff8baa7ceb75785d246d4c29ce6717dfab3663"
+    },
+    {
+      "file": "tests/fixtures/field-oracle/TS1-AC1032.dxf.gz",
+      "sha256": "2e41e56cb64961082a13c9e655e96df7c602da79e7968159de4c7d2e848bec64",
+      "git_blob_sha1": "20cd6940b29b37d5f3e38dd6f4fd7f21f29408f8"
+    },
+    {
+      "file": "tests/fixtures/geodata/independent-geodata-R2010.dxf",
+      "sha256": "13dc5c813acb7ad7e899cae726a19fd750f7d0cfa8e045843009eca639363d77",
+      "git_blob_sha1": "1195fa73ff514efa4a25145ad18fa6c97089c1ab"
+    },
+    {
+      "file": "tests/fixtures/geodata/independent-geodata-R2013.dxf",
+      "sha256": "11bb02f9d0a4f02550057adcdc647a6a79db758059242bcd857da7d197d970a5",
+      "git_blob_sha1": "fb6cea868573879cd6ee821a9655117702f3bc46"
+    },
+    {
+      "file": "tests/fixtures/geodata/independent-geodata-R2018.dxf",
+      "sha256": "eaf905dcb1c6177cb91c80d9f6d5cc53b45dd2b3b5f3eb7b976402064492cf69",
+      "git_blob_sha1": "ff73221a833cd069ec35dbdc45034895fdb2fe3f"
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2000.dxf",
+      "sha256": "58e72a9c33a0ab37a7eddca4b98e6a6cdbde875510452655c866333f1eb249a6",
+      "git_blob_sha1": "5c8d1d59c1902da2b0c48dd9bcbbc8c8cf34273e"
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2004.dxf",
+      "sha256": "64f17fb5a09fe9821ffd34c0fffbff3bc6c9ac83efbb37ec64523495a87bf650",
+      "git_blob_sha1": "bc9e776ed8899f14aedd370b5f428f7e0e7e0a25"
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2007.dxf",
+      "sha256": "366100fcea7c9a294ff04f66fe397ca61cfdad88f5555b2301af120ffb710fa0",
+      "git_blob_sha1": "aea0926f7378fe892dea14d831e8979528dbf4cb"
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2010.dxf",
+      "sha256": "d33a75f5c581b9769b51c4312e7ad81feeabb797109018f382a766ca44d4f3ad",
+      "git_blob_sha1": "3794b7b6a84029f24b19a8444c5c04afc487f315"
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2013.dxf",
+      "sha256": "43660f7fb60f11604932c1b93812cfe24c4b3203b4cdbc2e87730f062b0871cb",
+      "git_blob_sha1": "2f33842f72cb91344c3041b68575e2b043d4f465"
+    },
+    {
+      "file": "tests/fixtures/layer-filter-pointer/independent-layer-filter-pointer-R2018.dxf",
+      "sha256": "e2c7abef442e576295b55b286fa4cb9b4a870defc0d5c65267dea35d62aa2ed5",
+      "git_blob_sha1": "b82f8501d0cf5367c7d0a64db32cb436d42a0376"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2000-ascii.dxf",
+      "sha256": "1a0ea250b4098344b0ca8cc1ee9926d676d3e65a47a4cc3afc3631e9967c6050",
+      "git_blob_sha1": "3313c30356469a7db78b531c430c96be1315ba36"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2000-binary.dxf",
+      "sha256": "63374dab2e2b1b32a8db61816cc787c64b60a3859b0a69218bdc3dcf13ab222b",
+      "git_blob_sha1": "db2eb44e6373179a126c5c7fbaee3896b15c15e6"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2004-ascii.dxf",
+      "sha256": "752810b7c5c37ed6fdc825baa1ed07eee066abd3dbe82e654c4bc3b219b7e538",
+      "git_blob_sha1": "13b559c5a3d5021cfbde67cdf45f4abda7b81634"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2004-binary.dxf",
+      "sha256": "c71c3619fba0c532e037f40bb22548971b7bbd4d165cba1aa86bd494049b1ba3",
+      "git_blob_sha1": "5efdf1396cdbf6c1362dbf5180abe11004b2bb1c"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2007-ascii.dxf",
+      "sha256": "cda684e10ebc502ea9ff0c2a42a38e00537f6c92b1cc581b14a68abac392b085",
+      "git_blob_sha1": "d1bd20158e9067394bc8cb61a8b80949ac17dd6a"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2007-binary.dxf",
+      "sha256": "9f53f3695b0f372df583448dfe71ed90f65803ed02ae10e84283a11a35800914",
+      "git_blob_sha1": "034f5e2f462e08dc08d3e8182ebc44ac33a1a22c"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2010-ascii.dxf",
+      "sha256": "b01d3a0a5cca9b0ab281073d6e9f346b09e28f11ae20168bb613615b914d8658",
+      "git_blob_sha1": "3060f00165ef002bf13e4c598e1d618bfbef2e3e"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2010-binary.dxf",
+      "sha256": "f428592ee2dddca1ebbc84e51c4d0e6f4bc940d3ccefbf941e5e641724867300",
+      "git_blob_sha1": "5877d6117da9dc03c9384acd8b177a3f4cea362a"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2013-ascii.dxf",
+      "sha256": "7920f1dc47f0a9bf4584b18e3967c46c4cbb73cbc29bc21caaf7183c24f7a9f3",
+      "git_blob_sha1": "e729996e07a1c2c6cf08aa12231314b7cee5c117"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2013-binary.dxf",
+      "sha256": "bf24f2ae7230a459c8c7fc03f83f1f924001f0a05a257f73681d161afb811e73",
+      "git_blob_sha1": "dca652e48474cc6637539b3502dc0d08e79f63a4"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2018-ascii.dxf",
+      "sha256": "a29c9db33decef6dc174c156c03119d7bc11f615f0f27ce76d0432dadb998be4",
+      "git_blob_sha1": "c0863653d133ac2a7ba62d91a4c57de670cabe6f"
+    },
+    {
+      "file": "tests/fixtures/layer-index/extracted-layer-index-R2018-binary.dxf",
+      "sha256": "0d5b7181955fd27ab784a391e0897900e9683bd7966f4851b50ee0a89c9c7712",
+      "git_blob_sha1": "387758673a15b6c0968626be977834471c41ce83"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2000-ascii.dxf.gz",
+      "sha256": "1c40127fdc173a5aec3e04bf4900107e6ca2c02edd076e3c51cecd310d722018",
+      "git_blob_sha1": "831d40f92ed458d16a7297acd26fa5c0c11faa58"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2000-binary.dxf.gz",
+      "sha256": "dcb3c834b0616b6c622e0c24c5634e41a968ce32e56bd9ccd8c099473d608723",
+      "git_blob_sha1": "6eef38ef45b99bd4e8eea1bb4e445e3d4e042643"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2004-ascii.dxf.gz",
+      "sha256": "346ea737946a376ae13cd9f6c6c1ed77ffa521e2b49bdadf32ec23264dd32f3d",
+      "git_blob_sha1": "de16cec694bbe540101f72008f49f01b1b5f702a"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2004-binary.dxf.gz",
+      "sha256": "f398670098524ad5b3cd1f63fc33549cc382eda0c3ed1193c1bbfcf477298e51",
+      "git_blob_sha1": "0aa8dc1917269570f34f392f03ec3ebd97c62e48"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2007-ascii.dxf.gz",
+      "sha256": "70801c54438030fb17de3f4a136cfc67beed3e56b66c24a3339c2bccdedb5a4f",
+      "git_blob_sha1": "af10b1361f7d1ebe8450eb2396545f4f5a98a2b7"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2007-binary.dxf.gz",
+      "sha256": "c7ece3c9a0508a9a7bcad92840f470fd72e09aad2f70a31637b7c82245011272",
+      "git_blob_sha1": "2444677394867de64c216a8ab9d658a80f76cd27"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2010-ascii.dxf.gz",
+      "sha256": "bca3f83fe344ef131d2049c8f6f12a32778f3775ce124b6e8bf720bb85591cac",
+      "git_blob_sha1": "c8f6e794ef7ef4b982a49b618dffdbeffb72a6bd"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2010-binary.dxf.gz",
+      "sha256": "3dcaee2ccc4e9f1baf55f47e346d0ef5e6f051744d64113439a810b8b5ae7f7b",
+      "git_blob_sha1": "d7ddc4b117943754ba0bc1319d53bd52104f79a8"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2013-ascii.dxf.gz",
+      "sha256": "709db050aeff71c85b4996e4fd5f870b74018679fc402f286e5d58675a3dd859",
+      "git_blob_sha1": "b6f10d2fcb2f6e25bad48c551fa18747de4c6c61"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2013-binary.dxf.gz",
+      "sha256": "ee5b8809c7da507879f7077f6756c940c279fee4ef4145e6f2d03ed54c8cb1a0",
+      "git_blob_sha1": "eddb00d8d76782e36d8afed9ea3e592ad151ca61"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2018-ascii.dxf.gz",
+      "sha256": "abee888f0fba6e66e6ebbd63363fd9247ddb53f06d0845ab31a9feb245ae8503",
+      "git_blob_sha1": "7cb630171400329058ddefd3174c724d5a9595c3"
+    },
+    {
+      "file": "tests/fixtures/layer-index/ixmilia-layer-index-R2018-binary.dxf.gz",
+      "sha256": "21f1a8487b1f163aa84de7946b3aee1ad17f40a4144837945c328925a1ed7160",
+      "git_blob_sha1": "ac9b786ffef0864a058765d888cdc00de4fc4941"
+    },
+    {
+      "file": "tests/fixtures/legacy/ASCII_R12.dxf",
+      "sha256": "b476d3e53fe24c1db3c701d20b2bebd774f7bd7966b12d81891505b9b29e4d21",
+      "git_blob_sha1": "1352ec0904ab49df4b6657d75dc21ad524d2cf42"
+    },
+    {
+      "file": "tests/fixtures/legacy/bin_dxf_r12.dxf",
+      "sha256": "1e7a904d67bc7036bd3f78a6273cdf28124ba7e8b731604c0593288182f2aa0e",
+      "git_blob_sha1": "d30f0b6430ec7ddefc753e023acdd8601241947a"
+    },
+    {
+      "file": "tests/fixtures/legacy/bin_dxf_r13.dxf",
+      "sha256": "c65782683815ff0f1680d26207da1637a486f96b30bc215685e26cf7adee8464",
+      "git_blob_sha1": "be4f0cb3fc488139ae72f92d756c1c6aa80aad83"
+    },
+    {
+      "file": "tests/fixtures/legacy/bin_dxf_r14.dxf",
+      "sha256": "177a97e5dc86ca106d0dd6365d139122fc54ff78df87670847eb7174a8bbd5eb",
+      "git_blob_sha1": "f09316f33b366264424482d8f58becbb5217200c"
+    },
+    {
+      "file": "tests/fixtures/legacy/small_r13.dxf",
+      "sha256": "a1007452f8ada2e71fdef60f79923924045cb371f37eeab896a61f5628573d0b",
+      "git_blob_sha1": "3693b689db808e8c6eb23f666efcaa87b0be4022"
+    },
+    {
+      "file": "tests/fixtures/legacy/small_r14.dxf",
+      "sha256": "92e792f8f9169e4226c9b7dbe848ba9afb96d3e388e6297c55481e1941c65fb0",
+      "git_blob_sha1": "118140edba4a289824a2cb09c9aa9e6b53ff0668"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2007-ascii.dxf",
+      "sha256": "502fe86d6cec9a42b8e6f9798d5258263ceb1e9658b91bc80d30b693e251c545",
+      "git_blob_sha1": "4abd333c787eefa7a6993a46bb25ed7dc3f2a4e9"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2007-binary.dxf",
+      "sha256": "641be2ad6370421bb6f0824fffd04f93784a28b6338ab66341cb0cb52e80417a",
+      "git_blob_sha1": "18464147b155593b0053a7ef5d989523fe4bcf31"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2010-ascii.dxf",
+      "sha256": "060b16d06e15bdd35e60c544d0136af5628cb130b481250c297c0fd9d72ce290",
+      "git_blob_sha1": "bf46f074eefd60a6961e45ba75ba030b0bb7493b"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2010-binary.dxf",
+      "sha256": "d5c3f54ced1f33e6893fdd8ec7da242be48485ccf8c0044ef998b5e9de80c8d5",
+      "git_blob_sha1": "2028a502bf86a4d8d52332ae6f5f1e2981b78433"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2013-ascii.dxf",
+      "sha256": "8f3b40af844aa92c2df015145144fcd93a507cec4b9e10ac10e35098a2ae60ab",
+      "git_blob_sha1": "071dfe5badfea9fd894146d2697c680a76287cfd"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2013-binary.dxf",
+      "sha256": "07dd1813ade4457c3ac87d231f018a770d02627fd70477df395092e4605e90a5",
+      "git_blob_sha1": "aa93f89fe425ab3b48bd8583318d6c08b5e9c8a2"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2018-ascii.dxf",
+      "sha256": "a60b00ca73ea25919907c5886ef8060fa5b85a911206787724e29c3250708cf8",
+      "git_blob_sha1": "8e2c4fe5525ba1507a66dcb9c89fc149418e4315"
+    },
+    {
+      "file": "tests/fixtures/lightlist/independent-lightlist-R2018-binary.dxf",
+      "sha256": "1f73423cabb6832cfcfe9876d43d02033258a4aa37fd6babb5f9e6c48c0ffcb8",
+      "git_blob_sha1": "e756ede81e7ea33d496104fc3bbbeb54fb1b8578"
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-absent.dxf",
+      "sha256": "b979185f0ef6d0bf484c9c5ac08be3fcaa0c95e143ac95dbc4ec2af6ef6a31ec",
+      "git_blob_sha1": "30750a4449061b1c6e31a1558fec081a2168e11a"
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-positive.dxf",
+      "sha256": "a982d3f966498b5d164ed9c51c12bf6ccc24dff453eb62f53fc3fbcfa7c42771",
+      "git_blob_sha1": "387c217e20c634859e1f9f78f822aad2cfff0e11"
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2000-zero.dxf",
+      "sha256": "fa9cdc69c318b47d3f739d63288c0deef423af88b1979598ea4c22518834623b",
+      "git_blob_sha1": "9ee03d876cec9a3485db113395c58e2891877cb4"
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-absent.dxf",
+      "sha256": "e959e64724cb8bad54573fc459505026fbdd2d6a22ee3fa4d590b49f4f325edc",
+      "git_blob_sha1": "938a81782e9a32ebaccaf4141c38ec05b2fa245d"
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-positive.dxf",
+      "sha256": "ce092d17fddb68c86d53dca6f285b74c2cd8073a1585aa940bbd1b4d84e6b689",
+      "git_blob_sha1": "36761a8ec8ff2773a6f5290ea4aad99444792ea7"
+    },
+    {
+      "file": "tests/fixtures/lwpolyline-fidelity/independent-lw-fidelity-R2018-zero.dxf",
+      "sha256": "119b0f92ae6fb1a4ae2d378555595aeda0f0c6608c6ac323793175098000c1ed",
+      "git_blob_sha1": "dcce59b2b2cb25cb00a0703e2aba4e1d6f328e6e"
+    },
+    {
+      "file": "tests/fixtures/mleader-native/native-mleader-R2007.dxf.gz",
+      "sha256": "cd4253dfac2a7a1c5e5949c3e8320d95e2d3846d8d8e1e410940ab0c4f0b769d",
+      "git_blob_sha1": "a8707dc53b8d7603c2673aead583f503a7df99c1"
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2007.dxf",
+      "sha256": "413766dae4d16e60e1f1ad509f1c0d997173128c84799aa3c6a5b1802bf39fa0",
+      "git_blob_sha1": "63244a17ff83b66c122055233a08e159a1f26c8e"
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2010.dxf",
+      "sha256": "aa64de7f72161558ed60b663ddda3cb58dc0c3696e1093b876f09513a124dcf9",
+      "git_blob_sha1": "6505184746a16a49c59e5b074443cb381aa71772"
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2013.dxf",
+      "sha256": "e165c1340eca1440549548acc256cf4e9c00dbbaaea788bc7aa8e1a62b0587f6",
+      "git_blob_sha1": "c3de653e1019b3ece6e4cfc6d83d5ba766fdda8e"
+    },
+    {
+      "file": "tests/fixtures/mleader/independent-mleader-R2018.dxf",
+      "sha256": "70db668b4c3bd1324e9a857f58676c7697b79fcd22815a94f62ae96d645df786",
+      "git_blob_sha1": "940ce37d9bfaf26213cbc8d63c08c50ca76f8945"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/conflicting/independent-mtext-static-R2018.dxf",
+      "sha256": "c32cd080274b701c7778fa79c14d4e4b30be8fef482c448ccafc72278e311bb2",
+      "git_blob_sha1": "359dbb76441dfea3e9c23f7dce703be2796d670f"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2000.dxf",
+      "sha256": "e50d1d0c2afb92546aeb83bc08ecea594ece01d755e80e5f5679272fa6ef08f5",
+      "git_blob_sha1": "2e6ccc6ef0f2870b44692da806ad85526709ac9b"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2013.dxf",
+      "sha256": "9ce220643b3c82d235c777bca2787bbc18e1e8878f8d015975a17d32d9157be6",
+      "git_blob_sha1": "6a1fd9aebbb822a81d569987be85faf7529b24d8"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_auto-R2018.dxf",
+      "sha256": "4e52b04d25b48c927c6e3796a7bb9d87fb6ab5af1b71573891b0f3a959d36a96",
+      "git_blob_sha1": "b98060c0fed52052ae468d2ee00161f8bd57df95"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2000.dxf",
+      "sha256": "dd17a5cf0de5df0695501549ef0a55b1f06f2f8fb13479d028addc08aa2b10e6",
+      "git_blob_sha1": "cde9faab4e8149f514e55f2bbe37e647d23311cd"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2013.dxf",
+      "sha256": "e7033abb5a6fabf7c7d238cf1313ef49f30ef78d537473a8f4230ee466fdd118",
+      "git_blob_sha1": "61009d87c34142b962dec9c710ad519d95c75c21"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-dynamic_manual-R2018.dxf",
+      "sha256": "be681369e45190ef26ac01ea3b191a88b7150a5ad5ebc8c0d63c852191023dfe",
+      "git_blob_sha1": "842569663d1874245e749d8cb0cdac053e49f522"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static-R2000.dxf",
+      "sha256": "80f56b71dca0828f3c170cbd7cbc2e73014732c187d991309c098148840dd4f8",
+      "git_blob_sha1": "77e6b0506bb9bb44230bdf039c5bb7cbe0760b7b"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static-R2013.dxf",
+      "sha256": "82f563edf1c7dbcb3b5f8e90ef0ba60fde40c734a54342a1fe6e1731976e8389",
+      "git_blob_sha1": "4ae05616dd80fd04693102df03ef755629bf8f8f"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static-R2018.dxf",
+      "sha256": "c0cc69229846dfdf57d2b352b85c47f09857d9c1145db9f3b89a45b614afd2de",
+      "git_blob_sha1": "9a2fecb7204a3ab1b84837987365d4a311ca1259"
+    },
+    {
+      "file": "tests/fixtures/mtext-columns/independent-mtext-static_reordered-R2013.dxf",
+      "sha256": "ca392e1b016e9310d30ff00757e84b599a7e6c03a47772670aae55dfaf0bdd06",
+      "git_blob_sha1": "2eddbc389a34313ae17bb61874a6a93a51dad323"
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2000.dxf",
+      "sha256": "92e617e16709e64ce837606ab35ebec98dd00c9fb0555b351800fbc0ecf7a45f",
+      "git_blob_sha1": "c364a727c2dcdd91028479b117006fd07f919e23"
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2004.dxf",
+      "sha256": "56a6363bde968f48f97fdc91cb7809337d56196e1e984b8726726d1453ec7d96",
+      "git_blob_sha1": "b03aec8148b03a9d0886256d7268a58c66909a92"
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2007.dxf",
+      "sha256": "9a3711d2d312725ef9a418bc72201328d3e70509b37c784f6025aebab690d0ad",
+      "git_blob_sha1": "033fe05da59b1e4cfa9e9ffe4fcfef6fac5f1e25"
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2010.dxf",
+      "sha256": "4627c47d62400a41aa065a03549654f5479854c9f657d87caa4fe2d365295602",
+      "git_blob_sha1": "3f71765e7cefdb8b65ce30e01cae4b1293c8c8b9"
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2013.dxf",
+      "sha256": "5aeaba4c3ffff9236e1ad23dcc1a78d80fe014d4ab214e5022fd9639b152402b",
+      "git_blob_sha1": "15ebe94e6820f42471a2d46162ae9f3878f78f28"
+    },
+    {
+      "file": "tests/fixtures/output-settings/independent-output-settings-R2018.dxf",
+      "sha256": "a437c9d728c9b8211944dd37dd3d3e25b6fe572fee7dd772a6c1b8844c1b7027",
+      "git_blob_sha1": "817813c1422c4f8db673496c0ad45bdad15408f9"
+    },
+    {
+      "file": "tests/fixtures/raw-objects-R2000.dxf",
+      "sha256": "308c500a530feddca2d2f01691faac2efed871bdf4fc708e0af149d0c1702e98",
+      "git_blob_sha1": "8d238dcc962516de45790b5f6d3a1918ef5ba7cb"
+    },
+    {
+      "file": "tests/fixtures/raw-objects-R2018.dxf",
+      "sha256": "0631df37e447399011c67a9650967995052bbe9f74a78bd5d65da7b06fa3eeee",
+      "git_blob_sha1": "bf4b2a7b082c44e55e152e4dfb0a7818af9a54b1"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2007-ascii.dxf",
+      "sha256": "991871d8c1c12b7a995ffde7e6d9415915eef40a9aa774c502c5a6adb45bab64",
+      "git_blob_sha1": "fdef078f327609972a84feca6a7dd950727d54c5"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2007-binary.dxf",
+      "sha256": "8d384dfbd12bc0e13e377deef97c72caf65c900f692a50c23249468eede4286b",
+      "git_blob_sha1": "9fb28a65ca8130f55bf3f197125ebc476bc26c04"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2010-ascii.dxf",
+      "sha256": "c5118142e474e0d5cbafb957d66c061c36ce14d451bc3c376d57243ecece8f99",
+      "git_blob_sha1": "e50dc9041b8c9431191d2d185f9eea662b21b476"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2010-binary.dxf",
+      "sha256": "5bda41fa5a4a4bfdd9c58b4766e98235f905d9f8d465548aa7bfb579f8e0773c",
+      "git_blob_sha1": "29d69cc9cd13945272292f2706e2f851a4e9472c"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2013-ascii.dxf",
+      "sha256": "409f6b2956af1711d5439eed435068a0d928721d96f6a2e3ec30352f9716d79d",
+      "git_blob_sha1": "629a217a84c3a27954dcd462f784404239f07f76"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2013-binary.dxf",
+      "sha256": "349ec8ce25e08e73e03cb032b2f839007fdaa397dd636bdcef2af886ea9c19ba",
+      "git_blob_sha1": "33688b92407a6cedc8b7dd53e42eeaeeee5e9511"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2018-ascii.dxf",
+      "sha256": "ddb7e8200c31ab06f5bdc2230e133e126d0866ba75f84e0121484c92792c7a13",
+      "git_blob_sha1": "b65e9c92713ee37e43f800b23282a725ad67e588"
+    },
+    {
+      "file": "tests/fixtures/section-producer/extracted/extracted-section-R2018-binary.dxf",
+      "sha256": "e5380662da814fabbfae761b01c687a39d9b959d5d95890c4f3ca3d7983525a8",
+      "git_blob_sha1": "e170bc14b486f15937674e479be65ca7c67ca9a9"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2007-ascii.dxf.gz",
+      "sha256": "51e7d634f13cb43a94c68f730e237bc82c16714c3630c62170567e214a4e9b08",
+      "git_blob_sha1": "d82caaef4a89d6e805f9be7f149e7184d81c5658"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2007-binary.dxf.gz",
+      "sha256": "f4bbc39aa8d5e48d7b90037ccc1788a5e97575610d1ee8d456a31fc31e19ff76",
+      "git_blob_sha1": "f3fb55e777c0fd87e334465f1779c995ec51897d"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2010-ascii.dxf.gz",
+      "sha256": "43e7fb056a15a988bef7419cae727fa2164b38f10d558681b3f1500f55ed811e",
+      "git_blob_sha1": "eebe4283de670b1ff907d2c0c67123dbfc6b6505"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2010-binary.dxf.gz",
+      "sha256": "88a154944e9166cb0c056820930be28a5bd44bee196bbd6f8e41caac282cb04e",
+      "git_blob_sha1": "238b1369c6557c3e1f29bd936dc2839e5149fa6c"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2013-ascii.dxf.gz",
+      "sha256": "893f16faf9aae7629ac3e186311f49afc71cdc95e799c0988ce1cd2644b008ce",
+      "git_blob_sha1": "2ee9737dfc9531d2916024b19eb743ae4c1dc2fb"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2013-binary.dxf.gz",
+      "sha256": "906545b5ace257e1cf6ec157719b84932fc90098740f48da071007fdbefbfb91",
+      "git_blob_sha1": "f1599f7c3e1f9efafc661a43620e2ad46b68aaf9"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2018-ascii.dxf.gz",
+      "sha256": "d54402b7629169d24dc250ec8edcc8950adddd87b5b21f789a8dc84bb2c6eb06",
+      "git_blob_sha1": "2e5297590a8e050b7a77388d31bf5fe9f1caaa0e"
+    },
+    {
+      "file": "tests/fixtures/section-producer/originals-gzip/ixmilia-section-R2018-binary.dxf.gz",
+      "sha256": "d2e2cf2af3a7bbbd42e8a6a093dc0818acb1114ff889d61d5d7245c770f3a8fa",
+      "git_blob_sha1": "93501f06f98aadaaff75048c2dc918792f0afd07"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2007-ascii.dxf",
+      "sha256": "016a8e8e800dadb3e22ee492c54b313a71f8706c3b73775b5575d7ffe0423257",
+      "git_blob_sha1": "aefe6a984ccf07ff809ce5ab5cda58ebdfee62ac"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2007-binary.dxf",
+      "sha256": "f38839e20be3bdb132728f68b3056f98cd00589636de90f7f788861ef06b1cfa",
+      "git_blob_sha1": "69bfd86d50ab64e4c09403898d1aa6658b16db0e"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2010-ascii.dxf",
+      "sha256": "faa9be7a5f325401272bbae13e5da4b2b5b3c2618c7e5c5259bf514a0aff154e",
+      "git_blob_sha1": "3658a866401f18f1348619fa20b8871771c8c284"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2010-binary.dxf",
+      "sha256": "85a81a7d3bdc7da0c3d0bab61822f4acf05ce8b2fabd677f7bfab0182dbeb48c",
+      "git_blob_sha1": "0a0feab6d4a771acc29f179c5b7496000028c19c"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2013-ascii.dxf",
+      "sha256": "d88bfe4f17d8f6b6833a9ee0d69c2b2dc2b7e4f40e99bf408689e45fdae17f64",
+      "git_blob_sha1": "a2a98695064b7e77333076584e2b592b3d7e616b"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2013-binary.dxf",
+      "sha256": "015389640312be39a8a056c219ef4fd6b2c0dbb4c36a1f1ec38d7afd7c5663df",
+      "git_blob_sha1": "84989e1e86d10d6efa68f362d569fb2019e2d686"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2018-ascii.dxf",
+      "sha256": "5320c1c1905492e292ea4b81ed79cff8faa4c85223c0b50bc42bb34f457680fd",
+      "git_blob_sha1": "b44d4792404ead587f8b02b41cb6e1046301ef2e"
+    },
+    {
+      "file": "tests/fixtures/section-settings/extracted-section-settings-R2018-binary.dxf",
+      "sha256": "392043ab76a78df5bb3f462e68e1912572e500019deebbb22d7de273f79f3529",
+      "git_blob_sha1": "172fe12a1e10d68f4252c34a36a4acecdde0fdc4"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2007-ascii.dxf.gz",
+      "sha256": "375c386358a054f87f1ea5771a549d2564439e9b6800cac92e864e6209badc75",
+      "git_blob_sha1": "425b4763c2c709fdf855a61420c02f1ba51bf5b2"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2007-binary.dxf.gz",
+      "sha256": "0c768fbaaf5c8644eaae3f9da8502505b2754240a993c482321b9f8e65300a2b",
+      "git_blob_sha1": "ed06442139a181a0d694200990622f126f0e481a"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2010-ascii.dxf.gz",
+      "sha256": "d763a5e5fd570aa096bb90f7b1904b109ca9d323908aa6542fd59b43c4fd9c0f",
+      "git_blob_sha1": "6ba0834a30d0340ffa644b42d8a3d9101aef6117"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2010-binary.dxf.gz",
+      "sha256": "3ac355b928db712d1c305e2dc8a17701cf31cf354c776a35fe285cc160993858",
+      "git_blob_sha1": "08975f7ab454bf9584cf63a3d3f17efb1b535a84"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2013-ascii.dxf.gz",
+      "sha256": "4488fdabb2181ea806d5069011ca987b5634b3c330970c9db47dfc59dabf0570",
+      "git_blob_sha1": "13035bd118805032fbfabf9ccc6fe142f228a4ab"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2013-binary.dxf.gz",
+      "sha256": "1c83d57d7f9c4f543fdc0d2e2be8d9614e83be80f0a2cc0eab37b3bae2fd92d3",
+      "git_blob_sha1": "a07fd9da731873d57d84a6c53e2592780f628887"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2018-ascii.dxf.gz",
+      "sha256": "9d4a38015f12d9189b99fe7354bbfc162b38a090668f3bafcc23770ac21297c0",
+      "git_blob_sha1": "74d9b39229224c8d9aa7088a0e6288ad0d695213"
+    },
+    {
+      "file": "tests/fixtures/section-settings/ixmilia-section-settings-R2018-binary.dxf.gz",
+      "sha256": "9edb6abee88710c0e975b269ad3b15b005c6100acca778940dc3614c7ad7a4e8",
+      "git_blob_sha1": "4ff133b2209a1ade685fb0fc1d6491cad8b8bc2c"
+    },
+    {
+      "file": "tests/fixtures/section/LiveSection1.dxf.gz",
+      "sha256": "7a1f9dedfde2629330e9d9bfa18ee5920a3e75499d2c65e079a558fccf608942",
+      "git_blob_sha1": "66bcd4629ff33adbd1af6e2b6866727abddc0a1f"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2000-ascii.dxf",
+      "sha256": "707f47d7647335b5c9bd210927e1c5fffb5f40f5aa0cf07ce9dff6b59b6fffee",
+      "git_blob_sha1": "197122135c59c59c74cba8d1c47edd1a48b391f5"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2000-binary.dxf",
+      "sha256": "561e5ffadb364dc562239dff592b2cd5b1e145809d062393496104146e9e277e",
+      "git_blob_sha1": "0d1d5f813af4bb5d55bf0d9a14b8e353af8175fc"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2004-ascii.dxf",
+      "sha256": "73a6449fc3dada2ba69a7974849ac969cf6485a3c92698c1c899c9cba7069d19",
+      "git_blob_sha1": "389d002e3c9a1477f3711ff193fa303d1547fa1b"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2004-binary.dxf",
+      "sha256": "400673ea99f74ae865369f0eb21fde7341b5a99030a0233d397365e16a65039e",
+      "git_blob_sha1": "1c7cecd183c005255b07662336f98557377b25b8"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2007-ascii.dxf",
+      "sha256": "e45c25a228d4ad88e7f18fa63b802a3f9eabbbe5b3171b7525f15949fec8d0db",
+      "git_blob_sha1": "df34ddb6328ebc7c6822964891a43f7d076134f3"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2007-binary.dxf",
+      "sha256": "3b49756e894e0b1737284ed88d3bb61b44f144052922920b70538d03e2f5ba6d",
+      "git_blob_sha1": "7a36a14a90cb56883a26480b71dcd3cbda4d3710"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2010-ascii.dxf",
+      "sha256": "efc41fa2316232e8b3066126342a7f3b90ce620f7837a6b162a6e2bab59c3c62",
+      "git_blob_sha1": "2f8d16e3e1e07831d50223b8ada8b0a313f06a36"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2010-binary.dxf",
+      "sha256": "233a009f243c1ef82d4272a547f5f3033439464460b5119f3f32619a11074094",
+      "git_blob_sha1": "225dc7a0f38eefcf308acdc1d9bba9d5e6dd6a0b"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2013-ascii.dxf",
+      "sha256": "5c8ae2d3c93683386fed65987bf1cafe829f3c2d78b0a285d0b3492cde419048",
+      "git_blob_sha1": "783d8a564c01de04b2faab44d4d5d648a2c01d6e"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2013-binary.dxf",
+      "sha256": "1713b3202aa04cf51c44002a791ca9b1abe1357fbdbd6e687af4468a55c07308",
+      "git_blob_sha1": "0bdbe4283c4b99f420cbd7380e5fe8d3abe61bef"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2018-ascii.dxf",
+      "sha256": "1871c55add58a7ea296a2976f99d58ec3b8a588804e8886a4b99753478da2c8e",
+      "git_blob_sha1": "c20cbc929b252f3da88526a5f37ff58518478609"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-spatial-R2018-binary.dxf",
+      "sha256": "6e61c3ecf72ef521883af8ff2e465df4187431188feb2228501f5eb9fefad5a5",
+      "git_blob_sha1": "5cccc17f917ab8704af7af5ba931d429e8cb5043"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2000-ascii.dxf",
+      "sha256": "ffc640f4a2facf6526f76f484ed8ea3770dd15bb5a83059a636b73967ed6267c",
+      "git_blob_sha1": "c9955e3082538905e6a631404cbb5ab54fd7a825"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2000-binary.dxf",
+      "sha256": "962e9a7044be4db8aefde05d0a2260d119cf5a7e1669fc1145a17ca96f2020e7",
+      "git_blob_sha1": "c11df65917f5be84ab5c899461db906c6f889179"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2004-ascii.dxf",
+      "sha256": "b8a76937e8041ee27260a0b420ee5464a65882c3d17ad9e60d544ef1d5a0627f",
+      "git_blob_sha1": "90763cbb772cae20629f0c7b8e5e9eb2c806b234"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2004-binary.dxf",
+      "sha256": "882c3206f439f6b0ced794edd0c13fa2736fe3ec07d7a7028ee3fc8d7fbfe955",
+      "git_blob_sha1": "65825480468791f9e53ca98b4a6cab0e38b7fe45"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2007-ascii.dxf",
+      "sha256": "5f2bbcc886b964cf340541f446d2e5c1c59f2d4386761154b46503d52af8cecb",
+      "git_blob_sha1": "693e9bd96b994b939f0f51dcffd9057fc0d2d99a"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2007-binary.dxf",
+      "sha256": "eec6e8e76abaacbc0c7a8d30c8b3319faef51d2fc795cdfeb3ce93655dedda50",
+      "git_blob_sha1": "2226e4b9584ce6297c317704a92788a768f358b8"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2010-ascii.dxf",
+      "sha256": "ea3328fb8e1512c7b7ef3eb25074876b8219fd3c59f367b99beb54bcd128a15f",
+      "git_blob_sha1": "1c34e83af8804160156c8d2adbbe366700ff447f"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2010-binary.dxf",
+      "sha256": "cbc4d2508e155a6b833634886094d2ed4100f8421b2a8b429fd9e35ac9befcf7",
+      "git_blob_sha1": "c8adbb814244bb964acd0033cfb5307db8da0ceb"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2013-ascii.dxf",
+      "sha256": "fc0263d07abe8ab84775f3425ea4fadf80e3cc09f2ebb7398026a15524e24346",
+      "git_blob_sha1": "905888b2f32a6668927dcd08dbe6a9ec9b4d3fef"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2013-binary.dxf",
+      "sha256": "09fd1dea77cc70d10089e4ee2f1b87a3b0c2e95cfd8e348945a97bd8c984875a",
+      "git_blob_sha1": "399385a1d70b0f28877d657183dd84fd6c358d6c"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2018-ascii.dxf",
+      "sha256": "ca497007b1b552aba1753b995e81db2296731214ecfd4ff0d0e3b6ffde01090a",
+      "git_blob_sha1": "cb082f5ce29322dd7bf52d241510e2ffa19960f2"
+    },
+    {
+      "file": "tests/fixtures/stored-envelopes/independent-stored-vba-R2018-binary.dxf",
+      "sha256": "978c325eb8607895ea0a593ad9ad3329edc0924e070d2ad8aecfb15a8fdac589",
+      "git_blob_sha1": "9473f599b4acf6608d65a53b165853aa39c09781"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2000-False.dxf",
+      "sha256": "209bffda1c8419700f517e86dad064f88ad926d6464094b619b227ff035d65ff",
+      "git_blob_sha1": "534b8355e2906e0cc470b5eef5cdc96541baa8db"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2000-True.dxf",
+      "sha256": "0cb29889524a1f5e9918ee1384df89d66f52de8780fad5047f52ce35c0d4124f",
+      "git_blob_sha1": "6acf2c28bb681836d98ed46925e989d53d700af1"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2004-False.dxf",
+      "sha256": "6fad3b47f19a49ab127a948ba14a82a83f3d5c0db8951b5ffcba7794c8a6b1a8",
+      "git_blob_sha1": "753a56280cdd3ec8090453b1c15ea39430f89932"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2004-True.dxf",
+      "sha256": "b0038313976940cc0b8566c93b62d2e4cc68525d78d4006c611eea6f5c60b144",
+      "git_blob_sha1": "0a543d9e24b05c9f43767bad1df0af8eb5cef0f0"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2007-False.dxf",
+      "sha256": "3bc53d3a8c3ec6d76c5aceaa061182e5bcf1c25dacd6fb967859370d502a7fdd",
+      "git_blob_sha1": "8d66649bc090ad5e366661e74386bee268fea295"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2007-True.dxf",
+      "sha256": "eb7256f697476bb8b3c704cefd3a307b9ff91415c98c6136f9a9129405882c55",
+      "git_blob_sha1": "40f04d2c31235cf21bac8a716402425b343fd7b3"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2010-False.dxf",
+      "sha256": "47022c1717844fadd7f7bc24aada9e3cc4437f17dd706f6b8a56f6ac3ea0a0e9",
+      "git_blob_sha1": "92a19ad0214ff76e78d750228b6ebc1a0f49642d"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2010-True.dxf",
+      "sha256": "ff7285528a4497eff19dc80736d007848b29f0734868952de5fcf9ee36c265cd",
+      "git_blob_sha1": "93ac428e74322c3c92b9e0a497cf076af7983c48"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2013-False.dxf",
+      "sha256": "777434cbe3a8391698b202a866bdc2d6e14b95fd63b21e8e2fc61f3384ffa1f3",
+      "git_blob_sha1": "80f29d9d96cb3f6d3a71a1cfefdfb1d1599dcb17"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2013-True.dxf",
+      "sha256": "2a054fd5b33879a013d1c21af2b22de1943543fabc15267f043e8fa79cb7c0ba",
+      "git_blob_sha1": "86992d8d210c2f29786d38038ea0b69ad869990c"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2018-False.dxf",
+      "sha256": "f51d7b992bb7a72f89c582027dd61502c75ac0594c71c83afba496f9847addb3",
+      "git_blob_sha1": "9fbb0ce94a71fdb2a55fbfbb99a048a4e395f8b8"
+    },
+    {
+      "file": "tests/fixtures/style-fidelity/ezdxf-style-R2018-True.dxf",
+      "sha256": "a9e72c45c9f3221db3907dfd7dee749b9cc0784209ed0b21e50265d04643e17b",
+      "git_blob_sha1": "75bdd47d202cbc40a3113e00b7a595a67dffd629"
+    },
+    {
+      "file": "tests/fixtures/table-oracle/acad_table_simple.dxf.gz",
+      "sha256": "b2a629b8b7d8292cc3d6205faf6a09358094f09eb63c3b3e2f6d27d6f788902f",
+      "git_blob_sha1": "7a5fc464bbf5690edf575df5665277a4e32dc4ce"
+    },
+    {
+      "file": "tests/fixtures/table-oracle/acad_table_with_blk_ref.dxf.gz",
+      "sha256": "e0d65de681d84f2787d185b4f1d75426bd85cc68fa8543d7cc3c8a353d2ba942",
+      "git_blob_sha1": "3b378a607580719524160dbea367e9de27cd80aa"
+    },
+    {
+      "file": "tests/fixtures/table-oracle/sample_AC1018_ascii.dxf.gz",
+      "sha256": "2472008a90e95a8533dccadda487f689d29811c3d945fae3b4b2a59fba772426",
+      "git_blob_sha1": "8e70d338a236d4c7ccc49cfa9d294d858fa60345"
+    },
+    {
+      "file": "tests/fixtures/table-oracle/sample_AC1021_ascii.dxf.gz",
+      "sha256": "2da81bce6b3d07cf99c2957f8f3f2a345a365097a467d9472865b3b725791f22",
+      "git_blob_sha1": "42b5e8eccb7ee7c2d16dbdb72c7025f03025cd2f"
+    },
+    {
+      "file": "tests/fixtures/table-oracle/sample_AC1024_ascii.dxf.gz",
+      "sha256": "a672d1a4a20e7ff207b167edfd25e170093872704a905a1ae006933b6a4028d0",
+      "git_blob_sha1": "02b633a9befc5f8d77c203fc2603f9fdaabf4864"
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/acad_table_simple.dxf.records.dxf.gz",
+      "sha256": "57f01531eae31e9168e7e202ced034d69857f8eb224fee79690f5970df0b65af",
+      "git_blob_sha1": "cd7f4b2f635b952cc5fda25d6c8746f7be7e3260"
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/acad_table_with_blk_ref.dxf.records.dxf.gz",
+      "sha256": "6e93886ed23d4fe57978119542c74ab559ea75c46a288e377b45f8c23ad1ec90",
+      "git_blob_sha1": "18d5186be4334ece662ebf94546a78d243a17cec"
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/sample_AC1018_ascii.dxf.records.dxf.gz",
+      "sha256": "4fcb7b836f08f4bd9eeda7ce09679853f90241d1513f6aecc3d7f86dc040b7f6",
+      "git_blob_sha1": "3c8f4ae402a5c47f074b06ddcd667f1660bcaf9d"
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/sample_AC1021_ascii.dxf.records.dxf.gz",
+      "sha256": "e37875a59ab4af742140d7aceee319016bbe00f97232cbe747cfa5bd3fdf84e0",
+      "git_blob_sha1": "7d1a3d215d9b585fb57d25f8682b17be8c12d9ae"
+    },
+    {
+      "file": "tests/fixtures/table-style-oracle/sample_AC1024_ascii.dxf.records.dxf.gz",
+      "sha256": "7323f25dfc5658dd84f6278eb4801ae9df040206316858bf5fdb0756214f8624",
+      "git_blob_sha1": "89830a67281a7d976dcc4d70d2b80b67bd9e217e"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/compatibility-probe/sortentstable-R2000.dxf",
+      "sha256": "f8ed92a1036f839cef9955c4284c1da1a2ca3d70e9056998edc90112c4ba235c",
+      "git_blob_sha1": "fa828532dc4d6fa855fc45c181b73a8099be3462"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2000.dxf",
+      "sha256": "09df6e3a24b774efdf91cc88078816687ef6574f0239e3e42dbd2aaa96431c2f",
+      "git_blob_sha1": "e9a0870b8e75580a836455322898798fa7b2ccf0"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2004.dxf",
+      "sha256": "a854c9333a5429c4f7f02477709e89d364553da827aa1946eb9b76512d28b7da",
+      "git_blob_sha1": "a47a99e009abcf009a03075ec1eefb01ed0e60a6"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2007.dxf",
+      "sha256": "1ab464e40d07a2ef442f7aaae1115b74a5d19e7164d92c8472eb3e159c4dce24",
+      "git_blob_sha1": "962ef158516f16c52c94f1ba6c90148f107a5354"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2010.dxf",
+      "sha256": "bf5d41a384ca4fbc37c5a7ca884a42525083814e781ef7fde1967132dd0924d9",
+      "git_blob_sha1": "a37662a2ae8bb99fc7087a69f3b911855ccfff6e"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2013.dxf",
+      "sha256": "84f114cb352c61df2ff7f7e095e576dca3004ebb4966dad1d42a979081c41b52",
+      "git_blob_sha1": "6ec813bbb58ba4ea99a884d78788cf9fdafe44cd"
+    },
+    {
+      "file": "tests/fixtures/typed-containers/independent-typed-containers-R2018.dxf",
+      "sha256": "e19ddd47cfcd394a85ca7ee8be03a26c0e9c91e68fa46f241339e1fef59a0003",
+      "git_blob_sha1": "2a8ca22b831ec98d689c1c2ae5720c71de4b19ba"
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2000.dxf",
+      "sha256": "267855abfccbe49bca4a3d559796d1187eec5f94cf8ced3f2d4f7d81727dc6d9",
+      "git_blob_sha1": "fcd53464d0c0b9c682bfb6702750120ca9a36097"
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2004.dxf",
+      "sha256": "f7328a42be28d9189d35a8dc23dcfa40bef7f341366ef2d195d45d47a5e17efb",
+      "git_blob_sha1": "3ded05526d74f77e20d6b93452da86c683601f34"
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2007.dxf",
+      "sha256": "ee9a5fd6945b9ea42ab8f060c2882da16e6715cc4740b6ec3d832a0084192b45",
+      "git_blob_sha1": "9aeeb4b2517bc505aa6923c0b38115c5c759232d"
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2010.dxf",
+      "sha256": "50dc6d1b5b5fedc953871f5553e82d61933d7da7e3c1b7a584b7409cf42806a5",
+      "git_blob_sha1": "10a1f0c34b2c7071d65b8297ea3eb10732441439"
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2013.dxf",
+      "sha256": "335a55f1ae509f41722810fb468a8fa8661662f9126b444acbfa5cd1a4c8e3f3",
+      "git_blob_sha1": "05d87b55337ece1365880dc3ed58d5b374534a29"
+    },
+    {
+      "file": "tests/fixtures/typed-erasure/independent-typed-erasure-R2018.dxf",
+      "sha256": "a682fa977b16e89c49320b570d260fff188022f27da3e48b2f8ce9b711f25848",
+      "git_blob_sha1": "8778314560cf546eed9831df9a06fe3c67d7eb71"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2000-ascii.dxf",
+      "sha256": "98fe907ed200da6d502d9a7b91f6a3f39d15516c7436b7ba884b47bb124cff67",
+      "git_blob_sha1": "ff035a30fcc7c6c5a2d6c27e484279ed0365d60c"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2000-binary.dxf",
+      "sha256": "e92824f9bdc6cd2a2b4d6ebf949388b865e3716ec4f8a3a68366defce54b3184",
+      "git_blob_sha1": "58f25ce6d831382f30d7c1b429ed07780f40d7cc"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2004-ascii.dxf",
+      "sha256": "4a46775c6d188a5c70250ca4db973987eaf4cd1fec7b228f12fd1a1d864e5bb4",
+      "git_blob_sha1": "f83ddcdba5ebfe7a18005c0394ac868278d3ae1b"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2004-binary.dxf",
+      "sha256": "968110cd0451670c80e95aa7c732f51309c70b805dad5020fcc2f1df5195982a",
+      "git_blob_sha1": "4c3440aac308a56579e49d23739a2133dbadf4ba"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2007-ascii.dxf",
+      "sha256": "6d257fce74678122cf6fcf521442045d1b5b35eb52289c44fea67b3c78f0e9bc",
+      "git_blob_sha1": "e6f8746df24cb89d5d09e3a2afcacb95e6ec9391"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2007-binary.dxf",
+      "sha256": "e68d5134e055da92319f95c5dceed39ab335eab3055e0e14a863aaa77b9517df",
+      "git_blob_sha1": "1aa944686c4a6e3b2290e596606134e243c7f232"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2010-ascii.dxf",
+      "sha256": "5475f8c71574e44e7ec9ec907d9af3400787ae90d4d0f7aedca43caee1217354",
+      "git_blob_sha1": "951472dc4b4d9da00f1394f5f611a94e879fd7c0"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2010-binary.dxf",
+      "sha256": "e6eb7fce4cd4f84431a35a968c1a2652a4599fb97ad4f281625e015bee64d1d3",
+      "git_blob_sha1": "0add909b2f3020cfe34dccdff532b8339f1b605a"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2013-ascii.dxf",
+      "sha256": "8bf364052ddb42f6c792aa3fed982cb81404dd0073af8c9587e1f60c8b154109",
+      "git_blob_sha1": "859f5d9c17b989d42845c34257a288a3a5897d65"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2013-binary.dxf",
+      "sha256": "e5d81f3f6f49b1e580efa421c18d37c870502c2da980662c7326e25d38d4b754",
+      "git_blob_sha1": "92a56b32cb24018a7b2d32671404f41167df53df"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2018-ascii.dxf",
+      "sha256": "ed863662df32b1cd8927cb041edd61fe0c1a084e6ec86c073e8107d7ebe2caaa",
+      "git_blob_sha1": "23a60d1bebfb3d73fd2dfa901022f84aca8b3fa0"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/carriers/carrier-ucs-base-R2018-binary.dxf",
+      "sha256": "4f0630dfd0134900f7486f357d7bab85027f067c2acef98ed966001ea64539ff",
+      "git_blob_sha1": "2c3298c1a28c338792607cd70a5901f5fe85d13c"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2000-ascii.dxf",
+      "sha256": "701fdc1f648b3abf8e70ada950c92117ca8d535256d299849dc5cc37ef21b98b",
+      "git_blob_sha1": "556e2fe16e32ab0a8f009079e874a81be22877b8"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2000-binary.dxf",
+      "sha256": "24f2ebfe06b7e21dd98a3e9ba335daad62bef9bf7f25ee06763bdba3e95526f8",
+      "git_blob_sha1": "f1dbbed8592d0f4b70e442c2566f489bc24aa23d"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2004-ascii.dxf",
+      "sha256": "212db63eed04e89a502718dd6a34b85884496944e7bcac326cab40affcfce001",
+      "git_blob_sha1": "ceec7f633a21e6a598d4643b25de59d5f27eb87e"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2004-binary.dxf",
+      "sha256": "c236c641bd52cc4cf3fa57011d95d6bed5375143f63e702316566062baadfe24",
+      "git_blob_sha1": "59387e4e282b9b41831fb071c8c1a9d48adf8c58"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2007-ascii.dxf",
+      "sha256": "9ea9f8c4f93bc5fdce99cefc05100f6532cc6411d152c7503ea448ea409fa07d",
+      "git_blob_sha1": "6fb7851ddd7e4914b10183a3c2e6bfbfaf8db32b"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2007-binary.dxf",
+      "sha256": "9e486ac5e1a6ab4a850b9bc64a02d130f4a0f505f82d3b678561fb959f02bf50",
+      "git_blob_sha1": "d8dee7dea4f49de6d0deb1458517fd83f14ae893"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2010-ascii.dxf",
+      "sha256": "1452b05c7494e3222fde3b4285664e392a37a3ac0a014fff45f79cd8729a133a",
+      "git_blob_sha1": "904e535f6da96b799740f60bf0043cbd0a36b7ea"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2010-binary.dxf",
+      "sha256": "ccbf86c37a870f6d6a4658c1335d13ad1ed4a6f8543837d3ab027b1289181498",
+      "git_blob_sha1": "dc1c5434ff05987fb0c449de3691653876cc5f37"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2013-ascii.dxf",
+      "sha256": "69bfaec4c5a0b74e3e114a1d4f9aec65484dd69e1faba6ea2cfeb106c31162ae",
+      "git_blob_sha1": "a1326803b5c20f08cbd645ce512ddbe8e122e7e1"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2013-binary.dxf",
+      "sha256": "ed45f61b721ca1da2c96791a083234f2e9ea1651e8ec299d743d8b4adc5f65ba",
+      "git_blob_sha1": "55633b354c5c03a9f8f53f1f399adc5d7efb10ce"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2018-ascii.dxf",
+      "sha256": "edd4b1e6023e1ea25c807c27ae7b5fc701c26a25ff8890afade0925d609f43c8",
+      "git_blob_sha1": "27e58121721bdf86d9c6f2270c0a9091e546164f"
+    },
+    {
+      "file": "tests/fixtures/ucs-record-base/ixmilia-ucs-base-R2018-binary.dxf",
+      "sha256": "e95612ed14be83b2280ec15929ed36cb9a5a72f0fe5c1730a5262062edddff83",
+      "git_blob_sha1": "6e802f0e54576fb637657d5c6a559fc648b60a91"
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2000.dxf",
+      "sha256": "a6eb5841244161feabc11645728ab35ca375795852ef72ec07cd6de94a0f736b",
+      "git_blob_sha1": "9938de1a07a6274c256d3e0bcf28a2414ab9ad1f"
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2004.dxf",
+      "sha256": "a6cb597606df88b9a01b655fdf8c7d1734baaf77f58ae1529c6dfb7f70b0ed98",
+      "git_blob_sha1": "8369f8ca7a2deb0e0dc697e9c52502946dc0fc81"
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2007.dxf",
+      "sha256": "e4a7055e76121f96bed5c26fccd90b919bd690493bd2726b870a3fb78c7f845a",
+      "git_blob_sha1": "0f4611170320b3415c594b9ee5525b781e37b662"
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2010.dxf",
+      "sha256": "4a8ff22c36f3f79a864914e99fa92bf5fe8babd1d58d50ea1467eb4a469f376a",
+      "git_blob_sha1": "eb9441214d9ba34b198b36ffab4659c98604e1c1"
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2013.dxf",
+      "sha256": "09e8939702b577e3fa233c3b77612eb0ad9cce4b06f503e8a66fffda4bcb009f",
+      "git_blob_sha1": "591863c918114578c2f26b33fc5da15b8aaecb0b"
+    },
+    {
+      "file": "tests/fixtures/view-ucs/independent-view-ucs-R2018.dxf",
+      "sha256": "640b5b2809ac094b5eff0ab8783bf31425a7727686d1b4e6e4080333bd0e188d",
+      "git_blob_sha1": "f52809be01e8a6a2427953d151a65788aad38373"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_r14.dxf",
+      "sha256": "5a735ce3f83328e8571a5d2007da4933310ade5d20acc23d01dd35d3c93533e8",
+      "git_blob_sha1": "018abeff41c25f29c082b5af1328a291a51b06ed"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Donut.dxf",
+      "sha256": "0884310ba35704392c2efb78fe8d3515d3f76829245aabd2e1b046d2f69eb5c3",
+      "git_blob_sha1": "0b10c9ba40350c09592a3c78ad01704c36eb1d9b"
+    },
+    {
+      "file": "libredwg/test/test-data/r12/Leader.dxf",
+      "sha256": "9d3ff6a3651915ef851bd4a29910dfbdac566260e52df53c7ac6000b20256cc2",
+      "git_blob_sha1": "6c5a54777d65289247c198a165a322fb07e5c79e"
+    },
+    {
+      "file": "libredwg/test/test-data/r2.10/entities.dxf",
+      "sha256": "df3755ce1ab559e28f6ec005b6fd868970f879e365604ec2e960118e725ba218",
+      "git_blob_sha1": "458ecb6daff069e0bad5b80e1799925e62cc217f"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/circle.dxf",
+      "sha256": "965996b659a8287302cc72c2ddb70ed8b986a6e2d7dff4166da23c8d96e34a39",
+      "git_blob_sha1": "01eabc3632328cf4c3d428228b1f9b344a209840"
+    },
+    {
+      "file": "libredwg/test/test-data/r11/entities-2d.dxf",
+      "sha256": "2c8bc7de7ab95a27cde449d73c1d2a34bcf038bd17255d2c0c40fbe704792828",
+      "git_blob_sha1": "4048b61051c266dfe875e1098875d09a8d7357c3"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_2007.dxf",
+      "sha256": "b29e7767e1f0bf0e8a985bbb7c3b03bb85e907322b894b0171a9364c2a21d5f6",
+      "git_blob_sha1": "569ab68826f5201158e1b7cf0a0654f16d767cbb"
+    },
+    {
+      "file": "libredwg/test/test-data/example_2004.dxf",
+      "sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+      "git_blob_sha1": "f411d9efb8cf774bdc44eee005dfc5bae47fffca"
+    },
+    {
+      "file": "libredwg/test/test-data/r2.6/entities.dxf",
+      "sha256": "d626dc92f34012d60fdbcad940b37d8a59297b7d94db0741f9cca20946d7be70",
+      "git_blob_sha1": "70d5eb7f80d5a8e496104560fac752cd868cff6b"
+    },
+    {
+      "file": "libredwg/test/test-data/example_r14.dxf",
+      "sha256": "b5db43eb376b8e6a11fc1596945baf538b67448d87e73840f6347007ea0035ed",
+      "git_blob_sha1": "6c7f22629b594b572287fed53adf732fc9ead0d9"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Text.dxf",
+      "sha256": "fe5c497429da0d81f788684757e12334fda95a108118db11afe1c58a6ee51a41",
+      "git_blob_sha1": "3a4583e4d2f16b6f673876e99d9cd4c917fe6288"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/TS1.dxf",
+      "sha256": "d55726ba862a45572a6b72493e3139b809d0a806e7eba6e4cae578a1a4227303",
+      "git_blob_sha1": "f32983e03c4823c2c6039c34bfc1b42befa9c7ef"
+    },
+    {
+      "file": "libredwg/test/test-data/2004/Underlay.dxf",
+      "sha256": "a95202c3425e8d3028abf6b762cd0bfcd66c755607b4da3d3cd398cbf3886637",
+      "git_blob_sha1": "df69b813bdd83004ff33c1dbc898b6bc5292a1a0"
+    },
+    {
+      "file": "libredwg/test/test-data/r9/entities.dxf",
+      "sha256": "b37fb624d442182e49698bff40bafdfe44040a51af0307d3a5d7e5d66d24d6ba",
+      "git_blob_sha1": "5236b8f248a0a043d6d33ac66871fc3166520280"
+    },
+    {
+      "file": "libredwg/test/test-data/r10/entities.dxf",
+      "sha256": "6579b1e6e8b39e254012ff323a0bf0d7304e2977cf54eac0dc6f5cbf2270a594",
+      "git_blob_sha1": "31e1190e3acb5cc94b79b365be424aeb48ebe6cb"
+    },
+    {
+      "file": "libredwg/test/test-data/example_2018.dxf",
+      "sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+      "git_blob_sha1": "589fbe42143b6d3e6796c9fc389c521f5d346ad2"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Ellipse.dxf",
+      "sha256": "79cac0a209db9101111260e9102288147d7c5b61bc0f341622063a4c25ed4f39",
+      "git_blob_sha1": "86b1f1e7d9708b670f16d192bffbba289c914d1d"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Constraints.dxf",
+      "sha256": "d8e72bec4ebbb54e2255c6895928f633fddecf6d4ca21e8267e3395a096cbde1",
+      "git_blob_sha1": "31eaeda497d8038153fcf4e7510d3afc20d98bf1"
+    },
+    {
+      "file": "libredwg/test/test-data/r1.4/entities.dxf",
+      "sha256": "734c9c5ae02443ed2125b857afadef0ca60665b1370a62a2f6c5b24f9710305f",
+      "git_blob_sha1": "eeb0188c80cfb8d90b98c487c7314e51fc2c1b33"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_2004.dxf",
+      "sha256": "544b707b9c2b1d1f14a72579e7f614846af1d3f855d518c188c19bbe25417dac",
+      "git_blob_sha1": "c646a65458311f4ad7f0e959243ed0433ed3e06c"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/entities-2d.dxf",
+      "sha256": "6487cde42549f84eaf9ef377c9bc33e4d0a25047d733ef65df33b9bd02987bb4",
+      "git_blob_sha1": "6f210c7a6b1afd70ce3da7c38e3585b688169eee"
+    },
+    {
+      "file": "libredwg/test/test-data/2013/Constraints.dxf",
+      "sha256": "da88787541f0d34fc1654567326ec5715131af9bf8467c52db32f531e162c59c",
+      "git_blob_sha1": "c746c9ef529911e400ab8cbe30c085cc875234f0"
+    },
+    {
+      "file": "libredwg/test/test-data/example_r12.dxf",
+      "sha256": "89461b11cb6c683f535d208c135aeaa22a844ac628565907a8572208a92d5aa1",
+      "git_blob_sha1": "bd962e9404dabe325f0f350acd8acd3f5dc63c01"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/ConstructionLine.dxf",
+      "sha256": "92e74dd3163533488771b793b0dc160075f8d28871e98ac0545f95e81bf96482",
+      "git_blob_sha1": "3b72288d69ae2ecdb0b7ad0a9fa8ea98c60972bd"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Leader.dxf",
+      "sha256": "4ab43c49dceb119d8e666a169faa87f6bbfa72f345ac109397752286a3676171",
+      "git_blob_sha1": "95adfe7f1c07c74bff29aa965a9e50d12c0b5ed5"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_2000.dxf",
+      "sha256": "4b81b4de8331c808495b1ea42754986207a4e16256750d334dd54f96b9762feb",
+      "git_blob_sha1": "b4646a16b0cd315bff3988188498472757fb7f9a"
+    },
+    {
+      "file": "libredwg/test/test-data/r10/tmp_line.dxf",
+      "sha256": "1cbff2c6bb12aac797e962df33af7b86d84d7975e7bd9258c732d66514d99ead",
+      "git_blob_sha1": "7756eb3afc1082e4853a27b1fdf7d5209c5ee9a9"
+    },
+    {
+      "file": "libredwg/test/test-data/2010/Leader.dxf",
+      "sha256": "2c8c4d821ab9151e3da40b12e0c1acbf716c82b0a1ad388620d068e4efb68986",
+      "git_blob_sha1": "1d370acbff3bf2f69a3c979ca40d2deb2c50906e"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_2018.dxf",
+      "sha256": "9618b5cef57867bee4c5b23898e653f0c5f2ba04c0ec729eb3dec73bb7175410",
+      "git_blob_sha1": "bd077e01222e1ab1a80b009f8739e259d814c4eb"
+    },
+    {
+      "file": "libredwg/test/test-data/2010/Constraints.dxf",
+      "sha256": "459fb35c21cf4045a207b5f2032b32dfc1031b0bbce5c40e5f705c5f8ef6485d",
+      "git_blob_sha1": "68d97a069ad1ea5c2cfdf9d5d0d9f14a991bdcc7"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Polyline.dxf",
+      "sha256": "1583874360c485caeee32269cb0019c07329c6d21bcc4d0a4a201a6f68ca134a",
+      "git_blob_sha1": "c853bdd43df41277df6bf25dbc0c032e63f3f5e6"
+    },
+    {
+      "file": "libredwg/test/test-data/example_2007.dxf",
+      "sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+      "git_blob_sha1": "ffdebb6b93cd08f3e29c64b09915b1563fed0a4d"
+    },
+    {
+      "file": "libredwg/test/test-data/2018/Dynblocks.dxf",
+      "sha256": "3320aac4a5b8128d58f9a7a28d013c6d06b1f7785d00884a7c952b58afdb13cc",
+      "git_blob_sha1": "4e40965ea8c879ceb4b05602bdb51da50353fcdb"
+    },
+    {
+      "file": "libredwg/test/test-data/example_r13.dxf",
+      "sha256": "2c573c70495850f301710ebfb26bd5e6eda4646d2f4ab657fdfd7bb2972faae4",
+      "git_blob_sha1": "747959fd8e28773a743d8cefe3fdb02b2eed640f"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Line.dxf",
+      "sha256": "5e5e75b41b4de51cd31a9f11e3174eb59d9363b4963b4b0431d3432d4ec38e73",
+      "git_blob_sha1": "232de11b9eee4b1b41b33ed281260b539b094101"
+    },
+    {
+      "file": "libredwg/test/test-data/example_2000.dxf",
+      "sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+      "git_blob_sha1": "70a2c625227cae86ab28254f0754538a7259cb16"
+    },
+    {
+      "file": "libredwg/test/test-data/2013/gh109_1.dxf",
+      "sha256": "d9bc12c75492edf3f4334a44c0138efee8fa6c441c14fab967493f67c7ce8139",
+      "git_blob_sha1": "2edc805ab5a09dad65b1fbaaed4455fa196f3888"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/PolyLine2D.dxf",
+      "sha256": "e74f03a383593ef96d5a349618390a393e8c5697e253014d4218fd40e3f37250",
+      "git_blob_sha1": "514f945a48e8a9854797b317764ce5781a9e20c7"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_2010.dxf",
+      "sha256": "fff9fd8a65cc62d72e3b16ce58797f6d8fa113fe49bd2b6293f1d2aac293fc4a",
+      "git_blob_sha1": "3d20839cc59a63d7d8d01cc6d152224029213d1e"
+    },
+    {
+      "file": "libredwg/test/test-data/r12/Constraints.dxf",
+      "sha256": "59c75e95f1fac57b1555a09983def233c2073b81e6e29f917fccc6a0a7930f3e",
+      "git_blob_sha1": "c90829e1db58eed5d4ab1096e999a5b05c0defe5"
+    },
+    {
+      "file": "libredwg/test/test-data/r14/Leader.dxf",
+      "sha256": "dc9e77c88cfe0b6b234e4eb051419b1d1b33bc105771048e9163ce562d3aed87",
+      "git_blob_sha1": "9a4f379e732e4a78d49e737e51eb3405ad40fbfe"
+    },
+    {
+      "file": "libredwg/test/test-data/2018/TS1.dxf",
+      "sha256": "ef795fb7c4c9cfc4486ff3cc0254d38cbdb870a326e7e8cccd78b0e046868d14",
+      "git_blob_sha1": "d6075cda476367dc0ce51d481966e1c40a6ab14a"
+    },
+    {
+      "file": "libredwg/test/test-data/r2.10/block.dxf",
+      "sha256": "4079edb4685427148aa4572af51e756a3550b3b677b9b8541396424edfb3109e",
+      "git_blob_sha1": "88a45e8fc392a9e314959da0ff247b64266078d8"
+    },
+    {
+      "file": "libredwg/test/test-data/r11/Constraints_12.dxf",
+      "sha256": "59c75e95f1fac57b1555a09983def233c2073b81e6e29f917fccc6a0a7930f3e",
+      "git_blob_sha1": "c90829e1db58eed5d4ab1096e999a5b05c0defe5"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/Leader.dxf",
+      "sha256": "12d6239782221ef8534ebd0e659c8eaeb5b5353e24a5774dc38f43416b8ad5bb",
+      "git_blob_sha1": "3456b89af4287a8327000787fbc13901f7620707"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Arc.dxf",
+      "sha256": "51f54b2e0e0cf67b9fb423b34c2c59c45ba12ebecc515504e218905ec06236c5",
+      "git_blob_sha1": "6eb277689d0213e88f892c1703047c6aca182f62"
+    },
+    {
+      "file": "libredwg/test/test-data/sample_2013.dxf",
+      "sha256": "99a27a2891d183b794960ecb44478851bc8eabfe0681d51bb76684b90f5f8d9d",
+      "git_blob_sha1": "cbd3fc737503fb5b425905d87f24c6a299237f20"
+    },
+    {
+      "file": "libredwg/test/test-data/2004/material.dxf",
+      "sha256": "388d2fda230cb25f497bcdc41a15aae66fb10fc509e7f8f372eb62b0ed5f30c2",
+      "git_blob_sha1": "724b95b0fc495905264e0856e0a66704e527a7e9"
+    },
+    {
+      "file": "libredwg/test/test-data/2004/Constraints.dxf",
+      "sha256": "6501eed5e754cea1583fb6ee9523c0a0f25c4dae7ca7e88d4a5380e7a19b5073",
+      "git_blob_sha1": "443c9e92ebae48d29f889e440ea5ece9393c4e75"
+    },
+    {
+      "file": "libredwg/test/test-data/r13/v.dxf",
+      "sha256": "86531656820742506d5964333c3a82d4554e649174ee67877b3f876f252aa0a1",
+      "git_blob_sha1": "3a80ba81345eb82c93b1df504bce61d68516101b"
+    },
+    {
+      "file": "libredwg/test/test-data/2013/Leader.dxf",
+      "sha256": "7e7a724c833667fcc114bdbd16068bc19ea3c76d5c61b17f446b776fa5a210ca",
+      "git_blob_sha1": "b60c751ee8c5af1eaff9e77dfb025698ed1ef0d6"
+    },
+    {
+      "file": "libredwg/test/test-data/2010/gh209_1.dxf",
+      "sha256": "e1df4235b1f156ad1210cb32b3752952c4d677e1401e617d33cfbb637495e718",
+      "git_blob_sha1": "71f4fe845b607262ff4bdb5f31060d3320413f8e"
+    },
+    {
+      "file": "libredwg/test/test-data/r2.6/dim.dxf",
+      "sha256": "0eca2a49dec7fcf7c0c6fb8e847e8d023ea08979b15640541e37754bab28fd33",
+      "git_blob_sha1": "aab57975a07c42562f4863107564f261a5ec098e"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Helix.dxf",
+      "sha256": "0370919383dc58d0b3d0c3c75e9993fb58cb4bf76083fa44a205864ede42c3b1",
+      "git_blob_sha1": "2033e62ab8a65c1f431cd577e436405f527586f2"
+    },
+    {
+      "file": "libredwg/test/test-data/2018/Constraints.dxf",
+      "sha256": "6f81984ffe6ca3e69281afec323335dcf1d8368a03bde1f0dcfadfa0fb97aff8",
+      "git_blob_sha1": "c09baaf8ece066b69e9e5c05131520509a756665"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/RAY.dxf",
+      "sha256": "53e00bc997bc40e986bfaafcec35a77efefaaf2b04a08a0715df1886013ebf7f",
+      "git_blob_sha1": "80476784dbfa7bd60bc3340a4a67ce9f69c2184a"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/entities-3d.dxf",
+      "sha256": "65d07b7afd3b3a51fc4f9a25ea91c67451157d68f614791f3c4fa64094e95162",
+      "git_blob_sha1": "6515b8c0e1c79de97d68d64f3d247c89a97624c8"
+    },
+    {
+      "file": "libredwg/test/test-data/2004/Surface.dxf",
+      "sha256": "aa4204cc64cde5867b4ac922a9356e02c091bcf8e0fec636252f06ed4ebe5c60",
+      "git_blob_sha1": "cf8c6734602eff261b7599f103d03c10459218ba"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/PolyLine3D.dxf",
+      "sha256": "a869cf5e71afdf98ea1fdb261bfaf4d3e6a565dd3f387e6484ae40c024705fd2",
+      "git_blob_sha1": "a300cd43375f2c927e746d8476fd8f24de3e7a1d"
+    },
+    {
+      "file": "libredwg/test/test-data/2004/Leader.dxf",
+      "sha256": "5cc97ba5ba48b2feb2e05a28c67b43aa421162376fb32a00ffd9e58df3523019",
+      "git_blob_sha1": "3c2468d031c68b842bc61568b78d7b9c731f0fc5"
+    },
+    {
+      "file": "libredwg/test/test-data/example_2013.dxf",
+      "sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+      "git_blob_sha1": "e8c0f7254b02c3e036d6ceacbbbfaa60b9d06563"
+    },
+    {
+      "file": "libredwg/test/test-data/2000/Constraints.dxf",
+      "sha256": "09beca558029b4c3a50f999cd1e90348902250fd565bcb50dcbccf91cdea654c",
+      "git_blob_sha1": "9bb6c4fc8c48d09d3d67c367699a98148cd7ec50"
+    },
+    {
+      "file": "libredwg/test/test-data/example_2010.dxf",
+      "sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+      "git_blob_sha1": "45a47fd6b6ef65dde6bd70fd1df6445ceeb9cc1b"
+    },
+    {
+      "file": "libredwg/test/test-data/2018/Leader.dxf",
+      "sha256": "8028ce0245c633fc07fcc676c6cc6445748d42ef0aee4a2b43bdb5f1e14ee86d",
+      "git_blob_sha1": "8e49a6719470745a2864a754f10cb465411aa4d6"
+    },
+    {
+      "file": "libredwg/test/test-data/2007/Polygon.dxf",
+      "sha256": "50a914162a4da7411e8e8a0bb8c779cb1dbb74c5c89bf3689478746b757954dc",
+      "git_blob_sha1": "6845e0f6843303dce6ae621406531ace294908ab"
+    },
+    {
+      "file": "libredwg/test/test-data/2018/LiveSection1.dxf",
+      "sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+      "git_blob_sha1": "dca7288f9ed9a2b1b17aa95d80759f5c82b8e6c9"
+    },
+    {
+      "file": "libredwg/test/test-data/r11/entities-3d.dxf",
+      "sha256": "862634382f4d0cc292ce5e389f16eeb78cd1520081bcf4d1c56df428cc848080",
+      "git_blob_sha1": "6bf3331366c038e4364dadd525610732c114d44f"
+    }
+  ],
+  "files": 324,
+  "hatch_records": 56,
+  "spline_edges": [],
+  "failures": [
+    {
+      "file": "libredwg/test/test-data/r1.4/entities.dxf",
+      "error": "Invalid group code \"EXTENTS,1\n\" at line 1."
+    }
+  ]
+}

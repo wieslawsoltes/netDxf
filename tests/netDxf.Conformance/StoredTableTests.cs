@@ -104,9 +104,15 @@ internal static partial class Program
         var doc = DxfDocument.Load(input) ?? throw new Exception("Full native document failed to load.");
         var table = doc.Entities.StoredTables.Single(); Check(table.Grid != null, "full native flat grid");
         Check(table.BackingContent != null, "full native backing content linkage");
+        Check(table.StoredBackingContent != null && ReferenceEquals(table.BackingContent, table.StoredBackingContent), "public typed backing identity");
         if (file == "acad_table_simple.dxf") Equal((bool?)true, table.BackingLiteralValuesAgree, "independent entity/backing literal agreement");
         using var output = new MemoryStream(); Check(doc.Save(output, binary), "full native TABLE document save");
         File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"stored-table-full-{file}-{binary}.dxf"), output.ToArray());
+        output.Position = 0;
+        var reloaded = DxfDocument.Load(output) ?? throw new Exception("Full native typed backing reload failed.");
+        var retained = reloaded.Entities.StoredTables.Single();
+        Check(retained.BackingContent is DxfStoredTableContent && ReferenceEquals(retained.BackingContent, retained.StoredBackingContent), "public typed backing reload identity");
+        Equal(table.BackingLiteralValuesAgree, retained.BackingLiteralValuesAgree, "backing comparison survives typed promotion");
         output.Position = 0; var after = DxfRawDocument.Load(output);
         var beforeRecord = original.Sections.Single(s => s.Name == "ENTITIES").Records.Single(r => r.Name == "ACAD_TABLE");
         var afterRecord = after.Sections.Single(s => s.Name == "ENTITIES").Records.Single(r => r.Name == "ACAD_TABLE");

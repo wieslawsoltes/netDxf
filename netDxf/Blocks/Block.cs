@@ -642,6 +642,7 @@ namespace netDxf.Blocks
 
         private static TableObject Clone(Block block, string newName, bool checkName)
         {
+            Polyline3D.RejectStoredRecordBlockClone(block);
             if (block.Record.Layout != null && !IsValidName(newName))
             {
                 throw new ArgumentException("*Model_Space and *Paper_Space# blocks can only be cloned with a new valid name.");
