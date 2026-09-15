@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "358af5f72e1af4eaaed0c9293b7dc5b841bad391",
-    "tree": "0b190ff8de849b3af99d04ad470c2e7d473b4e31"
+    "commit": "1631547bfae37dccbea900970ceaaad61c868020",
+    "tree": "aacbe71c64d3a2fc1998396aaae4877b617d7589"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 30772,
+    "test_cases": 33296,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 93,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/34989160308"
+    "last_implementation_pr": 94,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/35001265150"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -739,6 +739,18 @@
     "MIX10": {
       "label": "Tenth mixed native backing and explicit reference-release graph",
       "path": "doc/dxf-conformance/tenth-mixed.md"
+    },
+    "OPAQUEHATCH": {
+      "label": "Qualified opaque HATCH source backlink release and independent before/after evidence",
+      "path": "doc/dxf-conformance/opaque-hatch-release-qualification.json"
+    },
+    "RETAINEDREFERENCES": {
+      "label": "Retained child metadata protects actual removal targets",
+      "path": "doc/dxf-conformance/receipts/retained-record-target-removal/qualification.json"
+    },
+    "COLLECTIONINSERT": {
+      "label": "Collection insertion callbacks and actual HATCH source occurrences",
+      "path": "doc/dxf-conformance/observable-insert.md"
     }
   },
   "features": [
@@ -6003,7 +6015,8 @@
       "feature": "Imported retained source identities",
       "scope": "Scoped typed-reference resolution requires the accepted instance from one unambiguous physical common-header record. Duplicate declarations cannot legitimize a retained target through a discarded record. Explicit legacy collection conversions retain source bindings; private nested control-group IDs are not declarations. Discarded or generated objects cannot satisfy source references.",
       "evidence": [
-        "SOURCEID"
+        "SOURCEID",
+        "RETAINEDREFERENCES"
       ],
       "status": {
         "AC1009": "X",
@@ -6574,9 +6587,11 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH ordered source relations and association lifecycle",
-      "scope": "Retained ordered group97/330 references require unique physical source entities in the same block. Shared entities and repeated source uses are supported; mutable path instances have one owner. Adoption rejects before mutation; unlink/removal clears final backlinks. Non-associative records with source lists are an unsupported typed combination. Clones detach association; no automatic geometry regeneration or native CAD execution is claimed.",
+      "scope": "Retained ordered group97/330 references require unique physical source entities in the same block. Shared entities and repeated source uses are supported; mutable path instances have one owner. Adoption rejects before mutation; unlink/removal clears final backlinks. Non-associative records with source lists are an unsupported typed combination. Clones detach association; no automatic geometry regeneration or native CAD execution is claimed. Insertion preserves existing source occurrences. Qualified opaque sources retain stored geometry while supported boundary operations release only their common HATCH backlinks; new associations to opaque sources and regeneration from opaque geometry reject, and unrelated private references remain active.",
       "evidence": [
-        "HATCHSOURCE"
+        "HATCHSOURCE",
+        "OPAQUEHATCH",
+        "COLLECTIONINSERT"
       ],
       "status": {
         "AC1009": "X",
@@ -6895,10 +6910,11 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "Polyface retained coordinate/face/SEQEND records",
-      "scope": "Loaded VertexRecords, FaceRecords, physical RecordSequence and EndSequenceRecord retain exact source identities, common metadata, nullable advisory counts, raw inactive slots and owner variants. Point/active signed-face edits and face Layer/Color changes preserve fixed record topology. Clean clone/adoption and guarded detach/re-adoption are qualified; private/owned/external metadata restrict lifecycle operations. Invalid normals reject before save/clone/adoption. Native and independent producer evidence are separate.",
+      "scope": "Loaded VertexRecords, FaceRecords, physical RecordSequence and EndSequenceRecord retain exact source identities, common metadata, nullable advisory counts, raw inactive slots and owner variants. Point/active signed-face edits and face Layer/Color changes preserve fixed record topology. Clean clone/adoption and guarded detach/re-adoption are qualified; private/owned/external metadata restrict lifecycle operations. Invalid normals reject before save/clone/adoption. Native and independent producer evidence are separate. Current retained child persistent-reactor and XData references protect actual entity and containing-block removal targets until explicitly cleared or the parent is detached.",
       "evidence": [
         "POLYFACERECORDS",
-        "POLYFACEGRAMMAR"
+        "POLYFACEGRAMMAR",
+        "RETAINEDREFERENCES"
       ],
       "status": {
         "AC1009": "X",
@@ -6959,9 +6975,10 @@
       "area": "Entities",
       "pipeline": "typed",
       "feature": "Qualified standalone unknown entity preservation",
-      "scope": "Loaded eligible unknown entities retain immutable complete SourceTags and support scoped common appearance/XData edits under exact source-document/profile/owner, standard-reference and optional CLASS guards. Private grammar stays uninterpreted; transforms/clones/adoption and unsupported metadata changes reject. Explicit unreferenced removal retires the identity. Proxy, aggregate, child, embedded/modeler/surface forms and nonempty discarded ACDSDATA are excluded. Qualification uses declared schema fixtures; no native unknown-entity producer or geometry semantics is claimed.",
+      "scope": "Loaded eligible unknown entities retain immutable complete SourceTags and support scoped common appearance/XData edits under exact source-document/profile/owner, standard-reference and optional CLASS guards. Private grammar stays uninterpreted; transforms/clones/adoption and unsupported metadata changes reject. Explicit unreferenced removal retires the identity. Proxy, aggregate, child, embedded/modeler/surface forms and nonempty discarded ACDSDATA are excluded. Qualification uses declared schema fixtures; no native unknown-entity producer or geometry semantics is claimed. Prevalidated HATCH source release updates only qualified common reactor entries; immutable SourceTags and unrelated private pointers remain preserved, and dirty direct reactor edits reject before mutation.",
       "evidence": [
-        "OPAQUEENTITY"
+        "OPAQUEENTITY",
+        "OPAQUEHATCH"
       ],
       "status": {
         "AC1009": "X",
@@ -6980,7 +6997,7 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "Native TABLE backing with explicit lifecycle/reference release",
-      "scope": "Draft tenth mixed graph combines two native R2013/R2018 TABLE carriers, explicit TABLECONTENT/TABLEGEOMETRY edits, created SECTION_MANAGER membership, SECTIONSETTINGS references, retained Polyface records, an authored opaque neighbor and affine explicit HATCH patterns. Actual shared dependencies require ordered release; failure/retry cases preserve snapshots and pre-output invariants. Native stored packets and resource normalization allowances are checked separately from authored generic-pointer semantics. Final combined qualification and promotion of the two native profile cells remain pending.",
+      "scope": "The qualified tenth mixed graph combines native R2013/R2018 TABLE carriers, explicit TABLECONTENT/TABLEGEOMETRY edits, created SECTION_MANAGER membership, SECTIONSETTINGS references, retained Polyface records, an authored opaque neighbor and affine explicit HATCH patterns. Actual shared dependencies require ordered release; failure/retry cases preserve snapshots and pre-output invariants. Complete native stored packets and resource normalization allowances are checked separately from declared generic-pointer semantics, with independent world-space pattern evaluation and actual wire corruption controls.",
       "evidence": [
         "MIX10"
       ],
@@ -6992,8 +7009,8 @@
         "AC1018": "V",
         "AC1021": "P",
         "AC1024": "P",
-        "AC1027": "P",
-        "AC1032": "P"
+        "AC1027": "T",
+        "AC1032": "T"
       }
     }
   ],
