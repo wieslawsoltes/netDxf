@@ -126,6 +126,8 @@ namespace netDxf.Objects
                 DxfDictionary dictionary = (DxfDictionary)destination;
                 if (dictionary.Database != this || dictionary.Contains(name) || dictionary == this.Root && IsReservedName(name)) throw new ArgumentException("The destination name already exists or is reserved.", nameof(name));
             }
+            if (source.IsErased || source.Database == null) throw new InvalidOperationException("The clone source must remain registered and cannot be erased.");
+            source.Database.CheckRegistered(source);
             IReadOnlyList<string> sourceErrors = source.Database.Validate();
             if (sourceErrors.Count > 0) throw new InvalidOperationException("Cannot clone an invalid source graph: " + string.Join("; ", sourceErrors));
             List<DxfDatabaseObject> originals = source.Database.objects.Values.Where(o => o == source || IsAncestor(source, o)).ToList();
@@ -219,6 +221,7 @@ namespace netDxf.Objects
             while (pending.Count > 0)
             {
                 DxfDatabaseObject item = pending.Pop();
+                if (item.IsErased) throw new InvalidOperationException("An erased object cannot be registered again.");
                 if (!found.Add(item)) continue;
                 if (item.Database != null && item.Database != this) throw new ArgumentException("Cannot link objects from different documents.", nameof(target));
                 if (item is DxfDictionary dictionary)
@@ -274,6 +277,7 @@ namespace netDxf.Objects
         }
         internal void Register(DxfDatabaseObject item, bool preserveHandle)
         {
+            if (item.IsErased) throw new InvalidOperationException("An erased object cannot be registered again.");
             if (preserveHandle)
             {
                 if (string.IsNullOrEmpty(item.Handle) || item.Handle == "0" || this.Document.GetObjectByHandle(item.Handle) != null) throw new FormatException("Duplicate or invalid database object handle: " + item.Handle);
