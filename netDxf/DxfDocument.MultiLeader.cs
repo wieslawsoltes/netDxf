@@ -21,6 +21,7 @@ namespace netDxf
                 else if(item is DxfStoredSunStudy study)references=study.References;
                 else if(item is DxfOpaqueObject opaqueStudy && opaqueStudy.CodeName=="SUNSTUDY")
                     references=opaqueStudy.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value)).Where(value=>value!=null);
+                else if(item is PolygonMeshRecord meshRecord)references=meshRecord.References;
                 else if(item is DxfStoredField field)references=field.References;
                 else if(item is StoredTable table)references=table.References;
                 else if(item is Section section)references=section.GeometrySettings==null?new DxfObject[0]:new DxfObject[]{section.GeometrySettings};
@@ -29,7 +30,8 @@ namespace netDxf
                 else if(item is DxfMLeaderStyle style)references=style.DatabaseReferences;
                 else if(item is DxfStoredTableContent content)references=content.References;
                 else if(item is DxfStoredTableGeometry geometry)references=geometry.References;
-                else if(item is DxfOpaqueObject opaqueContent && (opaqueContent.CodeName=="TABLECONTENT" || opaqueContent.CodeName=="TABLEGEOMETRY"))
+                else if(item is DxfStoredCellStyleMap map)references=map.References;
+                else if(item is DxfOpaqueObject opaqueContent && (opaqueContent.CodeName=="TABLECONTENT" || opaqueContent.CodeName=="TABLEGEOMETRY" || opaqueContent.CodeName=="CELLSTYLEMAP"))
                     references=opaqueContent.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value)).Where(value=>value!=null);
                 else if(item is DxfTableStyle tableStyle)references=tableStyle.References;
                 else if(item is DxfStoredDimAssoc association)references=association.References;

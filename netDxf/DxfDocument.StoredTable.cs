@@ -15,6 +15,7 @@ namespace netDxf
         internal void ValidateStoredTableEntityAdoption(EntityObject entity)
         {
             if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
+            if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
             if (entity is StoredTable table) table.ValidateIncoming(this);
             else if (entity is Insert insert) this.ValidateStoredTableBlockAdoption(insert.Block);
             else if (entity is Dimension dimension && dimension.Block != null) this.ValidateStoredTableBlockAdoption(dimension.Block);
@@ -30,6 +31,7 @@ namespace netDxf
                 {
                     if (entity is Hatch hatch) HatchSourceRelations.ValidateOwner(hatch, block, this);
                     if (entity is Polyline3D polyline) polyline.ValidateStoredRecords(this, false);
+            if (entity is PolygonMesh mesh) mesh.ValidateStoredRecords(this, false);
                     if (entity is Section section) section.Validate(this);
                     else if (entity is StoredTable table) table.ValidateIncoming(this);
                     else if (entity is Insert insert) visit(insert.Block);
@@ -65,10 +67,11 @@ namespace netDxf
             if (this.StoredPolylineReferencesRemoval(removed)) return true;
             if (this.SectionReferencesRemoval(removed)) return true;
             foreach (DxfObject item in removed) if (SunReferences.Get(item) != null) return true;
-            foreach (DxfDatabaseObject content in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "TABLECONTENT" || item.CodeName == "TABLEGEOMETRY"))
+            foreach (DxfDatabaseObject content in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "TABLECONTENT" || item.CodeName == "TABLEGEOMETRY" || item.CodeName == "CELLSTYLEMAP"))
             {
                 if (content is DxfStoredTableContent stored && stored.References.Any(removed.Contains)) return true;
                 if (content is DxfStoredTableGeometry geometry && geometry.References.Any(removed.Contains)) return true;
+                if (content is DxfStoredCellStyleMap map && map.References.Any(removed.Contains)) return true;
                 if (content is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags)
                         if (DxfObjectDatabase.IsReference(tag) && removed.Contains(this.StoredTableHandleTarget((string)tag.Value))) return true;

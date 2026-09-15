@@ -39,9 +39,9 @@ The report captures the current source version, requested target version, diagno
 | `DATATABLE_PROFILE`, `SORTENTSTABLE_PROFILE` | Corresponding typed objects | Requires R2004+ |
 | `LIGHTLIST_PROFILE`, `SUN_PROFILE`, `MLEADERSTYLE_PROFILE`, `SECTIONSETTINGS_PROFILE` | Corresponding typed objects | Requires R2007+ |
 | `GEODATA_PROFILE` | Typed version-2 GEODATA | Requires R2010+ |
-| `STORED_SOURCE_PROFILE` | TABLE, TABLESTYLE, TABLECONTENT, TABLEGEOMETRY, FIELD, DIMASSOC, SECTION_MANAGER, SUNSTUDY and retained POLYLINE VERTEX/SEQEND packets | Requires the exact source profile, including when upgrading |
+| `STORED_SOURCE_PROFILE` | TABLE, TABLESTYLE, TABLECONTENT, TABLEGEOMETRY, CELLSTYLEMAP, FIELD, DIMASSOC, SECTION_MANAGER, SUNSTUDY and retained POLYLINE and PolygonMesh VERTEX/SEQEND packets | Requires the exact source profile, including when upgrading |
 | `HATCH_GRADIENT_OMITTED` | Gradient pattern packet | R2000 omits gradient data and writes the base hatch fill |
 | `HEADER_LAST_SAVED_BY_OMITTED` | Nonempty `DrawingVariables.LastSavedBy` | R2000 omits `$LASTSAVEDBY` |
 | `CLASS_INSTANCE_COUNT_OMITTED` | Explicit CLASS instance count, including zero | R2000 omits group 91 |
 
-These are concrete existing writer rules, not inferred DXF restrictions. For example, legacy MTEXT defined height remains represented through XData and is not diagnosed as a loss. Proxy-graphics count-code changes preserve the payload and are not omissions. Arbitrary opaque objects are not assigned invented version legality. New typed features must extend this bounded matrix when their writer guards are added; the initial implementation is based on PR92.
+These are concrete existing writer rules, not inferred DXF restrictions. For example, legacy MTEXT defined height remains represented through XData and is not diagnosed as a loss. Proxy-graphics count-code changes preserve the payload and are not omissions. Arbitrary opaque objects are not assigned invented version legality. New typed features must extend this bounded matrix when their writer guards are added; the implementation includes the PR93 CELLSTYLEMAP and ordinary PolygonMesh record storage increments.

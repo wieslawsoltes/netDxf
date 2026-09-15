@@ -84,7 +84,7 @@ namespace netDxf
                         this.Add("HEADER_LAST_SAVED_BY_OMITTED", this.document.DrawingVariables, "LastSavedBy", "The R2000 writer omits $LASTSAVEDBY.", DxfVersionCompatibilityKind.DataOmission);
                     foreach (DxfClass definition in this.document.Classes)
                         if (definition.InstanceCount.HasValue)
-                            this.Add("CLASS_INSTANCE_COUNT_OMITTED", definition, "Classes[\"" + definition.Name + "\"].InstanceCount", "The R2000 writer omits the explicit CLASS group-91 instance count.", DxfVersionCompatibilityKind.DataOmission);
+                            this.Add("CLASS_INSTANCE_COUNT_OMITTED", definition, "InstanceCount", "The R2000 writer omits the explicit CLASS group-91 instance count.", DxfVersionCompatibilityKind.DataOmission);
                 }
                 return new DxfVersionCompatibilityReport(this.document.DrawingVariables.AcadVer, this.target, this.diagnostics);
             }
@@ -169,9 +169,11 @@ namespace netDxf
             private void RegisteredObject(DxfObject item)
             {
                 if (item is Polyline3DRecord vertex) this.SourceProfile(vertex, vertex.SourceVersion);
+                else if (item is PolygonMeshRecord meshVertex) this.SourceProfile(meshVertex, meshVertex.SourceVersion);
                 else if (item is DxfTableStyle tableStyle) this.SourceProfile(tableStyle, tableStyle.SourceVersion);
                 else if (item is DxfStoredTableContent content) this.SourceProfile(content, content.SourceVersion);
                 else if (item is DxfStoredTableGeometry geometry) this.SourceProfile(geometry, geometry.SourceVersion);
+                else if (item is DxfStoredCellStyleMap map) this.SourceProfile(map, map.SourceVersion);
                 else if (item is DxfStoredField field) this.SourceProfile(field, field.SourceVersion);
                 else if (item is DxfStoredDimAssoc association) this.SourceProfile(association, association.SourceVersion);
                 else if (item is DxfStoredSectionManager manager) this.SourceProfile(manager, manager.SourceVersion);
