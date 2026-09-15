@@ -24,6 +24,7 @@ internal static partial class Program
             foreach (bool end in new[] { false, true }) foreach (bool xyz in new[] { false, true })
                 Run($"legacy2d-records/tag-budget/{binary}/{end}/{xyz}", () => Legacy2DBudget(binary, end, xyz));
             Run($"legacy2d-records/transform-overflow/{binary}", () => Legacy2DTransformOverflow(binary));
+            Run($"legacy2d-records/sparse-header/{binary}", () => Legacy2DSparseHeader(binary));
             foreach (int count in new[] { 0, 1 }) Run($"legacy2d-records/degenerate/{binary}/{count}", () => Legacy2DDegenerate(binary, count));
             for (int mode = 0; mode < 3; mode++) { int m = mode; Run($"legacy2d-records/default-presence/{binary}/{m}", () => Legacy2DDefaultPresence(binary, m)); }
         }
@@ -125,6 +126,26 @@ internal static partial class Program
         var copy = (Polyline2D)StoredDimAssocLoad(StoredDimAssocSave(doc, binary)).GetObjectByHandle(parent);
         Equal(end * 2, copy.LegacyDefaultStartWidth, "scaled nullable start on wire"); Equal(start * 2, copy.LegacyDefaultEndWidth, "scaled nullable end on wire");
         Equal((end * 2).GetValueOrDefault(), copy.GetEffectiveStartWidth(0), "omitted default effective geometry");
+    }
+    private static void Legacy2DSparseHeader(bool binary)
+    {
+        var input = Legacy2DInput(DxfVersion.AutoCad2018, binary); string parent = Legacy2DFixture(DxfVersion.AutoCad2018, binary).GetProperty("handles").GetProperty("plain_polyline").GetString()!;
+        var raw = ObjectStoreReplaceRecord(PolylineRecordRaw(input), parent, tags => { tags.RemoveAll(t => t.Code == 10 || t.Code == 20 || t.Code == 30); tags.Add(new DxfTag(100, "PrivateHeaderTail")); tags.Add(new DxfTag(1, "private marker")); return tags; });
+        input = StoredDimAssocRawBytes(raw, binary); var doc = StoredDimAssocLoad(input); var line = (Polyline2D)doc.GetObjectByHandle(parent);
+        var unchanged = StoredDimAssocSave(doc, binary, $"legacy2d-records-sparse-header-{binary}.dxf");
+        var before = PolyfaceRecordParent(input, parent).Tags; var after = PolyfaceRecordParent(unchanged, parent).Tags;
+        int first = before.ToList().FindIndex(t => t.Code == 100 && Equals(t.Value, "AcDb2dPolyline")); int second = after.ToList().FindIndex(t => t.Code == 100 && Equals(t.Value, "AcDb2dPolyline"));
+        Check(before.Skip(first).Select(PolylineRecordTagKey).SequenceEqual(after.Skip(second).Select(PolylineRecordTagKey)), "omitted parent dummy point was materialized without an edit");
+        line.Elevation = 7; var output = StoredDimAssocSave(doc, binary, $"legacy2d-records-sparse-header-edited-{binary}.dxf"); var packet = PolyfaceRecordParent(output, parent).Tags.ToList();
+        int point = packet.FindIndex(t => t.Code == 10); Check(point >= 0 && packet[point + 1].Code == 20 && packet[point + 2].Code == 30, "elevation edit failed to emit a complete contiguous parent point");
+        Check(point < packet.FindIndex(t => t.Code == 100 && Equals(t.Value, "PrivateHeaderTail")), "new parent point was inserted into a private subclass");
+        Equal(7.0, ((Polyline2D)StoredDimAssocLoad(output).GetObjectByHandle(parent)).Elevation, "sparse parent elevation edit roundtrip");
+        foreach (short code in new short[] { 10, 20, 30 })
+        {
+            var malformed = ObjectStoreReplaceRecord(PolylineRecordRaw(Legacy2DInput(DxfVersion.AutoCad2018, binary)), parent, tags => { tags.RemoveAll(t => t.Code == code); return tags; }); bool rejected = false;
+            try { rejected = DxfDocument.Load(new MemoryStream(StoredDimAssocRawBytes(malformed, binary))) == null; } catch (FormatException) { rejected = true; }
+            Check(rejected, "partial legacy parent dummy vector admitted");
+        }
     }
     private static void Legacy2DDegenerate(bool binary, int count)
     {

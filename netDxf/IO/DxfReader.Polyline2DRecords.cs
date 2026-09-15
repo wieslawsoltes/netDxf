@@ -49,7 +49,7 @@ namespace netDxf.IO
                 {
                     case 10: case 20:
                         if ((double)tag.Value != 0) throw new FormatException("Legacy POLYLINE requires zero dummy X/Y coordinates.");
-                        break;
+                        indices.Add(tag.Code, i); break;
                     case 30: elevation = (double)tag.Value; indices.Add(tag.Code, i); break;
                     case 39: thickness = (double)tag.Value; indices.Add(tag.Code, i); break;
                     case 40: startWidth = (double)tag.Value; Polyline2D.ValidateWidth(startWidth.Value, "LegacyDefaultStartWidth"); indices.Add(tag.Code, i); break;
@@ -69,6 +69,9 @@ namespace netDxf.IO
             // Preserve the existing fitted reader path; retained ordinary records do not claim that schema.
             if (((int)flags & 6) != 0 || smooth != 0)
                 return this.ReadFittedLegacyPolyline2D(flags, normal, elevation, thickness, smooth, xdata);
+            int pointCount = indices.Keys.Count(code => code == 10 || code == 20 || code == 30);
+            if (pointCount != 0 && pointCount != 3)
+                throw new FormatException("A retained legacy POLYLINE requires a complete dummy point or its complete omission.");
             int normalCount = indices.Keys.Count(code => code == 210 || code == 220 || code == 230);
             if (normalCount != 0 && normalCount != 3 || Vector3.IsZero(normal))
                 throw new FormatException("Legacy POLYLINE requires a complete finite nonzero extrusion normal.");

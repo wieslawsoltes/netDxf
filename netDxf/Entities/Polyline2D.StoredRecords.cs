@@ -44,7 +44,12 @@ namespace netDxf.Entities
         {
             var result = new Dictionary<short, DxfTag>();
             if (this.StoredHeaderIndices.ContainsKey(70) || (short)this.Flags != 0) result.Add(70, new DxfTag(70, (short)this.Flags));
-            if (this.StoredHeaderIndices.ContainsKey(30) || this.Elevation != 0) result.Add(30, new DxfTag(30, this.Elevation));
+            if (this.StoredHeaderIndices.ContainsKey(30) || this.Elevation != 0)
+            {
+                result.Add(10, this.StoredHeaderIndices.TryGetValue(10, out int x) ? this.StoredHeaderTags[x] : new DxfTag(10, 0.0));
+                result.Add(20, this.StoredHeaderIndices.TryGetValue(20, out int y) ? this.StoredHeaderTags[y] : new DxfTag(20, 0.0));
+                result.Add(30, new DxfTag(30, this.Elevation));
+            }
             if (this.StoredHeaderIndices.ContainsKey(39) || this.Thickness != 0) result.Add(39, new DxfTag(39, this.Thickness));
             if (this.LegacyDefaultStartWidth.HasValue) result.Add(40, new DxfTag(40, this.LegacyDefaultStartWidth.Value));
             if (this.LegacyDefaultEndWidth.HasValue) result.Add(41, new DxfTag(41, this.LegacyDefaultEndWidth.Value));

@@ -39,7 +39,11 @@ The vertex model stores OCS X/Y. This bounded path requires each physical child
 Z coordinate to equal zero. World positions use the parent `Elevation` and
 `Normal`. A nonzero child Z is explicitly rejected; the implementation does not
 flatten or reinterpret it. Non-world normals and finite nonzero elevations are
-supported. Parent dummy X/Y values must be zero.
+supported. Parent dummy X/Y values must be zero. The dummy point may be wholly omitted;
+an unchanged omitted point stays omitted. An elevation edit then inserts a
+complete contiguous 10/20/30 triple before any later private subclass. Partial
+source dummy vectors are rejected, since a standalone Z field does not provide
+the qualified point interpreted by independent DXF readers.
 
 Vertex position, bulge, nullable start/end width overrides and optional vertex
 identifier edits update only their qualified public fields. Absence stays

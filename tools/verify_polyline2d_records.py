@@ -152,6 +152,13 @@ def main():
         check(value(after[h['vertices'][3]],'AcDb2dVertex',40)==0.,'reversed scaled explicit zero start')
         check(value(after[h['vertices'][1]],'AcDb2dVertex',41)==0.,'reversed scaled explicit zero end')
         check(value(after[h['polyline']],'AcDb2dPolyline',40)==3.75,'reversed scaled default start')
+        for edited in (False,True):
+            suffix='sparse-header-edited' if edited else 'sparse-header'
+            after=read(f'legacy2d-records-{suffix}-{binary}.dxf',2018,binary);parent=after[h['plain_polyline']]
+            check(value(parent,'AcDb2dPolyline',10)==((0.,0.,7.) if edited else None),'sparse qualified parent point')
+            document=ezdxf.readfile(args.artifacts/f'legacy2d-records-{suffix}-{binary}.dxf')
+            check(document.entitydb[h['plain_polyline']].dxf.elevation.z==(7. if edited else 0.),'independent sparse parent elevation interpretation')
+            check(DXFTag(100,'PrivateHeaderTail') in parent and DXFTag(1,'private marker') in parent,'sparse private subclass retained')
         for number in (0,1):
             for transformed in (False,True):
                 suffix='degenerate-transformed' if transformed else 'degenerate'
