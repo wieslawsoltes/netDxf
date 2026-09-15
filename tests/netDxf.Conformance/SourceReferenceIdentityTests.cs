@@ -19,6 +19,7 @@ internal static partial class Program
                 foreach (bool normalized in new[] { false, true })
                     Run($"source-reference/retained/{path}/{normalized}/{binary}", () => SourceReferenceRetained(path, normalized, binary));
             }
+            Run($"source-reference/consumed-extension-wrong-host/{binary}", () => SourceReferenceConsumedWrongHost(binary));
             Run($"source-reference/null-idbuffer/{binary}", () => SourceReferenceNull(binary));
             Run($"source-reference/consumed-layer-state-extension/{binary}", () => SourceReferenceLayerStates(binary));
         }
@@ -134,7 +135,7 @@ internal static partial class Program
         raw.Save(stream, binary);
         stream.Position = 0;
         bool rejected = false;
-        try { DxfDocument.Load(stream); }
+        try { rejected = DxfDocument.Load(stream) == null; }
         catch (FormatException exception)
         {
             string expected = path switch {
@@ -184,6 +185,27 @@ internal static partial class Program
         output.Position = 0;
         var again = DxfDocument.Load(output) ?? throw new InvalidOperationException("retained source reload failed");
         Check(ReferenceEquals(again.GetObjectByHandle(fixture.Target), SourceReferenceValue(again, fixture.Carrier, path)), "retained source identity lost on reload");
+    }
+
+    private static void SourceReferenceConsumedWrongHost(bool binary)
+    {
+        SourceReferenceFixture fixture = SourceReferenceSeed("extension");
+        DxfRawRecord layer = fixture.Raw.Sections.Single(s => s.Name == "TABLES").Records
+            .Single(r => r.Name == "TABLE" && r.Tags.Any(t => t.Code == 2 && Equals(t.Value, "LAYER")));
+        string consumed = (string)layer.Tags.Single(t => t.Code == 360).Value;
+        Check(SourceReferenceRecord(fixture.Raw, consumed).Name == "DICTIONARY", "consumed extension source exists");
+        using var stream = new MemoryStream();
+        SourceReferenceReplace(fixture, "extension", consumed).Save(stream, binary);
+        stream.Position = 0;
+        bool rejected = false;
+        try { rejected = DxfDocument.Load(stream) == null; }
+        catch (FormatException error)
+        {
+            Check(error.Message.Contains("extension dictionary", StringComparison.OrdinalIgnoreCase), "wrong host diagnostic");
+            rejected = true;
+        }
+        Check(rejected, "the consumed LAYER dictionary must not silently satisfy an unrelated object's extension reference");
+        Check(stream.CanRead, "wrong host rejection closed the caller stream");
     }
 
     private static void SourceReferenceNull(bool binary)

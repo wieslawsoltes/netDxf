@@ -51,6 +51,7 @@ internal static partial class Program
         RegisterStoredTableFidelityTests();
         RegisterFifthMixedModuleTests();
         RunSourceReferenceIdentityTests();
+        RunNumericHandleTests();
         RunAppIdXDataLifecycleTests();
         File.WriteAllText(Path.Combine(ArtifactDirectory, "results.json"),
             JsonSerializer.Serialize(Results, new JsonSerializerOptions { WriteIndented = true }));

@@ -18,11 +18,12 @@ internal static partial class Program
             {
                 Run($"datatable/all-types/{version}/{binary}", () => DataTableAuthored(version, binary));
                 Run($"datatable/clone-erase/{version}/{binary}", () => DataTableCloneErase(version, binary));
-                foreach (string decoy in new[] { "none", "class", "payload", "control", "unknown-entity", "discarded-entity", "dictionary-entity", "ignored-section", "missing-table-identity", "missing-raster-identity" })
+                foreach (string decoy in new[] { "none", "class", "payload", "control", "unknown-entity", "discarded-entity", "dictionary-entity", "ignored-section", "missing-table-identity", "missing-raster-identity", "table-payload-identity", "raster-payload-identity", "unrelated-managed-dictionary" })
                     Run($"datatable/source-identity/{version}/{binary}/{decoy}", () => DataTableSourceIdentity(version, binary, decoy));
                 Run($"datatable/canonical-forward-identity/{version}/{binary}", () => DataTableCanonicalIdentity(version, binary));
                 Run($"datatable/symbol-table-identities/{version}/{binary}", () => DataTableSymbolTableIdentity(version, binary));
                 Run($"datatable/retained-resource-identities/{version}/{binary}", () => DataTableRetainedIdentities(version, binary));
+                Run($"datatable/section-entity-context/{version}/{binary}", () => DataTableSectionContext(version, binary));
                 foreach (string defect in new[] { "missing-version", "duplicate-version", "missing-columns", "negative-columns", "huge-columns", "negative-rows", "huge-rows", "missing-name", "missing-column-name", "wrong-type-code", "missing-value", "extra-value", "duplicate-marker", "bool-range", "point-missing-z", "vector-order", "unresolved-reference", "wrong-owner", "duplicate-owner", "foreign-owner", "nonfinite", "surrogate" })
                     Run($"datatable/malformed/{version}/{binary}/{defect}", () => DataTableMalformed(version, binary, defect));
                 foreach (string variant in new[] { "version", "type", "field", "subclass", "header" })
@@ -179,6 +180,8 @@ internal static partial class Program
     private static void DataTableSourceIdentity(DxfVersion version, bool binary, string decoy)
     {
         var raw = DataTableRaw(version, binary); string seed = (string)raw.Tags[raw.Tags.ToList().FindIndex(t => t.Code == 9 && (string)t.Value == "$HANDSEED") + 1].Value;
+        if (decoy == "table-payload-identity" || decoy == "raster-payload-identity") seed = "F00";
+        if (decoy == "unrelated-managed-dictionary") seed = (Convert.ToUInt64(seed, 16) + 2).ToString("X");
         var original = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DATATABLE" && r.Tags.Any(t => t.Code == 90 && (int)t.Value == 11));
         string originalHandle = (string)original.Tags.Single(t => t.Code == 5).Value;
         var source = original.Tags.ToList(); int slot = source.FindIndex(t => t.Code == 331); source[slot] = new DxfTag(331, seed); raw = raw.WithRecord(original, source);
@@ -195,9 +198,19 @@ internal static partial class Program
             else tags.InsertRange(at, new[] { new DxfTag(102, "{PRIVATE_ID_DECOY"), new DxfTag(5, seed), new DxfTag(102, "}") });
             raw = raw.WithRecord(other, tags);
         }
-        else if (decoy == "unknown-entity" || decoy == "discarded-entity" || decoy == "dictionary-entity" || decoy == "ignored-section" || decoy == "missing-table-identity" || decoy == "missing-raster-identity")
+        else if (decoy == "unrelated-managed-dictionary")
         {
-            string kind = decoy == "unknown-entity" || decoy.StartsWith("missing-", StringComparison.Ordinal) ? "FUTURE_ENTITY" : decoy == "discarded-entity" ? "PDFUNDERLAY" : "DICTIONARY";
+            var root = raw.Sections.Single(section => section.Name == "OBJECTS").Records.First(record => record.Name == "DICTIONARY");
+            var tags = root.Tags.ToList(); int entry = tags.FindIndex(tag => tag.Code == 3 && (string)tag.Value == "ACAD_GROUP");
+            string group = (string)tags[entry + 1].Value;
+            tags[entry] = new DxfTag(3, "UNRELATED_GROUP_DICTIONARY"); tags[entry + 1] = new DxfTag(tags[entry + 1].Code, seed);
+            raw = raw.WithRecord(root, tags);
+            var dictionary = raw.Sections.Single(section => section.Name == "OBJECTS").Records.Single(record => record.Name == "DICTIONARY" && record.Tags.Any(tag => tag.Code == 5 && (string)tag.Value == group));
+            raw = raw.WithRecord(dictionary, dictionary.Tags.Select(tag => tag.Code == 5 ? new DxfTag(5, seed) : tag));
+        }
+        else if (decoy == "unknown-entity" || decoy == "discarded-entity" || decoy == "dictionary-entity" || decoy == "ignored-section" || decoy == "missing-table-identity" || decoy == "missing-raster-identity" || decoy == "table-payload-identity" || decoy == "raster-payload-identity")
+        {
+            string kind = decoy == "unknown-entity" || decoy.StartsWith("missing-", StringComparison.Ordinal) || decoy.EndsWith("-payload-identity", StringComparison.Ordinal) ? "FUTURE_ENTITY" : decoy == "discarded-entity" ? "PDFUNDERLAY" : "DICTIONARY";
             var packet = new List<DxfTag> { new DxfTag(0, kind), new DxfTag(5, seed), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"), new DxfTag(100, kind == "PDFUNDERLAY" ? "AcDbUnderlayReference" : kind == "DICTIONARY" ? "AcDbDictionary" : "FutureEntity") };
             if (kind == "PDFUNDERLAY") packet.AddRange(new[] { new DxfTag(340, "0"), new DxfTag(10, 0.0), new DxfTag(20, 0.0), new DxfTag(30, 0.0) });
             if (decoy == "ignored-section")
@@ -208,15 +221,18 @@ internal static partial class Program
             }
             else
             {
-                if (decoy == "missing-table-identity")
+                if (decoy == "missing-table-identity" || decoy == "table-payload-identity")
                 {
                     var layerTable = raw.Sections.Single(section => section.Name == "TABLES").Records.Single(record => record.Name == "TABLE" && record.Tags.Any(tag => tag.Code == 2 && (string)tag.Value == "LAYER"));
-                    raw = raw.WithRecord(layerTable, layerTable.Tags.Where(tag => tag.Code != 5));
+                    var tableTags = layerTable.Tags.Where(tag => tag.Code != 5).ToList();
+                    if (decoy == "table-payload-identity") tableTags.Add(new DxfTag(5, seed));
+                    raw = raw.WithRecord(layerTable, tableTags);
                 }
-                else if (decoy == "missing-raster-identity")
+                else if (decoy == "missing-raster-identity" || decoy == "raster-payload-identity")
                 {
                     int objectEnd = raw.Sections.Single(section => section.Name == "OBJECTS").EndTagIndex - 1;
-                    var raster = new[] { new DxfTag(0, "RASTERVARIABLES"), new DxfTag(100, "AcDbRasterVariables"), new DxfTag(90, 0), new DxfTag(70, (short)1), new DxfTag(71, (short)1), new DxfTag(72, (short)0) };
+                    var raster = new List<DxfTag> { new DxfTag(0, "RASTERVARIABLES"), new DxfTag(100, "AcDbRasterVariables"), new DxfTag(90, 0), new DxfTag(70, (short)1), new DxfTag(71, (short)1), new DxfTag(72, (short)0) };
+                    if (decoy == "raster-payload-identity") raster.Add(new DxfTag(5, seed));
                     raw = raw.WithTags(raw.Tags.Take(objectEnd).Concat(raster).Concat(raw.Tags.Skip(objectEnd)));
                 }
                 int end = raw.Sections.Single(section => section.Name == "ENTITIES").EndTagIndex - 1;
@@ -264,10 +280,13 @@ internal static partial class Program
         var seedDocument = DataTableDocument(version); using var seed = new MemoryStream(); Check(seedDocument.Save(seed, binary), "Canonical source seed"); seed.Position = 0;
         var doc = DxfDocument.Load(seed) ?? throw new Exception("Canonical source seed rejected."); var line = doc.Entities.Lines.Single();
         var group = new Group("SOURCE_IDENTITY_GROUP"); group.Entities.Add(line); doc.Groups.Add(group);
+        var block = new netDxf.Blocks.Block("SOURCE_ATTRIBUTES"); var definition = new AttributeDefinition("SOURCE_TAG"); block.AttributeDefinitions.Add(definition);
+        var insert = new Insert(block); doc.Entities.Add(insert);
         DxfObject[] targets = { doc.NamedObjects, line, line.Owner, line.Owner.Record, line.Layer, line.Linetype,
             doc.Layers, doc.Linetypes, doc.Blocks, doc.ApplicationRegistries, doc.ApplicationRegistries["DATATABLE_APP"],
             doc.DimensionStyles, doc.DimensionStyles.First(), doc.TextStyles, doc.TextStyles.First(),
-            doc.Groups, group, doc.Layouts, doc.Layouts.First(), doc.MlineStyles, doc.MlineStyles.First() };
+            doc.Groups, group, doc.Layouts, doc.Layouts.First(), doc.MlineStyles, doc.MlineStyles.First(),
+            block, block.Record, definition, insert };
         foreach (var target in targets) Check(target != null && ReferenceEquals(doc.GetObjectByHandle(target.Handle), target), "Positive fixture target must already be registered: " + target?.GetType().Name + "/" + target?.Handle);
         var references = new DxfDataTable(); references.SetColumns(targets.Length, new[] { new DxfDataColumn(DxfDataCellType.ObjectId, "Retained identities", targets) });
         doc.NamedObjects.Add("SOURCE_REFERENCES", references);
@@ -281,7 +300,25 @@ internal static partial class Program
             Equal(targets[i].GetType(), target.GetType(), "Source object type retained");
             Check(ReferenceEquals(loaded.GetObjectByHandle(target.Handle), target), "Retained resource is canonical");
         }
+        var loadedInsert = loaded.Entities.Inserts.Single();
+        Equal(1, loadedInsert.Attributes.Count, "Nested ATTRIB retained while resolving the enclosing INSERT");
+        Equal("SOURCE_TAG", loadedInsert.Attributes.Single().Tag, "Nested attribute data retained");
         Equal(0, loaded.Objects.Validate().Count, "Retained source resources validate");
+    }
+    private static void DataTableSectionContext(DxfVersion version, bool binary)
+    {
+        var raw = DataTableRaw(version, binary); var entities = raw.Sections.Single(section => section.Name == "ENTITIES");
+        var line = entities.Records.Single(record => record.Name == "LINE"); string handle = (string)line.Tags.Single(tag => tag.Code == 5).Value;
+        int at = line.StartTagIndex;
+        var ignored = new[] { new DxfTag(0, "SECTION"), new DxfTag(5, "F10"), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"), new DxfTag(100, "PrivateSectionEntity") };
+        raw = raw.WithTags(raw.Tags.Take(at).Concat(ignored).Concat(raw.Tags.Skip(at)));
+        var record = raw.Sections.Single(section => section.Name == "OBJECTS").Records.Single(item => item.Name == "DATATABLE" && item.Tags.Any(tag => tag.Code == 90 && (int)tag.Value == 11));
+        bool first = true; raw = raw.WithRecord(record, record.Tags.Select(tag => tag.Code == 331 && first ? (first = false, new DxfTag(331, handle)).Item2 : tag));
+        using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
+        var loaded = DxfDocument.Load(input) ?? throw new Exception("SECTION entity erased following entity source context.");
+        var table = (DxfDataTable)((DxfDictionary)loaded.NamedObjects["DATA_TABLES"])["TABLE"];
+        Check(ReferenceEquals(table.Columns[4].Values[0], loaded.Entities.Lines.Single()), "Following LINE retains its same-record source identity");
+        Equal(0, loaded.Objects.Validate().Count, "Section-shaped entity does not alter following reference resolution");
     }
     private static DxfRawDocument DataTableRaw(DxfVersion version, bool binary)
     { using var output = new MemoryStream(); Check(DataTableDocument(version).Save(output, binary), "Malformed seed"); output.Position = 0; return DxfRawDocument.Load(output); }

@@ -10,10 +10,10 @@ namespace netDxf.IO
         private readonly HashSet<ulong> sourceObjectIdentities = new HashSet<ulong>();
         private readonly Dictionary<ulong, DxfObject> acceptedSourceObjects = new Dictionary<ulong, DxfObject>();
 
-        private void RecordSourceObject(DxfObject item)
+        private sealed class SourceRecordIdentity
         {
-            if (item != null && ulong.TryParse(item.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong value)
-                && value != 0) this.acceptedSourceObjects[value] = item;
+            // Filled only from this physical record's eligible common header.
+            internal ulong Handle;
         }
 
         // The LAYER table extension dictionary can be consumed by the explicit
@@ -26,13 +26,18 @@ namespace netDxf.IO
                 && accepted is netDxf.Objects.DxfDictionary;
         }
 
-        private void RecordSourceObject(DxfObject item, string sourceHandle)
+        private SourceRecordIdentity CurrentSourceRecord
         {
-            // A collection constructor can allocate when its source handle is absent.
-            // Such generated identities cannot borrow a discarded record's identity.
-            if (item != null && ulong.TryParse(sourceHandle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong source)
-                && source != 0 && ulong.TryParse(item.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong actual)
-                && source == actual) this.acceptedSourceObjects[source] = item;
+            get { return ((DatabaseMetadataReader)this.chunk).SourceRecord; }
+        }
+
+        private void RecordSourceObject(DxfObject item, SourceRecordIdentity source)
+        {
+            // Some legacy parsers also read group5 from private payloads; only the
+            // common identity of the exact record that produced this object counts.
+            if (item != null && source != null && source.Handle != 0
+                && ulong.TryParse(item.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong actual)
+                && source.Handle == actual) this.acceptedSourceObjects[actual] = item;
         }
 
         private DxfObject GetObjectBySourceHandle(string handle)
