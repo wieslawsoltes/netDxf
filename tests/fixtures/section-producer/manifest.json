@@ -1,0 +1,228 @@
+{
+  "producer": "IxMilia.Dxf 0.8.4",
+  "schema_source_commit": "3ab0f9d6d3f14a6f6fa924e111e8e3af1065c567",
+  "package_sha256": "3b08f5b604c958ea6c29f107f751d75abdf3328713ec586bc4fdbf0302e24c81",
+  "extractor": "ezdxf 1.4.4",
+  "original_whole_file_import_qualified": false,
+  "original_transformations": [],
+  "extraction_contract": "Exact source entity packet except identity 1D->F1000 and insertion of absent common owner330 to generated model-space BLOCK_RECORD; all ordered AcDbSection fields and other common fields retained.",
+  "audit_contract": "Only an in-memory entity type and corresponding CLASS name SECTION->SECTIONOBJECT adapter is used for ezdxf audit. Stored extraction files retain SECTION. No field values, counts, geometry, ownership or settings are repaired for audit.",
+  "fixtures": [
+    {
+      "file": "ixmilia-section-R2007-ascii.dxf",
+      "source_sha256": "4dcd0385063b959bb88f5637034ff4d49be56f2277e42af29d5673d34b2f86ba",
+      "source_bytes": 13862,
+      "gzip_file": "ixmilia-section-R2007-ascii.dxf.gz",
+      "gzip_sha256": "51e7d634f13cb43a94c68f730e237bc82c16714c3630c62170567e214a4e9b08",
+      "extracted_file": "extracted-section-R2007-ascii.dxf",
+      "extracted_sha256": "991871d8c1c12b7a995ffde7e6d9415915eef40a9aa774c502c5a6adb45bab64",
+      "profile": "AC1021",
+      "binary": false,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2007-binary.dxf",
+      "source_sha256": "3990b4c79e13dce5d613805fc6964b6e389ff0cb1de3518ace4fec65b870a65a",
+      "source_bytes": 9123,
+      "gzip_file": "ixmilia-section-R2007-binary.dxf.gz",
+      "gzip_sha256": "f4bbc39aa8d5e48d7b90037ccc1788a5e97575610d1ee8d456a31fc31e19ff76",
+      "extracted_file": "extracted-section-R2007-binary.dxf",
+      "extracted_sha256": "8d384dfbd12bc0e13e377deef97c72caf65c900f692a50c23249468eede4286b",
+      "profile": "AC1021",
+      "binary": true,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2010-ascii.dxf",
+      "source_sha256": "e046c119bf199219e1594df34ef2a69421dcd8b92d58c2ac0acce756264d6141",
+      "source_bytes": 13934,
+      "gzip_file": "ixmilia-section-R2010-ascii.dxf.gz",
+      "gzip_sha256": "43e7fb056a15a988bef7419cae727fa2164b38f10d558681b3f1500f55ed811e",
+      "extracted_file": "extracted-section-R2010-ascii.dxf",
+      "extracted_sha256": "c5118142e474e0d5cbafb957d66c061c36ce14d451bc3c376d57243ecece8f99",
+      "profile": "AC1024",
+      "binary": false,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2010-binary.dxf",
+      "source_sha256": "7e99455e8f4f8e745f9e07a19912ecb5112effc75939b7346daff9073a61eb5d",
+      "source_bytes": 9159,
+      "gzip_file": "ixmilia-section-R2010-binary.dxf.gz",
+      "gzip_sha256": "88a154944e9166cb0c056820930be28a5bd44bee196bbd6f8e41caac282cb04e",
+      "extracted_file": "extracted-section-R2010-binary.dxf",
+      "extracted_sha256": "5bda41fa5a4a4bfdd9c58b4766e98235f905d9f8d465548aa7bfb579f8e0773c",
+      "profile": "AC1024",
+      "binary": true,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2013-ascii.dxf",
+      "source_sha256": "6196a4870854a1f9d62bf91585c265ea931407bdca57e6ca191f6ec31fc9a8b6",
+      "source_bytes": 13965,
+      "gzip_file": "ixmilia-section-R2013-ascii.dxf.gz",
+      "gzip_sha256": "893f16faf9aae7629ac3e186311f49afc71cdc95e799c0988ce1cd2644b008ce",
+      "extracted_file": "extracted-section-R2013-ascii.dxf",
+      "extracted_sha256": "409f6b2956af1711d5439eed435068a0d928721d96f6a2e3ec30352f9716d79d",
+      "profile": "AC1027",
+      "binary": false,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2013-binary.dxf",
+      "source_sha256": "db60db602cb25f55e2051396eb442a26dabf9d119463ec534557f5b44fa6eef9",
+      "source_bytes": 9189,
+      "gzip_file": "ixmilia-section-R2013-binary.dxf.gz",
+      "gzip_sha256": "906545b5ace257e1cf6ec157719b84932fc90098740f48da071007fdbefbfb91",
+      "extracted_file": "extracted-section-R2013-binary.dxf",
+      "extracted_sha256": "349ec8ce25e08e73e03cb032b2f839007fdaa397dd636bdcef2af886ea9c19ba",
+      "profile": "AC1027",
+      "binary": true,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2018-ascii.dxf",
+      "source_sha256": "26c1ae6252545b6285617ebcc1955b98a795d73b078d462772286351297783a1",
+      "source_bytes": 13940,
+      "gzip_file": "ixmilia-section-R2018-ascii.dxf.gz",
+      "gzip_sha256": "d54402b7629169d24dc250ec8edcc8950adddd87b5b21f789a8dc84bb2c6eb06",
+      "extracted_file": "extracted-section-R2018-ascii.dxf",
+      "extracted_sha256": "ddb7e8200c31ab06f5bdc2230e133e126d0866ba75f84e0121484c92792c7a13",
+      "profile": "AC1032",
+      "binary": false,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "file": "ixmilia-section-R2018-binary.dxf",
+      "source_sha256": "36bc52d170775f068716e6a758d272e1522c53aff11d6a6cce74b1445ca410d8",
+      "source_bytes": 9175,
+      "gzip_file": "ixmilia-section-R2018-binary.dxf.gz",
+      "gzip_sha256": "d2e2cf2af3a7bbbd42e8a6a093dc0818acb1114ff889d61d5d7245c770f3a8fa",
+      "extracted_file": "extracted-section-R2018-binary.dxf",
+      "extracted_sha256": "e5380662da814fabbfae761b01c687a39d9b959d5d95890c4f3ca3d7983525a8",
+      "profile": "AC1032",
+      "binary": true,
+      "handle_map": {
+        "1D": "F1000"
+      },
+      "inserted_common_owner": {
+        "code": 330,
+        "value": "17",
+        "reason": "The original entity has no owner; the generated carrier places it in model space."
+      },
+      "exact_ordered_body": true,
+      "all_other_common_fields_unchanged": true,
+      "audit_type_name_changes": {
+        "entity_type": 1,
+        "class_name": 1
+      },
+      "audit_errors": 0,
+      "audit_repairs": 0
+    }
+  ]
+}

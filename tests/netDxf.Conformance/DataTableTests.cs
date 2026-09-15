@@ -310,15 +310,31 @@ internal static partial class Program
         var raw = DataTableRaw(version, binary); var entities = raw.Sections.Single(section => section.Name == "ENTITIES");
         var line = entities.Records.Single(record => record.Name == "LINE"); string handle = (string)line.Tags.Single(tag => tag.Code == 5).Value;
         int at = line.StartTagIndex;
-        var ignored = new[] { new DxfTag(0, "SECTION"), new DxfTag(5, "F10"), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"), new DxfTag(100, "PrivateSectionEntity") };
-        raw = raw.WithTags(raw.Tags.Take(at).Concat(ignored).Concat(raw.Tags.Skip(at)));
+        // SECTION is now a typed entity: use its actual public packet while checking
+        // that its name never resets the observer's surrounding ENTITIES context.
+        var sectionPacket = new[] {
+            new DxfTag(0, "SECTION"), new DxfTag(5, "F10"), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"),
+            new DxfTag(100, "AcDbSection"), new DxfTag(90, 1), new DxfTag(91, 0), new DxfTag(1, "Source context"),
+            new DxfTag(10, 0.0), new DxfTag(20, 0.0), new DxfTag(30, 1.0), new DxfTag(40, 1.0), new DxfTag(41, 0.0),
+            new DxfTag(70, (short)0), new DxfTag(92, 2),
+            new DxfTag(11, 0.0), new DxfTag(21, 0.0), new DxfTag(31, 0.0),
+            new DxfTag(11, 1.0), new DxfTag(21, 0.0), new DxfTag(31, 0.0), new DxfTag(93, 0), new DxfTag(360, "0") };
+        raw = raw.WithTags(raw.Tags.Take(at).Concat(sectionPacket).Concat(raw.Tags.Skip(at)));
         var record = raw.Sections.Single(section => section.Name == "OBJECTS").Records.Single(item => item.Name == "DATATABLE" && item.Tags.Any(tag => tag.Code == 90 && (int)tag.Value == 11));
         bool first = true; raw = raw.WithRecord(record, record.Tags.Select(tag => tag.Code == 331 && first ? (first = false, new DxfTag(331, handle)).Item2 : tag));
-        using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
+        using var input = new MemoryStream(); raw.Save(input, binary); input.Position = 0;
+        if (version < DxfVersion.AutoCad2007)
+        {
+            bool rejected = false;
+            try { rejected = DxfDocument.Load(input) == null; } catch (NotSupportedException) { rejected = true; }
+            Check(rejected, "A typed SECTION packet requires R2007 or later");
+            return;
+        }
         var loaded = DxfDocument.Load(input) ?? throw new Exception("SECTION entity erased following entity source context.");
+        Equal(1, loaded.Entities.All.OfType<netDxf.Entities.Section>().Count(), "The SECTION context control must be a retained typed entity");
         var table = (DxfDataTable)((DxfDictionary)loaded.NamedObjects["DATA_TABLES"])["TABLE"];
         Check(ReferenceEquals(table.Columns[4].Values[0], loaded.Entities.Lines.Single()), "Following LINE retains its same-record source identity");
-        Equal(0, loaded.Objects.Validate().Count, "Section-shaped entity does not alter following reference resolution");
+        Equal(0, loaded.Objects.Validate().Count, "Typed SECTION does not alter following reference resolution");
     }
     private static DxfRawDocument DataTableRaw(DxfVersion version, bool binary)
     { using var output = new MemoryStream(); Check(DataTableDocument(version).Save(output, binary), "Malformed seed"); output.Position = 0; return DxfRawDocument.Load(output); }

@@ -127,7 +127,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (this.HasReferences(item))
+            if (this.HasReferences(item) || item.Sun != null)
             {
                 return false;
             }

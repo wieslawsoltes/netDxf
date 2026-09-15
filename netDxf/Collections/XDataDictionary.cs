@@ -337,7 +337,7 @@ namespace netDxf.Collections
         private XData Acquire(XData item)
         {
             // A value already stored elsewhere cannot be rebound by another container.
-            if (item.Container != null && !ReferenceEquals(item.Container, this)) item = (XData)item.Clone();
+            if (item.Container != null && !ReferenceEquals(item.Container, this)) item = item.CopyStoredGraph();
             item.Container = this;
             item.ApplicationRegistry.AttachXData(this);
             return item;

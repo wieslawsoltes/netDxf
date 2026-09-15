@@ -74,7 +74,7 @@ namespace netDxf.Collections
             }
 
             if (appReg.Owner != null && !ReferenceEquals(appReg.Owner, this))
-                appReg = (ApplicationRegistry)appReg.Clone();
+                appReg = appReg.CloneStoredGraph();
 
             if (assignHandle || string.IsNullOrEmpty(appReg.Handle))
             {

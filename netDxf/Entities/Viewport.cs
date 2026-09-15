@@ -36,7 +36,7 @@ namespace netDxf.Entities
     /// <remarks>
     /// The viewport with id equals 1 is the view of the paper space layout itself and it does not show the model.
     /// </remarks>
-    public class Viewport :
+    public partial class Viewport :
         EntityObject
     {
         #region delegates and events
@@ -533,6 +533,7 @@ namespace netDxf.Entities
         /// <returns>A new viewport that is a copy of this instance.</returns>
         public override object Clone()
         {
+            netDxf.Objects.SunReferences.CheckClone(this);
             Viewport viewport = new Viewport
             {
                 //EntityObject properties
@@ -578,6 +579,7 @@ namespace netDxf.Entities
                 viewport.XData.Add((XData) data.Clone());
 
             this.CopyCommonDataTo(viewport);
+            viewport.SunHandlePresent = this.SunHandlePresent;
             return viewport;
         }
 

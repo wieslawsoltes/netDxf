@@ -1,0 +1,1294 @@
+{
+  "qualification": "Exact source record fragments only; no editable style, CELLSTYLEMAP schema, or renderer qualification.",
+  "acadsharp_commit": "f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11",
+  "files": [
+    {
+      "source_file": "acad_table_simple.dxf",
+      "source_url": "https://raw.githubusercontent.com/mozman/ezdxf/v1.4.4/examples_dxf/acad_table_simple.dxf",
+      "source_sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "profile": "AC1027",
+      "fragment": "acad_table_simple.dxf.records.dxf.gz",
+      "fragment_sha256": "60ace80990ae6cf3254e3de774016a041fc9e7becf54dec0bab3e9b69b5609dc",
+      "fragment_byte_count": 5608,
+      "records": [
+        {
+          "handle": "6B",
+          "kind": "TABLESTYLE",
+          "common_owner": "6A",
+          "tag_count": 99,
+          "byte_count": 1083,
+          "sha256": "3f8fcf09e876517e597b09a947e9ef069d76c60684019a8178b0a76d84365ec4"
+        },
+        {
+          "handle": "B6",
+          "kind": "DICTIONARY",
+          "common_owner": "6B",
+          "tag_count": 8,
+          "byte_count": 125,
+          "sha256": "a1ab305e86495c5bec60a1efa718f7041e9c9390ba8566416d8f3ffaa706b541"
+        },
+        {
+          "handle": "B7",
+          "kind": "CELLSTYLEMAP",
+          "common_owner": "B6",
+          "tag_count": 323,
+          "byte_count": 4400,
+          "sha256": "ba9b85d206c77bbbf403fa061c7566f0123a53bd5b5deb1b835f6b34ba3b5759"
+        }
+      ],
+      "map_dictionary_name": "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP",
+      "map_dictionary_code": 360,
+      "style_header_wire_values": [
+        [
+          3,
+          "Standard"
+        ],
+        [
+          70,
+          "0"
+        ],
+        [
+          71,
+          "0"
+        ],
+        [
+          40,
+          "1.5"
+        ],
+        [
+          41,
+          "1.5"
+        ],
+        [
+          280,
+          "0"
+        ],
+        [
+          281,
+          "0"
+        ]
+      ],
+      "row_packets": [
+        {
+          "ordinal": 0,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "4.5"
+            ],
+            [
+              170,
+              "2"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "257"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "4"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 1,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "6.0"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "257"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "4"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 2,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "4.5"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "257"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "4"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_file": "acad_table_with_blk_ref.dxf",
+      "source_url": "https://raw.githubusercontent.com/mozman/ezdxf/v1.4.4/examples_dxf/acad_table_with_blk_ref.dxf",
+      "source_sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "profile": "AC1032",
+      "fragment": "acad_table_with_blk_ref.dxf.records.dxf.gz",
+      "fragment_sha256": "a97fa91b533bb76794a4d488e215d65164b16bce4f58bf3998784fd7726c6667",
+      "fragment_byte_count": 5614,
+      "records": [
+        {
+          "handle": "6B",
+          "kind": "TABLESTYLE",
+          "common_owner": "6A",
+          "tag_count": 99,
+          "byte_count": 1084,
+          "sha256": "0d403c0165391b6abe895efde43f6e258397cea7875c59aefe3770bdb18b4199"
+        },
+        {
+          "handle": "11A",
+          "kind": "DICTIONARY",
+          "common_owner": "6B",
+          "tag_count": 8,
+          "byte_count": 127,
+          "sha256": "ba6885df681d0b5385f85f4c22782a744b2a9d4ac13e6250237ca7eca75865e5"
+        },
+        {
+          "handle": "11B",
+          "kind": "CELLSTYLEMAP",
+          "common_owner": "11A",
+          "tag_count": 323,
+          "byte_count": 4403,
+          "sha256": "b277ec28c865de2a5142aef61fb09fca2889d22599c79e4011d09e96e6c26ec3"
+        }
+      ],
+      "map_dictionary_name": "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP",
+      "map_dictionary_code": 360,
+      "style_header_wire_values": [
+        [
+          3,
+          "Standard"
+        ],
+        [
+          70,
+          "0"
+        ],
+        [
+          71,
+          "0"
+        ],
+        [
+          40,
+          "1.5"
+        ],
+        [
+          41,
+          "1.5"
+        ],
+        [
+          280,
+          "0"
+        ],
+        [
+          281,
+          "0"
+        ]
+      ],
+      "row_packets": [
+        {
+          "ordinal": 0,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "4.5"
+            ],
+            [
+              170,
+              "2"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "257"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "4"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 1,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "6.0"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "257"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "4"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 2,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "4.5"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "257"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "4"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_file": "sample_AC1024_ascii.dxf",
+      "source_url": "https://raw.githubusercontent.com/DomCR/ACadSharp/f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11/samples/sample_AC1024_ascii.dxf",
+      "source_sha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+      "profile": "AC1024",
+      "fragment": "sample_AC1024_ascii.dxf.records.dxf.gz",
+      "fragment_sha256": "c40d125a46ee839c12e939a9a7a7fa6ef7238c5ad4f0a80c13b7303b46a0c6a9",
+      "fragment_byte_count": 5644,
+      "records": [
+        {
+          "handle": "87",
+          "kind": "TABLESTYLE",
+          "common_owner": "86",
+          "tag_count": 101,
+          "byte_count": 1109,
+          "sha256": "4c07873ea99a53add7cbba750da83907c7035573315c39afaf1dd9f1058df95f"
+        },
+        {
+          "handle": "104",
+          "kind": "DICTIONARY",
+          "common_owner": "87",
+          "tag_count": 8,
+          "byte_count": 128,
+          "sha256": "068c464a9bce1de82c9588d37f573345501e99411da268eeee901eb2ee1d7945"
+        },
+        {
+          "handle": "130F",
+          "kind": "CELLSTYLEMAP",
+          "common_owner": "104",
+          "tag_count": 323,
+          "byte_count": 4407,
+          "sha256": "fea1c04599d42b5d5bf17a597341fd4c0034259fd3bc33aa3539c731b0173d1f"
+        }
+      ],
+      "map_dictionary_name": "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP",
+      "map_dictionary_code": 360,
+      "style_header_wire_values": [
+        [
+          280,
+          "0"
+        ],
+        [
+          3,
+          "Standard"
+        ],
+        [
+          70,
+          "0"
+        ],
+        [
+          71,
+          "0"
+        ],
+        [
+          40,
+          "0.06"
+        ],
+        [
+          41,
+          "0.06"
+        ],
+        [
+          280,
+          "0"
+        ],
+        [
+          281,
+          "0"
+        ]
+      ],
+      "row_packets": [
+        {
+          "ordinal": 0,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.18"
+            ],
+            [
+              170,
+              "2"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "512"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 1,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.25"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "512"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 2,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.18"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "512"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_file": "sample_AC1018_ascii.dxf",
+      "source_url": "https://raw.githubusercontent.com/DomCR/ACadSharp/f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11/samples/sample_AC1018_ascii.dxf",
+      "source_sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+      "profile": "AC1018",
+      "fragment": "sample_AC1018_ascii.dxf.records.dxf.gz",
+      "fragment_sha256": "ddf03cb52d1252f2e47a6714440f3a3fe6b8a74a84be92ed1be00f4bb504c73d",
+      "fragment_byte_count": 5567,
+      "records": [
+        {
+          "handle": "87",
+          "kind": "TABLESTYLE",
+          "common_owner": "86",
+          "tag_count": 91,
+          "byte_count": 999,
+          "sha256": "663a4abe3bf29c1eab371245f401e45e1aeae117bc754b25c6f9c688c615f4df"
+        },
+        {
+          "handle": "104",
+          "kind": "DICTIONARY",
+          "common_owner": "87",
+          "tag_count": 10,
+          "byte_count": 161,
+          "sha256": "87e21478486accef05bfcede1b6c91a5a92f28bf3f03dea20cff070a15c6c372"
+        },
+        {
+          "handle": "13D9",
+          "kind": "CELLSTYLEMAP",
+          "common_owner": "104",
+          "tag_count": 323,
+          "byte_count": 4407,
+          "sha256": "eeba97fc25dceb62559484cafe8822887dc01547361f1d6a5aa312757125f8a0"
+        }
+      ],
+      "map_dictionary_name": "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP",
+      "map_dictionary_code": 360,
+      "style_header_wire_values": [
+        [
+          3,
+          "Standard"
+        ],
+        [
+          70,
+          "0"
+        ],
+        [
+          71,
+          "0"
+        ],
+        [
+          40,
+          "0.06"
+        ],
+        [
+          41,
+          "0.06"
+        ],
+        [
+          280,
+          "0"
+        ],
+        [
+          281,
+          "0"
+        ]
+      ],
+      "row_packets": [
+        {
+          "ordinal": 0,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.18"
+            ],
+            [
+              170,
+              "2"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 1,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.25"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 2,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.18"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_file": "sample_AC1021_ascii.dxf",
+      "source_url": "https://raw.githubusercontent.com/DomCR/ACadSharp/f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11/samples/sample_AC1021_ascii.dxf",
+      "source_sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+      "profile": "AC1021",
+      "fragment": "sample_AC1021_ascii.dxf.records.dxf.gz",
+      "fragment_sha256": "bd697c3dc984d95653dccab4ef580936cf7227067ad94f50b95a89210651252d",
+      "fragment_byte_count": 5633,
+      "records": [
+        {
+          "handle": "87",
+          "kind": "TABLESTYLE",
+          "common_owner": "86",
+          "tag_count": 100,
+          "byte_count": 1098,
+          "sha256": "d4565713062dff71cf6ce589f6ea7f4f03688d70924941a658769cceabc25295"
+        },
+        {
+          "handle": "104",
+          "kind": "DICTIONARY",
+          "common_owner": "87",
+          "tag_count": 8,
+          "byte_count": 128,
+          "sha256": "9bcd99a4fe36a8a3f768842a286832c09016c06b97dd61673d1a85722f1467eb"
+        },
+        {
+          "handle": "136F",
+          "kind": "CELLSTYLEMAP",
+          "common_owner": "104",
+          "tag_count": 323,
+          "byte_count": 4407,
+          "sha256": "430d2aa39fc8557c74ca43aa617dd38852ef64edb64a1ffa9a7d7ab7ef98cd9c"
+        }
+      ],
+      "map_dictionary_name": "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP",
+      "map_dictionary_code": 360,
+      "style_header_wire_values": [
+        [
+          3,
+          "Standard"
+        ],
+        [
+          70,
+          "0"
+        ],
+        [
+          71,
+          "0"
+        ],
+        [
+          40,
+          "0.06"
+        ],
+        [
+          41,
+          "0.06"
+        ],
+        [
+          280,
+          "0"
+        ],
+        [
+          281,
+          "0"
+        ]
+      ],
+      "row_packets": [
+        {
+          "ordinal": 0,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.18"
+            ],
+            [
+              170,
+              "2"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "512"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 1,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.25"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "512"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        },
+        {
+          "ordinal": 2,
+          "text_style_name": "Standard",
+          "text_style_handle": "11",
+          "scalar_wire_values": [
+            [
+              140,
+              "0.18"
+            ],
+            [
+              170,
+              "5"
+            ],
+            [
+              62,
+              "0"
+            ],
+            [
+              63,
+              "7"
+            ],
+            [
+              283,
+              "0"
+            ],
+            [
+              90,
+              "512"
+            ],
+            [
+              91,
+              "0"
+            ],
+            [
+              1,
+              ""
+            ]
+          ],
+          "border_visibility_wire_values": [
+            [
+              284,
+              "1"
+            ],
+            [
+              285,
+              "1"
+            ],
+            [
+              286,
+              "1"
+            ],
+            [
+              287,
+              "1"
+            ],
+            [
+              288,
+              "1"
+            ],
+            [
+              289,
+              "1"
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

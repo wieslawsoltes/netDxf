@@ -13,6 +13,7 @@ namespace netDxf.IO
             if (this.chunk.Code != 100 || this.chunk.ReadString() != SubclassMarker.VPort)
                 throw new InvalidDataException("VPORT requires the AcDbViewportTableRecord subclass.");
             VPort vport = new VPort("_reading");
+            var sunContext = new SunOwnerContext(SubclassMarker.VPort);
             string name = null;
             var seen = new HashSet<short>();
             var xdata = new List<XData>();
@@ -31,6 +32,7 @@ namespace netDxf.IO
             while (this.chunk.Code != 0)
             {
                 short code = this.chunk.Code;
+                sunContext.Observe(code, this.chunk.Value);
                 if (code == 1001)
                 {
                     string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
@@ -49,6 +51,7 @@ namespace netDxf.IO
                 {
                     switch (code)
                     {
+                        case 361: if (sunContext.IsPublic) this.AddSunReference(vport, this.chunk.ReadHex()); break;
                         case 2: name = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString()); break;
                         case 10: lowerLeftCorner.X = this.chunk.ReadDouble(); break;
                         case 20: lowerLeftCorner.Y = this.chunk.ReadDouble(); break;
@@ -211,6 +214,7 @@ namespace netDxf.IO
             this.chunk.Write(146, vp.UcsElevation);
             if (vp.NamedUcs != null) this.chunk.Write(345, vp.NamedUcs.Handle);
             if (vp.BaseUcs != null) this.chunk.Write(346, vp.BaseUcs.Handle);
+            this.WriteSunReference(vp);
             this.WriteXData(vp.XData);
         }
     }

@@ -46,13 +46,21 @@ internal static partial class Program
         RunTypedObjectErasureTests();
         RunLightListTests();
         RunDataTableTests();
+        RunSunTests();
         RegisterStoredTableTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
+        RegisterStoredTableNameSpellingTests();
+        RegisterTableStyleTests();
         RegisterFifthMixedModuleTests();
         RunSourceReferenceIdentityTests();
         RunNumericHandleTests();
+        RegisterSectionTests();
+        RegisterSectionLifecycleTests();
+        RunSectionSettingsTests();
+        RegisterSectionProducerTests();
         RunAppIdXDataLifecycleTests();
+        RegisterTransparencyStoredTests();
         File.WriteAllText(Path.Combine(ArtifactDirectory, "results.json"),
             JsonSerializer.Serialize(Results, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"Conformance: {Results.Count - failures} passed; {failures} failed.");

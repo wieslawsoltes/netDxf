@@ -102,6 +102,7 @@ namespace netDxf.IO
             this.ValidateLightVersions();
             this.ValidateMultiLeaders();
             this.ValidateStoredTables();
+            this.ValidateSections();
             this.ValidateHatchBoundaryPresence();
             this.ValidateOutputSettings();
             IReadOnlyList<string> databaseErrors = this.doc.Objects.Validate();
@@ -1589,7 +1590,7 @@ namespace netDxf.IO
             }
 
             // transparency is stored in XData
-            if (layer.Transparency.Value > 0)
+            if (layer.Transparency.Value >= 0 && (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 || layer.XData.ContainsAppId("AcCmTransparency")))
             {
                 AddLayerTransparencyXData(layer);
             }
@@ -1735,8 +1736,9 @@ namespace netDxf.IO
             this.chunk.Write(22, ucs.YAxis.Y);
             this.chunk.Write(32, ucs.YAxis.Z);
 
-            this.chunk.Write(79, (short) 0);
+            this.chunk.Write(79, ucs.OrthographicViewType);
             this.chunk.Write(146, ucs.Elevation);
+            if (ucs.BaseUcsHandlePresent) this.chunk.Write(346, ucs.BaseUcs?.Handle ?? "0");
 
             // Canonical order is independent of insertion order and Dictionary implementation.
             for (short value = 1; value <= 6; value++)
@@ -1949,6 +1951,9 @@ namespace netDxf.IO
                     break;
                 case EntityType.Ole2Frame:
                     this.WriteOle2Frame((Ole2Frame) entity);
+                    break;
+                case EntityType.Section:
+                    this.WriteSection((Section)entity);
                     break;
                 case EntityType.StoredTable:
                     this.WriteStoredTable((StoredTable)entity);
@@ -4672,6 +4677,7 @@ namespace netDxf.IO
             this.chunk.Write(122, vp.UcsYAxis.Y);
             this.chunk.Write(132, vp.UcsYAxis.Z);
 
+            this.WriteSunReference(vp);
             this.WriteXData(vp.XData);
         }
 

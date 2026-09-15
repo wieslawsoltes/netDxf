@@ -1,0 +1,122 @@
+{
+  "producer": "IxMilia.Dxf",
+  "version": "0.8.4",
+  "package_sha256": "3b08f5b604c958ea6c29f107f751d75abdf3328713ec586bc4fdbf0302e24c81",
+  "schema_source_commit": "3ab0f9d6d3f14a6f6fa924e111e8e3af1065c567",
+  "native_execution_qualified": false,
+  "whole_original_typed_import_qualified": false,
+  "fixtures": [
+    {
+      "file": "ixmilia-section-settings-R2007-ascii.dxf.gz",
+      "sha256": "0d5a607a49a83c9707a6d3928364ecd4aef0bf4ed7c45141922f771cc4fbc48b",
+      "gzip_sha256": "375c386358a054f87f1ea5771a549d2564439e9b6800cac92e864e6209badc75",
+      "extracted_file": "extracted-section-settings-R2007-ascii.dxf",
+      "extracted_sha256": "016a8e8e800dadb3e22ee492c54b313a71f8706c3b73775b5575d7ffe0423257",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2007-binary.dxf.gz",
+      "sha256": "87455c9979349a7b7c8a96a2504b03b377ab72c979bf52d84bc2bc7ee361d8ea",
+      "gzip_sha256": "0c768fbaaf5c8644eaae3f9da8502505b2754240a993c482321b9f8e65300a2b",
+      "extracted_file": "extracted-section-settings-R2007-binary.dxf",
+      "extracted_sha256": "f38839e20be3bdb132728f68b3056f98cd00589636de90f7f788861ef06b1cfa",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2010-ascii.dxf.gz",
+      "sha256": "7265e42981ecf0c22d1646f7713d2ad8a2ee5024eb8bf3d9afbb40c463343d49",
+      "gzip_sha256": "d763a5e5fd570aa096bb90f7b1904b109ca9d323908aa6542fd59b43c4fd9c0f",
+      "extracted_file": "extracted-section-settings-R2010-ascii.dxf",
+      "extracted_sha256": "faa9be7a5f325401272bbae13e5da4b2b5b3c2618c7e5c5259bf514a0aff154e",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2010-binary.dxf.gz",
+      "sha256": "984c86a416c5c408cbe0ecdd309e7ba5bb7831d74396f8d59868295a567af81e",
+      "gzip_sha256": "3ac355b928db712d1c305e2dc8a17701cf31cf354c776a35fe285cc160993858",
+      "extracted_file": "extracted-section-settings-R2010-binary.dxf",
+      "extracted_sha256": "85a81a7d3bdc7da0c3d0bab61822f4acf05ce8b2fabd677f7bfab0182dbeb48c",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2013-ascii.dxf.gz",
+      "sha256": "656d5197c02db96598a2103b93cb4f46eec19c17fe4678b8ff462dcc9927eb7d",
+      "gzip_sha256": "4488fdabb2181ea806d5069011ca987b5634b3c330970c9db47dfc59dabf0570",
+      "extracted_file": "extracted-section-settings-R2013-ascii.dxf",
+      "extracted_sha256": "d88bfe4f17d8f6b6833a9ee0d69c2b2dc2b7e4f40e99bf408689e45fdae17f64",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2013-binary.dxf.gz",
+      "sha256": "93caf0a0063a19436dc1f8c6f1982d2667ea835d5928f723e8d59a09748b7420",
+      "gzip_sha256": "1c83d57d7f9c4f543fdc0d2e2be8d9614e83be80f0a2cc0eab37b3bae2fd92d3",
+      "extracted_file": "extracted-section-settings-R2013-binary.dxf",
+      "extracted_sha256": "015389640312be39a8a056c219ef4fd6b2c0dbb4c36a1f1ec38d7afd7c5663df",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2018-ascii.dxf.gz",
+      "sha256": "7ca01795c7e59bf3d3c66c03cae30d2b9f87118919c03c854ae4c7234175b97f",
+      "gzip_sha256": "9d4a38015f12d9189b99fe7354bbfc162b38a090668f3bafcc23770ac21297c0",
+      "extracted_file": "extracted-section-settings-R2018-ascii.dxf",
+      "extracted_sha256": "5320c1c1905492e292ea4b81ed79cff8faa4c85223c0b50bc42bb34f457680fd",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    },
+    {
+      "file": "ixmilia-section-settings-R2018-binary.dxf.gz",
+      "sha256": "c052ddc7a1ffe805165fe0c4b5b218bf55a02a1a4369c4da7d1d7b8b5259528f",
+      "gzip_sha256": "9edb6abee88710c0e975b269ad3b15b005c6100acca778940dc3614c7ad7a4e8",
+      "extracted_file": "extracted-section-settings-R2018-binary.dxf",
+      "extracted_sha256": "392043ab76a78df5bb3f462e68e1912572e500019deebbb22d7de273f79f3529",
+      "handle_map": {
+        "1E": "A",
+        "20": "30"
+      },
+      "application_packets": [
+        "20"
+      ]
+    }
+  ]
+}

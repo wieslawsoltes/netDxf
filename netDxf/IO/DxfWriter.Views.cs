@@ -68,6 +68,7 @@ namespace netDxf.IO
             {
                 this.chunk.Write(73, view.IsCameraPlottable ? (short)1 : (short)0);
             }
+            this.WriteSunReference(view);
             this.WriteXData(view.XData);
         }
     }

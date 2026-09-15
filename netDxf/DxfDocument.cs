@@ -826,6 +826,7 @@ namespace netDxf
             }
 
             if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this);
+            if (entity is Section section) section.Validate(this);
             this.ValidateStoredTableEntityAdoption(entity);
 
             // assign a handle
@@ -962,6 +963,7 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.Section:
                 case EntityType.StoredTable:
                     break;
                 case EntityType.MultiLeader:
@@ -1133,6 +1135,7 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.Section:
                 case EntityType.StoredTable:
                     break;
                 case EntityType.MultiLeader:
@@ -1874,7 +1877,7 @@ namespace netDxf
         {
             if (this.appRegistries.TryGetValue(source.Name, out ApplicationRegistry registered)) return registered;
             // XData supplied by a caller or another document keeps its registry and mutable payload.
-            return this.appRegistries.Add((ApplicationRegistry)source.Clone());
+            return this.appRegistries.Add(source.CloneStoredGraph());
         }
 
         private void DxfObject_XDataAddAppReg(DxfObject sender, ObservableCollectionEventArgs<ApplicationRegistry> e)

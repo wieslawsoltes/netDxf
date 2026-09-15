@@ -37,7 +37,7 @@ namespace netDxf.Entities
                 if (value || tag.Code != 7) continue;
                 string name = this.decode((string)tag.Value);
                 if (!this.source.TextStyles.TryGetValue(name, out TextStyle style)) continue;
-                this.namedStyles.Add(tag, Tuple.Create(style, name));
+                this.namedStyles.Add(tag, Tuple.Create(style, style.Name));
                 this.references.Add(style);
             }
         }

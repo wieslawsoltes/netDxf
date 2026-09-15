@@ -40,12 +40,13 @@ namespace netDxf.IO
                 && source.Handle == actual) this.acceptedSourceObjects[actual] = item;
         }
 
-        private DxfObject GetObjectBySourceHandle(string handle)
+        private DxfObject GetObjectBySourceHandle(string handle, bool includeMetadata = false)
         {
             if (!ulong.TryParse(handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong value)
                 || value == 0 || !this.sourceObjectIdentities.Contains(value)
                 || !this.acceptedSourceObjects.TryGetValue(value, out DxfObject accepted)) return null;
-            DxfObject current = this.doc.GetObjectByHandle(value.ToString("X", CultureInfo.InvariantCulture));
+            string canonical = value.ToString("X", CultureInfo.InvariantCulture);
+            DxfObject current = includeMetadata ? this.doc.StoredTableHandleTarget(canonical) : this.doc.GetObjectByHandle(canonical);
             return ReferenceEquals(accepted, current) ? current : null;
         }
     }

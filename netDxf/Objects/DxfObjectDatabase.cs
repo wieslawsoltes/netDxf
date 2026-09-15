@@ -80,6 +80,7 @@ namespace netDxf.Objects
             }
             foreach (DxfObject item in this.Document.AddedObjects.Values)
             {
+                SunReferences.Validate(item, this, errors);
                 if (item.ExtensionDictionary != null && (!this.IsRegistered(item.ExtensionDictionary) || item.ExtensionDictionary.Owner != item)) errors.Add("Invalid extension dictionary: " + item.Handle);
                 foreach (DxfObject reactor in item.PersistentReactors)
                     if (reactor == null || !this.IsRegistered(reactor)) errors.Add("Unregistered persistent reactor: " + item.Handle);
@@ -110,7 +111,7 @@ namespace netDxf.Objects
         }
         private DxfDictionary CloneDictionaryGraph(DxfDictionary source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences)
         { return (DxfDictionary)this.CloneOwnershipGraph(source, destination, name, extension, externalReferences); }
-        private DxfDatabaseObject CloneOwnershipGraph(DxfDatabaseObject source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences)
+        private DxfDatabaseObject CloneOwnershipGraph(DxfDatabaseObject source, DxfObject destination, string name, bool extension, IReadOnlyDictionary<DxfObject, DxfObject> externalReferences, bool sun = false)
         {
             // Enumerating caller mappings can run application code. Snapshot it before reading
             // graph state and recheck the destination slot after the final external callback.
@@ -118,7 +119,8 @@ namespace netDxf.Objects
             if (externalReferences != null)
                 foreach (KeyValuePair<DxfObject, DxfObject> pair in externalReferences) externalMap.Add(pair.Key, pair.Value);
             this.CheckRegistered(destination);
-            if (extension)
+            if (sun) this.CheckSunDestination(destination);
+            else if (extension)
             {
                 if (destination == this.Document.Layers || destination.ExtensionDictionary != null) throw new InvalidOperationException("The destination extension-dictionary slot is occupied or reserved.");
             }
@@ -155,7 +157,7 @@ namespace netDxf.Objects
                 original.CopyDatabaseReferencesTo(clone, resolve);
                 foreach (XData data in original.XData.Values)
                 {
-                    clone.XData.Add((XData)data.Clone());
+                    clone.XData.Add(data.CopyStoredGraph());
                     foreach (XDataRecord tag in data.XDataRecord)
                         if (tag.Code == XDataCode.DatabaseHandle && !IsNullHandle((string)tag.Value))
                         {
@@ -200,7 +202,8 @@ namespace netDxf.Objects
                     }
             }
             DxfDatabaseObject result = (DxfDatabaseObject)map[source];
-            if (extension) destination.ExtensionDictionary = (DxfDictionary)result;
+            if (sun) SunReferences.Set(destination, result);
+            else if (extension) destination.ExtensionDictionary = (DxfDictionary)result;
             else ((DxfDictionary)destination).AddLoaded(name, result, true);
             return result;
         }
@@ -304,7 +307,7 @@ namespace netDxf.Objects
                 this.Document.NumHandles = item.AssignHandle(this.Document.NumHandles);
             }
             // XData may have been shared with a foreign document; never transfer its application registry.
-            foreach (XData data in item.XData.Values.ToList()) item.XData.ReplaceForBinding(data.ApplicationRegistry.Name, (XData)data.Clone());
+            foreach (XData data in item.XData.Values.ToList()) item.XData.ReplaceForBinding(data.ApplicationRegistry.Name, data.CopyStoredGraph());
             item.Database = this;
             this.objects.Add(item.Handle, item);
             this.Document.AddedObjects.Add(item.Handle, item);

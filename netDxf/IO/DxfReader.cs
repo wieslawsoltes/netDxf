@@ -331,6 +331,7 @@ namespace netDxf.IO
             this.ImportDatabaseObjects();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
+            this.ResolveSections();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -2687,6 +2688,8 @@ namespace netDxf.IO
             Debug.Assert(this.chunk.ReadString() == SubclassMarker.Ucs);
 
             string name = string.Empty;
+            short orthographicViewType = 0; string baseUcsHandle = null;
+            var baseContext = new UcsBaseContext();
             Vector3 origin = Vector3.Zero;
             Vector3 xDir = Vector3.UnitX;
             Vector3 yDir = Vector3.UnitY;
@@ -2703,6 +2706,7 @@ namespace netDxf.IO
 
             while (this.chunk.Code != 0)
             {
+                baseContext.Observe(this.chunk.Code, this.chunk.Value);
                 switch (this.chunk.Code)
                 {
                     case 2:
@@ -2749,7 +2753,19 @@ namespace netDxf.IO
                         if (!relationshipCodes.Add(70)) throw new InvalidDataException("Duplicate UCS flags.");
                         flags = (UcsFlags)this.chunk.ReadShort(); this.chunk.Next(); break;
                     case 79:
-                        if (!relationshipCodes.Add(79) || this.chunk.ReadShort() != 0) throw new InvalidDataException("UCS table group 79 is reserved and must be zero.");
+                        if (baseContext.IsPublic)
+                        {
+                            if (!relationshipCodes.Add(79)) throw new InvalidDataException("Duplicate UCS orthographic view type.");
+                            orthographicViewType = this.chunk.ReadShort();
+                            if (orthographicViewType < 0 || orthographicViewType > 6) throw new InvalidDataException("Unsupported UCS orthographic view type outside 0 through 6.");
+                        }
+                        this.chunk.Next(); break;
+                    case 346:
+                        if (baseContext.IsPublic)
+                        {
+                            if (baseUcsHandle != null) throw new InvalidDataException("Duplicate UCS base-reference group 346.");
+                            baseUcsHandle = this.chunk.ReadHex();
+                        }
                         this.chunk.Next(); break;
                     case 71:
                         CompleteUcsOrthographicOrigin(orthographicOrigins, orthographicType, orthographicOrigin, orthographicComponents);
@@ -2802,6 +2818,7 @@ namespace netDxf.IO
             }
 
             UCS ucs = new UCS(name, origin, xDir, yDir, false) { Elevation = elevation, Flags = flags };
+            this.CompleteUcsBase(ucs, orthographicViewType, baseUcsHandle);
             foreach (KeyValuePair<UcsOrthographicType, Vector3> pair in orthographicOrigins)
             {
                 ucs.SetOrthographicOrigin(pair.Key, pair.Value);
@@ -3747,6 +3764,10 @@ namespace netDxf.IO
                 case DxfObjectCode.Ole2Frame:
                     dxfObject = this.ReadOle2Frame();
                     break;
+                case "SECTION":
+                case "SECTIONOBJECT":
+                    dxfObject = this.ReadSection(dxfCode);
+                    break;
                 case "MULTILEADER":
                 case "MLEADER":
                     dxfObject = this.ReadMultiLeader();
@@ -4658,6 +4679,7 @@ namespace netDxf.IO
             Debug.Assert(this.chunk.ReadString() == SubclassMarker.Viewport);
 
             Viewport viewport = new Viewport();
+            var sunContext = new SunOwnerContext(SubclassMarker.Viewport);
             Vector3 center = viewport.Center;
             Vector2 viewCenter = viewport.ViewCenter;
             Vector2 snapBase = viewport.SnapBase;
@@ -4674,8 +4696,13 @@ namespace netDxf.IO
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                sunContext.Observe(this.chunk.Code, this.chunk.Value);
                 switch (this.chunk.Code)
                 {
+                    case 361:
+                        if (sunContext.IsPublic) this.AddSunReference(viewport, this.chunk.ReadHex());
+                        this.chunk.Next();
+                        break;
                     case 10:
                         center.X = this.chunk.ReadDouble();
                         this.chunk.Next();
