@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
-  "audit_date": "2026-09-14",
+  "audit_date": "2026-09-15",
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "005d5401c5c6514e54a64121ac5888f7525a4eca",
-    "tree": "731b4c04178e4888af6921cabbd99eb958f0e3b2"
+    "commit": "0f924c892b94840cf85519d57837c3839c582a2e",
+    "tree": "55d3de29002c9f40d68499280ec737129731d082"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 22047,
+    "test_cases": 22994,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 85,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/85/checks"
+    "last_implementation_pr": 86,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/86/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -515,6 +515,42 @@
     "ATTEMPTY": {
       "label": "Attribute defaults and null normalization",
       "path": "doc/dxf-conformance/attribute-default-values.md"
+    },
+    "FILTERPTR": {
+      "label": "LAYER_FILTER and OBJECT_PTR stored envelopes",
+      "path": "doc/dxf-conformance/layer-filter-pointer.md"
+    },
+    "STOREDENV": {
+      "label": "SPATIAL_INDEX and inert VBA_PROJECT storage",
+      "path": "doc/dxf-conformance/stored-envelopes.md"
+    },
+    "LIGHTLIST": {
+      "label": "Explicit-version LIGHTLIST storage",
+      "path": "doc/dxf-conformance/lightlist.md"
+    },
+    "ERASE": {
+      "label": "Terminal typed-object erasure",
+      "path": "doc/dxf-conformance/typed-object-erasure.md"
+    },
+    "TABLEOWN": {
+      "label": "Declared TABLE roundtrip ownership prerequisites",
+      "path": "doc/dxf-conformance/table-ownership-prerequisites.md"
+    },
+    "MIX4": {
+      "label": "Mixed object lifecycle qualification",
+      "path": "doc/dxf-conformance/fourth-mixed-modules.md"
+    },
+    "APPIDLIFE": {
+      "label": "APPID and retained XData lifecycle",
+      "path": "doc/dxf-conformance/appid-xdata-lifecycle.md"
+    },
+    "NATMLEAD": {
+      "label": "Native MLEADER envelope compatibility",
+      "path": "doc/dxf-conformance/mleader-native-inputs.md"
+    },
+    "PROXYCOMP": {
+      "label": "Native R2010 proxy count compatibility",
+      "path": "doc/dxf-conformance/common-entity-data.md"
     }
   },
   "features": [
@@ -599,7 +635,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All 310\u2013319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
       "evidence": [
         "B"
       ]
@@ -1889,9 +1925,9 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Registry/XData registration. `ReadApplicationId/WriteApplicationRegistry`.",
+      "scope": "Canonical document registries, callback-safe rename indexes, exact retained-carrier references and independent foreign/cyclic clones are tested. Broader private XData semantics remain partial.",
       "evidence": [
-        "B"
+        "APPIDLIFE"
       ]
     },
     {
@@ -2254,7 +2290,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Editable ordered typed payload codes1\u2013369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
+      "scope": "Editable ordered typed payload codes1–369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
       "evidence": [
         "NODO"
       ]
@@ -2444,9 +2480,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "IDBUFFER has typed ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR remains missing.",
+      "scope": "IDBUFFER has ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR stores its published common-only envelope; no undocumented pointer field or placement semantics are invented.",
       "evidence": [
-        "CONT"
+        "CONT",
+        "FILTERPTR"
       ]
     },
     {
@@ -2458,16 +2495,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Layer filters/indexes.",
+      "scope": "LAYER_FILTER stores ordered unresolved names with exact duplicates and case preservation. Layer evaluation and LAYER_INDEX remain unimplemented.",
       "evidence": [
-        "B"
+        "FILTERPTR"
       ]
     },
     {
@@ -2479,16 +2516,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Light-object lists.",
+      "scope": "Explicit stored Int32 version, ordered LIGHT references, repeated targets and independently stored names. Common metadata, lifecycle and clone maps are qualified from R2007; older input stays opaque. No rendering or native CAD qualification.",
       "evidence": [
-        "B"
+        "LIGHTLIST"
       ]
     },
     {
@@ -2633,9 +2670,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Typed SPATIAL_FILTER rectangle/polygon boundary, normal/origin, optional planes and two affine matrices with extension ownership. SPATIAL_INDEX and private inverted-XCLIP records remain missing; no clipping evaluation.",
+      "scope": "Typed SPATIAL_FILTER boundaries, planes and matrices plus SPATIAL_INDEX exact finite stored timestamp. Spatial-index/clipping evaluation and private inverted-XCLIP schemas remain open.",
       "evidence": [
-        "CONT"
+        "CONT",
+        "STOREDENV"
       ]
     },
     {
@@ -2689,16 +2727,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Inert VBA payload preservation, not execution.",
+      "scope": "Inert defensive bytes and exact ordered 310 chunks, including empty chunks, with count checks and resource budgets in all admitted typed profiles. Unknown variants stay opaque; no VBA parsing or execution.",
       "evidence": [
-        "B"
+        "STOREDENV"
       ]
     },
     {
@@ -2864,10 +2902,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Basic records/APPID registration; binary clone storage is now isolated. Full type-dependent transforms, quotas and handle-closure remapping remain open.",
+      "scope": "Basic records, canonical APPID bindings and isolated binary values, including merges into existing entries. Retained carriers include INSERT attributes, BLOCK end records and main layout viewports. Full transforms, quotas and universal dependency import remain open.",
       "evidence": [
         "XDCL",
-        "B"
+        "B",
+        "APPIDLIFE"
       ]
     },
     {
@@ -4845,7 +4884,7 @@
         "AC1027": "T",
         "AC1032": "V"
       },
-      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000\u20132013 writer profile.",
+      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000–2013 writer profile.",
       "evidence": [
         "MTCOL"
       ]
@@ -4971,7 +5010,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320\u2013329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
+      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320–329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
       "evidence": [
         "NODO"
       ]
@@ -5244,7 +5283,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Optional group 284 values 0\u20133, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
+      "scope": "Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
       "evidence": [
         "COMMON"
       ]
@@ -5391,9 +5430,10 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "CloneObject copies values and owned children with exact external reference mappings, independent metadata and preallocation rejection. Dictionary name removal remains unlink-only; universal erasure is not implied.",
+      "scope": "CloneObject copies values and owned children with exact external reference mappings, independent metadata and preallocation rejection. Dictionary removal unlinks; EraseOwnedTree separately validates and terminally removes a qualified typed ownership closure.",
       "evidence": [
-        "OUTSET"
+        "OUTSET",
+        "ERASE"
       ]
     },
     {
@@ -5475,9 +5515,10 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Typed editable public parameter schema, nullable group 293, named dictionary placement and explicit graph clone mappings. Older profiles retain unknown objects opaquely, while typed style export rejects.",
+      "scope": "Typed editable public parameters, nullable groups 179/293, named dictionary placement and explicit graph clone mappings. Missing 179 preserves absence with effective value 2. Unknown style payloads remain wholly opaque and cannot supply typed entity resources; typed output requires R2007+.",
       "evidence": [
-        "MLEAD"
+        "MLEAD",
+        "NATMLEAD"
       ]
     },
     {
@@ -5521,13 +5562,223 @@
       "evidence": [
         "ATTEMPTY"
       ]
+    },
+    {
+      "id": "typed-layer-filter-stored-names",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "LAYER_FILTER ordered stored names",
+      "scope": "Published AcDbFilter/AcDbLayerFilter repeated group 8 names, including duplicates, case distinctions and unresolved layers; common metadata, compatible CLASS counts and graph clones. No filter evaluation.",
+      "evidence": [
+        "FILTERPTR"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-object-ptr-common-envelope",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "OBJECT_PTR published common envelope",
+      "scope": "Published common metadata only, with exact CAseDLPNTableRecord class spelling where declared. No undocumented payload or dictionary placement is invented; private variants remain opaque.",
+      "evidence": [
+        "FILTERPTR"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-spatial-index-stored-time",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SPATIAL_INDEX stored timestamp",
+      "scope": "Finite group 40 value retained bit-exactly through both transports and graph clones. Unknown/private packets stay opaque; the timestamp is not interpreted as a rebuilt index.",
+      "evidence": [
+        "STOREDENV"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-object-terminal-erasure",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Terminal EraseOwnedTree",
+      "scope": "Actual-owner closure, alias and extension teardown after incoming-reference validation before mutation. Tombstone handles remain and reattachment rejects. Opaque subtrees, managed legacy owners and hidden private dependencies remain excluded.",
+      "evidence": [
+        "ERASE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-declared-ownership",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "TABLE roundtrip declared ownership",
+      "scope": "Exact XRECORD 360 TABLECONTENT and 361 TABLEGEOMETRY ownership binding, adoption and clone safeguards; extracted native ownership packets retained. Composite R2004 DATATABLE envelopes stay unbound. Full TABLE cells/backing schemas remain separate.",
+      "evidence": [
+        "TABLEOWN"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-object-mixed-lifecycle",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Mixed object clone, APPID rename and erasure",
+      "scope": "Twelve combined scenarios, 36 drawings and 12 exact maps; LIGHTLIST joins from R2007. Payloads, semantic remapping, arbitrary 320 values, rejected/committed erasure and surviving external resources are independently checked.",
+      "evidence": [
+        "MIX4"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-appid-xdata-lifecycle",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "APPID rename, sharing and retained-carrier lifecycle",
+      "scope": "Two-phase internal rename binding; canonical registry identity without caller transfer; single-container value identity; isolated shared/merged binary arrays; exact references and removal guards across retained metadata carriers.",
+      "evidence": [
+        "APPIDLIFE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-block-end-xdata",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Independent BLOCK and ENDBLK XData packets",
+      "scope": "Each record reads and writes its own packets in all admitted profiles/transports. Block clones preserve ENDBLK data with independent bytes and registry bindings.",
+      "evidence": [
+        "APPIDLIFE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-mleader-native-envelope-presence",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Native MLEADER optional stored fields",
+      "scope": "Absent entity 270 and style 179 retain stored absence while using effective value 2; nullable line 92 retains absence with effective ByBlock color. Known malformed values reject; unknown style payloads preserve their full body and discard only abandoned typed reference fixups. Extracted native fixtures do not certify whole drawings.",
+      "evidence": [
+        "NATMLEAD"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-proxy-r2010-input",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Native R2010 proxy graphics length fields",
+      "scope": "Group 160 input is accepted from R2010 with existing length and allocation checks. Canonical output remains group 92 through R2010 and group 160 from R2013. Pinned native caches qualify only the common stored byte envelope.",
+      "evidence": [
+        "PROXYCOMP"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "V",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
     {
       "id": "opaque-graph",
       "title": "Class-specific dependencies and typed integration",
-      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented. An explicit typed-object erase operation with incoming-reference validation and owned-subtree cleanup remains to be implemented."
+      "scope": "Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal dependency import and typed unknown-entity preservation. Typed graph copying requires explicit external maps and rejects opaque subtrees. Scoped raw transactions and terminal typed erasure are implemented with documented graph boundaries."
     },
     {
       "id": "field-fidelity",
@@ -5542,7 +5793,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "TABLESTYLE, FIELD/DIMASSOC, OBJECT_PTR/SPATIAL_INDEX, LAYER_FILTER/LAYER_INDEX, MATERIAL/VISUALSTYLE/rendering, sun and other public object families. Stored MLEADERSTYLE, standalone output settings and WIPEOUTVARIABLES now join the earlier typed containers and GEODATA subset."
+      "scope": "TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, LAYER_INDEX/DATATABLE, MATERIAL/VISUALSTYLE/rendering and sun families. Public OBJECT_PTR/LAYER_FILTER/SPATIAL_INDEX/LIGHTLIST and inert VBA_PROJECT storage join earlier stored object subsets; private variants and evaluation remain separate."
     },
     {
       "id": "historical-typed",

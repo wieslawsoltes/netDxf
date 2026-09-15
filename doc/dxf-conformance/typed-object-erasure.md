@@ -85,10 +85,9 @@ silently acquiring a different identity through reattachment.
 
 Registration removal uses the document's normal `AddedObjects.Remove` lifecycle
 to release APPID use counts and document XData handlers. A shared APPID remains
-in use until its last live user is removed. Unregistration uses each packet's
-actual `ApplicationRegistry.Name`, which also permits erasure after a registry
-rename when an older XData dictionary key remains. This does not claim a general
-repair of XData dictionary rename/subscription behavior.
+in use until its last live user is removed. Unregistration uses each packet's actual `ApplicationRegistry.Name`. The [APPID lifecycle contract](appid-xdata-lifecycle.md)
+additionally covers canonical registry bindings and callback-safe retained-carrier
+rename indexes.
 
 `DxfDictionary.Remove(name)` continues to remove one name only. Use
 `EraseOwnedTree` when permanent removal of the owned records is intended.

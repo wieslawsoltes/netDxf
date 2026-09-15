@@ -2,12 +2,12 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-14**. Implementation snapshot for PR **#85**: [`005d5401c5c6514e54a64121ac5888f7525a4eca`](https://github.com/wieslawsoltes/netDxf/tree/005d5401c5c6514e54a64121ac5888f7525a4eca).
-Source tree: `731b4c04178e4888af6921cabbd99eb958f0e3b2`. Branch: `netstandard`.
+Audit date: **2026-09-15**. Implementation snapshot for PR **#86**: [`0f924c892b94840cf85519d57837c3839c582a2e`](https://github.com/wieslawsoltes/netDxf/tree/0f924c892b94840cf85519d57837c3839c582a2e).
+Source tree: `55d3de29002c9f40d68499280ec737129731d082`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
-**234 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
+**244 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
 
 `DxfDocument` is the existing typed geometry/database API. `DxfRawDocument` is a separate immutable ordered-tag/record API. Raw preservation is now implemented; it is not an automatic preservation fallback inside typed `DxfDocument.Load/Save`. A raw file containing an unfamiliar entity can survive while that entity is still missing from the typed API.
 
@@ -229,12 +229,16 @@ Product release years and database-format families are separate: an AC1032 file 
 | Common entity color names · typed | X | X | X | V | T | T | T | T | T | Optional group 430, including explicit empty values, literal Unicode escape text and framing controls; cloned by public entities, ATTRIB and ATTDEF. [COMMON](common-entity-data.md) |
 | Common entity shadow mode · typed | X | X | X | V | V | T | T | T | T | Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output. [COMMON](common-entity-data.md) |
 | Common entity opaque proxy cache · typed | X | X | X | T | T | T | T | T | T | Defensive byte copies, absent/empty distinction, ordered chunks, exact counts and a 16 MiB limit; rejects duplicate or invalid common subclasses. Geometry operations preserve the opaque cache; callers clear or regenerate stale data. [COMMON](common-entity-data.md) |
+| APPID rename, sharing and retained-carrier lifecycle · typed | X | X | X | T | T | T | T | T | T | Two-phase internal rename binding; canonical registry identity without caller transfer; single-container value identity; isolated shared/merged binary arrays; exact references and removal guards across retained metadata carriers. [APPIDLIFE](appid-xdata-lifecycle.md) |
+| Independent BLOCK and ENDBLK XData packets · typed | X | X | X | T | T | T | T | T | T | Each record reads and writes its own packets in all admitted profiles/transports. Block clones preserve ENDBLK data with independent bytes and registry bindings. [APPIDLIFE](appid-xdata-lifecycle.md) |
+| Native MLEADER optional stored fields · typed | X | X | X | V | V | T | T | T | T | Absent entity 270 and style 179 retain stored absence while using effective value 2; nullable line 92 retains absence with effective ByBlock color. Known malformed values reject; unknown style payloads preserve their full body and discard only abandoned typed reference fixups. Extracted native fixtures do not certify whole drawings. [NATMLEAD](mleader-native-inputs.md) |
+| Native R2010 proxy graphics length fields · typed | X | X | X | V | V | V | T | T | T | Group 160 input is accepted from R2010 with existing length and allocation checks. Canonical output remains group 92 through R2010 and group 160 from R2013. Pinned native caches qualify only the common stored byte envelope. [PROXYCOMP](common-entity-data.md) |
 
 ## 7. Symbol tables
 
 | Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
 |---|---|---|---|---|---|---|---|---|---|---|
-| APPID · typed | X | X | X | P | P | P | P | P | P | Registry/XData registration. `ReadApplicationId/WriteApplicationRegistry`. [B](version-feature-matrix-2026-09-12.md) |
+| APPID · typed | X | X | X | P | P | P | P | P | P | Canonical document registries, callback-safe rename indexes, exact retained-carrier references and independent foreign/cyclic clones are tested. Broader private XData semantics remain partial. [APPIDLIFE](appid-xdata-lifecycle.md) |
 | BLOCK_RECORD · typed | X | X | X | P | P | P | P | P | P | Block ownership/layout links; all flags/dependencies unverified. `ReadBlockRecord/WriteBlockRecord`. [B](version-feature-matrix-2026-09-12.md) |
 | DIMSTYLE · typed | X | X | X | P | P | P | P | P | P | Large typed subset including stored 142/145/288, corrected DIMRND/DIMALT overrides and clone parity. Complete versioned override evaluation and rendering remain separate. [DIMPAR](dimstyle-stored-settings.md), [B](version-feature-matrix-2026-09-12.md) |
 | LAYER · typed | X | X | X | P | P | P | P | P | P | Layer/style/color subset; material/plot-style graphs missing. `ReadLayer/WriteLayer`. [B](version-feature-matrix-2026-09-12.md) |
@@ -267,25 +271,28 @@ Product release years and database-format families are separate: an AC1032 file 
 | DIMASSOC · typed | X | X | X | M | M | M | M | M | M | Associative dimension records/links. [B](version-feature-matrix-2026-09-12.md) |
 | FIELD · typed | X | X | X | M | M | M | M | M | M | Field expression/evaluation records. [B](version-feature-matrix-2026-09-12.md) |
 | GEODATA · typed | X | X | X | V | V | V | T | T | T | Public version-2 schema: host ownership, coordinate metadata, chunked coordinate-system XML, observation strings and mesh point/face data. Explicit clone mappings and atomic attachment. Version 1/3 and private schemas remain opaque; no CRS evaluation or geographic transformation service. [GEODATA](geodata.md) |
-| IDBUFFER / OBJECT_PTR · typed | X | X | X | P | P | P | P | P | P | IDBUFFER has typed ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR remains missing. [CONT](typed-containers.md) |
-| LAYER_FILTER / LAYER_INDEX · typed | X | X | X | M | M | M | M | M | M | Layer filters/indexes. [B](version-feature-matrix-2026-09-12.md) |
-| LIGHTLIST · typed | X | X | X | M | M | M | M | M | M | Light-object lists. [B](version-feature-matrix-2026-09-12.md) |
+| IDBUFFER / OBJECT_PTR · typed | X | X | X | P | P | P | P | P | P | IDBUFFER has ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR stores its published common-only envelope; no undocumented pointer field or placement semantics are invented. [CONT](typed-containers.md), [FILTERPTR](layer-filter-pointer.md) |
+| LAYER_FILTER / LAYER_INDEX · typed | X | X | X | P | P | P | P | P | P | LAYER_FILTER stores ordered unresolved names with exact duplicates and case preservation. Layer evaluation and LAYER_INDEX remain unimplemented. [FILTERPTR](layer-filter-pointer.md) |
+| LIGHTLIST · typed | X | X | X | V | V | T | T | T | T | Explicit stored Int32 version, ordered LIGHT references, repeated targets and independently stored names. Common metadata, lifecycle and clone maps are qualified from R2007; older input stays opaque. No rendering or native CAD qualification. [LIGHTLIST](lightlist.md) |
 | MATERIAL · typed | X | X | X | M | M | M | M | M | M | Materials/textures/mappers and references. [B](version-feature-matrix-2026-09-12.md) |
 | RENDERSETTINGS / MENTALRAYRENDERSETTINGS · typed | X | X | X | M | M | M | M | M | M | Rendering setting families. [B](version-feature-matrix-2026-09-12.md) |
 | RENDERENVIRONMENT / RENDERGLOBAL · typed | X | X | X | M | M | M | M | M | M | Environment/global records. [B](version-feature-matrix-2026-09-12.md) |
 | RAPIDRTRENDERENVIRONMENT / RAPIDRTRENDERSETTINGS · typed | X | X | X | M | M | M | M | M | M | RapidRT families. [B](version-feature-matrix-2026-09-12.md) |
 | SECTION manager/settings/type/geometry objects · typed | X | X | X | M | M | M | M | M | M | Section-settings graph. [B](version-feature-matrix-2026-09-12.md) |
 | SORTENTSTABLE · typed | X | X | X | V | T | T | T | T | T | Typed block draw order, exact opaque sort keys and association order; extension ownership and entity uniqueness enforced. Opaque keys never reserve document handles. Conservative 2004+ export; no native redraw qualification. [CONT](typed-containers.md) |
-| SPATIAL_FILTER / SPATIAL_INDEX · typed | X | X | X | P | P | P | P | P | P | Typed SPATIAL_FILTER rectangle/polygon boundary, normal/origin, optional planes and two affine matrices with extension ownership. SPATIAL_INDEX and private inverted-XCLIP records remain missing; no clipping evaluation. [CONT](typed-containers.md) |
+| SPATIAL_FILTER / SPATIAL_INDEX · typed | X | X | X | P | P | P | P | P | P | Typed SPATIAL_FILTER boundaries, planes and matrices plus SPATIAL_INDEX exact finite stored timestamp. Spatial-index/clipping evaluation and private inverted-XCLIP schemas remain open. [CONT](typed-containers.md), [STOREDENV](stored-envelopes.md) |
 | SUN / SUNSTUDY · typed | X | X | X | M | M | M | M | M | M | Sun configuration/study objects. [B](version-feature-matrix-2026-09-12.md) |
 | TABLESTYLE · typed | X | X | X | M | M | M | M | M | M | Table style schema. [B](version-feature-matrix-2026-09-12.md) |
-| VBA_PROJECT · typed | X | X | X | M | M | M | M | M | M | Inert VBA payload preservation, not execution. [B](version-feature-matrix-2026-09-12.md) |
+| VBA_PROJECT · typed | X | X | X | T | T | T | T | T | T | Inert defensive bytes and exact ordered 310 chunks, including empty chunks, with count checks and resource budgets in all admitted typed profiles. Unknown variants stay opaque; no VBA parsing or execution. [STOREDENV](stored-envelopes.md) |
 | VISUALSTYLE · typed | X | X | X | M | M | M | M | M | M | Visual-style records and dependent references. [B](version-feature-matrix-2026-09-12.md) |
 | WIPEOUTVARIABLES · typed | X | X | X | T | T | T | T | T | T | Editable boolean frame flag under canonical ACAD_WIPEOUT_VARS, common metadata and typed object graph cloning; no rendering claim. [OUTSET](output-settings.md) |
 | PLOTSETTINGS / LAYOUT scale and window storage · typed | X | X | X | T | T | T | T | T | T | Group 75 type, nullable explicit 147 and correctly paired 48/49 and 140/141 coordinates. Finite explicit 147 includes zero and negative values as wire storage; those values have no rendering qualification. [OUTSET](output-settings.md) |
 | PLOTSETTINGS / LAYOUT shade object 333 · typed | X | X | X | V | V | T | T | T | T | Exact registered nongraphical reference, deferred input fixup, explicit clone mapping and before-output profile validation. 2007 is a conservative export boundary, not a first-release claim. [OUTSET](output-settings.md) |
-| Clone a registered OBJECTS ownership subtree · typed | X | X | X | T | T | T | T | T | T | CloneObject copies values and owned children with exact external reference mappings, independent metadata and preallocation rejection. Dictionary name removal remains unlink-only; universal erasure is not implied. [OUTSET](output-settings.md) |
-| MLEADERSTYLE stored public parameters · typed | X | X | X | V | V | T | T | T | T | Typed editable public parameter schema, nullable group 293, named dictionary placement and explicit graph clone mappings. Older profiles retain unknown objects opaquely, while typed style export rejects. [MLEAD](multileader-contexts.md) |
+| Clone a registered OBJECTS ownership subtree · typed | X | X | X | T | T | T | T | T | T | CloneObject copies values and owned children with exact external reference mappings, independent metadata and preallocation rejection. Dictionary removal unlinks; EraseOwnedTree separately validates and terminally removes a qualified typed ownership closure. [OUTSET](output-settings.md), [ERASE](typed-object-erasure.md) |
+| MLEADERSTYLE stored public parameters · typed | X | X | X | V | V | T | T | T | T | Typed editable public parameters, nullable groups 179/293, named dictionary placement and explicit graph clone mappings. Missing 179 preserves absence with effective value 2. Unknown style payloads remain wholly opaque and cannot supply typed entity resources; typed output requires R2007+. [MLEAD](multileader-contexts.md), [NATMLEAD](mleader-native-inputs.md) |
+| LAYER_FILTER ordered stored names · typed | X | X | X | T | T | T | T | T | T | Published AcDbFilter/AcDbLayerFilter repeated group 8 names, including duplicates, case distinctions and unresolved layers; common metadata, compatible CLASS counts and graph clones. No filter evaluation. [FILTERPTR](layer-filter-pointer.md) |
+| OBJECT_PTR published common envelope · typed | X | X | X | T | T | T | T | T | T | Published common metadata only, with exact CAseDLPNTableRecord class spelling where declared. No undocumented payload or dictionary placement is invented; private variants remain opaque. [FILTERPTR](layer-filter-pointer.md) |
+| SPATIAL_INDEX stored timestamp · typed | X | X | X | T | T | T | T | T | T | Finite group 40 value retained bit-exactly through both transports and graph clones. Unknown/private packets stay opaque; the timestamp is not interpreted as a rebuilt index. [STOREDENV](stored-envelopes.md) |
 
 ## 9. Common fields and dependency graphs
 
@@ -296,7 +303,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Transparency · typed | X | X | X | P | P | P | P | P | P | 440 path exists; version eligibility/all flags unverified. [B](version-feature-matrix-2026-09-12.md) |
 | Material / plot-style references · typed | X | X | X | M | M | M | M | M | M | Common 347/390 graph relationships incomplete. [B](version-feature-matrix-2026-09-12.md) |
 | Color names / shadow mode / proxy graphics · typed | X | X | X | P | P | P | P | P | P | EntityObject, ATTRIB and ATTDEF retain optional 430 (2004+), 284 (2007+) and bounded opaque proxy bytes (all admitted profiles; canonical count code 160 from 2013). Internal VERTEX metadata and proxy evaluation remain outside this subset. [COMMON](common-entity-data.md) |
-| XData basic typed records · typed | X | X | X | P | P | P | P | P | P | Basic records/APPID registration; binary clone storage is now isolated. Full type-dependent transforms, quotas and handle-closure remapping remain open. [XDCL](xdata-clone.md), [B](version-feature-matrix-2026-09-12.md) |
+| XData basic typed records · typed | X | X | X | P | P | P | P | P | P | Basic records, canonical APPID bindings and isolated binary values, including merges into existing entries. Retained carriers include INSERT attributes, BLOCK end records and main layout viewports. Full transforms, quotas and universal dependency import remain open. [XDCL](xdata-clone.md), [B](version-feature-matrix-2026-09-12.md), [APPIDLIFE](appid-xdata-lifecycle.md) |
 | XData binary round trips · typed | X | X | X | T | T | T | T | T | T | Exact bytes/chunk counts across all formats and transports, #4. [B](version-feature-matrix-2026-09-12.md) |
 | Extension dictionaries / persistent reactors · typed | X | X | X | P | P | P | P | P | P | Selected relationships; arbitrary dependency closure absent. [B](version-feature-matrix-2026-09-12.md) |
 | Dynamic blocks / annotation / associative networks · typed | X | X | X | M | M | M | M | M | M | Static appearance may survive; graphs/evaluation absent. [B](version-feature-matrix-2026-09-12.md) |
@@ -350,22 +357,30 @@ Product release years and database-format families are separate: an AC1032 file 
 | Typed placeholder and common metadata · typed | X | X | X | T | T | T | T | T | T | ACDBPLACEHOLDER object with required class declaration, owner, extension, reactor and XData preservation; no application-service semantics. [NODO](named-object-database.md) |
 | Opaque OBJECTS subclass payload preservation · typed | X | X | X | O | O | O | O | O | O | Loaded unsupported OBJECTS records retain ordered subclass payload and recognized common metadata. Private semantics and opaque-subtree clone are unsupported; arbitrary unknown entities and common application groups require the separate raw pipeline. [NODO](named-object-database.md) |
 
-## 14. Remaining implementation sequence
+## 14. Typed object lifecycle
+
+| Feature / pipeline | R11/R12 | R13 | R14 | 2000 | 2004 | 2007 | 2010 | 2013 | 2018 | Scope and evidence |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Terminal EraseOwnedTree · typed | X | X | X | T | T | T | T | T | T | Actual-owner closure, alias and extension teardown after incoming-reference validation before mutation. Tombstone handles remain and reattachment rejects. Opaque subtrees, managed legacy owners and hidden private dependencies remain excluded. [ERASE](typed-object-erasure.md) |
+| TABLE roundtrip declared ownership · typed | X | X | X | T | T | T | T | T | T | Exact XRECORD 360 TABLECONTENT and 361 TABLEGEOMETRY ownership binding, adoption and clone safeguards; extracted native ownership packets retained. Composite R2004 DATATABLE envelopes stay unbound. Full TABLE cells/backing schemas remain separate. [TABLEOWN](table-ownership-prerequisites.md) |
+| Mixed object clone, APPID rename and erasure · typed | X | X | X | T | T | T | T | T | T | Twelve combined scenarios, 36 drawings and 12 exact maps; LIGHTLIST joins from R2007. Payloads, semantic remapping, arbitrary 320 values, rejected/committed erasure and surviving external resources are independently checked. [MIX4](fourth-mixed-modules.md) |
+
+## 15. Remaining implementation sequence
 
 | Workstream | Required scope |
 |---|---|
-| Class-specific dependencies and typed integration | Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal cross-document dependency import and typed unknown-entity preservation. Typed application-object graph copying requires explicit external maps; opaque subtrees fail. Scoped raw transactions and object editing are implemented. An explicit typed-object erase operation with incoming-reference validation and owned-subtree cleanup remains to be implemented. |
+| Class-specific dependencies and typed integration | Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal dependency import and typed unknown-entity preservation. Typed graph copying requires explicit external maps and rejects opaque subtrees. Scoped raw transactions and terminal typed erasure are implemented with documented graph boundaries. |
 | Finish partial typed records | HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in. |
 | Missing typed entity families | Structured TABLE, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Stored MULTILEADER contexts and pre-2013 inert SAT now join HELIX, LIGHT and OLE frame subsets; rendering and private graphs remain unqualified. |
-| Missing object families | TABLESTYLE, FIELD/DIMASSOC, OBJECT_PTR/SPATIAL_INDEX, LAYER_FILTER/LAYER_INDEX, MATERIAL/VISUALSTYLE/rendering, sun and other public object families. Stored MLEADERSTYLE, standalone output settings and WIPEOUTVARIABLES now join the earlier typed containers and GEODATA subset. |
+| Missing object families | TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, LAYER_INDEX/DATATABLE, MATERIAL/VISUALSTYLE/rendering and sun families. Public OBJECT_PTR/LAYER_FILTER/SPATIAL_INDEX/LIGHTLIST and inert VBA_PROJECT storage join earlier stored object subsets; private variants and evaluation remain separate. |
 | Historical typed dialects and schema-aware down-save | R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit per-property downgrade reports. Marker safety on raw profiles is not proof of historical feature legality. |
 | Native interoperability and robustness | Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Expand independent corpora, resource accounting, fuzzing and actual older-runtime execution; netstandard2.0 compilation is not execution on every consumer runtime. |
 
 Feature changes require reviewable PRs, independently authored positive and malformed fixtures, applicable version/transport tests, explicit normalization/downgrade semantics, and green final-head CI before merge. Shared reader/writer/graph edits are sequenced; nonconflicting work can proceed independently. Do not substitute raw preservation, static appearance or synthesized values for tested semantic support.
 
-## 15. Evidence and qualification
+## 16. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **22,047 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **22,994 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 
