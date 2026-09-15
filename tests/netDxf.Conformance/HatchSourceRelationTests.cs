@@ -16,7 +16,7 @@ internal static partial class Program
             foreach (bool outputBinary in new[] { false, true })
                 Run($"hatch-source/retained/{kind}/{version}/{inputBinary}/{outputBinary}", () => HatchSourceRetained(kind, version, inputBinary, outputBinary));
             Run($"hatch-source/normalized/{kind}/{version}/{inputBinary}", () => HatchSourceNormalized(kind, version, inputBinary));
-            foreach (string defect in new[] { "missing", "zero", "wrong-owner", "self", "discarded", "missing-identity", "private-identity", "nonassociative", "short-count", "long-count", "duplicate-physical", "duplicate-common-equal", "duplicate-common-different" })
+            foreach (string defect in new[] { "missing", "zero", "wrong-owner", "self", "unsupported-proxy", "unsupported-aggregate", "missing-identity", "private-identity", "nonassociative", "short-count", "long-count", "duplicate-physical", "duplicate-common-equal", "duplicate-common-different" })
                 Run($"hatch-source/reject/{kind}/{version}/{inputBinary}/{defect}", () => HatchSourceReject(kind, version, inputBinary, defect));
         }
         foreach (bool binary in new[] { false, true }) foreach (int placement in Enumerable.Range(0, 3))
@@ -87,17 +87,18 @@ internal static partial class Program
         {
             var source = HatchSourceRecord(raw, target); var sourceTags = source.Tags.ToList();
             if (defect == "duplicate-physical")
-                raw = DxfRawDocument.Create(raw.Tags.Take(source.StartTagIndex).Concat(new[] { new DxfTag(0, "FUTURE_BOUNDARY_CURVE"), new DxfTag(5, target), new DxfTag(100, "AcDbEntity"), new DxfTag(100, "AcDbFutureBoundaryCurve") }).Concat(raw.Tags.Skip(source.StartTagIndex)));
+                raw = DxfRawDocument.Create(raw.Tags.Take(source.StartTagIndex).Concat(new[] { new DxfTag(0, "FUTURE_BOUNDARY_CURVE"), new DxfTag(5, target), new DxfTag(330, ((EntityObject)HatchSourceLoad(HatchSourceInput(kind, version, binary)).GetObjectByHandle(target)).Owner.Record.Handle), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"), new DxfTag(100, "AcDbFutureBoundaryCurve") }).Concat(raw.Tags.Skip(source.StartTagIndex)));
             else
             {
                 sourceTags.Insert(sourceTags.FindIndex(t => t.Code == 5), new DxfTag(5, defect == "duplicate-common-equal" ? target : "FFFF"));
                 raw = raw.WithRecord(source, sourceTags);
             }
         }
-        else if (defect is "discarded" or "missing-identity" or "private-identity")
+        else if (defect is "unsupported-proxy" or "unsupported-aggregate" or "missing-identity" or "private-identity")
         {
             var source = HatchSourceRecord(raw, target); var sourceTags = source.Tags.ToList();
-            if (defect == "discarded") sourceTags[0] = new DxfTag(0, "FUTURE_BOUNDARY_CURVE");
+            if (defect == "unsupported-proxy") sourceTags[0] = new DxfTag(0, "ACAD_PROXY_ENTITY");
+            else if (defect == "unsupported-aggregate") { sourceTags[0] = new DxfTag(0, "FUTURE_BOUNDARY_CURVE"); int xdata = sourceTags.FindIndex(t => t.Code == 1001); sourceTags.Insert(xdata < 0 ? sourceTags.Count : xdata, new DxfTag(66, (short)1)); }
             else
             {
                 sourceTags.RemoveAt(sourceTags.FindIndex(t => t.Code == 5));
@@ -126,6 +127,11 @@ internal static partial class Program
         bool rejected = false;
         try { DxfDocument.Load(stream); }
         catch (InvalidDataException error) { rejected = error.Message.Contains("HATCH") || ((defect is "missing-identity" or "private-identity") && error.Message.Contains("source handle identity")); }
+        catch (NotSupportedException error)
+        {
+            rejected = defect == "unsupported-proxy" && error.Message == "Unsupported standalone, aggregate or proxy entity: ACAD_PROXY_ENTITY"
+                || defect == "unsupported-aggregate" && error.Message == "Unknown aggregate or embedded entity framing is unsupported.";
+        }
         catch (FormatException error)
         {
             // The common entity reader can reject these identities before HATCH
@@ -133,6 +139,7 @@ internal static partial class Program
             rejected = (defect is "missing-identity" or "private-identity" or "duplicate-common-equal" or "duplicate-common-different")
                 && error.Message.StartsWith("A retained DXF entity ", StringComparison.Ordinal)
                 && error.Message.Contains("common handle");
+            if (defect == "duplicate-physical") rejected = error.Message == "A retained DXF object has an ambiguous physical source identity: " + target;
         }
         Check(rejected, "Unretained or unsupported HATCH source did not reject contextually: " + defect);
 #else

@@ -1,0 +1,422 @@
+[
+  {
+    "name": "source-reference/reject/idbuffer/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/generated-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/idbuffer/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/idbuffer/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/generated-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-entry/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-entry/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/generated-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-default/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-default/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/generated-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/reactor/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/reactor/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/extension/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/extension/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/consumed-extension-wrong-host/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/null-idbuffer/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/consumed-layer-state-extension/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/idbuffer/generated-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/idbuffer/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/idbuffer/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-entry/generated-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-entry/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-entry/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/dictionary-default/generated-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-default/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/dictionary-default/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/reactor/generated-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/reactor/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/reactor/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/reject/extension/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/extension/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/retained/extension/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/consumed-extension-wrong-host/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/null-idbuffer/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-reference/consumed-layer-state-extension/True",
+    "passed": true,
+    "error": null
+  }
+]

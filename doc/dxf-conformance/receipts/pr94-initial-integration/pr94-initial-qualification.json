@@ -1,0 +1,41 @@
+{
+  "implementation": "26b9edd5f4e2ddecee07d8fad7c513e119f25b90",
+  "tree": "06932943c0ab62d85a2efc767d73ba5e2364f67c",
+  "ci_run": 34997115344,
+  "ci_url": "https://github.com/wieslawsoltes/netDxf/actions/runs/34997115344",
+  "configurations": {
+    "debug": {
+      "total": 32883,
+      "unique": 32883,
+      "passed": 32735,
+      "failed": 148,
+      "new_cases": 2111,
+      "new_cases_failed": 0,
+      "failure_groups": {
+        "hatch-source": 48,
+        "datatable": 60,
+        "table-style": 4,
+        "stored-field": 4,
+        "composite-table": 4,
+        "source-reference": 28
+      },
+      "results_sha256": "e106e0b06ef3c8ae23e329d054aa147c4e953de0b9f019a9eaab16ebd678bd29",
+      "artifacts": 5423
+    },
+    "release": {
+      "total": 32883,
+      "unique": 32883,
+      "passed": 32855,
+      "failed": 28,
+      "new_cases": 2111,
+      "new_cases_failed": 0,
+      "failure_groups": {
+        "hatch-source": 24,
+        "table-style": 4
+      },
+      "results_sha256": "dcd5cab87066f882fe6d22f545e021949c7b6d593bdd217fa981e6f18eafbbd4",
+      "artifacts": 5423
+    }
+  },
+  "CI_consistency": "All four platform jobs match local outcomes: 32735/148 Debug; 32855/28 Release."
+}

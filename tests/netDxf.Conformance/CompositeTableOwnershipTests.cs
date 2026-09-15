@@ -161,7 +161,9 @@ internal static partial class Program
         var fixture = CompositeTableCarrier("13DF", binary); var raw = fixture.Carrier;
         string missing = (string)raw.Sections.Single(s => s.Name == "HEADER").Records.Single(r => r.Name == "$HANDSEED").Tags.Single(t => t.Code == 5).Value;
         var wrapper = CompositeTableRecord(raw, "13DF"); var tags = wrapper.Tags.ToList(); tags[tags.FindLastIndex(t => t.Code == 360)] = new DxfTag(360, missing);
-        CompositeTableReject(SourceReferenceDecoy(raw.WithRecord(wrapper, tags), missing, decoy), binary);
+        raw = SourceReferenceDecoy(raw.WithRecord(wrapper, tags), missing, decoy);
+        if (decoy is "unknown-entity" or "dictionary-entity") SourceReferenceRejectMalformedEntity(raw, binary);
+        else CompositeTableReject(raw, binary);
     }
     private static void CompositeTableBindAtomicity()
     {

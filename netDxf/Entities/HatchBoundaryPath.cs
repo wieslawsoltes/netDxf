@@ -980,6 +980,10 @@ namespace netDxf.Entities
 
         private void SetInternalInfo(IEnumerable<EntityObject> contour, bool clearEdges)
         {
+            // Reject unprojected geometry before clearing any stored edges.
+            var sources = new List<EntityObject>(contour);
+            foreach (EntityObject source in sources)
+                if (source is DxfOpaqueEntity) throw new NotSupportedException("Unknown entity HATCH sources retain stored edges and cannot regenerate geometry.");
             bool containsPolyline = false;
             if (clearEdges)
             {
@@ -987,7 +991,7 @@ namespace netDxf.Entities
                 this.pathType &= ~HatchBoundaryPathTypeFlags.Polyline;
             }
 
-            foreach (EntityObject entity in contour)
+            foreach (EntityObject entity in sources)
             {
                 if (containsPolyline)
                 {

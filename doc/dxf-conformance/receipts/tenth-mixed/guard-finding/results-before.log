@@ -1,0 +1,4 @@
+face=CD hatch=C5 XData=String=authored retained face reference,DatabaseHandle=C5
+mesh removal=False
+hatch removal=True
+face still registered=True

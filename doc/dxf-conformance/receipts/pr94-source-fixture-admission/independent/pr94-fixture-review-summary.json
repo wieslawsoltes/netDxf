@@ -1,0 +1,349 @@
+{
+  "schema": 1,
+  "review": "Independent PR94 source-fixture admission test-only review and TABLESTYLE gate replay",
+  "owner_commit": "7b40a5e57a06006a223328292f07b6c02e35f132",
+  "production_changed": false,
+  "findings": [
+    "Historical ownerless unknown/dictionary inputs remain exact early-admission negatives with the expected Debug error.",
+    "Generated TABLE/raster source-identity negatives use the existing discarded-underlay recipe and retain late dependency checks; DATATABLE now requires the exact unresolved-cell-reference message in Debug.",
+    "Four qualified opaque-target positives assert actual identity, source lookup, cross-transport reload and removal protection.",
+    "Both code-value readers normalize handle text through ulong.ToString(\"X\", InvariantCulture). The gate pins original input5/340 spelling separately from canonical loaded/output5/340 and checks complete packets, actual owner and unique numeric identity.",
+    "No production relaxation or removed meaningful behavior coverage was identified."
+  ],
+  "result": {
+    "outputs": 70,
+    "pinned_declared_inputs": 4,
+    "actual_corruption_controls": 118,
+    "elapsed_seconds": 9.384819247999985,
+    "exit_code": 0
+  },
+  "scope": "Read-only test/gate review and independent Python gate replay of final Release artifacts. Owner769-case C# execution remains separately owned evidence. Qualified opaque inputs are declared synthetic schema, not native producer evidence.",
+  "gate": {
+    "file": "netDxf-pr94-fixture-integration/tools/verify_table_styles.py",
+    "sha256": "c569ceab8d2ccc4d98850387011ff861d0cf8690284d3d9ee4008c4842ff03c5"
+  },
+  "source_files": [
+    {
+      "file": "tests/netDxf.Conformance/SourceReferenceIdentityTests.cs",
+      "sha256": "63536e8123245c8f747f01e6922aeb07fdf153ececabe550792c66ca3129f90a"
+    },
+    {
+      "file": "tests/netDxf.Conformance/DataTableTests.cs",
+      "sha256": "0bd4b1d2c7e463c5d971616b984c562deda717084506ac8c3b28404488904867"
+    },
+    {
+      "file": "tests/netDxf.Conformance/StoredFieldTests.cs",
+      "sha256": "76290133cf8a1f1db0d25b834b76ddfd586332f2e60380bcb1b12933b3e79435"
+    },
+    {
+      "file": "tests/netDxf.Conformance/CompositeTableOwnershipTests.cs",
+      "sha256": "d97e416de823b26801d9416c987c1399dc1c3ad302c3558954211296a31f6d26"
+    },
+    {
+      "file": "tests/netDxf.Conformance/TableStyleTests.cs",
+      "sha256": "74ba2416912e63ab778733ee31419f551a9db4af9719ee3882c2ddaa1b969053"
+    }
+  ],
+  "log": {
+    "file": "pr94-fixture-table-style-gate.log",
+    "sha256": "0964a1e5556b416f9875087aa60d7f83ab3cca4a26c71ae781fe32d28cd9d504"
+  },
+  "output_files": [
+    {
+      "file": "table-style-boundary-older-profile-False.dxf",
+      "sha256": "03b37d187e485ad39c3427d833d63e1b3e3ba6e36d003cd794fec9e68169222b"
+    },
+    {
+      "file": "table-style-boundary-older-profile-True.dxf",
+      "sha256": "309845ba76b8418af16e341fc0f65c204487d61c7ba2687c77dbfcfecf39e08d"
+    },
+    {
+      "file": "table-style-boundary-private-class-False.dxf",
+      "sha256": "b912352fa88d8da80404d9b7aed199b0a96df0a762bc65d89490cb68844f5463"
+    },
+    {
+      "file": "table-style-boundary-private-class-True.dxf",
+      "sha256": "92e420a1b01280bdf4c9f9313ac0fe1a9c754bfd8a9e693392a30dd096b9b34b"
+    },
+    {
+      "file": "table-style-boundary-private-class-empty-False.dxf",
+      "sha256": "9dbb7aef8e7bfc18ca6af7fb6e4daa0226ad1fbc369122c25a95508e167c3acd"
+    },
+    {
+      "file": "table-style-boundary-private-class-empty-True.dxf",
+      "sha256": "bf937fa03eb817bf74cb07105042a1f4ae3ef548e3512cdf11309b246af0e2b0"
+    },
+    {
+      "file": "table-style-full-native-acad_table_simple.dxf-False.dxf",
+      "sha256": "b97d577070b2a87d536c5ea5f81538fa82a30cfa505decfcb35c294e9ae06c37"
+    },
+    {
+      "file": "table-style-full-native-acad_table_simple.dxf-True.dxf",
+      "sha256": "f0e09505a6f315c20f210e517e1882b424f15fca62b166a5cdb0b3dd9a3a9ff9"
+    },
+    {
+      "file": "table-style-full-native-acad_table_with_blk_ref.dxf-False.dxf",
+      "sha256": "c835f9dafad8864aa3541e3325d3e1bce1e077fef4b83f9269c5fb4babd67924"
+    },
+    {
+      "file": "table-style-full-native-acad_table_with_blk_ref.dxf-True.dxf",
+      "sha256": "dc06b685997f3e7bb32f2f7dd1d56ab02ea96f8897cc530aaa2cb6b56d7d3945"
+    },
+    {
+      "file": "table-style-identity-absent-False.dxf",
+      "sha256": "4b30869fa07e56e00a220cb6e9dfc3f178ad0e1079aa8029cf5a680312b44e2e"
+    },
+    {
+      "file": "table-style-identity-absent-True.dxf",
+      "sha256": "0944c3f321b7f46a06f025f0b473550c8a7720ced142dc24154bae3ca97eba0e"
+    },
+    {
+      "file": "table-style-identity-discarded-underlay-False.dxf",
+      "sha256": "f6bc0e42b1ded487cdaa547b9c93a199ea216f712d09dfbddf018412e52d36a8"
+    },
+    {
+      "file": "table-style-identity-discarded-underlay-True.dxf",
+      "sha256": "799e69e039dae59c890eaeedc80e69da83eb73d2aed62401888da34d683b8382"
+    },
+    {
+      "file": "table-style-identity-ignored-section-False.dxf",
+      "sha256": "05e71a9b21a79986e0d583f8e5bf39a8622116e1c8144771e1d12b220553f783"
+    },
+    {
+      "file": "table-style-identity-ignored-section-True.dxf",
+      "sha256": "723b77d3102b133b8726f8f218919a2e0eef4b64ec79146cddc0b96c8b46b51a"
+    },
+    {
+      "file": "table-style-identity-private-identity-False.dxf",
+      "sha256": "2b66da3b0df9761d3ee35b3ab76fad10fc1085e143b11f8c7797007aa4c62b68"
+    },
+    {
+      "file": "table-style-identity-private-identity-True.dxf",
+      "sha256": "85a6a8fc9c72f88df0546e6522af71a1f4477201f667681b098b31811b3cb8dc"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2004-False.dxf",
+      "sha256": "581976caaffad0e0efc66d18b8564282c222a9e185636ff7857e513e0c3fefbe"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2004-True.dxf",
+      "sha256": "64690ddc1dd930cd9a034048055884f16afa5e6dd448821e404dff4f41472bec"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2007-False.dxf",
+      "sha256": "6a6933c5f817b7fb0b59f8f88cc8d8cc94667f772237d6eb2421e5b7a8c8eedb"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2007-True.dxf",
+      "sha256": "0df0e596c893fa5321c6d7acee025ed7fbb3cea06b6c58477b7d243dfb2a10a3"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2010-False.dxf",
+      "sha256": "4258f9b0c7aaa7e739aebc164d069bd509c2ce1e9b6256a5d407a145ff6d8b27"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2010-True.dxf",
+      "sha256": "7a77ff8f8f69a2fd09aa885efb26a04ed893181d27e83861ffba3e56c537e5bc"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2013-False.dxf",
+      "sha256": "d740d6b9499ac3fc2b11669b2e8c914f782fd8f7ed7fb4aa2a1c83e80ec2d7d8"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2013-True.dxf",
+      "sha256": "38f5685e3d3ef74f7648ab6bc2fc9c948b99dfc71d2cec252ee56176ff92dea9"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2018-False.dxf",
+      "sha256": "56977c7bbc8e0e57a9fb65f1dc5715beb3f44cb9a60933048f463fa072902c32"
+    },
+    {
+      "file": "table-style-lifecycle-AutoCad2018-True.dxf",
+      "sha256": "f0feddff58d978f33c84fc749d0218ad0d74c37c92f4bc6a1bc590d4ba140168"
+    },
+    {
+      "file": "table-style-native-acad_table_simple.dxf-False.dxf",
+      "sha256": "b49c8cdd70864f4075123acbe1f9646829e991be910fd92389a3606752f48e7d"
+    },
+    {
+      "file": "table-style-native-acad_table_simple.dxf-True.dxf",
+      "sha256": "2b47fbf1f092ea130f015dd5164480a313f7a745593e186d212194eaaabb57e8"
+    },
+    {
+      "file": "table-style-native-acad_table_with_blk_ref.dxf-False.dxf",
+      "sha256": "bd5bc2692229a0ba4771f381b01ed24ec562bc36e8b18101f14511d54b86438c"
+    },
+    {
+      "file": "table-style-native-acad_table_with_blk_ref.dxf-True.dxf",
+      "sha256": "4cacd02ec02ae1ee85239cd9e81b799706bf41433826e492fa58bebadbdb374f"
+    },
+    {
+      "file": "table-style-native-sample_AC1018_ascii.dxf-False.dxf",
+      "sha256": "832364969575f8ca562575064409c0eca346a91a68a783cc80bdbf51d020a46c"
+    },
+    {
+      "file": "table-style-native-sample_AC1018_ascii.dxf-True.dxf",
+      "sha256": "a6a767265522fdf484971454f8c38a3649068539d38659324b8a15e0ea759a64"
+    },
+    {
+      "file": "table-style-native-sample_AC1021_ascii.dxf-False.dxf",
+      "sha256": "197f017fcbc86e447618e59f745cfdb1abb2d3f848cfe42c629472e6c4a8bf05"
+    },
+    {
+      "file": "table-style-native-sample_AC1021_ascii.dxf-True.dxf",
+      "sha256": "cfcd59c5a280ac6463355b532d5da4e2b63d054a6013c9ba51604294cf0f086a"
+    },
+    {
+      "file": "table-style-native-sample_AC1024_ascii.dxf-False.dxf",
+      "sha256": "18383a1bb2be0e7505af13bc9fb946e47b4134918cfe087673d487393f109802"
+    },
+    {
+      "file": "table-style-native-sample_AC1024_ascii.dxf-True.dxf",
+      "sha256": "5be6a229940a4b13a2b7cf05da4b383658973714f1ad5cb5ebe3dc99fcf06ff8"
+    },
+    {
+      "file": "table-style-opaque-identity-False-False.dxf",
+      "sha256": "49b8726521c0f0ace132b498b3eb9c265055892f1ae4d3e8f5be86251d80c716"
+    },
+    {
+      "file": "table-style-opaque-identity-False-True.dxf",
+      "sha256": "bf39c8af6be284a9fbab48425e54d8356c762dc0e47fc1f57ae48e31f4b34294"
+    },
+    {
+      "file": "table-style-opaque-identity-True-False.dxf",
+      "sha256": "9af1f9eda6514d2864436db24bd98d2ad0070b3c64434fa2b99da0e5846a22c7"
+    },
+    {
+      "file": "table-style-opaque-identity-True-True.dxf",
+      "sha256": "1623b74ffb902e954d289c33c640b17905bee875fdbd80e0575d2a5e244248b5"
+    },
+    {
+      "file": "table-style-projection-case-spelling-False.dxf",
+      "sha256": "d09134fa702e65e88107e4f193c570b16a2aab6e1cf3646920130d387ed82ca1"
+    },
+    {
+      "file": "table-style-projection-case-spelling-True.dxf",
+      "sha256": "a51d758a9c0759a1cfe25fbff3316105d5af5ab2c915ccae950d99dc244e11b3"
+    },
+    {
+      "file": "table-style-projection-duplicate-height-False.dxf",
+      "sha256": "930f92cab0354a7906a475ce087545ef821838efd05921af1802c53fe61fc721"
+    },
+    {
+      "file": "table-style-projection-duplicate-height-True.dxf",
+      "sha256": "cebfc46b924fe24b28230daa24cc23d697267369b781ff6c56a4ff6a2a5a1b01"
+    },
+    {
+      "file": "table-style-projection-duplicate-margin-False.dxf",
+      "sha256": "6cf543de2794741e50315748ec70b4b190045e2be35a6cdbe44ff2241f909410"
+    },
+    {
+      "file": "table-style-projection-duplicate-margin-True.dxf",
+      "sha256": "0155036b3f3eb5adba424dfb4ec84b289432ccb3b32cb74063e91baad679a961"
+    },
+    {
+      "file": "table-style-projection-four-rows-False.dxf",
+      "sha256": "1d4d80481cbc0f420ad6bcb7f3b662c24cb60df1f0d2186a63989f1e6c94c9da"
+    },
+    {
+      "file": "table-style-projection-four-rows-True.dxf",
+      "sha256": "9f121f6f3fb9c1d823774eb9820cce331d319c73a6140f4a8904d8783eaf8564"
+    },
+    {
+      "file": "table-style-projection-leading280-False.dxf",
+      "sha256": "06057cbfc03848e0f4631093a05877efaf35dd5618271f59514ff0f271cccf9b"
+    },
+    {
+      "file": "table-style-projection-leading280-True.dxf",
+      "sha256": "2ad286730f32ee141c2ce834b1b277fd23631b6606ebef1ed9f7e5ac90fbfe23"
+    },
+    {
+      "file": "table-style-projection-missing-height-False.dxf",
+      "sha256": "605b35fd3fa9574195f55f320f6ccdef4320022e251f709c956a0faa4521cc0c"
+    },
+    {
+      "file": "table-style-projection-missing-height-True.dxf",
+      "sha256": "017ae4cef18d4e8af7e214a951634f746c190b9c7552fe921fdf62588901b9a8"
+    },
+    {
+      "file": "table-style-projection-private-application-False.dxf",
+      "sha256": "c225c32e5139fd6341df8f3f806399f7d4fb40787f261658df19c9867c604552"
+    },
+    {
+      "file": "table-style-projection-private-application-True.dxf",
+      "sha256": "aaa102532f8d044dfd5f6d7233e4d8807028401d6d8d66d8f26dfd5cc62e7792"
+    },
+    {
+      "file": "table-style-projection-private-subclass-False.dxf",
+      "sha256": "617dd64c3cd8bb784ed5f322e7c97dfd336a4a0dc8ce346dd5d986bf6f8d76ef"
+    },
+    {
+      "file": "table-style-projection-private-subclass-True.dxf",
+      "sha256": "04eb30e54f045604ae094f7610375f1fc9c405035c5197070c1a537e1dcbc397"
+    },
+    {
+      "file": "table-style-projection-unknown-first-False.dxf",
+      "sha256": "d53f16240d62052baad200d6afdb85384b563982798790ac133e0575ac530598"
+    },
+    {
+      "file": "table-style-projection-unknown-first-True.dxf",
+      "sha256": "353208fd643201f4d03f3b28cdd2d7816b8c7a85de599e1ab55e931b19353952"
+    },
+    {
+      "file": "table-style-removal-appid-False.dxf",
+      "sha256": "b42ed1a657da0606e0fef3f66c5b5897aefec783f35014e1d2b89dfe786a4e2c"
+    },
+    {
+      "file": "table-style-removal-appid-True.dxf",
+      "sha256": "12612a4bff9a6270f6e5a352de7dff8279780d1621483a88f506bbf74314b942"
+    },
+    {
+      "file": "table-style-removal-attribute-False.dxf",
+      "sha256": "f26d026d53c7eff2228fde5c9026e696db12428c1fa478b3759239ede5385c98"
+    },
+    {
+      "file": "table-style-removal-attribute-True.dxf",
+      "sha256": "2714b27dec63662e70ea9c05b7ac885a4f3975f70baf91679cb1b4f175398410"
+    },
+    {
+      "file": "table-style-removal-block-member-False.dxf",
+      "sha256": "882d7d875e70f76db13c211d8bb489383ea3d98164eda09a2aaaf1c046397cc4"
+    },
+    {
+      "file": "table-style-removal-block-member-True.dxf",
+      "sha256": "3d1346c2c6a0a481da93b6a7c375ec916d713a4a5dce84bc041bbec5a2d31c52"
+    },
+    {
+      "file": "table-style-removal-endblock-False.dxf",
+      "sha256": "248e32f1f61b2e97872de4e84b67c7c4eb7e245879b2adf0d20932462880c951"
+    },
+    {
+      "file": "table-style-removal-endblock-True.dxf",
+      "sha256": "573105117e4200d764f14149b7414e939052170ced6a76b142e1b7882969c082"
+    },
+    {
+      "file": "table-style-removal-entity-False.dxf",
+      "sha256": "7422d9afb4c1903606b78763a17c5080361cbaa0e64cc733c6e9ff2df9081727"
+    },
+    {
+      "file": "table-style-removal-entity-True.dxf",
+      "sha256": "3f1b31ab6f7a005a63406d37f839a96463192d5dab6780fcab4b253481d77659"
+    },
+    {
+      "file": "qualified-style-source-False-False.dxf",
+      "sha256": "80256ec620aaed53ac4e0e971df68df212a566a3d7a1a231142963028e44f854"
+    },
+    {
+      "file": "qualified-style-source-False-True.dxf",
+      "sha256": "60c73f97ca4d8b1837a4000e2f6c050056694dbf8e0106a859a0b0ddda7ad0b2"
+    },
+    {
+      "file": "qualified-style-source-True-False.dxf",
+      "sha256": "f0515790291f75569f75d7dd1332560ead551fce8d9fd41b2b121df7c3a54dc5"
+    },
+    {
+      "file": "qualified-style-source-True-True.dxf",
+      "sha256": "97edad372c1745566d064ff3e91f8a219d92713e229328a49101fa88d371b73c"
+    }
+  ]
+}

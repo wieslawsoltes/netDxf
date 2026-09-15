@@ -11,7 +11,7 @@ namespace netDxf
         private bool OpaqueEntityReferencesRemoval(HashSet<DxfObject> removed)
         {
             foreach (DxfOpaqueEntity entity in this.AddedObjects.Values.OfType<DxfOpaqueEntity>())
-                if (!removed.Contains(entity) && entity.References.Any(removed.Contains)) return true;
+                if (!removed.Contains(entity) && entity.ReferencesRemoval(removed)) return true;
             if (!removed.Any(item => item is DxfOpaqueEntity)) return false;
             foreach (DxfObject item in this.RetainedMetadataObjects())
             {

@@ -202,13 +202,52 @@ def main():
                     style = one_style(records(path)); wanted = [[100, "PrivateTableStyle"], [1, "private payload"]]
                     verify_exact(wanted, style); negative += reject_change(style, 1, lambda record: verify_exact(wanted, record))
             checked += 1
-        for decoy in ("absent", "unknown-entity", "discarded-underlay", "dictionary-entity", "ignored-section", "private-identity"):
+        for decoy in ("absent", "discarded-underlay", "ignored-section", "private-identity"):
             name = f"table-style-identity-{decoy}-{binary}.dxf"; expected.add(name); path = args.directory / name
             verify_file(path, not binary, 2018); style = one_style(records(path)); wanted = synthetic_packet() + [[340, "C0FFEE01"]]
             verify_exact(wanted, style); negative += reject_change(style, 340, lambda record: verify_exact(wanted, record)); checked += 1
+        # Ownerless unknown/dictionary decoys now reject during admission; they have
+        # no saved carrier. Qualified opaque sources independently exercise binding.
+        for normalized in (False, True):
+            name = f"table-style-opaque-identity-{normalized}-{binary}.dxf"; expected.add(name); path = args.directory / name
+            audit = verify_file(path, not binary, 2018).audit()
+            check(not audit.errors and not audit.fixes, "Qualified opaque carrier requires an independent audit without repairs")
+            found = records(path); style = one_style(found)
+            input_spelling = "000c0ffee01" if normalized else "C0FFEE01"
+            spelling = "C0FFEE01"  # Both public code-value readers canonicalize handles before typed capture.
+            wanted = synthetic_packet() + [[340, spelling]]
+            verify_exact(wanted, style)
+            target = found[spelling]
+            check(sum(int(h, 16) == 0xC0FFEE01 for h in found) == 1, "Opaque physical identity must be unique")
+            owner = common(target)[0]
+            check(owner in found and found[owner][0] == [0, "BLOCK_RECORD"] and [2, "*Model_Space"] in found[owner],
+                  "Opaque source owner must be its actual model-space BLOCK_RECORD")
+            expected_target = [[0, "QUALIFIED_SOURCE_TARGET"], [5, spelling], [330, owner],
+                               [100, "AcDbEntity"], [8, "0"], [100, "AcDbQualifiedSourceTarget"], [1, "actual retained source"]]
+            def validate_target(record):
+                check(record == expected_target, "Qualified opaque complete source packet changed")
+            validate_target(target)
+            source_path = args.directory / f"qualified-style-source-{normalized}-{binary}.dxf"
+            verify_file(source_path, binary, 2018)
+            source = records(source_path); source_style = one_style(source)
+            source_wanted = synthetic_packet() + [[340, input_spelling]]
+            verify_exact(source_wanted, source_style)
+            source_target = source[input_spelling]
+            expected_source = copy.deepcopy(expected_target); expected_source[1][1] = input_spelling
+            def validate_source(record):
+                check(record == expected_source, "Complete declared opaque input packet changed")
+            validate_source(source_target)
+            negative += reject_change(source_style, 340, lambda record: verify_exact(source_wanted, record))
+            negative += reject_change(source_target, 5, validate_source)
+            negative += reject_change(style, 340, lambda record: verify_exact(wanted, record))
+            for code in (1, 5, 330): negative += reject_change(target, code, validate_target)
+            checked += 1
     check({p.name for p in args.directory.glob("table-style-*.dxf")} == expected, "Expected all TABLESTYLE output carriers")
-    check(checked == 70 and negative == 98, "TABLESTYLE qualification count changed")
-    print(f"PASS {checked} TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and {negative} corruption controls; no map semantics or regeneration claim")
+    check({p.name for p in args.directory.glob("qualified-style-source-*.dxf")} == {
+        f"qualified-style-source-{normalized}-{binary}.dxf" for normalized in (False, True) for binary in (False, True)},
+        "Expected all four declared opaque source inputs")
+    check(checked == 70 and negative == 118, "TABLESTYLE qualification count changed")
+    print(f"PASS {checked} TABLESTYLE outputs (10 scoped native graphs, 4 full native drawings) and {negative} corruption controls, plus 4 pinned declared opaque inputs; no map semantics or regeneration claim")
 
 
 if __name__ == "__main__":

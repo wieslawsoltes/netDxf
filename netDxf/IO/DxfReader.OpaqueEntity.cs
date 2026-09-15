@@ -97,7 +97,7 @@ namespace netDxf.IO
             }
             finally { observer.SetSkipComments(true); }
             string handle = null, owner = null; int common = -1, body = -1;
-            var commonFields = new List<int>(); var references = new List<int>(); var owners = new List<int>();
+            var commonFields = new List<int>(); var references = new List<int>(); var owners = new List<int>(); var reactors = new List<int>();
             var singleton = new HashSet<short>(); var metadata = new HashSet<string>();
             int xdata = tags.Count;
             for (int i = 1; i < tags.Count; i++)
@@ -119,6 +119,7 @@ namespace netDxf.IO
                                 throw new InvalidDataException("Unsupported unknown entity metadata group framing.");
                             references.Add(at); count++;
                             if (group == "{ACAD_XDICTIONARY") owners.Add(at);
+                            else reactors.Add(at);
                         }
                         if (group == "{ACAD_XDICTIONARY" && count != 1) throw new InvalidDataException("Extension metadata requires one target.");
                     }
@@ -187,7 +188,7 @@ namespace netDxf.IO
             if (source.Ambiguous) throw new FormatException("A retained DXF object has an ambiguous physical source identity: " + handle);
             var entity = new DxfOpaqueEntity(this.doc, name, tags, handle)
             { SourceOwnerHandle = owner, CommonEnd = body, XDataStart = xdata };
-            entity.CommonFields.UnionWith(commonFields); entity.ReferenceIndices.AddRange(references); entity.OwnerIndices.AddRange(owners);
+            entity.CommonFields.UnionWith(commonFields); entity.ReferenceIndices.AddRange(references); entity.OwnerIndices.AddRange(owners); entity.QualifiedReactorIndices.UnionWith(reactors);
             this.ReadOpaqueCommon(entity, tags, commonFields);
             if (xdata < tags.Count)
             {

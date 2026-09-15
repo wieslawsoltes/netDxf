@@ -1,0 +1,247 @@
+[
+  {
+    "name": "observable-insert/generic/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/cancel/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/throw/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/generic/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/cancel/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/throw/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/generic/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/cancel/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/throw/3",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/invalid/-1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/invalid/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/removal-events",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/True/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/False/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/False/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/False/2",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/True/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/True/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/True/2",
+    "passed": true,
+    "error": null
+  }
+]

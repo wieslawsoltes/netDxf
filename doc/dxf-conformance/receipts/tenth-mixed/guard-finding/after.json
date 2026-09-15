@@ -1,0 +1,20 @@
+{
+  "status": "confirmed_after_integrated_correction",
+  "production_correction": "ee1f287fff6889b7d9cba2d1ac5cf7f431297a38",
+  "local_correction_commit": "e87a065",
+  "compiled_revision": "3d487e4",
+  "findings": {
+    "face_handle": "CD",
+    "hatch_handle": "C5",
+    "xdata_1005": "C5",
+    "mesh_removed": false,
+    "hatch_removed": false,
+    "face_still_registered": true
+  },
+  "assemblies": {
+    "netDxf.netstandard.dll": "5f68130642edc56c14d01abb554e682f97032753a0c838501495a761e4d57333",
+    "netDxf.Conformance.dll": "ba4bf4a7b3d0a07ba0aba04f579db7f298a8577c14f0f93623cb41f106301d51"
+  },
+  "probe_assembly_sha256": "c92827c139fa3e89092cc540358dc27b82ed9395cad351c475015f68804f9433",
+  "note": "The small Probe.dll is unchanged between runs. It invokes the same TenthMixedSource factory from conformance builds before/after TABLECONTENT test integration. This receipt does not claim the larger conformance DLL is identical between the two runs; both hashes are retained."
+}

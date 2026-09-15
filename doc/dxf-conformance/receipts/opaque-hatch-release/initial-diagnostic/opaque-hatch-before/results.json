@@ -1,0 +1,362 @@
+[
+  {
+    "name": "native-2000-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2000-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2000-False/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2000-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2000-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2000-True/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2004-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2004-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2004-False/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2004-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2004-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2004-True/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2007-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2007-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2007-False/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2007-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2007-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2007-True/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2010-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2010-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2010-False/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2010-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2010-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2010-True/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2013-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2013-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2013-False/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2013-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2013-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2013-True/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2018-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2018-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2018-False/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2018-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2018-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "native-2018-True/path-removal",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2000-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2000-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2000-False/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2000-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2000-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2000-True/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2004-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2004-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2004-False/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2004-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2004-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2004-True/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2007-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2007-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2007-False/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2007-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2007-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2007-True/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2010-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2010-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2010-False/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2010-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2010-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2010-True/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2013-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2013-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2013-False/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2013-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2013-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2013-True/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2018-False/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2018-False/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2018-False/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  },
+  {
+    "name": "producer-2018-True/retained-source",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2018-True/unlink-retire",
+    "passed": true,
+    "error": ""
+  },
+  {
+    "name": "producer-2018-True/path-removal",
+    "passed": false,
+    "error": "System.Exception: Empty hatch cleanup\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String why) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 3\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__9() in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eg__Run|4(String scenario, Action action) in /workspace/scratch/2ec4aa26f01f/recovery-audit/opaque-hatch-probe/Program.cs:line 10"
+  }
+]

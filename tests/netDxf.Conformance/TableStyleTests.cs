@@ -21,6 +21,8 @@ internal static partial class Program
                 Run($"table-style/boundary/{boundary}/{binary}", () => TableStyleBoundary(boundary, binary));
             foreach (string decoy in new[] { "absent", "unknown-entity", "discarded-underlay", "dictionary-entity", "ignored-section", "private-identity" })
                 Run($"table-style/source-identity/{decoy}/{binary}", () => TableStyleSourceIdentity(decoy, binary));
+            foreach (bool normalized in new[] { false, true })
+                Run($"table-style/opaque-source-identity/{normalized}/{binary}", () => TableStyleOpaqueSourceIdentity(normalized, binary));
             foreach (DxfVersion version in new[] { DxfVersion.AutoCad2004, DxfVersion.AutoCad2007, DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })
                 Run($"table-style/lifecycle/{version}/{binary}", () => TableStyleLifecycle(version, binary));
             foreach (string variant in new[] { "leading280", "duplicate-margin", "missing-height", "duplicate-height", "private-application", "private-subclass", "unknown-first", "four-rows", "case-spelling" })
@@ -40,6 +42,13 @@ internal static partial class Program
         return tags;
     }
     private static DxfDocument TableStyleLoad(List<DxfTag> payload, bool binary, DxfVersion version = DxfVersion.AutoCad2018, string kind = "xrecord", Func<DxfRawDocument, DxfRawDocument>? mutate = null)
+    {
+        var raw = TableStyleInput(payload, binary, version, kind);
+        if (mutate != null) raw = mutate(raw);
+        using var input = new MemoryStream(); raw.Save(input, binary); input.Position = 0;
+        return DxfDocument.Load(input) ?? throw new FormatException("TABLESTYLE input was rejected.");
+    }
+    private static DxfRawDocument TableStyleInput(List<DxfTag> payload, bool binary, DxfVersion version = DxfVersion.AutoCad2018, string kind = "xrecord")
     {
         var doc = new DxfDocument(version); doc.TextStyles.Add(new TextStyle("STYLE_REF", "txt.shx"));
         doc.TextStyles.Add(new TextStyle("PRIVATE_STYLE", "txt.shx"));
@@ -62,9 +71,7 @@ internal static partial class Program
         var raw = DxfRawDocument.Load(setup); var old = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Tags.Any(t => t.Code == 5 && (string)t.Value == carrier.Handle));
         var prefix = old.Tags.TakeWhile(t => t.Code != 100).Select(t => t.Code == 0 ? new DxfTag(0, "TABLESTYLE") : t);
         raw = raw.WithRecord(old, prefix.Concat(payload.Select(t => t.ValueType == DxfTagValueType.Handle && (string)t.Value == "C0FFEE" ? new DxfTag(t.Code, target.Handle) : t)));
-        if (mutate != null) raw = mutate(raw);
-        using var input = new MemoryStream(); raw.Save(input, binary); input.Position = 0;
-        return DxfDocument.Load(input) ?? throw new FormatException("TABLESTYLE input was rejected.");
+        return raw;
     }
     private static DxfTableStyle TableStyleObject(DxfDocument doc) => doc.Objects.Items.OfType<DxfTableStyle>().Single();
     private static DxfRawDocument TableStyleSave(DxfDocument doc, bool binary, string name)
@@ -256,6 +263,11 @@ internal static partial class Program
     {
         const string missing = "C0FFEE01";
         var payload = TableStylePacket(); payload.Add(new DxfTag(340, missing));
+        if (decoy is "unknown-entity" or "dictionary-entity")
+        {
+            SourceReferenceRejectMalformedEntity(SourceReferenceDecoy(TableStyleInput(payload, binary), missing, decoy), binary);
+            return;
+        }
         var doc = TableStyleLoad(payload, binary, mutate: raw =>
         {
             if (decoy != "private-identity") return SourceReferenceDecoy(raw, missing, decoy);
@@ -267,6 +279,32 @@ internal static partial class Program
         Check(style.Rows.All(r => ReferenceEquals(r.TextStyle, doc.TextStyles["STYLE_REF"])), "real physical STYLE token still binds by name");
         Check(doc.TextStyles["STYLE_REF"].Handle != missing, "private group5 cannot replace actual STYLE identity");
         TableStyleSave(doc, !binary, $"table-style-identity-{decoy}-{binary}.dxf");
+    }
+    private static void TableStyleOpaqueSourceIdentity(bool normalized, bool binary)
+    {
+        const string handle = "C0FFEE01";
+        string spelling = normalized ? "000" + handle.ToLowerInvariant() : handle;
+        var payload = TableStylePacket(); payload.Add(new DxfTag(340, spelling));
+        var doc = TableStyleLoad(payload, binary, mutate: raw =>
+        {
+            raw = SourceReferenceOpaqueTarget(raw, handle, normalized);
+            using var input = new MemoryStream(); raw.Save(input, binary);
+            File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"qualified-style-source-{normalized}-{binary}.dxf"), input.ToArray());
+            Check(System.Text.Encoding.ASCII.GetString(input.ToArray()).Contains(spelling, StringComparison.Ordinal), "physical input must retain the requested source handle spelling");
+            return raw;
+        });
+        var target = doc.GetObjectByHandle(handle) as DxfOpaqueEntity;
+        Check(target != null && ReferenceEquals(doc.Entities.All.Single(), target), "opaque physical source must bind its actual registered identity");
+        var style = TableStyleObject(doc);
+        Check(style.References.Contains(target!), "TABLESTYLE lost its qualified opaque semantic reference");
+        Check(style.Rows.All(r => ReferenceEquals(r.TextStyle, doc.TextStyles["STYLE_REF"])), "independent STYLE name reference changed");
+        Check(!doc.Entities.Remove(target!), "TABLESTYLE must protect the actual opaque target from removal");
+        var saved = TableStyleSave(doc, !binary, $"table-style-opaque-identity-{normalized}-{binary}.dxf");
+        using var input = new MemoryStream(); saved.Save(input, !binary); input.Position = 0;
+        var again = DxfDocument.Load(input) ?? throw new Exception("opaque source reference reload");
+        var reloaded = again.GetObjectByHandle(handle) as DxfOpaqueEntity;
+        Check(reloaded != null && TableStyleObject(again).References.Contains(reloaded), "opaque actual identity lost on cross-transport reload");
+        Check(!again.Entities.Remove(reloaded!), "reloaded TABLESTYLE reference failed to protect opaque target");
     }
     private static void TableStyleMalformed(string variant, bool binary)
     {

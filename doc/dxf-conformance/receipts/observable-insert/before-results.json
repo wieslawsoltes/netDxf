@@ -1,0 +1,247 @@
+[
+  {
+    "name": "observable-insert/generic/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion emits only addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 14\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/cancel/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Rejected insertion does not emit removal/addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 44\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__2() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 15\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/throw/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Rejected insertion does not emit removal/addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 44\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 16\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/generic/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion emits only addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 39\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 14\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/cancel/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Rejected insertion does not emit removal/addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 44\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__2() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 15\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/throw/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Rejected insertion does not emit removal/addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 44\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 16\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/generic/3",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 3 must be in between 0 and 3.\u0027)\n   at netDxf.Collections.ObservableCollection\u00601.Insert(Int32 index, T item)\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 35\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 14\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/cancel/3",
+    "passed": false,
+    "error": "System.InvalidOperationException: Rejected insertion does not emit removal/addition callbacks\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 220\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 44\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__2() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 15\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/throw/3",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 3 must be in between 0 and 3.\u0027)\n   at netDxf.Collections.ObservableCollection\u00601.Insert(Int32 index, T item)\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass884_0.\u003CObservableInsertGeneric\u003Eb__6() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 34\n   at NetDxf.Conformance.Program.Throws[T](Action action) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 237\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 34\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_0.\u003CRegisterObservableCollectionInsertTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 16\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/invalid/-1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/invalid/4",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/empty",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 0 must be in between 0 and 0.\u0027)\n   at netDxf.Collections.ObservableCollection\u00601.Insert(Int32 index, T item)\n   at NetDxf.Conformance.Program.ObservableInsertGeneric(Int32 index, String mode) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 35\n   at NetDxf.Conformance.Program.\u003C\u003Ec.\u003CRegisterObservableCollectionInsertTests\u003Eb__883_0() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 19\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/removal-events",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/False/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/False/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/False/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/True/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/True/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2000/True/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/False/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/False/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/False/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/True/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/True/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2004/True/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/False/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/False/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/False/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/True/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/True/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2007/True/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/False/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/False/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/False/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/True/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/True/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2010/True/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/False/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/False/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/False/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/True/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/True/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2013/True/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/False/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/False/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/False/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/True/0",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/True/1",
+    "passed": false,
+    "error": "System.InvalidOperationException: Insertion does not remove an existing HATCH path: expected 0, actual 1.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 226\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 69\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  },
+  {
+    "name": "observable-insert/hatch/AutoCad2018/True/2",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter \u0027The parameter index 2 must be in between 0 and 2.\u0027)\n   at NetDxf.Conformance.Program.ObservableInsertHatch(DxfVersion version, Boolean binary, Int32 index) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 67\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass883_4.\u003CRegisterObservableCollectionInsertTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/ObservableCollectionInsertTests.cs:line 22\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/netDxf-observable-insert/tests/netDxf.Conformance/Program.cs:line 123"
+  }
+]

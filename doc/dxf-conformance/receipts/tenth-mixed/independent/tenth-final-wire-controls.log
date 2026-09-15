@@ -1,0 +1,8 @@
+PASS hatch-identity Retained Polyface full header/physical child packets changed
+PASS mesh-identity Retained Polyface full header/physical child packets changed
+PASS face-identity SECTION generic source order/repetition/null/count packet changed
+PASS coordinate-identity Retained Polyface full header/physical child packets changed
+PASS opaque-identity Complete opaque source packet/identity changed
+PASS hatch-elevation-x HATCH elevation point X/Y must remain zero
+PASS geometry-target Explicit native geometry edit/reference packet changed
+PASS content-display Explicit native content header/scalar/display edit or untouched packet changed

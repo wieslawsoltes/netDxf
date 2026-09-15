@@ -68,6 +68,7 @@ namespace netDxf
                 foreach (var entity in block.Entities) add(entity);
                 foreach (var definition in block.AttributeDefinitions.Values) add(definition);
             }
+            foreach (Hatch hatch in removed.OfType<Hatch>()) hatch.ValidateOpaqueSourceRelease();
             if (this.OpaqueEntityReferencesRemoval(removed)) return true;
             if (this.StoredPolylineReferencesRemoval(removed)) return true;
             if (this.SectionReferencesRemoval(removed)) return true;

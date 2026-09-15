@@ -1,0 +1,504 @@
+{
+  "dll_sha256": "04a543935282f70adafbf23ab4fcf879dcac7e2853cd8a9fc570c2f7ba4ffb37",
+  "passed": 12,
+  "failed": 68,
+  "scope": "Explicitly authored controlled HATCH graph; renamed source is opaque storage, without native geometry claims",
+  "results": [
+    {
+      "name": "unlink-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-False-False-False",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-hatch-False-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-hatch-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-block-False-False-False",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 0,
+        "output_sha256": "0425f2006c227f578ff3f8fbd9d99f32d75517058b5c265f3a9cc131605d4b80"
+      }
+    },
+    {
+      "name": "remove-block-False-False-True",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 0,
+        "output_sha256": "5a9444227816d09fadcea4906fde5eff159fbcbf6c82f23eadd16aae5057fa4d"
+      }
+    },
+    {
+      "name": "update-False-False-False",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "update-False-False-True",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-False-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-False-True-False",
+      "passed": false,
+      "error": "System.Exception: Remove intentionally emptied HATCH before typed export\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 80\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-False-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-False-True-False",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-False-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-False-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-False-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-hatch-False-True-False",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "39b9368ba387180095919778a1bc75d553d81707e01702517df600edabe65e7c"
+      }
+    },
+    {
+      "name": "remove-hatch-False-True-True",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "2c108493ebeca9beebce4403b5b1f199048496584a861c077528079f8882bce2"
+      }
+    },
+    {
+      "name": "remove-block-False-True-False",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "2f0482184153e3a7f52f9cfb85d80e70d1ccd305e8e112501671183bd2ad4ef2"
+      }
+    },
+    {
+      "name": "remove-block-False-True-True",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "92024ae8020f5c79111446b520ec62f628d81b5bb34be1d179cdd475db0c8a66"
+      }
+    },
+    {
+      "name": "update-False-True-False",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "update-False-True-True",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-True-False-False",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-hatch-True-False-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-hatch-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-block-True-False-False",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 0,
+        "output_sha256": "2efbf9cc758b2ebee92e3753370ec477fd07a9dcb61b7689bec285f82aa60e75"
+      }
+    },
+    {
+      "name": "remove-block-True-False-True",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 0,
+        "output_sha256": "917bdc24857d797d57b7adcc704a39f04417b8c042439fa95ba2ce248be87ff3"
+      }
+    },
+    {
+      "name": "update-True-False-False",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "update-True-False-True",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-True-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "unlink-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-True-True-False",
+      "passed": false,
+      "error": "System.Exception: Remove intentionally emptied HATCH before typed export\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 80\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "clear-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-True-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "replace-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-True-True-False",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "insert-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Insertion released an existing opaque-source occurrence\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 77\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-True-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-false-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-True-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "create-true-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-True-True-False",
+      "passed": false,
+      "error": "System.NotSupportedException: Unknown entity extension and reactor edits require a complete metadata mapping.\n   at netDxf.Entities.DxfOpaqueEntity.Validate(DxfDocument document)\n   at netDxf.IO.DxfWriter.ValidateOpaqueEntities()\n   at netDxf.IO.DxfWriter.Write(Stream stream, DxfDocument document, Boolean binary)\n   at netDxf.DxfDocument.Save(Stream stream, Boolean isBinary)\n   at Probe.Save(DxfDocument d, Boolean binary) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 23\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 83\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "transform-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Unsupported operation did not refuse before mutation\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "remove-hatch-True-True-False",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "d8dbf6956de62a46df44437f8b8d3dc54364f3c8d64c9eb2609ae450485cd5fd"
+      }
+    },
+    {
+      "name": "remove-hatch-True-True-True",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "1516b6d36051c7d3161e018d5c0e88e6dc6625ace3b6860fbdd5db53516b1306"
+      }
+    },
+    {
+      "name": "remove-block-True-True-False",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "7fa65d52ea9e5f1c8e0c32c2543829febf5c4ef8f7199967a121f78fe9ede440"
+      }
+    },
+    {
+      "name": "remove-block-True-True-True",
+      "passed": true,
+      "outcome": {
+        "removed": false,
+        "exception": null,
+        "callbacks": 0,
+        "source_live": true,
+        "source_managed": 4,
+        "source_persistent": 2,
+        "output_sha256": "0bca7c825359c6ed85ec13bd34795cbd1be7aa44ffbd186588900b289a7df563"
+      }
+    },
+    {
+      "name": "update-True-True-False",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    },
+    {
+      "name": "update-True-True-True",
+      "passed": false,
+      "error": "System.Exception: Rejected operation partially changed paths, source relationships, membership, callbacks or seed\n   at Probe.Check(Boolean b, String m) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 22\n   at Probe.Run(String name, String op, Boolean binary, Boolean physical, Boolean corrupt) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 71\n   at Probe.Main(String[] args) in /workspace/scratch/2ec4aa26f01f/opaque-hatch-independent/probe/Program.cs:line 16"
+    }
+  ]
+}

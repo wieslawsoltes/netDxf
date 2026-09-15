@@ -19,7 +19,7 @@ namespace netDxf.Entities
     /// application groups are inert storage. Geometry, proxy entities, aggregate sequences, hidden
     /// application dependencies, copying, owner changes and conversion between profiles are unsupported.
     /// </remarks>
-    public sealed class DxfOpaqueEntity : EntityObject
+    public sealed partial class DxfOpaqueEntity : EntityObject
     {
         private readonly DxfDocument source;
         private readonly ReadOnlyCollection<DxfTag> tags;
@@ -68,7 +68,7 @@ namespace netDxf.Entities
         {
             get
             {
-                var result = new List<DxfObject>(this.links.Values);
+                var result = new List<DxfObject>(this.links.Where(link => !this.releasedHatchReactors.Contains(link.Key)).Select(link => link.Value));
                 result.Add(this.Layer); result.Add(this.Linetype);
                 if (this.ExtensionDictionary != null) result.Add(this.ExtensionDictionary);
                 result.AddRange(this.PersistentReactors);
@@ -168,12 +168,12 @@ namespace netDxf.Entities
             if (!ReferenceEquals(this.sourceOwner.Record.Layout, this.sourceLayout) || this.sourceLayoutName != null && this.sourceLayout.Name != this.sourceLayoutName)
                 throw new NotSupportedException("Unknown entity layout changes require a common metadata mapping.");
             foreach (var link in this.links)
-                if (!ReferenceEquals(document.StoredTableHandleTarget(CanonicalHandle((string)this.tags[link.Key].Value)), link.Value))
+                if (!this.releasedHatchReactors.Contains(link.Key) && !ReferenceEquals(document.StoredTableHandleTarget(CanonicalHandle((string)this.tags[link.Key].Value)), link.Value))
                     throw new InvalidOperationException("Unknown entity dependency identity changed.");
             foreach (int index in this.OwnerIndices)
                 if (this.links.TryGetValue(index, out DxfObject target) && !ReferenceEquals(target.Owner, this))
                     throw new InvalidOperationException("Unknown entity dependency ownership changed.");
-            if (!ReferenceEquals(this.ExtensionDictionary, this.originalExtension) || !this.PersistentReactors.SequenceEqual(this.originalReactors) || !this.Reactors.SequenceEqual(this.originalManagedReactors))
+            if (!ReferenceEquals(this.ExtensionDictionary, this.originalExtension) || !this.PersistentReactors.SequenceEqual(this.permittedPersistentReactors ?? this.originalReactors) || !this.Reactors.SequenceEqual(this.permittedManagedReactors ?? this.originalManagedReactors))
                 throw new NotSupportedException("Unknown entity extension and reactor edits require a complete metadata mapping.");
             if (this.sourceClass != null && (!document.Classes.Contains(this.sourceClass.Name)
                 || !ReferenceEquals(document.Classes[this.sourceClass.Name], this.sourceClass) || !SameClass(this.sourceClass, this.classSnapshot)))
@@ -311,6 +311,7 @@ namespace netDxf.Entities
             Action<short> emit = code => { if (emitted.Add(code)) foreach (DxfTag tag in common[code]) add(tag); };
             for (int i = 0; i < this.XDataStart; i++)
             {
+                if (this.releasedHatchReactors.Contains(i)) continue;
                 if (i == this.CommonEnd) foreach (short code in common.Keys) if (changed.Contains(code)) emit(code);
                 short key = this.tags[i].Code == 160 || this.tags[i].Code == 310 ? (short)92 : this.tags[i].Code;
                 if (this.CommonFields.Contains(i) && changed.Contains(key)) emit(key);

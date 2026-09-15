@@ -1,0 +1,50 @@
+[
+  {
+    "file": "content-display.dxf",
+    "gzip_file": "content-display.dxf.gz",
+    "uncompressed_sha256": "fe0747b2b5071fff78330f24ec340904f4a05b68cdeda615d79eb4d98ed36434",
+    "gzip_sha256": "0ecaaca13c18bcb8039eb06e5e77b011f1e6bc26ea14498cdb77814d7db7a01e"
+  },
+  {
+    "file": "coordinate-identity.dxf",
+    "gzip_file": "coordinate-identity.dxf.gz",
+    "uncompressed_sha256": "857f160d29c5584ba5198b45b0c84dcfdb7a93073ce4b76526535327adf93a03",
+    "gzip_sha256": "7d820817e45814eba2a1003eec3ffee2749d91ac129899a929439da8eabb0765"
+  },
+  {
+    "file": "face-identity.dxf",
+    "gzip_file": "face-identity.dxf.gz",
+    "uncompressed_sha256": "9133c4233b98dabb747ae209ec94d515482062203ccb00f8629316e905ad606a",
+    "gzip_sha256": "c05a583b91bfd74d9f23aff722e946db3a36b2f4d97c2782c1c75b0af0ff5baa"
+  },
+  {
+    "file": "geometry-target.dxf",
+    "gzip_file": "geometry-target.dxf.gz",
+    "uncompressed_sha256": "2cb08b36544a3eb83121b00451f5cdebc3b20c695383e9a9ac35894b926bea0a",
+    "gzip_sha256": "15618d3b0c23cd68aa72734face25f4cddd158b653044c7891fcdca2f6f2bdbf"
+  },
+  {
+    "file": "hatch-elevation-x.dxf",
+    "gzip_file": "hatch-elevation-x.dxf.gz",
+    "uncompressed_sha256": "fd1890fdee778ac56ca04bf77f207cfb7843e4413e2436f33e6c7371a5b79c5e",
+    "gzip_sha256": "128287741d2a6e6091175e9d8c6f8717b14c6429bed1fe92160c3659b1479c28"
+  },
+  {
+    "file": "hatch-identity.dxf",
+    "gzip_file": "hatch-identity.dxf.gz",
+    "uncompressed_sha256": "781fe5800320ae73fa01263daab9d1655906558d48288a386c049b4dee549b53",
+    "gzip_sha256": "831e0091aca050766aa636f7e36bb8b0c82a8424560cbca3123cfb675dd6ea58"
+  },
+  {
+    "file": "mesh-identity.dxf",
+    "gzip_file": "mesh-identity.dxf.gz",
+    "uncompressed_sha256": "395e1ce6147d7e7fdd8fe38bc9fe3e3b9aa9701b01e79d6d3c7afb1d71803113",
+    "gzip_sha256": "cd4e1f493581cc2db80166ed550d845fcaa4e5585435121854f1680209d023b0"
+  },
+  {
+    "file": "opaque-identity.dxf",
+    "gzip_file": "opaque-identity.dxf.gz",
+    "uncompressed_sha256": "ba94dd5590ed227318ee39855e33fd7d9687a42053aae7edc4254aa6441d584d",
+    "gzip_sha256": "fff2aae2925dedb5e19e51a0b93c15b8889ed871e784d0e1109ed2830f9f62d8"
+  }
+]

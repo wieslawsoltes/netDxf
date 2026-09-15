@@ -1,0 +1,467 @@
+[
+  {
+    "name": "table-style/native/acad_table_simple.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_with_blk_ref.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1018_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1021_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1024_ascii.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_simple.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_with_blk_ref.dxf/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/older-profile/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class-empty/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/typed-class-conflict/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/private-identity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/opaque-source-identity/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/opaque-source-identity/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/leading280/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-margin/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/missing-height/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-height/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-application/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-subclass/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/unknown-first/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/four-rows/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/case-spelling/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/appid/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/block-member/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/attribute/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/endblock/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unclosed-control/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unmatched-control/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/bare-xdata/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_simple.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/acad_table_with_blk_ref.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1018_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1021_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/native/sample_AC1024_ascii.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_simple.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/full-native/acad_table_with_blk_ref.dxf/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/older-profile/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/private-class-empty/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/boundary/typed-class-conflict/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/source-identity/private-identity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/opaque-source-identity/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/opaque-source-identity/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/lifecycle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/leading280/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-margin/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/missing-height/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/duplicate-height/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-application/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/private-subclass/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/unknown-first/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/four-rows/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/projection/case-spelling/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/appid/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/block-member/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/attribute/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/removal/endblock/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unclosed-control/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/unmatched-control/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/malformed/bare-xdata/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/320",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/329",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/330",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/340",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/350",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/360",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/369",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/390",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/399",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/480",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "table-style/semantic-handle/481",
+    "passed": true,
+    "error": null
+  }
+]

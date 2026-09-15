@@ -244,6 +244,7 @@ namespace netDxf.Entities
         /// <remarks>The entities that make the hatch boundaries will not be deleted from the document if they already belong to one.</remarks>
         public List<EntityObject> UnLinkBoundary()
         {
+            this.ValidateOpaqueSourceRelease();
             List<EntityObject> boundary = new List<EntityObject>();
             this.associative = false;
             foreach (HatchBoundaryPath path in this.boundaryPaths)
@@ -527,6 +528,8 @@ namespace netDxf.Entities
             e.Cancel = e.Item == null;
             if (e.Cancel) return;
             if (this.boundaryPaths.Contains(e.Item)) throw new ArgumentException("A HATCH boundary path instance cannot occur more than once; clone the path before reuse.");
+            foreach (EntityObject source in e.Item.Entities)
+                if (source is DxfOpaqueEntity opaque) opaque.ValidateHatchSourceAddition();
             HatchSourceRelations.ValidatePathOwner(this, e.Item, this.Owner);
         }
 
@@ -550,6 +553,7 @@ namespace netDxf.Entities
 
         private void BoundaryPaths_BeforeRemoveItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
+            this.ValidateOpaqueSourceRelease();
         }
 
         private void BoundaryPaths_RemoveItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
@@ -569,6 +573,7 @@ namespace netDxf.Entities
 
         private void RemoveUnusedSourceBacklink(EntityObject entity)
         {
+            if (entity is DxfOpaqueEntity opaque) opaque.ReleaseHatchSourceBacklink(this);
             foreach (DxfObject reactor in entity.Reactors) if (ReferenceEquals(reactor, this)) return;
             for (int i = entity.PersistentReactors.Count - 1; i >= 0; i--)
                 if (ReferenceEquals(entity.PersistentReactors[i], this)) entity.PersistentReactors.RemoveAt(i);

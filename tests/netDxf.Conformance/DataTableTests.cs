@@ -210,7 +210,10 @@ internal static partial class Program
         }
         else if (decoy == "unknown-entity" || decoy == "discarded-entity" || decoy == "dictionary-entity" || decoy == "ignored-section" || decoy == "missing-table-identity" || decoy == "missing-raster-identity" || decoy == "table-payload-identity" || decoy == "raster-payload-identity")
         {
-            string kind = decoy == "unknown-entity" || decoy.StartsWith("missing-", StringComparison.Ordinal) || decoy.EndsWith("-payload-identity", StringComparison.Ordinal) ? "FUTURE_ENTITY" : decoy == "discarded-entity" ? "PDFUNDERLAY" : "DICTIONARY";
+            // Generated table/raster aliases must still reach late physical-identity binding.
+            // Use a known discarded underlay; a malformed unknown entity now fails admission first.
+            string kind = decoy == "unknown-entity" ? "FUTURE_ENTITY" : decoy == "discarded-entity" ||
+                decoy.StartsWith("missing-", StringComparison.Ordinal) || decoy.EndsWith("-payload-identity", StringComparison.Ordinal) ? "PDFUNDERLAY" : "DICTIONARY";
             var packet = new List<DxfTag> { new DxfTag(0, kind), new DxfTag(5, seed), new DxfTag(100, "AcDbEntity"), new DxfTag(8, "0"), new DxfTag(100, kind == "PDFUNDERLAY" ? "AcDbUnderlayReference" : kind == "DICTIONARY" ? "AcDbDictionary" : "FutureEntity") };
             if (kind == "PDFUNDERLAY") packet.AddRange(new[] { new DxfTag(340, "0"), new DxfTag(10, 0.0), new DxfTag(20, 0.0), new DxfTag(30, 0.0) });
             if (decoy == "ignored-section")
@@ -239,8 +242,19 @@ internal static partial class Program
                 raw = raw.WithTags(raw.Tags.Take(end).Concat(packet).Concat(raw.Tags.Skip(end)));
             }
         }
-        using var input = new MemoryStream(); raw.Save(input); input.Position = 0; bool rejected = false;
-        try { rejected = DxfDocument.Load(input) == null; } catch (FormatException) { rejected = true; }
+        if (decoy is "unknown-entity" or "dictionary-entity")
+        {
+            SourceReferenceRejectMalformedEntity(raw, binary);
+            return;
+        }
+        using var input = new MemoryStream(); raw.Save(input, binary); input.Position = 0; bool rejected = false;
+        try { rejected = DxfDocument.Load(input) == null; }
+        catch (FormatException error)
+        {
+            if (decoy.StartsWith("missing-", StringComparison.Ordinal) || decoy.EndsWith("-payload-identity", StringComparison.Ordinal))
+                Equal("Unresolved DATATABLE cell reference: " + seed, error.Message, "generated identity must reach the intended late DATATABLE reference check");
+            rejected = true;
+        }
         Check(rejected, "Missing or discarded source target must not alias a synthesized runtime collection: " + seed + "/" + decoy);
     }
     private static void DataTableCanonicalIdentity(DxfVersion version, bool binary)

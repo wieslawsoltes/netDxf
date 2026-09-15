@@ -1,0 +1,18 @@
+{
+  "pr94-full-debug-results.json.gz": {
+    "uncompressed_sha256": "e106e0b06ef3c8ae23e329d054aa147c4e953de0b9f019a9eaab16ebd678bd29",
+    "archive_sha256": "276f65469becf634867014d36902e2155757c47a9857804612e76b28c422068f"
+  },
+  "pr94-full-release-results.json.gz": {
+    "uncompressed_sha256": "dcd5cab87066f882fe6d22f545e021949c7b6d593bdd217fa981e6f18eafbbd4",
+    "archive_sha256": "40e6aba2c81b904b411634ff30aff1401e387bb872b48be26e941a50214ca7db"
+  },
+  "pr94-initial-independent-debug-results.json.gz": {
+    "uncompressed_sha256": "a8cd642298dd93c9c4c9818b38169b1a07c66054ecebf05c1fde2777792fe965",
+    "archive_sha256": "da036484844d43719996984df84b546c6f0b11e6b29fac73aecb8b376520484d"
+  },
+  "pr94-initial-independent-release-results.json.gz": {
+    "uncompressed_sha256": "a9fee0c8cbaef764ef55c9c2944bf4247ff634456557f53d727ab00e91e0cabc",
+    "archive_sha256": "52077f784416fc58eb788016e71951a3c331dc4d11f553bf7d74d5cd6413a9a2"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "scope": "Bounded release of qualified common HATCH source backlinks on retained standalone unknown entities; no unknown geometry interpretation.",
+  "production_commit": "713cca8a0680a56c536e4e170c5ccee4c0f534f0",
+  "test_commit": "2857b2048896c662b2c9a741fd5f2c0f0b38d565",
+  "prerequisite_insert_commit": "daa5309",
+  "local_insert_equivalent": "168fa17",
+  "profiles": [
+    "R2000",
+    "R2004",
+    "R2007",
+    "R2010",
+    "R2013",
+    "R2018"
+  ],
+  "input_transports": [
+    "ASCII",
+    "binary"
+  ],
+  "output_transports": [
+    "ASCII",
+    "binary"
+  ],
+  "fixtures": {
+    "pinned_carrier_manifest": "../../tests/fixtures/hatch-source-relations/manifest.json",
+    "carrier_variants": 24,
+    "source_entity_name": "FUTURE_BOUNDARY_CURVE",
+    "native_source_handle": "8E",
+    "producer_source_handle": "3A0",
+    "declared_changes": [
+      "Eligible source name substituted",
+      "Unknown balanced group102 with HATCH-shaped330 value added",
+      "Separate private flat340 pointer control added"
+    ],
+    "native_unknown_entity_evidence": false
+  },
+  "net_new_tests": 360,
+  "new_opaque_hatch_cases": 336,
+  "hatch_source_regressions": 429,
+  "negative_fixture_changes": {
+    "discarded_to_proxy": 24,
+    "new_aggregate": 24,
+    "duplicate_physical_envelope_corrected": 24,
+    "duplicate_physical_exception": "A retained DXF object has an ambiguous physical source identity: <actual source handle>"
+  },
+  "new_gates": [
+    "tools/verify_opaque_hatch_release.py"
+  ],
+  "existing_changed_gates": [],
+  "configurations": {
+    "debug": {
+      "library_sha256": "3fa4c4ba92159acd225e7ce304575a9c08eca6c5875f927c3e7cc8255d1a75e8",
+      "conformance_sha256": "b5a14fe64edf36a1b08631f6afcb4024df4ade09b7e4faff6d6970851f998110",
+      "opaque_hatch": {
+        "passed": 336,
+        "failed": 0,
+        "results_sha256": "25129163f6348711e573fe6af602763e71d393a2632e4ecad4e79703072a64cf",
+        "final_output_gate": 672,
+        "corruption_controls": 4,
+        "gate_sha256": "d4d0ddd6068413a4c1172693d2e91ffb9b079667b94b361a1077eec2f9c10aec"
+      },
+      "hatch_source": {
+        "passed": 429,
+        "failed": 0,
+        "results_sha256": "64fcb302fcb80c4e49116e708779afb435048f6856375244484e72ea9aebbad3",
+        "final_output_gate": 48,
+        "corruption_controls": 3,
+        "gate_sha256": "9a032f9d82f806892e8d6603a6674e4f615597c8fe20a4d72721267556036440"
+      },
+      "independent": {
+        "passed": 80,
+        "failed": 0,
+        "audited_outputs": 80,
+        "audit_errors": 0,
+        "audit_repairs": 0
+      },
+      "build": {
+        "target": "net8.0",
+        "warnings": {
+          "CS1591": 561
+        },
+        "errors": 0
+      }
+    },
+    "release": {
+      "library_sha256": "515c44816b9b6ca7901c050a173aac37fa2a810bca2400bf604214c81775047f",
+      "conformance_sha256": "160c29c2b2fe352f45a262615e1a23eb2a902991b8344398cd9376a8282f3a51",
+      "opaque_hatch": {
+        "passed": 336,
+        "failed": 0,
+        "results_sha256": "25129163f6348711e573fe6af602763e71d393a2632e4ecad4e79703072a64cf",
+        "final_output_gate": 672,
+        "corruption_controls": 4,
+        "gate_sha256": "d4d0ddd6068413a4c1172693d2e91ffb9b079667b94b361a1077eec2f9c10aec"
+      },
+      "hatch_source": {
+        "passed": 429,
+        "failed": 0,
+        "results_sha256": "64fcb302fcb80c4e49116e708779afb435048f6856375244484e72ea9aebbad3",
+        "final_output_gate": 48,
+        "corruption_controls": 3,
+        "gate_sha256": "9a032f9d82f806892e8d6603a6674e4f615597c8fe20a4d72721267556036440"
+      },
+      "independent": {
+        "passed": 80,
+        "failed": 0,
+        "audited_outputs": 80,
+        "audit_errors": 0,
+        "audit_repairs": 0
+      },
+      "build": {
+        "target": "net8.0",
+        "warnings": {
+          "CS1591": 561
+        },
+        "errors": 0
+      }
+    }
+  },
+  "independent_review": "receipts/opaque-hatch-release/independent/review.json",
+  "independent_review_sha256": "73bbafd840bc97f16c3d9bfc64171e2a2e820ec7eef91365a243b0d6b229ff78",
+  "initial_diagnostic": {
+    "cases": 72,
+    "passed": 60,
+    "failed": 12,
+    "interpretation": "24 initial retained-source/save cases,24 expected-refusal/unlink-retire cases and12 native path-cleanup cases passed;12 producer path-cleanup cases failed. This diagnostic is not the unchanged independent before/after harness.",
+    "library_sha256": "b00470c616f2a949bc510b1dfda0cd9f70d9ad5e2a8fdc69dc101dc440a6ab41"
+  },
+  "owner_initial_test_correction": "Initial324/336 run used a Z translation that the existing native HATCH Point2d pattern-origin contract cannot represent. Test translation changed to Z0; no production change was needed.",
+  "limits": [
+    "SourceTags remains the immutable original snapshot",
+    "Only qualified common ACAD_REACTORS330 links are released",
+    "Private flat standard pointers, XData links and unknown groups are unchanged",
+    "Resolved opaque source path re-add and geometric Update reject",
+    "Containing-block removal remains a safe bounded refusal when existing source-owner/dependency guards apply",
+    "No native CAD execution or unknown geometry/application semantics claim"
+  ],
+  "output_archive": {
+    "file": "receipts/opaque-hatch-release/output-packets.tar.gz",
+    "sha256": "67f5dc6c5dccb041cd952294db0f4155c58c2ca013d8b875d0d3d6b7c8b9a586",
+    "packets": 2064,
+    "manifest": "receipts/opaque-hatch-release/output-packets-manifest.json"
+  },
+  "reproduction": [
+    "Build tests/netDxf.Conformance/netDxf.Conformance.csproj in Debug and Release",
+    "Run DXF_TEST_FILTER=opaque-hatch/ and DXF_TEST_FILTER=hatch-source/ into separate artifact directories",
+    "Run tools/verify_opaque_hatch_release.py and tools/verify_hatch_source_relations.py against the respective artifacts",
+    "Replay the unchanged independent probe against the pinned before/final libraries, then audit_outputs.py"
+  ]
+}

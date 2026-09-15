@@ -1,0 +1,247 @@
+[
+  {
+    "name": "composite-table/native/13DF/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13F2/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/reversed-order/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-content/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-geometry/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/null-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/absent-table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-owner/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/undeclared-child/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/cycle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/private-marker/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/reordered-markers/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/extra-marker/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/trailing-value/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/duplicate-owner-slot/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-cell/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/unknown-scalar-code/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/absent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/unknown-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/discarded-underlay/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/dictionary-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/ignored-section/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13DF/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/native/13F2/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/reversed-order/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-content/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-geometry/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/null-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/absent-table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/wrong-owner/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/undeclared-child/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/malformed/cycle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/private-marker/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/reordered-markers/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/extra-marker/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/trailing-value/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/duplicate-owner-slot/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-cell/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/unknown-scalar-code/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/unbound/missing-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/absent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/unknown-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/discarded-underlay/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/dictionary-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/source-identity/ignored-section/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "composite-table/bind-atomicity",
+    "passed": true,
+    "error": null
+  }
+]

@@ -262,14 +262,9 @@ namespace netDxf.Collections
         /// <returns>True if the object has been inserted to the collection; otherwise, false.</returns>
         public void Insert(int index, T item)
         {
-            if (index < 0 || index >= this.innerArray.Count)
+            if (index < 0 || index > this.innerArray.Count)
             {
-                throw new ArgumentOutOfRangeException(string.Format("The parameter index {0} must be in between {1} and {2}.", index, 0, this.innerArray.Count));
-            }
-
-            if (this.OnBeforeRemoveItemEvent(this.innerArray[index]))
-            {
-                return;
+                throw new ArgumentOutOfRangeException(nameof(index), index, "The insertion index must be between zero and the collection count.");
             }
 
             if (this.OnBeforeAddItemEvent(item))
@@ -277,7 +272,6 @@ namespace netDxf.Collections
                 throw new ArgumentException("The item cannot be added to the collection.", nameof(item));
             }
 
-            this.OnRemoveItemEvent(this.innerArray[index]);
             this.innerArray.Insert(index, item);
             this.OnAddItemEvent(item);
         }

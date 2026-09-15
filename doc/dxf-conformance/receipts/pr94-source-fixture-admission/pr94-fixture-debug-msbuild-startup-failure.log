@@ -1,0 +1,25 @@
+MSBuild version 17.11.26+2b19be476 for .NET
+MSBUILD : error MSB1025: An internal failure occurred while running MSBuild.
+System.TypeInitializationException: The type initializer for 'Microsoft.Build.Shared.Debugging.DebugUtils' threw an exception.
+ ---> System.InvalidOperationException: Process has exited, so the requested information is not available.
+   at System.Diagnostics.Process.EnsureState(State state)
+   at System.Diagnostics.Process.get_ProcessName()
+   at Microsoft.Build.Shared.Debugging.DebugUtils..cctor()
+   --- End of inner exception stack trace ---
+   at Microsoft.Build.Execution.BuildManager.AttachDebugger()
+   at Microsoft.Build.Execution.BuildManager.BeginBuild(BuildParameters parameters)
+   at Microsoft.Build.Execution.BuildManager.BeginBuild(BuildParameters parameters, IEnumerable`1 deferredBuildMessages)
+   at Microsoft.Build.CommandLine.MSBuildApp.BuildProject(String projectFile, String[] targets, String toolsVersion, Dictionary`2 globalProperties, Dictionary`2 restoreProperties, ILogger[] loggers, LoggerVerbosity verbosity, DistributedLoggerRecord[] distributedLoggerRecords, Int32 cpuCount, Boolean enableNodeReuse, TextWriter preprocessWriter, TextWriter targetsWriter, Boolean detailedSummary, ISet`1 warningsAsErrors, ISet`1 warningsNotAsErrors, ISet`1 warningsAsMessages, Boolean enableRestore, ProfilerLogger profilerLogger, Boolean enableProfiler, Boolean interactive, ProjectIsolationMode isolateProjects, GraphBuildOptions graphBuildOptions, Boolean lowPriority, Boolean question, Boolean isBuildCheckEnabled, String[] inputResultsCaches, String outputResultsCache, Boolean saveProjectResult, BuildResult& result, String[] commandLine)
+   at Microsoft.Build.CommandLine.MSBuildApp.Execute(String[] commandLine)
+Unhandled exception. System.TypeInitializationException: The type initializer for 'Microsoft.Build.Shared.Debugging.DebugUtils' threw an exception.
+ ---> System.InvalidOperationException: Process has exited, so the requested information is not available.
+   at System.Diagnostics.Process.EnsureState(State state)
+   at System.Diagnostics.Process.get_ProcessName()
+   at Microsoft.Build.Shared.Debugging.DebugUtils..cctor()
+   --- End of inner exception stack trace ---
+   at Microsoft.Build.Execution.BuildManager.AttachDebugger()
+   at Microsoft.Build.Execution.BuildManager.BeginBuild(BuildParameters parameters)
+   at Microsoft.Build.Execution.BuildManager.BeginBuild(BuildParameters parameters, IEnumerable`1 deferredBuildMessages)
+   at Microsoft.Build.CommandLine.MSBuildApp.BuildProject(String projectFile, String[] targets, String toolsVersion, Dictionary`2 globalProperties, Dictionary`2 restoreProperties, ILogger[] loggers, LoggerVerbosity verbosity, DistributedLoggerRecord[] distributedLoggerRecords, Int32 cpuCount, Boolean enableNodeReuse, TextWriter preprocessWriter, TextWriter targetsWriter, Boolean detailedSummary, ISet`1 warningsAsErrors, ISet`1 warningsNotAsErrors, ISet`1 warningsAsMessages, Boolean enableRestore, ProfilerLogger profilerLogger, Boolean enableProfiler, Boolean interactive, ProjectIsolationMode isolateProjects, GraphBuildOptions graphBuildOptions, Boolean lowPriority, Boolean question, Boolean isBuildCheckEnabled, String[] inputResultsCaches, String outputResultsCache, Boolean saveProjectResult, BuildResult& result, String[] commandLine)
+   at Microsoft.Build.CommandLine.MSBuildApp.Execute(String[] commandLine)
+   at Microsoft.Build.CommandLine.MSBuildApp.Main(String[] args)

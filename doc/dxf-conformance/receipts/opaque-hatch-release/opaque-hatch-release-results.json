@@ -1,0 +1,1682 @@
+[
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2000/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2000/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2004/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2004/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2007/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2007/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2010/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2010/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2013/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2013/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/False/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/native/AutoCad2018/True/private-pointer",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/retained",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/paths",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/create-unlinked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/create-linked",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/transform",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/clone",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/remove-hatch",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/dirty-unlink",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/dirty-clear",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/dirty-remove",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/update",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/readd",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "opaque-hatch/producer/AutoCad2018/True/private-pointer",
+    "passed": true,
+    "error": null
+  }
+]
