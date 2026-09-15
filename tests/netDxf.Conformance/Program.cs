@@ -53,6 +53,7 @@ internal static partial class Program
         RunSunTests();
         RunUcsBaseTests();
         RunSunStudyProducerRawTests();
+        RegisterStoredSunStudyTests();
         RegisterStoredTableTests();
         RegisterStoredTableContentTests();
         RegisterStoredTableLifecycleReviewTests();

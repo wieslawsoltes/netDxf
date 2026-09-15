@@ -1,0 +1,92 @@
+{
+  "module": "Stored SUNSTUDY internal-version-0 empty-date packets",
+  "qualifiedSourceCommit": "9a2fd397cbde08fe74f3a96545737d108f8349de",
+  "qualifiedSourceTree": "600cd9aebc396490aa280349d6ed544eaed9113b",
+  "productionCommit": "b2cdb0c27bb75a1ad118fca17b7e2d03a309748d",
+  "profiles": [
+    "AC1027",
+    "AC1032"
+  ],
+  "sourceProducer": "IxMilia.Dxf 0.8.4",
+  "sourcePositivePackets": 6,
+  "sourceChanges": "Originals and raw carriers unchanged. Typed carriers additionally remove three orphan STYLE 1071=0 fields, replace PLOTSETTINGS 142/143 scales from 0 to 1 and correct its 330 owner from SUNSTUDY22 to reciprocal NOD1F. Complete SUNSTUDY bodies and pointer identities unchanged.",
+  "typedCarrierManifestSha256": "e606c847fefa25af8891e583d75848167121606adc6e6ff588dd129cea432c2e",
+  "configurations": {
+    "Debug": {
+      "newCases": 60,
+      "existingRawCases": 26,
+      "passed": 86,
+      "failed": 0,
+      "resultSha256": "cb8f0b3c36d04368a884b8285853a0270f3611f34e810767ca0b331c63f573e3",
+      "librarySha256": "d3fefe6f28fa0f6b59112c775da25833b2e901d419fb3b9020176cb056b4e214",
+      "conformanceSha256": "ad6adfed076182fb60287a81a51b892dbad9d964c918ccb78348b47ca5143778",
+      "typedOutputs": 24,
+      "opaqueOutputs": 14,
+      "corruptionControls": 31,
+      "rawOutputs": 18,
+      "rawCorruptionControls": 6
+    },
+    "Release": {
+      "newCases": 60,
+      "existingRawCases": 26,
+      "passed": 86,
+      "failed": 0,
+      "resultSha256": "cb8f0b3c36d04368a884b8285853a0270f3611f34e810767ca0b331c63f573e3",
+      "librarySha256": "ec239da2d367b899e32714576f8fbd58c2550551d569601d08aa52ea75e9dd4b",
+      "conformanceSha256": "8112bd2226e273675de4633a6c48c1985b3b60c114e373704c1600c314f9f3c1",
+      "typedOutputs": 24,
+      "opaqueOutputs": 14,
+      "corruptionControls": 31,
+      "rawOutputs": 18,
+      "rawCorruptionControls": 6
+    }
+  },
+  "nativeApplicationValidation": false,
+  "unmodifiedProducerWholeFileTypedImport": false,
+  "targetClassCompatibilityValidation": false,
+  "nonemptyDateSemantics": false,
+  "studyEvaluation": false,
+  "builds": {
+    "Release/netstandard2.0": {
+      "librarySha256": "d146a1c36ffed8c17f78ae6b61084fa1238f45fdec9126248bc75293b4e3cff0",
+      "errors": 0,
+      "existingCs1591Warnings": 561
+    },
+    "Release/net471": {
+      "librarySha256": "ef1126fecb9d87b65b17700e62dcff7d92aaf4330b23f64c1df4217736f25284",
+      "errors": 0,
+      "existingCs1591Warnings": 561
+    },
+    "Release/net48": {
+      "librarySha256": "1045f561e2de1f59781b922f4d3fc4684692369b4614ee8052b97150fcfad3cc",
+      "errors": 0,
+      "existingCs1591Warnings": 561
+    },
+    "Release/net6.0": {
+      "librarySha256": "aee55a3bcba90ec0b445629bdc7f0dbe7fbb16925676a44688397b15247dddc3",
+      "errors": 0,
+      "existingCs1591Warnings": 561
+    },
+    "Release/net8.0": {
+      "librarySha256": "f5aca5f42cef0a75c6886d45b816937b66a1bc5c1138896a26fd79fa924797c1",
+      "errors": 0,
+      "existingCs1591Warnings": 561
+    },
+    "Debug/netstandard2.0": {
+      "librarySha256": "f12b6afa067a6c633e164bcafc32b50cf7b18b0b798169b8ba9d78f15dea6180",
+      "errors": 0,
+      "existingCs1591Warnings": 561
+    }
+  },
+  "independentReview": {
+    "cases": 80,
+    "passed": 80,
+    "failed": 0,
+    "resultSha256": "7a188efebccb725c8802adc6f3a16b4db51e6a870eb1a14ea2b582f34d5059c3",
+    "ezdxfVersion": "1.4.4",
+    "outputDrawings": 26,
+    "auditErrors": 0,
+    "auditRepairs": 0,
+    "auditReportSha256": "79872a865bc3104e744da86bce21c5de446ecca7087dbaaa5a5ad5a305764929"
+  }
+}
