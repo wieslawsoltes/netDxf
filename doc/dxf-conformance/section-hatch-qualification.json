@@ -1,0 +1,137 @@
+{
+  "source": {
+    "local_commit": "98541734c6d21145e016518510be340ceb88bc90",
+    "dotnet_test_build_source": "a6d540325fc8dfdf5a98432405907408bd8010df",
+    "dotnet_source_unchanged": true,
+    "published_commit": "a0b9fdb350988c456f9717dfe89dce62ffb77109",
+    "tree": "83299c4ff79430bd4232ff258345e751a88f1c7b",
+    "verification": "GitHub Git tree matches the local implementation exactly; runtime dependency hashes are taken from the conformance executable directory."
+  },
+  "configurations": {
+    "Debug": {
+      "cases": 27555,
+      "unique_cases": 27555,
+      "failed": 0,
+      "result_sha256": "98d761fba236442457f0469d3fe99f5bf2d7e30069abca06b6d6cbab0c8c6e94",
+      "independent_gates": 98,
+      "gates_sha256": "7158209ce415adb39dbf1ae60a1451637a4b8e559553e3b3e06a0f120aadba97",
+      "dxfs": 3591,
+      "las": 96,
+      "library_sha256": "e257ab9bd6b1d8323a38f85053d73079ae97ed71092ac8d5c68c37486c172edc",
+      "test_executable_sha256": "cf9d12606a0dda5aa60368be4305b467b62f9cab9eff3f7f47d93e097e483d18"
+    },
+    "Release": {
+      "cases": 27555,
+      "unique_cases": 27555,
+      "failed": 0,
+      "result_sha256": "98d761fba236442457f0469d3fe99f5bf2d7e30069abca06b6d6cbab0c8c6e94",
+      "independent_gates": 98,
+      "gates_sha256": "04c7b17b817357792bb8430a08dee5082736bf033b94882a401bd69f07c3e6d7",
+      "dxfs": 3591,
+      "las": 96,
+      "library_sha256": "7bfe79f3877e133ef0fbc937c68cd69bfddb6fffe4f54d41906bf58b80725756",
+      "test_executable_sha256": "9ccf2a7feccbfcecbe912ad97a7a895a05b066a3152cf6107f66aec6e5fc7970"
+    }
+  },
+  "same_case_outcomes": true,
+  "schema_version": 1,
+  "baseline": {
+    "pr": 89,
+    "merge": "5592edade61a9fe22215b8f9e098fa8beda46b76",
+    "cases": 26980,
+    "additional_cases": 575
+  },
+  "builds": {
+    "sdk": "8.0.408",
+    "release_targets": [
+      "netstandard2.0",
+      "net471",
+      "net48",
+      "net6.0",
+      "net8.0"
+    ],
+    "debug_targets": [
+      "netstandard2.0",
+      "net8.0"
+    ],
+    "errors": 0,
+    "existing_CS1591_warnings_per_target": 561
+  },
+  "audit": {
+    "self_test_passed": true,
+    "io_files": 99,
+    "methods": 702,
+    "model_header_files": 250,
+    "inventory_sha256": "7ee1f473bb0e278bdeb22d0a621632bd00e8fc74f759af421d6d18e3b46a5f93",
+    "scope": "Source syntax and field inventory, not semantic completeness.",
+    "inventory_generator": "tools/dxf_audit_inventory.py",
+    "field_inventory_generator": "tools/netDxf.FieldAudit",
+    "field_inventory_sha256": "4e429bdf7e1edb85a94fdfb36efd8ff7984a02a82161ddea56205cc6657f01c4"
+  },
+  "python_tests": {
+    "passed": 18,
+    "failed": 0
+  },
+  "coverage_rows": 272,
+  "review": {
+    "manager_independent": {
+      "Debug": 52,
+      "Release": 52
+    },
+    "hatch_owner_cases": 405,
+    "hatch_unchanged_lifecycle": {
+      "Debug": 16,
+      "Release": 16
+    },
+    "source_ambiguity_independent": {
+      "Debug": 28,
+      "Release": 28
+    },
+    "unreferenced_metadata_ambiguity": {
+      "Debug": 8,
+      "Release": 8
+    },
+    "scope": "Frozen independent probes and permanent integration regressions complement the full suite. Module receipts retain before and after evidence."
+  },
+  "ci": {
+    "implementation_run": 34963947082,
+    "url": "https://github.com/wieslawsoltes/netDxf/actions/runs/34963947082",
+    "commit": "a0b9fdb350988c456f9717dfe89dce62ffb77109",
+    "jobs": [
+      {
+        "name": "conformance (windows-latest, Debug)",
+        "id": 104363860342,
+        "passed": 27555,
+        "failed": 0
+      },
+      {
+        "name": "conformance (ubuntu-latest, Debug)",
+        "id": 104363860490,
+        "passed": 27555,
+        "failed": 0
+      },
+      {
+        "name": "conformance (windows-latest, Release)",
+        "id": 104363860613,
+        "passed": 27555,
+        "failed": 0
+      },
+      {
+        "name": "conformance (ubuntu-latest, Release)",
+        "id": 104363860639,
+        "passed": 27555,
+        "failed": 0
+      }
+    ],
+    "linux_release_independent_gates": 98,
+    "source_archive_byte_verification": false,
+    "evidence": "Completed workflow status and decoded job logs; published tree equality verified separately."
+  },
+  "boundaries": [
+    "SECTION_MANAGER is immutable stored state; editable membership, generation and live sectioning remain open.",
+    "HATCH source references and lifecycle are qualified; automatic associative geometry updates, arbitrary affine operations and periodic evaluation remain open.",
+    "A non-associative HATCH with source references is an unsupported typed combination, not a universal DXF illegality claim.",
+    "Full DXF support, native AutoCAD execution and production-scale qualification remain incomplete.",
+    "Editable TABLE/FIELD/DIMASSOC graphs, modern SAB/ACDSDATA, other POLYLINE metadata families, MESH override values, typed SUNSTUDY and historical typed dialects remain separate work."
+  ]
+}

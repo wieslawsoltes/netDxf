@@ -22,6 +22,16 @@ and defaults, extension dictionaries, persistent reactors, IDBUFFER entries,
 SORTENTSTABLE targets, and LAYER_INDEX owned buffers use this check. Numeric zero
 continues to represent an absent reference in the fields that allow it.
 
+Source identity also requires a unique physical declaration. A skipped unknown
+entity cannot share the target's common handle, whether it occurs before or after
+the retained record. Repeated common handle fields make the declaration
+ambiguous even when their numeric values agree. All source-bound consumers use
+this check, including HATCH, SECTION_MANAGER and the consumed layer-state
+dictionary exception. Nested private application groups are tracked separately;
+their group-5 values and subclass-like data do not create declarations. Retained
+records are checked before database metadata import even when no other object
+references them, so failed identity lookup cannot silently discard their reactors.
+
 Legacy conversions need explicit mappings. Managed named collections are admitted
 only for their corresponding reserved named-dictionary entry and source owner.
 The consumed layer-state extension dictionary is accepted only for its owning
