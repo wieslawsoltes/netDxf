@@ -1,0 +1,193 @@
+{
+  "base_commit": "bb8c73c",
+  "commands": [
+    "/workspace/runtime/dotnet8/dotnet restore tests/netDxf.Conformance -p:TargetFrameworks=net8.0 --ignore-failed-sources -p:NuGetAudit=false",
+    "DXF_TEST_FILTER=hatch-periodic DXF_TEST_ARTIFACTS=artifacts/hatch-periodic-final-{configuration} /workspace/runtime/dotnet8/dotnet run --project tests/netDxf.Conformance -c {Configuration} -p:TargetFrameworks=net8.0 --no-restore",
+    "DXF_TEST_FILTER=hatch DXF_TEST_ARTIFACTS=artifacts/hatch-all-{configuration} /workspace/runtime/dotnet8/dotnet tests/netDxf.Conformance/bin/{Configuration}/net8.0/netDxf.Conformance.dll",
+    "DXF_TEST_FILTER=spline DXF_TEST_ARTIFACTS=artifacts/hatch-periodic-spline-regression-{configuration} /workspace/runtime/dotnet8/dotnet tests/netDxf.Conformance/bin/{Configuration}/net8.0/netDxf.Conformance.dll",
+    "python3 tools/verify_hatch_periodic_conversion.py artifacts/hatch-periodic-final-{configuration}",
+    "python3 tools/verify_hatch_{affine,conic,pattern_affine}.py artifacts/hatch-all-{configuration}"
+  ],
+  "corrected_commit": "6c2a607f6f55f3134f1ea1ffc63c8cb293f1e4b7",
+  "independent": {
+    "debug": {
+      "affine": {
+        "actual_output_negative_controls": 6,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "curve_evaluation": false,
+        "native_cad_execution": false,
+        "outputs": 140,
+        "polyline_outputs": 20,
+        "source_producer": "ezdxf 1.4.4",
+        "spline_packets": 480
+      },
+      "conic": {
+        "actual_output_negative_controls": 7,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "conditioning_outputs": 14,
+        "conditioning_rejections": 42,
+        "conic_and_line_segments": 6216,
+        "maximum_world_error": 1.2054219513963056e-09,
+        "mixed_spline_packets": 8,
+        "native_cad_execution": false,
+        "outputs": 168,
+        "raw_producer_convention": true,
+        "world_curve_probes": 404040
+      },
+      "pattern_affine": {
+        "actual_output_negative_controls": 8,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "maximum_world_error": 4.4015086511551544e-12,
+        "mixed_stored_spline_packets": 8,
+        "native_cad_execution": false,
+        "origin_specific_outputs": 6,
+        "outputs": 168,
+        "pattern_family_packets": 1008,
+        "world_pattern_probes": 80640
+      },
+      "periodic": {
+        "actual_evaluator_world_samples": 73728,
+        "actual_output_negative_controls": 5,
+        "additional_canonical_curve_drawings": 48,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "canonical_audited_drawings": 96,
+        "compact_compatibility_drawings": 48,
+        "exact_rational_local_weight_samples": 48,
+        "maximum_world_error": 1.0110347025910704e-14,
+        "native_cad_execution": false,
+        "outputs": 96,
+        "periodic_curves": 1152,
+        "storage_only_outputs": 26
+      }
+    },
+    "release": {
+      "affine": {
+        "actual_output_negative_controls": 6,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "curve_evaluation": false,
+        "native_cad_execution": false,
+        "outputs": 140,
+        "polyline_outputs": 20,
+        "source_producer": "ezdxf 1.4.4",
+        "spline_packets": 480
+      },
+      "conic": {
+        "actual_output_negative_controls": 7,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "conditioning_outputs": 14,
+        "conditioning_rejections": 42,
+        "conic_and_line_segments": 6216,
+        "maximum_world_error": 1.2054219513963056e-09,
+        "mixed_spline_packets": 8,
+        "native_cad_execution": false,
+        "outputs": 168,
+        "raw_producer_convention": true,
+        "world_curve_probes": 404040
+      },
+      "pattern_affine": {
+        "actual_output_negative_controls": 8,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "maximum_world_error": 4.4015086511551544e-12,
+        "mixed_stored_spline_packets": 8,
+        "native_cad_execution": false,
+        "origin_specific_outputs": 6,
+        "outputs": 168,
+        "pattern_family_packets": 1008,
+        "world_pattern_probes": 80640
+      },
+      "periodic": {
+        "actual_evaluator_world_samples": 73728,
+        "actual_output_negative_controls": 5,
+        "additional_canonical_curve_drawings": 48,
+        "audit_errors": 0,
+        "audit_fixes": 0,
+        "canonical_audited_drawings": 96,
+        "compact_compatibility_drawings": 48,
+        "exact_rational_local_weight_samples": 48,
+        "maximum_world_error": 1.0110347025910704e-14,
+        "native_cad_execution": false,
+        "outputs": 96,
+        "periodic_curves": 1152,
+        "storage_only_outputs": 26
+      }
+    }
+  },
+  "initial_recovered_periodic_run": {
+    "failed": 0,
+    "note": "Observed before adding local-weight and reversal tests; artifact directory subsequently reused.",
+    "passed": 222
+  },
+  "library_sha256": {
+    "Debug": "e8aea792fb4ef6d9980809e151cb8536ba254b31023835c4807faf5f03e4fa2d",
+    "Release": "5f604e73bc537fbbf1c4674af7ed16b6f24ff28f6d371819bb4f65b2c26f62ba"
+  },
+  "limitations": [
+    "Conversion/evaluation admits only the documented positive-weight strictly increasing cyclic knot contract.",
+    "Legacy compact HATCH storage is preserved separately and is not asserted to be a native-valid expanded packet.",
+    "No adaptive tessellation error bound or native CAD execution/rendering qualification.",
+    "Caller exceptions during successful association commit remain outside prevalidation atomicity."
+  ],
+  "notes": [
+    "Full HATCH and SPLINE runs use the same corrected production logic as focused periodic runs. A final newline-format-only adjustment preserves the baseline mixed-line-ending layout; integration CI rebuilds the final commit.",
+    "The storage verifier now derives the real DXF profile, including the current R2000 document default."
+  ],
+  "output_hashes": "periodic-output-hashes.json.gz",
+  "qualification_scope": "Periodic HATCH conversion/evaluation, local rational weight scaling, clone/reversal, existing HATCH and SPLINE regressions",
+  "recovered_from_commit": "01f935d7d38c51cb75a2341566fb3fc17fefbac1",
+  "recovery_commit": "fbdf8b6d22aa1096a3ba2f0bfafea5a2d3c7d6a0",
+  "source_sha256": {
+    "netDxf/Entities/Hatch.ConicTransform.cs": "a186a00bb545474411be0a41c3ba35cbb3cf1da0a2cd7902566fb4b3c84fed7e",
+    "netDxf/Entities/Hatch.PatternTransform.cs": "9447b0cedaac296dd18947afca6c6fd12247dae28fbdc1998dcd6f5e6fc06dea",
+    "netDxf/Entities/Hatch.Transform.cs": "6672145a873bd201ca89534905c13cc80a6488eb32a3a156ed8178dfff309ba4",
+    "netDxf/Entities/Hatch.cs": "0bfa75872edb031078f8f84ea5248580e1b19e3a8f68c406abe9bccc1066a6e7",
+    "netDxf/Entities/HatchBoundaryPath.cs": "dc30d3a142fe4dc93137852ed541ceb7897306a9fd998bb9056f718243f14ddd",
+    "netDxf/Entities/PeriodicSplineData.cs": "9873d98843ad7e158a0cba439ca2e0d0186ec13bff5000b640b23cacbbdae60e",
+    "netDxf/Entities/Spline.cs": "1e4c19e6c6ccaa9bc12dc239073b65d98e0c87be80ea4584dde11038960411b8",
+    "tests/netDxf.Conformance/HatchPeriodicConversionTests.cs": "68fdd33ba6e3725bc6cf284b4d233025be1605dc928f532cf6240d3d1ddaf2f3",
+    "tools/verify_hatch_periodic_conversion.py": "a9db16cec340d62a385bba2f2f9a672a31c4145c1c27b027c31bcc1c90a0f23d"
+  },
+  "test_results": {
+    "before-local-weight-debug": {
+      "failed": 2,
+      "passed": 0,
+      "results": "before-local-weight-debug-results.json.gz"
+    },
+    "hatch-regression-debug": {
+      "failed": 0,
+      "passed": 9523,
+      "results": "hatch-regression-debug-results.json.gz"
+    },
+    "hatch-regression-release": {
+      "failed": 0,
+      "passed": 9523,
+      "results": "hatch-regression-release-results.json.gz"
+    },
+    "periodic-debug": {
+      "failed": 0,
+      "passed": 238,
+      "results": "periodic-debug-results.json.gz"
+    },
+    "periodic-release": {
+      "failed": 0,
+      "passed": 238,
+      "results": "periodic-release-results.json.gz"
+    },
+    "spline-regression-debug": {
+      "failed": 0,
+      "passed": 1556,
+      "results": "spline-regression-debug-results.json.gz"
+    },
+    "spline-regression-release": {
+      "failed": 0,
+      "passed": 1556,
+      "results": "spline-regression-release-results.json.gz"
+    }
+  }
+}

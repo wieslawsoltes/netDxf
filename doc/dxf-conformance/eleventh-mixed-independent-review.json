@@ -1,0 +1,103 @@
+{
+  "review": "independent six-corruption challenge of mixed integration gate",
+  "baseline_implementation_commit": "4e0ea3c",
+  "fixed_verifier_commit": "055306dd80299d3d2b196b2f7f11f17901d1071c",
+  "scope": "Validation defects only; no production failure established. Fixed mixed fixture adds nonempty fit/tangent metadata; source/input/verifier hashes identify the exact before and after runs.",
+  "probe": "tools/review_eleventh_mixed_oracle.py",
+  "probe_sha256": "c12a74ce86876babc456661ab8cffc6c837cc09a31938a098a31a574cdf90652",
+  "before": {
+    "verifier_sha256": "6c8cb5da691eda97130116b2c3b4e8bc5a89e53177b21bf67766ec9edd9fc3fa",
+    "input_sha256": "1fdf86f93391d2858156cb65f46e527298f1dc57e58d9bc1a36e4e76410ed50f",
+    "manifest_sha256": "6a71780d5397d714d41eda3ce6380a67bdccc962dfc2f4cb425755e6d0c42d98",
+    "controls": 6,
+    "accepted_corruptions": 6,
+    "results": [
+      {
+        "mutation": "hatch-knot",
+        "accepted": true,
+        "old": -3.0,
+        "new": -2.875
+      },
+      {
+        "mutation": "hatch-rational-weight",
+        "accepted": true,
+        "old": 1.0,
+        "new": 1.125
+      },
+      {
+        "mutation": "hatch-rational-flag",
+        "accepted": true,
+        "old": 1,
+        "new": 0
+      },
+      {
+        "mutation": "style-description",
+        "accepted": true,
+        "old": "Eleventh style \u2014 \u65e5\u672c\u8a9e",
+        "new": "BROKEN-HEADER"
+      },
+      {
+        "mutation": "style-horizontal-margin",
+        "accepted": true,
+        "old": 1.625,
+        "new": 1.75
+      },
+      {
+        "mutation": "legacy-manager-xdata-link",
+        "accepted": true,
+        "removed": "DA"
+      }
+    ]
+  },
+  "after": {
+    "verifier_sha256": "14688b5de71670ad3a21206f287109d423b94dccb5973f959334daaa58e362f4",
+    "input_sha256": "e5616f260ea36b71c3678d57ab2eec5cfc80a31876fae2fa980c982c5fb45000",
+    "manifest_sha256": "40f26a35c11aa8efd7ee5675073d39facd2b108008e631d8c009004240018225",
+    "controls": 6,
+    "accepted_corruptions": 0,
+    "results": [
+      {
+        "mutation": "hatch-knot",
+        "accepted": false,
+        "old": -3.0,
+        "new": -2.875,
+        "error": "Complete HATCH spline packet: flags, knots, weights, fits and tangents"
+      },
+      {
+        "mutation": "hatch-rational-weight",
+        "accepted": false,
+        "old": 1.0,
+        "new": 1.125,
+        "error": "Complete HATCH spline packet: flags, knots, weights, fits and tangents"
+      },
+      {
+        "mutation": "hatch-rational-flag",
+        "accepted": false,
+        "old": 1,
+        "new": 0,
+        "error": "Complete HATCH spline packet: flags, knots, weights, fits and tangents"
+      },
+      {
+        "mutation": "style-description",
+        "accepted": false,
+        "old": "Eleventh style \u2014 \u65e5\u672c\u8a9e",
+        "new": "BROKEN-HEADER",
+        "error": "Complete edited TABLESTYLE header"
+      },
+      {
+        "mutation": "style-horizontal-margin",
+        "accepted": false,
+        "old": 1.625,
+        "new": 1.75,
+        "error": "Complete edited TABLESTYLE header"
+      },
+      {
+        "mutation": "legacy-manager-xdata-link",
+        "accepted": false,
+        "removed": "DA",
+        "error": "Ordered exact retained-child XData graph"
+      }
+    ]
+  },
+  "result": "All six previously accepted output corruptions are now rejected, with the unmodified fixed input accepted."
+}

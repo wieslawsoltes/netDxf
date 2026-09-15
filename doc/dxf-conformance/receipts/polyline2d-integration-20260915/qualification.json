@@ -1,0 +1,108 @@
+{
+  "base": "bb8c73c",
+  "production_commit": "ee59528190b4181c6882fc97a937b2492228bf6d",
+  "recovered_commits": [
+    "cf41048",
+    "b2a4e86",
+    "ae754cb",
+    "1dc4e91",
+    "171bcf0"
+  ],
+  "sdk": "8.0.408",
+  "target": "net8.0",
+  "reader": "ezdxf 1.4.4",
+  "native_cad_execution": false,
+  "configurations": {
+    "debug": {
+      "legacy": {
+        "filter": "legacy2d-records/",
+        "passed": 280,
+        "failed": 0,
+        "output_files": 100
+      },
+      "compatibility": {
+        "filter": "version-compatibility/",
+        "passed": 734,
+        "failed": 0,
+        "output_files": 346
+      },
+      "removal": {
+        "filter": "retained-record-target/",
+        "passed": 432,
+        "failed": 0,
+        "output_files": 0
+      },
+      "lw": {
+        "filter": "lw-fidelity/",
+        "passed": 328,
+        "failed": 0,
+        "output_files": 120
+      },
+      "siblings": {
+        "filter": "poly",
+        "passed": 2578,
+        "failed": 0,
+        "output_files": 624
+      },
+      "independent": {
+        "filter": null,
+        "passed": 220,
+        "failed": 0,
+        "output_files": 372
+      },
+      "library_sha256": "2272e5fcc6618bd76b007e69823fde81966395d0f58df102422270555cb6bb0e",
+      "conformance_sha256": "2043610f67e840ea4fcf10d98cb94566e904f830e3cf2194e1d56a2999a1227e",
+      "independent_probe_sha256": "2b6d037856633a7fbaa8c1694ce86fcd2937afec7810c7c525f8324d425ab18d",
+      "conformance_cases": 4352,
+      "raw_gate_outputs": 832,
+      "raw_corruption_controls": 922
+    },
+    "release": {
+      "legacy": {
+        "filter": "legacy2d-records/",
+        "passed": 280,
+        "failed": 0,
+        "output_files": 100
+      },
+      "compatibility": {
+        "filter": "version-compatibility/",
+        "passed": 734,
+        "failed": 0,
+        "output_files": 346
+      },
+      "removal": {
+        "filter": "retained-record-target/",
+        "passed": 432,
+        "failed": 0,
+        "output_files": 0
+      },
+      "lw": {
+        "filter": "lw-fidelity/",
+        "passed": 328,
+        "failed": 0,
+        "output_files": 120
+      },
+      "siblings": {
+        "filter": "poly",
+        "passed": 2578,
+        "failed": 0,
+        "output_files": 624
+      },
+      "independent": {
+        "filter": null,
+        "passed": 220,
+        "failed": 0,
+        "output_files": 372
+      },
+      "library_sha256": "0657ec4454a0cc2631f286e478f69176bfd3af6a39d799defa9ae3e32c9e689f",
+      "conformance_sha256": "e34647f53846a0b1310a5fa048f99404134596be1adec6e93e18af8e7800fecc",
+      "independent_probe_sha256": "62f84e3158527e423884acdda272128b38670cff0c247f21fe737ca88d5e0816",
+      "conformance_cases": 4352,
+      "raw_gate_outputs": 832,
+      "raw_corruption_controls": 922
+    }
+  },
+  "initial_test_setup": "The first new compatibility matrix inspected the complete producer document and expected only chain/CLASS diagnostics; 16 cases also correctly reported a VPORT SUN slot. The final test isolates the clean retained chain in a new document, matching the pre-existing Polyface compatibility test. No production correction resulted from this setup adjustment.",
+  "output_archive_sha256": "b4aec01e6a532bb9050b7cc704c2eb1c85b3b276a6a57867b57d5895e1ea6ebb",
+  "archived_dxf_files": 3124
+}

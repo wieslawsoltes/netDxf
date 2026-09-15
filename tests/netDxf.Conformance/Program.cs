@@ -76,6 +76,7 @@ internal static partial class Program
         RegisterStoredTableFidelityTests();
         RegisterStoredTableNameSpellingTests();
         RegisterTableStyleTests();
+        RegisterEditableTableStyleTests();
         RegisterStoredFieldTests();
         RegisterFifthMixedModuleTests();
         RegisterSixthMixedModuleTests();
@@ -83,6 +84,7 @@ internal static partial class Program
         RegisterEighthMixedModuleTests();
         RegisterNinthMixedModuleTests();
         RegisterTenthMixedModuleTests();
+        RegisterEleventhMixedModuleTests();
         RegisterCompositeTableOwnershipTests();
         RegisterPrivateXRecordTests();
         RunSourceReferenceIdentityTests();

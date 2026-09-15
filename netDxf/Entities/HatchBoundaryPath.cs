@@ -746,13 +746,22 @@ namespace netDxf.Entities
                     throw new ArgumentException("The HatchBoundaryPath spline edge requires a spline entity with control points.", nameof(entity));
                 }
 
+                if (this.IsPeriodic) PeriodicSplineData.Validate(spline);
                 Matrix3 trans = MathHelper.ArbitraryAxis(entity.Normal).Transpose();
 
-                this.ControlPoints = new Vector3[spline.ControlPoints.Length];
+                int prefix = this.IsPeriodic ? this.Degree : 0;
+                this.ControlPoints = new Vector3[spline.ControlPoints.Length + prefix];
+                for (int i = 0; i < prefix; i++)
+                {
+                    int at = spline.ControlPoints.Length - prefix + i;
+                    Vector3 point = trans * spline.ControlPoints[at];
+                    this.ControlPoints[i] = new Vector3(point.X, point.Y, spline.Weights[at]);
+                }
                 for (int i = 0; i < spline.ControlPoints.Length; i++)
                 {
                     Vector3 point = trans * spline.ControlPoints[i];
-                    this.ControlPoints[i] = new Vector3(point.X, point.Y, spline.Weights[i]);
+                    if (this.IsPeriodic) { PeriodicSplineData.Finite(point.X); PeriodicSplineData.Finite(point.Y); }
+                    this.ControlPoints[i + prefix] = new Vector3(point.X, point.Y, spline.Weights[i]);
                 }
 
                 foreach (Vector3 fitPoint in spline.FitPoints)
@@ -791,17 +800,43 @@ namespace netDxf.Entities
             /// Converts the actual edge to its entity equivalent.
             /// </summary>
             /// <returns>An <see cref="EntityObject">entity</see> equivalent to the actual edge.</returns>
+            /// <remarks>
+            /// Periodic edges require a qualified expanded or legacy compact layout,
+            /// positive finite weights and cyclic strictly increasing knot spans.
+            /// Conversion preserves the source edge and does not refit its geometry.
+            /// Unsupported periodic forms remain available for storage and cloning.
+            /// </remarks>
             public override EntityObject ConvertTo()
             {
+                if (this.IsPeriodic) HatchSplineData.Validate(this);
                 List<Vector3> ctrl = new List<Vector3>();
                 List<double> weights = new List<double>();
                 List<double> knots = new List<double>(this.Knots);
-
-                foreach (Vector3 point in this.ControlPoints)
+                int first = 0;
+                if (this.IsPeriodic)
                 {
+                    if (!this.IsRational && this.ControlPoints.Any(point => point.Z != 1))
+                        throw new NotSupportedException("A nonrational periodic HATCH with nonunit stored weights has no qualified conversion meaning.");
+                    if ((long)this.Knots.Length == (long)this.ControlPoints.Length + this.Degree + 1)
+                    {
+                        if (this.ControlPoints.Length < 2 * this.Degree + 1)
+                            throw new NotSupportedException("Periodic HATCH conversion requires a degree-fold cyclic control overlap.");
+                        for (int i = 0; i < this.Degree; i++)
+                        {
+                            Vector3 a = this.ControlPoints[i], b = this.ControlPoints[this.ControlPoints.Length - this.Degree + i];
+                            if (!PeriodicSplineData.Same(a.X, b.X) || !PeriodicSplineData.Same(a.Y, b.Y) || !PeriodicSplineData.Same(a.Z, b.Z))
+                                throw new NotSupportedException("Periodic HATCH conversion requires exact coordinate and weight overlap.");
+                        }
+                        first = this.Degree;
+                    }
+                }
+                for (int i = first; i < this.ControlPoints.Length; i++)
+                {
+                    Vector3 point = this.ControlPoints[i];
                     ctrl.Add(new Vector3(point.X, point.Y, 0.0));
                     weights.Add(point.Z);
                 }
+                if (this.IsPeriodic) PeriodicSplineData.Validate(ctrl.ToArray(), weights.ToArray(), this.Knots, this.Degree);
                 // Preserve the authored control geometry and fit metadata together;
                 // the fit-point authoring constructor would regenerate the controls.
                 return new Entities.Spline(ctrl, weights, knots, this.Degree,

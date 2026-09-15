@@ -273,12 +273,9 @@ namespace netDxf.Entities
         /// </remarks>
         public List<EntityObject> CreateBoundary(bool linkBoundary)
         {
-            if (this.associative)
-            {
-                this.UnLinkBoundary();
-            }
-
-            this.associative = linkBoundary;
+            // Prepare every entity before changing source associations. An unsupported
+            // later edge must not leave earlier paths linked to partial new geometry.
+            List<KeyValuePair<HatchBoundaryPath, EntityObject>> prepared = new List<KeyValuePair<HatchBoundaryPath, EntityObject>>();
             List<EntityObject> boundary = new List<EntityObject>();
             Matrix3 trans = MathHelper.ArbitraryAxis(this.Normal);
             Vector3 pos = trans * new Vector3(0.0, 0.0, this.elevation);
@@ -310,12 +307,19 @@ namespace netDxf.Entities
                             break;
                     }
 
-                    if (this.associative)
-                    {
-                        path.AddContour(entity);
-                        entity.AddReactor(this);
-                        this.OnHatchBoundaryPathAddedEvent(path);
-                    }
+                    if (entity is Spline spline && spline.IsClosedPeriodic) PeriodicSplineData.Validate(spline);
+                    prepared.Add(new KeyValuePair<HatchBoundaryPath, EntityObject>(path, entity));
+                }
+            }
+            if (this.associative) this.UnLinkBoundary();
+            this.associative = linkBoundary;
+            if (linkBoundary)
+            {
+                foreach (KeyValuePair<HatchBoundaryPath, EntityObject> item in prepared)
+                {
+                    item.Key.AddContour(item.Value);
+                    item.Value.AddReactor(this);
+                    this.OnHatchBoundaryPathAddedEvent(item.Key);
                 }
             }
             return boundary;
