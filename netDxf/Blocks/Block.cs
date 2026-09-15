@@ -734,6 +734,7 @@ namespace netDxf.Blocks
         private void Entities_BeforeAddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
             if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
+            if (e.Item is StoredTable storedTable && e.Item.Owner == null) storedTable.ValidateIncoming(this.Record.Owner?.Owner);
             // null items, entities already owned by another Block, attribute definitions and attributes are not allowed in the entities list.
             if (e.Item == null)
             {

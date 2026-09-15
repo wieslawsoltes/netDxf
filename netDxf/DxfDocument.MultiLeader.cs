@@ -17,7 +17,8 @@ namespace netDxf
             foreach(DxfObject item in this.AddedObjects.Values)
             {
                 IEnumerable<DxfObject> references;
-                if(item is MultiLeader leader)references=leader.Data.SelectMany(d=>d.References);
+                if(item is StoredTable table)references=table.References;
+                else if(item is MultiLeader leader)references=leader.Data.SelectMany(d=>d.References);
                 else if(item is DxfMLeaderStyle style)references=style.DatabaseReferences;
                 else continue;
                 int count=references.Count(r=>ReferenceEquals(r,target));

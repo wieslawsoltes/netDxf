@@ -821,6 +821,7 @@ namespace netDxf
             }
 
             if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this);
+            if (entity is StoredTable storedTable) storedTable.ValidateIncoming(this);
 
             // assign a handle
             if (assignHandle || string.IsNullOrEmpty(entity.Handle))
@@ -956,6 +957,8 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.StoredTable:
+                    break;
                 case EntityType.MultiLeader:
                 case EntityType.Light:
                 case EntityType.Ole2Frame:
@@ -1125,6 +1128,8 @@ namespace netDxf
                     break;
                 case EntityType.Spline:
                 case EntityType.Helix:
+                case EntityType.StoredTable:
+                    break;
                 case EntityType.MultiLeader:
                 case EntityType.Light:
                 case EntityType.Ole2Frame:
@@ -1249,6 +1254,7 @@ namespace netDxf
             entity.LayerChanged -= this.Entity_LayerChanged;
             entity.LinetypeChanged -= this.Entity_LinetypeChanged;
 
+            if (entity is StoredTable removedTable) removedTable.MarkRemoved();
             entity.Handle = null;
             entity.Owner = null;
 

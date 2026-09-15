@@ -330,6 +330,7 @@ namespace netDxf.IO
             this.ResolveUcsReferences();
             this.ImportDatabaseObjects();
             this.ResolveMultiLeaderReferences();
+            this.ResolveStoredTables();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -3741,7 +3742,7 @@ namespace netDxf.IO
                     dxfObject = this.ReadWipeout();
                     break;
                 case DxfObjectCode.AcadTable:
-                    dxfObject = this.ReadAcadTable(isBlockEntity);
+                    dxfObject = this.ReadStoredTable();
                     break;
                 default:
                     this.ReadUnknowData();
@@ -3807,99 +3808,6 @@ namespace netDxf.IO
             }
 
             return dxfObject;
-        }
-
-        private Insert ReadAcadTable(bool isBlockEntity)
-        {
-            Vector3 basePoint = Vector3.Zero;
-            Vector3 normal = Vector3.UnitZ;
-            Vector3 direction = Vector3.UnitX;
-            string blockName = string.Empty;
-            Block block = null;
-            List<XData> xData = new List<XData>();
-
-            this.chunk.Next();
-            while (this.chunk.Code != 0)
-            {
-                switch (this.chunk.Code)
-                {
-                    case 2:
-                        blockName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        if (!isBlockEntity)
-                        {
-                            block = this.GetBlock(blockName);
-                        }
-                        this.chunk.Next();
-                        break;
-                    case 10:
-                        basePoint.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 20:
-                        basePoint.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 30:
-                        basePoint.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 11:
-                        direction.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 21:
-                        direction.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 31:
-                        direction.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 210:
-                        normal.X = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 220:
-                        normal.Y = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 230:
-                        normal.Z = this.chunk.ReadDouble();
-                        this.chunk.Next();
-                        break;
-                    case 1001:
-                        string appId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        XData data = this.ReadXDataRecord(this.GetApplicationRegistry(appId));
-                        xData.Add(data);
-                        break;
-                    default:
-                        Debug.Assert(!(this.chunk.Code >= 1000 && this.chunk.Code <= 1071), "The extended data of an entity must start with the application registry code.");
-                        this.chunk.Next();
-                        break;
-                }
-            }
-
-            // It is a lot more intuitive to give the position in world coordinates and then define the orientation with the normal.
-            Vector3 wcsBasePoint = MathHelper.Transform(basePoint, normal, CoordinateSystem.Object, CoordinateSystem.World);
-            Insert insert = new Insert(new List<Attribute>())
-            {
-                Block = block,
-                Position = wcsBasePoint,
-                Normal = normal
-            };
-            insert.XData.AddRange(xData);
-
-            //Vector3 ocsDirection = MathHelper.Transform(direction, normal, CoordinateSystem.World, CoordinateSystem.Object);
-            //insert.Rotation = Vector2.Angle(new Vector2(ocsDirection.X, ocsDirection.Y))*MathHelper.RadToDeg;
-            //insert.Scale = new Vector3(1.0);
-
-            // post process nested inserts
-            if (isBlockEntity)
-            {
-                this.nestedInserts.Add(insert, blockName);
-            }
-
-            return insert;
         }
 
         private Wipeout ReadWipeout()
