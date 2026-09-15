@@ -1,0 +1,125 @@
+{
+  "implementation_commit": "f9bf71739e7bd60d1e448848921ef153ada47294",
+  "implementation_tree": "a64cc268cd1202b44b99f1c96e342bd8db900012",
+  "base_merge_commit": "ce3f1bf9394fa3b3192a68d59f203a41cd85335c",
+  "local_implementation_tree_equivalent": "b9ccd3908f1583a11560c3e60b7b9e8b4c85f34b",
+  "sdk": "8.0.408",
+  "runtime": "net8.0",
+  "independent_reader": "ezdxf 1.4.4",
+  "configurations": {
+    "debug": {
+      "passed": 25408,
+      "failed": 0,
+      "unique_names": 25408,
+      "results_sha256": "58e7025cc265f4e9cadd5b2677a642f7f5f5561a8c393803f2c86b267ff29945",
+      "production_dll_sha256": "19c64d7a0c5c07b93a3e1349d0b69a282c5bd38e0d011dc8eb437bdc099e652d",
+      "tests_dll_sha256": "b275a9f5478f49b75ba9691d794e61bf7e1ce7b87b6cbe18ba01af885b3fc038",
+      "dxf_artifacts": 3145,
+      "las_artifacts": 96,
+      "independent_scripts_passed": 86,
+      "independent_scripts_failed": 0,
+      "distinct_dxfs_opened": 3044,
+      "transparency_gate": {
+        "schema": 1,
+        "parser": "ezdxf 1.4.4 raw DXF tags; independent complete-pair LAS parser",
+        "expected_files": 552,
+        "checked_files": 552,
+        "checked_dxf": 456,
+        "checked_las": 96,
+        "corruption_controls": 4920,
+        "failures": []
+      }
+    },
+    "release": {
+      "passed": 25408,
+      "failed": 0,
+      "unique_names": 25408,
+      "results_sha256": "58e7025cc265f4e9cadd5b2677a642f7f5f5561a8c393803f2c86b267ff29945",
+      "production_dll_sha256": "35f282535852bb67b39f56f926439f532948e0116ea77b080065e31f0c102913",
+      "tests_dll_sha256": "7a26acf4b03742aeef78bbd7a48c0b8e835c7f7f48c55eb76c02d81ec585ae79",
+      "dxf_artifacts": 3145,
+      "las_artifacts": 96,
+      "independent_scripts_passed": 86,
+      "independent_scripts_failed": 0,
+      "distinct_dxfs_opened": 3044,
+      "transparency_gate": {
+        "schema": 1,
+        "parser": "ezdxf 1.4.4 raw DXF tags; independent complete-pair LAS parser",
+        "expected_files": 552,
+        "checked_files": 552,
+        "checked_dxf": 456,
+        "checked_las": 96,
+        "corruption_controls": 4920,
+        "failures": []
+      }
+    }
+  },
+  "debug_release_case_outcomes_identical": true,
+  "implementation_ci": {
+    "run_id": 34943862740,
+    "head": "f9bf71739e7bd60d1e448848921ef153ada47294",
+    "platforms": [
+      "ubuntu-latest",
+      "windows-latest"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "passed_per_job": 25408,
+    "failed_per_job": 0,
+    "linux_release_independent_gates": 86,
+    "windows_case_comparison": "Only the six existing Infinity-symbol label differences are normalized."
+  },
+  "release_targets": [
+    "netstandard2.0",
+    "net471",
+    "net48",
+    "net6.0",
+    "net8.0"
+  ],
+  "debug_additional_targets": [
+    "netstandard2.0"
+  ],
+  "xml_documentation_warnings_per_target": 561,
+  "build_errors": 0,
+  "python_tests": 18,
+  "field_audit": {
+    "self_test": true,
+    "io_files": 87,
+    "io_methods": 672,
+    "model_header_files": 241,
+    "all_file_hashes_match_implementation": true,
+    "scope": "Syntax inventory and exact file hashes; not a semantic standards certificate."
+  },
+  "coverage_rows": 259,
+  "added_cases": {
+    "section": 215,
+    "section_settings": 161,
+    "table_style": 89,
+    "table_name_spelling": 4,
+    "sun": 300,
+    "stored_field": 76,
+    "packed_transparency_and_boundaries": 653,
+    "internal_metadata_copy": 13,
+    "sixth_mixed": 18
+  },
+  "independent_review": {
+    "section_callback_cases": 22,
+    "section_callback_failures": 0,
+    "packed_alpha_api_cases": 2048,
+    "packed_alpha_wire_values": 11520,
+    "final_transparency_boundary_cases": 78,
+    "final_transparency_boundary_failures": 0,
+    "sixth_mixed_cases_per_configuration": 18,
+    "sixth_mixed_outputs_per_configuration": 42
+  },
+  "native_boundaries": {
+    "section_documented_name_audit": "Raw packets checked first; documented SECTION names need a disclosed in-memory ezdxf structural adapter. Native SECTIONOBJECT outputs are audited unchanged.",
+    "table_style": "Five native packet sets, ten scoped carriers and four complete-source outputs are distinct evidence categories.",
+    "field": "Exact native R2000/R2018 FIELD graphs use scoped carriers with disclosed host replacements; whole originals encounter unrelated OLE2FRAME/ACIS limits.",
+    "sun": "Native packets and registered host lifecycle only; retained-only layout viewport Id1 is excluded."
+  },
+  "full_standard_complete": false,
+  "autocad_executed": false
+}

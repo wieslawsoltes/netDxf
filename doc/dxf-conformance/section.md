@@ -143,3 +143,14 @@ adapted structural audit. These adapted audits are reported separately. Native
 `SECTIONOBJECT` outputs are audited without an adapter, including the complete
 pinned source round trips. Neither category proves geometric cut correctness or
 AutoCAD application execution.
+
+The isolated final Debug qualification passed 2,083 focused cases with normal
+compiler warning diagnostics, including existing lazy-database preflight and
+strict DXF EOF regressions. Both SECTION gates passed on fresh output artifacts;
+552 additional transparency artifacts feed its independent mandatory gate.
+`section-qualification.json` records source checkpoints, DLL hashes, gate scopes,
+independent review outcomes and output hashes. Combined Release and full-suite
+qualification are recorded by the integration branch, separately from this
+isolated Debug receipt.
+
+The same isolated outputs also pass the [independent transparency gate](transparency-independent-gate.md): all 456 DXF and 96 LAS files, with 4,920 mutations of actual output fields rejected. The exact receipt and artifact hashes are included in `section-qualification.json`.

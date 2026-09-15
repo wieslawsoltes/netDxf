@@ -42,8 +42,9 @@ the gate does not overwrite the conformance artifacts.
 This qualification preserves the existing effective API. Generic packed numeric
 zero retains its legacy ByBlock projection; physical layer-state numeric zero
 retains its legacy opaque projection. Same-carrier load/clone/export preserves
-the exact stored integer. Transfers between those carriers clear only the
-ambiguous zero cache and encode the existing effective value for the destination.
+the exact stored integer. The `LayerStateProperties` constructor, `CopyFrom`, and
+`CopyTo` clear only the ambiguous zero cache when copying between those carriers
+and encode the existing effective value for the destination.
 The transfer artifacts therefore contain a normal layer with packed zero, its
 captured state encoded as `0x01000000`, the original physical state zero, and an
 opaque destination layer encoded as `0x020000FF`.
@@ -57,3 +58,8 @@ presence, clone isolation, whole-value replacement, and transfer behavior before
 serialization. The pinned independent SECTION producer provides the native
 common group-440 regression; these additional boundary fixtures are deliberately
 constructed compatibility controls.
+
+The [qualification receipt](transparency-independent-qualification.json) records
+552 accepted files and 4,920 rejected parsed-output corruptions for both final
+isolated Debug and combined Release output. It also records all 78 passing
+independently authored API counterexamples against the exact final Debug DLL.
