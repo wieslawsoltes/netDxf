@@ -179,7 +179,10 @@ namespace netDxf.Collections
 
             if (this.innerDictionary.TryGetValue(item.ApplicationRegistry.Name, out XData xdata))
             {
-                xdata.XDataRecord.AddRange(item.XDataRecord);
+                // Existing-key merges must isolate payloads held by another container too.
+                XData merged = item.Container != null && !ReferenceEquals(item.Container, this)
+                    ? item.CopyForRegistry(xdata.ApplicationRegistry) : item;
+                xdata.XDataRecord.AddRange(merged.XDataRecord);
             }
             else
             {

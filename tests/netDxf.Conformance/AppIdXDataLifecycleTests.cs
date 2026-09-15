@@ -22,8 +22,14 @@ internal static partial class Program
             Run($"appid-lifecycle/collision/{callback}/{table}", () => AppIdCollision(callback, table));
         foreach (DxfVersion version in SupportedVersions) foreach (bool binary in new[] { false, true })
             Run($"appid-lifecycle/layout-viewports/{version}/{binary}", () => AppIdLayoutViewports(version, binary));
+        foreach (bool sameDocument in new[] { false, true })
+            Run($"appid-lifecycle/merge-shared-payload/{sameDocument}", () => AppIdMergedPayload(sameDocument));
         Run("appid-lifecycle/clone-names-and-cycles", AppIdNamedClone);
-        Run("appid-lifecycle/retained-attributes-and-block-end", AppIdMetadataCarriers);
+        foreach (DxfVersion version in SupportedVersions) foreach (bool binary in new[] { false, true })
+            Run($"appid-lifecycle/retained-attributes-and-block-end/{version}/{binary}", () => AppIdMetadataCarriers(version, binary));
+        Run("appid-lifecycle/late-attribute-sync", AppIdAttributeSync);
+        Run("appid-lifecycle/layout-viewport-replacement", AppIdViewportReplacement);
+        Run("appid-lifecycle/block-end-detach-readd", AppIdBlockEndReadd);
         Run("appid-lifecycle/foreign-registration-and-removal", AppIdForeign);
         Run("appid-lifecycle/detached-replacement-and-readd", AppIdDetachedReplacement);
         Run("appid-lifecycle/clone-renamed-registries", AppIdClone);
@@ -57,7 +63,7 @@ internal static partial class Program
         Check(ReferenceEquals(line.XData["QA_RENAMED"], caller), "single-container XData identity changed during canonicalization");
         Equal((byte)99, ((byte[])line.XData["QA_RENAMED"].XDataRecord[0].Value)[0], "caller-held live XData edits were lost");
         foreach (DxfObject item in items.Skip(1)) Equal((byte)1, ((byte[])item.XData["QA_RENAMED"].XDataRecord[0].Value)[0], "shared caller data aliases another container");
-        using var stream = new MemoryStream(); Check(doc.Save(stream, binary), "renamed APPID save"); stream.Position = 0; var loaded = DxfDocument.Load(stream)!;
+        using var stream = new MemoryStream(); Check(doc.Save(stream, binary), "renamed APPID save"); File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"appid-lifecycle-{version}-{binary}.dxf"), stream.ToArray()); stream.Position = 0; var loaded = DxfDocument.Load(stream)!;
         DxfObject[] saved = { loaded.Entities.Lines.Single(), loaded.NamedObjects["QA_RECORD"], loaded.Layers["QA_LAYER"], loaded.VPorts.GetConfiguration("QA_VIEW")[0], loaded.VPorts.GetConfiguration("QA_VIEW")[1] };
         foreach (DxfObject item in saved) AppIdHas(item, "QA_RENAMED");
         Equal(5, loaded.ApplicationRegistries.GetReferences("QA_RENAMED").Sum(reference => reference.Uses), "loaded reference count");
@@ -96,6 +102,18 @@ internal static partial class Program
         target.ApplicationRegistries["SHARED"].Name = "TARGET"; AppIdHas(second, "TARGET"); AppIdHas(first, sameDocument ? "TARGET" : "SHARED");
         originalRegistry.Name = "CALLER"; AppIdHas(second, "TARGET"); AppIdHas(first, sameDocument ? "TARGET" : "SHARED");
     }
+    private static void AppIdMergedPayload(bool sameDocument)
+    {
+        var source = new DxfDocument(); var target = sameDocument ? source : new DxfDocument();
+        var first = new Line(); var second = new Line(); var data = AppIdData(new ApplicationRegistry("MERGE"), 17);
+        first.XData.Add(data); second.XData.Add(AppIdData(new ApplicationRegistry("MERGE"), 3)); source.Entities.Add(first); target.Entities.Add(second);
+        XData retained = second.XData["MERGE"]; second.XData.Add(first.XData["MERGE"]);
+        Check(ReferenceEquals(retained, second.XData["MERGE"]), "merge replaced target XData value"); Equal(2, retained.XDataRecord.Count, "merge did not append records");
+        ((byte[])data.XDataRecord[0].Value)[0] = 44;
+        Equal((byte)17, ((byte[])retained.XDataRecord[1].Value)[0], "merge shares binary payload from another container");
+        ((byte[])retained.XDataRecord[1].Value)[1] = 99; Equal((byte)2, ((byte[])data.XDataRecord[0].Value)[1], "merged payload mutation changed source");
+        Equal(sameDocument ? 2 : 1, target.ApplicationRegistries.GetReferences("MERGE").Sum(reference => reference.Uses), "merged APPID membership counted twice");
+    }
     private static void AppIdObserverThrow(bool attachFirst, bool table)
     {
         var doc = new DxfDocument(); var registry = new ApplicationRegistry("OLD"); var holder = new Line();
@@ -126,7 +144,7 @@ internal static partial class Program
         Check(refs.Any(reference => ReferenceEquals(reference.Reference, first.Viewport)) && refs.Any(reference => ReferenceEquals(reference.Reference, second.Viewport)), "viewport reference identities changed");
         Check(!doc.ApplicationRegistries.Remove(registry), "referenced viewport APPID removed"); registry.Name = "RENAMED_VIEWPORT_DATA";
         AppIdHas(first.Viewport, "RENAMED_VIEWPORT_DATA"); AppIdHas(second.Viewport, "RENAMED_VIEWPORT_DATA");
-        using var stream = new MemoryStream(); Check(doc.Save(stream, binary), "viewport APPID save"); stream.Position = 0; var loaded = DxfDocument.Load(stream)!;
+        using var stream = new MemoryStream(); Check(doc.Save(stream, binary), "viewport APPID save"); File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"appid-carriers-{version}-{binary}.dxf"), stream.ToArray()); stream.Position = 0; var loaded = DxfDocument.Load(stream)!;
         AppIdHas(loaded.Layouts["FIRST"].Viewport, "RENAMED_VIEWPORT_DATA"); AppIdHas(loaded.Layouts["SECOND"].Viewport, "RENAMED_VIEWPORT_DATA");
         Equal(2, loaded.ApplicationRegistries.GetReferences("RENAMED_VIEWPORT_DATA").Sum(reference => reference.Uses), "loaded viewport APPID count");
         loaded.Layouts["FIRST"].Viewport.XData.Clear(); Check(!loaded.ApplicationRegistries.Remove("RENAMED_VIEWPORT_DATA"), "second viewport use ignored");
@@ -144,13 +162,54 @@ internal static partial class Program
         Throws<ArgumentException>(() => root.Clone("PEER")); Equal("ROOT", root.Name, "failed conflicting clone changed source");
         var reserved = new ApplicationRegistry(ApplicationRegistry.DefaultName); var custom = (ApplicationRegistry)reserved.Clone("CUSTOM"); Equal("CUSTOM", custom.Name, "reserved registry renamed clone failed"); Check(!custom.IsReserved, "renamed clone retained reserved flag");
     }
-    private static void AppIdMetadataCarriers()
+    private static void AppIdMetadataCarriers(DxfVersion version, bool binary)
     {
-        var doc = new DxfDocument(); var block = new netDxf.Blocks.Block("META"); block.AttributeDefinitions.Add(new AttributeDefinition("TAG") { Value = "value" }); var insert = new Insert(block); doc.Entities.Add(insert);
-        var registry = doc.ApplicationRegistries.Add(new ApplicationRegistry("CARRIERS")); var end = (DxfObject)typeof(netDxf.Blocks.Block).GetProperty("End", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(block)!; insert.Attributes[0].XData.Add(AppIdData(registry)); end.XData.Add(AppIdData(registry));
-        var refs = doc.ApplicationRegistries.GetReferences(registry); Equal(2, refs.Sum(reference => reference.Uses), "retained carriers counted twice or omitted");
-        Check(refs.Count == 2 && refs.Any(reference => ReferenceEquals(reference.Reference, insert.Attributes[0])) && refs.Any(reference => ReferenceEquals(reference.Reference, end)), "carrier reference identities changed");
-        Check(!doc.ApplicationRegistries.Remove(registry), "referenced carrier APPID removed"); insert.Attributes[0].XData.Clear(); end.XData.Clear(); Check(doc.ApplicationRegistries.Remove(registry), "cleared carrier APPID retained");
+        var doc = new DxfDocument(version); var block = new netDxf.Blocks.Block("META"); block.AttributeDefinitions.Add(new AttributeDefinition("TAG") { Value = "value" }); var insert = new Insert(block); doc.Entities.Add(insert);
+        var registry = doc.ApplicationRegistries.Add(new ApplicationRegistry("CARRIERS")); var end = (DxfObject)typeof(netDxf.Blocks.Block).GetProperty("End", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(block)!; insert.Attributes[0].XData.Add(AppIdData(registry)); end.XData.Add(AppIdData(registry, 5)); block.XData.Add(AppIdData(registry, 3));
+        var refs = doc.ApplicationRegistries.GetReferences(registry); Equal(3, refs.Sum(reference => reference.Uses), "retained carriers counted twice or omitted");
+        Check(refs.Count == 3 && refs.Any(reference => ReferenceEquals(reference.Reference, block)) && refs.Any(reference => ReferenceEquals(reference.Reference, insert.Attributes[0])) && refs.Any(reference => ReferenceEquals(reference.Reference, end)), "carrier reference identities changed");
+        Check(!doc.ApplicationRegistries.Remove(registry), "referenced carrier APPID removed"); registry.Name = "RENAMED_CARRIERS";
+        AppIdHas(insert.Attributes[0], "RENAMED_CARRIERS"); AppIdHas(end, "RENAMED_CARRIERS"); AppIdHas(block, "RENAMED_CARRIERS");
+        using var stream = new MemoryStream(); Check(doc.Save(stream, binary), "retained carrier save"); File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"appid-members-{version}-{binary}.dxf"), stream.ToArray()); stream.Position = 0; var loaded = DxfDocument.Load(stream)!;
+        var loadedAttribute = loaded.Entities.Inserts.Single().Attributes[0]; var loadedEnd = (DxfObject)typeof(netDxf.Blocks.Block).GetProperty("End", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(loaded.Blocks["META"])!;
+        AppIdHas(loadedAttribute, "RENAMED_CARRIERS"); AppIdHas(loadedEnd, "RENAMED_CARRIERS"); AppIdHas(loaded.Blocks["META"], "RENAMED_CARRIERS");
+        Equal((byte)1, ((byte[])loadedAttribute.XData["RENAMED_CARRIERS"].XDataRecord[0].Value)[0], "ATTRIB payload changed");
+        Equal((byte)3, ((byte[])loaded.Blocks["META"].XData["RENAMED_CARRIERS"].XDataRecord[0].Value)[0], "BLOCK payload changed");
+        Equal((byte)5, ((byte[])loadedEnd.XData["RENAMED_CARRIERS"].XDataRecord[0].Value)[0], "ENDBLK payload changed");
+        Equal(3, loaded.ApplicationRegistries.GetReferences("RENAMED_CARRIERS").Sum(reference => reference.Uses), "loaded member APPID count");
+        Check(!loaded.ApplicationRegistries.Remove("RENAMED_CARRIERS"), "loaded referenced carrier APPID removed"); loadedAttribute.XData.Clear(); Check(!loaded.ApplicationRegistries.Remove("RENAMED_CARRIERS"), "remaining block end APPID ignored"); loadedEnd.XData.Clear(); Check(!loaded.ApplicationRegistries.Remove("RENAMED_CARRIERS"), "remaining BLOCK APPID ignored"); loaded.Blocks["META"].XData.Clear(); Check(loaded.ApplicationRegistries.Remove("RENAMED_CARRIERS"), "cleared carrier APPID retained");
+    }
+
+    private static void AppIdAttributeSync()
+    {
+        var doc = new DxfDocument(); var block = new netDxf.Blocks.Block("SYNC"); block.AttributeDefinitions.Add(new AttributeDefinition("OLD") { Value = "old" }); var insert = new Insert(block); doc.Entities.Add(insert);
+        var old = insert.Attributes[0]; old.XData.Add(AppIdData(new ApplicationRegistry("OLD_APP")));
+        Check(doc.ApplicationRegistries.Contains("OLD_APP") && doc.ApplicationRegistries.GetReferences("OLD_APP").Single().Uses == 1, "late ATTRIB APPID not registered exactly once");
+        block.AttributeDefinitions.Remove("OLD"); block.AttributeDefinitions.Add(new AttributeDefinition("NEW") { Value = "new" }); insert.Sync();
+        Check(doc.ApplicationRegistries.Remove("OLD_APP"), "Sync removal retained old attribute reference"); old.XData.Add(AppIdData(new ApplicationRegistry("DETACHED_OLD"))); Check(!doc.ApplicationRegistries.Contains("DETACHED_OLD"), "Sync removal retained document subscription");
+        var current = insert.Attributes[0]; current.XData.Add(AppIdData(new ApplicationRegistry("NEW_APP")));
+        Check(doc.ApplicationRegistries.Contains("NEW_APP") && doc.ApplicationRegistries.GetReferences("NEW_APP").Single().Uses == 1, "Sync addition did not bind new attribute");
+        doc.Entities.Remove(insert); Check(doc.ApplicationRegistries.Remove("NEW_APP"), "INSERT removal retained attribute reference");
+        current.XData.Add(AppIdData(new ApplicationRegistry("DETACHED_CURRENT"))); Check(!doc.ApplicationRegistries.Contains("DETACHED_CURRENT"), "INSERT removal retained attribute subscription");
+        doc.Entities.Add(insert); Equal(1, doc.ApplicationRegistries.GetReferences("NEW_APP").Sum(reference => reference.Uses), "INSERT re-add duplicated attribute reference");
+        Equal(1, doc.ApplicationRegistries.GetReferences("DETACHED_CURRENT").Sum(reference => reference.Uses), "INSERT re-add omitted pending XData");
+    }
+    private static void AppIdViewportReplacement()
+    {
+        var doc = new DxfDocument(); var layout = doc.Layouts.Add(new Layout("REPLACE")); var old = layout.Viewport; old.XData.Add(AppIdData(new ApplicationRegistry("VIEWPORT_APP")));
+        var replacement = (Viewport)old.Clone(); typeof(Layout).GetProperty(nameof(Layout.Viewport))!.SetValue(layout, replacement);
+        var refs = doc.ApplicationRegistries.GetReferences("VIEWPORT_APP"); Check(refs.Count == 1 && ReferenceEquals(refs[0].Reference, replacement) && refs[0].Uses == 1, "viewport replacement reference identity/count");
+        old.XData.Add(AppIdData(new ApplicationRegistry("DETACHED_VIEWPORT"))); Check(!doc.ApplicationRegistries.Contains("DETACHED_VIEWPORT"), "old viewport retained document subscription");
+        replacement.XData.Add(AppIdData(new ApplicationRegistry("LIVE_VIEWPORT"))); Check(doc.ApplicationRegistries.Contains("LIVE_VIEWPORT"), "replacement viewport lacks document subscription");
+        doc.Layouts.Remove(layout); Check(doc.ApplicationRegistries.Remove("LIVE_VIEWPORT"), "layout removal retained viewport reference"); replacement.XData.Add(AppIdData(new ApplicationRegistry("AFTER_LAYOUT_REMOVE"))); Check(!doc.ApplicationRegistries.Contains("AFTER_LAYOUT_REMOVE"), "layout removal retained viewport subscription");
+    }
+    private static void AppIdBlockEndReadd()
+    {
+        var doc = new DxfDocument(); var block = doc.Blocks.Add(new netDxf.Blocks.Block("END_META")); var end = (DxfObject)typeof(netDxf.Blocks.Block).GetProperty("End", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(block)!;
+        end.XData.Add(AppIdData(new ApplicationRegistry("END_APP"))); Equal(1, doc.ApplicationRegistries.GetReferences("END_APP").Sum(reference => reference.Uses), "block end APPID count");
+        Check(doc.Blocks.Remove(block), "unreferenced block removal failed"); Check(doc.ApplicationRegistries.Remove("END_APP"), "removed block end retained APPID use");
+        end.XData.Add(AppIdData(new ApplicationRegistry("DETACHED_END"))); Check(!doc.ApplicationRegistries.Contains("DETACHED_END"), "removed block end retained subscription");
+        doc.Blocks.Add(block); Equal(1, doc.ApplicationRegistries.GetReferences("END_APP").Sum(reference => reference.Uses), "block re-add duplicated APPID use"); Equal(1, doc.ApplicationRegistries.GetReferences("DETACHED_END").Sum(reference => reference.Uses), "block re-add omitted pending XData");
     }
 
     private static void AppIdForeign()

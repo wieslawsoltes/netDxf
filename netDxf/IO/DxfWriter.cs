@@ -1786,6 +1786,7 @@ namespace netDxf.IO
             this.chunk.Write(30, block.Origin.Z);
             this.chunk.Write(3, name);
             this.chunk.Write(4, this.EncodeNonAsciiCharacters(block.Description));
+            this.WriteXData(block.XData);
 
             if (layout == null)
             {
@@ -1829,7 +1830,7 @@ namespace netDxf.IO
             this.chunk.Write(8, blockLayer);
             this.chunk.Write(100, SubclassMarker.BlockEnd);
 
-            this.WriteXData(block.XData);
+            this.WriteXData(block.End.XData);
         }
 
         #endregion
