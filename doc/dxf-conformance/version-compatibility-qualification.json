@@ -1,0 +1,109 @@
+{
+  "module": "Read-only target-version compatibility diagnostics",
+  "scope": "Known version-dependent writer guards and three omissions; no exhaustive legality, native CAD or CanSave claim.",
+  "qualifiedLocalCommit": "6aa0a5781fd9a45f68c5cc7fc9d6092db4089277",
+  "qualifiedSourceTree": "e7c7d3eeac572c5c1f97cdf9284dd3d8200f92fd",
+  "qualifiedPublishedCommit": "fef0dab3b6c18e705e876f6c21353da6dd095db9",
+  "productionLocalCommit": "ffd995d59cadbc7a956b3371af82eb034c64bea8",
+  "base": "1aa26d13eb659cf4c89269afa346b3bc00b5e9c1",
+  "dependencyCommits": {
+    "CELLSTYLEMAP": "fc0fdef74dd40767340e0628ae2dbf542b228a0e",
+    "PolygonMeshRecords": "2d9b231d2568e92887c6ec9164a7ad667216ee61"
+  },
+  "configurations": {
+    "Debug": {
+      "cases": 638,
+      "uniqueCases": 638,
+      "failures": 0,
+      "librarySha256": "9cf10f6844ec1bb2dcc4dbb575ab0f60d915e4cf49ce5913be690471b66a0c71",
+      "conformanceAssemblySha256": "890c3e7313bc976888d01674256468cbfe4c1485638993392a41df8c8543f139",
+      "results": "receipts/version-compatibility/conformance-results.json",
+      "resultsSha256": "bf8839334c3a387a0b0717498f0e2144b3220e26dde238bb18f0f5a3f88e814f"
+    },
+    "Release": {
+      "cases": 638,
+      "uniqueCases": 638,
+      "failures": 0,
+      "librarySha256": "fbed811e873df46f0f7b30b48063a2b65d946e3654507a9ed174e2cc809721d8",
+      "conformanceAssemblySha256": "bda2384366caaefdf6b3f78a4791db4465594fd30905276cdfbbb3f2cf433b7b",
+      "results": "receipts/version-compatibility/conformance-results.json",
+      "resultsSha256": "bf8839334c3a387a0b0717498f0e2144b3220e26dde238bb18f0f5a3f88e814f"
+    }
+  },
+  "caseGroups": {
+    "writer": 396,
+    "stored": 132,
+    "omissions": 12,
+    "defined-height": 12,
+    "traversal": 6,
+    "upgrade": 16,
+    "sun-null": 36,
+    "polygonmesh": 12,
+    "pristine-purity": 1,
+    "live-reference-snapshot": 1,
+    "metadata-callbacks": 1,
+    "bounded-not-save-promise": 1,
+    "opaque-exclusion": 12
+  },
+  "omissionGate": {
+    "script": "tools/verify_version_compatibility.py",
+    "outputsPerConfiguration": 12,
+    "physicalPacketCorruptionsRejectedPerConfiguration": 10,
+    "sha256": "6ee20a6a0119c1790e382eeb67fa34aca62b535df6428110be4fe903464e0f49"
+  },
+  "independentReview": {
+    "receipt": "receipts/version-compatibility-independent/receipt.json",
+    "casesPerConfiguration": 518,
+    "failures": 0,
+    "reusedFixtureHelpersDisclosed": true
+  },
+  "releaseBuilds": {
+    "netstandard2.0": {
+      "errors": 0,
+      "warnings": {
+        "CS1591": 561,
+        "CS1573": 1
+      },
+      "librarySha256": "3bdecda3fcd053f3bd6c22213d499d79c9518485ff9b80f41e25a51a8cbece24"
+    },
+    "net471": {
+      "errors": 0,
+      "warnings": {
+        "CS1591": 561,
+        "CS1573": 1
+      },
+      "librarySha256": "34f0f26b59b72fe02c642e6c08ea62eedfef768bfa1e6ceea914dd642ab23ce6"
+    },
+    "net48": {
+      "errors": 0,
+      "warnings": {
+        "CS1591": 561,
+        "CS1573": 1
+      },
+      "librarySha256": "ca6a980ac23de0c3a3f31a5d11c279111f769009e789b42cd1e33e2c0cd476c3"
+    },
+    "net6.0": {
+      "errors": 0,
+      "warnings": {
+        "CS1591": 561,
+        "CS1573": 1
+      },
+      "librarySha256": "1d8baa5b0e3ef5528d112cbb5487b5e12e210c8e41d3a4a0916ba46caad3ceb8"
+    },
+    "net8.0": {
+      "errors": 0,
+      "warnings": {
+        "CS1591": 561,
+        "CS1573": 1
+      },
+      "librarySha256": "fbed811e873df46f0f7b30b48063a2b65d946e3654507a9ed174e2cc809721d8"
+    }
+  },
+  "notes": [
+    "All analysis checks preserve current AcadVer, allocation/header seed and lazy object database identity. Registered membership/order checks compare actual reference identities, including TableObject instances with value equality.",
+    "Authoring and stored-source cases compare report predictions with actual writer rejection or success across six profiles and both transports. Physical omissions are independently decoded from the actual writer outputs.",
+    "Debug and Release conformance results are byte-identical; one common result snapshot is preserved.",
+    "This isolated qualification uses the PR92 source before the missing HATCH newNormal XML parameter documentation cleanup. Each framework reports 561 existing CS1591 and one existing CS1573 warning. The report files introduce no compiler warnings. PR92 final cleanup removes CS1573 in the parent integration.",
+    "Independent harness sources and results are imported byte-for-byte. Fixture creation reuses the explicitly pinned conformance helpers; all rule, path, source-identity, purity and actual-Save assertions are independent."
+  ]
+}

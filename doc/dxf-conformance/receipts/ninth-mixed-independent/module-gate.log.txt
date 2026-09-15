@@ -1,0 +1,1 @@
+{"actual_output_corruptions_rejected": 300, "audit_errors": 0, "audit_repairs": 0, "native_cad_execution": false, "native_linetype_packet_comparisons": 16, "native_map_packet_comparisons": 16, "native_style_comparisons_with_declared_normalization": 16, "outputs": 16, "section_evaluation": false, "section_source_links": "explicitly authored generic pointer storage"}

@@ -330,6 +330,7 @@ namespace netDxf.IO
             this.ResolveUcsReferences();
             this.ImportDatabaseObjects();
             this.ResolveStoredPolylineRecords();
+            this.ResolveStoredPolygonMeshRecords();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
             this.ResolveSections();
@@ -8582,6 +8583,8 @@ namespace netDxf.IO
 
             if (smoothType == PolylineSmoothType.NoSmooth && ((int)flags & ~129) == 8)
                 return this.ReadStoredPolylineSequence(flags, normal, xData);
+            if (surfaceType == 0 && ((int)flags & ~33) == 16)
+                return this.ReadStoredPolygonMeshSequence(flags, normal, xData, m, n);
 
             //begin to read the vertex list (although it is not recommended the vertex list might have 0 entries)
             while (this.chunk.ReadString() != DxfObjectCode.EndSequence)

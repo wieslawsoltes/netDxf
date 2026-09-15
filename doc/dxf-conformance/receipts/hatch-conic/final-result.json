@@ -1,0 +1,1020 @@
+{
+  "outputs": 168,
+  "segments": 6216,
+  "world_points": 254856,
+  "maximum_world_error": 1.3191085866178993e-09,
+  "audit_errors": 0,
+  "audit_repairs": 0,
+  "oracle": "ezdxf 1.4.4 construction primitives and OCS; independent matrix composition; ordered endpoints and parameter samples on actual output",
+  "harness_sha256": "84f9e33ff9e998189d28dc1ea6def7b74280f97057a01720cba9108c8db1f2d8",
+  "results": [
+    {
+      "file": "hatch-conic-AutoCad2000-False-0-0.dxf",
+      "sha256": "2b60398f55a6299fe175588c3762503c7c78019eaa3c5be858c6b1ee57921f85",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-0-1.dxf",
+      "sha256": "37a2fdf5dbcda9ff0e615d32f1cb9a41fb19415424b26d78ad7c69cb54a80512",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-1-0.dxf",
+      "sha256": "a0e62de84be7b0be32be53ab2b9f56b7b773953fc7e73bf054b3995f2b210154",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-1-1.dxf",
+      "sha256": "0c3e491c041212b1f62c30881e5066242d8b5a9372836c645e69700c66e2a166",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-2-0.dxf",
+      "sha256": "1bdf178ae828e7f69c6a85412e58893db46d9e78162f43b491581cdb3b74ff89",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-2-1.dxf",
+      "sha256": "c268f3ef8b30701fa8596a7d7aab11bc943a4862372718923b86ffbb29905d69",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-3-0.dxf",
+      "sha256": "3a8d26ded71b6a9531169500f769bf86b98e0481f94f839ef14026329ea20cfc",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-3-1.dxf",
+      "sha256": "a1f731c7b517adb3a649e2253cc22a369a262050a5e9fd3f5943f2fc5e7ee284",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-4-0.dxf",
+      "sha256": "cb57ba5c81d2b8dd40e47946a343b094c44b7180e12dc9d823df7bab10719830",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-4-1.dxf",
+      "sha256": "3908374723da2a713f36184583593d5f5351fd7e6e21e5cd6149a787a3d28eb1",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-5-0.dxf",
+      "sha256": "f0f28ce694543a6f96de6a230481b0f586160c36d54c12c37986c84971ab8e48",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-5-1.dxf",
+      "sha256": "0960263273dc078ec932bff5939f2b90c42ed6ee3769c6cd811bd784cfc6812d",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-6-0.dxf",
+      "sha256": "7d9f665d637ec3c28fb152bfd654e0f5b9d1d9c0f1b6b1785b81350b07d7c7ea",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-False-6-1.dxf",
+      "sha256": "1832740c14ff1e66bd6bd02aa1536f3e5f722dd0ffc008d354d9fe8fde1c3fb5",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-0-0.dxf",
+      "sha256": "e7b5a94609241b6ebd860eed868738538142d999222a006c3abd040dcaea076f",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-0-1.dxf",
+      "sha256": "02e7c84043c45fdad6db460cc4d7cebcd00c5fe4b7ba88f1c8f17b173f0ca086",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-1-0.dxf",
+      "sha256": "c442a425c798067693b2212d55a0980ccd5d5293527e349ed78f16b1bc83850e",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-1-1.dxf",
+      "sha256": "9cf1fe2e0453aae55cf112a7e51b3e8a06936f5d090525d8633dbd4a437b796c",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-2-0.dxf",
+      "sha256": "d8b30f1fdecb474e9cdb8f48d3a4e5d14855f0b63f1c1df1f5c57a0d4f4a727e",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-2-1.dxf",
+      "sha256": "c7ed80d2dd892ff265ab1d76ed619b3d52c344f468a6015665022a8dc121b08b",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-3-0.dxf",
+      "sha256": "bcb4a2d3e3438b275f2b7d7983008f521e987697d449eaed027746d35f69b151",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-3-1.dxf",
+      "sha256": "dcaee1870e90ece767f4e088af01d9a4ef3eb542a265090994b5f554fabaf86d",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-4-0.dxf",
+      "sha256": "4c02e7434df80a77eccba2669394653e8e6876e5f550d8157999b203025477be",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-4-1.dxf",
+      "sha256": "49d6625eb9b9f0185f6be7dc94af66b3889731b13a7b0211a93638876914b192",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-5-0.dxf",
+      "sha256": "ae8b3f57097f76471f27ec7f0151580aa055372f27f6ad3362643b2a0b8d159e",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-5-1.dxf",
+      "sha256": "2f01eb28ba081524862b373977137b265ec4edb3eed56d7a9e105e7db1c2ce81",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-6-0.dxf",
+      "sha256": "5c39eed72d56f8e08eba25e131baf7f51adc07ba37b525385a08345b6d4729df",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2000-True-6-1.dxf",
+      "sha256": "9ae9e9ae737645ecfea85cee5d4b3156e2a1e9d522e6cc0f45679b2ca21150c8",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-0-0.dxf",
+      "sha256": "acd3e87c6565d9daee234c08ae11b37a4272ce9eb1648f6705e6803497217019",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-0-1.dxf",
+      "sha256": "a3df438a619bb10bd229c14261d687743ae691b9ccaccef5ea52b0dc9616ff41",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-1-0.dxf",
+      "sha256": "1d40d80ffa26aa0b5e6087cd2ec76c370caf81cb93b62cb522ca641e0a9d80b7",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-1-1.dxf",
+      "sha256": "5beb2836898607f57ac821d62cc6d450e12b3acbf5c37aba33910080c9cde298",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-2-0.dxf",
+      "sha256": "5bc155ac616cfa9ea313338e51d125fee9a016c21e8f124412fd2df9de4ddd21",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-2-1.dxf",
+      "sha256": "6592eef19d7b221971759303ccfc31c15602a9ee0562d29cc4b33b7a10a7ca30",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-3-0.dxf",
+      "sha256": "076d581aa6164718f0083967e83b5fd169a0ba9d0e3950623ba70d24e1841dd3",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-3-1.dxf",
+      "sha256": "5c5f06fc433957425a3ae6fe3102cab0aa308d4325a75ae6ab7fa0bc0478093e",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-4-0.dxf",
+      "sha256": "daff87049f3cfd3a8c3d5d8b80bbcf0a1059651421e3b57a4f75d7f1e01c7728",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-4-1.dxf",
+      "sha256": "77388f985b39e1c7a8b0137115da7b7e8d72283667505cade165e32ed1968345",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-5-0.dxf",
+      "sha256": "9a2c6b3282fc46dd619eec5f7c5111b26fa387c718ec24573008e5d1d13b1d65",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-5-1.dxf",
+      "sha256": "51cee3f185a3f1497c2ff65704a03276487f86cfcd1a011653abf5f71042d781",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-6-0.dxf",
+      "sha256": "8719c69cedbba83c44def7570228a602ef0bfcd2a68c944edbd7fce8f3cbc437",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-False-6-1.dxf",
+      "sha256": "110453fc0b611b010e9fe400cdb39f7f747f5fc52eac61ca5606494b1be320f7",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-0-0.dxf",
+      "sha256": "e650be22ed86ac712a88d776b41a6606f941adf6ec004b694b653960e8881712",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-0-1.dxf",
+      "sha256": "de9b5c339e5ba048bebf0088018b4a2267141f22bbe96428ba58db03ff6b3f25",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-1-0.dxf",
+      "sha256": "4a5c07a1407c2bb1090ea1ff452483dd76e8b302332b0c24d4fd5a5df29423a4",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-1-1.dxf",
+      "sha256": "c5dba7b215ffe0c963e8a948117f361572493417450120d9f2188592efacdb90",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-2-0.dxf",
+      "sha256": "2fa04104d4663f93e6f5d577f639cd8d9fb18c8f7a37603d85bcaa010ca3edad",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-2-1.dxf",
+      "sha256": "359e24e38c3b42e54916926bca8d40afc79c5c6f972d619b19fba82bf989d9fb",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-3-0.dxf",
+      "sha256": "12c896fc2d140c4bd6eb39ddc31c61e337e2ad3a76642ccec814c19f206b4f99",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-3-1.dxf",
+      "sha256": "c78e1fd9ebfa6f80c17c98cf5c88464d6345eab397d2d4f809cde5b4e0d2b1a4",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-4-0.dxf",
+      "sha256": "5c0cad81766b4a10d1cc803c77a33bca17dd326b755be98265a01e10f839e326",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-4-1.dxf",
+      "sha256": "43483224a7fb6efe0b99f083e34bf7d177fd8416059ab303159483f33c5d25c7",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-5-0.dxf",
+      "sha256": "7260e61e6d163b0536e586e84bad423b4f0eb41f5d7a1844a12e510c77f01071",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-5-1.dxf",
+      "sha256": "49d346bb09dcad19b66fff4b93929f63629495194e917a24361c4e4d0266c4cc",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-6-0.dxf",
+      "sha256": "da41b711aad191356e909d88c4afbaea71fa1f8784470f1c56a8504b3748fdeb",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2004-True-6-1.dxf",
+      "sha256": "9e1be028486c48ccfa0eb03805ed9273ce1106640d6fba5d93c55500bef1f0ee",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-0-0.dxf",
+      "sha256": "c3d37622bdd1ea319255654db01aaef7dfcf325bc8a343ac759e2f0e1e57663e",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-0-1.dxf",
+      "sha256": "f938cb5f69ad15547c6d09f7d1bef418838123a8338423099a775427869f670e",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-1-0.dxf",
+      "sha256": "4a4e9db30f9841d01b85afb13da056e9c476541d7f453545782fd217dbd1c9d5",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-1-1.dxf",
+      "sha256": "a54d0207b8ce55513f1af746a491f36494674810fdf02d7d3d841f4567e56782",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-2-0.dxf",
+      "sha256": "02dc30eaa45eb91068d96ceb3fd4ec095a7a8bbb5e57567b25adf218d3bcc3ac",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-2-1.dxf",
+      "sha256": "854892fb9b8c0c58cf77cfe8d36a32e7bf3d3e3ee1276870efa647d0fa451be8",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-3-0.dxf",
+      "sha256": "c1223d4841030d9965ae1f0c24b8b7011bd8e179953cb3d7ddcda4e24d4e8b90",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-3-1.dxf",
+      "sha256": "d144e04e53f845a38144012a03ba68ca47d41e5a909a60657c335c045593fcb2",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-4-0.dxf",
+      "sha256": "d3462f5fbd74aa82b333c451f572ba202db35436ad2c5c880237cbdcba05ea6b",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-4-1.dxf",
+      "sha256": "fdc6a1e58d8bc3b066b402395d50c391b144e90ac0d8ea4c19834383b5769fdd",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-5-0.dxf",
+      "sha256": "848a3279c1af5a0cee4be593d741a38e391784a54a30f93e4fba8e92aa75be22",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-5-1.dxf",
+      "sha256": "aa289ef89f2192eed7a603ae1adf8c1259beddd6a84fca7b00bfe6011980c09e",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-6-0.dxf",
+      "sha256": "cfcc467c603f89cd6f0edd04a04d3337fbd1d216cb33919fb1aec89ba83454bc",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-False-6-1.dxf",
+      "sha256": "b5502e6c6aea44d220376515b5da9a8aba67b81d7d0a102525d23ac23b31a4f7",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-0-0.dxf",
+      "sha256": "d5ec522c6cbe5c52785e51b1bb8c772b0fc5197d86abdd927073b774e1c16461",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-0-1.dxf",
+      "sha256": "28bf03c68b493f5d4c943754975facb1c3691a496469d89c9a93025766e717c9",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-1-0.dxf",
+      "sha256": "eb354523826d2d55fde99a39e1ce7fb2a478293d3bc57f7997adf9c10c076c4e",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-1-1.dxf",
+      "sha256": "e6c14d5e00a2f76eb74a699ccd8fcb6d9a1b0d8cc744116fe7e3a3fbe1368e9f",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-2-0.dxf",
+      "sha256": "57f1f6435cc988c69b9a03886e7ef6abacfcfb92832e38d6e97e63c9fb703433",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-2-1.dxf",
+      "sha256": "5915625f413e8bbbfc75d2759a4ee5dba239e41bbd445962c5beb80b6c8168a5",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-3-0.dxf",
+      "sha256": "c9d24744d6aeb6b97dcf8ebd2f8ff4a30239c9c34ddfff434305b8bec4acb196",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-3-1.dxf",
+      "sha256": "5f6c4d5fdbb9acb30dfb810c2330b846d9642050fc24cd7cd5e5cf9c188e3872",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-4-0.dxf",
+      "sha256": "4c7294cdc6183bef3e06416a0e27be5043b126133d0d17ab9f4935093680bea1",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-4-1.dxf",
+      "sha256": "470b2d14a05576e3c614ebfb3433fcbbf1c5f268e7f67f4048df340325073d04",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-5-0.dxf",
+      "sha256": "b0dcafe52bc3d9626e4cc542d9163fc2107855cbe5411668414d33ae7e7f2272",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-5-1.dxf",
+      "sha256": "162dc2b48f932e7ad0fcc365dca71915245eab5542393f5af59a0aedf1d2c972",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-6-0.dxf",
+      "sha256": "8b428305b58e5eba79d6730399e7c7e56ae5d6294dbdb6839c119aa3a1becc33",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2007-True-6-1.dxf",
+      "sha256": "fe1d991b6ee665629aacaf0eb52b5dae83821cb71b44755476f2c9811b69d59d",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-0-0.dxf",
+      "sha256": "03c8a5622ae95e9d66a4ca6a021b3ff1805886e45270eab6f373334977004069",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-0-1.dxf",
+      "sha256": "5628a0ca373754a9b64078e30c8fea163961cd35eb0c965d8c4b77cdd08fa29a",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-1-0.dxf",
+      "sha256": "dfdd0a989110a5b5f7c19f47ec5cbd6eae6ab846210ed614f4e7021bab131442",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-1-1.dxf",
+      "sha256": "1918c30fbc78528772336369b82a70b4b5107ee619bca041d88a6e2b419ae260",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-2-0.dxf",
+      "sha256": "92a1b3637498cd4d5553a5723a5a17c6eaf87f6c7a8392afc3a6a10002417dda",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-2-1.dxf",
+      "sha256": "9c3fdf91be9d2ebd9dd072f2f357ded5422146bf5a34f8cf4980ecd4034762fe",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-3-0.dxf",
+      "sha256": "a5213047288ce92c8146fb80235dfbd362ec889803aa85fe3816db902781c64f",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-3-1.dxf",
+      "sha256": "058fca0b20c791bcff2f4a0cce9dc241cee2cfe049bcbb01dece547336d2aecb",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-4-0.dxf",
+      "sha256": "5ec8bc2e4f76dea349276aab80a719be5cc1916d01ad19a6a1cc4d9eb46fc49a",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-4-1.dxf",
+      "sha256": "1a09ecf789b2e5def0495c5dd8e48efa1b293a9a339a3b12402454fe28712039",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-5-0.dxf",
+      "sha256": "f965491e2df8b30f638d0ed173c9f39d02e1fa8bca727af9195bb29d668760ea",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-5-1.dxf",
+      "sha256": "b6af14718dbf622a3f3addec31f268309b9f0a89c8cbe09bf99488c3970c6e3f",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-6-0.dxf",
+      "sha256": "1521fffcc41e9e2963de39c9bff03c8f4df30f8d193330533bcc3252918e02d1",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-False-6-1.dxf",
+      "sha256": "1c4c1509b808bcce1ef9a07671a15aedfb4c3795398562e52e919fe8c1878bd3",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-0-0.dxf",
+      "sha256": "d66e1835c97923747bed92512b57fe78b44b030797fbff0efeea89acf6f0687c",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-0-1.dxf",
+      "sha256": "9ee5f9d2adb12cd6bf34de0bf68246ee65f9dcbb2001a9ecc2c71f549aa4c395",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-1-0.dxf",
+      "sha256": "b4ecc26e811720df556fea0f5bc4305cb14efe4de5335f5982f49adbca8e874f",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-1-1.dxf",
+      "sha256": "ae0e3f45761ff78f2a502f7555428cf8e6f582309f5f1705f41c6e23df8c4b2a",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-2-0.dxf",
+      "sha256": "67b0c36df0fbb25154138178a54dead9df085336b6c8f5913e382a6d5f20d21d",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-2-1.dxf",
+      "sha256": "2a682e5479ad8a2463feaf9334261043aa5ec56e480e9d9847b258c6242853bf",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-3-0.dxf",
+      "sha256": "a64b0f070c7f71c5c55639ed7b3d6c4808f7aefa503ae1e2bca7ad338a9118dd",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-3-1.dxf",
+      "sha256": "28da8be2ed22a349e394e4cec8c2a7cefdda6403be5d494327184a4a0217aea9",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-4-0.dxf",
+      "sha256": "1ddc2823b183f319288e194cc06a731483f2d0e6b909030e078af53c4b7d6244",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-4-1.dxf",
+      "sha256": "38c44b5eaed7c9a263b7cdca164c9a275510c055cf1f8fe238a5bd86b7f54b66",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-5-0.dxf",
+      "sha256": "e8a25e3f1af23cffe34f4b8e31f21eb07f0e4be146ef7dc4142578cd090d30a4",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-5-1.dxf",
+      "sha256": "22c8135f0d447f47d021156c106981128b2a5267a2266c1d17da7864ec67bc9e",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-6-0.dxf",
+      "sha256": "a64b387401f1d7547661529e06ae4dd8c7cc52363dd19714bf93993950e9246b",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2010-True-6-1.dxf",
+      "sha256": "9999b6ad7f7096e3a94687bfbf1e683b49dfeee57483a7416c7378d361b759d1",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-0-0.dxf",
+      "sha256": "ab5a5a12a6f12f3a3a87e3cf16887e51a59f80221edd880f642b48399c174b78",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-0-1.dxf",
+      "sha256": "3ccf0f23d8a1e399f896e804cb5c76d3e84a73badaad69f76700c979c8ee8ea8",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-1-0.dxf",
+      "sha256": "27cd9493effe1a7601f841ffc1c8b8d15a15fe6ebb184013fa9427ce46fb4ceb",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-1-1.dxf",
+      "sha256": "11b3010e8d10bc327f7d2cbcfeaf9151fae2a9e183d5df5c69530caec1e8bb92",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-2-0.dxf",
+      "sha256": "dfb7d067025772b3f7508060b9639195976d756f3b8165d51f03c25b924859bb",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-2-1.dxf",
+      "sha256": "82d67c1ba41de88d3cae92f562f20b30f13a6fa8f4c52728f2c0a1be47a596d7",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-3-0.dxf",
+      "sha256": "76269217b1c7736500a3f7e982bc3400f55b9a802ac50a5ffa96f2e94f35fde8",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-3-1.dxf",
+      "sha256": "6115c2872621eabb5b398cbfb55e4a96b65a8e6f38370d6f624287fe0c79476a",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-4-0.dxf",
+      "sha256": "74a467d3a5c60c8ab66e88f45c127488911f25bec4d57ca15badcac0b3ae69bc",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-4-1.dxf",
+      "sha256": "ed67e5a702ccf25d0a40d28483631d6424200c37b6e8672fd5ba62765fd19251",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-5-0.dxf",
+      "sha256": "6b08e59402d0446679842d0e091d19bda31ce65e7245204cd74b6af067b1662a",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-5-1.dxf",
+      "sha256": "1d42a29e3997c2481cb9e3532833dfdf7af0d55a8ae4747735f49bb5faadf5d2",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-6-0.dxf",
+      "sha256": "89b9d0e36b04a656badb7eecf84862550002e0910b61dd8b3c23f62284e462bd",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-False-6-1.dxf",
+      "sha256": "4f04af68da40650a0dd1526164716b920f1f51e10f121284a85f5deed4b3399a",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-0-0.dxf",
+      "sha256": "f26c96b1d9eac9b8f8912b5b27e135a99c0fef2e01347ef10d8bbbefcbaefcfb",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-0-1.dxf",
+      "sha256": "3dfa9de8d09678bfe9f807f071a85c83e1ae45fcc71393c4d41cc2860f21c268",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-1-0.dxf",
+      "sha256": "325bdb6f98bffca65106aca4a11a79892adcb313f62601eaa3dad53126fc8278",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-1-1.dxf",
+      "sha256": "d5a03effc3a677bea6515d824794dbd79b0181ef96b17d7a60ac3549debb47ea",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-2-0.dxf",
+      "sha256": "4b60655a02d070cd36f6d8fce2814cfba4e4eba84ff9fe6e74cc4a736ce7a917",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-2-1.dxf",
+      "sha256": "06287ad99c3cf9184b52c8d0e3e91c2e179be0f4d457051fdb9bac904a7d1fdc",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-3-0.dxf",
+      "sha256": "3ebf17474569bf0724014e552d26e1cb7be5bfd840cf46933606b8395ff091a6",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-3-1.dxf",
+      "sha256": "97e77dbbac32d9bada84881b0427e7ec4c755a36970fb1898ca93f7bd7357f10",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-4-0.dxf",
+      "sha256": "e7731a0a3b58b88a0b257a83bac524434a17dbb9282b73c3c002196a4139312b",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-4-1.dxf",
+      "sha256": "c91047f4039a951b198cd36d3193b961a0a1c6193990f52c4223a510db150b63",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-5-0.dxf",
+      "sha256": "0c68e2aa40c7c1807643b8d1f61bd951b15fa4e2bb49544200038bf9c064b8c6",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-5-1.dxf",
+      "sha256": "de576d9a888fe967f0c67d72436df4d044b5482c974fcd42f0cb7a63d95c5467",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-6-0.dxf",
+      "sha256": "36b202a7b63261cd7337f7d1c17990340a2fa57c0bd3701e58edd39ec576baed",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2013-True-6-1.dxf",
+      "sha256": "727fdd54108ca75de99c1413f8d2546dcdd342d349a419341185d25c6890eca0",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-0-0.dxf",
+      "sha256": "c07c6b774d19767fe45d94f9d73cb7b58e7a43cb62c67de7a6006c0d1acaa398",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-0-1.dxf",
+      "sha256": "e7c3a819a82bf0d30a4f47f7c1e157bcb85521b97b122db28714575a42042708",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-1-0.dxf",
+      "sha256": "feb97a3e2fa38f1b0aa1af75fd4c72dee7ec8b41e85b328d87144a8f5c045c26",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-1-1.dxf",
+      "sha256": "ddbb55a05c7438436f51c7f4709600206351a4c6ccd4b92dfd38751c799f03d3",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-2-0.dxf",
+      "sha256": "1493d6232ec3afe1bce5cd3dda9748d9c75b11644cb29361fd84feb46b75c95f",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-2-1.dxf",
+      "sha256": "781b8ce0f7e26645efe8fe1b1818933a5a09ea92651b9f68fbb9da38fb0343e2",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-3-0.dxf",
+      "sha256": "92fefab4eaa969f438ed071b1fef136519296268df0f7fd7cc2dcf0eb2509920",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-3-1.dxf",
+      "sha256": "4daec3fbd3276d9f9363e603d208408b33732d058e78b16d1801893c3d6d28de",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-4-0.dxf",
+      "sha256": "678cf3af2877ab69bc8d439fe00a84488941a842a58b6b04fc730153193e7df4",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-4-1.dxf",
+      "sha256": "6eacffdb700a7cf7b05ff47b016720281cdc071102312249bf75822038382bd3",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-5-0.dxf",
+      "sha256": "e43e613c2ff61e2b08a134845de0bb35c1516e48f96505f26bb18985638eb05c",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-5-1.dxf",
+      "sha256": "7d83a86e6e43b2a2d53ceea3e043662609b06f1856d7b4f806d9975cbdfbb52c",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-6-0.dxf",
+      "sha256": "14ea115d5379e05a5c50232570dd5d4e0f24053736cbf706af1a598ad154e98b",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-False-6-1.dxf",
+      "sha256": "a82ffc895a944b2f9b92b3a085cbc65489e58d940f95e861640f0fc45635067e",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-0-0.dxf",
+      "sha256": "d874fdd7544282cdd7bb78463924bcf828dec980850566c76a187bb985c8a609",
+      "segments": 37,
+      "max_world_error": 1.432144669219779e-14
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-0-1.dxf",
+      "sha256": "dd5f7f2f2eb6f921e076bd1c3f2ad8ea3e30d505b0abf5aa767100b8a1c153e6",
+      "segments": 37,
+      "max_world_error": 6.002392623995504e-13
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-1-0.dxf",
+      "sha256": "0610a3401fb0e089833eb01ae3d5e40c2174dc54f6f8b5df6712b920612adcb9",
+      "segments": 37,
+      "max_world_error": 1.3096184021937277e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-1-1.dxf",
+      "sha256": "848e08846b034239d8dfc6327407e133aefd6a120dbaa0f5c25b5dac203d3aa7",
+      "segments": 37,
+      "max_world_error": 1.2200212882669295e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-2-0.dxf",
+      "sha256": "3c8a94247e1a46290a6943bc4beebe7586f9cf74bcb9288ff169c670549a3b19",
+      "segments": 37,
+      "max_world_error": 7.893411064546859e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-2-1.dxf",
+      "sha256": "cf6adff6d849050d91c3c3c1fcc74a4bb3a12e94254262ae35e7e17d88aa1149",
+      "segments": 37,
+      "max_world_error": 1.2386231622636661e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-3-0.dxf",
+      "sha256": "efdc824d5e1207ebc309f948a64b6694959c3feeb82f79bdc97c40e37b9cc1bc",
+      "segments": 37,
+      "max_world_error": 2.9413428057585593e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-3-1.dxf",
+      "sha256": "d2e61b375cf556545b5cd6361044ea92d4d2288fd1b6a6cf785e99ce5dfa50da",
+      "segments": 37,
+      "max_world_error": 3.3108896141251773e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-4-0.dxf",
+      "sha256": "3c5a4f4f1ff7dbd9785191a51eed2340a28659f9b3017d3c353e477d501e517e",
+      "segments": 37,
+      "max_world_error": 1.3029577417000837e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-4-1.dxf",
+      "sha256": "067c8f41daed0646ad0374e207c9f5099ca66d6d39dc75abde74256f37eac806",
+      "segments": 37,
+      "max_world_error": 1.377014589850682e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-5-0.dxf",
+      "sha256": "18dfa5530696f1c46a9eb9baab83fb1c5d908764fea588e1aebcf17bf5972d5a",
+      "segments": 37,
+      "max_world_error": 9.283692228953762e-12
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-5-1.dxf",
+      "sha256": "25b6de976cee2d1bfc44a4f8915dd1f6ce588ad59fe1091dc3484f14b217bef9",
+      "segments": 37,
+      "max_world_error": 6.164732381334033e-11
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-6-0.dxf",
+      "sha256": "582ec8b972e2fc0d0fe017f89ebc1664368dca7caaaf1d947d92c6891a972ff6",
+      "segments": 37,
+      "max_world_error": 5.35749223517007e-10
+    },
+    {
+      "file": "hatch-conic-AutoCad2018-True-6-1.dxf",
+      "sha256": "8793edc304f66c1fd2f79dfb7516a309c2f55ffc2fda41a646ce9701a670f4e5",
+      "segments": 37,
+      "max_world_error": 1.3191085866178993e-09
+    }
+  ]
+}

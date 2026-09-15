@@ -1,0 +1,42 @@
+{
+  "module": "Read-only target-version diagnostics",
+  "production_commit": "ffd995d",
+  "factory_origin": "Existing CompatibilityFeature and stored/native fixture helpers from the separately qualified conformance assembly; rule/path/source identity, purity and real-writer assertions are independent.",
+  "fixture_factory_sha256": "d9671c214f160a014ec15dd7b4adb67898864d27e7ffba2a11baad259a2a3c84",
+  "harness_sha256": {
+    "Matrix.cs": "b509d47794309e94cced2e5143151cea93ecbf449ded26bb4805010a1352bb7a",
+    "Program.cs": "0573ca0c4fa15244b6c1789a16eb8ee9c098989e5c0cbce2aa9343b494174bec",
+    "StoredMatrix.cs": "d805aead88544c7fd2d548cc9ec0a2cd855ff34bae21f04b66b54a6e747067c5"
+  },
+  "configurations": {
+    "Debug": {
+      "cases": 518,
+      "failures": 0,
+      "library_sha256": "9cf10f6844ec1bb2dcc4dbb575ab0f60d915e4cf49ce5913be690471b66a0c71",
+      "authored_rule_target_transport_cases": 396,
+      "source_bound_family_target_transport_cases": 84,
+      "physical_omission_target_transport_cases": 12,
+      "results_sha256": "f1a570958945156071c2bcaaaab3cd76d46b0a72c42916a03adc79b3db0563a1",
+      "writer_evidence_sha256": "32b5460c380dc98345cf213be5de98290a5dbaff21a752a2d6a5707dc681b90d"
+    },
+    "Release": {
+      "cases": 518,
+      "failures": 0,
+      "library_sha256": "fbed811e873df46f0f7b30b48063a2b65d946e3654507a9ed174e2cc809721d8",
+      "authored_rule_target_transport_cases": 396,
+      "source_bound_family_target_transport_cases": 84,
+      "physical_omission_target_transport_cases": 12,
+      "results_sha256": "7e365722752e80fbf5ff3db96bab0058995dcbb7ac11b1e6b031e50de66bf819",
+      "writer_evidence_sha256": "d150b3eb45b8486add40524adbc426f35d0f0504abb0acddc990485b30f657a8"
+    }
+  },
+  "review": [
+    "Every documented rule code is exercised, including exact public property paths, all HATCH fit/tangent paths, six R2010 MLeader paths, and CLASS path InstanceCount.",
+    "Actual Saves agree across six target versions and ASCII/binary transports for valid authored fixtures. All 11 source-bound families are checked using actual object identities; same source accepts and both upgrade/downgrade report the existing source-profile guard.",
+    "R2000 header LastSavedBy, explicit CLASS count0 and HATCH gradient omissions are asserted from actual physical output records; omissions remain distinct from rejections.",
+    "Analysis preserves document version, allocation/header seed, lazy database identity, registered objects/order, block collection identities/items, APPIDs/classes/views; no collection mutation callbacks or overridden registry Clone callbacks run.",
+    "Captured labels/handles/paths and immutable diagnostics survive later source edits/removal while SourceObject remains the original live reference.",
+    "Recognized pre-R2000 targets report unsupported writer profile; invalid enum arguments refuse without mutation. General geometry/schema legality is explicitly outside this bounded report.",
+    "No native CAD runtime, rendering or application evaluation claim."
+  ]
+}

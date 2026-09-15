@@ -1,0 +1,2597 @@
+{
+  "cases": 518,
+  "failed": 0,
+  "librarySha256": "fbed811e873df46f0f7b30b48063a2b65d946e3654507a9ed174e2cc809721d8",
+  "results": [
+    {
+      "name": "empty-purity-AutoCad1_1",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad1_2",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad1_4",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2_0",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2_10",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2_5",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2_6",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad9",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad10",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad12",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad13",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad14",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2000",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2004",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2007",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2010",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2013",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty-purity-AutoCad2018",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid-arguments-are-pure",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "snapshot-and-live-source-separation",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "unused-block-and-attribute-walk",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "explicit-null-live-section-presence",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "omissions-remain-separate-from-rejections",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "no-save-or-geometry-validation-side-effects",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "retained-polyline-source-profile",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/color/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shadow/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mesh/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/helix/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/light/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/section/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/vertex-id/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/background/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/frame/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-direct/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-embedded/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/columns-linked/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/hatch-fit/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-optional/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleader-extend/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sat-history/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/camera/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/live-section-null/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-view/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-vport/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun-viewport/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-layout/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/shade-page/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/datatable/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/geodata/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/lightlist/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sun/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/mleaderstyle/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sectionsettings/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rule-writer/sortents/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-clone-callback-purity",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/field/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/dimassoc/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/manager/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/sunstudy/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2013/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/tables-2018/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-stored-rule/children/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2000/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2000/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2004/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2004/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2007/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2007/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2010/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2010/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2013/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2013/True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2018/False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "independent-physical-omissions/AutoCad2018/True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

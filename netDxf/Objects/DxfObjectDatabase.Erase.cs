@@ -52,6 +52,7 @@ namespace netDxf.Objects
                 if (value is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
                 if (value is DxfStoredSunStudy) throw new NotSupportedException("Stored SUNSTUDY erasure requires its complete application lifecycle.");
                 if (value is DxfStoredTableGeometry) throw new NotSupportedException("Stored TABLEGEOMETRY erasure requires its complete application schema.");
+                if (value is DxfStoredCellStyleMap) throw new NotSupportedException("Stored CELLSTYLEMAP erasure requires its complete application schema.");
                 if (value is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (value is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (value is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");
@@ -117,6 +118,11 @@ namespace netDxf.Objects
                 {
                     foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");
                     foreach (DxfTag tag in polylineRecord.OpaqueHandleTags) handle((string)tag.Value, "polyline record handle");
+                }
+                if (item is PolygonMeshRecord meshRecord)
+                {
+                    foreach (DxfObject target in meshRecord.References) reference(target, "polygon mesh record reference");
+                    foreach (DxfTag tag in meshRecord.OpaqueHandleTags) handle((string)tag.Value, "polygon mesh record handle");
                 }
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");

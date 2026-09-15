@@ -1,0 +1,227 @@
+{
+  "cases": 44,
+  "failed": 0,
+  "librarySha256": "8481162971886bd085e189e0642d3d21735a54a6e8aff929aae61782e5de6eff",
+  "results": [
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-False-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-False-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-False-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-False-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-False-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-True-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-True-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-True-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-True-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTION_MANAGER-True-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-False-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-False-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-False-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-False-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-False-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-True-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-True-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-True-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-True-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2013-SECTIONMANAGER-True-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-False-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-False-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-False-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-False-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-False-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-True-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-True-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-True-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-True-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTION_MANAGER-True-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-False-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-False-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-False-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-False-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-False-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-True-edit-snapshots-dependencies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-True-enumeration-atomic",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-True-caught-and-uncaught-reentry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-True-actual-source-identities",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AutoCad2018-SECTIONMANAGER-True-source-lifecycle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-False-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-False-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-True-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "native-True-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+using System.Reflection;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.IO;
+using netDxf.Objects;
+
+internal static partial class Program
+{
+    private static void StoredRuleMatrix(Type factory, List<object> evidence)
+    {
+        object Invoke(string name, params object?[] values) => factory.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)!.Invoke(null, values)!;
+        DxfDocument LoadRaw(DxfRawDocument raw, bool binary)
+        { using var stream = new MemoryStream(); raw.WithTags(raw.Tags.Where(t => t.Code != 999)).Save(stream, binary); stream.Position = 0; return DxfDocument.Load(stream)!; }
+        DxfDocument Fixture(string feature, bool binary)
+        {
+            if (feature == "field") return (DxfDocument)Invoke("StoredFieldCarrier", DxfVersion.AutoCad2010, binary, null);
+            if (feature == "dimassoc") return (DxfDocument)Invoke("StoredDimAssocLoad", Invoke("StoredDimAssocInput", DxfVersion.AutoCad2010, binary));
+            if (feature == "manager") return LoadRaw((DxfRawDocument)Invoke("SectionManagerFixture", DxfVersion.AutoCad2010, "SECTION_MANAGER", 3), binary);
+            if (feature == "sunstudy") return LoadRaw((DxfRawDocument)Invoke("SunStudySource", new object?[] { null }), binary);
+            if (feature.StartsWith("tables-")) return LoadRaw((DxfRawDocument)Invoke("StoredTableSource", feature == "tables-2013" ? "acad_table_simple.dxf" : "acad_table_with_blk_ref.dxf"), binary);
+            var document = new DxfDocument(DxfVersion.AutoCad2010); document.Entities.Add(new Polyline3D(new[] { Vector3.Zero, Vector3.UnitX }));
+            document.Entities.Add(new PolygonMesh(2, 2, new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY, Vector3.UnitX + Vector3.UnitY }));
+            using var stream = new MemoryStream(); Check(document.Save(stream, binary), "Stored child fixture save failed."); stream.Position = 0; return DxfDocument.Load(stream)!;
+        }
+        foreach (string feature in new[] { "field", "dimassoc", "manager", "sunstudy", "tables-2013", "tables-2018", "children" })
+        foreach (DxfVersion target in Targets) foreach (bool binary in new[] { false, true }) Run($"independent-stored-rule/{feature}/{target}/{binary}", () =>
+        {
+            var document = Fixture(feature, binary); Type[] types = feature switch {
+                "field" => new[] { typeof(DxfStoredField) }, "dimassoc" => new[] { typeof(DxfStoredDimAssoc) }, "manager" => new[] { typeof(DxfStoredSectionManager) }, "sunstudy" => new[] { typeof(DxfStoredSunStudy) },
+                "children" => new[] { typeof(Polyline3DRecord), typeof(PolygonMeshRecord) },
+                _ => new[] { typeof(StoredTable), typeof(DxfTableStyle), typeof(DxfStoredTableContent), typeof(DxfStoredTableGeometry), typeof(DxfStoredCellStyleMap) }
+            };
+            var items = Registered(document).Values.Where(item => types.Any(type => type.IsInstanceOfType(item))).ToArray();
+            foreach (Type type in types) Check(items.Any(type.IsInstanceOfType), "Expected typed source missing: " + type.Name);
+            var report = AnalyzePure(document, target);
+            foreach (DxfObject item in items)
+            {
+                var source = (DxfVersion)item.GetType().GetProperty("SourceVersion")!.GetValue(item)!;
+                Check(report.Diagnostics.Count(d => d.Code == "STORED_SOURCE_PROFILE" && d.PropertyPath == "SourceVersion" && ReferenceEquals(d.SourceObject, item)) == (source == target ? 0 : 1), "Exact stored source-profile diagnostic missing or duplicated: " + item.GetType().Name);
+            }
+            bool expected = document.DrawingVariables.AcadVer != target; Check(report.HasKnownRejections == expected, "Stored source-profile prediction differs.");
+            document.DrawingVariables.AcadVer = target; using var output = new MemoryStream(); bool success; string failure = "";
+            try { success = document.Save(output, binary); } catch (Exception error) when (error is NotSupportedException or InvalidOperationException or ArgumentException) { success = false; failure = error.GetType().Name + ": " + error.Message; }
+            Check(success == !expected, "Actual stored writer result differs: " + failure);
+            evidence.Add(new { feature, target, binary, expectedCode = "STORED_SOURCE_PROFILE", expectedPath = "SourceVersion", sourceTypes = types.Select(t => t.Name), actualSourceCount = items.Length, expectedDiagnostic = expected, report.HasKnownRejections, saved = success, failure });
+        });
+    }
+}

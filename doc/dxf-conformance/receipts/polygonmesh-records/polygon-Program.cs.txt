@@ -1,0 +1,100 @@
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.IO;
+using netDxf.Objects;
+using netDxf.Tables;
+
+internal static class Program
+{
+    private static int Failed;
+    private static readonly List<object> Results = new();
+    private static string Repo = "", Output = "";
+    private static void Check(bool value, string message) { if (!value) throw new Exception(message); }
+    private static void Run(string name, Action action)
+    {
+        try { action(); Results.Add(new { name, passed = true, error = "" }); Console.WriteLine("PASS " + name); }
+        catch (Exception error) { Failed++; Results.Add(new { name, passed = false, error = error.ToString() }); Console.WriteLine("FAIL " + name + ": " + error.Message); }
+    }
+    private static long Seed(DxfDocument document) => Convert.ToInt64(typeof(DxfDocument).GetProperty("NumHandles", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(document));
+    private static byte[] Save(DxfDocument document, bool binary)
+    { using var output = new MemoryStream(); Check(document.Save(output, binary), "Save returned false."); return output.ToArray(); }
+    private static DxfDocument Load(byte[] bytes)
+    { using var input = new MemoryStream(bytes); return DxfDocument.Load(input) ?? throw new FormatException("Load returned null."); }
+    private static DxfRawDocument Raw(byte[] bytes)
+    { using var input = new MemoryStream(bytes); return DxfRawDocument.Load(input); }
+    private static string Tag(DxfTag tag) => tag.Code + ":" + (tag.Value is byte[] data ? Convert.ToHexString(data) : Convert.ToString(tag.Value, System.Globalization.CultureInfo.InvariantCulture));
+    private static DxfRawRecord Record(DxfRawDocument raw, string handle) => raw.Sections.SelectMany(s => s.Records).Single(r => r.Tags.Any(t => t.Code == 5 && Equals(t.Value, handle)));
+    private static void RefuseSave(DxfDocument document, bool binary)
+    {
+        long seed = Seed(document); using var output = new MemoryStream(); bool refused = false;
+        try { refused = !document.Save(output, binary); } catch (Exception error) when (error is NotSupportedException or InvalidOperationException or ArgumentException) { refused = true; }
+        Check(refused && output.Length == 0 && Seed(document) == seed, $"Save did not reject before output/allocation: refused={refused}, bytes={output.Length}, seedDelta={Seed(document)-seed}.");
+    }
+    private static void Main(string[] args)
+    {
+        Repo = Path.GetFullPath(args[0]); Output = Path.GetFullPath(args[1]); Directory.CreateDirectory(Output);
+        using var manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Repo, "tests/fixtures/polygonmesh-records/manifest.json")));
+        foreach (var fixture in manifest.RootElement.GetProperty("fixtures").EnumerateArray())
+        {
+            string file = fixture.GetProperty("file").GetString()!; bool binary = fixture.GetProperty("binary").GetBoolean();
+            byte[] bytes = File.ReadAllBytes(Path.Combine(Repo, "tests/fixtures/polygonmesh-records", file));
+            Check(Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant() == fixture.GetProperty("sha256").GetString(), "Producer hash changed.");
+            Run(file + "-wire-slot-identities", () =>
+            {
+                var document = Load(bytes); var mesh = (PolygonMesh)document.GetObjectByHandle("32"); var raw = Raw(bytes); var initial = mesh.VertexRecords.ToArray(); var end = mesh.EndSequenceRecord;
+                string[] wireHandles = fixture.GetProperty("handles").GetProperty("vertices").EnumerateArray().Select(v => v.GetString()!).ToArray();
+                Check(mesh.U == 3 && mesh.V == 4 && mesh.VertexRecords.Count == 12, "Producer mesh dimensions changed.");
+                for (int ordinal = 0; ordinal < wireHandles.Length; ordinal++)
+                {
+                    int slot = ordinal / mesh.V + ordinal % mesh.V * mesh.U;
+                    var record = mesh.VertexRecords[slot]; Check(record.Handle == wireHandles[ordinal] && ReferenceEquals(record.Owner, mesh) && ReferenceEquals(document.GetObjectByHandle(record.Handle), record), "Wire-to-slot identity mapping failed.");
+                    var tags = Record(raw, record.Handle).Tags; double Coordinate(short code) => (double)tags.First(t => t.Code == code).Value;
+                    Check(mesh.Vertexes[slot] == new Vector3(Coordinate(10), Coordinate(20), Coordinate(30)), "Wire-to-slot geometry mapping failed.");
+                }
+                mesh.Vertexes[5] = new Vector3(17, -23, 11); byte[] saved = Save(document, binary); File.WriteAllBytes(Path.Combine(Output, "edited-" + file), saved);
+                var after = Raw(saved); var loaded = (PolygonMesh)Load(saved).GetObjectByHandle(mesh.Handle);
+                Check(loaded.Vertexes[5] == mesh.Vertexes[5] && loaded.VertexRecords.Select(r => r.Handle).SequenceEqual(initial.Select(r => r.Handle)) && loaded.EndSequenceRecord.Handle == end.Handle, "Geometry edit changed retained identity or slot.");
+                foreach (var record in initial.Append(end))
+                {
+                    var beforeTags = Record(raw, record.Handle).Tags; var afterTags = Record(after, record.Handle).Tags;
+                    if (ReferenceEquals(record, initial[5])) { beforeTags = beforeTags.Where(t => t.Code is not 10 and not 20 and not 30).ToList(); afterTags = afterTags.Where(t => t.Code is not 10 and not 20 and not 30).ToList(); }
+                    Check(beforeTags.Select(Tag).SequenceEqual(afterTags.Select(Tag)), "Geometry edit changed unrelated child packet: " + record.Handle);
+                }
+            });
+            Run(file + "-clone-adoption", () =>
+            {
+                var document = Load(bytes); var mesh = (PolygonMesh)document.GetObjectByHandle("44"); var clone = (PolygonMesh)mesh.Clone();
+                Check(clone.VertexRecords.Count == 6 && clone.VertexRecords.All(r => r.Handle == null) && clone.EndSequenceRecord.Handle == null, "Clone retained source handles.");
+                Check(clone.SmoothType == mesh.SmoothType && clone.DensityU == mesh.DensityU && clone.DensityV == mesh.DensityV, "Clone lost scalar state.");
+                var destination = new DxfDocument(document.DrawingVariables.AcadVer); destination.Entities.Add(clone);
+                Check(clone.VertexRecords.All(r => ReferenceEquals(destination.GetObjectByHandle(r.Handle), r)) && clone.Vertexes.SequenceEqual(mesh.Vertexes), "Clone adoption failed to register mapped identities.");
+                _ = Load(Save(destination, binary));
+            });
+            Run(file + "-incoming-removal", () =>
+            {
+                var document = Load(bytes); var mesh = (PolygonMesh)document.GetObjectByHandle("44"); var child = mesh.VertexRecords[2]; var pointer = new DxfXRecord(); pointer.Data.Add(new DxfTag(330, child.Handle)); document.Objects.Root.Add("INDEPENDENT_POINTER", pointer);
+                long seed = Seed(document); Check(!document.Entities.Remove(mesh), "Incoming child reference permitted parent removal."); Check(Seed(document) == seed && ReferenceEquals(document.GetObjectByHandle(child.Handle), child), "Refused removal changed identity or seed.");
+                pointer.Data.Clear(); Check(document.Entities.Remove(mesh) && document.GetObjectByHandle(child.Handle) == null, "Released child reference still blocks removal or child remains registered.");
+                document.Entities.Add(mesh); Check(ReferenceEquals(document.GetObjectByHandle(child.Handle), child), "Same-source re-adoption lost child identity."); _ = Save(document, binary);
+            });
+            Run(file + "-source-profile-and-geometry", () =>
+            {
+                var document = Load(bytes); var mesh = (PolygonMesh)document.GetObjectByHandle("44"); var original = document.DrawingVariables.AcadVer;
+                document.DrawingVariables.AcadVer = original == DxfVersion.AutoCad2018 ? DxfVersion.AutoCad2013 : DxfVersion.AutoCad2018; RefuseSave(document, binary); document.DrawingVariables.AcadVer = original;
+                mesh.Vertexes[0] = new Vector3(double.NaN, 0, 0); RefuseSave(document, binary);
+            });
+        }
+        foreach (bool binary in new[] { false, true }) Run("child-admission-budget-" + binary, () =>
+        {
+            var document = Load(File.ReadAllBytes(Path.Combine(Repo, "tests/fixtures/polygonmesh-records/producer-R2018-ascii.dxf"))); var mesh = (PolygonMesh)document.GetObjectByHandle("44");
+            var data = new XData(new ApplicationRegistry("INDEPENDENT_BUDGET")); for (int i = 0; i < 4200; i++) data.XDataRecord.Add(new XDataRecord(XDataCode.String, "")); mesh.VertexRecords[0].XData.Add(data);
+            RefuseSave(document, binary);
+        });
+        File.WriteAllText(Path.Combine(Output, "results.json"), JsonSerializer.Serialize(new { cases = Results.Count, failed = Failed, librarySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(), results = Results }, new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine($"{Results.Count} cases; {Failed} failed."); Environment.ExitCode = Failed == 0 ? 0 : 1;
+    }
+}

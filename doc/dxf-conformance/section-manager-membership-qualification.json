@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "module": "Explicit loaded SECTION_MANAGER membership editing",
+  "baseline_commit": "c108513f3e13486c049d4d07fac79bf3d0bb7217",
+  "production_commit": "9fc30e0ec50903a00a19211a6d2226db24336964",
+  "qualified_source_commit": "4f7c5e72601d84e8fbf89e41cab912c261ce29d9",
+  "qualified_source_tree": "b43d3c523af5913a63b62565966f8fa5fb24137c",
+  "sdk": "8.0.408",
+  "qualified_library_target": "net8.0",
+  "independent_reader": "ezdxf 1.4.4",
+  "profiles": [
+    "AC1021",
+    "AC1024",
+    "AC1027",
+    "AC1032"
+  ],
+  "transports": [
+    "ASCII",
+    "binary"
+  ],
+  "source_sha256": {
+    "netDxf/Objects/DxfStoredSectionManager.cs": "30c382d4ac8fb4357b4293613278cb9d93970448c3ad0ea75ae4dc07fc8b48c7",
+    "tests/netDxf.Conformance/Program.cs": "1814395b01ddae40d24a91c87594f15c21e38bf7d9ebe6288dc4dd31ef5bbead",
+    "tests/netDxf.Conformance/SectionManagerMembershipTests.cs": "7e890f010d37503b0f7054b38495d07c2ab4553e160b2d564d62e0c57d3ad71a",
+    "tools/verify_section_membership.py": "c831101fb972be171bebbe600c02ac959335fbd5b2dbf2f9dc3d23f46a3bdc0f"
+  },
+  "native_fixture": {
+    "path": "tests/fixtures/section/LiveSection1.dxf.gz",
+    "source_sha256": "2046c85bdbd3ad1b63273c74e3aee20f28e774a50cc6296b064e835c23295183",
+    "gzip_sha256": "7a1f9dedfde2629330e9d9bfa18ee5920a3e75499d2c65e079a558fccf608942",
+    "original_packet": "R2018 manager229, rootC, reactorC, section228, flag0",
+    "requested_edit": "retain source common packet; replace public packet with flag1/count2/330228/330228",
+    "new_cad_produced_edit_fixture": false
+  },
+  "configurations": {
+    "Debug": {
+      "dedicated_passed": 84,
+      "dedicated_failed": 0,
+      "existing_regressions": 325,
+      "unique_focused_passed": 409,
+      "unique_focused_failed": 0,
+      "scopes": {
+        "membership": {
+          "passed": 84,
+          "failed": 0,
+          "results_sha256": "74611d8f1df35346216d5d848f1deafd65d8c5fbf056e37f0d44a0891c1565b4",
+          "log_sha256": "b99184c05f966ea3c2759932a596b01b17e42091fbfe2862da6b8c4c6dfe334d"
+        },
+        "regression": {
+          "passed": 110,
+          "failed": 0,
+          "results_sha256": "5e905a89fee76a1c39bc05137184de7c6e055e64c341e01da7c30cc22614121e",
+          "log_sha256": "d5a2a54a67601615db5fe9d60c1207edece7fa60b53255704816476ca9e1918b"
+        },
+        "section-regression": {
+          "passed": 215,
+          "failed": 0,
+          "results_sha256": "f9572465f23ed3c44bb2222b945d3d5fd863836a130939a130308bfd9fd371db",
+          "log_sha256": "6cbe9d84625ed49cc970bd3d3d36120fade7a7c2549409f9de131dff35485059"
+        }
+      },
+      "library_sha256": "ae1910cd906d854733c04f66cfac931bbfebbafa0cb3f7a75ecc562dc2570782",
+      "conformance_sha256": "b6c6a288657999d03cc16c0be0ec583c0d20399716a2970f7e70858993b76932",
+      "test_build_log_sha256": "b33ff0b858e3297a3bce5161ea5941467b020dfe7ca59643a8c9e135d21b9ef2",
+      "independent_gate": {
+        "actual_output_corruptions_rejected": 260,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "automatic_membership": false,
+        "native_cad_execution": false,
+        "native_manager_boundary_comparisons": 4,
+        "outputs": 52,
+        "section_evaluation": false
+      },
+      "independent_gate_sha256": "d8e57c943679cbb0773d75bc8cb1476aec223ddc83e6e0b20bff5b413a37d62b",
+      "neighbor_gates": {
+        "verify_section_manager.py": {
+          "outputs": 52,
+          "corruption_controls": 160,
+          "log_sha256": "7a7ea19f19462865312715210ddfa16569954a25ae3de4f1576883a2178fe184"
+        },
+        "verify_section.py": {
+          "result": {
+            "actual_output_packet_corruption_controls": 6,
+            "adapted_documented_name_structural_audits": 56,
+            "adapted_producer_extracted_source_audits": 8,
+            "native_original_transformations": 0,
+            "pinned_producer_originals_and_exact_extractions": 8,
+            "unmodified_native_name_audits": 14,
+            "unmodified_native_original_audits": 1,
+            "verified_outputs": 70
+          },
+          "log_sha256": "f01b81d148be89327b8b5e12c76f584c22707c8718c10ab2612ceb39f9a80acf"
+        }
+      },
+      "output_sha256": {
+        "section-membership-edited-AutoCad2007-SECTIONMANAGER-False.dxf": "0d1b4b03d350490777a2f482c5fcc125a71130a30e86a0765ba690ebcd09a1bd",
+        "section-membership-edited-AutoCad2007-SECTIONMANAGER-True.dxf": "0cc650143fdfb10dd52236a7139f6cb7216dedfe3d245bca8580ad7a9ed52739",
+        "section-membership-edited-AutoCad2007-SECTION_MANAGER-False.dxf": "bae4cf198e657a82018e75198bf86bbc2a6b78a6f6c8d44834c612d6115b2176",
+        "section-membership-edited-AutoCad2007-SECTION_MANAGER-True.dxf": "35ed96660264c748712fecae2e550ffc4cabfebf934932acd1387b92607abfa4",
+        "section-membership-edited-AutoCad2010-SECTIONMANAGER-False.dxf": "8b20387701ab307849b7d3b3962c558a36976ecde752c66af3eb914cfd33e6f0",
+        "section-membership-edited-AutoCad2010-SECTIONMANAGER-True.dxf": "12c4e00b737fbe6b823993977d1f96db129bccf8f344ac4d0cf181b8653124ea",
+        "section-membership-edited-AutoCad2010-SECTION_MANAGER-False.dxf": "1e060624cabb959ec40abefe6c6f5bb2119987a72bd635cf12f66929a3fb1c8f",
+        "section-membership-edited-AutoCad2010-SECTION_MANAGER-True.dxf": "50fb0a7b49c419f220493448c29498ec07c52701c518471694908e8eeec2ce89",
+        "section-membership-edited-AutoCad2013-SECTIONMANAGER-False.dxf": "6207a3bf0f738e80a70b952a2e7cdbc3de451f9c4f1a63da056d18a639bbc1ca",
+        "section-membership-edited-AutoCad2013-SECTIONMANAGER-True.dxf": "c196b869198ef06675ddb467f6c3bee825c864f0b71daccaa64fde80247545d7",
+        "section-membership-edited-AutoCad2013-SECTION_MANAGER-False.dxf": "d62a6d0e03ee80ecaf368ab98c939a4bcc46d028e46b199a84c125479fa10614",
+        "section-membership-edited-AutoCad2013-SECTION_MANAGER-True.dxf": "ff058b33f6ee273db1df90f96c2e0fe8af5c8d35da0968ed3873ce940da282ec",
+        "section-membership-edited-AutoCad2018-SECTIONMANAGER-False.dxf": "c515799487056cf6f80e8c2404a6a799f3d3562ec3baff26378d1cb43fffdc0f",
+        "section-membership-edited-AutoCad2018-SECTIONMANAGER-True.dxf": "df67800278ee0d5cd820e40e5be6e7ea784d2fc60f9c8bd3bed437967b1305d7",
+        "section-membership-edited-AutoCad2018-SECTION_MANAGER-False.dxf": "56a34ca073016e30fd3b979a701576b3ced223e80bd74017696e340a6092ea2d",
+        "section-membership-edited-AutoCad2018-SECTION_MANAGER-True.dxf": "dba26ea33f2be63c19f7e7d5f032d350f1c23a4d51bff3ccce75655a6ae1100d",
+        "section-membership-empty-AutoCad2007-SECTIONMANAGER-False.dxf": "ec7dfb3b83f09a0c904b9b986f1f0bda79b461385eec138fdb1e5307367da88c",
+        "section-membership-empty-AutoCad2007-SECTIONMANAGER-True.dxf": "88679724f19652a851f4788614862f7163d021bfa618a26534751114a0887fd9",
+        "section-membership-empty-AutoCad2007-SECTION_MANAGER-False.dxf": "f8a1a6acc50aacaf70d48fb181db3be7450d399c72b132d1919f558ee18e38cd",
+        "section-membership-empty-AutoCad2007-SECTION_MANAGER-True.dxf": "e5f596231c88d54d7625443944ec86195bb1012c9cc88635625e5745c2611ba6",
+        "section-membership-empty-AutoCad2010-SECTIONMANAGER-False.dxf": "646a8d57c192801886714270228ca4946b683e2ae2cf5c2638f80c454846ec98",
+        "section-membership-empty-AutoCad2010-SECTIONMANAGER-True.dxf": "cef8365b16e0553216035d1aad350b1ca8a8863637719e891910c696e5cfb297",
+        "section-membership-empty-AutoCad2010-SECTION_MANAGER-False.dxf": "960d61f0189323560443026611e2d1e611d0af06e192882c239927f148f96b85",
+        "section-membership-empty-AutoCad2010-SECTION_MANAGER-True.dxf": "e7ee7bd92e20fb1207ed4afac61b67ce267e78155bec4a9b46f4423648a95831",
+        "section-membership-empty-AutoCad2013-SECTIONMANAGER-False.dxf": "38bcc5c6fadb545ab70dafd3d66d4bb25dc09708caf553b56e12cf6a6a93676b",
+        "section-membership-empty-AutoCad2013-SECTIONMANAGER-True.dxf": "532511c401e4e26ab170b69e5fae6a4fa3f60e3ba48bccd4b0903ac6b4da21c4",
+        "section-membership-empty-AutoCad2013-SECTION_MANAGER-False.dxf": "dfe2177c3eb430948428e94fe543053114dc66870331e119a0f65930bffd41f5",
+        "section-membership-empty-AutoCad2013-SECTION_MANAGER-True.dxf": "dd0b5b0d86b3ceac4367fbd2add93f6f4d4669ac910112198922fc619d63c11f",
+        "section-membership-empty-AutoCad2018-SECTIONMANAGER-False.dxf": "bc093b4bb6dd74485cc8e5d6b2a662f5dddb2a197a0ab05f10d9bb1bf79213e9",
+        "section-membership-empty-AutoCad2018-SECTIONMANAGER-True.dxf": "395144d09d5c07cd0cdab40e10d18757c7447e0d2f82544d50190f67bcb89679",
+        "section-membership-empty-AutoCad2018-SECTION_MANAGER-False.dxf": "f4af669b519672167f43ae611f7638b0f347b9df8f27665b05d0af84643b6fbc",
+        "section-membership-empty-AutoCad2018-SECTION_MANAGER-True.dxf": "b3c88aaadb61b67a4594107ddb2e2daeb48531465de3a1744f3e265ecbcc9d2a",
+        "section-membership-mapped-AutoCad2007-SECTIONMANAGER-False.dxf": "31a2077e902523e35c8317d36afb9b0c7623a108bc6b134b2fd5026260e22843",
+        "section-membership-mapped-AutoCad2007-SECTIONMANAGER-True.dxf": "c39438741cef7334dcdc289eac5b713333db858aa2918bab2c2b8e6f96fd07f0",
+        "section-membership-mapped-AutoCad2007-SECTION_MANAGER-False.dxf": "57ea163a60fa225dac1b0354e078569e0a031debfc29f2cb24b3a0e155f9a635",
+        "section-membership-mapped-AutoCad2007-SECTION_MANAGER-True.dxf": "082ee98b8cbe964bc2062503983c1ff1d3cb0cd975cf3b709e9542910358295f",
+        "section-membership-mapped-AutoCad2010-SECTIONMANAGER-False.dxf": "f79fad3cefb55a0fc1303ae02101cae36cf21fcfeeb89aa78ad4d91079231af2",
+        "section-membership-mapped-AutoCad2010-SECTIONMANAGER-True.dxf": "9cf9d5050894a0fda80d8e62cc4c48f767bdbefd75eed7ec8e6a48af7af4ee8d",
+        "section-membership-mapped-AutoCad2010-SECTION_MANAGER-False.dxf": "aa8ac795282bc85f9fdc96dc608e6b40f27826902dc9880cc8f2cab57756e409",
+        "section-membership-mapped-AutoCad2010-SECTION_MANAGER-True.dxf": "d7fc397aa11871d1b2e354a8b8abbc08ada68743e7a948edf0cbca7351dc042d",
+        "section-membership-mapped-AutoCad2013-SECTIONMANAGER-False.dxf": "483edf8b1325da7751dab23c8cbec8ad9174b6bde7926aac63fa6c50e89bc2ad",
+        "section-membership-mapped-AutoCad2013-SECTIONMANAGER-True.dxf": "7d1a0baf33cd14bd115468e5ffe1cd3b35a39a9dfdb4e16d156fa0e28701373f",
+        "section-membership-mapped-AutoCad2013-SECTION_MANAGER-False.dxf": "5b8d2c3cae4cd9bd8ec5bbe7e6560d1a7ab1cb9b47ec6b1dfb4a663a93643053",
+        "section-membership-mapped-AutoCad2013-SECTION_MANAGER-True.dxf": "2d8ead8d73b250d1c32395cad79078aed007917252e27f91429f499a45d1f4a2",
+        "section-membership-mapped-AutoCad2018-SECTIONMANAGER-False.dxf": "2d65a8a551fa7413a9a3b8759ca2cf316868dd6a2fb57271d53589d8c25cd00e",
+        "section-membership-mapped-AutoCad2018-SECTIONMANAGER-True.dxf": "ed0459e7413e3c67f584389d6db445a2bf6786ed4058c0f45207e3c9841106a4",
+        "section-membership-mapped-AutoCad2018-SECTION_MANAGER-False.dxf": "1fd784b118fea68c080eb49782586b98682837337ab86b09c07d4d18349a781a",
+        "section-membership-mapped-AutoCad2018-SECTION_MANAGER-True.dxf": "85f059b1443a25c3d71d5eee406101d837601d6543bffccc2d5eea230cf7d654",
+        "section-membership-native-False-False.dxf": "bb0a5552bcdcf25371222b1269e51dbe079831405d8365b34f70b3ccecc78f86",
+        "section-membership-native-False-True.dxf": "6c5b4164c6ab713d9846844ca8b713991ae61462c699863768fd86f1113a1044",
+        "section-membership-native-True-False.dxf": "bb0a5552bcdcf25371222b1269e51dbe079831405d8365b34f70b3ccecc78f86",
+        "section-membership-native-True-True.dxf": "6c5b4164c6ab713d9846844ca8b713991ae61462c699863768fd86f1113a1044"
+      }
+    },
+    "Release": {
+      "dedicated_passed": 84,
+      "dedicated_failed": 0,
+      "existing_regressions": 325,
+      "unique_focused_passed": 409,
+      "unique_focused_failed": 0,
+      "scopes": {
+        "membership": {
+          "passed": 84,
+          "failed": 0,
+          "results_sha256": "74611d8f1df35346216d5d848f1deafd65d8c5fbf056e37f0d44a0891c1565b4",
+          "log_sha256": "b99184c05f966ea3c2759932a596b01b17e42091fbfe2862da6b8c4c6dfe334d"
+        },
+        "regression": {
+          "passed": 110,
+          "failed": 0,
+          "results_sha256": "5e905a89fee76a1c39bc05137184de7c6e055e64c341e01da7c30cc22614121e",
+          "log_sha256": "d5a2a54a67601615db5fe9d60c1207edece7fa60b53255704816476ca9e1918b"
+        },
+        "section-regression": {
+          "passed": 215,
+          "failed": 0,
+          "results_sha256": "f9572465f23ed3c44bb2222b945d3d5fd863836a130939a130308bfd9fd371db",
+          "log_sha256": "6cbe9d84625ed49cc970bd3d3d36120fade7a7c2549409f9de131dff35485059"
+        }
+      },
+      "library_sha256": "c7baa0d029c610207657eb38136e4974ca0e704e4e314256f006b469fde678f2",
+      "conformance_sha256": "5322dda33b556def38f7e2ae6b50317198ed39e8d56e17cbd617c788034de8e4",
+      "test_build_log_sha256": "5db88439d8cecc169d433f454201773eb438baaa20bec396d124ac62a4875c54",
+      "independent_gate": {
+        "actual_output_corruptions_rejected": 260,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "automatic_membership": false,
+        "native_cad_execution": false,
+        "native_manager_boundary_comparisons": 4,
+        "outputs": 52,
+        "section_evaluation": false
+      },
+      "independent_gate_sha256": "d8e57c943679cbb0773d75bc8cb1476aec223ddc83e6e0b20bff5b413a37d62b",
+      "neighbor_gates": {
+        "verify_section_manager.py": {
+          "outputs": 52,
+          "corruption_controls": 160,
+          "log_sha256": "7a7ea19f19462865312715210ddfa16569954a25ae3de4f1576883a2178fe184"
+        },
+        "verify_section.py": {
+          "result": {
+            "actual_output_packet_corruption_controls": 6,
+            "adapted_documented_name_structural_audits": 56,
+            "adapted_producer_extracted_source_audits": 8,
+            "native_original_transformations": 0,
+            "pinned_producer_originals_and_exact_extractions": 8,
+            "unmodified_native_name_audits": 14,
+            "unmodified_native_original_audits": 1,
+            "verified_outputs": 70
+          },
+          "log_sha256": "f01b81d148be89327b8b5e12c76f584c22707c8718c10ab2612ceb39f9a80acf"
+        }
+      },
+      "output_sha256": {
+        "section-membership-edited-AutoCad2007-SECTIONMANAGER-False.dxf": "db6b083ff5ee298ffb1a3300d57d3599c890c45142651b215457c8d8f53e3bdb",
+        "section-membership-edited-AutoCad2007-SECTIONMANAGER-True.dxf": "63c8feb504c1e1cd2b3ef6bb923c9955a4804fabab3554dd06d6a5262235d647",
+        "section-membership-edited-AutoCad2007-SECTION_MANAGER-False.dxf": "b5cb1238b8c91d13016df7c995d8117a08c7f1c496b36b04e737053a9cbf9788",
+        "section-membership-edited-AutoCad2007-SECTION_MANAGER-True.dxf": "20ce568d85b0a87858914ce1777ccc17b8ac326866c6f1d1e6b6352dbcf98dbe",
+        "section-membership-edited-AutoCad2010-SECTIONMANAGER-False.dxf": "41fe7a1ac54af127de2e9c12f4d056277780e5d438304f722210d0724846dd80",
+        "section-membership-edited-AutoCad2010-SECTIONMANAGER-True.dxf": "fca538d2cf2aa6d05a68640e6415fc0f1e9378fbe6963046eaacc8d1a5661438",
+        "section-membership-edited-AutoCad2010-SECTION_MANAGER-False.dxf": "e9bab4f8d78bf0b67aaed98477f49c162439f5ab2f36fa7ffc218ada4c29cdf6",
+        "section-membership-edited-AutoCad2010-SECTION_MANAGER-True.dxf": "d1c0cea4057fa420d22ceaaa931b8330575e87bfdf8dd266f7451188d4bf5b25",
+        "section-membership-edited-AutoCad2013-SECTIONMANAGER-False.dxf": "bcca972c19ee70140a02b2375e15887abb504efac8aa1100378f62b565b26358",
+        "section-membership-edited-AutoCad2013-SECTIONMANAGER-True.dxf": "5f5c0841fc09a87065b9c33f9431cce1a1a45edac8de856045b912f968ccfcb8",
+        "section-membership-edited-AutoCad2013-SECTION_MANAGER-False.dxf": "5ef757758eba8db412483c1f78b7e1802586229a17e1c49cf07f476d1532ba80",
+        "section-membership-edited-AutoCad2013-SECTION_MANAGER-True.dxf": "54303e0e1e1c0f9adc19b190b6b25b9d1928866dfc7ce5262eb1b7fb15ec7198",
+        "section-membership-edited-AutoCad2018-SECTIONMANAGER-False.dxf": "d1ecdc954d458e46db8083b7946d5f26007f5f66ea752a55399a7316f6117068",
+        "section-membership-edited-AutoCad2018-SECTIONMANAGER-True.dxf": "82f6e69c693c4a0b2c477802d7e0f5952134b00419ee44a310dadfa1dcf9192b",
+        "section-membership-edited-AutoCad2018-SECTION_MANAGER-False.dxf": "583ea472150100f4ed21c6a14753371948d25e702a9b6ad400ffd261bd164479",
+        "section-membership-edited-AutoCad2018-SECTION_MANAGER-True.dxf": "d5b536f5bd19e742c197707dddaf67977da0710eecc75050dc2fbfe8f92606c6",
+        "section-membership-empty-AutoCad2007-SECTIONMANAGER-False.dxf": "5bf57d0983706be1d387b3b69d64ab0da7643df9982fc0d5c15b496748200f6f",
+        "section-membership-empty-AutoCad2007-SECTIONMANAGER-True.dxf": "66664eafec39bb9a6850a80fe1ebafe076089e7b9530f81a97706bab94c31951",
+        "section-membership-empty-AutoCad2007-SECTION_MANAGER-False.dxf": "f53186707eb7e22e947845098c88bedffbba57c6e974203e92cbc367709ee8a8",
+        "section-membership-empty-AutoCad2007-SECTION_MANAGER-True.dxf": "52b6457a86e9f77d761dcebb42ab3ebe3ef493ae05d2a51e5b1f012e94171d91",
+        "section-membership-empty-AutoCad2010-SECTIONMANAGER-False.dxf": "31b52db7f8c3b9b397ea21d21ea546b2c308b5d28e7eeee273ad432e226a3d2b",
+        "section-membership-empty-AutoCad2010-SECTIONMANAGER-True.dxf": "5e6edcf996ff72d2cc5f5326d40f7ce2d457364dd4e4633624cd2365c5a49003",
+        "section-membership-empty-AutoCad2010-SECTION_MANAGER-False.dxf": "c317c5d708b416ac7ecfb0b7ec52135f90d30f43ad1c6e389854439c54c8d568",
+        "section-membership-empty-AutoCad2010-SECTION_MANAGER-True.dxf": "e65810a4a26bba19c5b7cdd1994354b46772b53e05b473fa878c2e8fe32ff301",
+        "section-membership-empty-AutoCad2013-SECTIONMANAGER-False.dxf": "824120fcce5788595e551fca3a54e296f12b5105c5fdb674dea586679330cb9b",
+        "section-membership-empty-AutoCad2013-SECTIONMANAGER-True.dxf": "3f4fe79f24f62454907b19b641ed0a6f02eb45dc9af6d66cc6ecb669441eeb83",
+        "section-membership-empty-AutoCad2013-SECTION_MANAGER-False.dxf": "0fa18fd042dc4ad83dbd868007d9402dc2d8b5b5d6b36fb6b47ccbf41ac5e1b6",
+        "section-membership-empty-AutoCad2013-SECTION_MANAGER-True.dxf": "d795ebdbf7010442967fd801b9554d1d16c89b7ebab691068275865c7c242f54",
+        "section-membership-empty-AutoCad2018-SECTIONMANAGER-False.dxf": "5576d78d61d4df29c180916afaf0981947d906f113b7d4436c95925427c9edda",
+        "section-membership-empty-AutoCad2018-SECTIONMANAGER-True.dxf": "ae70fa868891ffd31a9db8614be017a9e13d3a24bac2be999f02203f3bb846ae",
+        "section-membership-empty-AutoCad2018-SECTION_MANAGER-False.dxf": "956eda5c106c999b02ec0baaad0da20a125737221550183869a4f36577e280bb",
+        "section-membership-empty-AutoCad2018-SECTION_MANAGER-True.dxf": "0e718fc20a7318d46c1b715ad37973ba70ed22d9c5eefb13f0ef61151a387be8",
+        "section-membership-mapped-AutoCad2007-SECTIONMANAGER-False.dxf": "55000d9159ae9163d48df215accb8c0e151c3d8c161abe3f2acd16914e3e1510",
+        "section-membership-mapped-AutoCad2007-SECTIONMANAGER-True.dxf": "b3b95f1886f6c28e8fe3215b75f4eb545ce4430fe370a2fec86a88bb4ca70f9f",
+        "section-membership-mapped-AutoCad2007-SECTION_MANAGER-False.dxf": "10b8939d3998ccf13f030031c67ccfd9eb31314c89018fe59527d41e34495349",
+        "section-membership-mapped-AutoCad2007-SECTION_MANAGER-True.dxf": "9066fcd6db40de371cf9317bb3d2905ca5f3fc0fc9039b31a080d6a22096e6f0",
+        "section-membership-mapped-AutoCad2010-SECTIONMANAGER-False.dxf": "798e3a71abfc62261b4dd262cdf38e417d0fafbd99c127d2f2f09436d07ff5a0",
+        "section-membership-mapped-AutoCad2010-SECTIONMANAGER-True.dxf": "1fc14a7163435cf12765e5a11cb92560a9ed32bb94c5d6939c4083e4e7cc4a05",
+        "section-membership-mapped-AutoCad2010-SECTION_MANAGER-False.dxf": "a9d264e9a805fd60981c83dd159272cda2c91a7131e0c71f5d799e253e982eab",
+        "section-membership-mapped-AutoCad2010-SECTION_MANAGER-True.dxf": "00bc8cd8b79db60316d07f2400ec6b58706ab0683327a1a90b54ca50f72a3906",
+        "section-membership-mapped-AutoCad2013-SECTIONMANAGER-False.dxf": "d95363cd4cc67c1f41f4f5c18eaf56866d93b8be2932c89d181969497ce7a407",
+        "section-membership-mapped-AutoCad2013-SECTIONMANAGER-True.dxf": "0b042c5927b5232547350d8ad10cb1025091ef276afffb9fb584505853af4826",
+        "section-membership-mapped-AutoCad2013-SECTION_MANAGER-False.dxf": "8acd6f9af5c46f2675a61736e76843f77e0289045f38b9931d9cd88e1d8b2fac",
+        "section-membership-mapped-AutoCad2013-SECTION_MANAGER-True.dxf": "bde121efe0f5de762ecf60d62f72eda7d8720f9cf9739a315bf9dfde146f3ffa",
+        "section-membership-mapped-AutoCad2018-SECTIONMANAGER-False.dxf": "0df6623ee401efa761eba42e49172cf7f62fc5b3aae96f9130029753b930314a",
+        "section-membership-mapped-AutoCad2018-SECTIONMANAGER-True.dxf": "de9a5a0ced4b3216faeab4ccddc0fd0850bccb4d83bb2a2df3a740de8de018a9",
+        "section-membership-mapped-AutoCad2018-SECTION_MANAGER-False.dxf": "1c9f1ea14749299186e53be1df3155624d34962f9b223c06c6a90e5f40c9f81d",
+        "section-membership-mapped-AutoCad2018-SECTION_MANAGER-True.dxf": "0cb705ab364f867f353201577581bc56378f4bef2879b3746799e8008c7d9c73",
+        "section-membership-native-False-False.dxf": "bb0a5552bcdcf25371222b1269e51dbe079831405d8365b34f70b3ccecc78f86",
+        "section-membership-native-False-True.dxf": "6c5b4164c6ab713d9846844ca8b713991ae61462c699863768fd86f1113a1044",
+        "section-membership-native-True-False.dxf": "bb0a5552bcdcf25371222b1269e51dbe079831405d8365b34f70b3ccecc78f86",
+        "section-membership-native-True-True.dxf": "6c5b4164c6ab713d9846844ca8b713991ae61462c699863768fd86f1113a1044"
+      }
+    }
+  },
+  "limits": [
+    "Only the public list and stored flag of a loaded typed manager may be replaced.",
+    "No automatic membership maintenance, section evaluation, generation, or native AutoCAD execution.",
+    "No manager creation, cloning, erasure, cross-document adoption or profile conversion.",
+    "This receipt qualifies net8.0 Debug/Release; root integration owns all-target and full-suite qualification."
+  ]
+}

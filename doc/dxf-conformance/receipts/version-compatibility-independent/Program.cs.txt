@@ -1,0 +1,96 @@
+using System.Collections;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using netDxf;
+using netDxf.Blocks;
+using netDxf.Entities;
+using netDxf.Header;
+using netDxf.Tables;
+
+internal static partial class Program
+{
+    private static readonly List<object> Results = new();
+    private static int Failed;
+    private static void Check(bool value, string message) { if (!value) throw new Exception(message); }
+    private static void Run(string name, Action action)
+    {
+        try { action(); Results.Add(new { name, passed = true, error = "" }); Console.WriteLine("PASS " + name); }
+        catch (Exception error) { Failed++; Results.Add(new { name, passed = false, error = error.ToString() }); Console.WriteLine("FAIL " + name + ": " + error.Message); }
+    }
+    private static long Seed(DxfDocument document) => Convert.ToInt64(typeof(DxfDocument).GetProperty("NumHandles", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(document));
+    private static object? Database(DxfDocument document) => typeof(DxfDocument).GetField("objectDatabase", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(document);
+    private static string Projection(DxfVersionCompatibilityReport report) => JsonSerializer.Serialize(new { report.SourceVersion, report.TargetVersion, report.HasKnownRejections, report.HasKnownLosses, Diagnostics = report.Diagnostics.Select(d => new { d.Code, d.Kind, d.SourceHandle, d.SourceCodeName, d.PropertyPath, d.Message }) });
+    private static DxfVersionCompatibilityReport AnalyzePure(DxfDocument document, DxfVersion target)
+    {
+        long seed = Seed(document); var version = document.DrawingVariables.AcadVer; var database = Database(document); int blocks = document.Blocks.Count, views = document.Views.Count, classes = document.Classes.Count;
+        var report = document.AnalyzeVersionCompatibility(target);
+        Check(seed == Seed(document) && document.DrawingVariables.AcadVer == version && ReferenceEquals(database, Database(document)) && blocks == document.Blocks.Count && views == document.Views.Count && classes == document.Classes.Count, "Analysis changed document state or created lazy database.");
+        Check(report.SourceVersion == version && report.TargetVersion == target && ((IList)report.Diagnostics).IsReadOnly, "Report versions or immutable collection contract changed.");
+        return report;
+    }
+    private static void Main(string[] args)
+    {
+        foreach (DxfVersion target in Enum.GetValues<DxfVersion>().Where(v => v != DxfVersion.Unknown)) Run("empty-purity-" + target, () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); Check(Database(document) == null, "Empty fixture already initialized object database.");
+            var report = AnalyzePure(document, target); Check(Database(document) == null, "Analysis created named-object database.");
+            Check(report.HasKnownRejections == (target < DxfVersion.AutoCad2000), "Empty profile rejection classification changed.");
+            if (target < DxfVersion.AutoCad2000) Check(report.Diagnostics.Count == 1 && report.Diagnostics[0].Code == "DXF_WRITER_PROFILE_UNSUPPORTED" && ReferenceEquals(report.Diagnostics[0].SourceObject, document.DrawingVariables), "Unsupported writer profile lacks exact header source.");
+        });
+        Run("invalid-arguments-are-pure", () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); long seed = Seed(document);
+            foreach (DxfVersion invalid in new[] { DxfVersion.Unknown, (DxfVersion)(-1), (DxfVersion)12345 })
+            { bool rejected = false; try { document.AnalyzeVersionCompatibility(invalid); } catch (ArgumentOutOfRangeException) { rejected = true; } Check(rejected && Seed(document) == seed && Database(document) == null, "Invalid argument changed document or was accepted."); }
+        });
+        Run("snapshot-and-live-source-separation", () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); var line = new Line(Vector3.Zero, Vector3.UnitX) { ColorName = "Book$Red", ShadowMode = EntityShadowMode.Ignore }; document.Entities.Add(line);
+            var report = AnalyzePure(document, DxfVersion.AutoCad2000); string snapshot = Projection(report);
+            Check(report.Diagnostics.Count(d => ReferenceEquals(d.SourceObject, line)) == 2, "Entity common data lacks distinct captured diagnostics.");
+            string handle = line.Handle; line.ColorName = null; line.ShadowMode = null; document.Entities.Remove(line);
+            Check(Projection(report) == snapshot && report.Diagnostics.Where(d => ReferenceEquals(d.SourceObject, line)).All(d => d.SourceHandle == handle), "Report labels mutated with live source.");
+            Check(!AnalyzePure(document, DxfVersion.AutoCad2000).HasKnownRejections, "Fresh report did not reflect entity removal.");
+        });
+        Run("unused-block-and-attribute-walk", () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); var block = new Block("UNUSED_INDEPENDENT"); var text = new MText("Stored") { BackgroundFill = new MTextBackgroundFill { Flags = MTextBackgroundFillFlags.TextFrame } }; block.Entities.Add(text);
+            var definition = new AttributeDefinition("TAG") { ColorName = "Book$Blue", ShadowMode = EntityShadowMode.Ignore }; block.AttributeDefinitions.Add(definition); document.Blocks.Add(block);
+            var report = AnalyzePure(document, DxfVersion.AutoCad2004);
+            Check(report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, text) && d.Code == "MTEXT_FRAME_PROFILE") && report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, text) && d.Code == "MTEXT_BACKGROUND_PROFILE"), "Unused block MTEXT was skipped.");
+            Check(report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, definition) && d.Code == "ENTITY_SHADOW_MODE_PROFILE"), "Unused block attribute definition was skipped.");
+            Check(!report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, definition) && d.Code == "ENTITY_COLOR_NAME_PROFILE"), "R2004 color name was incorrectly rejected.");
+        });
+        Run("explicit-null-live-section-presence", () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); var view = new View("INDEPENDENT_VIEW") { LiveSection = null }; document.Views.Add(view);
+            var report = AnalyzePure(document, DxfVersion.AutoCad2004); Check(report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, view) && d.Code == "VIEW_LIVE_SECTION_PROFILE"), "Explicit null live-section slot was omitted.");
+            view.ClearLiveSectionReference(); Check(!AnalyzePure(document, DxfVersion.AutoCad2004).Diagnostics.Any(d => d.Code == "VIEW_LIVE_SECTION_PROFILE"), "Absent live-section slot was reported.");
+        });
+        Run("omissions-remain-separate-from-rejections", () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); document.DrawingVariables.LastSavedBy = "Independent reviewer"; var definition = new DxfClass("INDEPENDENT_CLASS", "IndependentClass", "Review") { InstanceCount = 0 }; document.Classes.Add(definition);
+            var report = AnalyzePure(document, DxfVersion.AutoCad2000);
+            Check(report.HasKnownLosses && !report.HasKnownRejections && report.Diagnostics.All(d => d.Kind == DxfVersionCompatibilityKind.DataOmission), "Known omissions were promoted to writer rejections.");
+            Check(report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, definition) && d.Code == "CLASS_INSTANCE_COUNT_OMITTED") && report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, document.DrawingVariables) && d.Code == "HEADER_LAST_SAVED_BY_OMITTED"), "Captured omission source is incorrect.");
+            Check(!AnalyzePure(document, DxfVersion.AutoCad2004).HasKnownLosses, "Supported target incorrectly reports R2000 omission.");
+        });
+        Run("no-save-or-geometry-validation-side-effects", () =>
+        {
+            var document = new DxfDocument(DxfVersion.AutoCad2018); var line = new Line(Vector3.Zero, Vector3.UnitX); document.Entities.Add(line); line.EndPoint = new Vector3(double.NaN, 0, 0);
+            var report = AnalyzePure(document, DxfVersion.AutoCad2018); Check(!report.HasKnownRejections && !report.HasKnownLosses, "Bounded report inferred unrelated geometry validity.");
+        });
+        Run("retained-polyline-source-profile", () =>
+        {
+            var original = new DxfDocument(DxfVersion.AutoCad2018); original.Entities.Add(new Polyline3D(new[] { Vector3.Zero, Vector3.UnitX })); using var bytes = new MemoryStream(); Check(original.Save(bytes), "Fixture save failed."); bytes.Position = 0;
+            var document = DxfDocument.Load(bytes)!; var polyline = document.Entities.Polylines3D.Single(); var report = AnalyzePure(document, DxfVersion.AutoCad2013);
+            Check(polyline.VertexRecords.Append(polyline.EndSequenceRecord).All(r => report.Diagnostics.Any(d => ReferenceEquals(d.SourceObject, r) && d.Code == "STORED_SOURCE_PROFILE")), "Retained child source-profile guard was skipped.");
+            Check(!AnalyzePure(document, DxfVersion.AutoCad2018).HasKnownRejections, "Retained child source profile rejected unchanged target.");
+        });
+        Directory.CreateDirectory(args[0]);
+        if (args.Length > 2) RuleMatrix(args[1], args[2], args[0]);
+        Directory.CreateDirectory(args[0]); File.WriteAllText(Path.Combine(args[0], "results.json"), JsonSerializer.Serialize(new { cases = Results.Count, failed = Failed, librarySha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(DxfDocument).Assembly.Location))).ToLowerInvariant(), results = Results }, new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine($"{Results.Count} cases; {Failed} failed."); Environment.ExitCode = Failed == 0 ? 0 : 1;
+    }
+}

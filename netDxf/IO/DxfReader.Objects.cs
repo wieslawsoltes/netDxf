@@ -45,6 +45,13 @@ namespace netDxf.IO
                 this.databaseRecords.Add(style);
                 return style;
             }
+            if (codeName == "CELLSTYLEMAP")
+            {
+                DatabaseRecord map = this.ReadStoredCellStyleMapRecord(tags);
+                map.SourceIdentity = source;
+                this.databaseRecords.Add(map);
+                return map;
+            }
             if (codeName == "TABLEGEOMETRY")
             {
                 DatabaseRecord geometry = this.ReadStoredTableGeometryRecord(tags);
@@ -268,6 +275,7 @@ namespace netDxf.IO
                 if (record.Object is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredTableContent content) foreach (DxfTag tag in content.Payload) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredTableGeometry geometry) foreach (DxfTag tag in geometry.Payload) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfStoredCellStyleMap map) foreach (DxfTag tag in map.Payload) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredSectionManager manager) foreach (DxfTag tag in manager.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfTableStyle style) foreach (DxfTag tag in style.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredField field) foreach (DxfTag tag in field.Payload) database.ReserveUnresolvedReference(tag);
@@ -353,6 +361,7 @@ namespace netDxf.IO
             this.ResolveTableStyleReferences();
             this.ResolveStoredTableContentReferences();
             this.ResolveStoredTableGeometryReferences();
+            this.ResolveStoredCellStyleMapReferences();
             this.ResolveSunReferences();
             this.ResolveStoredFields();
             this.ResolveStoredSunStudyReferences();

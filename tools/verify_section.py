@@ -199,7 +199,7 @@ def main():
     expected|={f'section-producer-AutoCad{year}-{source_binary}-{binary}.dxf' for year in VERSIONS for source_binary in (False,True) for binary in (False,True)}
     # Adjacent modules have their own mandatory inventories and verifiers.
     # Keep this gate exact for all 70 SECTION outputs when run on the full suite.
-    check({p.name for p in args.directory.glob('section-*.dxf') if not p.name.startswith(('section-settings-','section-manager-'))}==expected,'Expected all 70 SECTION output fixtures')
+    check({p.name for p in args.directory.glob('section-*.dxf') if not p.name.startswith(('section-settings-','section-manager-','section-membership-'))}==expected,'Expected all 70 SECTION output fixtures')
     source=native_source(root);producer_inputs,source_adapted=producer_sources(root);adapted=0;native_audits=0
     for year in VERSIONS:
         for binary in (False,True):

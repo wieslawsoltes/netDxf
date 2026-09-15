@@ -35,12 +35,14 @@ namespace netDxf
         }
         private bool StoredPolylineReferencesRemoval(HashSet<DxfObject> removed)
         {
-            bool removesRecords = removed.OfType<Polyline3DRecord>().Any();
+            bool removesRecords = removed.Any(item => item is Polyline3DRecord || item is PolygonMeshRecord);
             foreach (Polyline3DRecord record in removed.OfType<Polyline3DRecord>())
+                if (record.HasPrivateData || record.ExtensionDictionary != null) return true;
+            foreach (PolygonMeshRecord record in removed.OfType<PolygonMeshRecord>())
                 if (record.HasPrivateData || record.ExtensionDictionary != null) return true;
             // Existing collection moves allocate a new parent handle. Object references
             // can follow that identity, but raw XData handle text needs an explicit map.
-            var parentHandles = new HashSet<DxfObject>(removed.OfType<Polyline3D>().Where(polyline => polyline.HasStoredRecords));
+            var parentHandles = new HashSet<DxfObject>(removed.Where(item => item is Polyline3D polyline && polyline.HasStoredRecords || item is PolygonMesh mesh && mesh.HasStoredRecords));
             foreach (DxfObject item in removed)
                 foreach (XData data in item.XData.Values)
                     foreach (XDataRecord tag in data.XDataRecord)
@@ -50,6 +52,8 @@ namespace netDxf
                 if (removed.Contains(item)) continue;
                 if (item is Polyline3DRecord record && (record.References.Any(removed.Contains)
                     || record.OpaqueHandleTags.Any(tag => this.RemovedPolylineHandle((string)tag.Value, removed)))) return true;
+                if (item is PolygonMeshRecord meshRecord && (meshRecord.References.Any(removed.Contains)
+                    || meshRecord.OpaqueHandleTags.Any(tag => this.RemovedPolylineHandle((string)tag.Value, removed)))) return true;
                 if (!removesRecords) continue;
                 if (item.Owner != null && removed.Contains(item.Owner) || item.ExtensionDictionary != null && removed.Contains(item.ExtensionDictionary)) return true;
                 if (item.PersistentReactors.Any(removed.Contains)) return true;

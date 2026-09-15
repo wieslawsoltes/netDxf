@@ -14,7 +14,7 @@ internal static partial class Program
         Run("hatch-affine/exact-identity", HatchAffineIdentity);
         foreach (bool binary in new[] { false, true }) foreach (int op in Enumerable.Range(0, 5)) foreach (int plane in Enumerable.Range(0, 2))
             Run($"hatch-affine/closed-polyline/{binary}/{op}/{plane}", () => HatchAffinePolyline(binary, op, plane));
-        foreach (string kind in new[] { "pattern", "gradient", "arc", "ellipse", "bulge" })
+        foreach (string kind in new[] { "pattern", "gradient" })
             Run($"hatch-affine/unsupported/{kind}", () => HatchAffineUnsupported(kind));
         foreach (bool binary in new[] { false, true }) Run($"hatch-affine/mixed-spline/{binary}", () => HatchAffineMixedSpline(binary));
     }

@@ -1,0 +1,79 @@
+{
+  "outputs": 12,
+  "errors": 0,
+  "repairs": 0,
+  "results": [
+    {
+      "file": "edited-producer-R2000-ascii.dxf",
+      "sha256": "bf514d77764550cc7f222dbcbda6bee9198fdcb1f8e903da4b4241d04d77eb70",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2000-binary.dxf",
+      "sha256": "28afcb3bddcf4d467b06758d7fd0a7151ea041907063d1de89eb855dc46fe8df",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2004-ascii.dxf",
+      "sha256": "457e64ff090ef888539eaf5a08431495590f99e4975acbce5098665d9e6a7b03",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2004-binary.dxf",
+      "sha256": "033a2c12b554a1e132ea7b26d68c26f692b2636a6aeaab8aeca633b58ea01bcc",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2007-ascii.dxf",
+      "sha256": "629c50bc150d9fd973583d91755ce4617e8e1ea009147029f87ff6db2aaae498",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2007-binary.dxf",
+      "sha256": "6431522d78c8390c7ece37c178bc9845dbfe2a54ad7b14ad7dc77dccb41378fe",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2010-ascii.dxf",
+      "sha256": "3fee37274db585df9400a75cf144198fb0973f6b04d980793e2928c04a1bc1a7",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2010-binary.dxf",
+      "sha256": "8c65f117ca4ac2fa7b2fb23030a02519e1f1f4718d2e463be15b7e5640a1486c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2013-ascii.dxf",
+      "sha256": "b7aa2f43db5c2693e222a5df74a32b71bcb88d5b1f49c9f7cfe0a799af546065",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2013-binary.dxf",
+      "sha256": "c5a04a0eb370d6b3a05290fc41716acea4b40fb951e959b83e679d3d99429fea",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2018-ascii.dxf",
+      "sha256": "da56fc9db24c83bfec308b516a8812143bd4a44a13565af13fe84180c25f8b2c",
+      "errors": 0,
+      "repairs": 0
+    },
+    {
+      "file": "edited-producer-R2018-binary.dxf",
+      "sha256": "9772768b8d6c86df09bf50b5ae006fa749e9ca8649b6f7f5aa76b10b799fe295",
+      "errors": 0,
+      "repairs": 0
+    }
+  ]
+}

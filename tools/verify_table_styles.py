@@ -71,8 +71,12 @@ def verify_native(before, after):
             check(common(after[child]) == common(before[child]), "Native extension child common graph changed")
         map_handle = next(value for name, code, value in entries(before[extension]) if name == "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP" and code == 360)
         check(after[map_handle][0] == [0, "CELLSTYLEMAP"], "Native map type changed")
-        check(payload(before[map_handle]) == payload(after[map_handle]), "Native opaque map packet changed")
+        check(payload(before[map_handle]) == payload(after[map_handle]), "Native map packet changed")
         check(common(before[map_handle]) == common(after[map_handle]), "Native map owner/reactors changed")
+        for code, target in before[map_handle]:
+            if code == 340 and int(target, 16):
+                check(target in after and after[target][0] == before[target][0], "Native map resource identity changed")
+                check(next(v for c, v in after[target] if c == 2) == next(v for c, v in before[target] if c == 2), "Native map resource name changed")
         for code, name in source:
             if code != 7: continue
             source_style = [h for h, r in before.items() if r[0] == [0, "STYLE"] and [2, name] in r]

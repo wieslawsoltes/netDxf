@@ -49,7 +49,9 @@ namespace netDxf.Objects
         public IReadOnlyList<DxfObject> References { get { return this.references.AsReadOnly(); } }
         /// <summary>Gets the retained owned CELLSTYLEMAP when the known extension dictionary slot identifies it.</summary>
         /// <remarks>This reference does not qualify the map's custom cell-style schema or synchronization.</remarks>
-        public DxfOpaqueObject CellStyleMap { get; private set; }
+        public DxfDatabaseObject CellStyleMap { get; private set; }
+        /// <summary>Gets the typed stored map, or null when the owned map remains opaque.</summary>
+        public DxfStoredCellStyleMap StoredCellStyleMap { get { return this.CellStyleMap as DxfStoredCellStyleMap; } }
         // The common database registrar does not own ATTRIB/ENDBLK metadata carriers.
         // Their exact retained identities are validated below and guarded through References.
         internal override IEnumerable<DxfObject> DatabaseReferences
@@ -78,7 +80,7 @@ namespace netDxf.Objects
                 if (this.namedStyles.TryGetValue(row.Tags[0], out Tuple<TextStyle, string> binding)) row.BindTextStyle(binding.Item1);
             if (this.ExtensionDictionary != null && this.ExtensionDictionary.Contains("ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP"))
             {
-                var map = this.ExtensionDictionary["ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP"] as DxfOpaqueObject;
+                var map = this.ExtensionDictionary["ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP"] as DxfDatabaseObject;
                 if (map != null && map.CodeName == "CELLSTYLEMAP" && ReferenceEquals(map.Owner, this.ExtensionDictionary)) this.CellStyleMap = map;
             }
             this.resolved = true;

@@ -46,6 +46,7 @@ internal static partial class Program
         RunLayerIndexTests();
         RegisterStoredDimAssocTests();
         RegisterPolyline3DRecordTests();
+        RegisterPolygonMeshRecordTests();
         RegisterPolylineTopologyTests();
         RegisterPolyfaceGrammarTests();
         RunTypedObjectErasureTests();
@@ -53,11 +54,13 @@ internal static partial class Program
         RunDataTableTests();
         RunSunTests();
         RegisterStoredSunStudyTests();
+        RegisterVersionCompatibilityTests();
         RunUcsBaseTests();
         RunSunStudyProducerRawTests();
         RegisterStoredTableTests();
         RegisterStoredTableContentTests();
         RegisterStoredTableGeometryTests();
+        RegisterStoredCellStyleMapTests();
         RegisterStoredTableLifecycleReviewTests();
         RegisterStoredTableFidelityTests();
         RegisterStoredTableNameSpellingTests();
@@ -67,6 +70,7 @@ internal static partial class Program
         RegisterSixthMixedModuleTests();
         RegisterSeventhMixedModuleTests();
         RegisterEighthMixedModuleTests();
+        RegisterNinthMixedModuleTests();
         RegisterCompositeTableOwnershipTests();
         RegisterPrivateXRecordTests();
         RunSourceReferenceIdentityTests();
@@ -75,6 +79,7 @@ internal static partial class Program
         RegisterSectionTests();
         RegisterViewLiveSectionTests();
         RegisterSectionManagerTests();
+        RegisterSectionManagerMembershipTests();
         RegisterSectionLifecycleTests();
         RunSectionSettingsTests();
         RegisterSectionProducerTests();

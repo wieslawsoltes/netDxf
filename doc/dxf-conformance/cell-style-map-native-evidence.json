@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "base_commit": "5190451ca1de5b32300d4f9841d121855c364c0b",
+  "production_commit": "fc0fdef74dd40767340e0628ae2dbf542b228a0e",
+  "independent_wire_source": {
+    "url": "https://github.com/LibreDWG/libredwg/blob/34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43/src/dwg2.spec",
+    "git_blob": "2f7cbbe8b2b2c7bfb5019080cb4acfaca873a5b3",
+    "scope": "Handwritten storage parser uses outer wire grammar facts; no external implementation code incorporated. Native R2004 positive evidence takes precedence over secondary introduction-version comment."
+  },
+  "original_fixture_manifest": "tools/table_oracle/fixtures.json",
+  "carrier_fixture_manifest": "tests/fixtures/table-content/manifest.json",
+  "carrier_manifest_sha256": "9b5cc698a55503d445c97522caa8d72b5e8047479bdbb20c5bbf73f3abb9895e",
+  "native_objects": [
+    {
+      "file": "acad_table_simple.dxf",
+      "profile": 2013,
+      "handle": "B7",
+      "owner_dictionary": "B6",
+      "table_style": "6B",
+      "reactors": [
+        "B6"
+      ],
+      "raw_tag_count": 323,
+      "entries": [
+        {
+          "id": 1,
+          "stored_type": 1,
+          "name": "_TITLE"
+        },
+        {
+          "id": 2,
+          "stored_type": 1,
+          "name": "_HEADER"
+        },
+        {
+          "id": 3,
+          "stored_type": 2,
+          "name": "_DATA"
+        }
+      ],
+      "semantic_340_references": [
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        }
+      ]
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "profile": 2018,
+      "handle": "11B",
+      "owner_dictionary": "11A",
+      "table_style": "6B",
+      "reactors": [
+        "11A"
+      ],
+      "raw_tag_count": 323,
+      "entries": [
+        {
+          "id": 1,
+          "stored_type": 1,
+          "name": "_TITLE"
+        },
+        {
+          "id": 2,
+          "stored_type": 1,
+          "name": "_HEADER"
+        },
+        {
+          "id": 3,
+          "stored_type": 2,
+          "name": "_DATA"
+        }
+      ],
+      "semantic_340_references": [
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        },
+        {
+          "handle": "14",
+          "type": "LTYPE"
+        }
+      ]
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "profile": 2004,
+      "handle": "13D9",
+      "owner_dictionary": "104",
+      "table_style": "87",
+      "reactors": [
+        "104"
+      ],
+      "raw_tag_count": 323,
+      "entries": [
+        {
+          "id": 1,
+          "stored_type": 1,
+          "name": "_TITLE"
+        },
+        {
+          "id": 2,
+          "stored_type": 1,
+          "name": "_HEADER"
+        },
+        {
+          "id": 3,
+          "stored_type": 2,
+          "name": "_DATA"
+        }
+      ],
+      "semantic_340_references": [
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        }
+      ]
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "profile": 2007,
+      "handle": "136F",
+      "owner_dictionary": "104",
+      "table_style": "87",
+      "reactors": [
+        "104"
+      ],
+      "raw_tag_count": 323,
+      "entries": [
+        {
+          "id": 1,
+          "stored_type": 1,
+          "name": "_TITLE"
+        },
+        {
+          "id": 2,
+          "stored_type": 1,
+          "name": "_HEADER"
+        },
+        {
+          "id": 3,
+          "stored_type": 2,
+          "name": "_DATA"
+        }
+      ],
+      "semantic_340_references": [
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        }
+      ]
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "profile": 2010,
+      "handle": "130F",
+      "owner_dictionary": "104",
+      "table_style": "87",
+      "reactors": [
+        "104"
+      ],
+      "raw_tag_count": 323,
+      "entries": [
+        {
+          "id": 1,
+          "stored_type": 1,
+          "name": "_TITLE"
+        },
+        {
+          "id": 2,
+          "stored_type": 1,
+          "name": "_HEADER"
+        },
+        {
+          "id": 3,
+          "stored_type": 2,
+          "name": "_DATA"
+        }
+      ],
+      "semantic_340_references": [
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        },
+        {
+          "handle": "11",
+          "type": "STYLE"
+        }
+      ]
+    }
+  ],
+  "native_map_count": 5,
+  "native_entry_count": 15,
+  "qualification_limit": "Stored outer entries and immutable formatting packets; no format evaluation, role assignment, editing, or native AutoCAD application validation."
+}

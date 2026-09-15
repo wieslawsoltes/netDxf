@@ -88,6 +88,7 @@ namespace netDxf.IO
             }
 
             this.ValidateStoredPolylineRecords();
+            this.ValidateStoredPolygonMeshRecords();
             this.ValidateStoredDimensionHeaders();
             this.ValidateTextStyleStrings();
             this.ValidateAcisEntities();
@@ -2797,6 +2798,7 @@ namespace netDxf.IO
 
             this.WriteXData(polyline.XData);
             if (polyline.StoredSource != null) { this.WriteStoredPolylineRecords(polyline.StoredSource); return; }
+            if (polyline.StoredMeshSource != null) { this.WriteStoredPolygonMeshRecords(polyline.StoredMeshSource); return; }
 
             string layerName = this.EncodeNonAsciiCharacters(polyline.Layer.Name);
 
@@ -5220,6 +5222,17 @@ namespace netDxf.IO
 
         private void PreProcessPolygonMesh(PolygonMesh pMesh)
         {
+            if (pMesh.HasStoredRecords)
+            {
+                var stored = new Polyline
+                {
+                    Handle = pMesh.Handle, SubclassMarker = SubclassMarker.PolygonMesh,
+                    Layer = pMesh.Layer, Normal = pMesh.Normal, Color = pMesh.Color,
+                    Flags = pMesh.Flags, SmoothType = pMesh.SmoothType, M = pMesh.U, N = pMesh.V,
+                    StoredMeshSource = pMesh
+                };
+                stored.XData.AddRange(pMesh.XData.Values); this.polylines.Add(pMesh.Handle, stored); return;
+            }
             List<Vertex> vertexes = new List<Vertex>();
             short precisionU = 0;
             short precisionV = 0;

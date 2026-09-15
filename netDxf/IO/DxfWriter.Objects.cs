@@ -28,6 +28,8 @@ namespace netDxf.IO
                     foreach (DxfTag tag in opaque.Tags) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfStoredSunStudy study)
                     foreach (DxfTag tag in study.Payload) if (tag.Value is string text) CheckDatabaseText(text);
+                if (item is DxfStoredCellStyleMap map)
+                    foreach (DxfTag tag in map.Payload) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfStoredTableGeometry geometry)
                     foreach (DxfTag tag in geometry.Payload) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfStoredTableContent content)
@@ -94,6 +96,7 @@ namespace netDxf.IO
             this.PrepareStoredDimAssocClass(definitions);
             this.PrepareStoredTableContentClass(definitions);
             this.PrepareStoredTableGeometryClass(definitions);
+            this.PrepareStoredCellStyleMapClass(definitions);
             this.PrepareLightListClass(definitions);
             this.PrepareDataTableClass(definitions);
             this.PrepareSunClass(definitions);
@@ -155,6 +158,7 @@ namespace netDxf.IO
             else if (this.WriteStoredTableContentPayload(item)) { }
             else if (this.WriteStoredSunStudyPayload(item)) { }
             else if (this.WriteStoredTableGeometryPayload(item)) { }
+            else if (this.WriteStoredCellStyleMapPayload(item)) { }
             else if (this.WriteSunPayload(item)) { }
             else if (this.WriteStoredDimAssocPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)

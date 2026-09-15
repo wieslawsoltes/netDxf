@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "1ed8719e2b1a2dcbde9556f52e9951485b7c2f6e",
-    "tree": "c1e7c729aaccb05dea5b4980ecba45663c4bd5e9"
+    "commit": "358af5f72e1af4eaaed0c9293b7dc5b841bad391",
+    "tree": "0b190ff8de849b3af99d04ad470c2e7d473b4e31"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 29293,
+    "test_cases": 30772,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 92,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/34982636218"
+    "last_implementation_pr": 93,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/actions/runs/34989160308"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -687,6 +687,30 @@
     "MIX8": {
       "label": "Mixed stored references, topology edits and affine geometry",
       "path": "doc/dxf-conformance/eighth-mixed-modules.md"
+    },
+    "CELLSTYLEMAP": {
+      "label": "CELLSTYLEMAP immutable ordered entry storage",
+      "path": "doc/dxf-conformance/cell-style-map.md"
+    },
+    "SECTIONMEMBERSHIP": {
+      "label": "SECTION_MANAGER explicit atomic membership replacement",
+      "path": "doc/dxf-conformance/section-manager-membership.md"
+    },
+    "POLYGONRECORDS": {
+      "label": "Ordinary PolygonMesh VERTEX and SEQEND identities",
+      "path": "doc/dxf-conformance/polygonmesh-records.md"
+    },
+    "HATCHCONIC": {
+      "label": "HATCH conic and bulge affine transforms",
+      "path": "doc/dxf-conformance/hatch-conic-affine.md"
+    },
+    "VERSIONREPORT": {
+      "label": "Read-only known target-version writer diagnostics",
+      "path": "doc/dxf-conformance/version-compatibility.md"
+    },
+    "MIX9": {
+      "label": "Native map resources, edited manager and retained mesh graph",
+      "path": "doc/dxf-conformance/ninth-mixed.md"
     }
   },
   "features": [
@@ -771,7 +795,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "scope": "All 310\u2013319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
       "evidence": [
         "B"
       ]
@@ -2432,7 +2456,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Editable ordered typed payload codes1–369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
+      "scope": "Editable ordered typed payload codes1\u2013369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
       "evidence": [
         "NODO"
       ]
@@ -5033,7 +5057,7 @@
         "AC1027": "T",
         "AC1032": "V"
       },
-      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000–2013 writer profile.",
+      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000\u20132013 writer profile.",
       "evidence": [
         "MTCOL"
       ]
@@ -5159,7 +5183,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320–329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
+      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320\u2013329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
       "evidence": [
         "NODO"
       ]
@@ -5432,7 +5456,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
+      "scope": "Optional group 284 values 0\u20133, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
       "evidence": [
         "COMMON"
       ]
@@ -5949,7 +5973,7 @@
       "area": "Typed object lifecycle",
       "pipeline": "typed",
       "feature": "Numeric handle identity and null references",
-      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320–329 values preserve lexical data and do not become clone dependencies.",
+      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320\u2013329 values preserve lexical data and do not become clone dependencies.",
       "evidence": [
         "SOURCEID",
         "MIX5"
@@ -6475,8 +6499,8 @@
       "id": "typed-section-manager-stored-payload",
       "area": "Objects",
       "pipeline": "typed",
-      "feature": "SECTION_MANAGER immutable stored section list",
-      "scope": "Source-bound update flag and ordered section pointers with exact registered identities, preserved object spelling, root-anchor checks and clone/erase/profile refusal. Native R2018 evidence is distinguished from synthetic R2007+ schema cases.",
+      "feature": "SECTION_MANAGER stored ordered section list",
+      "scope": "Source-bound stored update flag and ordered section pointers with exact registered identities, preserved object spelling, root-anchor checks and clone/erase/profile refusal. Native R2018 evidence is distinguished from synthetic R2007+ schema cases. Explicit qualified membership replacement is covered separately.",
       "evidence": [
         "SECTIONMANAGER"
       ],
@@ -6602,7 +6626,7 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH direct affine spline and straight-boundary transforms",
-      "scope": "Direct control/fit/tangent/seed transformation preserves stored knots, weights and flags, including periodic flags without evaluation. Transformed OCS axes define the plane; rank-two maps are accepted when the plane remains two-dimensional. Unsupported non-similarity patterns, gradients, conics and bulges reject before unlinking or callbacks.",
+      "scope": "Direct control/fit/tangent/seed transformation preserves stored knots, weights and flags, including periodic flags without evaluation. Transformed OCS axes define the plane; rank-two maps are accepted when the plane remains two-dimensional. Unsupported non-similarity patterns and gradients reject before unlinking or callbacks. Qualified conic and bulge transformations are covered separately.",
       "evidence": [
         "HATCHAFFINE"
       ],
@@ -6638,6 +6662,132 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "stored-cell-style-map",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "CELLSTYLEMAP immutable ordered entry storage",
+      "scope": "Qualified R2004+ native packets preserve ordered raw entry IDs/types, decoded names, complete format payloads and exact source STYLE/LTYPE references. Unknown/private framing remains opaque. The CellStyleMap getter now returns DxfDatabaseObject; consumers must rebuild. No formatting evaluation or entry editing.",
+      "evidence": [
+        "CELLSTYLEMAP"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "O",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "section-manager-explicit-membership",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SECTION_MANAGER explicit atomic membership replacement",
+      "scope": "ReplaceSections edits a loaded qualified manager after bounded enumeration and full source/root/registration checks. Order, repeats, actual target identities and prior snapshots are preserved; stale or foreign inputs reject before mutation. Public creation, erasure and automatic section generation remain separate.",
+      "evidence": [
+        "SECTIONMEMBERSHIP"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "polygonmesh-child-records",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Ordinary PolygonMesh VERTEX and SEQEND identities",
+      "scope": "Loaded ordinary unsmoothed grids retain physical child identities, ordering, common/private metadata, source profiles and exact registered dependencies. Coordinate edits preserve slots; qualified clones receive fresh identities. Fitted/smoothed generation and general topology edits remain separate. Retained PolygonMesh and Polyline3D preflight enforces metadata limits matching reader admission.",
+      "evidence": [
+        "POLYGONRECORDS"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-conic-affine",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH conic and bulge affine transforms",
+      "scope": "Direct arc/ellipse/bulge transformation preserves ordered segments, zero/full/near-full intervals, direction, open closure and mixed spline metadata. Similarities retain polyline representation. Nonrepresentable tiny bulges and dormant values reject atomically; output obeys an explicit numeric endpoint contract. Pattern and gradient non-similarity remain unsupported.",
+      "evidence": [
+        "HATCHCONIC"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "target-version-diagnostics",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "Read-only known target-version writer diagnostics",
+      "scope": "AnalyzeVersionCompatibility reports qualified current writer rejections and omissions with immutable captured fields and actual live SourceObject references. It checks known typed features and source-bound packets without changing headers, handles, collections, callbacks or lazy database state. An empty report does not guarantee Save success or complete DXF legality.",
+      "evidence": [
+        "VERSIONREPORT"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-map-manager-mesh-mixed",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Native map resources, edited manager and retained mesh graph",
+      "scope": "R2013/R2018 native CELLSTYLEMAP/STYLE/LTYPE identities coexist with authored SECTION/settings/VIEW and PolygonMesh child dependencies. Staged membership/reference release, mesh removal, immutable diagnostic snapshots and profile refusal retain exact graph identities. Explicit source normalizations and coherent identity-change controls distinguish packet storage from evaluation.",
+      "evidence": [
+        "MIX9"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -6649,7 +6799,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH periodic spline evaluation, exact conic/pattern affine transforms and automatic associative regeneration; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining internal VERTEX variants. Direct HATCH spline/straight-boundary transforms, explicit retained Polyline3D topology edits and VIEW live-section references now have scoped qualification. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
+      "scope": "HATCH periodic spline evaluation, affine pattern/gradient transforms and automatic associative regeneration; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining POLYLINE record variants. Direct HATCH spline/conic/bulge transforms, explicit retained Polyline3D topology, ordinary PolygonMesh record retention and VIEW live-section references have scoped qualification. Tiny unrepresentable bulges reject under the numeric contract. MTEXT rendering/layout and annotation contexts remain open."
     },
     {
       "id": "new-entities",
@@ -6659,12 +6809,12 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY and CELLSTYLEMAP storage, complete FIELD and DIMASSOC graphs, editable SECTION_MANAGER lifecycles, material/rendering and broader SUNSTUDY schemas. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT/TABLEGEOMETRY and empty-date SUNSTUDY storage, stored SECTION_MANAGER lists, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
+      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, explicit SECTION_MANAGER authoring/erasure, material/rendering and broader SUNSTUDY schemas. CELLSTYLEMAP joins the qualified immutable backing schemas; loaded SECTION_MANAGER lists now support explicit atomic replacement. Table layout, automatic section generation and solar evaluation remain separate."
     },
     {
       "id": "historical-typed",
       "title": "Historical typed dialects and schema-aware down-save",
-      "scope": "R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit per-property downgrade reports. Marker safety on raw profiles is not proof of historical feature legality."
+      "scope": "R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit schema-aware conversions. The bounded read-only target-version report now diagnoses documented current writer rejections/omissions; it does not perform conversion or establish complete historical legality."
     },
     {
       "id": "qualification",
