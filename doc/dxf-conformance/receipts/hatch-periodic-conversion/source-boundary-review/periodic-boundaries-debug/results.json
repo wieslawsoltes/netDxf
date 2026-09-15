@@ -1,0 +1,75 @@
+{
+  "cases": 12,
+  "failures": 0,
+  "librarySha256": "2ed2b2d050a96b937719d0332cec937a94f56e9846d046cccd13211414dbcd7b",
+  "results": [
+    {
+      "kind": "start-tangent",
+      "rejected": true,
+      "returnedFinite": false,
+      "returnedX": null,
+      "returnedY": null,
+      "sourceUnchanged": true,
+      "error": "ArgumentOutOfRangeException"
+    },
+    {
+      "kind": "end-tangent",
+      "rejected": true,
+      "returnedFinite": false,
+      "returnedX": null,
+      "returnedY": null,
+      "sourceUnchanged": true,
+      "error": "ArgumentOutOfRangeException"
+    },
+    {
+      "kind": "atomic-False-False-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-False-False-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-False-True-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-False-True-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-True-False-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-True-False-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-True-True-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "atomic-True-True-True",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "tiny-period-False",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "kind": "tiny-period-True",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "module": "Periodic HATCH conversion and evaluation: independent source-boundary review",
+  "production_commit": "18d5717eaccd5a68dd01791117761e6e64dcc4d0",
+  "reviewed_checkpoint": "a3b8dbc1b3d354b46d2deb574165267d335bd5b4",
+  "source_worktree": "recovered-hatch-periodic",
+  "harness": {
+    "recovery-audit/periodic-probe/Program.cs": "dbd71330d066a90afb821d73605382ee736e54c3bbed50d06e519855da137143",
+    "recovery-audit/periodic-probe/Probe.csproj": "50dd62d55b04516fd69ea1c2cad2cd4696e19bee5455a848d23e3c60ebec2361"
+  },
+  "configurations": {
+    "debug": {
+      "cases": 12,
+      "failures": 0,
+      "library_sha256": "2ed2b2d050a96b937719d0332cec937a94f56e9846d046cccd13211414dbcd7b",
+      "results_path": "recovery-audit/periodic-boundaries-debug/results.json",
+      "results_sha256": "7104075858b7b75c4124c064a6f112cffb88ab307fcd4cea57d13b4bc18a9b96"
+    },
+    "release": {
+      "cases": 12,
+      "failures": 0,
+      "library_sha256": "a57e820679e8bfe8950433f69002808077596dacbd74fde4b6e5ee02b586dcd7",
+      "results_path": "recovery-audit/periodic-boundaries-release/results.json",
+      "results_sha256": "e7b03c19f353e6eb0d52b2d21faddbf62b5303c74879b797b9f407c7161b1335"
+    }
+  },
+  "source_review": [
+    "The expanded adapter removes exactly the degree-sized prefix only when the knot/control count relation identifies that form; exact coordinate/weight overlap is checked first. The compact compatibility relation does not lose a second prefix. Both preserve the supplied knot sequence.",
+    "The standalone periodic validator requires positive finite weights and strictly increasing finite knots, bounds the active period and compares all 2p exterior spans to the supplied cyclic continuation with a relative tolerance and no absolute floor.",
+    "Periodic evaluation uses the active domain before the ordinary closed-control condition, normalizes only a temporary weight array, validates denominator/results and rejects unrepresentable parameter grids. The nonperiodic path remains separate.",
+    "CreateBoundary prepares all converted world-coordinate entities before unlinking old contours or changing associativity. Periodic world-transform overflow is validated before commit. Exceptions in caller callbacks during successful commit remain outside the documented prevalidation guarantee."
+  ],
+  "runtime_controls": [
+    "Two valid finite standalone tangent vectors overflow during their OCS projection. Both start/end conversions reject through the existing finite tangent setter and preserve the source, so no additional production fix is needed.",
+    "Eight combinations of prior association, requested linking and late failure preserve complete drawing membership, source occurrences, reactors, path/edge arrays, association state and seed with zero callbacks. The late failures are incompatible cyclic spans and world-coordinate overflow after otherwise valid conversion.",
+    "Two tiny-domain controls at 1e-150 scale verify a valid cyclic packet evaluates to finite samples while a 1e-156 exterior-span mismatch rejects. The input knots remain unchanged, demonstrating the check has no fixed absolute tolerance floor."
+  ],
+  "scope": "No production defect found. Root separately owns the full independent producer/curve/sample replay. These 12 controls per configuration supplement that proof without claiming additional native CAD execution or qualifying the legacy compact HATCH wire as canonical DXF."
+}

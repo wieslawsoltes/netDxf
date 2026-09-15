@@ -1,0 +1,150 @@
+{
+  "sourceDll": "c6acdbb4e5b1d7fc0a4751fb5addef838096af27bb1ead6184f4aa9abcf39d1b",
+  "rows": [
+    {
+      "periodic": true,
+      "controls": 6,
+      "knots": 8,
+      "degree": 1,
+      "error": "ArgumentException: Invalid number of knots.",
+      "count": 0
+    },
+    {
+      "periodic": true,
+      "controls": 6,
+      "knots": 8,
+      "degree": 1,
+      "error": "ArgumentException: Invalid number of knots.",
+      "count": 0
+    },
+    {
+      "periodic": true,
+      "controls": 7,
+      "knots": 10,
+      "degree": 2,
+      "error": "ArgumentException: Invalid number of knots.",
+      "count": 0
+    },
+    {
+      "periodic": true,
+      "controls": 7,
+      "knots": 10,
+      "degree": 2,
+      "error": "ArgumentException: Invalid number of knots.",
+      "count": 0
+    },
+    {
+      "periodic": true,
+      "controls": 8,
+      "knots": 12,
+      "degree": 3,
+      "error": "ArgumentException: Invalid number of knots.",
+      "count": 0
+    },
+    {
+      "periodic": true,
+      "controls": 8,
+      "knots": 12,
+      "degree": 3,
+      "error": "ArgumentException: Invalid number of knots.",
+      "count": 0
+    }
+  ],
+  "adapter": {
+    "compactControls": 5,
+    "edgeControls": 5,
+    "edgeKnots": 8,
+    "IsPeriodic": true,
+    "samples": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        1.1764705882352944,
+        2.0588235294117654,
+        0
+      ],
+      [
+        2.3529411764705888,
+        4.117647058823531,
+        0
+      ],
+      [
+        3.5294117647058822,
+        6.1764705882352935,
+        0
+      ],
+      [
+        5.058823529411766,
+        5.941176470588234,
+        0
+      ],
+      [
+        6.8235294117647065,
+        4.1764705882352935,
+        0
+      ],
+      [
+        8.588235294117647,
+        2.4117647058823533,
+        0
+      ],
+      [
+        9.823529411764707,
+        0.6470588235294104,
+        0
+      ],
+      [
+        8.941176470588236,
+        -1.1176470588235299,
+        0
+      ],
+      [
+        8.058823529411764,
+        -2.88235294117647,
+        0
+      ],
+      [
+        7.1764705882352935,
+        -4.647058823529413,
+        0
+      ],
+      [
+        4.647058823529411,
+        -4.294117647058823,
+        0
+      ],
+      [
+        1.7058823529411775,
+        -3.4117647058823533,
+        0
+      ],
+      [
+        -1.235294117647065,
+        -2.5294117647058805,
+        0
+      ],
+      [
+        -2.6470588235294104,
+        -1.7647058823529402,
+        0
+      ],
+      [
+        -1.7647058823529402,
+        -1.1764705882352935,
+        0
+      ],
+      [
+        -0.8823529411764701,
+        -0.5882352941176467,
+        0
+      ]
+    ]
+  },
+  "boundaryFailure": {
+    "boundaryError": "ArgumentException: Invalid number of knots.",
+    "Associative": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "dll_sha256": "2ed2b2d050a96b937719d0332cec937a94f56e9846d046cccd13211414dbcd7b",
+  "rows": [
+    {
+      "offset": false,
+      "knots": [
+        0,
+        5E-324,
+        1E-323,
+        1.5E-323,
+        2E-323,
+        2.5E-323,
+        3E-323,
+        3.5E-323,
+        4E-323,
+        4.4E-323
+      ],
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented.",
+      "samples": null,
+      "distinct_samples": 0
+    },
+    {
+      "offset": true,
+      "knots": [
+        10000000000000000,
+        10000000000000002,
+        10000000000000004,
+        10000000000000006,
+        10000000000000008,
+        10000000000000010,
+        10000000000000012,
+        10000000000000014,
+        10000000000000016,
+        10000000000000018
+      ],
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented.",
+      "samples": null,
+      "distinct_samples": 0
+    }
+  ]
+}

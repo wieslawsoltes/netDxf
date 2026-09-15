@@ -1,0 +1,1112 @@
+[
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/0/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/0/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/1/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/1/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/1/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/1/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/1/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/1/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/2/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/2/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/2/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/2/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/3/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/3/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/3/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/3/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/4/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/4/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/4/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/4/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/5/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/5/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/5/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/5/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/6/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/6/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/6/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/6/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/7/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/7/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/7/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/7/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/8/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/8/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/8/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/8/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/9/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/9/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/9/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/9/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/10/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/10/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/10/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/10/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/parameter-grid/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/parameter-grid/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/5E-324/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/5E-324/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E-200/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E-200/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E+200/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E+200/True",
+    "passed": true,
+    "error": null
+  }
+]

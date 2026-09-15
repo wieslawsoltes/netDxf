@@ -99,6 +99,6 @@ def main():
         else:raise ValueError('Accepted actual-output corruption '+kind)
     storage=list(args.artifacts.glob('hatch-periodic-storage-*.dxf'));check(len(storage)==26,'Unsupported conversion storage inventory')
     for file in storage:
-        hatches=[t for t in records(file.read_bytes()).values() if t[0]==(0,'HATCH')];check(len(hatches)==1 and packet(hatches[0],2018)['periodic'],'Unsupported stored periodic flag lost')
+        hatches=[t for t in records(file.read_bytes()).values() if t[0]==(0,'HATCH')];check(len(hatches)==1 and first(hatches[0],74)==1,'Unsupported stored periodic flag lost')
     print(json.dumps({'outputs':outputs,'canonical_audited_drawings':96,'compact_compatibility_drawings':48,'additional_canonical_curve_drawings':48,'periodic_curves':curves,'actual_evaluator_world_samples':curves*64,'maximum_world_error':maximum,'storage_only_outputs':len(storage),'actual_output_negative_controls':negative,'audit_errors':0,'audit_fixes':0,'native_cad_execution':False},sort_keys=True))
 if __name__=='__main__':main()

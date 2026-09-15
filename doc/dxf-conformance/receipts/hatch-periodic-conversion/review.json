@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scope": "Independent numerical and actual-wire review of periodic HATCH conversion and generated standalone SPLINE curves",
+  "source_commit": "a3b8dbc1b3d354b46d2deb574165267d335bd5b4",
+  "remote_equivalent_commit": "01f935d7d38c51cb75a2341566fb3fc17fefbac1",
+  "source_tree": "1b25411330289c8dc9a6b2f809854a905f3f1388",
+  "configuration": "Debug",
+  "library_sha256": "2ed2b2d050a96b937719d0332cec937a94f56e9846d046cccd13211414dbcd7b",
+  "harness": "review.py",
+  "harness_sha256": "a16dc341443763a25842305e8d471c08d947b57ef392558cef9f9104371adedc",
+  "result": "final-result.json",
+  "result_sha256": "bc2e4a3873b5bc26efaa382f62b0a8aa26012d13e6d9fe4626aa43947995d94e",
+  "case_drawings": 96,
+  "curves": 1152,
+  "actual_samples": 73728,
+  "point_comparisons": 169344,
+  "maximum_absolute_error": 4.440892098500626e-15,
+  "canonical_audits": 96,
+  "audit_errors": 0,
+  "audit_repairs": 0,
+  "method": "Homogeneous de Boor recurrence and manually constructed OCS frame, using actual producer DXF control/weight/knot arrays. No owner verifier helper or manifest expected sample data imported. Actual standalone arrays and emitted netDxf evaluation samples compared independently.",
+  "artifact_directory": "hatch-periodic-work/qualified-debug",
+  "limits": [
+    "48 legacy compact HATCH drawings (576 periodic packets) are explicitly storage-only; their separately emitted canonical standalone drawings are audited.",
+    "This review covers twelve degree1/2/3 periodic producer packets in all six supported profiles, both transports, both plane choices, both link modes and both retained packet forms.",
+    "Native CAD execution and other periodic knot layouts remain unqualified."
+  ],
+  "provisional": "provisional-result.json is historical setup evidence only; final-result supersedes it and counts are not additive."
+}

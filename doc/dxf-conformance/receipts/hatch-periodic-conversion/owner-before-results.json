@@ -1,0 +1,1112 @@
+[
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/False/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2000/True/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/False/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2004/True/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/False/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2007/True/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/False/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2010/True/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/False/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2013/True/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/False/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/0/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/0/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/1/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/False/1/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 59\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/0/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/0/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/1/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/geometry/AutoCad2018/True/True/1/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Canonical expanded edge count: expected 6, actual 5.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicGeometry(DxfVersion version, Boolean binary, Boolean compact, Int32 plane, Boolean link) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 61\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_4.\u003CRegisterHatchPeriodicConversionTests\u003Eb__0() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 11\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/False/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/overlap-x",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/overlap-y",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/overlap-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/flag-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/zero-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/negative-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/count",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/spans",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/repeated",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/domain",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/empty",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/degree",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/False/True/weight-range",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected False, actual True.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/overlap-x",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/overlap-y",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/overlap-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/flag-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/zero-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/negative-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/count",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/spans",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/repeated",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/domain",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/empty",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/degree",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/False/weight-range",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused boundary association unchanged: expected True, actual False.\n   at NetDxf.Conformance.Program.Equal[T](T expected, T actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 206\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 94\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/overlap-x",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/overlap-y",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/overlap-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/flag-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/zero-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/negative-weight",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/count",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/spans",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/repeated",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/domain",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/empty",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/degree",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/atomic/True/True/weight-range",
+    "passed": false,
+    "error": "System.InvalidOperationException: Refused source occurrences/reactors\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchPeriodicAtomic(Boolean associated, Boolean link, String defect) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 95\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_7.\u003CRegisterHatchPeriodicConversionTests\u003Eb__1() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 13\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/storage/False/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/False/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/overlap-x",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/overlap-y",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/overlap-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/flag-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/zero-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/negative-weight",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/count",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/spans",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/repeated",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/domain",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/empty",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/degree",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/storage/True/weight-range",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/1/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/1/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 0.09230769230769231, 0.18461538461538463, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/1/True/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/1/True/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/2/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/2/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 3, 0, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/2/True/False",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/2/True/True",
+    "passed": false,
+    "error": "System.ArgumentException: Invalid number of knots.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/3/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/3/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 6.333333333333334, 2.666666666666667, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/3/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/3/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/4/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/4/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 8.5, 5.5, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/4/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/4/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/5/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/5/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 9.883333333333333, 5.266666666666667, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/5/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/5/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/6/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/6/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 10.977777777777778, 3.988888888888889, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/6/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/6/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/7/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/7/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 11.996428571428572, 3.1214285714285714, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/7/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/7/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/8/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/8/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 12.999503968253968, 3.277579365079365, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/8/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/8/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/9/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/9/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 13.999939373897709, 3.9999779541446205, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/9/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/9/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/10/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/degree/10/False/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: High-degree/coincident periodic active domain expected 14.999993386243387, 4.494732142857144, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/10/True/False",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/degree/10/True/True",
+    "passed": false,
+    "error": "System.ArgumentOutOfRangeException: The number of control points must be equal or greater than the spline degree \u002B 1. (Parameter \u0027controlPoints\u0027)\nActual value was 3.\n   at netDxf.Entities.Spline..ctor(IEnumerable\u00601 controlPoints, IEnumerable\u00601 weights, IEnumerable\u00601 knots, Int16 degree, IEnumerable\u00601 fitPoints, SplineCreationMethod method, Boolean closedPeriodic)\n   at netDxf.Entities.HatchBoundaryPath.Spline.ConvertTo()\n   at NetDxf.Conformance.Program.HatchPeriodicDegree(Int32 degree, Boolean compact, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 108\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_12.\u003CRegisterHatchPeriodicConversionTests\u003Eb__3() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 17\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/parameter-grid/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Expected ArgumentException.\n   at NetDxf.Conformance.Program.Throws[T](Action action) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchPeriodicParameterGrid(Boolean offset) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 118\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_13.\u003CRegisterHatchPeriodicConversionTests\u003Eb__4() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 18\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/parameter-grid/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Expected ArgumentException.\n   at NetDxf.Conformance.Program.Throws[T](Action action) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 219\n   at NetDxf.Conformance.Program.HatchPeriodicParameterGrid(Boolean offset) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 118\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_13.\u003CRegisterHatchPeriodicConversionTests\u003Eb__4() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 18\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/weight-scale/5E-324/False",
+    "passed": false,
+    "error": "System.InvalidOperationException: Temporary weight normalization expected 2, -3.5, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicWeightScale(Double weight, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 124\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_15.\u003CRegisterHatchPeriodicConversionTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/weight-scale/5E-324/True",
+    "passed": false,
+    "error": "System.InvalidOperationException: Temporary weight normalization expected 6.999999999999999, -5, 0, actual 0, 0, 0\n   at NetDxf.Conformance.Program.Check(Boolean condition, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 200\n   at NetDxf.Conformance.Program.HatchAffineNear(Vector3 expected, Vector3 actual, String message) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchAffineTests.cs:line 30\n   at NetDxf.Conformance.Program.HatchPeriodicWeightScale(Double weight, Boolean coincident) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 124\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass391_15.\u003CRegisterHatchPeriodicConversionTests\u003Eb__5() in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/HatchPeriodicConversionTests.cs:line 20\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/2ec4aa26f01f/recovered-hatch-periodic/tests/netDxf.Conformance/Program.cs:line 103"
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E-200/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E-200/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E\u002B200/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-periodic/weight-scale/1E\u002B200/True",
+    "passed": true,
+    "error": null
+  }
+]
