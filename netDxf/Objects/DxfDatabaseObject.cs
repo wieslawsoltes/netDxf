@@ -10,9 +10,14 @@ namespace netDxf.Objects
     public abstract class DxfDatabaseObject : DxfObject
     {
         internal DxfDatabaseObject(string codeName) : base(codeName) { }
-        /// <summary>Gets the database containing this object, or null while detached.</summary>
+        /// <summary>Gets the database containing this object, or null while detached or permanently erased.</summary>
         public DxfObjectDatabase Database { get; internal set; }
+        /// <summary>Gets whether this object was permanently erased from its database.</summary>
+        /// <remarks>Erased objects retain their original handles and payload for inspection. They cannot be registered, attached or cloned again.</remarks>
+        public bool IsErased { get; internal set; }
         internal abstract DxfDatabaseObject CloneShell();
+        internal virtual IEnumerable<DxfDatabaseObject> DeclaredOwnedObjects { get { yield break; } }
+        internal virtual void MaterializeOwnedObjectReferences() { }
         internal virtual IEnumerable<DxfObject> DatabaseReferences { get { yield break; } }
         internal virtual IEnumerable<DxfTag> AllocationReservations { get { yield break; } }
         internal virtual void CopyDatabaseReferencesTo(DxfDatabaseObject clone, Func<DxfObject, DxfObject> resolve) { }
@@ -22,7 +27,7 @@ namespace netDxf.Objects
         {
             if (this.Database != null)
             {
-                this.XData[item.Name] = (XData)this.XData[item.Name].Clone();
+                this.XData.ReplaceForBinding(item.Name, (XData)this.XData[item.Name].Clone());
                 foreach (XDataRecord tag in this.XData[item.Name].XDataRecord)
                     if (tag.Code == XDataCode.DatabaseHandle) this.Database.ReserveUnresolvedReference(new DxfTag(1005, tag.Value));
             }
@@ -81,8 +86,10 @@ namespace netDxf.Objects
         /// <summary>Adds a named link and registers any detached owned graph in this database.</summary>
         public void Add(string name, DxfObject target, bool hardOwner = true)
         {
+            if (this.IsErased) throw new InvalidOperationException("An erased dictionary cannot adopt objects.");
             ValidateName(name);
             if (target == null) throw new ArgumentNullException(nameof(target));
+            if (target is DxfDatabaseObject erased && erased.IsErased) throw new InvalidOperationException("An erased object cannot be attached again.");
             if (target is netDxf.Entities.EntityObject) throw new ArgumentException("Graphical entities cannot be dictionary entries; use XRECORD pointer data.", nameof(target));
             if (this.index.ContainsKey(name)) throw new ArgumentException("The dictionary already contains this name.", nameof(name));
             if (this.Database != null && this == this.Database.Root && DxfObjectDatabase.IsReservedName(name))
@@ -138,13 +145,14 @@ namespace netDxf.Objects
     }
 
     /// <summary>Validated arbitrary application data carried in an XRECORD.</summary>
-    public sealed class DxfXRecord : DxfDatabaseObject
+    public sealed partial class DxfXRecord : DxfDatabaseObject
     {
         private DictionaryCloningFlags cloning = DictionaryCloningFlags.KeepExisting;
         private readonly DxfXRecordData data;
         /// <summary>Creates an empty detached record.</summary>
         public DxfXRecord() : base("XRECORD") { this.data = new DxfXRecordData(this); }
-        /// <summary>Gets editable, ordered payload tags; duplicates and binary chunks are preserved.</summary>
+        /// <summary>Gets ordered payload tags; duplicates and binary chunks are preserved.</summary>
+        /// <remarks>Ordinary payloads are editable. Schema-managed ownership records reject generic payload edits; edit their typed owner instead.</remarks>
         public Collection<DxfTag> Data { get { return this.data; } }
         /// <summary>Gets or sets the group-280 duplicate-record cloning policy.</summary>
         public DictionaryCloningFlags Cloning
@@ -167,8 +175,10 @@ namespace netDxf.Objects
             private void Reserve(DxfTag tag) { this.owner.Database?.ReserveUnresolvedReference(tag); }
             internal void AddPreserved(DxfTag item) { Check(item, true); base.InsertItem(this.Count, item); }
             internal void SetPreserved(int index, DxfTag item) { Check(item, true); base.SetItem(index, item); }
-            protected override void InsertItem(int index, DxfTag item) { if (index < 0 || index > this.Count) throw new ArgumentOutOfRangeException(nameof(index)); Check(item, false); this.Reserve(item); base.InsertItem(index, item); }
-            protected override void SetItem(int index, DxfTag item) { if (index < 0 || index >= this.Count) throw new ArgumentOutOfRangeException(nameof(index)); Check(item, false); this.Reserve(item); base.SetItem(index, item); }
+            protected override void InsertItem(int index, DxfTag item) { if (index < 0 || index > this.Count) throw new ArgumentOutOfRangeException(nameof(index)); this.owner.CheckPayloadEditable(); Check(item, false); this.Reserve(item); base.InsertItem(index, item); }
+            protected override void SetItem(int index, DxfTag item) { if (index < 0 || index >= this.Count) throw new ArgumentOutOfRangeException(nameof(index)); this.owner.CheckPayloadEditable(); Check(item, false); this.Reserve(item); base.SetItem(index, item); }
+            protected override void RemoveItem(int index) { this.owner.CheckPayloadEditable(); base.RemoveItem(index); }
+            protected override void ClearItems() { this.owner.CheckPayloadEditable(); base.ClearItems(); }
             private static void Check(DxfTag tag, bool preserved)
             {
                 if (tag == null) throw new ArgumentNullException(nameof(tag));

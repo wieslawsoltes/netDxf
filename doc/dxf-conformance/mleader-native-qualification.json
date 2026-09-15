@@ -1,0 +1,49 @@
+{
+  "base_commit": "fc7a54300583d3d9c29e2795d420be0464fee8bf",
+  "sdk": "8.0.408",
+  "independent_reader": "ezdxf 1.4.4",
+  "new_case_count": 199,
+  "existing_mleader_case_count": 269,
+  "configurations": {
+    "Debug": {
+      "passed": 468,
+      "failed": 0,
+      "results_sha256": "ab73725b5d71a816f4b718f07b2a79925607093c1ee44f08975b4b95dd9a96ab",
+      "library_sha256": "dfb47ac5a31abd6b19cfcec4e370ef47ba4eb64f1fb3488c0dacb37215978d34",
+      "native_outputs": 102,
+      "independent_verifiers_passed": 3
+    },
+    "Release": {
+      "passed": 468,
+      "failed": 0,
+      "results_sha256": "ab73725b5d71a816f4b718f07b2a79925607093c1ee44f08975b4b95dd9a96ab",
+      "library_sha256": "6ceeaf852457183212f23f4d36b0651a6ccf66629efac5e4dbab7b8a8de43fa4",
+      "native_outputs": 102,
+      "independent_verifiers_passed": 3
+    }
+  },
+  "mandatory_verifiers": [
+    "tools/verify_mleader_native.py",
+    "tools/verify_mleader_inputs.py",
+    "tools/verify_mleader_authored.py"
+  ],
+  "native_required_outputs": 102,
+  "native_scaffold": {
+    "decoded_sha256": "5e57fbcb9bbf326de7bbcdc9951e51c1d52834ae4f6117c0e3f95fdda09474ab",
+    "gzip_sha256": "cd4253dfac2a7a1c5e5949c3e8320d95e2d3846d8d8e1e410940ab0c4f0b769d",
+    "generation_hash_seeds": [
+      1,
+      2,
+      3,
+      100
+    ],
+    "original_packets": 23,
+    "native_multileaders": 15
+  },
+  "native_autocad_qualified": false,
+  "whole_original_file_fidelity_qualified": false,
+  "local_validation_commit": "09072ee980fef63e774f814e67b59228b99c189a",
+  "local_color_commit": "e8a270282f75e4b25d61dadf3fa73c614a0fc9ba",
+  "published_combined_implementation_commit": "0f924c892b94840cf85519d57837c3839c582a2e",
+  "published_combined_implementation_tree": "55d3de29002c9f40d68499280ec737129731d082"
+}

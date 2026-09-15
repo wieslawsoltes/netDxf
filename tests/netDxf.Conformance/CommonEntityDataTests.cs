@@ -12,6 +12,7 @@ internal static partial class Program
 {
     private static void RegisterCommonEntityDataTests()
     {
+        RegisterCommonProxy160Tests();
         foreach (DxfVersion version in SupportedVersions)
         foreach (bool binary in new[] { false, true })
         {
@@ -202,7 +203,7 @@ internal static partial class Program
                 tags[tags.FindIndex(t => t.Code == 100)] = new(100, "AcDbNotEntity");
                 break;
             case 13:
-                if (v < DxfVersion.AutoCad2013) tags[at] = new(160, 129L);
+                if (v < DxfVersion.AutoCad2010) tags[at] = new(160, 129L);
                 else tags.Insert(at + 1, new(92, 129));
                 break;
             case 11:

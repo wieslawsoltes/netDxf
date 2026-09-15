@@ -70,8 +70,11 @@ namespace netDxf.IO
                 }
                 else if (count > 0) definitions.Add(new DxfClass(names[i], cppNames[i], "ObjectDBX Classes") { ProxyFlags = 0, IsEntity = false, InstanceCount = count });
             }
+            this.PrepareStoredEnvelopeClasses(definitions);
             this.PrepareGeoDataClass(definitions);
+            this.PrepareLayerFilterPointerClasses(definitions);
             this.PrepareMultiLeaderClasses(definitions);
+            this.PrepareLightListClass(definitions);
         }
         private void WriteDatabaseObject(DxfDatabaseObject item, DictionaryObject generatedRoot = null)
         {
@@ -114,10 +117,13 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }
             else if (this.WriteOutputSettingsPayload(item)) { }
             else if (this.WriteMLeaderStylePayload(item)) { }
+            else if (this.WriteLayerFilterPointerPayload(item)) { }
+            else if (this.WriteLightListPayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

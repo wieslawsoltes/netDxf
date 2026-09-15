@@ -35,12 +35,26 @@ namespace netDxf.IO
         private bool ReadMLeaderStylePayload(DatabaseRecord record,string name,List<DxfTag> tags,int start)
         {
             if(name!="MLEADERSTYLE"||this.doc.DrawingVariables.AcadVer<netDxf.Header.DxfVersion.AutoCad2007)return false;
-            var style=new DxfMLeaderStyle();record.Object=style;
-            if(start>=tags.Count||tags[start].Code!=100||(string)tags[start].Value!="AcDbMLeaderStyle")throw new InvalidDataException("MLEADERSTYLE requires AcDbMLeaderStyle subclass data.");
+            if(start>=tags.Count||tags[start].Code!=100)throw new InvalidDataException("MLEADERSTYLE requires subclass data.");
+            if((string)tags[start].Value!="AcDbMLeaderStyle")return false;
             int end=tags.FindIndex(start,t=>t.Code==1001);
-            if(end<0)end=tags.Count;else this.ReadDatabaseXData(style,tags,end);
-            var parser=new MLeaderParser(this,tags.GetRange(start+1,end-start-1));parser.ReadStyle(style);return true;
+            if(end<0)end=tags.Count;
+            var style=new DxfMLeaderStyle();
+            int pendingStart=this.mleaderReferences.Count;bool typed=false;
+            try
+            {
+                var parser=new MLeaderParser(this,tags.GetRange(start+1,end-start-1));
+                if(!parser.ReadStyle(style))return false;
+                if(end<tags.Count)this.ReadDatabaseXData(style,tags,end);
+                record.Object=style;typed=true;return true;
+            }
+            finally
+            {
+                // Private objects retain their raw references. Never resolve fixups queued for a discarded typed shell.
+                if(!typed)this.mleaderReferences.RemoveRange(pendingStart,this.mleaderReferences.Count-pendingStart);
+            }
         }
+
         private void ResolveMultiLeaderReferences()
         {
             foreach(var pending in this.mleaderReferences)
@@ -105,7 +119,16 @@ namespace netDxf.IO
             }
             internal void ReadEntity(MultiLeader leader)
             {
-                if((short)this.Take(270).Value!=2)throw this.Error("Only AcDbMLeader version 2 is qualified");
+                if(this.Code==270)
+                {
+                    if((short)this.Take(270).Value!=2)throw this.Error("Only AcDbMLeader version 2 is qualified");
+                    leader.StoredVersion=2;
+                }
+                else
+                {
+                    if(this.Code!=300)throw this.Error("An omitted group 270 must be followed by the context envelope");
+                    leader.StoredVersion=null;
+                }
                 bool context=false;var seen=new HashSet<short>();
                 while(!this.End)
                 {
@@ -126,12 +149,27 @@ namespace netDxf.IO
                 }
                 if(!context)throw this.Error("Missing context");this.Complete(leader.Properties,seen);
             }
-            internal void ReadStyle(DxfMLeaderStyle style)
+            internal bool ReadStyle(DxfMLeaderStyle style)
             {
-                var seen=new HashSet<short>();
-                if(this.Code==179 && (short)this.Take(179).Value!=2)throw this.Error("Only MLEADERSTYLE envelope value 179=2 is qualified");
-                while(!this.End)if(!this.Scalar(style.Properties,seen))throw this.Error("Unsupported MLEADERSTYLE group "+this.Code);
-                this.Complete(style.Properties,seen);
+                var seen=new HashSet<short>();bool known=true,publicScope=true;
+                if(this.Code==179)
+                {
+                    if((short)this.Take(179).Value!=2)throw this.Error("Only MLEADERSTYLE envelope value 179=2 is qualified");
+                    style.StoredEnvelopeValue=2;
+                }
+                else style.StoredEnvelopeValue=null;
+                while(!this.End)
+                {
+                    if(this.Code==100)
+                    {
+                        if((string)this.Take(100).Value=="AcDbMLeaderStyle")throw this.Error("Duplicate MLEADERSTYLE subclass");
+                        known=false;publicScope=false;
+                    }
+                    else if(!publicScope)this.at++;
+                    else if(this.Code==179)throw this.Error("Duplicate or misplaced MLEADERSTYLE envelope value");
+                    else if(!this.Scalar(style.Properties,seen)){known=false;this.at++;}
+                }
+                this.Complete(style.Properties,seen);return known;
             }
             private void ReadContext(MLeaderContext context)
             {

@@ -1,0 +1,870 @@
+{
+  "producer": "ezdxf 1.4.4 plus explicit public-schema tag patch",
+  "qualification": "synthetic stored envelopes, no native CAD corpus",
+  "sources": [
+    {
+      "filename": "independent-stored-spatial-R2000-ascii.dxf",
+      "sha256": "707f47d7647335b5c9bd210927e1c5fffb5f40f5aa0cf07ce9dff6b59b6fffee",
+      "version": "AC1015",
+      "kind": "spatial",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2000-binary.dxf",
+      "sha256": "561e5ffadb364dc562239dff592b2cd5b1e145809d062393496104146e9e277e",
+      "version": "AC1015",
+      "kind": "spatial",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2004-ascii.dxf",
+      "sha256": "73a6449fc3dada2ba69a7974849ac969cf6485a3c92698c1c899c9cba7069d19",
+      "version": "AC1018",
+      "kind": "spatial",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2004-binary.dxf",
+      "sha256": "400673ea99f74ae865369f0eb21fde7341b5a99030a0233d397365e16a65039e",
+      "version": "AC1018",
+      "kind": "spatial",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2007-ascii.dxf",
+      "sha256": "e45c25a228d4ad88e7f18fa63b802a3f9eabbbe5b3171b7525f15949fec8d0db",
+      "version": "AC1021",
+      "kind": "spatial",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2007-binary.dxf",
+      "sha256": "3b49756e894e0b1737284ed88d3bb61b44f144052922920b70538d03e2f5ba6d",
+      "version": "AC1021",
+      "kind": "spatial",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2010-ascii.dxf",
+      "sha256": "efc41fa2316232e8b3066126342a7f3b90ce620f7837a6b162a6e2bab59c3c62",
+      "version": "AC1024",
+      "kind": "spatial",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2010-binary.dxf",
+      "sha256": "233a009f243c1ef82d4272a547f5f3033439464460b5119f3f32619a11074094",
+      "version": "AC1024",
+      "kind": "spatial",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2013-ascii.dxf",
+      "sha256": "5c8ae2d3c93683386fed65987bf1cafe829f3c2d78b0a285d0b3492cde419048",
+      "version": "AC1027",
+      "kind": "spatial",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2013-binary.dxf",
+      "sha256": "1713b3202aa04cf51c44002a791ca9b1abe1357fbdbd6e687af4468a55c07308",
+      "version": "AC1027",
+      "kind": "spatial",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2018-ascii.dxf",
+      "sha256": "1871c55add58a7ea296a2976f99d58ec3b8a588804e8886a4b99753478da2c8e",
+      "version": "AC1032",
+      "kind": "spatial",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-spatial-R2018-binary.dxf",
+      "sha256": "6e61c3ecf72ef521883af8ff2e465df4187431188feb2228501f5eb9fefad5a5",
+      "version": "AC1032",
+      "kind": "spatial",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "38",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": "4142b42c40000001",
+          "chunks": null,
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": "8000000000000000",
+          "chunks": null,
+          "extension": "36"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2000-ascii.dxf",
+      "sha256": "ffc640f4a2facf6526f76f484ed8ea3770dd15bb5a83059a636b73967ed6267c",
+      "version": "AC1015",
+      "kind": "vba",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2000-binary.dxf",
+      "sha256": "962e9a7044be4db8aefde05d0a2260d119cf5a7e1669fc1145a17ca96f2020e7",
+      "version": "AC1015",
+      "kind": "vba",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2004-ascii.dxf",
+      "sha256": "b8a76937e8041ee27260a0b420ee5464a65882c3d17ad9e60d544ef1d5a0627f",
+      "version": "AC1018",
+      "kind": "vba",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2004-binary.dxf",
+      "sha256": "882c3206f439f6b0ced794edd0c13fa2736fe3ec07d7a7028ee3fc8d7fbfe955",
+      "version": "AC1018",
+      "kind": "vba",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2007-ascii.dxf",
+      "sha256": "5f2bbcc886b964cf340541f446d2e5c1c59f2d4386761154b46503d52af8cecb",
+      "version": "AC1021",
+      "kind": "vba",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2007-binary.dxf",
+      "sha256": "eec6e8e76abaacbc0c7a8d30c8b3319faef51d2fc795cdfeb3ce93655dedda50",
+      "version": "AC1021",
+      "kind": "vba",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2010-ascii.dxf",
+      "sha256": "ea3328fb8e1512c7b7ef3eb25074876b8219fd3c59f367b99beb54bcd128a15f",
+      "version": "AC1024",
+      "kind": "vba",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2010-binary.dxf",
+      "sha256": "cbc4d2508e155a6b833634886094d2ed4100f8421b2a8b429fd9e35ac9befcf7",
+      "version": "AC1024",
+      "kind": "vba",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2013-ascii.dxf",
+      "sha256": "fc0263d07abe8ab84775f3425ea4fadf80e3cc09f2ebb7398026a15524e24346",
+      "version": "AC1027",
+      "kind": "vba",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2013-binary.dxf",
+      "sha256": "09fd1dea77cc70d10089e4ee2f1b87a3b0c2e95cfd8e348945a97bd8c984875a",
+      "version": "AC1027",
+      "kind": "vba",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2018-ascii.dxf",
+      "sha256": "ca497007b1b552aba1753b995e81db2296731214ecfd4ff0d0e3b6ffde01090a",
+      "version": "AC1032",
+      "kind": "vba",
+      "binary": false,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    },
+    {
+      "filename": "independent-stored-vba-R2018-binary.dxf",
+      "sha256": "978c325eb8607895ea0a593ad9ad3329edc0924e070d2ad8aecfb15a8fdac589",
+      "version": "AC1032",
+      "kind": "vba",
+      "binary": true,
+      "root": "A",
+      "owner": "31",
+      "following": "3B",
+      "line": "30",
+      "targets": [
+        {
+          "handle": "32",
+          "name": "ITEM_0",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            "0b30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42678cb1d6fb20456a8fb4d9fe23486d92b7dc01264b7095badf04294e7398bde2072c51769bc0e50a2f54799ec3e80d32577ca1c6eb10355a7fa4c9ee13385d82a7ccf1163b6085aacff4193e6388add2f71c41",
+            "668bb0",
+            "",
+            "d5fa1f44698eb3d8fd22476c91b6db00254a6f94b9de03284d7297bce1062b50759abfe4092e53789dc2e70c31567ba0c5ea0f34597ea3c8ed12375c81a6cbf0153a5f84a9cef3183d6287acd1f61b40658aafd4f91e43688db2d7fc21466b90b5daff24496e93b8dd02274c7196bbe0052a4f7499bee3082d52779cc1e60b",
+            "30557a9fc4e90e33587da2c7ec11365b80a5caef14395e83a8cdf2173c6186abd0f51a3f6489aed3f81d42",
+            ""
+          ],
+          "extension": "33"
+        },
+        {
+          "handle": "35",
+          "name": "ITEM_1",
+          "timestamp_hex": null,
+          "chunks": [],
+          "extension": "36"
+        },
+        {
+          "handle": "38",
+          "name": "ITEM_2",
+          "timestamp_hex": null,
+          "chunks": [
+            "",
+            ""
+          ],
+          "extension": "39"
+        }
+      ]
+    }
+  ]
+}

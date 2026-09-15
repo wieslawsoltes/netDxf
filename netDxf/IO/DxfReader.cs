@@ -2897,6 +2897,7 @@ namespace netDxf.IO
             // read the end block object until a new element is found
             this.chunk.Next();
             string endBlockHandle = string.Empty;
+            var endBlockXData = new List<XData>();
             while (this.chunk.Code != 0)
             {
                 switch (this.chunk.Code)
@@ -2909,7 +2910,13 @@ namespace netDxf.IO
                         // the EndBlock layer and the Block layer are the same
                         this.chunk.Next();
                         break;
+                    case 1001:
+                        string endAppId = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
+                        endBlockXData.Add(this.ReadXDataRecord(new ApplicationRegistry(endAppId)));
+                        break;
                     default:
+                        if (this.chunk.Code >= 1000 && this.chunk.Code <= 1071)
+                            throw new InvalidDataException("The extended data of ENDBLK must start with the application registry code.");
                         this.chunk.Next();
                         break;
                 }
@@ -2970,6 +2977,7 @@ namespace netDxf.IO
 
             block.End.Handle = endBlockHandle;
             block.XData.AddRange(xData);
+            block.End.XData.AddRange(endBlockXData);
 
             if (name.StartsWith(Block.DefaultPaperSpaceName, StringComparison.OrdinalIgnoreCase))
             {

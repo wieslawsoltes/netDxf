@@ -1,0 +1,115 @@
+{
+  "producer": "independent low-level Autodesk schema insertion into ezdxf 1.4.4 scaffolding",
+  "native_semantics_qualified": false,
+  "layer_names": [
+    "Alpha",
+    "CaseLayer",
+    "Alpha",
+    "caselayer",
+    "東京",
+    "Literal\\U+0041",
+    "Unresolved"
+  ],
+  "fixtures": [
+    {
+      "file": "independent-layer-filter-pointer-R2000.dxf",
+      "sha256": "58e72a9c33a0ab37a7eddca4b98e6a6cdbde875510452655c866333f1eb249a6",
+      "version": "AC1015",
+      "objects": {
+        "NAMES": "36",
+        "EMPTY_FILTER": "37",
+        "POINTER": "38",
+        "EMPTY_POINTER": "39"
+      },
+      "dictionary": "35",
+      "extension": "3A",
+      "xrecord": "3B",
+      "line": "34"
+    },
+    {
+      "file": "independent-layer-filter-pointer-R2004.dxf",
+      "sha256": "64f17fb5a09fe9821ffd34c0fffbff3bc6c9ac83efbb37ec64523495a87bf650",
+      "version": "AC1018",
+      "objects": {
+        "NAMES": "36",
+        "EMPTY_FILTER": "37",
+        "POINTER": "38",
+        "EMPTY_POINTER": "39"
+      },
+      "dictionary": "35",
+      "extension": "3A",
+      "xrecord": "3B",
+      "line": "34"
+    },
+    {
+      "file": "independent-layer-filter-pointer-R2007.dxf",
+      "sha256": "366100fcea7c9a294ff04f66fe397ca61cfdad88f5555b2301af120ffb710fa0",
+      "version": "AC1021",
+      "objects": {
+        "NAMES": "36",
+        "EMPTY_FILTER": "37",
+        "POINTER": "38",
+        "EMPTY_POINTER": "39"
+      },
+      "dictionary": "35",
+      "extension": "3A",
+      "xrecord": "3B",
+      "line": "34"
+    },
+    {
+      "file": "independent-layer-filter-pointer-R2010.dxf",
+      "sha256": "d33a75f5c581b9769b51c4312e7ad81feeabb797109018f382a766ca44d4f3ad",
+      "version": "AC1024",
+      "objects": {
+        "NAMES": "36",
+        "EMPTY_FILTER": "37",
+        "POINTER": "38",
+        "EMPTY_POINTER": "39"
+      },
+      "dictionary": "35",
+      "extension": "3A",
+      "xrecord": "3B",
+      "line": "34"
+    },
+    {
+      "file": "independent-layer-filter-pointer-R2013.dxf",
+      "sha256": "43660f7fb60f11604932c1b93812cfe24c4b3203b4cdbc2e87730f062b0871cb",
+      "version": "AC1027",
+      "objects": {
+        "NAMES": "36",
+        "EMPTY_FILTER": "37",
+        "POINTER": "38",
+        "EMPTY_POINTER": "39"
+      },
+      "dictionary": "35",
+      "extension": "3A",
+      "xrecord": "3B",
+      "line": "34"
+    },
+    {
+      "file": "independent-layer-filter-pointer-R2018.dxf",
+      "sha256": "e2c7abef442e576295b55b286fa4cb9b4a870defc0d5c65267dea35d62aa2ed5",
+      "version": "AC1032",
+      "objects": {
+        "NAMES": "36",
+        "EMPTY_FILTER": "37",
+        "POINTER": "38",
+        "EMPTY_POINTER": "39"
+      },
+      "dictionary": "35",
+      "extension": "3A",
+      "xrecord": "3B",
+      "line": "34"
+    }
+  ],
+  "sources": [
+    "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-3B44DCFD-FA96-482B-8468-37B3C5B5F289.htm",
+    "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-6D6885E2-281C-410A-92FB-8F6A7F54C9DF.htm",
+    "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-DBDBE57E-9045-46A5-9FB9-99CADEB81CF0.htm"
+  ],
+  "limitations": [
+    "No historical/native legality or ASE/filter execution qualification.",
+    "ezdxf high-level LayerFilter emits330 instead of the published8 names; ordered tags are the oracle.",
+    "OBJECT_PTR class defaults use the Autodesk row; unspecified application name is empty. No DC015 semantics is inferred."
+  ]
+}

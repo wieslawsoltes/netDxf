@@ -55,8 +55,8 @@ namespace netDxf.IO
                     break;
                 case 92:
                 case 160:
-                    if (data.DeclaredLength.HasValue || (this.chunk.Code == 160 && version < DxfVersion.AutoCad2013))
-                        throw new InvalidDataException("AcDbEntity proxy graphics require one byte count; group 160 requires DXF 2013 or later.");
+                    if (data.DeclaredLength.HasValue || (this.chunk.Code == 160 && version < DxfVersion.AutoCad2010))
+                        throw new InvalidDataException("AcDbEntity proxy graphics require one byte count; group 160 requires DXF 2010 or later.");
                     long length = this.chunk.Code == 160 ? this.chunk.ReadLong() : this.chunk.ReadInt();
                     if (length < data.ActualLength || length > EntityObject.MaximumProxyGraphicsBytes)
                         throw new InvalidDataException("AcDbEntity proxy graphics byte count exceeds the allowed 0 to 16 MiB range.");

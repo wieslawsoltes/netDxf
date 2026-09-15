@@ -1,0 +1,82 @@
+{
+  "autodesk": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-C4E7FFF8-C3ED-43DD-854D-304F87FFCF06.htm",
+  "historical_schema": "https://damassets.autodesk.net/content/dam/autodesk/www/developer-network/platform-technologies/autocad-dxf-archive/acad_dxf_2007.pdf",
+  "repository": "LibreDWG/libredwg",
+  "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43",
+  "files": [
+    {
+      "path": "test/test-data/example_2007.dxf",
+      "git_blob_sha": "ffdebb6b93cd08f3e29c64b09915b1563fed0a4d",
+      "lightlist_objects": 0,
+      "light_objects": 1
+    },
+    {
+      "path": "test/test-data/example_2010.dxf",
+      "git_blob_sha": "45a47fd6b6ef65dde6bd70fd1df6445ceeb9cc1b",
+      "lightlist_objects": 0,
+      "light_objects": 1
+    },
+    {
+      "path": "test/test-data/example_2013.dxf",
+      "git_blob_sha": "e8c0f7254b02c3e036d6ceacbbbfaa60b9d06563",
+      "lightlist_objects": 0,
+      "light_objects": 1
+    },
+    {
+      "path": "test/test-data/example_2018.dxf",
+      "git_blob_sha": "589fbe42143b6d3e6796c9fc389c521f5d346ad2",
+      "lightlist_objects": 0,
+      "light_objects": 1
+    },
+    {
+      "path": "test/test-data/sample_2007.dxf",
+      "git_blob_sha": "569ab68826f5201158e1b7cf0a0654f16d767cbb",
+      "lightlist_objects": 0,
+      "light_objects": 0
+    },
+    {
+      "path": "test/test-data/sample_2010.dxf",
+      "git_blob_sha": "3d20839cc59a63d7d8d01cc6d152224029213d1e",
+      "lightlist_objects": 0,
+      "light_objects": 0
+    },
+    {
+      "path": "test/test-data/sample_2013.dxf",
+      "git_blob_sha": "cbd3fc737503fb5b425905d87f24c6a299237f20",
+      "lightlist_objects": 0,
+      "light_objects": 0
+    },
+    {
+      "path": "test/test-data/sample_2018.dxf",
+      "git_blob_sha": "bd077e01222e1ab1a80b009f8739e259d814c4eb",
+      "lightlist_objects": 0,
+      "light_objects": 0
+    }
+  ],
+  "constructor_design": "DxfLightList(int storedVersion) requires explicit raw signed Int32; no default or interpretation. No native version value established; this is qualified public storage grammar only.",
+  "reference_schema": {
+    "body": [
+      "100 AcDbLightList",
+      "90 storedVersion",
+      "90 count",
+      "(5 Light handle, 1 independent stored name) repeated count"
+    ],
+    "class_source": "https://github.com/LibreDWG/libredwg/blob/34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43/src/dxfclasses.in",
+    "class": {
+      "name": "LIGHTLIST",
+      "cpp": "AcDbLightList",
+      "application": "SCENEOE",
+      "graphical": false
+    },
+    "placement": "Autodesk mentions ACAD_LIGHT but exact dictionary/object placement not established; no placement helper."
+  },
+  "ixmilia": {
+    "source_commit": "3ab0f9d6d3f14a6f6fa924e111e8e3af1065c567",
+    "package": "IxMilia.Dxf 0.8.4",
+    "limits": [
+      "DefaultVersion0 is a library convention, not native version evidence.",
+      "Unit tests explicitly use synthetic42.",
+      "Reader discards stored names, writer derives names from Light entities; independent name divergence needs documented raw augmentation and raw oracle."
+    ]
+  }
+}

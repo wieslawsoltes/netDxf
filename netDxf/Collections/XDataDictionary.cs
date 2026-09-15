@@ -117,7 +117,12 @@ namespace netDxf.Collections
                     throw new ArgumentException(string.Format("The extended data application registry name {0} must be equal to the specified appId {1}.", value.ApplicationRegistry.Name, appId));
                 }
 
-                this.innerDictionary[appId] = value;
+                if (this.innerDictionary.TryGetValue(appId, out XData previous))
+                {
+                    if (ReferenceEquals(previous, value)) return;
+                    this.Remove(appId);
+                }
+                this.Add(value);
             }
         }
 
@@ -174,12 +179,15 @@ namespace netDxf.Collections
 
             if (this.innerDictionary.TryGetValue(item.ApplicationRegistry.Name, out XData xdata))
             {
-                xdata.XDataRecord.AddRange(item.XDataRecord);
+                // Existing-key merges must isolate payloads held by another container too.
+                XData merged = item.Container != null && !ReferenceEquals(item.Container, this)
+                    ? item.CopyForRegistry(xdata.ApplicationRegistry) : item;
+                xdata.XDataRecord.AddRange(merged.XDataRecord);
             }
             else
             {
+                item = this.Acquire(item);
                 this.innerDictionary.Add(item.ApplicationRegistry.Name, item);
-                item.ApplicationRegistry.NameChanged += this.ApplicationRegistry_NameChanged;
                 this.OnAddAppRegEvent(item.ApplicationRegistry);
             }
         }
@@ -214,7 +222,7 @@ namespace netDxf.Collections
             }
 
             XData xdata = this.innerDictionary[appId];
-            xdata.ApplicationRegistry.NameChanged -= this.ApplicationRegistry_NameChanged;
+            this.Release(xdata);
             this.innerDictionary.Remove(appId);
             this.OnRemoveAppRegEvent(xdata.ApplicationRegistry);
             return true;
@@ -324,13 +332,57 @@ namespace netDxf.Collections
 
         #endregion
 
-        #region ApplicationRegistry events
+        #region ApplicationRegistry binding
 
-        private void ApplicationRegistry_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        private XData Acquire(XData item)
         {
-            XData xdata = this.innerDictionary[e.OldValue];
-            this.innerDictionary.Remove(e.OldValue);
-            this.innerDictionary.Add(e.NewValue, xdata);
+            // A value already stored elsewhere cannot be rebound by another container.
+            if (item.Container != null && !ReferenceEquals(item.Container, this)) item = (XData)item.Clone();
+            item.Container = this;
+            item.ApplicationRegistry.AttachXData(this);
+            return item;
+        }
+        private void Release(XData item)
+        {
+            item.ApplicationRegistry.DetachXData(this);
+            item.Container = null;
+        }
+        internal void ReplaceForBinding(string appId, XData value)
+        {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (!string.Equals(appId, value.ApplicationRegistry.Name, StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("An internal registry binding cannot change its name.", nameof(value));
+            XData previous = this.innerDictionary[appId];
+            if (ReferenceEquals(previous, value)) return;
+            value = this.Acquire(value);
+            this.Release(previous);
+            // Release may remove this collection from a shared registry; restore the live binding.
+            value.ApplicationRegistry.AttachXData(this);
+            this.innerDictionary[appId] = value;
+        }
+        internal void CanonicalizeApplicationRegistry(string appId, ApplicationRegistry registry)
+        {
+            XData item = this.innerDictionary[appId];
+            if (!ReferenceEquals(item.ApplicationRegistry, registry))
+            {
+                // Keep a caller-held value live in its one container; Acquire isolates shared values.
+                this.Release(item);
+                item.ApplicationRegistry = registry;
+                this.Acquire(item);
+            }
+        }
+        internal void ValidateApplicationRegistryRename(ApplicationRegistry registry, string newName)
+        {
+            if (!this.innerDictionary.TryGetValue(registry.Name, out XData item) || !ReferenceEquals(item.ApplicationRegistry, registry))
+                throw new InvalidOperationException("The XData application registry binding is inconsistent.");
+            if (this.innerDictionary.TryGetValue(newName, out XData other) && !ReferenceEquals(other, item))
+                throw new ArgumentException("The XData dictionary already contains the requested application name.", nameof(newName));
+        }
+        internal void CommitApplicationRegistryRename(ApplicationRegistry registry, string newName)
+        {
+            XData item = this.innerDictionary[registry.Name];
+            this.innerDictionary.Remove(registry.Name);
+            this.innerDictionary.Add(newName, item);
         }
 
         #endregion

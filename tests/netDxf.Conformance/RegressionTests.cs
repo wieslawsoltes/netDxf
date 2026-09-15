@@ -4,6 +4,10 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterFourthMixedModuleTests();
+        RegisterStoredEnvelopeTests();
+        RegisterDeclaredOwnershipTests();
+        RegisterErasureDeclaredOwnershipTests();
         RegisterTextStyleFidelityTests();
         RegisterAttributeDefaultValueTests();
         RegisterThirdMixedModuleTests();
@@ -21,6 +25,7 @@ internal static partial class Program
         RegisterVPortApiTests();
         RegisterViewUcsTests();
         RegisterMLeaderTests();
+        RegisterMLeaderNativeTests();
         RegisterTextFramingTests();
         RegisterMinimalDocumentTests();
         RegisterHeaderProbeTests();

@@ -263,7 +263,12 @@ namespace netDxf.Objects
         public Viewport Viewport
         {
             get { return this.viewport; }
-            internal set { this.viewport = value; }
+            internal set
+            {
+                Viewport previous = this.viewport;
+                this.viewport = value;
+                this.Owner?.Owner.ReplaceLayoutViewportMetadata(this, previous, value);
+            }
         }
 
         /// <summary>

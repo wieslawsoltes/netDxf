@@ -41,6 +41,10 @@ internal static partial class Program
         RegisterMixedModuleIntegrationTests();
         RunDimensionStyleParityTests();
         RunOutputSettingsTests();
+        RunLayerFilterPointerTests();
+        RunTypedObjectErasureTests();
+        RunLightListTests();
+        RunAppIdXDataLifecycleTests();
         File.WriteAllText(Path.Combine(ArtifactDirectory, "results.json"),
             JsonSerializer.Serialize(Results, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine($"Conformance: {Results.Count - failures} passed; {failures} failed.");

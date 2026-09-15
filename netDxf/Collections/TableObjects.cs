@@ -147,6 +147,8 @@ namespace netDxf.Collections
         /// </returns>
         public bool HasReferences(string name)
         {
+            if (this.list.TryGetValue(name, out T appItem) && appItem is netDxf.Tables.ApplicationRegistry registry)
+                return this.Owner.ApplicationRegistryReferences(registry).Count != 0;
             return !this.references[name].IsEmpty() || (this.list.TryGetValue(name, out T target) && this.Owner.MLeaderReferences(target).Count > 0);
         }
 
@@ -159,6 +161,7 @@ namespace netDxf.Collections
         /// </returns>
         public bool HasReferences(T item)
         {
+            if (item is netDxf.Tables.ApplicationRegistry registry) return this.Owner.ApplicationRegistryReferences(registry).Count != 0;
             return !this.references[item.Name].IsEmpty() || this.Owner.MLeaderReferences(item).Count > 0;
         }
 
@@ -173,6 +176,8 @@ namespace netDxf.Collections
         /// </remarks>
         public List<DxfObjectReference> GetReferences(string name)
         {
+            if (this.list.TryGetValue(name, out T appItem) && appItem is netDxf.Tables.ApplicationRegistry registry)
+                return this.Owner.ApplicationRegistryReferences(registry);
             List<DxfObjectReference> result = this.references[name].ToList();
             if (this.list.TryGetValue(name, out T target)) this.MergeMLeaderReferences(result, target);
             return result;
@@ -189,6 +194,7 @@ namespace netDxf.Collections
         /// </remarks>
         public List<DxfObjectReference> GetReferences(T item)
         {
+            if (item is netDxf.Tables.ApplicationRegistry registry) return this.Owner.ApplicationRegistryReferences(registry);
             List<DxfObjectReference> result = this.references[item.Name].ToList();
             this.MergeMLeaderReferences(result, item);
             return result;

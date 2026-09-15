@@ -1,0 +1,181 @@
+{
+  "repository": "mozman/ezdxf",
+  "commit": "d6f2ac10caeddc712ed1824aaeb3b9c050de4a04",
+  "files": [
+    {
+      "path": "examples_dxf/text.dxf",
+      "git_blob_sha": "47d5233aa9d7e2c995b4894a7716110177f9d386",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/uncommon.dxf",
+      "git_blob_sha": "d9b5bca29fd6aaa57d3ef06230bf3ddc20d6d9c4",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/visibility.dxf",
+      "git_blob_sha": "0e2f9813c3d861413cf079727fcd7bbe5e041ffc",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "integration_tests/data/custom_blocks.dxf",
+      "git_blob_sha": "6c47b6d634d647e803e56e80541dea79377c1593",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/wipeout_door.dxf",
+      "git_blob_sha": "531b270dbecc03586bd8086e854485c92f35cf13",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/3dface.dxf",
+      "git_blob_sha": "9eb0711e169ecfaec975622c6e79f27d0e92f2a9",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/colors.dxf",
+      "git_blob_sha": "7c7d0b4149793885fc240df6be720192889a816b",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/hatches_1.dxf",
+      "git_blob_sha": "2369b78fd6484de93ac4079dc6b10cb631ed1495",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/hatches_2.dxf",
+      "git_blob_sha": "7eeadb6192a8927e3bcb592c601d7821e7e0ba5e",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/text_negative_extrusion.dxf",
+      "git_blob_sha": "631d36f1d08a8e748d8ff05b4e516fc50f800b40",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "integration_tests/data/issue_1359_1.dxf",
+      "git_blob_sha": "bf31a3cf57a8fe516d1720032e2853933f0788cd",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "integration_tests/data/issue_1359_2.dxf",
+      "git_blob_sha": "a8c3244452a8c5c7afa7e5afef78d41d9a94dad2",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/image/images.dxf",
+      "git_blob_sha": "66a9cdf6ad350ff7925a8369dbb10b192c1d5e84",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    },
+    {
+      "path": "examples_dxf/image/viewports.dxf",
+      "git_blob_sha": "5fe7e8ea4a3febb0bda30088454947ab86bce8af",
+      "spatial_index_class_declarations": 1,
+      "actual_objects": {
+        "SPATIAL_INDEX": 0,
+        "OBJECT_PTR": 0,
+        "LAYER_FILTER": 0,
+        "VBA_PROJECT": 0
+      }
+    }
+  ],
+  "limits": "Bounded sample selected from repository search hits; absence here does not establish global corpus absence.",
+  "findings": {
+    "LAYER_FILTER": "Native ezdxf producer/tests emit group330 handles; Autodesk specifies repeatedgroup8 layer names. Use independent low-level schema fixtures and document oracle discrepancy.",
+    "SPATIAL_INDEX": "Autodesk100AcDbIndex/40Julian timestamp/100AcDbSpatialIndex empty body. No native payload example located. Public stored metadata qualification only.",
+    "OBJECT_PTR": "Autodesk common handle/reactor envelope and1001DC015 ASE XData; no public pointer payload/subclass. No native payload example located. No invented reference semantics or placement helper.",
+    "VBA_PROJECT": "Autodesk100AcDbVbaProject/90bytecount/310bytes. ezdxf native bytes producer with127byte chunks; tests use synthetic6/1000bytes and changelog acknowledges no real embeddedVBA corpus. Inert byte qualification only; ignore ezdxf count/clone implementation as correctness oracle."
+  },
+  "primary_sources": {
+    "LAYER_FILTER": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-3B44DCFD-FA96-482B-8468-37B3C5B5F289.htm",
+    "SPATIAL_INDEX": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-CD1E44DA-CDBA-4AA7-B08E-C53F71648984.htm",
+    "OBJECT_PTR": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-6D6885E2-281C-410A-92FB-8F6A7F54C9DF.htm",
+    "VBA_PROJECT": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-F247DB75-5C4D-4944-8C20-1567480221F4.htm",
+    "2009_reference": "https://damassets.autodesk.net/content/dam/autodesk/www/developer-network/platform-technologies/autocad-dxf-archive/acad_dxf_2009.pdf"
+  },
+  "qualification_limits": [
+    "Schema-authored envelope fixtures can qualify public stored tags independently; they cannot establish native application behavior.",
+    "No pointer target, ASE payload schema, or contextual attachment key was established for OBJECT_PTR.",
+    "No actual SPATIAL_INDEX timestamp or empty-body instance was found in this bounded corpus.",
+    "Historical version gates proposed by library policy must not be presented as proven first product releases.",
+    "VBA_PROJECT byte payload is inert and is not claimed to be a valid or loadable VBA project."
+  ]
+}

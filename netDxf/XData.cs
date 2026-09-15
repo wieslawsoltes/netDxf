@@ -42,6 +42,7 @@ namespace netDxf
         #region private fields
 
         private ApplicationRegistry appReg;
+        internal netDxf.Collections.XDataDictionary Container { get; set; }
         private readonly List<XDataRecord> xData;
 
         #endregion
@@ -84,6 +85,14 @@ namespace netDxf
         }
 
         #endregion
+
+        internal XData CopyForRegistry(ApplicationRegistry registry)
+        {
+            var copy = new XData(registry);
+            foreach (XDataRecord record in this.xData)
+                copy.xData.Add(new XDataRecord(record.Code, record.Value is byte[] bytes ? bytes.Clone() : record.Value));
+            return copy;
+        }
 
         #region overrides
 

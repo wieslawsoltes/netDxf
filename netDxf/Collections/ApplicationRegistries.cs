@@ -73,17 +73,19 @@ namespace netDxf.Collections
                 return add;
             }
 
+            if (appReg.Owner != null && !ReferenceEquals(appReg.Owner, this))
+                appReg = (ApplicationRegistry)appReg.Clone();
+
             if (assignHandle || string.IsNullOrEmpty(appReg.Handle))
             {
                 this.Owner.NumHandles = appReg.AssignHandle(this.Owner.NumHandles);
             }
 
             this.List.Add(appReg.Name, appReg);
-            this.References.Add(appReg.Name, new DxfObjectReferences());
+            this.References.Add(appReg.Name, new DxfObjectReferences(true));
 
             appReg.Owner = this;
 
-            appReg.NameChanged += this.Item_NameChanged;
 
             Debug.Assert(!string.IsNullOrEmpty(appReg.Handle), "The application registry handle cannot be null or empty.");
             this.Owner.AddedObjects.Add(appReg.Handle, appReg);
@@ -115,7 +117,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!this.List.TryGetValue(item.Name, out ApplicationRegistry existing) || !ReferenceEquals(existing, item))
             {
                 return false;
             }
@@ -137,31 +139,31 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
 
             return true;
         }
 
         #endregion
 
-        #region TableObject events
-
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        /// <summary>Tests whether this exact application registry is registered in the collection.</summary>
+        public new bool Contains(ApplicationRegistry item)
         {
-            if (this.Contains(e.NewValue))
-            {
-                throw new ArgumentException("There is already another application registry with the same name.");
-            }
-
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (ApplicationRegistry) sender);
-
-            List<DxfObjectReference> refs = this.References[sender.Name].ToList();
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+            return item != null && this.List.TryGetValue(item.Name, out ApplicationRegistry existing) && ReferenceEquals(existing, item);
         }
 
-        #endregion
+        internal void ValidateRecordRename(ApplicationRegistry record, string newName)
+        {
+            if (!this.Contains(record)) throw new InvalidOperationException("The application registry has inconsistent table membership.");
+            if (this.List.TryGetValue(newName, out ApplicationRegistry existing) && !ReferenceEquals(existing, record))
+                throw new ArgumentException("There is already another application registry with the same name.", nameof(newName));
+        }
+        internal void CommitRecordRename(ApplicationRegistry record, string newName)
+        {
+            DxfObjectReferences references = this.References[record.Name];
+            this.List.Remove(record.Name);
+            this.References.Remove(record.Name);
+            this.List.Add(newName, record);
+            this.References.Add(newName, references);
+        }
     }
 }
