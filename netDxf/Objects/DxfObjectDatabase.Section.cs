@@ -159,6 +159,8 @@ namespace netDxf.Objects
             foreach (DxfDatabaseObject item in tree)
             {
                 if (item is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
+                if (item is DxfStoredSunStudy) throw new NotSupportedException("Stored SUNSTUDY erasure requires its complete application lifecycle.");
+                if (item is DxfStoredTableGeometry) throw new NotSupportedException("Stored TABLEGEOMETRY erasure requires its complete application schema.");
                 if (item is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (item is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (item is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");
@@ -184,6 +186,7 @@ namespace netDxf.Objects
                 if (item is DxfXRecord record) foreach (DxfTag tag in record.Data) if (IsReference(tag)) handle((string)tag.Value, "XRECORD reference");
                 if (item is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) if (tag.ValueType == DxfTagValueType.Handle) handle((string)tag.Value, "opaque handle");
                 if (item is Section other) reference(other.GeometrySettings, "section settings");
+                if (item is View view) reference(view.LiveSection, "VIEW live section 334");
                 if (item is Polyline3DRecord polylineRecord)
                 {
                     foreach (DxfObject target in polylineRecord.References) reference(target, "polyline record reference");

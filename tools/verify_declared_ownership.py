@@ -32,7 +32,7 @@ def inspect(path, year, binary):
     check(payload == [[102, "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"], [360, content], [70, 2], [90, 1],
                       [10, [0.0, 0.0, 0.0]], [90, 0], [90, 2], [361, geometry]],
           "Exact stored wrapper envelope changed")
-    for handle, kind, subclass in ((content, "TABLECONTENT", "PrivateOwnershipTableContent"), (geometry, "TABLEGEOMETRY", "AcDbTableGeometry")):
+    for handle, kind, subclass in ((content, "TABLECONTENT", "PrivateOwnershipTableContent"), (geometry, "TABLEGEOMETRY", "PrivateOwnershipTableGeometry")):
         check(wire[handle] == [[0, kind], [5, handle], [330, record.dxf.handle], [100, subclass], [90, 0]],
               "Child identity, owner, or structural test body changed")
     check(len(list(doc.modelspace())) == 0, "Structural ownership fixture gained entities")

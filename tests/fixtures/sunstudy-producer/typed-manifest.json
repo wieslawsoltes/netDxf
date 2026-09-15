@@ -1,0 +1,450 @@
+{
+  "source": "source-manifest.json raw carriers",
+  "operation": "Remove orphan STYLE group 1071=0 outside an APPID envelope; set invalid PLOTSETTINGS scale 142/143 from 0 to 1 and restore reciprocal NOD owner; no SUNSTUDY changes",
+  "files": [
+    {
+      "name": "ixmilia-sunstudy-R2013-ascii-no-dates-hours.dxf",
+      "sourceSha256": "79e081a9c0a95a3693a0898fa4f092379a8beeb8d7a26d53f2ed8d55f6014ff7",
+      "sha256": "4415464aec0d3dae9e317940d75cc392b346643b42b673efd3ed8de19d737985",
+      "bytes": 11399,
+      "changes": [
+        {
+          "recordType": "STYLE",
+          "handle": "B",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "A",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "C",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 2,
+          "before": [
+            330,
+            "22"
+          ],
+          "after": [
+            330,
+            "1F"
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 20,
+          "before": [
+            142,
+            0.0
+          ],
+          "after": [
+            142,
+            1.0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 21,
+          "before": [
+            143,
+            0.0
+          ],
+          "after": [
+            143,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-ascii-no-dates-no-hours.dxf",
+      "sourceSha256": "2cc5ba8e891a83481c9c3d1343f605398e76336f2eb7c711841b82aa096d6336",
+      "sha256": "b74663d54366390e3c5e364ba93a9b6bfd11a450cd4202cd20877748c74785d7",
+      "bytes": 11382,
+      "changes": [
+        {
+          "recordType": "STYLE",
+          "handle": "B",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "A",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "C",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 2,
+          "before": [
+            330,
+            "22"
+          ],
+          "after": [
+            330,
+            "1F"
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 20,
+          "before": [
+            142,
+            0.0
+          ],
+          "after": [
+            142,
+            1.0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 21,
+          "before": [
+            143,
+            0.0
+          ],
+          "after": [
+            143,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ixmilia-sunstudy-R2013-binary-no-dates-no-hours.dxf",
+      "sourceSha256": "c1b8d34842d75c0c647f140e1612caa06699fa06b83e4fb2a93b15de8eacdb1e",
+      "sha256": "c7c5d687d3f4f59d95e2d2c047fcd775b552dbdc703715318f41db8c47cb781b",
+      "bytes": 9990,
+      "changes": [
+        {
+          "recordType": "STYLE",
+          "handle": "B",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "A",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "C",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 2,
+          "before": [
+            330,
+            "22"
+          ],
+          "after": [
+            330,
+            "1F"
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 20,
+          "before": [
+            142,
+            0.0
+          ],
+          "after": [
+            142,
+            1.0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 21,
+          "before": [
+            143,
+            0.0
+          ],
+          "after": [
+            143,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-ascii-no-dates-hours.dxf",
+      "sourceSha256": "93deffed25e20507146213603d1d2b18269a7ed139f63479d8336322fb6ad101",
+      "sha256": "722411d25f7e67c091ab9ef127f81bdd512da1872656a08a85fd9eb687ba87d5",
+      "bytes": 11380,
+      "changes": [
+        {
+          "recordType": "STYLE",
+          "handle": "B",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "A",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "C",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 2,
+          "before": [
+            330,
+            "22"
+          ],
+          "after": [
+            330,
+            "1F"
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 20,
+          "before": [
+            142,
+            0.0
+          ],
+          "after": [
+            142,
+            1.0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 21,
+          "before": [
+            143,
+            0.0
+          ],
+          "after": [
+            143,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-ascii-no-dates-no-hours.dxf",
+      "sourceSha256": "8fbf9c68f5900736efe1187b0ed8125e5ece244015d19c413f393cffc890c0b7",
+      "sha256": "4ebd42280962939134af37780efdf2f13585d5284f1f5db98c776d3b2166c28d",
+      "bytes": 11358,
+      "changes": [
+        {
+          "recordType": "STYLE",
+          "handle": "B",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "A",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "C",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 2,
+          "before": [
+            330,
+            "22"
+          ],
+          "after": [
+            330,
+            "1F"
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 20,
+          "before": [
+            142,
+            0.0
+          ],
+          "after": [
+            142,
+            1.0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 21,
+          "before": [
+            143,
+            0.0
+          ],
+          "after": [
+            143,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ixmilia-sunstudy-R2018-binary-no-dates-no-hours.dxf",
+      "sourceSha256": "0aa1d7514a2f239f6f7a692b02d946438b7a01eae052339a601481daa21febe9",
+      "sha256": "9272c33664cd11f4b5b0b167b3e92b805a87d215af259481cb7c033595d387dd",
+      "bytes": 9976,
+      "changes": [
+        {
+          "recordType": "STYLE",
+          "handle": "B",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "A",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "STYLE",
+          "handle": "C",
+          "index": 14,
+          "removed": [
+            1071,
+            0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 2,
+          "before": [
+            330,
+            "22"
+          ],
+          "after": [
+            330,
+            "1F"
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 20,
+          "before": [
+            142,
+            0.0
+          ],
+          "after": [
+            142,
+            1.0
+          ]
+        },
+        {
+          "recordType": "PLOTSETTINGS",
+          "handle": "21",
+          "index": 21,
+          "before": [
+            143,
+            0.0
+          ],
+          "after": [
+            143,
+            1.0
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+using System.Text.Json;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
+
+var rows = new List<object>();
+string output = args.Length > 0 ? args[0] : "results.json";
+var transforms = new (string Name, Matrix3 Value)[] {
+    ("identity", Matrix3.Identity),
+    ("rank-two", new Matrix3(2,0,0,0,3,0,0,0,0)),
+    ("scale", new Matrix3(2,0,0,0,3,0,0,0,4)),
+    ("shear", new Matrix3(1,0,0,0,1,0,0.7,-0.4,1)),
+    ("reflection", new Matrix3(-1,0,0,0,1,0,0,0,1))
+};
+foreach (var transform in transforms)
+foreach (bool rational in new[] { false, true })
+foreach (bool periodic in new[] { false, true })
+foreach (bool binary in new[] { false, true })
+{
+    var edge = new HatchBoundaryPath.Spline {
+        Degree = 2, IsRational = rational, IsPeriodic = periodic,
+        Knots = new double[] { -2,-2,-2,3,3,3 },
+        ControlPoints = new[] { new Vector3(0,0,1), new Vector3(2,5,-2.5), new Vector3(7,0,1) },
+        StartTangent = new Vector2(2,-3), EndTangent = Vector2.Zero
+    };
+    edge.FitPoints.Add(new Vector2(3,4));
+    var line = new HatchBoundaryPath.Line { Start = new Vector2(7,0), End = Vector2.Zero };
+    var hatch = new Hatch(HatchPattern.Solid, new[] { new HatchBoundaryPath(new HatchBoundaryPath.Edge[] { edge, line }) }, false) {
+        Normal = new Vector3(2,3,4), Elevation = 2.25, PixelSize = 0.125
+    };
+    hatch.SeedPoints.Clear(); hatch.SeedPoints.Add(new Vector2(3,1));
+    Vector3 normal = hatch.Normal;
+    Vector3 translation = transform.Name == "identity" ? Vector3.Zero : new Vector3(2,-4,1);
+    Vector3[] expected = edge.ControlPoints.Select(p => transform.Value * World(normal, hatch.Elevation, new Vector2(p.X,p.Y)) + translation).ToArray();
+    Vector3 fitExpected = transform.Value * World(normal,hatch.Elevation,edge.FitPoints[0]) + translation;
+    Vector3 seedExpected = transform.Value * World(normal,hatch.Elevation,hatch.SeedPoints[0]) + translation;
+    Vector3 tangentExpected = transform.Value * World(normal,0,edge.StartTangent!.Value);
+    var doc = new DxfDocument(DxfVersion.AutoCad2018); doc.Entities.Add(hatch);
+    string? error = null; double maxError = 0; bool flags = false, knots = false, weights = false, fits = false, tangents = false, hint = false;
+    try {
+        hatch.TransformBy(transform.Value,translation);
+        using var bytes = new MemoryStream(); if (!doc.Save(bytes,binary)) throw new Exception("Save returned false");
+        bytes.Position = 0; doc = DxfDocument.Load(bytes) ?? throw new Exception("Reload returned null"); hatch = doc.Entities.Hatches.Single();
+        var result = hatch.BoundaryPaths.Single().Edges.OfType<HatchBoundaryPath.Spline>().Single();
+        flags = result.IsRational == rational && result.IsPeriodic == periodic;
+        knots = result.Knots.SequenceEqual(edge.Knots);
+        weights = result.ControlPoints.Select(p => p.Z).SequenceEqual(edge.ControlPoints.Select(p => p.Z));
+        for (int i=0;i<expected.Length;i++) maxError = Math.Max(maxError, Distance(expected[i],World(hatch.Normal,hatch.Elevation,new Vector2(result.ControlPoints[i].X,result.ControlPoints[i].Y))));
+        maxError = Math.Max(maxError,Distance(seedExpected,World(hatch.Normal,hatch.Elevation,hatch.SeedPoints.Single())));
+        fits = result.FitPoints.Count == 1 && Distance(fitExpected,World(hatch.Normal,hatch.Elevation,result.FitPoints[0])) < 1e-9;
+        tangents = result.StartTangent.HasValue && result.EndTangent == Vector2.Zero && Distance(tangentExpected,World(hatch.Normal,0,result.StartTangent.Value)) < 1e-9;
+        hint = hatch.PixelSize == 0.125;
+    } catch(Exception ex) { error = ex.GetType().Name + ": " + ex.Message; }
+    rows.Add(new { transform=transform.Name,rational,periodic,binary,passed=error==null&&flags&&knots&&weights&&fits&&tangents&&hint&&maxError<1e-9,error,flags,knots,weights,fits,tangents,hint,maxError });
+}
+File.WriteAllText(output,JsonSerializer.Serialize(rows,new JsonSerializerOptions{WriteIndented=true}));
+Console.WriteLine($"Wrote {rows.Count} independently checked affine/storage observations.");
+
+// Reproduce the published arbitrary-axis convention directly, independently of
+// netDxf's transformation helpers. Geometry comparisons happen in world space.
+static Vector3 World(Vector3 normal,double elevation,Vector2 point) {
+    Vector3 n = Unit(normal);
+    Vector3 x = Unit(Cross(Math.Abs(n.X)<1.0/64 && Math.Abs(n.Y)<1.0/64 ? new Vector3(0,1,0) : new Vector3(0,0,1),n));
+    Vector3 y = Cross(n,x);
+    return x*point.X+y*point.Y+n*elevation;
+}
+static Vector3 Cross(Vector3 a,Vector3 b) => new(a.Y*b.Z-a.Z*b.Y,a.Z*b.X-a.X*b.Z,a.X*b.Y-a.Y*b.X);
+static Vector3 Unit(Vector3 a) { double d=Math.Sqrt(a.X*a.X+a.Y*a.Y+a.Z*a.Z); return a/d; }
+static double Distance(Vector3 a,Vector3 b) { var d=a-b; return Math.Sqrt(d.X*d.X+d.Y*d.Y+d.Z*d.Z); }

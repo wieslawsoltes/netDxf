@@ -50,6 +50,8 @@ namespace netDxf.Objects
                 if (value.IsErased || value.Database != this || !this.IsRegistered(value))
                     throw new InvalidOperationException("The erased ownership subtree has inconsistent registration.");
                 if (value is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
+                if (value is DxfStoredSunStudy) throw new NotSupportedException("Stored SUNSTUDY erasure requires its complete application lifecycle.");
+                if (value is DxfStoredTableGeometry) throw new NotSupportedException("Stored TABLEGEOMETRY erasure requires its complete application schema.");
                 if (value is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (value is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
                 if (value is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");

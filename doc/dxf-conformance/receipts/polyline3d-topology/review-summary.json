@@ -1,0 +1,24 @@
+{
+  "production_source": "11eb060186cbf711f1757bb81146d29f72f50fc5",
+  "harness_source_sha256": "73a5b9f3d3d3558733d086265e7127115ecdb7252f59ef04d017bc0aaade22ce",
+  "configurations": {
+    "Debug": {
+      "cases": 60,
+      "failed": 0,
+      "library_sha256": "9c6b4bb0aa8bf9eaf4d957ec2bfa5511a8bd4167a1523c55b2a71f416ebc7cff",
+      "results_sha256": "0443f1fd870a56a8a34fa6afab6d30923a1c613c15ad3ec5d2233bd3362aad6c",
+      "output_count": 12,
+      "ezdxf_errors": 0,
+      "ezdxf_repairs": 0
+    },
+    "Release": {
+      "cases": 60,
+      "failed": 0,
+      "library_sha256": "c62000c9741720a6c604b6d722450c8e1d3c29fd7e9e875ddbd71834d39746bb",
+      "results_sha256": "b6a8e7047076b77e21352dcb3bda3f82ec499a66b5d0243cb1ede8ea1def8ce2",
+      "output_count": 12,
+      "ezdxf_errors": 0,
+      "ezdxf_repairs": 0
+    }
+  }
+}

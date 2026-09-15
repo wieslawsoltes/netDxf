@@ -321,7 +321,9 @@ namespace netDxf.Tables
                 Flags = this.flags,
                 RenderMode = this.renderMode,
                 IsCameraPlottable = this.cameraPlottable,
-                Ucs = this.Ucs == null ? null : (ViewUcs)this.Ucs.Clone()
+                Ucs = this.Ucs == null ? null : (ViewUcs)this.Ucs.Clone(),
+                liveSection = this.liveSection,
+                hasStoredLiveSection = this.hasStoredLiveSection
             };
             foreach (XData data in this.XData.Values)
             {

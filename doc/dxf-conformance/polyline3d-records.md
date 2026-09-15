@@ -38,7 +38,7 @@ values do not become physical source identities or ordinary owners.
 Geometry remains in the existing mutable `List<Vector3> Vertexes` API. An
 identity belongs to its index slot: equal-count coordinate replacement keeps that
 identity; `Reverse()` reverses both points and child records. Duplicate coordinates
-are deliberately not used to infer identity. Count changes, smoothing changes,
+are deliberately not used to infer identity. Direct list count changes, smoothing changes,
 nonfinite coordinates and DXF profile changes reject before stream writes or
 handle allocation. The stored optional and private packets have no cross-profile
 regenerator, so cloned retained records also require their original profile.
@@ -69,6 +69,10 @@ A same-document move retains child identities even though the existing collectio
 API assigns a new parent handle. Live reactor references are rewritten to that new
 parent handle. Parent or child XData text pointing at the parent blocks removal,
 because that text requires an explicit handle map before a move.
+
+The follow-up [explicit topology API](polyline3d-topology.md) provides validated
+point/record insertion, removal and final-index movement for registered ordinary
+sequences. It preserves unaffected identities and the existing lifecycle guards.
 
 ## Evidence and independent checks
 
@@ -119,7 +123,7 @@ match. Without it, the complete suite still runs. CI discovers the independent
 verifier through the normal `tools/verify_*.py` entry point.
 
 Legacy 2D POLYLINE conversion, fitted or smoothed vertices, polyface/polygon mesh
-child records, arbitrary topology editing, full metadata-graph cloning and native
+child records, arbitrary topology or graph remapping, full metadata-graph cloning and native
 CAD execution remain outside this retained-record slice. Compile/runtime and
 independent-reader evidence do not establish rendering or native-application
 certification.

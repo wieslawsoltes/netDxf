@@ -65,14 +65,24 @@ namespace netDxf
             if (this.StoredPolylineReferencesRemoval(removed)) return true;
             if (this.SectionReferencesRemoval(removed)) return true;
             foreach (DxfObject item in removed) if (SunReferences.Get(item) != null) return true;
-            foreach (DxfDatabaseObject content in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "TABLECONTENT"))
+            foreach (DxfDatabaseObject content in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "TABLECONTENT" || item.CodeName == "TABLEGEOMETRY"))
             {
                 if (content is DxfStoredTableContent stored && stored.References.Any(removed.Contains)) return true;
+                if (content is DxfStoredTableGeometry geometry && geometry.References.Any(removed.Contains)) return true;
                 if (content is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags)
                         if (DxfObjectDatabase.IsReference(tag) && removed.Contains(this.StoredTableHandleTarget((string)tag.Value))) return true;
                 var owners = new HashSet<DxfObject>(new MetadataIdentityComparer());
                 for (DxfObject owner = content.Owner; owner != null && owners.Add(owner); owner = owner.Owner)
+                    if (removed.Contains(owner)) return true;
+            }
+            foreach (DxfDatabaseObject study in this.AddedObjects.Values.OfType<DxfDatabaseObject>().Where(item => item.CodeName == "SUNSTUDY"))
+            {
+                if (study is DxfStoredSunStudy stored && stored.References.Any(removed.Contains)) return true;
+                if (study is DxfOpaqueObject opaque && opaque.Tags.Where(DxfObjectDatabase.IsReference)
+                    .Select(tag => this.StoredTableHandleTarget((string)tag.Value)).Any(target => target != null && removed.Contains(target))) return true;
+                var owners = new HashSet<DxfObject>(new MetadataIdentityComparer());
+                for (DxfObject owner = study.Owner; owner != null && owners.Add(owner); owner = owner.Owner)
                     if (removed.Contains(owner)) return true;
             }
             foreach (DxfStoredField field in this.AddedObjects.Values.OfType<DxfStoredField>())

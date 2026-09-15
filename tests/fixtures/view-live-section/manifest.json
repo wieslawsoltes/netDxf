@@ -1,0 +1,88 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "view_producer_api": "views.new + dxf.live_selection_handle",
+  "section_carrier": "Explicitly authored SECTIONOBJECT packet stored by DXFTagStorage",
+  "native_cad_execution": false,
+  "fixtures": [
+    {
+      "path": "ezdxf-view-live-section-R2007-ascii.dxf",
+      "sha256": "a3696ad6c47f15d1b609a19c6995cb7efd81df4277428d8bb45d7eb6272fedfa",
+      "profile": "AC1021",
+      "binary": false,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2007-binary.dxf",
+      "sha256": "e49b816fbfb59425ed658aa45b684581db246c42854f86fb8d8bf96f00e7da91",
+      "profile": "AC1021",
+      "binary": true,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2010-ascii.dxf",
+      "sha256": "ee2021bc95345c288f351f891bf6eca75b7148f48d529e4a343bf68a08d6890e",
+      "profile": "AC1024",
+      "binary": false,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2010-binary.dxf",
+      "sha256": "1660883b2ed21a2ec896c9dbcc08ab45de10030648371f626b4a1a8eb848e6ee",
+      "profile": "AC1024",
+      "binary": true,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2013-ascii.dxf",
+      "sha256": "2d228d7311cf29f455c57a307cc97db8c3e4210a55ec60db16254883db44d82c",
+      "profile": "AC1027",
+      "binary": false,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2013-binary.dxf",
+      "sha256": "e7e2fcbc0803ac3985e9fde17703d3fd98eb9a4cf8e7f3a77cde1f088c669e44",
+      "profile": "AC1027",
+      "binary": true,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2018-ascii.dxf",
+      "sha256": "db29d4493bff6be4cf022e54f6e668b69799d48706ce7164081eaf7b81b9d074",
+      "profile": "AC1032",
+      "binary": false,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    },
+    {
+      "path": "ezdxf-view-live-section-R2018-binary.dxf",
+      "sha256": "0e7c4a705edf322a27bda9e922aed307cd912c57c93897b88c76c403b83900e0",
+      "profile": "AC1032",
+      "binary": true,
+      "view_handle": "30",
+      "section_handle": "2F",
+      "audit_errors": 0,
+      "audit_repairs": 0
+    }
+  ]
+}

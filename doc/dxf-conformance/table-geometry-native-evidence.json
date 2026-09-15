@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "base_commit": "c108513f3e13486c049d4d07fac79bf3d0bb7217",
+  "independent_wire_source": {
+    "url": "https://github.com/LibreDWG/libredwg/blob/34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43/src/dwg2.spec",
+    "git_blob": "2f7cbbe8b2b2c7bfb5019080cb4acfaca873a5b3",
+    "scope": "Wire grammar facts independently match actual native packets; no implementation code incorporated.",
+    "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43"
+  },
+  "original_fixture_manifest": "tools/table_oracle/fixtures.json",
+  "carrier_fixture_manifest": "tests/fixtures/table-content/manifest.json",
+  "carrier_manifest_sha256": "9b5cc698a55503d445c97522caa8d72b5e8047479bdbb20c5bbf73f3abb9895e",
+  "native_objects": [
+    {
+      "file": "acad_table_simple.dxf",
+      "profile": 2013,
+      "handle": "B0",
+      "owner": "B3",
+      "rows": 3,
+      "columns": 3,
+      "cells": 9,
+      "geometry_packets": 0,
+      "flags": [
+        0
+      ],
+      "stored_value95": [],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "profile": 2018,
+      "handle": "117",
+      "owner": "119",
+      "rows": 10,
+      "columns": 5,
+      "cells": 50,
+      "geometry_packets": 0,
+      "flags": [
+        0
+      ],
+      "stored_value95": [],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "profile": 2004,
+      "handle": "748",
+      "owner": "13DF",
+      "rows": 7,
+      "columns": 3,
+      "cells": 21,
+      "geometry_packets": 19,
+      "flags": [
+        3
+      ],
+      "stored_value95": [
+        0
+      ],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "profile": 2004,
+      "handle": "13F0",
+      "owner": "13F2",
+      "rows": 4,
+      "columns": 5,
+      "cells": 20,
+      "geometry_packets": 18,
+      "flags": [
+        4,
+        7
+      ],
+      "stored_value95": [
+        0
+      ],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "profile": 2007,
+      "handle": "748",
+      "owner": "1375",
+      "rows": 7,
+      "columns": 3,
+      "cells": 21,
+      "geometry_packets": 19,
+      "flags": [
+        3
+      ],
+      "stored_value95": [
+        0
+      ],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "profile": 2007,
+      "handle": "1386",
+      "owner": "1388",
+      "rows": 4,
+      "columns": 5,
+      "cells": 20,
+      "geometry_packets": 18,
+      "flags": [
+        4,
+        7
+      ],
+      "stored_value95": [
+        0
+      ],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "profile": 2010,
+      "handle": "748",
+      "owner": "1311",
+      "rows": 7,
+      "columns": 3,
+      "cells": 21,
+      "geometry_packets": 19,
+      "flags": [
+        3
+      ],
+      "stored_value95": [
+        0
+      ],
+      "nonzero_cell_pointers": []
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "profile": 2010,
+      "handle": "131F",
+      "owner": "1321",
+      "rows": 4,
+      "columns": 5,
+      "cells": 20,
+      "geometry_packets": 18,
+      "flags": [
+        4,
+        7
+      ],
+      "stored_value95": [
+        0
+      ],
+      "nonzero_cell_pointers": []
+    }
+  ],
+  "native_object_count": 8,
+  "native_cell_count": 182,
+  "native_geometry_packet_count": 111,
+  "native_pointer_note": "All actual native cell330 values are null. Nonzero source-reference behavior is separately qualified with explicit synthetic mutations."
+}

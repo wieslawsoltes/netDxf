@@ -18,6 +18,7 @@ namespace netDxf
                 if (!removed.Contains(settings) && settings.DatabaseReferences.Any(target => target != null && removed.Contains(target))) return true;
             var sections = new HashSet<DxfObject>(removed.OfType<Section>(), new MetadataIdentityComparer());
             if (sections.Count == 0) return false;
+            if (this.Views.Any(view => !removed.Contains(view) && view.LiveSection != null && sections.Contains(view.LiveSection))) return true;
             foreach (DxfObject item in this.RetainedMetadataObjects())
             {
                 if (removed.Contains(item)) continue;

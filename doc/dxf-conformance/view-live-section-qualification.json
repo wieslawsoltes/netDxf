@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "module": "Named VIEW live SECTION reference",
+  "qualified_source_commit": "e41eecd008d31784abd1213c392de3a49eabc4c2",
+  "qualified_source_tree": "aae1fb798f96b1253912ed15eaf7fea3de663200",
+  "production_commit": "d618a9e920e40577ee7d398093f9784d914fcca0",
+  "sdk": "8.0.408",
+  "qualified_library_target": "net8.0",
+  "independent_reader": "ezdxf1.4.4",
+  "profiles": [
+    "AC1021",
+    "AC1024",
+    "AC1027",
+    "AC1032"
+  ],
+  "transports": [
+    "ASCII",
+    "binary"
+  ],
+  "source_sha256": {
+    "netDxf/Collections/Views.cs": "1c03bc42b79a6b1377aab47fbe9505bccf28cd67542945cffb0bbeb37c5379fd",
+    "netDxf/DxfDocument.Section.cs": "684c5126ae292d21b5e62ebd54eb3cb5ffe0122b1be30a98c9a082764625563b",
+    "netDxf/IO/DxfReader.Views.cs": "2ec27bf37a333bb5fa392b2c55e2b60d300aa8f493e4245b7c7d613beef4f063",
+    "netDxf/IO/DxfReader.cs": "c71640e451f24792ae73bec11ee1a04f4bb97997d98b4866b60760e612cb2ce7",
+    "netDxf/IO/DxfViewSection.cs": "65235beb32032bbb278829076b9bd341ad56a156b97eb38d0c7deaa2b9c79015",
+    "netDxf/IO/DxfViewUcs.cs": "3ea70e14fb3f2f1ed26d95f0a66471bf19c07226ce5d7ec3fab0d15d9103f61d",
+    "netDxf/IO/DxfWriter.Views.cs": "e58b31171ae585b293f474aa45b675e01acb75b6be9dda4cc45a37b8cfe83c20",
+    "netDxf/Objects/DxfObjectDatabase.Section.cs": "770a796bf74e523c3105e7cb3f6a330025c440ef288c18d540fe0faee4c429f2",
+    "netDxf/Tables/View.LiveSection.cs": "4146eac05f79dc508b483feed1ce5297eec4e015cee27e1668ca25b52021dfcd",
+    "netDxf/Tables/View.cs": "e07e8c8f9973b0aec5d800d7d1540a468c56e150397600694deffa8a103edcaa",
+    "tests/fixtures/view-live-section/generate_fixtures.py": "bd0d6436644838a735a821fb5daabc0f95b1edd91d7b7fa4d1d9ebeb2beac46f",
+    "tests/netDxf.Conformance/Program.cs": "3dc61134d80174547a324aa0ed3889e3c13569059739f0f85444358e84ae0f5a",
+    "tests/netDxf.Conformance/ViewLiveSectionTests.cs": "42a8a6eaa553afa1e9bf30d8bec1344fa95bad8e39d1a224a8b582c1841f6762",
+    "tools/verify_view_live_section.py": "f737bb8a7c257cec9adaef9c193307b053d4a289f01dd35bb20f5070ae02658c"
+  },
+  "configurations": {
+    "Debug": {
+      "dedicated_passed": 124,
+      "dedicated_failed": 0,
+      "unique_with_neighbor_regressions": 760,
+      "new_cases_in_neighbor_scope": 124,
+      "existing_regressions": 636,
+      "library_sha256": "ec25f796b2577c93d6900f084d2b00c1d67f621f65a6dea03142263596c1e330",
+      "conformance_sha256": "ef7ce97064caab4d5bc480c37deffa2ab9905894fd073d9b74407581049e6f79",
+      "dedicated_results_sha256": "dbee1651a3edf90eb2e9ba8d989cd344f2fa9a1ebb2dd2e1bde2f32844f9c2cc",
+      "test_build_log_sha256": "bba9a0a3aa4ab44fc6821b484b6f8e1528ff026089f02d55a355244d23f8cef9",
+      "independent_gate": {
+        "actual_output_corruptions_rejected": 120,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "independent_view_producer_inputs": 8,
+        "native_cad_execution": false,
+        "outputs": 24,
+        "section_carriers": "explicitly authored",
+        "section_evaluation": false
+      },
+      "independent_gate_sha256": "caf071b31cd7d97b3a72a25f9d91ce0cb764d26ba09af09091d51be06d78f680",
+      "neighbor_gates": {
+        "verify_view_ucs.py": {
+          "verified_outputs": 12,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "log_sha256": "910e86b1207873aa1f43789d487c53b8cbc89462c2cdde0a0b8d86a4df8932b8"
+        },
+        "verify_section.py": {
+          "result": {
+            "actual_output_packet_corruption_controls": 6,
+            "adapted_documented_name_structural_audits": 56,
+            "adapted_producer_extracted_source_audits": 8,
+            "native_original_transformations": 0,
+            "pinned_producer_originals_and_exact_extractions": 8,
+            "unmodified_native_name_audits": 14,
+            "unmodified_native_original_audits": 1,
+            "verified_outputs": 70
+          },
+          "log_sha256": "f01b81d148be89327b8b5e12c76f584c22707c8718c10ab2612ceb39f9a80acf"
+        }
+      },
+      "output_sha256": {
+        "view-live-section-authored-AutoCad2007-False.dxf": "5a06d22d14a6d47b431e8abe265b22aae88c2b99d27e884533e9f410b9bbb732",
+        "view-live-section-authored-AutoCad2007-True.dxf": "d5bfb80c88954f02ec5cc39b35d4e662ac64f54a50ca5f2e566f0f3ff7311747",
+        "view-live-section-authored-AutoCad2010-False.dxf": "8d18f365c24175262103021bdb730ffdab4e16f9bc14bec5f14eb894afff61bd",
+        "view-live-section-authored-AutoCad2010-True.dxf": "7124cc1b028735c00c062eb3df4a89aa0bd2d1dec95a04185d8b243b9d9e19d8",
+        "view-live-section-authored-AutoCad2013-False.dxf": "bb02592deb48e25f59c45feb8117d4a4a51916be0b31dd95c7eaaf50faa4f123",
+        "view-live-section-authored-AutoCad2013-True.dxf": "7d1790e95d2ae8c270c6a9ee501a05b0412236d420cb27b1b6504ac0fc11af27",
+        "view-live-section-authored-AutoCad2018-False.dxf": "cf3ae9a24df808325661a247acca87a7753f465a942f9ad5fb5b3a7f1601f643",
+        "view-live-section-authored-AutoCad2018-True.dxf": "db3d8e9e6a5dc40f5766e8692e336ce9e2a27795aecfafe0dab7505d28efa171",
+        "view-live-section-foreign-AutoCad2007-False.dxf": "36bdb1bd0c0a53b81d9bde9f3c7d6fec12f871ada034dd1afd1b7fd0c0cab7cc",
+        "view-live-section-foreign-AutoCad2007-True.dxf": "32af7b9779f21eeba5df2707fa48e7048e89c19ab25ac284176cb2b39758cc1d",
+        "view-live-section-foreign-AutoCad2010-False.dxf": "14da23f0c7dfbdc2476cbf1869b23d82371d9c3c932026d401f0d4eac3339bfd",
+        "view-live-section-foreign-AutoCad2010-True.dxf": "59c5895e9db76b8edd59386eea4aefe9d8b9a241c56a1ffb7e240227e3a7df33",
+        "view-live-section-foreign-AutoCad2013-False.dxf": "643abda43540ba1ef97647219c1057c195f5e33ee5c4386aabacd9f7285d4495",
+        "view-live-section-foreign-AutoCad2013-True.dxf": "58083d35403b01d543e7be9067381dd331fd80a8216a216582e41bcbf2b68e11",
+        "view-live-section-foreign-AutoCad2018-False.dxf": "e645404d5ac3dfe32d7c1eba055f7512eacef488d476552ab5e52681d269eb0c",
+        "view-live-section-foreign-AutoCad2018-True.dxf": "46dbd0bbd3d957166e18f775e438b12ff3666267fd6457ec84b39e0d66291cf8",
+        "view-live-section-producer-AutoCad2007-False.dxf": "d06ebc6352193413d614ba213e14c489e6cc35ac0db3e8d44d9005aab8ddd407",
+        "view-live-section-producer-AutoCad2007-True.dxf": "7bd24f6507b23fb77e8398cc1720f91f5964ba66d75e3af39ed4f3a06e16acae",
+        "view-live-section-producer-AutoCad2010-False.dxf": "f805cb43ffbdd4c502000f2794056ecd57d903defceb2335a18189a77fafda8a",
+        "view-live-section-producer-AutoCad2010-True.dxf": "d5a3b511bac96b85ba15b51fb8eb99dee0d81551196db0ad159ab94c61ee8c5a",
+        "view-live-section-producer-AutoCad2013-False.dxf": "1fa20f8916528a0d714f16c8e144c0d5188834c6ed3175892116a1b324e4db13",
+        "view-live-section-producer-AutoCad2013-True.dxf": "7ccd9e8c037c5e8dd6279d0046ff527cd911fbaef3f38f2395a4be907e067270",
+        "view-live-section-producer-AutoCad2018-False.dxf": "f8d17328304bd5518d48bbee7956283cd2219cad3b4fadc9f6923489aaed1630",
+        "view-live-section-producer-AutoCad2018-True.dxf": "577da277b09a87b076984cb0234af4607a2bde25e9059f1d86c731a196ae77fd"
+      }
+    },
+    "Release": {
+      "dedicated_passed": 124,
+      "dedicated_failed": 0,
+      "unique_with_neighbor_regressions": 760,
+      "new_cases_in_neighbor_scope": 124,
+      "existing_regressions": 636,
+      "library_sha256": "be1966f25d4d8830a7bee1c5ed1745ba98aa6988eef621f30699420ba12d24d6",
+      "conformance_sha256": "c8bdf9c3f63a6795d6ae4115043c8b250508a7f7826361c2dcc1bb67b61b7a3f",
+      "dedicated_results_sha256": "dbee1651a3edf90eb2e9ba8d989cd344f2fa9a1ebb2dd2e1bde2f32844f9c2cc",
+      "test_build_log_sha256": "b7ff73552dcadcc98e75ada340d9e357f5562fcf5681756f7bd48efab493bfd0",
+      "independent_gate": {
+        "actual_output_corruptions_rejected": 120,
+        "audit_errors": 0,
+        "audit_repairs": 0,
+        "independent_view_producer_inputs": 8,
+        "native_cad_execution": false,
+        "outputs": 24,
+        "section_carriers": "explicitly authored",
+        "section_evaluation": false
+      },
+      "independent_gate_sha256": "caf071b31cd7d97b3a72a25f9d91ce0cb764d26ba09af09091d51be06d78f680",
+      "neighbor_gates": {
+        "verify_view_ucs.py": {
+          "verified_outputs": 12,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "log_sha256": "dcaa27bd13a21d149d543e2ccbd78c0db59c80cfb4ab4b250ab1a0f733d5c2fb"
+        },
+        "verify_section.py": {
+          "result": {
+            "actual_output_packet_corruption_controls": 6,
+            "adapted_documented_name_structural_audits": 56,
+            "adapted_producer_extracted_source_audits": 8,
+            "native_original_transformations": 0,
+            "pinned_producer_originals_and_exact_extractions": 8,
+            "unmodified_native_name_audits": 14,
+            "unmodified_native_original_audits": 1,
+            "verified_outputs": 70
+          },
+          "log_sha256": "f01b81d148be89327b8b5e12c76f584c22707c8718c10ab2612ceb39f9a80acf"
+        }
+      },
+      "output_sha256": {
+        "view-live-section-authored-AutoCad2007-False.dxf": "c36a4a51e8674876238d3445c3e1e71dba3ab397dbdec4bbff1d07549b582951",
+        "view-live-section-authored-AutoCad2007-True.dxf": "9ebe2de87cedaf7b7fc004eed5c3741e31fe1145dd5642a0f51aca33f29d4dbe",
+        "view-live-section-authored-AutoCad2010-False.dxf": "19e72cbb2e93dcf4176457b924659fb85512fb684aa7ffce9818c7a59a2f5939",
+        "view-live-section-authored-AutoCad2010-True.dxf": "0335e30e6912dccb1c2abbaf9bb23de9059f603a1fa037f0abba7725ed5b1ce2",
+        "view-live-section-authored-AutoCad2013-False.dxf": "bf44ad22f3cc2ac2b6d45e786d1b4218720e2c7dffd52071a1ab6552475c878f",
+        "view-live-section-authored-AutoCad2013-True.dxf": "830550a365d4b345ce42510cb78b720c545814568f8db4dea4a3c308dcefb148",
+        "view-live-section-authored-AutoCad2018-False.dxf": "68cbbfd214fb42f6e884277e27ac74934e4ce26000f95f8bc096462eee987bdf",
+        "view-live-section-authored-AutoCad2018-True.dxf": "8c112e4e3cb97c24548368faea62b0442de9ba7309a24934b0621336cd3c50f9",
+        "view-live-section-foreign-AutoCad2007-False.dxf": "60c741036c5b85d6ad3c77aa356fa0460d63a6ca3c9c46e66cd00cd6862eecef",
+        "view-live-section-foreign-AutoCad2007-True.dxf": "e7fa8aa33b5b8321eb6f289398b43ddf18e695f729d5a682a3bcc669dfc513ca",
+        "view-live-section-foreign-AutoCad2010-False.dxf": "8d9c28606eb0378a546d6d70c9fecb5e6f9c64f87fcd22421b90899fc5f632e8",
+        "view-live-section-foreign-AutoCad2010-True.dxf": "d12455d387aa4ab035a994cabf2e22b24afaa671946296fa81ba6756fc62057b",
+        "view-live-section-foreign-AutoCad2013-False.dxf": "8e80f524c1d17bc5d6a1b871eb03628d9d16934d6e4da512736834209ce47565",
+        "view-live-section-foreign-AutoCad2013-True.dxf": "15bcc9f483b9fc497bb281000d5b8d9fd977e3e4a0afa5687df1198b5f9f6cfe",
+        "view-live-section-foreign-AutoCad2018-False.dxf": "3ac17e0b834aaaa42bef24c4c0df5eb49819679632ea05b7189439558541909e",
+        "view-live-section-foreign-AutoCad2018-True.dxf": "e1fb38830338855afeb56f7f371b32b6cfa530eed4c9708aa256bb285f05af9b",
+        "view-live-section-producer-AutoCad2007-False.dxf": "d06ebc6352193413d614ba213e14c489e6cc35ac0db3e8d44d9005aab8ddd407",
+        "view-live-section-producer-AutoCad2007-True.dxf": "7bd24f6507b23fb77e8398cc1720f91f5964ba66d75e3af39ed4f3a06e16acae",
+        "view-live-section-producer-AutoCad2010-False.dxf": "f805cb43ffbdd4c502000f2794056ecd57d903defceb2335a18189a77fafda8a",
+        "view-live-section-producer-AutoCad2010-True.dxf": "d5a3b511bac96b85ba15b51fb8eb99dee0d81551196db0ad159ab94c61ee8c5a",
+        "view-live-section-producer-AutoCad2013-False.dxf": "1fa20f8916528a0d714f16c8e144c0d5188834c6ed3175892116a1b324e4db13",
+        "view-live-section-producer-AutoCad2013-True.dxf": "7ccd9e8c037c5e8dd6279d0046ff527cd911fbaef3f38f2395a4be907e067270",
+        "view-live-section-producer-AutoCad2018-False.dxf": "f8d17328304bd5518d48bbee7956283cd2219cad3b4fadc9f6923489aaed1630",
+        "view-live-section-producer-AutoCad2018-True.dxf": "577da277b09a87b076984cb0234af4607a2bde25e9059f1d86c731a196ae77fd"
+      }
+    }
+  },
+  "native_cad_execution": false,
+  "section_evaluation": false,
+  "same_harness_before_after": {
+    "harness": "tests/fixtures/view-live-section/review/Program.cs",
+    "harness_sha256": "2c6d56b9039ba6859e57fa3f090e14aee1191ac5fa594f1bbc55cfb683571c5d",
+    "old_library_sha256": "f85f25e948be658c012c2b3d7b22a84de3e180227c3e5f124168c1ca14622e25",
+    "fixed_library_sha256": "ec25f796b2577c93d6900f084d2b00c1d67f621f65a6dea03142263596c1e330",
+    "old_results_sha256": "5e7980353ae5f2b42bd341a30a247ce6b04ec67d6c56b91e937fdcde80b787c7",
+    "fixed_results_sha256": "c116ae6e94935044a354a4dd60e7abe18b33574f44500b37ece354acd916c97f",
+    "old": [
+      {
+        "file": "ezdxf-view-live-section-R2007-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2007-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2010-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2010-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2013-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2013-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2018-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      },
+      {
+        "file": "ezdxf-view-live-section-R2018-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 0,
+        "referenced_section_removed": true,
+        "referenced_section_erased": true
+      }
+    ],
+    "fixed": [
+      {
+        "file": "ezdxf-view-live-section-R2007-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2007-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2010-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2010-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2013-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2013-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2018-ascii.dxf",
+        "binary": false,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      },
+      {
+        "file": "ezdxf-view-live-section-R2018-binary.dxf",
+        "binary": true,
+        "roundtrip_public_334_fields": 2,
+        "referenced_section_removed": false,
+        "referenced_section_erased": false
+      }
+    ],
+    "scope": "8 identical actual VIEW producer inputs; SECTIONOBJECT carriers explicitly authored; no use of new public API in the probe"
+  },
+  "fixture_manifest_sha256": "34301fe2d6f9dc40f848340d492de272edd9fc094be2afe0fb553f52542d6edb",
+  "limits": [
+    "No native AutoCAD execution or regeneration.",
+    "No typed VPORT frozen-layer API; disputed331or441 entry remains unresolved.",
+    "The SECTIONOBJECT carrier is explicitly authored and preserved by ezdxf DXFTagStorage; this is not independent SECTION geometry codec qualification.",
+    "This receipt qualifies net8.0 Debug and Release plus760unique cases per configuration; root integration owns all-target and full-suite validation."
+  ]
+}

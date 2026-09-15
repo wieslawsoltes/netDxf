@@ -32,6 +32,7 @@ namespace netDxf.Entities
         internal int IdentityIndex;
         internal int OwnerIndex;
         internal bool HasPrivateData;
+        internal bool IsAuthored;
 
         internal Polyline3DRecord(string codeName, List<DxfTag> tags) : base(codeName)
         { this.Tags = tags; this.XDataStart = tags.Count; }
@@ -45,6 +46,9 @@ namespace netDxf.Entities
         public Linetype Linetype { get { return this.Resources.Values.OfType<Linetype>().FirstOrDefault(); } }
         /// <summary>Gets whether this record terminates the vertex sequence.</summary>
         public bool IsSequenceEnd { get { return this.CodeName == DxfObjectCode.EndSequence; } }
+        /// <summary>Gets whether an explicit topology edit permanently removed this VERTEX.</summary>
+        /// <remarks>A removed record retains its retired handle for inspection and has no owner.</remarks>
+        public bool IsRemoved { get; internal set; }
         /// <summary>Gets whether the stored VERTEX group 330 names the containing block record.</summary>
         /// <remarks>The structural Owner is always the containing Polyline3D. This observed producer form is retained independently.</remarks>
         public bool UsesBlockRecordOwner { get; internal set; }
@@ -68,6 +72,7 @@ namespace netDxf.Entities
 
         internal void Validate(DxfDocument document, Polyline3D owner, bool registered)
         {
+            if (this.IsRemoved) throw new InvalidOperationException("A removed VERTEX cannot be adopted or emitted again.");
             if (document.DrawingVariables.AcadVer != this.SourceVersion)
                 throw new NotSupportedException("Converting retained VERTEX/SEQEND records to another DXF profile requires schema regeneration.");
             if (this.SourceDocument != null && !ReferenceEquals(this.SourceDocument, document) || !ReferenceEquals(this.Owner, owner))
@@ -89,13 +94,37 @@ namespace netDxf.Entities
                 && !this.XData.Values.SelectMany(data => data.XDataRecord).Any(tag => tag.Code == XDataCode.DatabaseHandle
                     && ulong.Parse((string)tag.Value, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture) != 0);
         }
+        internal int TopologyTagCount()
+        {
+            int count = this.XDataStart;
+            bool extension = false, reactors = false;
+            foreach (var group in this.MetadataGroups)
+            {
+                bool isExtension = (string)this.Tags[group.Key].Value == "{ACAD_XDICTIONARY";
+                bool unchanged = isExtension ? ReferenceEquals(this.ExtensionDictionary, this.OriginalExtension)
+                    : this.PersistentReactors.SequenceEqual(this.OriginalReactors)
+                        && this.ReactorHandles.Where(handle => handle != "0").SequenceEqual(this.PersistentReactors.Select(target => target.Handle));
+                if (!unchanged)
+                {
+                    count -= group.Value - group.Key + 1;
+                    count += isExtension ? this.ExtensionDictionary == null ? 0 : 3
+                        : this.PersistentReactors.Count == 0 ? 0 : this.PersistentReactors.Count + 2;
+                }
+                if (isExtension) extension = true; else reactors = true;
+            }
+            if (!extension && this.ExtensionDictionary != null) count += 3;
+            if (!reactors && this.PersistentReactors.Count != 0) count += this.PersistentReactors.Count + 2;
+            foreach (XData data in this.XData.Values) count += 1 + data.XDataRecord.Count;
+            return count;
+        }
         internal Polyline3DRecord CopyForClone()
         {
             var result = new Polyline3DRecord(this.CodeName, new List<DxfTag>(this.Tags))
             {
                 SourceOwner = this.SourceOwner, CommonEnd = this.CommonEnd, XDataStart = this.XDataStart,
                 Position = this.Position, IdentityIndex = this.IdentityIndex, OwnerIndex = this.OwnerIndex,
-                ExtensionHandle = this.ExtensionHandle, UsesBlockRecordOwner = this.UsesBlockRecordOwner, SourceVersion = this.SourceVersion
+                ExtensionHandle = this.ExtensionHandle, UsesBlockRecordOwner = this.UsesBlockRecordOwner, SourceVersion = this.SourceVersion,
+                IsAuthored = this.IsAuthored
             };
             foreach (var pair in this.Coordinates) result.Coordinates.Add(pair.Key, pair.Value);
             foreach (var pair in this.MetadataGroups) result.MetadataGroups.Add(pair.Key, pair.Value);

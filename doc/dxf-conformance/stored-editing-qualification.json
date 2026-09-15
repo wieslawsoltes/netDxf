@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "module": "PR92 stored references, explicit topology and HATCH affine transforms",
+  "implementation_commit": "1ed8719e2b1a2dcbde9556f52e9951485b7c2f6e",
+  "implementation_tree": "c1e7c729aaccb05dea5b4980ecba45663c4bd5e9",
+  "local_equivalent_commit": "1aa26d13eb659cf4c89269afa346b3bc00b5e9c1",
+  "executed_local_build_commit": "0562d9a8c1074ce97f7c731122ca6b93b77bd67f",
+  "build_provenance": "Later implementation commit changes only the independent mixed verifier and documentation. Both local configurations execute matching frozen production and conformance source. Subsequent integration XML parameter documentation changes no runtime behavior.",
+  "sdk": "8.0.408",
+  "independent_reader": "ezdxf 1.4.4",
+  "new_cases": {
+    "SUNSTUDY": 60,
+    "TABLEGEOMETRY": 142,
+    "VIEW_live_section": 124,
+    "Polyline3D_topology": 169,
+    "HATCH_affine": 163,
+    "mixed_graph": 8
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "passed": 29293,
+      "failed": 0,
+      "unique": 29293,
+      "results_sha256": "8da0cb43fb554929629357c262198368c98a8549d44fbe839129372c17d3fd58",
+      "conformance_log_sha256": "2af3ca0d8f2cc63a920e6cd0684858b4794959e8773f34d69612eb217daa02f8",
+      "library_sha256": "98c17c5b5d53772478574f1f2239a50bad34054da5ee6b3517b91a5209d3a127",
+      "conformance_sha256": "bae0a75436a699d3fc2344b85b40a491fb154287df29aa3c94d12db8a5922dbd",
+      "independent_passed": 106,
+      "independent_failed": 0,
+      "independent_results_sha256": "6a6c88cafeae83cd3812f4a294eb85c4982e01205647837fbcf8ed628918538b",
+      "dxf_artifacts": 4147
+    },
+    {
+      "configuration": "Release",
+      "passed": 29293,
+      "failed": 0,
+      "unique": 29293,
+      "results_sha256": "8da0cb43fb554929629357c262198368c98a8549d44fbe839129372c17d3fd58",
+      "conformance_log_sha256": "2af3ca0d8f2cc63a920e6cd0684858b4794959e8773f34d69612eb217daa02f8",
+      "library_sha256": "cc27554c66599424acd07a928e5bfdf307d4e0b44f39f66c8e60efb67f68bf96",
+      "conformance_sha256": "70aa8e98f5d928bdf366dff75e2a30d50f3cd0ca65b997cc9a00111a2c3f28b1",
+      "independent_passed": 106,
+      "independent_failed": 0,
+      "independent_results_sha256": "4665e87d6548f15d9d1062785e7877074b65f67840bbac5522a5e6c3cdb4f9f6",
+      "dxf_artifacts": 4147
+    }
+  ],
+  "full_standard_complete": false,
+  "autocad_executed": false,
+  "initial_build_diagnostics": {
+    "existing_CS1591_per_compiled_target": 561,
+    "additional_CS1573_per_compiled_target": 1,
+    "errors": 0,
+    "correction": "Missing newNormal XML parameter comment supplied by local97e57e7. It does not change runtime behavior; final normal-diagnostic build results are recorded separately."
+  },
+  "field_audit": {
+    "self_test": "passed",
+    "io_files": 105,
+    "methods": 712,
+    "model_header_files": 255,
+    "source_inventory_sha256": "bdb0960bed18740fe6ed917218f5df7df225ed16615bdf426586e551fa955720",
+    "field_inventory_sha256": "30b4c951a7548cd7bc87b2954f2cc840f10e06d11688aaea0550ec4a98b7c32f",
+    "scope": "Static syntax evidence, not semantic completeness."
+  },
+  "coverage": {
+    "rows": 278,
+    "profiles": 9,
+    "ledger_tests": 18,
+    "test_failures": 0,
+    "test_log_sha256": "b7c534f21f212b7e83b357550da7108804a84f7adb6c828d855611d2c261efa9"
+  },
+  "implementation_ci": {
+    "run_id": 34982636218,
+    "url": "https://github.com/wieslawsoltes/netDxf/actions/runs/34982636218",
+    "head_sha": "1ed8719e2b1a2dcbde9556f52e9951485b7c2f6e",
+    "all_four_jobs": "success",
+    "passed_per_job": 29293,
+    "failed_per_job": 0,
+    "linux_release_independent_gates": 106,
+    "verified_artifacts": [
+      {
+        "archive": "pr92-implementation-linux-debug.zip",
+        "sha256": "2d4bfe7c7ba3095cb83757a0c404939d66dc6e5e3f8ad0774823844d7e2eb1ca",
+        "tree": "c1e7c729aaccb05dea5b4980ecba45663c4bd5e9",
+        "passed_cases": 29293,
+        "dxf_artifacts": 4147,
+        "verified_source_files": 1659
+      },
+      {
+        "archive": "pr92-implementation-linux-release.zip",
+        "sha256": "7bd1cbaf2f67932767334983c40a1668ab40e6b04609878d3a54834d090804f4",
+        "tree": "c1e7c729aaccb05dea5b4980ecba45663c4bd5e9",
+        "passed_cases": 29293,
+        "dxf_artifacts": 4147,
+        "passed_independent_verifiers": 106
+      }
+    ]
+  },
+  "source_sha256": {
+    "netDxf/Collections/Views.cs": "1c03bc42b79a6b1377aab47fbe9505bccf28cd67542945cffb0bbeb37c5379fd",
+    "netDxf/DxfDocument.MultiLeader.cs": "19eb0082312e4f19f49241f88afd4892739a002d1e0508e36b413d69da7281fc",
+    "netDxf/DxfDocument.PolylineTopology.cs": "8361e54af6e085ec0991c12a7fca49ffb8bbd35236269e3a4a7c7db232401ae6",
+    "netDxf/DxfDocument.Section.cs": "684c5126ae292d21b5e62ebd54eb3cb5ffe0122b1be30a98c9a082764625563b",
+    "netDxf/DxfDocument.StoredTable.cs": "824bd6c35d9ad3f8828ed012d734713c810775df64513f1107de986dfd9e0618",
+    "netDxf/Entities/Hatch.Transform.cs": "80625db71256d0e906c942ff3152f81eee4761cd84ddf0fd71b7000a1dc19058",
+    "netDxf/Entities/Hatch.cs": "fab07a30911624f9176a8e8ef76da5d77444cb8cdf9e4917274e0574c3cc5b73",
+    "netDxf/Entities/Polyline3D.Topology.cs": "f037eaf1d7a5517b51fe9bbf3fbfa8b894fc426dd7d0ce4637714ea6cefcc64a",
+    "netDxf/Entities/Polyline3DRecord.cs": "7d7b966a6f894ade9493f2bf29dae1547a96bc07c65b2e1d40ab2c452594a294",
+    "netDxf/IO/DxfReader.Objects.cs": "0ece17e5609d288f19c5a819326901f35adb20fec5ed0d72ac3e46f0d474e73a",
+    "netDxf/IO/DxfReader.StoredSunStudy.cs": "78a092d7493fcbd8c371ac19d461f073efa5e11a8eaf0ed560cbb5f36e7bdbed",
+    "netDxf/IO/DxfReader.StoredTableGeometry.cs": "9ee076868ca48d664bd04e424a02b631e01c0bb04dd48ee678a722356637b6d1",
+    "netDxf/IO/DxfReader.Views.cs": "2ec27bf37a333bb5fa392b2c55e2b60d300aa8f493e4245b7c7d613beef4f063",
+    "netDxf/IO/DxfReader.cs": "c71640e451f24792ae73bec11ee1a04f4bb97997d98b4866b60760e612cb2ce7",
+    "netDxf/IO/DxfViewSection.cs": "65235beb32032bbb278829076b9bd341ad56a156b97eb38d0c7deaa2b9c79015",
+    "netDxf/IO/DxfViewUcs.cs": "3ea70e14fb3f2f1ed26d95f0a66471bf19c07226ce5d7ec3fab0d15d9103f61d",
+    "netDxf/IO/DxfWriter.Objects.cs": "7fc7ea099b3c0438f958a8719418c1ea75deebe233055268197b10faf138e93f",
+    "netDxf/IO/DxfWriter.PolylineRecords.cs": "39bb681993a71d132fff46524142f8785e491fe298bd625877579f4964109508",
+    "netDxf/IO/DxfWriter.StoredSunStudy.cs": "521f967b827a8749b0471353892c052d9557b5f30edb86da237c4b94d2875751",
+    "netDxf/IO/DxfWriter.StoredTableGeometry.cs": "399fec4d41f9d6d1177e668862afb8a6c15c5166b10b6ed76f0043bab99978fa",
+    "netDxf/IO/DxfWriter.Views.cs": "e58b31171ae585b293f474aa45b675e01acb75b6be9dda4cc45a37b8cfe83c20",
+    "netDxf/Objects/DxfObjectDatabase.Erase.cs": "1af6f9d81087e33f9194305fb9a110c0e2f309964abbff0740958e622e696eda",
+    "netDxf/Objects/DxfObjectDatabase.Section.cs": "7746c1a9068bae0a172da5c00379604c6333692eea153a4c4a3b9bb72b0cf391",
+    "netDxf/Objects/DxfStoredSunStudy.cs": "95d38e51aee5ebd34e8ce93da40b044b626bafeefc762fe5a89d6dfc8240eae2",
+    "netDxf/Objects/DxfStoredTableGeometry.cs": "b2216c972b6ac9c09e8a7018dbdf92f2d86d159ab2a61aa7fda9da5d331fb69a",
+    "netDxf/Tables/View.LiveSection.cs": "4146eac05f79dc508b483feed1ce5297eec4e015cee27e1668ca25b52021dfcd",
+    "netDxf/Tables/View.cs": "e07e8c8f9973b0aec5d800d7d1540a468c56e150397600694deffa8a103edcaa",
+    "tests/netDxf.Conformance/DeclaredOwnershipTests.cs": "f559064e0b45e4375b0c0acca4449330169013358595c0add57cd7008323f363",
+    "tests/netDxf.Conformance/EighthMixedModuleTests.cs": "e7bc2fc11456767b27a6d6994d5d29f76107936f0a6d903c6d783714594a8104",
+    "tests/netDxf.Conformance/HatchAffineTests.cs": "45bf029996f9658237e0774dbf50374410153af3d4e4c6ac4ed699b385afec95",
+    "tests/netDxf.Conformance/HatchSeedPointApiTests.cs": "302eb469477c4f0034481bd82592d7876239b909462cf9e0b0c8fff2bdf73e0d",
+    "tests/netDxf.Conformance/HatchSplineFitApiTests.cs": "4be76e66fdeef79550bbff66b1de663772ecd7a007727e4d26ce8552dd79cfec",
+    "tests/netDxf.Conformance/PolylineTopologyTests.cs": "b444375f2443bed0dc1357fdb8b837fa1f18ef09a2ffa9451116e1e514968162",
+    "tests/netDxf.Conformance/Program.cs": "7bec71bca3e0745911c1a304ca7d22d6401f64c1fd16ae06258a440e33f54224",
+    "tests/netDxf.Conformance/RegressionTests.cs": "33c403dc315fe9bd7e1b8629fbbb22dea6d40c0c483aa9965acbdc8c29174233",
+    "tests/netDxf.Conformance/StoredSunStudyTests.cs": "e90b926a13a69223202707aca61fd699f323d2e95d323452ba46c3d7d99b04cb",
+    "tests/netDxf.Conformance/StoredTableGeometryTests.cs": "b5a5be03d646825b358d22251b771069e9f6326c36cff8d8e8a6354741d8e420",
+    "tests/netDxf.Conformance/ViewLiveSectionTests.cs": "42a8a6eaa553afa1e9bf30d8bec1344fa95bad8e39d1a224a8b582c1841f6762",
+    "tools/verify_declared_ownership.py": "bbb88a19fd79e0fb11dcbc7e1266d0cdefdd4df5154fd58b1d845c7360bf342d",
+    "tools/verify_eighth_mixed.py": "f8cd033fa52e7d3bff391c6434b54b69b28ad321bb2a12b4e5ffe82c09bc1fef",
+    "tools/verify_hatch_affine.py": "b03a9e6a4d92f2ad00f4a1c34d04670b0f2d3220133ad440e6d50c56eae6d8f2",
+    "tools/verify_polyline_topology.py": "0fe70a001dad2e8ac3b4bee72f7fd6d2d7c524d022cbdbb8a5c345b1d047e939",
+    "tools/verify_stored_sunstudy.py": "3d71ef1ea5b44c8e69e415de8940188be2bec410e6ab91e5f875f39ef6955a03",
+    "tools/verify_stored_table_geometry.py": "b6d59510017c9017d4284b30264435a2f60d760d0b9be036eac27a9b826ef5b0",
+    "tools/verify_view_live_section.py": "f737bb8a7c257cec9adaef9c193307b053d4a289f01dd35bb20f5070ae02658c"
+  },
+  "independent_review_receipts": [
+    "receipts/eighth-mixed-independent/mixed-review-summary.json",
+    "receipts/hatch-affine/review40.json",
+    "receipts/polyline3d-topology/review-summary.json",
+    "table-geometry-qualification.json",
+    "stored-sunstudy-qualification.json",
+    "view-live-section-qualification.json"
+  ],
+  "limitations": [
+    "Native AutoCAD execution remains unavailable and unqualified.",
+    "SUNSTUDY qualifies disclosed internal-version-0 empty-date carriers only; no solar/date evaluation or inferred target classes.",
+    "TABLEGEOMETRY is immutable source-bound storage, not editable table layout.",
+    "Polyline3D explicit topology applies only to qualified retained ordinary unsmoothed sequences.",
+    "HATCH patterns/gradients/conics/bulged paths reject non-similarity transforms in this increment; periodic spline evaluation remains separate.",
+    "Mixed links are explicitly authored; retained source packet provenance is documented.",
+    "Final documentation/XML-comment commit requires its own green CI before merge."
+  ],
+  "final_build_diagnostics": {
+    "source_commit": "97e57e79f8e196016a26e679f60b35c8d7830a06",
+    "scope": "XML-comment cleanup; no runtime behavior change",
+    "logs": {
+      "next-clean-release-targets.log": {
+        "sha256": "d0f44b3035dce77aea1192be5ac61d55161bb145898e69ac96cc331d457349a5",
+        "compiled_targets": 5,
+        "warnings_per_target": 561,
+        "warning_code": "CS1591",
+        "errors": 0
+      },
+      "next-clean-debug-netstandard.log": {
+        "sha256": "45606bec9e9d4cfb215aa261bac6d589da1cad234c598f8522b5e5b09bff32fe",
+        "compiled_targets": 1,
+        "warnings_per_target": 561,
+        "warning_code": "CS1591",
+        "errors": 0
+      }
+    }
+  }
+}

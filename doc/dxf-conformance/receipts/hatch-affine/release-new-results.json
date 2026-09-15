@@ -1,0 +1,817 @@
+[
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2000/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2004/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2007/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2010/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2013/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/geometry/AutoCad2018/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/nan-matrix",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/infinite-matrix",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/nan-translation",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/collapsed-plane",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/overflow",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/invalid-spline",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/False/invalid-mixed-line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/nan-matrix",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/infinite-matrix",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/nan-translation",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/collapsed-plane",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/overflow",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/invalid-spline",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/atomic/True/invalid-mixed-line",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/association/success",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/exact-identity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/False/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/0/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/0/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/1/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/1/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/2/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/2/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/3/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/3/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/4/0",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/closed-polyline/True/4/1",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/unsupported/pattern",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/unsupported/gradient",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/unsupported/arc",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/unsupported/ellipse",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/unsupported/bulge",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/mixed-spline/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "hatch-affine/mixed-spline/True",
+    "passed": true,
+    "error": null
+  }
+]

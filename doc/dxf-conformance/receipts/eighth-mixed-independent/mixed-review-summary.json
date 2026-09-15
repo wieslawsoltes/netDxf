@@ -1,0 +1,142 @@
+{
+  "review": "Independent PR92 eighth mixed-module gate qualification",
+  "runtime_source_checkpoint": "5190451",
+  "runtime": {
+    "netDxf.netstandard.dll": "38cafad456d50f167938615b0aae0c2aeca06878fb290aca602297613309b8fc",
+    "netDxf.Conformance.dll": "60e63cac2dac0b20645a632eee0791dbb59ec69cf61ff2bb3a97a82116514bac"
+  },
+  "focused_conformance": [
+    {
+      "name": "eighth-mixed/references-and-topology/AutoCad2013/False",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/rejected-transform/AutoCad2013/False",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/references-and-topology/AutoCad2013/True",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/rejected-transform/AutoCad2013/True",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/references-and-topology/AutoCad2018/False",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/rejected-transform/AutoCad2018/False",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/references-and-topology/AutoCad2018/True",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "eighth-mixed/rejected-transform/AutoCad2018/True",
+      "passed": true,
+      "error": null
+    }
+  ],
+  "corrected_module_gate": {
+    "outputs": 4,
+    "actual_output_corruptions_rejected": 72,
+    "pre_edit_snapshots": 4,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "mixed_links": "explicitly authored; SUNSTUDY body retained from independently produced packet"
+  },
+  "additional_actual_wire_controls_rejected": 6,
+  "controls": [
+    {
+      "fault": "plane-normal",
+      "file": "mixed-extra-plane-normal.dxf",
+      "sha256": "2edb47afc181f87bb3493b6d5fb920394c13c2182f221be4b28e8712dc64b7f2",
+      "corrected_gate_rejection": "Mixed HATCH plane or elevation changed",
+      "prior_gate": "accepted",
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      }
+    },
+    {
+      "fault": "elevation",
+      "file": "mixed-extra-elevation.dxf",
+      "sha256": "5974030131b77df89b4b84db81159022a80db8fd42b2cf2ce6264ce10af4fb64",
+      "corrected_gate_rejection": "Mixed HATCH plane or elevation changed",
+      "prior_gate": "accepted",
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      }
+    },
+    {
+      "fault": "seed-point",
+      "file": "mixed-extra-seed-point.dxf",
+      "sha256": "a8e3795f4f7a4250cf16c34cd7a9ac71c329088486d38eaf467289bf61a75add",
+      "corrected_gate_rejection": "Mixed HATCH transformed seed or count changed",
+      "prior_gate": "accepted",
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      }
+    },
+    {
+      "fault": "knot-count",
+      "file": "mixed-extra-knot-count.dxf",
+      "sha256": "8c5c200976dcf7ba33003371f4df15733ab59e8773fa820d8f6dbfce976392b9",
+      "corrected_gate_rejection": "Mixed HATCH spline count declarations changed",
+      "prior_gate": "accepted",
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      }
+    },
+    {
+      "fault": "control-count",
+      "file": "mixed-extra-control-count.dxf",
+      "sha256": "5e9a2de02ab365b11d588738e6d5bce69030f56094185c9056efe19c793b7eeb",
+      "corrected_gate_rejection": "Mixed HATCH spline count declarations changed",
+      "prior_gate": "accepted",
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      }
+    },
+    {
+      "fault": "seed-count",
+      "file": "mixed-extra-seed-count.dxf",
+      "sha256": "223d94192723a02fb24e8bbbf0ea20329f18550b83059fa66c16a279b2aa4881",
+      "corrected_gate_rejection": "Mixed HATCH transformed seed or count changed",
+      "prior_gate": "accepted",
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      }
+    }
+  ],
+  "harness_sha256": "6f6a0762ddfd85d03a95fafee5209e2a7375d49851d963faaf82ea442afff0e0",
+  "corrected_gate_sha256": "f8cd033fa52e7d3bff391c6434b54b69b28ad321bb2a12b4e5ffe82c09bc1fef",
+  "prior_gate_sha256": "73ea87894496436458e80cca1d50ba2af5b4d437eef587625a19ae62a1377f9e",
+  "fixture_sha256": "722411d25f7e67c091ab9ef127f81bdd512da1872656a08a85fd9eb687ba87d5",
+  "artifacts_sha256": {
+    "eighth-mixed-AutoCad2013-False-input.dxf": "d5383e2d3deedb650399f68074508c03fd2a181572f4079969f4169fd67df19d",
+    "eighth-mixed-AutoCad2013-False.dxf": "ffce383b002e330c4ac887fb2aaeed7dc390272076c2d4b65d9ab755f2c048bb",
+    "eighth-mixed-AutoCad2013-True-input.dxf": "9b6b2d96c4c700909a4be4fbb57f459949c474559911fe1db572fe125e559daf",
+    "eighth-mixed-AutoCad2013-True.dxf": "4d03475b8da77508cc10f18dc9de95fb1044951cee1e80f7d0a5b5fa339145e7",
+    "eighth-mixed-AutoCad2018-False-input.dxf": "cb78073bde88fca47e86774ec16ac16e23bcec90c2d98d58d5f1891da60fb0ac",
+    "eighth-mixed-AutoCad2018-False.dxf": "313e57a52fa9c0db55d63a2d6cae82b9a2906004a4df8f653cef4c57d044d779",
+    "eighth-mixed-AutoCad2018-True-input.dxf": "89121435378b4c69a85016def6e3bcca61a31efb1888435c61fcef7ba32d37c0",
+    "eighth-mixed-AutoCad2018-True.dxf": "2536559bcb9ed172dbdd7ed1698e461690d24606d9c5d82236791126d2d71f4d"
+  },
+  "scope": "Four stored-packet outputs and four pre-edit snapshots; authored mixed links; exact retained identity and payload assertions. Native CAD executables were unavailable and no native runtime qualification is claimed."
+}

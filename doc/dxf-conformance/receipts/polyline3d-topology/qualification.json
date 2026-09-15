@@ -1,0 +1,122 @@
+{
+  "implementation_commit": "11eb060186cbf711f1757bb81146d29f72f50fc5",
+  "implementation_tree": "84b6eb3ed1d5bedf87a1f72614ef12ff78eb530e",
+  "base_commit": "c108513f3e13486c049d4d07fac79bf3d0bb7217",
+  "runtime": ".NET 8.0.15 / SDK 8.0.408; Linux container",
+  "filter": "polyline-",
+  "new_topology_cases": 169,
+  "existing_record_cases": 382,
+  "source_files": {
+    "netDxf/DxfDocument.PolylineTopology.cs": "8361e54af6e085ec0991c12a7fca49ffb8bbd35236269e3a4a7c7db232401ae6",
+    "netDxf/Entities/Polyline3D.Topology.cs": "f037eaf1d7a5517b51fe9bbf3fbfa8b894fc426dd7d0ce4637714ea6cefcc64a",
+    "netDxf/Entities/Polyline3DRecord.cs": "7d7b966a6f894ade9493f2bf29dae1547a96bc07c65b2e1d40ab2c452594a294",
+    "netDxf/IO/DxfWriter.PolylineRecords.cs": "39bb681993a71d132fff46524142f8785e491fe298bd625877579f4964109508",
+    "tests/netDxf.Conformance/PolylineTopologyTests.cs": "b444375f2443bed0dc1357fdb8b837fa1f18ef09a2ffa9451116e1e514968162",
+    "tests/netDxf.Conformance/Program.cs": "348233dab9acac8848f98d0fe58b9a0442a914cef67d33e1e25f1caa4a328913",
+    "tools/verify_polyline_topology.py": "0fe70a001dad2e8ac3b4bee72f7fd6d2d7c524d022cbdbb8a5c345b1d047e939"
+  },
+  "configurations": {
+    "debug": {
+      "passed": 551,
+      "failed": 0,
+      "unique_names": 551,
+      "results_sha256": "97597358c29b9d7c71cfbed399eeb1add58b038b81caf1506f3945de3a555705",
+      "output_files": 188,
+      "output_manifest_sha256": "359ff05b89d4235ed82d7161fba1ce161f0317cd0e14ae782a628471abe46f64",
+      "library_sha256": "9c6b4bb0aa8bf9eaf4d957ec2bfa5511a8bd4167a1523c55b2a71f416ebc7cff",
+      "conformance_executable_sha256": "34691f809f91aee46eebdbd871a49314dee27877481bb80442a4691b72a30b55",
+      "build_log_sha256": "280b6ef5e317ae90d04498f009840c771c67990f54f3b83b982750b6e7987d21",
+      "build_errors": 0,
+      "existing_CS1591_warnings": 561,
+      "gates": {
+        "polyline_topology": {
+          "outputs": 98,
+          "actual_output_corruption_controls": 8,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "log_sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463"
+        },
+        "polyline3d_records": {
+          "outputs": 90,
+          "actual_output_corruption_controls": 6,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "log_sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b"
+        }
+      }
+    },
+    "release": {
+      "passed": 551,
+      "failed": 0,
+      "unique_names": 551,
+      "results_sha256": "97597358c29b9d7c71cfbed399eeb1add58b038b81caf1506f3945de3a555705",
+      "output_files": 188,
+      "output_manifest_sha256": "5fb73e267ab3842279c6fc3b4e6a57f8d2c192625b76c712244134ac9234853d",
+      "library_sha256": "c62000c9741720a6c604b6d722450c8e1d3c29fd7e9e875ddbd71834d39746bb",
+      "conformance_executable_sha256": "e49efb6191f8c5015654b4211f18f999e76d3e47e2f16375b79c95bcec5c31e0",
+      "build_log_sha256": "cbec1f2b57c3ffcc1fcca5cc8ce51ab1e85c7342faa021d4fcd7230874c86c29",
+      "build_errors": 0,
+      "existing_CS1591_warnings": 561,
+      "gates": {
+        "polyline_topology": {
+          "outputs": 98,
+          "actual_output_corruption_controls": 8,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "log_sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463"
+        },
+        "polyline3d_records": {
+          "outputs": 90,
+          "actual_output_corruption_controls": 6,
+          "audit_errors": 0,
+          "audit_repairs": 0,
+          "log_sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b"
+        }
+      }
+    }
+  },
+  "scope": "Focused ordinary Polyline3D topology and retained-record qualification. Integration owns full-suite, all-target, platform and CI evidence. Native source packet extraction is separate from native CAD execution; no full-format, evaluator or private-graph qualification.",
+  "independent_review": {
+    "production_source": "11eb060186cbf711f1757bb81146d29f72f50fc5",
+    "harness_source_sha256": "73a5b9f3d3d3558733d086265e7127115ecdb7252f59ef04d017bc0aaade22ce",
+    "configurations": {
+      "Debug": {
+        "cases": 60,
+        "failed": 0,
+        "library_sha256": "9c6b4bb0aa8bf9eaf4d957ec2bfa5511a8bd4167a1523c55b2a71f416ebc7cff",
+        "results_sha256": "0443f1fd870a56a8a34fa6afab6d30923a1c613c15ad3ec5d2233bd3362aad6c",
+        "output_count": 12,
+        "ezdxf_errors": 0,
+        "ezdxf_repairs": 0
+      },
+      "Release": {
+        "cases": 60,
+        "failed": 0,
+        "library_sha256": "c62000c9741720a6c604b6d722450c8e1d3c29fd7e9e875ddbd71834d39746bb",
+        "results_sha256": "b6a8e7047076b77e21352dcb3bda3f82ec499a66b5d0243cb1ede8ea1def8ce2",
+        "output_count": 12,
+        "ezdxf_errors": 0,
+        "ezdxf_repairs": 0
+      }
+    }
+  },
+  "reproduction_artifact_sha256": {
+    "debug-outputs.json": "359ff05b89d4235ed82d7161fba1ce161f0317cd0e14ae782a628471abe46f64",
+    "debug-polyline3d_records.txt": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+    "debug-polyline_topology.txt": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+    "debug-results.json": "97597358c29b9d7c71cfbed399eeb1add58b038b81caf1506f3945de3a555705",
+    "release-outputs.json": "5fb73e267ab3842279c6fc3b4e6a57f8d2c192625b76c712244134ac9234853d",
+    "release-polyline3d_records.txt": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b",
+    "release-polyline_topology.txt": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463",
+    "release-results.json": "97597358c29b9d7c71cfbed399eeb1add58b038b81caf1506f3945de3a555705",
+    "review-debug-audit.json": "113e60125d555c1fb37ce195dd87eb9ef020bc21782b54aaff7e2bae4ddc8687",
+    "review-debug-outputs.json": "81db18449664349a61e93f7ad46c5878251c0c3a9ba766261c81b9477bd6a312",
+    "review-debug-results.json": "0443f1fd870a56a8a34fa6afab6d30923a1c613c15ad3ec5d2233bd3362aad6c",
+    "review-probe.cs.txt": "73a5b9f3d3d3558733d086265e7127115ecdb7252f59ef04d017bc0aaade22ce",
+    "review-probe.csproj.txt": "50dd62d55b04516fd69ea1c2cad2cd4696e19bee5455a848d23e3c60ebec2361",
+    "review-release-audit.json": "113e60125d555c1fb37ce195dd87eb9ef020bc21782b54aaff7e2bae4ddc8687",
+    "review-release-outputs.json": "910482f0c06d03c24b6a60f0ebce62b25d704d12b2e223c023f01dd420b34e09",
+    "review-release-results.json": "b6a8e7047076b77e21352dcb3bda3f82ec499a66b5d0243cb1ede8ea1def8ce2",
+    "review-summary.json": "5f65d7e98225cd02618823158ea186cfa170f469521142357ba0d9c3a7a555ac"
+  }
+}

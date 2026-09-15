@@ -131,7 +131,7 @@ internal static partial class Program
 
     private static void HatchSplineFitInsert()
     {
-        Hatch hatch = NewHatchSplineFit();
+        Hatch hatch = NewHatchSplineFit(); hatch.Pattern = HatchPattern.Solid;
         var block = new Block("SplineFitBlock"); block.Entities.Add((Hatch)hatch.Clone());
         var insert = new Insert(block, new Vector3(10, 20, 30)) { Scale = new Vector3(2, 3, 1), Rotation = 30 };
         var copy = (Insert)insert.Clone();
