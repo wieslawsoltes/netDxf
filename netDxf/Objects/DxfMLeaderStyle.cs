@@ -11,12 +11,20 @@ namespace netDxf.Objects
     public sealed class DxfMLeaderStyle : DxfDatabaseObject
     {
         private readonly MLeaderStyleProperties properties;
+        private short? storedEnvelopeValue = 2;
         /// <summary>Creates a detached style. Register referenced tables and blocks before adopting this object.</summary>
         public DxfMLeaderStyle() : base("MLEADERSTYLE") {this.properties=new MLeaderStyleProperties{Parent=this};}
         /// <summary>Gets editable style values and typed document-object references.</summary>
         public MLeaderStyleProperties Properties {get{return this.properties;}}
+        /// <summary>Gets or sets the optional group-179 envelope value. Null retains physical absence; the only qualified explicit value is 2.</summary>
+        /// <remarks>This retains the stored envelope marker without assigning undocumented semantics to it.</remarks>
+        public short? StoredEnvelopeValue
+        {
+            get { return this.storedEnvelopeValue; }
+            set { if (value.HasValue && value.Value != 2) throw new ArgumentOutOfRangeException(nameof(value)); this.storedEnvelopeValue = value; }
+        }
         internal override IEnumerable<DxfObject> DatabaseReferences {get{return this.properties.References;}}
-        internal override DxfDatabaseObject CloneShell() {var copy=new DxfMLeaderStyle();this.properties.CopyValuesTo(copy.properties);return copy;}
+        internal override DxfDatabaseObject CloneShell() {var copy=new DxfMLeaderStyle { StoredEnvelopeValue=this.StoredEnvelopeValue };this.properties.CopyValuesTo(copy.properties);return copy;}
         internal override void CopyDatabaseReferencesTo(DxfDatabaseObject target,Func<DxfObject,DxfObject> resolve)
         {((DxfMLeaderStyle)target).properties.MapReferences(resolve);}
         internal override void ValidateDatabaseSchema(DxfObjectDatabase database,List<string> errors)

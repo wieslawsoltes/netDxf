@@ -38,3 +38,19 @@ The eight pinned LibreDWG examples and samples listed in `tests/fixtures/lightli
 The eight source fixtures are explicitly **synthetic IxMilia.Dxf0.8.4 output with documented low-level augmentations**. They cover four profiles and both original transports, five explicitly chosen raw version values, an empty list, duplicate LIGHT targets and independently stored names. The generator repairs known unrelated producer scaffold problems (missing root owner, empty optional handle strings and unscoped default STYLE1071), adds common metadata, and replaces derived names with declared independent names. The manifest records original and final byte hashes and every augmentation. No native AutoCAD-created input, native LIGHTLIST execution or semantic-version validity is claimed.
 
 The mandatory `tools/verify_lightlist.py` requires exactly32 output drawings:16 external round-trips,8 authored graphs and8 mapped clones. It uses independent low-level parsing because ezdxf has no LIGHTLIST model and IxMilia's reader drops the names. It checks exact grammar, signed versions, identities, ordered references, names, dictionary aliases, extension ownership, XData, class declarations, LIGHT vectors and following LINE. Zero ezdxf audit changes qualify only the ancillary common graph.
+
+## Qualification receipt
+
+At production checkpoint `6bcc867` with the stricter independent gate from `4e4870e`:
+
+| Check | Result |
+| --- | --- |
+| Focused LIGHTLIST conformance | 189 passed, 0 failed |
+| Full Debug conformance | 22,236 passed, 0 failed |
+| Full Release conformance | 22,236 passed, 0 failed |
+| Release build targets | netstandard2.0, net471, net48, net6.0, net8.0 compiled |
+| Independent Debug gates | 66 scripts passed, 0 failed |
+| Independent Release gates | 66 scripts passed, 0 failed |
+| LIGHTLIST gate in each configuration | 32 required drawings, 112 physical LIGHTLIST objects |
+
+The189 focused cases include120 recognized malformed packets,24 private-extension fallbacks,16 independent-source round-trips,8 authored graphs,8 mapped clones,8 class contracts,4 older-profile checks and1 authoring-validation scenario. Additional independent negative probes reject an altered stored name and a payload group5 that points at the LIGHTLIST object instead of its LIGHT. No native AutoCAD-created LIGHTLIST or native application behavior is part of these results.

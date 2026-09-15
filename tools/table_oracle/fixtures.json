@@ -1,0 +1,571 @@
+{
+  "acadsharp_commit": "f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11",
+  "csutilities_commit": "b1f53ee2c68143173100d031adcdb275f524aea9",
+  "files": [
+    {
+      "file": "acad_table_simple.dxf",
+      "url": "https://raw.githubusercontent.com/mozman/ezdxf/v1.4.4/examples_dxf/acad_table_simple.dxf",
+      "sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "profile": "AC1027",
+      "tables": 1,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "B3",
+          "owner": "B2",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "AF"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              2
+            ],
+            [
+              361,
+              "B0"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "AF",
+              "kind": "TABLECONTENT",
+              "owner": "B3"
+            },
+            {
+              "code": 361,
+              "handle": "B0",
+              "kind": "TABLEGEOMETRY",
+              "owner": "B3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "url": "https://raw.githubusercontent.com/mozman/ezdxf/v1.4.4/examples_dxf/acad_table_with_blk_ref.dxf",
+      "sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "profile": "AC1032",
+      "tables": 1,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "119",
+          "owner": "118",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "116"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              9
+            ],
+            [
+              361,
+              "117"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "116",
+              "kind": "TABLECONTENT",
+              "owner": "119"
+            },
+            {
+              "code": 361,
+              "handle": "117",
+              "kind": "TABLEGEOMETRY",
+              "owner": "119"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "url": "https://raw.githubusercontent.com/DomCR/ACadSharp/f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11/samples/sample_AC1024_ascii.dxf",
+      "sha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+      "profile": "AC1024",
+      "tables": 2,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "1311",
+          "owner": "1310",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "747"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              6
+            ],
+            [
+              361,
+              "748"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "747",
+              "kind": "TABLECONTENT",
+              "owner": "1311"
+            },
+            {
+              "code": 361,
+              "handle": "748",
+              "kind": "TABLEGEOMETRY",
+              "owner": "1311"
+            }
+          ]
+        },
+        {
+          "handle": "1321",
+          "owner": "1320",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "131E"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              3
+            ],
+            [
+              361,
+              "131F"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "131E",
+              "kind": "TABLECONTENT",
+              "owner": "1321"
+            },
+            {
+              "code": 361,
+              "handle": "131F",
+              "kind": "TABLEGEOMETRY",
+              "owner": "1321"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "url": "https://raw.githubusercontent.com/DomCR/ACadSharp/f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11/samples/sample_AC1018_ascii.dxf",
+      "sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+      "profile": "AC1018",
+      "tables": 2,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "13DF",
+          "owner": "13DE",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "747"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              6
+            ],
+            [
+              361,
+              "748"
+            ],
+            [
+              102,
+              "ACAD_ROUNDTRIP_PRE2007_TABLE"
+            ],
+            [
+              90,
+              7
+            ],
+            [
+              91,
+              3
+            ],
+            [
+              102,
+              "ACAD_ROUNDTRIP_PRE2007_TABLECELL"
+            ],
+            [
+              360,
+              "143D"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "747",
+              "kind": "TABLECONTENT",
+              "owner": "13DF"
+            },
+            {
+              "code": 361,
+              "handle": "748",
+              "kind": "TABLEGEOMETRY",
+              "owner": "13DF"
+            },
+            {
+              "code": 360,
+              "handle": "143D",
+              "kind": "DATATABLE",
+              "owner": "13DF"
+            }
+          ]
+        },
+        {
+          "handle": "13F2",
+          "owner": "13F1",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "13EF"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              3
+            ],
+            [
+              361,
+              "13F0"
+            ],
+            [
+              102,
+              "ACAD_ROUNDTRIP_PRE2007_TABLE"
+            ],
+            [
+              90,
+              4
+            ],
+            [
+              91,
+              5
+            ],
+            [
+              102,
+              "ACAD_ROUNDTRIP_PRE2007_TABLECELL"
+            ],
+            [
+              360,
+              "145B"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "13EF",
+              "kind": "TABLECONTENT",
+              "owner": "13F2"
+            },
+            {
+              "code": 361,
+              "handle": "13F0",
+              "kind": "TABLEGEOMETRY",
+              "owner": "13F2"
+            },
+            {
+              "code": 360,
+              "handle": "145B",
+              "kind": "DATATABLE",
+              "owner": "13F2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "url": "https://raw.githubusercontent.com/DomCR/ACadSharp/f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11/samples/sample_AC1021_ascii.dxf",
+      "sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+      "profile": "AC1021",
+      "tables": 2,
+      "ezdxf_audit": {
+        "errors": 0,
+        "repairs": 0
+      },
+      "wrappers": [
+        {
+          "handle": "1375",
+          "owner": "1374",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "747"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              6
+            ],
+            [
+              361,
+              "748"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "747",
+              "kind": "TABLECONTENT",
+              "owner": "1375"
+            },
+            {
+              "code": 361,
+              "handle": "748",
+              "kind": "TABLEGEOMETRY",
+              "owner": "1375"
+            }
+          ]
+        },
+        {
+          "handle": "1388",
+          "owner": "1387",
+          "payload": [
+            [
+              102,
+              "ACAD_ROUNDTRIP_2008_TABLE_ENTITY"
+            ],
+            [
+              360,
+              "1385"
+            ],
+            [
+              70,
+              2
+            ],
+            [
+              90,
+              1
+            ],
+            [
+              10,
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              3
+            ],
+            [
+              361,
+              "1386"
+            ]
+          ],
+          "children": [
+            {
+              "code": 360,
+              "handle": "1385",
+              "kind": "TABLECONTENT",
+              "owner": "1388"
+            },
+            {
+              "code": 361,
+              "handle": "1386",
+              "kind": "TABLEGEOMETRY",
+              "owner": "1388"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Verify declared 360/361 child ownership; this gate does not qualify TABLE cell data."""
 import argparse
+import gzip
+import hashlib
+import json
+import tempfile
 from pathlib import Path
 
 import ezdxf
@@ -34,6 +38,38 @@ def inspect(path, year, binary):
     check(len(list(doc.modelspace())) == 0, "Structural ownership fixture gained entities")
 
 
+def inspect_native(directory):
+    repository = Path(__file__).resolve().parents[1]
+    inventory = json.loads((repository / "tools/table_oracle/fixtures.json").read_text())["files"]
+    expected = {f"declared-native-{item['file']}-{wrapper['handle']}-{kind}.dxf"
+                for item in inventory for wrapper in item["wrappers"] for kind in ("text", "binary")}
+    check({p.name for p in directory.glob("declared-native-*.dxf")} == expected, "Expected all16 extracted native envelopes")
+    with tempfile.TemporaryDirectory() as temporary:
+        for item in inventory:
+            original = gzip.decompress((repository / "tests/fixtures/table-oracle" / (item["file"] + ".gz")).read_bytes())
+            check(hashlib.sha256(original).hexdigest() == item["sha256"], "Native fixture bytes changed")
+            source = Path(temporary) / item["file"]
+            source.write_bytes(original)
+            source_wire = records(source)
+            for wrapper in item["wrappers"]:
+                for binary in (False, True):
+                    path = directory / f"declared-native-{item['file']}-{wrapper['handle']}-{'binary' if binary else 'text'}.dxf"
+                    check(path.read_bytes().startswith(b"AutoCAD Binary DXF") == binary, "Extracted native transport changed")
+                    doc = ezdxf.readfile(path)
+                    check(doc.dxfversion == item["profile"], "Extracted native profile changed")
+                    wire = records(path)
+                    target = doc.rootdict["NATIVE_WRAPPER"]
+                    check(target.dxf.handle == wrapper["handle"] and target.dxf.owner == doc.rootdict.dxf.handle, "Native wrapper registration changed")
+                    before, after = source_wire[wrapper["handle"]], wire[wrapper["handle"]]
+                    start_before = before.index([100, "AcDbXrecord"])
+                    start_after = after.index([100, "AcDbXrecord"])
+                    check(before[start_before:] == after[start_after:], "Native XRECORD payload or cloning policy changed")
+                    for child in wrapper["children"]:
+                        check(wire[child["handle"]] == source_wire[child["handle"]], "Native opaque child body/identity/owner changed")
+                    print("PASS " + path.name)
+    print("PASS16 extracted native owning envelopes and unchanged opaque child records; external resource semantics are not asserted")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
@@ -46,6 +82,7 @@ def main():
             inspect(path, year, binary)
             print("PASS " + path.name)
     print("PASS 12 exact ownership envelopes and reciprocal child identities; TABLE cell/display semantics remain outside this gate")
+    inspect_native(args.directory)
 
 
 if __name__ == "__main__":

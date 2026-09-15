@@ -19,6 +19,10 @@ internal static partial class Program
         foreach (bool binary in new[] { false, true })
             foreach (bool duplicate in new[] { false, true })
                 Run($"declared-ownership/malformed-envelope/{binary}/{duplicate}", () => DeclaredOwnershipMalformed(binary, duplicate));
+        foreach (string file in new[] { "acad_table_simple.dxf", "acad_table_with_blk_ref.dxf", "sample_AC1018_ascii.dxf", "sample_AC1021_ascii.dxf", "sample_AC1024_ascii.dxf" })
+            foreach (bool binary in new[] { false, true })
+                Run($"declared-ownership/native-packet/{file}/{binary}", () => DeclaredOwnershipNativePackets(file, binary));
+        Run("declared-ownership/handle-case", DeclaredOwnershipHandleCase);
         Run("declared-ownership/payload-protection", DeclaredOwnershipPayload);
         Run("declared-ownership/bind-atomicity", DeclaredOwnershipBindAtomicity);
         Run("declared-ownership/adoption-atomicity", DeclaredOwnershipAdoptionAtomicity);
@@ -126,6 +130,72 @@ internal static partial class Program
         Check(rejected, "Malformed single-section envelope loaded");
     }
 
+    private static void DeclaredOwnershipNativePackets(string file, bool binary)
+    {
+        using var compressed = File.OpenRead(Path.Combine("tests", "fixtures", "table-oracle", file + ".gz"));
+        using var decompressor = new System.IO.Compression.GZipStream(compressed, System.IO.Compression.CompressionMode.Decompress);
+        using var original = new MemoryStream(); decompressor.CopyTo(original); byte[] bytes = original.ToArray();
+        using var inventory = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine("tools", "table_oracle", "fixtures.json")));
+        string expectedHash = inventory.RootElement.GetProperty("files").EnumerateArray().Single(v => v.GetProperty("file").GetString() == file).GetProperty("sha256").GetString()!;
+        Equal(expectedHash, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)).ToLowerInvariant(), "native source bytes");
+        original.Position = 0; var source = DxfRawDocument.Load(original);
+        var sourceObjects = source.Sections.Single(s => s.Name == "OBJECTS").Records;
+        foreach (var wrapper in sourceObjects.Where(r => r.Name == "XRECORD" && r.Tags.Any(t => t.Code == 102 && (string)t.Value == "ACAD_ROUNDTRIP_2008_TABLE_ENTITY")))
+        {
+            string wrapperHandle = (string)wrapper.Tags.Single(t => t.Code == 5).Value;
+            var children = wrapper.Tags.Where(t => t.Code is 360 or 361).Select(t => sourceObjects.Single(r => r.Tags.Any(h => h.Code == 5 && (string)h.Value == (string)t.Value))).ToArray();
+            var minimal = new DxfDocument(source.Version); string root = minimal.Objects.Root.Handle;
+            using var setup = new MemoryStream(); Check(minimal.Save(setup, binary), "native packet setup save"); setup.Position = 0;
+            var raw = DxfRawDocument.Load(setup); var dictionary = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "DICTIONARY" && r.Tags.Any(t => t.Code == 5 && (string)t.Value == root));
+            raw = raw.WithRecord(dictionary, dictionary.Tags.Concat(new[] { new DxfTag(3, "NATIVE_WRAPPER"), new DxfTag(360, wrapperHandle) }));
+            int boundary = raw.Sections.Single(s => s.Name == "OBJECTS").EndTagIndex - 1;
+            var packetTags = wrapper.Tags.Select(t => t.Code == 330 ? new DxfTag(330, root) : t).Concat(children.SelectMany(r => r.Tags));
+            raw = raw.WithTags(raw.Tags.Take(boundary).Concat(packetTags).Concat(raw.Tags.Skip(boundary)));
+            using var input = new MemoryStream(); raw.Save(input); input.Position = 0;
+            var loaded = DxfDocument.Load(input) ?? throw new Exception("Native owning packet load failed.");
+            var record = (DxfXRecord)loaded.GetObjectByHandle(wrapperHandle);
+            bool composite = file == "sample_AC1018_ascii.dxf";
+            Equal(!composite, record.IsSchemaManaged, "native envelope management policy");
+            int payloadStart = wrapper.Tags.ToList().FindIndex(t => t.Code == 100 && (string)t.Value == "AcDbXrecord") + 1;
+            if (wrapper.Tags[payloadStart].Code == 280) payloadStart++;
+            Check(wrapper.Tags.Skip(payloadStart).Select(t => (t.Code, t.Value)).SequenceEqual(record.Data.Select(t => (t.Code, t.Value))), "Native owning payload changed on input");
+            foreach (var child in children)
+            {
+                string handle = (string)child.Tags.Single(t => t.Code == 5).Value;
+                Check(ReferenceEquals(record, loaded.GetObjectByHandle(handle).Owner), "native child common owner changed");
+            }
+            Equal(0, loaded.Objects.Validate().Count, "native ownership validation");
+            using var output = new MemoryStream(); Check(loaded.Save(output, binary), "native owning packet save"); output.Position = 0;
+            File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"declared-native-{file}-{wrapperHandle}-{(binary ? "binary" : "text")}.dxf"), output.ToArray());
+            var savedRaw = DxfRawDocument.Load(output); var savedObjects = savedRaw.Sections.Single(s => s.Name == "OBJECTS").Records;
+            foreach (var child in children)
+            {
+                string handle = (string)child.Tags.Single(t => t.Code == 5).Value;
+                var after = savedObjects.Single(r => r.Tags.Any(t => t.Code == 5 && (string)t.Value == handle));
+                Check(OwnershipTagValues(child.Tags).SequenceEqual(OwnershipTagValues(after.Tags)), "Native opaque child record changed");
+            }
+        }
+    }
+
+    private static IEnumerable<(short Code, string Value)> OwnershipTagValues(IEnumerable<DxfTag> tags)
+    {
+        return tags.Select(t => (t.Code, t.Value is byte[] bytes ? Convert.ToHexString(bytes) : t.Value is double number ? BitConverter.DoubleToInt64Bits(number).ToString("X") : Convert.ToString(t.Value, System.Globalization.CultureInfo.InvariantCulture)!));
+    }
+
+    private static void DeclaredOwnershipHandleCase()
+    {
+        var doc = new DxfDocument();
+        for (int i = 0; i < 10; i++) doc.Objects.Root.Add("RESERVED_" + i, new DxfPlaceholder());
+        var graph = OwnershipGraph(); doc.Objects.Root.Add("GRAPH", graph.Record);
+        using var saved = new MemoryStream(); Check(doc.Save(saved), "handle case setup"); saved.Position = 0;
+        var raw = DxfRawDocument.Load(saved); var record = raw.Sections.Single(s => s.Name == "OBJECTS").Records.Single(r => r.Name == "XRECORD");
+        Check(record.Tags.Any(t => t.Code is 360 or 361 && (string)t.Value != ((string)t.Value).ToLowerInvariant()), "Handle-case probe lacks a letter");
+        using var input = new MemoryStream(); raw.WithRecord(record, record.Tags.Select(t => t.Code is 360 or 361 ? new DxfTag(t.Code, ((string)t.Value).ToLowerInvariant()) : t)).Save(input); input.Position = 0;
+        var loaded = DxfDocument.Load(input) ?? throw new Exception("Case-insensitive ownership reference load failed.");
+        Equal(0, loaded.Objects.Validate().Count, "Case-insensitive ownership validation");
+        using var output = new MemoryStream(); Check(loaded.Save(output), "Case-insensitive ownership save");
+    }
+
     private static void DeclaredOwnershipPayload()
     {
         var doc = new DxfDocument(); var graph = OwnershipGraph(); doc.Objects.Root.Add("GRAPH", graph.Record);
@@ -214,7 +284,10 @@ internal static partial class Program
         OwnershipSetOwner(graph.Geometry, doc.Objects.Root);
         Check(doc.Objects.Validate().Any(e => e.Contains("not reciprocal")), "registered ownership corruption was missed");
         using var output = new MemoryStream(new byte[16], true); long length = output.Length; long position = output.Position;
-        Throws<InvalidOperationException>(() => doc.Save(output));
+        bool rejected;
+        try { rejected = !doc.Save(output); } catch (InvalidOperationException) { rejected = true; }
+        Check(rejected, "Invalid graph was saved");
+        Check(output.ToArray().All(value => value == 0), "Invalid graph changed destination bytes");
         Equal(length, output.Length, "invalid graph changed destination length"); Equal(position, output.Position, "invalid graph changed destination position");
     }
 }

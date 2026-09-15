@@ -1695,6 +1695,7 @@ namespace netDxf
 
         private void Insert_AttributeAdded(Insert sender, AttributeChangeEventArgs e)
         {
+            this.BindMetadataObject(e.Item);
             this.NumHandles = e.Item.AssignHandle(this.NumHandles);
 
             e.Item.Layer = this.layers.Add(e.Item.Layer);
@@ -1712,6 +1713,7 @@ namespace netDxf
 
         private void Insert_AttributeRemoved(Insert sender, AttributeChangeEventArgs e)
         {
+            this.UnbindMetadataObject(e.Item);
             this.layers.References[e.Item.Layer.Name].Remove(e.Item);
             e.Item.LayerChanged -= this.Entity_LayerChanged;
 
@@ -1845,19 +1847,7 @@ namespace netDxf
 
         private void AddedObjects_AddItem(ObservableDictionary<string, DxfObject> sender, ObservableDictionaryEventArgs<string, DxfObject> e)
         {
-            DxfObject o = e.Item.Value;
-            if (o != null)
-            {
-                foreach (XData data in new List<XData>(o.XData.Values))
-                {
-                    ApplicationRegistry registry = this.CanonicalXDataRegistry(data.ApplicationRegistry);
-                    o.XData.CanonicalizeApplicationRegistry(data.ApplicationRegistry.Name, registry);
-                    this.appRegistries.References[registry.Name].Add(e.Item.Value);
-                }
-
-                o.XDataAddAppReg += this.DxfObject_XDataAddAppReg;
-                o.XDataRemoveAppReg += this.DxfObject_XDataRemoveAppReg;
-            }
+            foreach (DxfObject item in ObjectMetadataMembers(e.Item.Value)) this.BindMetadataObject(item);
         }
 
         private void AddedObjects_BeforeRemoveItem(ObservableDictionary<string, DxfObject> sender, ObservableDictionaryEventArgs<string, DxfObject> e)
@@ -1866,16 +1856,7 @@ namespace netDxf
 
         private void AddedObjects_RemoveItem(ObservableDictionary<string, DxfObject> sender, ObservableDictionaryEventArgs<string, DxfObject> e)
         {
-            DxfObject o = e.Item.Value;
-            if (o != null)
-            {
-                foreach (XData data in o.XData.Values)
-                {
-                    this.appRegistries.References[data.ApplicationRegistry.Name].Remove(e.Item.Value);
-                }
-                o.XDataAddAppReg -= this.DxfObject_XDataAddAppReg;
-                o.XDataRemoveAppReg -= this.DxfObject_XDataRemoveAppReg;
-            }
+            foreach (DxfObject item in ObjectMetadataMembers(e.Item.Value)) this.UnbindMetadataObject(item);
         }
 
         private ApplicationRegistry CanonicalXDataRegistry(ApplicationRegistry source)

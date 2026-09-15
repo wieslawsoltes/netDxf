@@ -6,16 +6,34 @@ AutoCAD semantics. ezdxf has no LIGHTLIST model; IxMilia drops stored entry name
 The ordered100/90/90/(5,1)* packet is therefore checked independently at tag level.
 """
 from pathlib import Path
-import argparse,hashlib,json
+import argparse,hashlib,json,io
 import ezdxf
 from ezdxf.lldxf.encoding import decode_dxf_unicode
-from verify_typed_container_inputs import wire_records
+from ezdxf.lldxf.tagger import ascii_tags_loader,binary_tags_loader,tag_compiler
 ROOT=Path(__file__).resolve().parents[1]
 VERSIONS={2007:'AC1021',2010:'AC1024',2013:'AC1027',2018:'AC1032'}
 NAMES=['Stored alias 青','',r'Literal\U+0041 🧪']
 STORED_VERSIONS={-2147483648,-7,0,42,2147483647}
 def check(value,message):
  if not value:raise ValueError(message)
+def wire_records(path):
+ data=path.read_bytes();loader=binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig'),newline=None))
+ records={};current=[];identities=set()
+ def flush():
+  if not current or current[0].value in('SECTION','ENDSEC','EOF','ENDTAB'):return
+  prefix=[]
+  for t in current[1:]:
+   if t.code in(100,1001):break
+   if t.code in(5,105):prefix.append(t.value)
+  if not prefix:return
+  check(len(prefix)==1,'Multiple record identities before subclass')
+  identity=int(prefix[0],16);check(identity not in identities,'Duplicate numeric object identity');identities.add(identity)
+  records[prefix[0]]=list(current)
+ for tag in tag_compiler(loader):
+  if tag.code==0:flush();current=[]
+  current.append(tag)
+ flush();return records
+
 def packet(tags):
  start=next(i for i,t in enumerate(tags) if t.code==100)
  end=next((i for i in range(start,len(tags)) if tags[i].code==1001),len(tags))
@@ -89,6 +107,8 @@ def authored(path,year,binary,source=None):
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('artifacts',type=Path);args=parser.parse_args()
  root=ROOT/'tests/fixtures/lightlist';manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+ check(ezdxf.__version__=='1.4.4','Qualification requires pinned ezdxf1.4.4')
+ check(manifest['producer_package_sha256']=='3b08f5b604c958ea6c29f107f751d75abdf3328713ec586bc4fdbf0302e24c81','Producer package hash pin differs')
  check(manifest['producer']=='IxMilia.Dxf 0.8.4' and manifest['secondary_transport_writer']=='ezdxf 1.4.4 low-level tag writer' and manifest['native_autocad'] is False,'Synthetic producer qualification changed')
  fixtures=manifest['fixtures'];expected_inputs={(f'independent-lightlist-R{year}-{transport}.dxf',year,version,transport=='binary') for year,version in VERSIONS.items() for transport in('ascii','binary')}
  check(len(fixtures)==8 and {(f['file'],f['year'],f['version'],f['binary']) for f in fixtures}==expected_inputs,'Exact eight source profiles differ')

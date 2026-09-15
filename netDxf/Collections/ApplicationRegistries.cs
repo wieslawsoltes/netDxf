@@ -82,7 +82,7 @@ namespace netDxf.Collections
             }
 
             this.List.Add(appReg.Name, appReg);
-            this.References.Add(appReg.Name, new DxfObjectReferences());
+            this.References.Add(appReg.Name, new DxfObjectReferences(true));
 
             appReg.Owner = this;
 

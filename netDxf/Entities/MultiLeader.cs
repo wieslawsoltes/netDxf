@@ -14,6 +14,7 @@ namespace netDxf.Entities
         private readonly MLeaderProperties properties;
         private readonly MLeaderContext context;
         internal bool PendingInputReferences;
+        private short? storedVersion = 2;
         /// <summary>Creates a leader with an empty context. Assign registered style, linetype and text-style references before adding it to a document.</summary>
         public MultiLeader() : base(EntityType.MultiLeader,"MULTILEADER")
         { this.properties=new MLeaderProperties{Parent=this};this.context=new MLeaderContext{Parent=this}; }
@@ -21,7 +22,13 @@ namespace netDxf.Entities
         public MLeaderProperties Properties {get{return this.properties;}}
         /// <summary>Gets the independently stored coordinate, content and leader context.</summary>
         public MLeaderContext Context {get{return this.context;}}
-        /// <summary>Gets the qualified AcDbMLeader payload version, always 2.</summary>
+        /// <summary>Gets or sets the optional group-270 envelope value. Null retains physical absence; the only qualified explicit value is 2.</summary>
+        public short? StoredVersion
+        {
+            get { return this.storedVersion; }
+            set { if (value.HasValue && value.Value != 2) throw new ArgumentOutOfRangeException(nameof(value)); this.storedVersion = value; }
+        }
+        /// <summary>Gets the qualified effective AcDbMLeader grammar version, always 2, including when group 270 is absent.</summary>
         public short Version {get{return 2;}}
         internal IEnumerable<MLeaderData> Data {get{yield return this.properties;yield return this.context;}}
         /// <summary>Validates the complete value grammar and, when registered, every object reference.</summary>
@@ -75,6 +82,7 @@ namespace netDxf.Entities
         {
             var copy=new MultiLeader {Layer=(Layer)this.Layer.Clone(),Linetype=(Linetype)this.Linetype.Clone(),Color=(AciColor)this.Color.Clone(),Lineweight=this.Lineweight,
                 Transparency=(Transparency)this.Transparency.Clone(),LinetypeScale=this.LinetypeScale,IsVisible=this.IsVisible,Normal=this.Normal};
+            copy.StoredVersion=this.StoredVersion;
             this.properties.CopyValuesTo(copy.properties);this.properties.CopyChildrenTo(copy.properties);
             this.context.CopyValuesTo(copy.context);this.context.CopyChildrenTo(copy.context);
             foreach(XData data in this.XData.Values)copy.XData.Add((XData)data.Clone());

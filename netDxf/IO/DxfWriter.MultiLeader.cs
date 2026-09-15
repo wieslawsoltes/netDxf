@@ -18,18 +18,22 @@ namespace netDxf.IO
         {
             int entities=this.doc.Blocks.Sum(b=>b.Entities.OfType<MultiLeader>().Count());
             int styles=this.doc.Objects.Items.Count(o=>o.CodeName=="MLEADERSTYLE");
-            this.PrepareMultiLeaderClass(definitions,"MULTILEADER","AcDbMLeader","ACDB_MLEADER_CLASS",true,entities);
-            this.PrepareMultiLeaderClass(definitions,"MLEADERSTYLE","AcDbMLeaderStyle","ACDB_MLEADERSTYLE_CLASS",false,styles);
+            this.PrepareMultiLeaderClass(definitions,"MULTILEADER","AcDbMLeader","ACDB_MLEADER_CLASS",true,entities,entities>0);
+            this.PrepareMultiLeaderClass(definitions,"MLEADERSTYLE","AcDbMLeaderStyle","ACDB_MLEADERSTYLE_CLASS",false,styles,this.doc.Objects.Items.Any(o=>o is DxfMLeaderStyle));
         }
-        private void PrepareMultiLeaderClass(DxfClassCollection definitions,string name,string cpp,string app,bool entity,int count)
+        private void PrepareMultiLeaderClass(DxfClassCollection definitions,string name,string cpp,string app,bool entity,int count,bool typed)
         {
             if(definitions.Contains(name))
             {
                 DxfClass definition=definitions[name];
-                if(definition.CppClassName!=cpp||definition.IsEntity!=entity)throw new System.IO.InvalidDataException("CLASS conflicts with "+name);
+                if(definition.CppClassName!=cpp||definition.IsEntity!=entity)
+                {
+                    if(typed)throw new System.IO.InvalidDataException("CLASS conflicts with "+name);
+                    return;
+                }
                 definition.InstanceCount=count;
             }
-            else if(count>0)definitions.Add(new DxfClass(name,cpp,app){ProxyFlags=entity?1025:4095,IsEntity=entity,InstanceCount=count});
+            else if(typed)definitions.Add(new DxfClass(name,cpp,app){ProxyFlags=entity?1025:4095,IsEntity=entity,InstanceCount=count});
         }
         private void WriteMLeaderVector(short code,Vector3 value)
         {this.chunk.Write(code,value.X);this.chunk.Write((short)(code+10),value.Y);this.chunk.Write((short)(code+20),value.Z);}
@@ -47,7 +51,7 @@ namespace netDxf.IO
         }
         private void WriteMultiLeader(MultiLeader leader)
         {
-            this.chunk.Write(100,"AcDbMLeader");this.chunk.Write(270,leader.Version);this.WriteMLeaderContext(leader.Context);
+            this.chunk.Write(100,"AcDbMLeader");if(leader.StoredVersion.HasValue)this.chunk.Write(270,leader.StoredVersion.Value);this.WriteMLeaderContext(leader.Context);
             this.WriteMLeaderFields(leader.Properties,f=>f.Code!=294&&f.Code!=178&&f.Code!=179&&f.Code!=45&&f.Code!=271&&f.Code!=272&&f.Code!=273&&f.Code!=295);
             foreach(var arrow in leader.Properties.ArrowHeads)this.WriteMLeaderFields(arrow);
             foreach(var attribute in leader.Properties.BlockAttributes)this.WriteMLeaderFields(attribute);
@@ -88,7 +92,7 @@ namespace netDxf.IO
         private bool WriteMLeaderStylePayload(DxfDatabaseObject item)
         {
             if(!(item is DxfMLeaderStyle style))return false;
-            this.chunk.Write(100,"AcDbMLeaderStyle");this.chunk.Write(179,(short)2);this.WriteMLeaderFields(style.Properties);return true;
+            this.chunk.Write(100,"AcDbMLeaderStyle");if(style.StoredEnvelopeValue.HasValue)this.chunk.Write(179,style.StoredEnvelopeValue.Value);this.WriteMLeaderFields(style.Properties);return true;
         }
     }
 }

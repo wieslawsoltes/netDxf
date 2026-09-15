@@ -361,7 +361,12 @@ namespace netDxf.Collections
         {
             XData item = this.innerDictionary[appId];
             if (!ReferenceEquals(item.ApplicationRegistry, registry))
-                this.ReplaceForBinding(appId, item.CopyForRegistry(registry));
+            {
+                // Keep a caller-held value live in its one container; Acquire isolates shared values.
+                this.Release(item);
+                item.ApplicationRegistry = registry;
+                this.Acquire(item);
+            }
         }
         internal void ValidateApplicationRegistryRename(ApplicationRegistry registry, string newName)
         {

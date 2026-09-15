@@ -106,7 +106,7 @@ namespace netDxf.Objects
                 errors.Add("Invalid TABLE roundtrip ownership slot codes: " + this.Handle);
             if (this.tableContent.CodeName != "TABLECONTENT" || this.tableGeometry.CodeName != "TABLEGEOMETRY")
                 errors.Add("Invalid TABLE roundtrip ownership target types: " + this.Handle);
-            if (this.Database != null && ((string)this.Data[this.tableContentSlot].Value != this.tableContent.Handle || (string)this.Data[this.tableGeometrySlot].Value != this.tableGeometry.Handle))
+            if (this.Database != null && (!string.Equals((string)this.Data[this.tableContentSlot].Value, this.tableContent.Handle, StringComparison.OrdinalIgnoreCase) || !string.Equals((string)this.Data[this.tableGeometrySlot].Value, this.tableGeometry.Handle, StringComparison.OrdinalIgnoreCase)))
                 errors.Add("TABLE roundtrip ownership handle mismatch: " + this.Handle);
         }
     }

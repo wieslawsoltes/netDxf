@@ -12,6 +12,8 @@ from ezdxf.lldxf.types import cast_tag_value
 from ezdxf.lldxf.tagwriter import BinaryTagWriter
 ROOT=Path(__file__).resolve().parent
 VERSIONS={2007:'AC1021',2010:'AC1024',2013:'AC1027',2018:'AC1032'}
+PACKAGE_SHA256='3b08f5b604c958ea6c29f107f751d75abdf3328713ec586bc4fdbf0302e24c81'
+PACKAGE_SHA512='T84UGifvXWXlQ9Fg2l+on3X8UR4zDhDnG/SNiE3uLuS2f4l4MyBi29GULt7A+bxCrgir0izK+xyLcs4xqFSW/Q=='
 NAMES=['Stored alias 青', '', r'Literal\U+0041 🧪']
 def records(path):
  data=path.read_bytes(); loader=binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig'),newline=None))
@@ -37,7 +39,7 @@ def output(path,rs,version,binary):
 
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('producer_output',type=Path);args=parser.parse_args()
- manifest={'producer':'IxMilia.Dxf 0.8.4','secondary_transport_writer':'ezdxf 1.4.4 low-level tag writer','native_autocad':False,'qualification':'Published storage grammar only; all version values explicitly synthetic and uninterpreted.',
+ manifest={'producer':'IxMilia.Dxf 0.8.4','producer_package_sha256':PACKAGE_SHA256,'producer_package_sha512':PACKAGE_SHA512,'secondary_transport_writer':'ezdxf 1.4.4 low-level tag writer','native_autocad':False,'qualification':'Published storage grammar only; all version values explicitly synthetic and uninterpreted.',
  'augmentations':['Remove IxMilia default empty optional handle fields330..369; they are not valid hexadecimal DXF handles.','Remove IxMilia default unscoped STYLE1071=0 (2010+) lacking required1001 application marker; no LIGHTLIST data is involved.','Add missing root dictionary owner330=0 (IxMilia emits no root owner).','Replace each populated LIGHTLIST group1 with independent names; IxMilia derives these names from LIGHT.Name and discards them when reading.','Add documented owner reactors, one extension dictionary/XRECORD, APPID and terminal XData, and update HANDSEED.','Use a custom QA_LIGHTLISTS dictionary; this does not qualify ACAD_LIGHT application placement.','Re-encode augmented low-level tags in the original transport; neither high-level producer saves them again.'], 'stored_names':NAMES,'fixtures':[]}
  for year,version in VERSIONS.items():
   for binary in (False,True):

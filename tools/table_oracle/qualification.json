@@ -1,0 +1,398 @@
+{
+  "acadsharp_commit": "f6a7f1e7e502c6fe9d1e840e576b6124ec0ded11",
+  "csutilities_commit": "b1f53ee2c68143173100d031adcdb275f524aea9",
+  "source_modifications": false,
+  "build_override": "TargetFrameworks=net8.0;LangVersion=preview;GeneratePackageOnBuild=false",
+  "scope": "Flat ACAD_TABLE entity cell/value decoding; backing TABLECONTENT association, TABLEGEOMETRY and CELLSTYLEMAP are not qualified by this reader.",
+  "files": [
+    {
+      "file": "acad_table_simple.dxf",
+      "sha256": "2fc8d0e9517b36dd13db95740b37bc2f534005f16abc222faab036c3407d9e8d",
+      "version": "AC1027",
+      "strict_read_succeeded": true,
+      "tables": [
+        {
+          "handle": "9C",
+          "rows": 3,
+          "columns": 3,
+          "linked_content_handle": "0",
+          "style_handle": "6B",
+          "display_block": "9D",
+          "column_widths": [
+            152,
+            152,
+            152
+          ],
+          "row_heights": [
+            11,
+            9,
+            9
+          ]
+        }
+      ],
+      "backing_contents": [
+        {
+          "handle": "AF",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        }
+      ],
+      "notification_counts": {
+        "None": 511,
+        "NotImplemented": 6,
+        "Warning": 34
+      },
+      "unsupported_table_types": [
+        "CELLSTYLEMAP",
+        "TABLEGEOMETRY"
+      ]
+    },
+    {
+      "file": "acad_table_with_blk_ref.dxf",
+      "sha256": "7c42eac2e0c21b386273294b7937845ddda3da58f85c30fe130db229570f8015",
+      "version": "AC1032",
+      "strict_read_succeeded": true,
+      "tables": [
+        {
+          "handle": "CF",
+          "rows": 10,
+          "columns": 5,
+          "linked_content_handle": "0",
+          "style_handle": "6B",
+          "display_block": "D0",
+          "column_widths": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "row_heights": [
+            11,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ]
+        }
+      ],
+      "backing_contents": [
+        {
+          "handle": "116",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        }
+      ],
+      "notification_counts": {
+        "None": 679,
+        "NotImplemented": 6,
+        "Warning": 34
+      },
+      "unsupported_table_types": [
+        "CELLSTYLEMAP",
+        "TABLEGEOMETRY"
+      ]
+    },
+    {
+      "file": "sample_AC1018_ascii.dxf",
+      "sha256": "71117bafa8f0d9816607768c8fb21676c83f99892c537711a68c24aa7e06e798",
+      "version": "AC1018",
+      "strict_read_succeeded": true,
+      "tables": [
+        {
+          "handle": "528",
+          "rows": 7,
+          "columns": 3,
+          "linked_content_handle": "0",
+          "style_handle": "87",
+          "display_block": "570",
+          "column_widths": [
+            34.19820493727295,
+            34.19820493727295,
+            34.19820493727295
+          ],
+          "row_heights": [
+            7.491035367212169,
+            6.351095202636404,
+            6.351095202636404,
+            6.351095202636404,
+            6.412163425738677,
+            6.412163425738677,
+            6.351095202636404
+          ]
+        },
+        {
+          "handle": "A35",
+          "rows": 4,
+          "columns": 5,
+          "linked_content_handle": "0",
+          "style_handle": "87",
+          "display_block": "A36",
+          "column_widths": [
+            2.5,
+            2.5,
+            2.5,
+            2.5,
+            2.5
+          ],
+          "row_heights": [
+            0.4533333333333334,
+            0.6067530695770805,
+            0.6045429740791269,
+            0.6045429740791269
+          ]
+        }
+      ],
+      "backing_contents": [
+        {
+          "handle": "747",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        },
+        {
+          "handle": "13EF",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        }
+      ],
+      "notification_counts": {
+        "None": 3672,
+        "NotImplemented": 7,
+        "Warning": 54
+      },
+      "unsupported_table_types": [
+        "CELLSTYLEMAP"
+      ]
+    },
+    {
+      "file": "sample_AC1021_ascii.dxf",
+      "sha256": "39ebdd9a48fef7a6240a04e3b5ca6d45ba5bb30b560fb9dadf26774e1af83731",
+      "version": "AC1021",
+      "strict_read_succeeded": true,
+      "tables": [
+        {
+          "handle": "528",
+          "rows": 7,
+          "columns": 3,
+          "linked_content_handle": "0",
+          "style_handle": "87",
+          "display_block": "570",
+          "column_widths": [
+            34.19820493727295,
+            34.19820493727295,
+            34.19820493727295
+          ],
+          "row_heights": [
+            7.491035367212169,
+            6.351095202636404,
+            6.351095202636404,
+            6.351095202636404,
+            6.412163425738677,
+            6.412163425738677,
+            6.351095202636404
+          ]
+        },
+        {
+          "handle": "A35",
+          "rows": 4,
+          "columns": 5,
+          "linked_content_handle": "0",
+          "style_handle": "87",
+          "display_block": "A36",
+          "column_widths": [
+            2.5,
+            2.5,
+            2.5,
+            2.5,
+            2.5
+          ],
+          "row_heights": [
+            0.4533333333333334,
+            0.6067530695770805,
+            0.6045429740791269,
+            0.6045429740791269
+          ]
+        }
+      ],
+      "backing_contents": [
+        {
+          "handle": "747",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        },
+        {
+          "handle": "1385",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        }
+      ],
+      "notification_counts": {
+        "None": 1214,
+        "NotImplemented": 13,
+        "Warning": 51
+      },
+      "unsupported_table_types": [
+        "CELLSTYLEMAP",
+        "TABLEGEOMETRY"
+      ]
+    },
+    {
+      "file": "sample_AC1024_ascii.dxf",
+      "sha256": "c97e857047ad4cecd84754ea1a8638e47508e339fd489f1e895ee7332127b372",
+      "version": "AC1024",
+      "strict_read_succeeded": true,
+      "tables": [
+        {
+          "handle": "528",
+          "rows": 7,
+          "columns": 3,
+          "linked_content_handle": "0",
+          "style_handle": "87",
+          "display_block": "570",
+          "column_widths": [
+            34.19820493727295,
+            34.19820493727295,
+            34.19820493727295
+          ],
+          "row_heights": [
+            7.491035367212169,
+            6.351095202636404,
+            6.351095202636404,
+            6.351095202636404,
+            6.412163425738677,
+            6.412163425738677,
+            6.351095202636404
+          ]
+        },
+        {
+          "handle": "A35",
+          "rows": 4,
+          "columns": 5,
+          "linked_content_handle": "0",
+          "style_handle": "87",
+          "display_block": "A36",
+          "column_widths": [
+            2.5,
+            2.5,
+            2.5,
+            2.5,
+            2.5
+          ],
+          "row_heights": [
+            0.4533333333333334,
+            0.6067530695770805,
+            0.6045429740791269,
+            0.6045429740791269
+          ]
+        }
+      ],
+      "backing_contents": [
+        {
+          "handle": "747",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        },
+        {
+          "handle": "131E",
+          "found": false,
+          "owner": null,
+          "style": null,
+          "columnWidths": null,
+          "rowHeights": null,
+          "values": null
+        }
+      ],
+      "notification_counts": {
+        "None": 1232,
+        "NotImplemented": 15,
+        "Warning": 55
+      },
+      "unsupported_table_types": [
+        "CELLSTYLEMAP",
+        "TABLEGEOMETRY"
+      ]
+    }
+  ],
+  "asserted_literal_comparisons": 100,
+  "flat_grid_count": 8,
+  "netdxf_whole_file_probe": {
+    "baseline_commit": "7d1e92b",
+    "prerequisite_checkpoint": "9c47d2d",
+    "full_file_saves_completed": 0,
+    "results": [
+      {
+        "file": "acad_table_simple.dxf",
+        "baseline_loaded": false,
+        "prerequisite_loaded": false,
+        "same_failure": true,
+        "error_type": "System.IO.InvalidDataException",
+        "message": "Unsupported MLEADERSTYLE group 298 (MULTILEADER payload tag 45)."
+      },
+      {
+        "file": "acad_table_with_blk_ref.dxf",
+        "baseline_loaded": false,
+        "prerequisite_loaded": false,
+        "same_failure": true,
+        "error_type": "System.IO.InvalidDataException",
+        "message": "Unsupported MLEADERSTYLE group 298 (MULTILEADER payload tag 45)."
+      },
+      {
+        "file": "sample_AC1024_ascii.dxf",
+        "baseline_loaded": false,
+        "prerequisite_loaded": false,
+        "same_failure": true,
+        "error_type": "System.IO.InvalidDataException",
+        "message": "AcDbEntity proxy graphics require one byte count; group 160 requires DXF 2013 or later."
+      },
+      {
+        "file": "sample_AC1018_ascii.dxf",
+        "baseline_loaded": false,
+        "prerequisite_loaded": false,
+        "same_failure": true,
+        "error_type": "System.NotSupportedException",
+        "message": "Typed MULTILEADER input requires the qualified R2007 or later profile."
+      },
+      {
+        "file": "sample_AC1021_ascii.dxf",
+        "baseline_loaded": false,
+        "prerequisite_loaded": false,
+        "same_failure": true,
+        "error_type": "System.IO.InvalidDataException",
+        "message": "Expected group 270, found 300 (MULTILEADER payload tag 0)."
+      }
+    ]
+  }
+}
