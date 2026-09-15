@@ -16,6 +16,8 @@ namespace netDxf.Entities
             get { return this.constantWidth; }
             set
             {
+                if (this.HasStoredRecords && value.HasValue)
+                    throw new NotSupportedException("ConstantWidth is a LWPOLYLINE field; use vertex width overrides for retained legacy POLYLINE records.");
                 if (value.HasValue) ValidateWidth(value.Value, nameof(value));
                 this.constantWidth = value;
             }
@@ -27,7 +29,7 @@ namespace netDxf.Entities
         public double GetEffectiveStartWidth(int vertexIndex)
         {
             Polyline2DVertex vertex = this.vertexes[vertexIndex];
-            return this.ConstantWidth.GetValueOrDefault() > 0 ? this.ConstantWidth.Value : vertex.StartWidth;
+            return this.ConstantWidth.GetValueOrDefault() > 0 ? this.ConstantWidth.Value : vertex.StartWidthOverride ?? this.LegacyDefaultStartWidth.GetValueOrDefault();
         }
 
         /// <summary>Gets the effective outgoing segment end width for the specified vertex.</summary>
@@ -36,7 +38,7 @@ namespace netDxf.Entities
         public double GetEffectiveEndWidth(int vertexIndex)
         {
             Polyline2DVertex vertex = this.vertexes[vertexIndex];
-            return this.ConstantWidth.GetValueOrDefault() > 0 ? this.ConstantWidth.Value : vertex.EndWidth;
+            return this.ConstantWidth.GetValueOrDefault() > 0 ? this.ConstantWidth.Value : vertex.EndWidthOverride ?? this.LegacyDefaultEndWidth.GetValueOrDefault();
         }
 
         internal static void ValidateWidth(double value, string name)
@@ -58,7 +60,9 @@ namespace netDxf.Entities
         private double GetWidthTransformScale(Matrix3 transformation)
         {
             this.ValidateVertexFidelity();
-            bool wide = this.ConstantWidth.GetValueOrDefault() > 0;
+            bool wide = this.ConstantWidth.GetValueOrDefault() > 0 || this.LegacyDefaultStartWidth.GetValueOrDefault() > 0
+                || this.LegacyDefaultEndWidth.GetValueOrDefault() > 0;
+            if (this.HasStoredRecords) foreach (Polyline2DVertex vertex in this.vertexes) wide |= vertex.Bulge != 0;
             foreach (Polyline2DVertex vertex in this.vertexes) wide |= vertex.StartWidth > 0 || vertex.EndWidth > 0;
             if (!wide) return 1;
             Matrix3 ocs = MathHelper.ArbitraryAxis(this.Normal);
@@ -81,6 +85,8 @@ namespace netDxf.Entities
                     if (vertex.Bulge != 0)
                         throw new NotSupportedException("Reflections of wide polylines with arc segments require explicit geometry conversion.");
             if (this.ConstantWidth.HasValue) ValidateWidth(this.ConstantWidth.Value * scale, "ConstantWidth");
+            if (this.LegacyDefaultStartWidth.HasValue) ValidateWidth(this.LegacyDefaultStartWidth.Value * scale, "LegacyDefaultStartWidth");
+            if (this.LegacyDefaultEndWidth.HasValue) ValidateWidth(this.LegacyDefaultEndWidth.Value * scale, "LegacyDefaultEndWidth");
             foreach (Polyline2DVertex vertex in this.vertexes)
             {
                 ValidateWidth(vertex.StartWidth * scale, "StartWidth");

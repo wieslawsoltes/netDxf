@@ -332,6 +332,7 @@ namespace netDxf.IO
             this.ResolveStoredPolylineRecords();
             this.ResolveStoredPolygonMeshRecords();
             this.ResolveStoredPolyfaceMeshRecords();
+            this.ResolveStoredPolyline2DRecords();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
             this.ResolveSections();
@@ -8490,6 +8491,8 @@ namespace netDxf.IO
         {
             if (this.chunk.Code == 100 && this.chunk.ReadString() == SubclassMarker.PolyfaceMesh)
                 return this.ReadStoredPolyfaceMesh();
+            if (this.chunk.Code == 100 && this.chunk.ReadString() == SubclassMarker.Polyline2D)
+                return this.ReadStoredPolyline2D();
             // the entity Polyline in DXF can actually hold four kinds of entities
             // 1. 3D polyline is the generic polyline
             // 2. Polygon mesh

@@ -35,17 +35,20 @@ namespace netDxf
         }
         private bool StoredPolylineReferencesRemoval(HashSet<DxfObject> removed)
         {
-            bool removesRecords = removed.Any(item => item is Polyline3DRecord || item is PolygonMeshRecord || item is PolyfaceMeshRecord);
+            bool removesRecords = removed.Any(item => item is Polyline3DRecord || item is PolygonMeshRecord || item is PolyfaceMeshRecord || item is Polyline2DRecord);
             foreach (Polyline3DRecord record in removed.OfType<Polyline3DRecord>())
                 if (record.HasPrivateData || record.ExtensionDictionary != null) return true;
             foreach (PolygonMeshRecord record in removed.OfType<PolygonMeshRecord>())
                 if (record.HasPrivateData || record.ExtensionDictionary != null) return true;
             foreach (PolyfaceMeshRecord record in removed.OfType<PolyfaceMeshRecord>())
                 if (record.HasPrivateData || record.ExtensionDictionary != null) return true;
+            foreach (Polyline2DRecord record in removed.OfType<Polyline2DRecord>())
+                if (record.HasPrivateData || record.ExtensionDictionary != null) return true;
+            if (removed.OfType<Polyline2D>().Any(polyline => polyline.HasPrivateHeader)) return true;
             if (removed.OfType<PolyfaceMesh>().Any(mesh => mesh.HasPrivateHeader)) return true;
             // Existing collection moves allocate a new parent handle. Object references
             // can follow that identity, but raw XData handle text needs an explicit map.
-            var parentHandles = new HashSet<DxfObject>(removed.Where(item => item is Polyline3D polyline && polyline.HasStoredRecords || item is PolygonMesh mesh && mesh.HasStoredRecords || item is PolyfaceMesh polyface && polyface.HasStoredRecords));
+            var parentHandles = new HashSet<DxfObject>(removed.Where(item => item is Polyline3D polyline && polyline.HasStoredRecords || item is PolygonMesh mesh && mesh.HasStoredRecords || item is PolyfaceMesh polyface && polyface.HasStoredRecords || item is Polyline2D legacy && legacy.HasStoredRecords));
             foreach (DxfObject item in removed)
                 foreach (XData data in item.XData.Values)
                     foreach (XDataRecord tag in data.XDataRecord)
@@ -60,7 +63,11 @@ namespace netDxf
                 if (item is PolyfaceMeshRecord polyfaceRecord && (polyfaceRecord.References.Any(removed.Contains)
                     || polyfaceRecord.OpaqueHandleTags.Any(tag => this.RemovedPolylineHandle((string)tag.Value, removed)))) return true;
                 if (item is PolyfaceMesh polyface && polyface.StoredHeaderReferences.Any(tag => this.RemovedPolylineHandle((string)tag.Value, removed))) return true;
-                if (!removesRecords) continue;
+                if (item is Polyline2DRecord legacyRecord && (legacyRecord.References.Any(removed.Contains)
+                    || legacyRecord.OpaqueHandleTags.Any(tag => this.RemovedPolylineHandle((string)tag.Value, removed)))) return true;
+                if (item is Polyline2D legacy && legacy.StoredHeaderReferences.Any(tag => this.RemovedPolylineHandle((string)tag.Value, removed))) return true;
+                // Retained children can reference ordinary entities through current common metadata.
+                if (!removesRecords && !(item is Polyline3DRecord || item is PolygonMeshRecord || item is PolyfaceMeshRecord || item is Polyline2DRecord)) continue;
                 if (item.Owner != null && removed.Contains(item.Owner) || item.ExtensionDictionary != null && removed.Contains(item.ExtensionDictionary)) return true;
                 if (item.PersistentReactors.Any(removed.Contains)) return true;
                 if (item is EntityObject entity && entity.Reactors.Any(removed.Contains)) return true;

@@ -128,6 +128,13 @@ namespace netDxf.Objects
                 }
                 if (item is PolyfaceMesh polyface)
                     foreach (DxfTag tag in polyface.StoredHeaderReferences) handle((string)tag.Value, "polyface header handle");
+                if (item is Polyline2DRecord legacyRecord)
+                {
+                    foreach (DxfObject target in legacyRecord.References) reference(target, "legacy 2D record reference");
+                    foreach (DxfTag tag in legacyRecord.OpaqueHandleTags) handle((string)tag.Value, "legacy 2D record handle");
+                }
+                if (item is Polyline2D legacy)
+                    foreach (DxfTag tag in legacy.StoredHeaderReferences) handle((string)tag.Value, "legacy 2D header handle");
                 if (item is StoredTable table)
                     foreach (DxfObject target in table.References) reference(target, "ACAD_TABLE reference");
                 if (item is MultiLeader leader)
