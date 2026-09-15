@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "ff2233122991a4454d42cc850b748dd9746a84a6",
-    "tree": "da7c6b2d62a2c593d7d24564290646d6664c39f9"
+    "commit": "a0b9fdb350988c456f9717dfe89dce62ffb77109",
+    "tree": "83299c4ff79430bd4232ff258345e751a88f1c7b"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 26980,
+    "test_cases": 27555,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 89,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/89/checks"
+    "last_implementation_pr": 90,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/90/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -647,6 +647,14 @@
     "MIX7": {
       "label": "Mixed association, UCS and TABLE backing graphs",
       "path": "doc/dxf-conformance/seventh-mixed-modules.md"
+    },
+    "SECTIONMANAGER": {
+      "label": "Immutable section-manager packets and exact source section references",
+      "path": "doc/dxf-conformance/section-manager.md"
+    },
+    "HATCHSOURCE": {
+      "label": "HATCH source identity, ordered association references and atomic lifecycle",
+      "path": "doc/dxf-conformance/hatch-source-relations.md"
     }
   },
   "features": [
@@ -731,7 +739,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "All 310–319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
+      "scope": "All 310\u2013319/1004 codes, valid bytes, mixed case, malformed input and missing lines; fixed #4.",
       "evidence": [
         "B"
       ]
@@ -1578,7 +1586,7 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer path framing and empty-input retention. Empty output rejects. General geometry, affine validity and associations remain partial.",
+      "scope": "Tested subsets include seeds, pixel size, XData, flags, closure, bulges, counted packets, fit metadata, outer path framing, empty-input retention and exact ordered source relations. Empty output rejects. General geometry, affine validity and automatic associative regeneration remain partial.",
       "evidence": [
         "HDOUBLE",
         "HSEED",
@@ -1592,7 +1600,8 @@
         "HEDGE",
         "HFIT",
         "HPATH",
-        "HEMPTY"
+        "HEMPTY",
+        "HATCHSOURCE"
       ]
     },
     {
@@ -2389,7 +2398,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Editable ordered typed payload codes1–369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
+      "scope": "Editable ordered typed payload codes1\u2013369 except5/105; post-subclass100/102 remain payload; binary defensive copies, text framing, Unicode, literal escapes and pointer remapping. Imported extended primitive tags retained without private schema evaluation.",
       "evidence": [
         "NODO"
       ]
@@ -2728,10 +2737,11 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS type and geometry bundles are stored with exact marker variants, bounded counts, explicit references and clone/erase guards. SECTION_MANAGER remains opaque; generation and private manager semantics remain open.",
+      "scope": "Public SECTIONSETTINGS/SECTION_SETTINGS bundles and source-bound SECTION_MANAGER/SECTIONMANAGER lists retain exact stored fields and explicit references with conservative lifecycle guards. Private manager variants, live sectioning, automatic membership updates and generation remain outside this scope.",
       "evidence": [
         "SECTIONSETTINGS",
-        "SECTION"
+        "SECTION",
+        "SECTIONMANAGER"
       ]
     },
     {
@@ -4204,11 +4214,12 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Separate fit retention and outer-count validation are now implemented; knot/degree/periodicity relations and geometry remain incomplete.",
+      "scope": "Checked LINE/ARC/ELLIPSE/SPLINE components and incremental lists. Separate fit retention, outer-count validation and nonperiodic knot/control/degree relations are implemented. Periodic semantics and geometry evaluation remain incomplete.",
       "evidence": [
         "HEDGE",
         "HFIT",
-        "HPATH"
+        "HPATH",
+        "HATCHREL"
       ]
     },
     {
@@ -4988,7 +4999,7 @@
         "AC1027": "T",
         "AC1032": "V"
       },
-      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000–2013 writer profile.",
+      "scope": "ACAD XDATA with actual linked MTEXT entities; same-block ownership and deferred physical-order-independent resolution. Conservative 2000\u20132013 writer profile.",
       "evidence": [
         "MTCOL"
       ]
@@ -5114,7 +5125,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320–329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
+      "scope": "Two-pass clone preserves aliases/defaults; remaps known handles and1005; preserves arbitrary320\u2013329values; snapshots external maps; rejects absent mappings/opaque subtrees before registration. Does not import arbitrary entity dependencies.",
       "evidence": [
         "NODO"
       ]
@@ -5387,7 +5398,7 @@
         "AC1027": "T",
         "AC1032": "T"
       },
-      "scope": "Optional group 284 values 0–3, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
+      "scope": "Optional group 284 values 0\u20133, preserving absence and explicit zero in entities and both attribute types; unsupported export rejected before output.",
       "evidence": [
         "COMMON"
       ]
@@ -5883,7 +5894,7 @@
       "area": "Typed object lifecycle",
       "pipeline": "typed",
       "feature": "Imported retained source identities",
-      "scope": "Scoped typed-reference resolution requires the accepted instance from the same physical common-header record. Explicit legacy collection conversions retain source bindings; discarded or generated objects cannot satisfy those source references.",
+      "scope": "Scoped typed-reference resolution requires the accepted instance from one unambiguous physical common-header record. Duplicate declarations cannot legitimize a retained target through a discarded record. Explicit legacy collection conversions retain source bindings; private nested control-group IDs are not declarations. Discarded or generated objects cannot satisfy source references.",
       "evidence": [
         "SOURCEID"
       ],
@@ -5904,7 +5915,7 @@
       "area": "Typed object lifecycle",
       "pipeline": "typed",
       "feature": "Numeric handle identity and null references",
-      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320–329 values preserve lexical data and do not become clone dependencies.",
+      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320\u2013329 values preserve lexical data and do not become clone dependencies.",
       "evidence": [
         "SOURCEID",
         "MIX5"
@@ -6326,7 +6337,7 @@
       "area": "Implemented field-level increments",
       "pipeline": "typed",
       "feature": "HATCH nonperiodic spline relations",
-      "scope": "Positive degree, finite supplied arrays, nondecreasing knots and nonperiodic knot/control/degree relationships are validated on read and before export mutation. Model/paper-space and all registered blocks are checked. Periodic count/shape evaluation and associative source closure remain unqualified.",
+      "scope": "Positive degree, finite supplied arrays, nondecreasing knots and nonperiodic knot/control/degree relationships are validated on read and before export mutation. Model/paper-space and all registered blocks are checked. Periodic count/shape evaluation remains unqualified; ordered source relation storage and lifecycle are covered separately.",
       "evidence": [
         "HATCHREL"
       ],
@@ -6425,6 +6436,48 @@
         "AC1027": "O",
         "AC1032": "O"
       }
+    },
+    {
+      "id": "typed-section-manager-stored-payload",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "SECTION_MANAGER immutable stored section list",
+      "scope": "Source-bound update flag and ordered section pointers with exact registered identities, preserved object spelling, root-anchor checks and clone/erase/profile refusal. Native R2018 evidence is distinguished from synthetic R2007+ schema cases.",
+      "evidence": [
+        "SECTIONMANAGER"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "V",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "hatch-source-relations",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "HATCH ordered source relations and association lifecycle",
+      "scope": "Retained ordered group97/330 references require unique physical source entities in the same block. Shared entities and repeated source uses are supported; mutable path instances have one owner. Adoption rejects before mutation; unlink/removal clears final backlinks. Non-associative records with source lists are an unsupported typed combination. Clones detach association; no automatic geometry regeneration or native CAD execution is claimed.",
+      "evidence": [
+        "HATCHSOURCE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -6436,7 +6489,7 @@
     {
       "id": "field-fidelity",
       "title": "Finish partial typed records",
-      "scope": "HATCH periodic spline semantics, full affine geometry and associative source closure; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining internal VERTEX variants. Nonperiodic HATCH relation validation and accepted stored weight retention are implemented. UCS base-reference storage and the qualified packed transparency/SECTION/SUN fields are implemented. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
+      "scope": "HATCH periodic spline semantics, full affine geometry and automatic associative regeneration; MESH subentity override values, frozen VPORT layers, extended rendering relationships and remaining internal VERTEX variants. Nonperiodic HATCH spline validation, accepted stored weights and ordered source-relation lifecycle are implemented. UCS base-reference storage and the qualified packed transparency/SECTION/SUN fields are implemented. MTEXT rendering, layout and annotation contexts remain open; SaveAtomic remains opt-in."
     },
     {
       "id": "new-entities",
@@ -6446,7 +6499,7 @@
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, SECTION_MANAGER, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT storage, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
+      "scope": "Editable TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, complete FIELD and DIMASSOC graphs, editable SECTION_MANAGER lifecycles, material/rendering and SUNSTUDY families. Immutable TABLESTYLE/FIELD/DIMASSOC/TABLECONTENT storage, stored SECTION_MANAGER lists, public SECTIONSETTINGS and registered SUN ownership have explicit source and lifecycle boundaries."
     },
     {
       "id": "historical-typed",

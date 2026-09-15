@@ -2,7 +2,7 @@
 
 Start with the [current version and feature comparison](version-feature-matrix.md), with typed editing distinguished from raw preservation and each format family shown separately. The machine-readable source is [coverage.json](coverage.json). It includes evidence links, a pinned production commit/tree, explicit missing/lossy/rejected states, and the remaining implementation sequence.
 
-The latest [association and child-record recovery checkpoint](checkpoint-recovery-2026-09-15.md) records PR #89: 26,980 passing cases, 96 independent gates in each local configuration, all five Release library targets, and a 270-row scoped comparison. It follows the [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) for PR #88 and the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
+The latest [SECTION_MANAGER, HATCH and source identity checkpoint](checkpoint-section-hatch-2026-09-15.md) records PR #90: 27,555 passing cases, 98 independent gates per configuration and 272 scoped rows. The [association and child-record recovery checkpoint](checkpoint-recovery-2026-09-15.md) records PR #89: 26,980 passing cases, 96 independent gates in each local configuration, all five Release library targets, and a 270-row scoped comparison. It follows the [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) for PR #88 and the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
 
 `DxfDocument` admits the six 2000–2018 format families. `DxfRawDocument` additionally admits R11/R12, R13 and R14 for ordered preservation and scoped immutable edits. Unknown raw records surviving is not evidence that the typed model can edit or evaluate them. No completeness percentage is inferred from test count.
 
@@ -41,3 +41,8 @@ Feature changes are grouped into reviewable PRs with applicable version/transpor
 Stored [UCS-record orthographic base references](ucs-record-base.md) preserve the distinct79/346 relationship, actual target identities and explicit-null presence. Independent producer packets qualify storage and lifecycle behavior; the published schema contradiction and lack of positive native packets remain documented.
 
 Loaded [ordinary 3D POLYLINE child records](polyline3d-records.md) retain VERTEX and SEQEND identities, optional packets, common metadata and exact native association references. The focused module has 382 Debug/Release cases and 90 independently checked outputs, including clone/removal guards and parent-reactor moves. It remains source/profile bound; fitted and legacy 2D records, arbitrary topology changes and full metadata-graph cloning remain separate work.
+
+The [immutable section manager](section-manager.md) retains the stored update flag,
+ordered section pointers and exact source identities with root-anchor and lifecycle
+guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
+storage; live sectioning and automatic membership maintenance remain separate.

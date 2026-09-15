@@ -1,0 +1,224 @@
+{
+  "associative_geometry_update": false,
+  "audit_errors": 0,
+  "audit_fixes": 0,
+  "boundary_paths": 120,
+  "fixtures": 24,
+  "hatches": 72,
+  "independent_reader": "ezdxf 1.4.4",
+  "native_cad_execution": false,
+  "native_originals": 6,
+  "negative_controls": [
+    {
+      "defect": "dropped_duplicate_source",
+      "rejection": "Stored HATCH source counts/order/duplicates, flags, identities, or geometry changed",
+      "sha256": "e2bf6b02cde420fb853c3bd12d78a6b72b526e64d65452219bc8d364fb6df37a"
+    },
+    {
+      "defect": "wrong_associative_flag",
+      "rejection": "Stored HATCH source counts/order/duplicates, flags, identities, or geometry changed",
+      "sha256": "603d5c7f9bf295d16dd0c31e653745168851f783a004ccbb45303f805ea7c12f"
+    },
+    {
+      "defect": "changed_source_identity",
+      "rejection": "Stored HATCH source counts/order/duplicates, flags, identities, or geometry changed",
+      "sha256": "76b37e4121dacb86fdde11c46909b72beb2d69e9174535722e6012993c44358a"
+    }
+  ],
+  "output_sha256": [
+    {
+      "file": "hatch-source-native-AutoCad2000-False-False.dxf",
+      "sha256": "e93db892259f4933ac547f8014255aeef9f566d88c8e44bea991c6457854ab22"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2000-False-True.dxf",
+      "sha256": "368faed12f80a31e165d828d1d67ef9c9c249cbc3ab9a2d5c4dc36a8736d5509"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2000-True-False.dxf",
+      "sha256": "e93db892259f4933ac547f8014255aeef9f566d88c8e44bea991c6457854ab22"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2000-True-True.dxf",
+      "sha256": "368faed12f80a31e165d828d1d67ef9c9c249cbc3ab9a2d5c4dc36a8736d5509"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2000-False-False.dxf",
+      "sha256": "862e4e3e77bf248f71f8229ea3ac3ca6a40624bde74f6a06af9855b08ac4a4b4"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2000-False-True.dxf",
+      "sha256": "ad02f0c8d75edcf4a0a551221582fa2576638a9f0105c16c02d2147d749f3015"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2000-True-False.dxf",
+      "sha256": "862e4e3e77bf248f71f8229ea3ac3ca6a40624bde74f6a06af9855b08ac4a4b4"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2000-True-True.dxf",
+      "sha256": "ad02f0c8d75edcf4a0a551221582fa2576638a9f0105c16c02d2147d749f3015"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2004-False-False.dxf",
+      "sha256": "876e2955413869363d2f5ac5f0e1ad900f7ab36b7e16a1da05544539b8211c4c"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2004-False-True.dxf",
+      "sha256": "b777d4fa69dc9e596ce3d51bf52333258073acaacae156f6efcc7cf457431a8e"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2004-True-False.dxf",
+      "sha256": "876e2955413869363d2f5ac5f0e1ad900f7ab36b7e16a1da05544539b8211c4c"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2004-True-True.dxf",
+      "sha256": "b777d4fa69dc9e596ce3d51bf52333258073acaacae156f6efcc7cf457431a8e"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2004-False-False.dxf",
+      "sha256": "68110343c3f28d599205c5e5b2817620b09d5e930fe9c5251ac1b11127c57ba8"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2004-False-True.dxf",
+      "sha256": "ebda71c56f5b36dfcad7177b8519bba989f9eadb0be3509fab6090a6ce3900ec"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2004-True-False.dxf",
+      "sha256": "68110343c3f28d599205c5e5b2817620b09d5e930fe9c5251ac1b11127c57ba8"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2004-True-True.dxf",
+      "sha256": "ebda71c56f5b36dfcad7177b8519bba989f9eadb0be3509fab6090a6ce3900ec"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2007-False-False.dxf",
+      "sha256": "5ca3280165f28e1dc9fe49f6e88593017a8a1a9004f0c40b747a64be19ac773c"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2007-False-True.dxf",
+      "sha256": "95dd7f312552d54dfd3437d0a1e6e867af7c53476386259ef4a4e633b3396b1b"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2007-True-False.dxf",
+      "sha256": "5ca3280165f28e1dc9fe49f6e88593017a8a1a9004f0c40b747a64be19ac773c"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2007-True-True.dxf",
+      "sha256": "95dd7f312552d54dfd3437d0a1e6e867af7c53476386259ef4a4e633b3396b1b"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2007-False-False.dxf",
+      "sha256": "a8078ba2d1bf85dd82e18e672ee36b6f523a89ded6b6ca628091509e94c928ff"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2007-False-True.dxf",
+      "sha256": "66e8814ff258b7f2abbd0051b3d36cd22a72fae1b6cfa0fd97d169f07f4664bf"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2007-True-False.dxf",
+      "sha256": "a8078ba2d1bf85dd82e18e672ee36b6f523a89ded6b6ca628091509e94c928ff"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2007-True-True.dxf",
+      "sha256": "66e8814ff258b7f2abbd0051b3d36cd22a72fae1b6cfa0fd97d169f07f4664bf"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2010-False-False.dxf",
+      "sha256": "7173ce604779e39048221ce08c635960a6eafa92e4d688274db049382a6bc038"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2010-False-True.dxf",
+      "sha256": "a307d06fb23a378b3c63f7b00149a61842791c16c2da479eabd202c8c54c015a"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2010-True-False.dxf",
+      "sha256": "7173ce604779e39048221ce08c635960a6eafa92e4d688274db049382a6bc038"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2010-True-True.dxf",
+      "sha256": "a307d06fb23a378b3c63f7b00149a61842791c16c2da479eabd202c8c54c015a"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2010-False-False.dxf",
+      "sha256": "a1854a5c3c45c11edd3214c2246bda52252bc24c1d16cb494997a9e6932265bf"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2010-False-True.dxf",
+      "sha256": "ce8a2af1470d8fd9706ea04d062ad1d1ba761572228dcb95fc25149dcb5de144"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2010-True-False.dxf",
+      "sha256": "a1854a5c3c45c11edd3214c2246bda52252bc24c1d16cb494997a9e6932265bf"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2010-True-True.dxf",
+      "sha256": "ce8a2af1470d8fd9706ea04d062ad1d1ba761572228dcb95fc25149dcb5de144"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2013-False-False.dxf",
+      "sha256": "0af77df5faef377b369a8e133e04d446ec8055a3615cecfb364a98ba1592d197"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2013-False-True.dxf",
+      "sha256": "74f0c07ed113ec9896b53f4a26ef4d2521602cf0a785bbfc0f952600135f2446"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2013-True-False.dxf",
+      "sha256": "0af77df5faef377b369a8e133e04d446ec8055a3615cecfb364a98ba1592d197"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2013-True-True.dxf",
+      "sha256": "74f0c07ed113ec9896b53f4a26ef4d2521602cf0a785bbfc0f952600135f2446"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2013-False-False.dxf",
+      "sha256": "e6a573aca816b300eb882127ab6b74d2c2798553433731195f76a1c6dc915f07"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2013-False-True.dxf",
+      "sha256": "e2550fd47d86f4e9d0f3cc59c8dc7272fdad766da0f840374c1ef45ea218725d"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2013-True-False.dxf",
+      "sha256": "e6a573aca816b300eb882127ab6b74d2c2798553433731195f76a1c6dc915f07"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2013-True-True.dxf",
+      "sha256": "e2550fd47d86f4e9d0f3cc59c8dc7272fdad766da0f840374c1ef45ea218725d"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2018-False-False.dxf",
+      "sha256": "59c1f96a16f1b1cbfb4ad46ce17c2eec97a817c12bdb1d0b608255d35cee7202"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2018-False-True.dxf",
+      "sha256": "bf1a6c62bd8c74204f7d714c45a74c4e0596a794cab366a50fa445382137ae86"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2018-True-False.dxf",
+      "sha256": "59c1f96a16f1b1cbfb4ad46ce17c2eec97a817c12bdb1d0b608255d35cee7202"
+    },
+    {
+      "file": "hatch-source-native-AutoCad2018-True-True.dxf",
+      "sha256": "bf1a6c62bd8c74204f7d714c45a74c4e0596a794cab366a50fa445382137ae86"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2018-False-False.dxf",
+      "sha256": "d66b1f9ede2f24ef1cac506ae5fc8c71a2889264feaa654644247228252be690"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2018-False-True.dxf",
+      "sha256": "96f35be86cd250b835b35956520356f79879a7fa66fd3f2a5abef996003d046d"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2018-True-False.dxf",
+      "sha256": "d66b1f9ede2f24ef1cac506ae5fc8c71a2889264feaa654644247228252be690"
+    },
+    {
+      "file": "hatch-source-producer-AutoCad2018-True-True.dxf",
+      "sha256": "96f35be86cd250b835b35956520356f79879a7fa66fd3f2a5abef996003d046d"
+    }
+  ],
+  "outputs": 48,
+  "source_references": 264
+}

@@ -87,9 +87,10 @@ erases the section and owned graph. External entities/resources are retained.
 Erased section and object handles remain available for inspection, and the erased
 instances cannot be adopted or cloned again. Incoming opaque exposed handles block
 erasure; data hidden inside private strings or binary packets is not interpreted.
-The original native SECTION_MANAGER is retained opaque, so its incoming reference
-can legitimately prevent erasing the original section. An independent cloned
-section without that incoming manager reference can be erased.
+The original native SECTION_MANAGER is now retained as an immutable
+[stored manager](section-manager.md), whose incoming reference prevents erasing
+the original section. Private manager variants remain opaque. An independent
+cloned section without that incoming manager reference can be erased.
 
 ## Evidence and mandatory gates
 

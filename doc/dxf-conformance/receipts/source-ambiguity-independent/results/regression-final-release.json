@@ -1,0 +1,102 @@
+[
+  {
+    "name": "source-ambiguity/section-manager/native/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/before/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/after/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/native/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/duplicate-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-standard-lookalikes/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/unbalanced-private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/native/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/before/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/after/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/private/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/native/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/duplicate-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/private/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-private/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-standard-lookalikes/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/unbalanced-private/True",
+    "passed": true,
+    "error": null
+  }
+]

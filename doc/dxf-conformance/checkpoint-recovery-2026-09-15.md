@@ -62,13 +62,16 @@ Both result files have SHA-256
 [Implementation CI 34959884293](https://github.com/wieslawsoltes/netDxf/actions/runs/34959884293)
 passed Linux and Windows in both configurations, each with 26,980 successful
 cases. Linux Release also passed all 96 independent verifiers. Final
-documentation-head CI is required before merge.
+documentation head `fbe2a96a6c77398a95a03d1884ec7b90f2b59f06` passed all four
+jobs in [CI 34960829144](https://github.com/wieslawsoltes/netDxf/actions/runs/34960829144).
+PR #89 merged into `netstandard` at `5592edade61a9fe22215b8f9e098fa8beda46b76`.
 
 ## Recovery and remaining scope
 
 All identified uncommitted VERTEX, TABLECONTENT, source-reference and SUNSTUDY
 work is represented in committed source. The original source-reference patch is
-left intact in its previous worktree; its tested equivalent is committed here.
+preserved by local commit `e98866c` in its previous worktree; its tested equivalent
+is committed here.
 Separate implementation branches and qualification receipts were integrated
 without replacing newer TABLECONTENT/UCS fixes with older checkpoints.
 

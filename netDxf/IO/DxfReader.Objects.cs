@@ -85,6 +85,13 @@ namespace netDxf.IO
                 this.databaseRecords.Add(envelope);
                 return envelope;
             }
+            if (codeName == "SECTIONMANAGER" || codeName == "SECTION_MANAGER")
+            {
+                DatabaseRecord manager = this.ReadSectionManagerRecord(codeName, tags);
+                manager.SourceIdentity = source;
+                this.databaseRecords.Add(manager);
+                return manager;
+            }
             if (codeName == "LAYER_INDEX")
             {
                 DatabaseRecord envelope = this.ReadLayerIndexRecord(tags);
@@ -118,12 +125,19 @@ namespace netDxf.IO
                 {
                     string group = (string)tag.Value;
                     bool closed = false;
+                    int depth = 1;
                     while (++payload < tags.Count)
                     {
                         tag = tags[payload];
-                        if (tag.Code == 102 && (string)tag.Value == "}") { closed = true; break; }
-                        if (group == "{ACAD_XDICTIONARY" && tag.Code == 360) result.Metadata.Extension = (string)tag.Value;
-                        if (group == "{ACAD_REACTORS" && tag.Code == 330) result.Metadata.Reactors.Add((string)tag.Value);
+                        if (tag.Code == 102)
+                        {
+                            string control = (string)tag.Value;
+                            if (control == "}" && --depth == 0) { closed = true; break; }
+                            if (control.StartsWith("{", StringComparison.Ordinal)) depth++;
+                            continue;
+                        }
+                        if (depth == 1 && group == "{ACAD_XDICTIONARY" && tag.Code == 360) result.Metadata.Extension = (string)tag.Value;
+                        if (depth == 1 && group == "{ACAD_REACTORS" && tag.Code == 330) result.Metadata.Reactors.Add((string)tag.Value);
                     }
                     if (!closed) throw new FormatException("Unterminated database control group.");
                 }
@@ -228,8 +242,9 @@ namespace netDxf.IO
         }
         private void ImportDatabaseObjects()
         {
-            if (this.databaseRecords.Count == 0) { this.ResolveSunReferences(); this.ResolveOutputSettingsReferences(); return; }
             foreach (DatabaseRecord record in this.databaseRecords) this.RecordSourceObject(record.Object, record.SourceIdentity);
+            this.ValidateSourceIdentityDeclarations();
+            if (this.databaseRecords.Count == 0) { this.ResolveSunReferences(); this.ResolveOutputSettingsReferences(); return; }
             // Reserve source identities before lazily creating the document's temporary root.
             foreach (DatabaseRecord record in this.databaseRecords)
                 if (long.TryParse(record.Object.Handle, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.InvariantCulture, out long sourceHandle) && sourceHandle >= this.doc.NumHandles && sourceHandle < long.MaxValue)
@@ -240,6 +255,7 @@ namespace netDxf.IO
                 if (record.Object is DxfXRecord xrecord) foreach (DxfTag tag in xrecord.Data) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredTableContent content) foreach (DxfTag tag in content.Payload) database.ReserveUnresolvedReference(tag);
+                if (record.Object is DxfStoredSectionManager manager) foreach (DxfTag tag in manager.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfTableStyle style) foreach (DxfTag tag in style.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredField field) foreach (DxfTag tag in field.Payload) database.ReserveUnresolvedReference(tag);
                 foreach (XData data in record.Object.XData.Values)
@@ -327,6 +343,7 @@ namespace netDxf.IO
             this.ResolveDataTableReferences();
             this.ResolveLayerIndexReferences();
             this.ResolveSectionSettingsReferences();
+            this.ResolveSectionManagerReferences();
             this.ResolveDeclaredOwnership();
             this.ResolveGeoDataHosts();
             this.ResolveOutputSettingsReferences();

@@ -1,0 +1,179 @@
+{
+  "library_sha256": "94f14189e72ab1b541992c157f2718aa1d133258b1c75d4bd8cf85c82eaeef37",
+  "results": [
+    {
+      "scenario": "hatch-attachment-foreign-source",
+      "rejected": true,
+      "error": "NotSupportedException: Retained VERTEX/SEQEND records cannot be adopted into another document.",
+      "before_entities": 0,
+      "after_entities": 2,
+      "before_seed": 34,
+      "after_seed": 35,
+      "before_paths": 1,
+      "after_paths": 1,
+      "first_source_owner": "*Model_Space",
+      "first_source_handle": "22",
+      "foreign_owner": null,
+      "before_first_source_reactors": 1,
+      "after_first_source_reactors": 1,
+      "hatch_owner": null
+    },
+    {
+      "scenario": "attached-path-foreign-source",
+      "rejected": true,
+      "error": "NotSupportedException: Retained VERTEX/SEQEND records cannot be adopted into another document.",
+      "before_entities": 1,
+      "after_entities": 2,
+      "before_seed": 35,
+      "after_seed": 36,
+      "before_paths": 0,
+      "after_paths": 1,
+      "first_source_owner": "*Model_Space",
+      "first_source_handle": "23",
+      "foreign_owner": null,
+      "before_first_source_reactors": 0,
+      "after_first_source_reactors": 1,
+      "hatch_owner": "*Model_Space"
+    },
+    {
+      "scenario": "shared-path-instance-unlink",
+      "rejected": false,
+      "error": null,
+      "second_associative": true,
+      "second_sources": 0,
+      "source_reactors": 1,
+      "source_references_second": true
+    },
+    {
+      "scenario": "repeated-path-instance-unlink",
+      "rejected": false,
+      "error": null,
+      "before_reactors": 2,
+      "after_reactors": 1,
+      "remaining_sources": 0,
+      "associative": false
+    },
+    {
+      "scenario": "discarded-plus-accepted-physical-duplicate",
+      "binary": false,
+      "accepted": true,
+      "error": null,
+      "refs": [
+        "22"
+      ]
+    },
+    {
+      "scenario": "duplicate-equal-common-source-identity",
+      "binary": false,
+      "accepted": true,
+      "error": null,
+      "refs": [
+        "22"
+      ]
+    },
+    {
+      "scenario": "duplicate-different-common-source-identity",
+      "binary": false,
+      "accepted": true,
+      "error": null,
+      "refs": [
+        "22"
+      ]
+    },
+    {
+      "scenario": "discarded-plus-accepted-physical-duplicate",
+      "binary": true,
+      "accepted": true,
+      "error": null,
+      "refs": [
+        "22"
+      ]
+    },
+    {
+      "scenario": "duplicate-equal-common-source-identity",
+      "binary": true,
+      "accepted": true,
+      "error": null,
+      "refs": [
+        "22"
+      ]
+    },
+    {
+      "scenario": "duplicate-different-common-source-identity",
+      "binary": true,
+      "accepted": true,
+      "error": null,
+      "refs": [
+        "22"
+      ]
+    },
+    {
+      "scenario": "loaded-hatch-unlink",
+      "binary": false,
+      "removed": null,
+      "saved": true,
+      "error": null,
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 1,
+      "persistent_target_still_registered": true
+    },
+    {
+      "scenario": "loaded-hatch-removal",
+      "binary": false,
+      "removed": true,
+      "saved": false,
+      "error": "InvalidOperationException: Invalid OBJECTS database: Unregistered persistent reactor: 22",
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 1,
+      "persistent_target_still_registered": false
+    },
+    {
+      "scenario": "loaded-hatch-unlink",
+      "binary": true,
+      "removed": null,
+      "saved": true,
+      "error": null,
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 1,
+      "persistent_target_still_registered": true
+    },
+    {
+      "scenario": "loaded-hatch-removal",
+      "binary": true,
+      "removed": true,
+      "saved": false,
+      "error": "InvalidOperationException: Invalid OBJECTS database: Unregistered persistent reactor: 22",
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 1,
+      "persistent_target_still_registered": false
+    },
+    {
+      "scenario": "constructor-shared-path-preflight",
+      "first_associative": false,
+      "rejected": false,
+      "error": null,
+      "before_sources": 0,
+      "after_sources": 1,
+      "before_reactors": 0,
+      "after_reactors": 0
+    },
+    {
+      "scenario": "constructor-shared-path-preflight",
+      "first_associative": true,
+      "rejected": false,
+      "error": null,
+      "before_sources": 1,
+      "after_sources": 0,
+      "before_reactors": 1,
+      "after_reactors": 1
+    }
+  ]
+}

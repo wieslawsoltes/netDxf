@@ -1,0 +1,214 @@
+{
+  "passed": 52,
+  "failed": 0,
+  "results": [
+    {
+      "name": "native/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1000/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1002/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1070/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1071/False",
+      "passed": true
+    },
+    {
+      "name": "private-prefix/False",
+      "passed": true
+    },
+    {
+      "name": "private-subclass-extended/False",
+      "passed": true
+    },
+    {
+      "name": "valid-empty/False",
+      "passed": true
+    },
+    {
+      "name": "later-private-subclass/False",
+      "passed": true
+    },
+    {
+      "name": "mixed-root-name/False",
+      "passed": true
+    },
+    {
+      "name": "real-xdata/False",
+      "passed": true
+    },
+    {
+      "name": "private-source-header-handle/False",
+      "passed": true
+    },
+    {
+      "name": "canonical-target/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-0/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-DEADBEEF/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-C/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-22A/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count--1/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count-0/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count-2/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count-65537/False",
+      "passed": true
+    },
+    {
+      "name": "repeated/False",
+      "passed": true
+    },
+    {
+      "name": "no-target-source-identity/False",
+      "passed": true
+    },
+    {
+      "name": "duplicate-source-identity/False",
+      "passed": true
+    },
+    {
+      "name": "discarded-target/False",
+      "passed": true
+    },
+    {
+      "name": "manager-profile-bound/False",
+      "passed": true
+    },
+    {
+      "name": "native/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1000/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1002/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1070/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1071/True",
+      "passed": true
+    },
+    {
+      "name": "private-prefix/True",
+      "passed": true
+    },
+    {
+      "name": "private-subclass-extended/True",
+      "passed": true
+    },
+    {
+      "name": "valid-empty/True",
+      "passed": true
+    },
+    {
+      "name": "later-private-subclass/True",
+      "passed": true
+    },
+    {
+      "name": "mixed-root-name/True",
+      "passed": true
+    },
+    {
+      "name": "real-xdata/True",
+      "passed": true
+    },
+    {
+      "name": "private-source-header-handle/True",
+      "passed": true
+    },
+    {
+      "name": "canonical-target/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-0/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-DEADBEEF/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-C/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-22A/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count--1/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count-0/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count-2/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count-65537/True",
+      "passed": true
+    },
+    {
+      "name": "repeated/True",
+      "passed": true
+    },
+    {
+      "name": "no-target-source-identity/True",
+      "passed": true
+    },
+    {
+      "name": "duplicate-source-identity/True",
+      "passed": true
+    },
+    {
+      "name": "discarded-target/True",
+      "passed": true
+    },
+    {
+      "name": "manager-profile-bound/True",
+      "passed": true
+    }
+  ]
+}

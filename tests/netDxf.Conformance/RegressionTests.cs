@@ -104,6 +104,7 @@ internal static partial class Program
         RegisterSplinePeriodicOverlapTests();
         RegisterHatchSplineFitTests();
         RegisterHatchSplineRelationTests();
+        RegisterHatchSourceRelationTests();
         RegisterHatchSplineFitApiTests();
         RegisterHatchPathCountTests();
         RegisterHatchGradientAciTests();

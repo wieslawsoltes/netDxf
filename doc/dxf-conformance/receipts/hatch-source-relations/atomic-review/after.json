@@ -1,0 +1,167 @@
+{
+  "library_sha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+  "results": [
+    {
+      "scenario": "hatch-attachment-foreign-source",
+      "rejected": true,
+      "error": "NotSupportedException: Retained VERTEX/SEQEND records cannot be adopted into another document.",
+      "before_entities": 0,
+      "after_entities": 0,
+      "before_seed": 34,
+      "after_seed": 34,
+      "before_paths": 1,
+      "after_paths": 1,
+      "first_source_owner": null,
+      "first_source_handle": null,
+      "foreign_owner": null,
+      "before_first_source_reactors": 1,
+      "after_first_source_reactors": 1,
+      "hatch_owner": null
+    },
+    {
+      "scenario": "attached-path-foreign-source",
+      "rejected": true,
+      "error": "NotSupportedException: Retained VERTEX/SEQEND records cannot be adopted into another document.",
+      "before_entities": 1,
+      "after_entities": 1,
+      "before_seed": 35,
+      "after_seed": 35,
+      "before_paths": 0,
+      "after_paths": 0,
+      "first_source_owner": null,
+      "first_source_handle": null,
+      "foreign_owner": null,
+      "before_first_source_reactors": 0,
+      "after_first_source_reactors": 0,
+      "hatch_owner": "*Model_Space"
+    },
+    {
+      "scenario": "shared-path-instance-unlink",
+      "rejected": true,
+      "error": "ArgumentException: A HATCH boundary path instance cannot belong to multiple hatches; clone the path before reuse.",
+      "second_associative": null,
+      "second_sources": null,
+      "source_reactors": 1,
+      "source_references_second": false
+    },
+    {
+      "scenario": "repeated-path-instance-unlink",
+      "rejected": true,
+      "error": "ArgumentException: A HATCH boundary path instance cannot occur more than once; clone the path before reuse. (Parameter \u0027paths\u0027)",
+      "before_reactors": 0,
+      "after_reactors": 0,
+      "remaining_sources": null,
+      "associative": null
+    },
+    {
+      "scenario": "discarded-plus-accepted-physical-duplicate",
+      "binary": false,
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 23 source boundary reference 22 must identify a retained source entity in the same block.",
+      "refs": null
+    },
+    {
+      "scenario": "duplicate-equal-common-source-identity",
+      "binary": false,
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 23 source boundary reference 22 must identify a retained source entity in the same block.",
+      "refs": null
+    },
+    {
+      "scenario": "duplicate-different-common-source-identity",
+      "binary": false,
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 23 source boundary reference 22 must identify a retained source entity in the same block.",
+      "refs": null
+    },
+    {
+      "scenario": "discarded-plus-accepted-physical-duplicate",
+      "binary": true,
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 23 source boundary reference 22 must identify a retained source entity in the same block.",
+      "refs": null
+    },
+    {
+      "scenario": "duplicate-equal-common-source-identity",
+      "binary": true,
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 23 source boundary reference 22 must identify a retained source entity in the same block.",
+      "refs": null
+    },
+    {
+      "scenario": "duplicate-different-common-source-identity",
+      "binary": true,
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 23 source boundary reference 22 must identify a retained source entity in the same block.",
+      "refs": null
+    },
+    {
+      "scenario": "loaded-hatch-unlink",
+      "binary": false,
+      "removed": null,
+      "saved": true,
+      "error": null,
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 0,
+      "persistent_target_still_registered": true
+    },
+    {
+      "scenario": "loaded-hatch-removal",
+      "binary": false,
+      "removed": true,
+      "saved": true,
+      "error": null,
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 0,
+      "persistent_target_still_registered": true
+    },
+    {
+      "scenario": "loaded-hatch-unlink",
+      "binary": true,
+      "removed": null,
+      "saved": true,
+      "error": null,
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 0,
+      "persistent_target_still_registered": true
+    },
+    {
+      "scenario": "loaded-hatch-removal",
+      "binary": true,
+      "removed": true,
+      "saved": true,
+      "error": null,
+      "before_automatic": 1,
+      "before_persistent": 1,
+      "after_automatic": 0,
+      "after_persistent": 0,
+      "persistent_target_still_registered": true
+    },
+    {
+      "scenario": "constructor-shared-path-preflight",
+      "first_associative": false,
+      "rejected": true,
+      "error": "ArgumentException: A HATCH boundary path instance cannot belong to multiple hatches; clone the path before reuse.",
+      "before_sources": 0,
+      "after_sources": 0,
+      "before_reactors": 0,
+      "after_reactors": 0
+    },
+    {
+      "scenario": "constructor-shared-path-preflight",
+      "first_associative": true,
+      "rejected": true,
+      "error": "ArgumentException: A HATCH boundary path instance cannot belong to multiple hatches; clone the path before reuse.",
+      "before_sources": 1,
+      "after_sources": 1,
+      "before_reactors": 1,
+      "after_reactors": 1
+    }
+  ]
+}

@@ -1750,33 +1750,16 @@ namespace netDxf
 
         private void Hatch_BoundaryPathAdded(Hatch sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
-            Layout layout = sender.Owner.Record.Layout;
+            Block block = sender.Owner;
+            HatchSourceRelations.ValidatePathOwner(sender, e.Item, block);
             foreach (EntityObject entity in e.Item.Entities)
-            {
-                // the hatch belongs to a layout
-                if (entity.Owner != null)
-                {
-                    // the hatch and its entities must belong to the same document or block
-                    if (!ReferenceEquals(entity.Owner.Record.Layout, layout))
-                    {
-                        throw new ArgumentException("The HatchBoundaryPath entity and the Hatch entity must belong to the same layout and document. Clone it instead.");
-                    }
-                    // there is no need to do anything else we will not add the same entity twice
-                }
-                else
-                {
-                    // we will add the new entity to the same document and layout of the hatch
-                    this.blocks[layout.AssociatedBlock.Name].Entities.Add(entity);
-                }
-            }
+                if (entity.Owner == null) block.Entities.Add(entity);
         }
 
         private void Hatch_BoundaryPathRemoved(Hatch sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
             foreach (EntityObject entity in e.Item.Entities)
-            {
-                this.Entities.Remove(entity);
-            }
+                sender.Owner.Entities.Remove(entity);
         }
 
         private void Viewport_ClippingBoundaryAdded(Viewport sender, EntityChangeEventArgs e)

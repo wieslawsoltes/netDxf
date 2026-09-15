@@ -1,0 +1,12 @@
+{
+  "passed": 16,
+  "failed": 0,
+  "probe_sha256": "dbf6e1719ba0a99a68070b99bed02d2ab458f56311d55278b44097393ee43910",
+  "before_library_sha256": "94f14189e72ab1b541992c157f2718aa1d133258b1c75d4bd8cf85c82eaeef37",
+  "after_library_sha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+  "receipts": {
+    "before.json": "a5e5e6bf30d0660b0e272cc58e72235ccdb23094126230e422e62d910a503ac0",
+    "after.json": "a77b1e9668b35798be7d4d80fff14fbbc63be0c089206b24781f3b20c94db93f"
+  },
+  "scope": "Independent unchanged-harness counterexamples for atomic source adoption, path ownership, source identity ambiguity and loaded persistent backlink lifecycle; no owner/root repository edits."
+}

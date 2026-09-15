@@ -1,0 +1,220 @@
+{
+  "passed": 46,
+  "failed": 6,
+  "results": [
+    {
+      "name": "native/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1000/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1002/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1070/False",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1071/False",
+      "passed": true
+    },
+    {
+      "name": "private-prefix/False",
+      "passed": true
+    },
+    {
+      "name": "private-subclass-extended/False",
+      "passed": true
+    },
+    {
+      "name": "valid-empty/False",
+      "passed": true
+    },
+    {
+      "name": "later-private-subclass/False",
+      "passed": true
+    },
+    {
+      "name": "mixed-root-name/False",
+      "passed": false,
+      "error": "System.FormatException: A stored section manager requires its source root ACAD_SECTION_MANAGER entry.\n   at netDxf.Objects.DxfStoredSectionManager.Resolve(Func\u00602 resolve)\n   at netDxf.IO.DxfReader.ResolveSectionManagerReferences()\n   at netDxf.IO.DxfReader.ImportDatabaseObjects()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Load|0_4(DxfRawDocument raw, Boolean binary) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 18\n   at Program.\u003C\u003Ec__DisplayClass0_3.\u003C\u003CMain\u003E$\u003Eb__20() in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 30\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|0(String name, Action action) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 14"
+    },
+    {
+      "name": "real-xdata/False",
+      "passed": true
+    },
+    {
+      "name": "private-source-header-handle/False",
+      "passed": true
+    },
+    {
+      "name": "canonical-target/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-0/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-DEADBEEF/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-C/False",
+      "passed": true
+    },
+    {
+      "name": "bad-target-22A/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count--1/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count-0/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count-2/False",
+      "passed": true
+    },
+    {
+      "name": "bad-count-65537/False",
+      "passed": true
+    },
+    {
+      "name": "repeated/False",
+      "passed": true
+    },
+    {
+      "name": "no-target-source-identity/False",
+      "passed": false,
+      "error": "System.Exception: missing-source child failed with 134: Process terminated. Assertion failed.\nEntity without handle.\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Reject|0_7(DxfRawDocument raw, Boolean binary) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 21\n   at Program.\u003CMain\u003E$(String[] args) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 22\n\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_1(Boolean value, String message) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_3.\u003C\u003CMain\u003E$\u003Eb__25() in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|0(String name, Action action) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 14"
+    },
+    {
+      "name": "duplicate-source-identity/False",
+      "passed": false,
+      "error": "System.Exception: malformed source loaded\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_1(Boolean value, String message) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 15\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Reject|0_7(DxfRawDocument raw, Boolean binary) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 21\n   at Program.\u003C\u003Ec__DisplayClass0_3.\u003C\u003CMain\u003E$\u003Eb__26() in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 38\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|0(String name, Action action) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 14"
+    },
+    {
+      "name": "discarded-target/False",
+      "passed": true
+    },
+    {
+      "name": "manager-profile-bound/False",
+      "passed": true
+    },
+    {
+      "name": "native/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1000/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1002/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1070/True",
+      "passed": true
+    },
+    {
+      "name": "stray-public-extended-1071/True",
+      "passed": true
+    },
+    {
+      "name": "private-prefix/True",
+      "passed": true
+    },
+    {
+      "name": "private-subclass-extended/True",
+      "passed": true
+    },
+    {
+      "name": "valid-empty/True",
+      "passed": true
+    },
+    {
+      "name": "later-private-subclass/True",
+      "passed": true
+    },
+    {
+      "name": "mixed-root-name/True",
+      "passed": false,
+      "error": "System.FormatException: A stored section manager requires its source root ACAD_SECTION_MANAGER entry.\n   at netDxf.Objects.DxfStoredSectionManager.Resolve(Func\u00602 resolve)\n   at netDxf.IO.DxfReader.ResolveSectionManagerReferences()\n   at netDxf.IO.DxfReader.ImportDatabaseObjects()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Load|0_4(DxfRawDocument raw, Boolean binary) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 18\n   at Program.\u003C\u003Ec__DisplayClass0_3.\u003C\u003CMain\u003E$\u003Eb__20() in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 30\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|0(String name, Action action) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 14"
+    },
+    {
+      "name": "real-xdata/True",
+      "passed": true
+    },
+    {
+      "name": "private-source-header-handle/True",
+      "passed": true
+    },
+    {
+      "name": "canonical-target/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-0/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-DEADBEEF/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-C/True",
+      "passed": true
+    },
+    {
+      "name": "bad-target-22A/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count--1/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count-0/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count-2/True",
+      "passed": true
+    },
+    {
+      "name": "bad-count-65537/True",
+      "passed": true
+    },
+    {
+      "name": "repeated/True",
+      "passed": true
+    },
+    {
+      "name": "no-target-source-identity/True",
+      "passed": false,
+      "error": "System.Exception: missing-source child failed with 134: Process terminated. Assertion failed.\nEntity without handle.\n   at netDxf.IO.DxfReader.ReadEntity(Boolean isBlockEntity)\n   at netDxf.IO.DxfReader.ReadEntities()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Reject|0_7(DxfRawDocument raw, Boolean binary) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 21\n   at Program.\u003CMain\u003E$(String[] args) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 22\n\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_1(Boolean value, String message) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_3.\u003C\u003CMain\u003E$\u003Eb__25() in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|0(String name, Action action) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 14"
+    },
+    {
+      "name": "duplicate-source-identity/True",
+      "passed": false,
+      "error": "System.Exception: malformed source loaded\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_1(Boolean value, String message) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 15\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Reject|0_7(DxfRawDocument raw, Boolean binary) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 21\n   at Program.\u003C\u003Ec__DisplayClass0_3.\u003C\u003CMain\u003E$\u003Eb__26() in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 38\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|0(String name, Action action) in /workspace/scratch/c6901be8789f/section-manager-independent/Program.cs:line 14"
+    },
+    {
+      "name": "discarded-target/True",
+      "passed": true
+    },
+    {
+      "name": "manager-profile-bound/True",
+      "passed": true
+    }
+  ]
+}

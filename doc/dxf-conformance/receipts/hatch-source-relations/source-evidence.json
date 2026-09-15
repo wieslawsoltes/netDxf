@@ -1,0 +1,665 @@
+{
+  "schema": 1,
+  "prepared_on": "2026-09-15",
+  "status": "source_evidence_only_qualification_pending",
+  "module": "Stored HATCH source boundary relationships",
+  "primary_references": [
+    {
+      "title": "Autodesk HATCH (DXF)",
+      "url": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-C6C71CED-CE0F-4184-82A5-07AD6241F15B.htm",
+      "accessed_on": "2026-09-15",
+      "fields": {
+        "71": "HATCH associativity: 0 non-associative, 1 associative",
+        "91": "Boundary path count"
+      }
+    },
+    {
+      "title": "Autodesk Boundary Path Data (DXF)",
+      "url": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-DC5215D6-E73F-4DFF-8BE9-01CA9610FAEE.htm",
+      "accessed_on": "2026-09-15",
+      "fields": {
+        "92": "Path flags",
+        "97": "Containing path source object count; distinct from spline fit count",
+        "330": "Repeated source object references"
+      }
+    }
+  ],
+  "policy_distinction": "Same-block closure, unambiguous physical source identity, non-associative-with-references rejection, and unique path-instance ownership are typed-model contract boundaries; Autodesk field definitions are not asserted to prescribe those additional rules.",
+  "fixture_manifest": {
+    "file": "tests/fixtures/hatch-source-relations/manifest.json",
+    "sha256": "ebd572b9a49181b3a03c2e91f880a5c5bbf8c0843d3ee26ae2fe5ddd6f4478fa"
+  },
+  "generator": {
+    "file": "tests/fixtures/hatch-source-relations/generate.py",
+    "sha256": "2549dccb294593b7d9cf73084b3d2622827de4b8fa10cabf5e2e639891f2552f"
+  },
+  "verifier": {
+    "file": "tools/verify_hatch_source_relations.py",
+    "sha256": "6b54ad2c65049a8bb93ed919f6fba33ac191b77c8cb548243d3aec95d21b627d"
+  },
+  "producer": {
+    "name": "ezdxf",
+    "version": "1.4.4",
+    "boundary_module_sha256": "5b1cd54669a0b04b3bca80e5d852b4efa5fb4e992956b1cdc3c4f270e2784618",
+    "hatch_module_sha256": "9fffed475879d238a5f869121ab1b7ed53d44e004193394282a0e4d269b6eb1f",
+    "metadata": "ezdxf fixed metadata option enabled; Python hash seed 0 fixes CLASS registration order"
+  },
+  "native_repository": {
+    "repository": "LibreDWG/libredwg",
+    "commit": "34f02f54b9aacb5708c1d3d2070efb3e4b2d8c43"
+  },
+  "native_originals": [
+    {
+      "year": 2000,
+      "gzip_path": "tests/fixtures/dimassoc/originals-gzip/example_2000.dxf.gz",
+      "gzip_sha256": "c8047efbb62878b28d4e217373765ebb91229009eca0813644228ba5c740aaca",
+      "source_sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+      "git_blob_sha": "70a2c625227cae86ab28254f0754538a7259cb16",
+      "repository_path": "test/test-data/example_2000.dxf",
+      "packet_transplant": {
+        "original_owner": "1F",
+        "carrier_owner": "17",
+        "source_handle": "8E",
+        "hatch_handle": "24F",
+        "following_line_handle": "300",
+        "wrong_owner_source_handle": "403",
+        "adaptation": "Only the entity-level owner group 330 changes from 1F to the carrier modelspace BLOCK_RECORD. Source references, reactors, original layer name, and all native entity body text pairs remain unchanged.",
+        "packets": [
+          {
+            "handle": "8E",
+            "original_packet_sha256": "025b7cf0eaaebdcdf60cfaf2737f8a8738589a0c7e7c30a9314de40d8909ffb2",
+            "adapted_packet_sha256": "94476908f6dcfdedba61ea1813c7b8c92af216a81feb8e5bd5fd5343cfae8b72",
+            "original_bytes": 450,
+            "adapted_bytes": 450
+          },
+          {
+            "handle": "24F",
+            "original_packet_sha256": "43aa98eda86179ffa0ad21b5f122a830c5cde036ab2639ba9df47d8f9808fbc0",
+            "adapted_packet_sha256": "567e36c06261b9f670ff7c987bc79e78d1a370ad9022e091100af15ed9c8046e",
+            "original_bytes": 1203,
+            "adapted_bytes": 1203
+          }
+        ]
+      }
+    },
+    {
+      "year": 2004,
+      "gzip_path": "tests/fixtures/dimassoc/originals-gzip/example_2004.dxf.gz",
+      "gzip_sha256": "6ff1fc0dcb27a5f246f1ee03a952dc6a69eefa8266afb1fd6c1f3ab611fb8448",
+      "source_sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+      "git_blob_sha": "f411d9efb8cf774bdc44eee005dfc5bae47fffca",
+      "repository_path": "test/test-data/example_2004.dxf",
+      "packet_transplant": {
+        "original_owner": "1F",
+        "carrier_owner": "17",
+        "source_handle": "8E",
+        "hatch_handle": "24F",
+        "following_line_handle": "300",
+        "wrong_owner_source_handle": "403",
+        "adaptation": "Only the entity-level owner group 330 changes from 1F to the carrier modelspace BLOCK_RECORD. Source references, reactors, original layer name, and all native entity body text pairs remain unchanged.",
+        "packets": [
+          {
+            "handle": "8E",
+            "original_packet_sha256": "025b7cf0eaaebdcdf60cfaf2737f8a8738589a0c7e7c30a9314de40d8909ffb2",
+            "adapted_packet_sha256": "94476908f6dcfdedba61ea1813c7b8c92af216a81feb8e5bd5fd5343cfae8b72",
+            "original_bytes": 450,
+            "adapted_bytes": 450
+          },
+          {
+            "handle": "24F",
+            "original_packet_sha256": "43aa98eda86179ffa0ad21b5f122a830c5cde036ab2639ba9df47d8f9808fbc0",
+            "adapted_packet_sha256": "567e36c06261b9f670ff7c987bc79e78d1a370ad9022e091100af15ed9c8046e",
+            "original_bytes": 1203,
+            "adapted_bytes": 1203
+          }
+        ]
+      }
+    },
+    {
+      "year": 2007,
+      "gzip_path": "tests/fixtures/dimassoc/originals-gzip/example_2007.dxf.gz",
+      "gzip_sha256": "0feafb9e31aac2ba2f67b2b602cd291a85c88f5a629c5a586580c8f3bfa7a12d",
+      "source_sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+      "git_blob_sha": "ffdebb6b93cd08f3e29c64b09915b1563fed0a4d",
+      "repository_path": "test/test-data/example_2007.dxf",
+      "packet_transplant": {
+        "original_owner": "1F",
+        "carrier_owner": "17",
+        "source_handle": "8E",
+        "hatch_handle": "24F",
+        "following_line_handle": "300",
+        "wrong_owner_source_handle": "403",
+        "adaptation": "Only the entity-level owner group 330 changes from 1F to the carrier modelspace BLOCK_RECORD. Source references, reactors, original layer name, and all native entity body text pairs remain unchanged.",
+        "packets": [
+          {
+            "handle": "8E",
+            "original_packet_sha256": "025b7cf0eaaebdcdf60cfaf2737f8a8738589a0c7e7c30a9314de40d8909ffb2",
+            "adapted_packet_sha256": "94476908f6dcfdedba61ea1813c7b8c92af216a81feb8e5bd5fd5343cfae8b72",
+            "original_bytes": 450,
+            "adapted_bytes": 450
+          },
+          {
+            "handle": "24F",
+            "original_packet_sha256": "43aa98eda86179ffa0ad21b5f122a830c5cde036ab2639ba9df47d8f9808fbc0",
+            "adapted_packet_sha256": "567e36c06261b9f670ff7c987bc79e78d1a370ad9022e091100af15ed9c8046e",
+            "original_bytes": 1203,
+            "adapted_bytes": 1203
+          }
+        ]
+      }
+    },
+    {
+      "year": 2010,
+      "gzip_path": "tests/fixtures/dimassoc/originals-gzip/example_2010.dxf.gz",
+      "gzip_sha256": "594c49a56335e40a577bdbdb6faa2590efdc57580888b00f33b6b287de675535",
+      "source_sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+      "git_blob_sha": "45a47fd6b6ef65dde6bd70fd1df6445ceeb9cc1b",
+      "repository_path": "test/test-data/example_2010.dxf",
+      "packet_transplant": {
+        "original_owner": "1F",
+        "carrier_owner": "17",
+        "source_handle": "8E",
+        "hatch_handle": "24F",
+        "following_line_handle": "300",
+        "wrong_owner_source_handle": "403",
+        "adaptation": "Only the entity-level owner group 330 changes from 1F to the carrier modelspace BLOCK_RECORD. Source references, reactors, original layer name, and all native entity body text pairs remain unchanged.",
+        "packets": [
+          {
+            "handle": "8E",
+            "original_packet_sha256": "025b7cf0eaaebdcdf60cfaf2737f8a8738589a0c7e7c30a9314de40d8909ffb2",
+            "adapted_packet_sha256": "94476908f6dcfdedba61ea1813c7b8c92af216a81feb8e5bd5fd5343cfae8b72",
+            "original_bytes": 450,
+            "adapted_bytes": 450
+          },
+          {
+            "handle": "24F",
+            "original_packet_sha256": "43aa98eda86179ffa0ad21b5f122a830c5cde036ab2639ba9df47d8f9808fbc0",
+            "adapted_packet_sha256": "567e36c06261b9f670ff7c987bc79e78d1a370ad9022e091100af15ed9c8046e",
+            "original_bytes": 1203,
+            "adapted_bytes": 1203
+          }
+        ]
+      }
+    },
+    {
+      "year": 2013,
+      "gzip_path": "tests/fixtures/dimassoc/originals-gzip/example_2013.dxf.gz",
+      "gzip_sha256": "784141c23a44adade7ea99f0611caabc6501cb33d4558d582e0e642226e21850",
+      "source_sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+      "git_blob_sha": "e8c0f7254b02c3e036d6ceacbbbfaa60b9d06563",
+      "repository_path": "test/test-data/example_2013.dxf",
+      "packet_transplant": {
+        "original_owner": "1F",
+        "carrier_owner": "17",
+        "source_handle": "8E",
+        "hatch_handle": "24F",
+        "following_line_handle": "300",
+        "wrong_owner_source_handle": "403",
+        "adaptation": "Only the entity-level owner group 330 changes from 1F to the carrier modelspace BLOCK_RECORD. Source references, reactors, original layer name, and all native entity body text pairs remain unchanged.",
+        "packets": [
+          {
+            "handle": "8E",
+            "original_packet_sha256": "025b7cf0eaaebdcdf60cfaf2737f8a8738589a0c7e7c30a9314de40d8909ffb2",
+            "adapted_packet_sha256": "94476908f6dcfdedba61ea1813c7b8c92af216a81feb8e5bd5fd5343cfae8b72",
+            "original_bytes": 450,
+            "adapted_bytes": 450
+          },
+          {
+            "handle": "24F",
+            "original_packet_sha256": "43aa98eda86179ffa0ad21b5f122a830c5cde036ab2639ba9df47d8f9808fbc0",
+            "adapted_packet_sha256": "567e36c06261b9f670ff7c987bc79e78d1a370ad9022e091100af15ed9c8046e",
+            "original_bytes": 1203,
+            "adapted_bytes": 1203
+          }
+        ]
+      }
+    },
+    {
+      "year": 2018,
+      "gzip_path": "tests/fixtures/dimassoc/originals-gzip/example_2018.dxf.gz",
+      "gzip_sha256": "60be0aed8aa68546cafd1c7f44d44f7a5c45cb3da10c99e258e0254df2ed45e8",
+      "source_sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+      "git_blob_sha": "589fbe42143b6d3e6796c9fc389c521f5d346ad2",
+      "repository_path": "test/test-data/example_2018.dxf",
+      "packet_transplant": {
+        "original_owner": "1F",
+        "carrier_owner": "17",
+        "source_handle": "8E",
+        "hatch_handle": "24F",
+        "following_line_handle": "300",
+        "wrong_owner_source_handle": "403",
+        "adaptation": "Only the entity-level owner group 330 changes from 1F to the carrier modelspace BLOCK_RECORD. Source references, reactors, original layer name, and all native entity body text pairs remain unchanged.",
+        "packets": [
+          {
+            "handle": "8E",
+            "original_packet_sha256": "025b7cf0eaaebdcdf60cfaf2737f8a8738589a0c7e7c30a9314de40d8909ffb2",
+            "adapted_packet_sha256": "94476908f6dcfdedba61ea1813c7b8c92af216a81feb8e5bd5fd5343cfae8b72",
+            "original_bytes": 450,
+            "adapted_bytes": 450
+          },
+          {
+            "handle": "24F",
+            "original_packet_sha256": "43aa98eda86179ffa0ad21b5f122a830c5cde036ab2639ba9df47d8f9808fbc0",
+            "adapted_packet_sha256": "567e36c06261b9f670ff7c987bc79e78d1a370ad9022e091100af15ed9c8046e",
+            "original_bytes": 1203,
+            "adapted_bytes": 1203
+          }
+        ]
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "file": "native-R2000-ascii.dxf",
+      "kind": "native",
+      "year": 2000,
+      "binary": false,
+      "sha256": "7f1b77c20f056d36ece9f601ea0f61aee10500c7f936293ec954c2756e5a9155",
+      "bytes": 16177,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "native-R2000-binary.dxf",
+      "kind": "native",
+      "year": 2000,
+      "binary": true,
+      "sha256": "623299f1ee093816f31113bb40b44e76bee9a6a136e9aaecbd5094b2afa4a13e",
+      "bytes": 13585,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "producer-R2000-ascii.dxf",
+      "kind": "producer",
+      "year": 2000,
+      "binary": false,
+      "sha256": "49003f9164c3ba26bd8d5cc7d8c96f0ad09ea42ed5d7927e978cf0e4797a2cce",
+      "bytes": 15808,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "producer-R2000-binary.dxf",
+      "kind": "producer",
+      "year": 2000,
+      "binary": true,
+      "sha256": "c56bcf3ad2ebe0f095c53ef6a04d0b0115200f6994e1b3a3968f7fc229915051",
+      "bytes": 14031,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "native-R2004-ascii.dxf",
+      "kind": "native",
+      "year": 2004,
+      "binary": false,
+      "sha256": "a0a17585ca9f08428cc58320a7382ffe66556370982e548c19742fe74cbf0491",
+      "bytes": 16543,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "native-R2004-binary.dxf",
+      "kind": "native",
+      "year": 2004,
+      "binary": true,
+      "sha256": "1d17de092221cc92ae1eaf2b0f66d94c0e51c371981efaa816cdacef1e483328",
+      "bytes": 13896,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "producer-R2004-ascii.dxf",
+      "kind": "producer",
+      "year": 2004,
+      "binary": false,
+      "sha256": "9d40a3c878e67a0c81ab5a92f3bbdb3b860b3b3dbff9847612bcb81c9f4c41e8",
+      "bytes": 16174,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "producer-R2004-binary.dxf",
+      "kind": "producer",
+      "year": 2004,
+      "binary": true,
+      "sha256": "5deaaa1f1e7be28374b0081a24fc2e43ff164eb81ff6854201ecf9dadfc0d683",
+      "bytes": 14342,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "native-R2007-ascii.dxf",
+      "kind": "native",
+      "year": 2007,
+      "binary": false,
+      "sha256": "b218bf9f044c694d0c3db5396cab4774e23edb5877847807a51bfa06148e84e0",
+      "bytes": 17556,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "native-R2007-binary.dxf",
+      "kind": "native",
+      "year": 2007,
+      "binary": true,
+      "sha256": "d2017b5a72df42f34250cdb3ea2dde8b9ce747f75da87dbb79ac3e5d96536735",
+      "bytes": 14743,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "producer-R2007-ascii.dxf",
+      "kind": "producer",
+      "year": 2007,
+      "binary": false,
+      "sha256": "c12e62efa4bd6dba9a2f2e981b6ee53d75041b3bb0282e13ed8aec5cf3707d3c",
+      "bytes": 17180,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "producer-R2007-binary.dxf",
+      "kind": "producer",
+      "year": 2007,
+      "binary": true,
+      "sha256": "99a10643215977cb015b1c04d90750e7037e8a074750ff127803bc06c82f6ee6",
+      "bytes": 15184,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "native-R2010-ascii.dxf",
+      "kind": "native",
+      "year": 2010,
+      "binary": false,
+      "sha256": "d501bcb3f682aa7bfba718b7d80a5b747458045350ee19a293e818ecc6b02820",
+      "bytes": 17582,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "native-R2010-binary.dxf",
+      "kind": "native",
+      "year": 2010,
+      "binary": true,
+      "sha256": "cb7334d1bf346a24265f22ce618ca72bd62c638ce586a8176d4b68ecd97490f4",
+      "bytes": 14767,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "producer-R2010-ascii.dxf",
+      "kind": "producer",
+      "year": 2010,
+      "binary": false,
+      "sha256": "46203ecd8e5dfedbacfa3c0bb7d2e79d89ea6e318e901bcc0387c0b14fc6f99c",
+      "bytes": 17206,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "producer-R2010-binary.dxf",
+      "kind": "producer",
+      "year": 2010,
+      "binary": true,
+      "sha256": "78a31f46e45e3356ed8dc012235d7cc4855d9b9a1112dedc9cce2d4865738854",
+      "bytes": 15208,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "native-R2013-ascii.dxf",
+      "kind": "native",
+      "year": 2013,
+      "binary": false,
+      "sha256": "7ae1a1fe1ff5d6714844c63cfe599ccb5cc83edc455cab1a32af987fea542280",
+      "bytes": 17612,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "native-R2013-binary.dxf",
+      "kind": "native",
+      "year": 2013,
+      "binary": true,
+      "sha256": "849b46eb98360e773b7fe161b644d4d3032a706b16d0310b53905a3fbb214e4c",
+      "bytes": 14797,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "producer-R2013-ascii.dxf",
+      "kind": "producer",
+      "year": 2013,
+      "binary": false,
+      "sha256": "b4b65605b504d33890b050b42b26e450914d1c6b645dff0251ca089ac799eab9",
+      "bytes": 17236,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "producer-R2013-binary.dxf",
+      "kind": "producer",
+      "year": 2013,
+      "binary": true,
+      "sha256": "f00659ab40f2d2405e723e8406922eaf45adc4c833cb1bf1b11366b062c92536",
+      "bytes": 15238,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "native-R2018-ascii.dxf",
+      "kind": "native",
+      "year": 2018,
+      "binary": false,
+      "sha256": "cbbc37804604241affb8d99bc496c423cf119d5a5ff7c6f51aaf55365c5ef515",
+      "bytes": 17610,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "native-R2018-binary.dxf",
+      "kind": "native",
+      "year": 2018,
+      "binary": true,
+      "sha256": "7f1a1b75de34a7072574aa49fe871e1fe1781dd7f4c7f8bef0ce8bb1319ff3cd",
+      "bytes": 14799,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "300"
+      }
+    },
+    {
+      "file": "producer-R2018-ascii.dxf",
+      "kind": "producer",
+      "year": 2018,
+      "binary": false,
+      "sha256": "3bd95372f73539b1786fa496bdeb0fae66c43565f4e850ae19c8cb44e06200c5",
+      "bytes": 17234,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    },
+    {
+      "file": "producer-R2018-binary.dxf",
+      "kind": "producer",
+      "year": 2018,
+      "binary": true,
+      "sha256": "39243becbb647232ea1786ff1cbdc99d6a27b9233ec3b5411d5146785c59d542",
+      "bytes": 15240,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "handles": {
+        "wrong_owner_source": "403",
+        "same_owner_source": "3A4"
+      }
+    }
+  ],
+  "independent_input_evidence": {
+    "fixtures": 24,
+    "native_originals": 6,
+    "versions": [
+      2000,
+      2004,
+      2007,
+      2010,
+      2013,
+      2018
+    ],
+    "transports": [
+      "ASCII",
+      "binary"
+    ],
+    "audit_errors": 0,
+    "audit_fixes": 0,
+    "interpretation": "Audits describe generated input fixtures, not netDxf output qualification."
+  },
+  "qualification": {
+    "status": "qualified_isolated_module",
+    "expected_focused_cases_per_configuration": 405,
+    "expected_focused_groups": {
+      "retained": 48,
+      "normalized": 24,
+      "rejections": 312,
+      "shared_lifecycle": 6,
+      "api": 15
+    },
+    "debug": {
+      "passed": 405,
+      "failed": 0,
+      "results_file": "debug-results.json",
+      "library_sha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+      "test_assembly_sha256": "0cbc7fe2784ff628612d9ac39742bf92a279f093df73109e8cf3e89eabf4ebe1"
+    },
+    "release": {
+      "passed": 405,
+      "failed": 0,
+      "results_file": "release-results.json",
+      "library_sha256": "05d0d730f8e49a0ecfa7e290938880ca3d6fed203ff39abfd24cc0886c414fb0",
+      "test_assembly_sha256": "1383531ea434d28397f4548d0ac9d6eed68c537208bad2ab1138818ca629c55d"
+    },
+    "independent_outputs": {
+      "debug": "debug-independent.json",
+      "release": "release-independent.json",
+      "outputs_per_configuration": 48,
+      "hatches_per_configuration": 72,
+      "paths_per_configuration": 120,
+      "source_occurrences_per_configuration": 264,
+      "audit_errors": 0,
+      "audit_fixes": 0,
+      "serialized_corruption_controls_per_configuration": 3,
+      "missing_output_control": "missing-output-control.json"
+    },
+    "required_output_files": 48,
+    "expected_output_hatches": 72,
+    "expected_output_paths": 120,
+    "expected_output_source_occurrences": 264,
+    "required_serialized_corruption_controls": [
+      "dropped_duplicate_source",
+      "wrong_associative_flag",
+      "changed_source_identity"
+    ],
+    "missing_mandatory_output_must_fail": true
+  },
+  "limitations": [
+    "No native CAD execution",
+    "No graphical rendering",
+    "No automatic associative geometry updates",
+    "No curve evaluation",
+    "No proof of geometric agreement between source objects and stored boundary edges",
+    "No arbitrary affine transformation qualification",
+    "No general cross-document dependency import or remapping engine",
+    "Filename Save wrapper can truncate before stream preflight in this isolated source"
+  ]
+}

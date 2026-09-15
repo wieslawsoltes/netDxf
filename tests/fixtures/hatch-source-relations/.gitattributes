@@ -1,0 +1,2 @@
+# Native text packets retain their original CRLF bytes inside the carrier.
+native-*-ascii.dxf whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

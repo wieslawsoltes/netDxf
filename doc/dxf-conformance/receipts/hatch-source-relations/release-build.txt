@@ -1,0 +1,2 @@
+  netDxf -> /workspace/scratch/c6901be8789f/netDxf-hatch-source/netDxf/bin/Release/net8.0/netDxf.netstandard.dll
+  netDxf.Conformance -> /workspace/scratch/c6901be8789f/netDxf-hatch-source/tests/netDxf.Conformance/bin/Release/net8.0/netDxf.Conformance.dll

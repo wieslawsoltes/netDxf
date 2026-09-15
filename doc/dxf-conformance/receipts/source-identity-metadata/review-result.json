@@ -1,0 +1,29 @@
+{
+  "source_fix": "a4332d209a0f1eb5d995131d56fe659da4092173",
+  "nested_group_fix": "45358eaec23fd83e8eabdeafc12d882d5f0bc853",
+  "tests_commit": "9d6f99b",
+  "frozen_probe_sha256": "2e466169a5d0700ec497ce04aa5c990119556c8085acfb6f87cd3832fd7a86f1",
+  "configurations": {
+    "debug": {
+      "before_library_sha256": "a4232cdb04c6421dbbd4b2ebf2b8b440e911ff586efa65908b07afae2c1f145f",
+      "after_library_sha256": "e4669b57474f490352700285abd72bc9ff1e2fa9a439af2813c099be79ceefa3",
+      "before_accepted_ambiguous_inputs": 8,
+      "before_silently_dropped_reactors": 4,
+      "after_rejected": 8,
+      "failed": 0
+    },
+    "release": {
+      "before_library_sha256": "2d559f8d8e84aa02aeb126308cc635deaa9f5e695c79bbd985e88e67848ed716",
+      "after_library_sha256": "5b5d7f988cb24c27466e572dc6d896cfb371c289e4096f6f1a5b03b7aa62fa9c",
+      "before_accepted_ambiguous_inputs": 8,
+      "before_silently_dropped_reactors": 4,
+      "after_rejected": 8,
+      "failed": 0
+    }
+  },
+  "registered_conformance_cases": {
+    "negative": 8,
+    "positive": 2
+  },
+  "focused_test_execution": "Delegated to root combined integration build; redundant owner builds were stopped at root request."
+}

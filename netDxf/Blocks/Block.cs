@@ -739,6 +739,7 @@ namespace netDxf.Blocks
 
         private void Entities_BeforeAddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
+            if (e.Item is Hatch incomingHatch && e.Item.Owner == null) HatchSourceRelations.ValidateOwner(incomingHatch, this);
             if (e.Item is Section section && this.Record.Owner != null) section.Validate(this.Record.Owner.Owner);
             if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
             if (e.Item is StoredTable storedTable && e.Item.Owner == null) storedTable.ValidateIncoming(this.Record.Owner?.Owner);
@@ -782,7 +783,7 @@ namespace netDxf.Blocks
                 {
                     foreach (EntityObject entity in path.Entities)
                     {
-                        this.entities.Add(entity);
+                        if (entity.Owner == null) this.entities.Add(entity);
                     }
                 }
             }

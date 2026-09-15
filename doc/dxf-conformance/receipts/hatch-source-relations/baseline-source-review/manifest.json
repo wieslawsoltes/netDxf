@@ -1,0 +1,866 @@
+[
+  {
+    "file": "2000-False-polyline-positive.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "cf44f1b6872289c31185de3d3796321d0cb067d7a90bb778000d49b728b71393"
+  },
+  {
+    "file": "2000-False-polyline-absent.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "6a05efaa667dea12eb88c1e4e2a737dc3a3acee91b2d11f69f55e72812cc8c8d"
+  },
+  {
+    "file": "2000-False-polyline-wrong-owner.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "7b383fe7f86e82e4269ab107e98de423141c0e55a608e293f60acf28973f2950"
+  },
+  {
+    "file": "2000-False-polyline-nonassociative.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "9f1fff6b6ef841e47d7a843b4074b13b13c3ac2c6be2148d17179fe3141101db"
+  },
+  {
+    "file": "2000-False-edges-positive.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "a23830179825c834b8782ca95f052711563e1bd3b9945cd5ae60ed544c26d17e"
+  },
+  {
+    "file": "2000-False-edges-absent.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "07b564f04712f72083b4fa6c0c51537d40ef80c28a802acc50519107cc744c42"
+  },
+  {
+    "file": "2000-False-edges-wrong-owner.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "e0d2a1bb7b66af00a84da01df4ebe1c3a5ca767ddb6cdcbcac150bbe55666c3b"
+  },
+  {
+    "file": "2000-False-edges-nonassociative.dxf",
+    "year": 2000,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "5b6b031a717ca51a686fd7b9bc83dbc181205c8c34bf3bcc0beabd20ab34a4e2"
+  },
+  {
+    "file": "2000-True-polyline-positive.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "e1d5bae29f06fa24794460f5d0ffbdce8270fac7152d89078ae7ddbd91bfe9b7"
+  },
+  {
+    "file": "2000-True-polyline-absent.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "54429347e2e25e90a5f930c85252a07ff442d504006c62961627b696e0e4abf8"
+  },
+  {
+    "file": "2000-True-polyline-wrong-owner.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "183bd1433261c0f54533d37bc0926f6f6cdd321223d664e820812d93a1b1c43d"
+  },
+  {
+    "file": "2000-True-polyline-nonassociative.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "fc6b21745771423fc67e6678a13c5d97ffbaf3e7baa01aa136250beda5d23f2b"
+  },
+  {
+    "file": "2000-True-edges-positive.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "37eb2f84448b8af5fe1ebc4d6d77c9c8a3fd65b3c91d024a4bb43f6ced6cf545"
+  },
+  {
+    "file": "2000-True-edges-absent.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "6ba879bf53b04929eddde226bb662f376287311f4212649d808613b756ab587c"
+  },
+  {
+    "file": "2000-True-edges-wrong-owner.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "1af4d175ebe708be09d8db184ac6f91d65e5aca9b7816e03437a7f1930543b32"
+  },
+  {
+    "file": "2000-True-edges-nonassociative.dxf",
+    "year": 2000,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "1c54142ce879db54005c0bd5fb180110d55a2d29e7c4a9e00e32563ab5e8cdbf"
+  },
+  {
+    "file": "2004-False-polyline-positive.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "299160abafc8ee509f93fa2e770a0773cb26e397619c39b57c5a6fea59487b48"
+  },
+  {
+    "file": "2004-False-polyline-absent.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "7ca950f7d7834c7d61345e6f56aae5365931fc93ab12a2e1cfc6d94a94344374"
+  },
+  {
+    "file": "2004-False-polyline-wrong-owner.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "93676c99e63d136fb124b195a73301294cca36106983c22c2bef76d23a87110e"
+  },
+  {
+    "file": "2004-False-polyline-nonassociative.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "35787e60c1a4c4436d87432c215e07856194cea7b0112a879b477718c091b309"
+  },
+  {
+    "file": "2004-False-edges-positive.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "cd7e3b4441b22b0d58737a77a3509172e91f755fa2e4843922f48b24280bd03e"
+  },
+  {
+    "file": "2004-False-edges-absent.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "2e18b8ecc075dddd259c89b4911d7d2aba8452518c9fcad848f611750d67f63a"
+  },
+  {
+    "file": "2004-False-edges-wrong-owner.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "cb4b1c53db03c00553d7ed2c5ea82a6659a09cc7fee65faf887cb750093f557e"
+  },
+  {
+    "file": "2004-False-edges-nonassociative.dxf",
+    "year": 2004,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "f91aebeadb154b74383bd83b255693bcfc33a2cd4cc48f8b5e7401b9be22bf24"
+  },
+  {
+    "file": "2004-True-polyline-positive.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "bd563c14b128fb745a05cb55401f8684d7d511d55813a3525305a0fd8e458e61"
+  },
+  {
+    "file": "2004-True-polyline-absent.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "9052fa1119c90fffdacf2eab241804ac6b180cc5092a39d8cc26b39dd10a5e1c"
+  },
+  {
+    "file": "2004-True-polyline-wrong-owner.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "fa01f601cf41b7b397ae39167dcf3b7e29d4b8649add4d17a83ea8571a029e04"
+  },
+  {
+    "file": "2004-True-polyline-nonassociative.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "51d40dc046c0d893f3da72cb42d4a5780895a7522f0cac8c0697b1c3aab4d869"
+  },
+  {
+    "file": "2004-True-edges-positive.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "24740c52c66dd0c7d4007fc28067ae37bf07faaeba7795c55ba32dd57bfa99cb"
+  },
+  {
+    "file": "2004-True-edges-absent.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "db6f3525783402c84354add471ee9061555c7017456f2148c1874a2a32ce032e"
+  },
+  {
+    "file": "2004-True-edges-wrong-owner.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "d092b0e221bfdf410797066745ee5a1eb043270e7f8bf7ca49a1161ce42ee957"
+  },
+  {
+    "file": "2004-True-edges-nonassociative.dxf",
+    "year": 2004,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "59059bdbc812e371d66d03fa143445f8237170b84fffa81be4ae3afe20737c95"
+  },
+  {
+    "file": "2007-False-polyline-positive.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "08923bb66a500692646f2414b7bfe310824dbf4f4d77614821dcf54a80d68b81"
+  },
+  {
+    "file": "2007-False-polyline-absent.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "96aea461dad499baa06f2e339bf335a92a46e10dc8f3c174f71fc4d04aa1473e"
+  },
+  {
+    "file": "2007-False-polyline-wrong-owner.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "07e6f95146d71b2323ca6bbf6b8ed6dac0e431857d905b251505514142a12dce"
+  },
+  {
+    "file": "2007-False-polyline-nonassociative.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "12cd17eadbc84eb9ec2a3e6821eae32b3cb522b8c0b0f4a1f7447ae8ba7daf15"
+  },
+  {
+    "file": "2007-False-edges-positive.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "1981fb634571986cb782132cc0e7e2fb5672e8ca623a91ad679b908b1c5161f2"
+  },
+  {
+    "file": "2007-False-edges-absent.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "e0dd01b84ad01168f932f4b27387b321a0fa3cf071fd4ddd5e88c87541c2bdd7"
+  },
+  {
+    "file": "2007-False-edges-wrong-owner.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "b1529935ea7ed1894e19ea538ea6ff751cd4fbd58afd4106ebf768f8a139a831"
+  },
+  {
+    "file": "2007-False-edges-nonassociative.dxf",
+    "year": 2007,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "42c477bbc55804d610e55010b3c22921f299a076a19ecea4fdd6d9f67a464a7b"
+  },
+  {
+    "file": "2007-True-polyline-positive.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "f80c668fb6e92770a357c5e7c6ba0e6ae4869e54ca1cadaaf45634cc5e831809"
+  },
+  {
+    "file": "2007-True-polyline-absent.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "10ca639803862ef5afeea95b27d5317ca4a5e7d7c0425158a16d64707cfbda54"
+  },
+  {
+    "file": "2007-True-polyline-wrong-owner.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "873413a3b25028cf9bec4032bc52b9f32dd0625f3a8bb35c5f52a258c56577fb"
+  },
+  {
+    "file": "2007-True-polyline-nonassociative.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "dbc2dacdcd6f9df38c2089167dfcf9e2d0630e194cd30c212244ec115e876a36"
+  },
+  {
+    "file": "2007-True-edges-positive.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "5843838682506a411726e273b1a22d9de98b8fc54d6b5f06a1e2209d920aaa88"
+  },
+  {
+    "file": "2007-True-edges-absent.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "09549426d37fde80a6689d56c0d6a3d53a2ebc659801444a79bc924e2474ef8f"
+  },
+  {
+    "file": "2007-True-edges-wrong-owner.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "bf7a21d0f0dd4ac6c0f8b2ae6232d78fa965dfea9fe2a1f8356f41a82ab80ed3"
+  },
+  {
+    "file": "2007-True-edges-nonassociative.dxf",
+    "year": 2007,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "b659b86e3ecb7beb693a1abe903482761f5dafdd518ae18709d27eba2e49e0b0"
+  },
+  {
+    "file": "2010-False-polyline-positive.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "154323ffde8ce1f935ce456901a0e2726570dca5562618b806df7cce84a14e0f"
+  },
+  {
+    "file": "2010-False-polyline-absent.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "449504c0b3ec14cd42186aa5b45df4465c57ace3912e901a3337e7141c1a7856"
+  },
+  {
+    "file": "2010-False-polyline-wrong-owner.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "76f2bb41b50274a2c044bce0f4c448208364816296a99b6588e2a33379d65d30"
+  },
+  {
+    "file": "2010-False-polyline-nonassociative.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "b908759526ad344d6c32f866bfa3a5051847348815935017001c527fbe70deda"
+  },
+  {
+    "file": "2010-False-edges-positive.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "2bc12b999a87229074e0facfc317248ea84e9c7f8f31501e355ca3adeb83fb25"
+  },
+  {
+    "file": "2010-False-edges-absent.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "059f052422ae4917d938ff093bb79e309f77bca9614f16787ffd18f6fc5197a2"
+  },
+  {
+    "file": "2010-False-edges-wrong-owner.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "490812901ed3ce0a931c536b7d2193a02bb36b613697e3961b339bfb0b0dc3aa"
+  },
+  {
+    "file": "2010-False-edges-nonassociative.dxf",
+    "year": 2010,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "169bf0066321d07e9cf7522635d70878670fcb1804b5c619be87918c5595168c"
+  },
+  {
+    "file": "2010-True-polyline-positive.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "8912d82676f93a409669705d7d1a31c77933700991d33d156f91074ff8907389"
+  },
+  {
+    "file": "2010-True-polyline-absent.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "cec369f29955c94203af68b67b65931db9ae57a3172b977d7cb6a6199c0670cc"
+  },
+  {
+    "file": "2010-True-polyline-wrong-owner.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "d001b29395d9938119541bd942168e3b87047af10eae31251190b18b14f4fea2"
+  },
+  {
+    "file": "2010-True-polyline-nonassociative.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "f4da3f323a0fdfb2576925a6124471a6a0cd69d63608fd271eab026bdf44e0b0"
+  },
+  {
+    "file": "2010-True-edges-positive.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "ba2d2f67b3e657975900f3edf684e19a6392fb147d3cc32abb6dd4d0a3eef78d"
+  },
+  {
+    "file": "2010-True-edges-absent.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "a0eb27dcd254b0142f0c83ce022741b29df39f8e3f085d3f20852062f7edc1ca"
+  },
+  {
+    "file": "2010-True-edges-wrong-owner.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "c0d72b8c722e8614c38375999d325f57c1d425b175ae3fbcb4bf13e6b615996e"
+  },
+  {
+    "file": "2010-True-edges-nonassociative.dxf",
+    "year": 2010,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "530cc593c0304609b323416e5852da683a40ceacdecda8f2f8543be7289f4575"
+  },
+  {
+    "file": "2013-False-polyline-positive.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "821f87442bf1124961fdbf65cee71417af8a6742f1520260feeec77fe64522c7"
+  },
+  {
+    "file": "2013-False-polyline-absent.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "8d713597eacfbf4d363f69c1c73abd5d1894a884117cddebcca32f9f81e2f006"
+  },
+  {
+    "file": "2013-False-polyline-wrong-owner.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "baab67fd679f7c6c5fefa2a57ce1a2f86d03369b153129337f1fc4d6537f9e7c"
+  },
+  {
+    "file": "2013-False-polyline-nonassociative.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "60d2eec349faaad6a99c949f1ea046bae618b49475c58694668d870eddaa1e42"
+  },
+  {
+    "file": "2013-False-edges-positive.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "c3cd5285934fe1794511b3f18dc490a9604be80e3b77b4fc10cd4bc72259d729"
+  },
+  {
+    "file": "2013-False-edges-absent.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "8f58c0385e3d05ea6952e67d98e9fd80e985f42430f23fc1cfd9a1eb53641d99"
+  },
+  {
+    "file": "2013-False-edges-wrong-owner.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "6a8ebda8d9c30d2010f6d53a1b105f846e7839011add4157d10663fca6265d46"
+  },
+  {
+    "file": "2013-False-edges-nonassociative.dxf",
+    "year": 2013,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "a070b44ef5229bb1e4e412360defaf861d32d3859bd8e5c3034efeb6605662b7"
+  },
+  {
+    "file": "2013-True-polyline-positive.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "90a176ef3b3684fcb9d5336eb5fddf1d5d4451fad69ee08bc751dd30cc1f3c1d"
+  },
+  {
+    "file": "2013-True-polyline-absent.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "50f0a7846b60e00334e877a89379c858744d3da38a8edc799f2c34a36ebc0c0b"
+  },
+  {
+    "file": "2013-True-polyline-wrong-owner.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "c607228d91d3f1770acb1854c7f72321ec68c7e67e731f9795a319156f3679fe"
+  },
+  {
+    "file": "2013-True-polyline-nonassociative.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "6a475d1f5964666f5a324095cd9a08c9f2114090e7d81b0971e257ac5dccf7fc"
+  },
+  {
+    "file": "2013-True-edges-positive.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "a50be4e1d62de25af218c49692e53437b9a4a6a0429860090a3996d89cf88ea6"
+  },
+  {
+    "file": "2013-True-edges-absent.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "ca85c43181dfd7a431aa0a26fe401bbd9f35ed57773ab02616ed9b2a12bb0c24"
+  },
+  {
+    "file": "2013-True-edges-wrong-owner.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "319617d5a66510ccdc47b9ceab6efff40e3750c98a337d3911ed5bf71f290a75"
+  },
+  {
+    "file": "2013-True-edges-nonassociative.dxf",
+    "year": 2013,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "a9caa243cd0d592d46326e9b54bfeb7fade942fbeaead859cae634d73f4b7bd7"
+  },
+  {
+    "file": "2018-False-polyline-positive.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "14c206b6306f98cded89efacb981236c538c7f5b66f1abf1cc159b1376cd0ed8"
+  },
+  {
+    "file": "2018-False-polyline-absent.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "a7975e0697aba78bd5a4b32bb809d12b38592beca75625cbb96208dc44a3cc9a"
+  },
+  {
+    "file": "2018-False-polyline-wrong-owner.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "614c4daeba8e81cbd26cec100d227db33ee895e82aa4145fc2b5e1670b5c3f07"
+  },
+  {
+    "file": "2018-False-polyline-nonassociative.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "c6ac9b553e42c6a66b4dfe57f5b9226f790920b00e0e24305242ac5dd4326042"
+  },
+  {
+    "file": "2018-False-edges-positive.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "465051d1446d2f1e84ff9f6c8513fd545e8942df792a283d76eaec83981a91e2"
+  },
+  {
+    "file": "2018-False-edges-absent.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "7fe759b1f6c87072096d8a0164890e2785de729db2ecfbabd66b5aed41b1c405"
+  },
+  {
+    "file": "2018-False-edges-wrong-owner.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "7db2dd0d03d78e5e08c18b2d213ae1b17d01b1e4e1a1bd59bb27fda84f1cde8e"
+  },
+  {
+    "file": "2018-False-edges-nonassociative.dxf",
+    "year": 2018,
+    "binary": false,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "99c9c2b81f057c9ef9dda18535cf06ae3c593c7caef00a4be702329973eb04e2"
+  },
+  {
+    "file": "2018-True-polyline-positive.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "c96a1e2a76fd325052a846ad3e84b7115d398a81dbbbb7d4c93c59de443438c5"
+  },
+  {
+    "file": "2018-True-polyline-absent.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "621aac41b913298800ee16c40971c617c355e500d3a23941bd192b8eacc1abbc"
+  },
+  {
+    "file": "2018-True-polyline-wrong-owner.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "8d0c918d1b54427ad14ded62924f5dcb99ea4b58b391795ab8e413c94d208231"
+  },
+  {
+    "file": "2018-True-polyline-nonassociative.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "polyline",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "570e9f5dd480063d9168b8e93bb6c56d5481a8ac04eed7a896ab3c9778e4889e"
+  },
+  {
+    "file": "2018-True-edges-positive.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "positive",
+    "expected_reference": "2F",
+    "sha256": "049ffee82dd9d76dbc631d66fc5b4dae43de57181706030b0a77ccc6dba1a26b"
+  },
+  {
+    "file": "2018-True-edges-absent.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "absent",
+    "expected_reference": "FFFF",
+    "sha256": "a537af744fac1d59d2005dbce2d49e91919efcb763de178869545e5b5633c630"
+  },
+  {
+    "file": "2018-True-edges-wrong-owner.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "wrong-owner",
+    "expected_reference": "34",
+    "sha256": "cda3f9d8b4097a40ed7b6761961ca8f36f68a3d0efc84467cb9a7818c0094916"
+  },
+  {
+    "file": "2018-True-edges-nonassociative.dxf",
+    "year": 2018,
+    "binary": true,
+    "kind": "edges",
+    "scenario": "nonassociative",
+    "expected_reference": "2F",
+    "sha256": "df14bd919e959f887e0ce4d2b74033f537211ef9756b98289ea219feb1f033ad"
+  }
+]

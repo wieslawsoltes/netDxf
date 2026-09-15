@@ -1,0 +1,94 @@
+{
+  "module": "HATCH source boundary relations",
+  "source_commit": "f6f2c1a4b6c4d7f2fc70f73e317e888c36138e1c",
+  "source_base": "6dfe470",
+  "sdk": "8.0.408",
+  "runtime": "net8.0",
+  "configurations": {
+    "debug": {
+      "passed": 405,
+      "failed": 0,
+      "results_file": "debug-results.json",
+      "library_sha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+      "test_assembly_sha256": "0cbc7fe2784ff628612d9ac39742bf92a279f093df73109e8cf3e89eabf4ebe1"
+    },
+    "release": {
+      "passed": 405,
+      "failed": 0,
+      "results_file": "release-results.json",
+      "library_sha256": "05d0d730f8e49a0ecfa7e290938880ca3d6fed203ff39abfd24cc0886c414fb0",
+      "test_assembly_sha256": "1383531ea434d28397f4548d0ac9d6eed68c537208bad2ab1138818ca629c55d"
+    }
+  },
+  "netstandard_release": {
+    "target": "netstandard2.0",
+    "passed": true,
+    "library_sha256": "e8914c0d7c21a0ad0e9e7493996e0122a67ce240f4cc7cafd2c81760ed1f846e",
+    "inherited_cs1591_warnings": 561,
+    "log": "netstandard-release-build.txt"
+  },
+  "independent_gates": {
+    "reader": "ezdxf 1.4.4",
+    "outputs_per_configuration": 48,
+    "hatches_per_configuration": 72,
+    "paths_per_configuration": 120,
+    "source_occurrences_per_configuration": 264,
+    "native_originals": 6,
+    "fixtures": 24,
+    "audit_errors": 0,
+    "audit_fixes": 0,
+    "byte_corruption_controls_per_configuration": 3,
+    "missing_output_control": {
+      "outputs_present": 47,
+      "rejected": true
+    }
+  },
+  "unchanged_baseline_probe": {
+    "cases": 96,
+    "positives_preserved": 24,
+    "previously_silently_lost_cases_now_rejected": 72,
+    "directory": "baseline-source-review"
+  },
+  "independent_unchanged_review": {
+    "cases": 16,
+    "passed": 16,
+    "directory": "atomic-review"
+  },
+  "commands": [
+    "dotnet msbuild tests/netDxf.Conformance/netDxf.Conformance.csproj -t:Build -p:Configuration=Debug -p:TargetFrameworks=net8.0 -p:UseSharedCompilation=false -m:1",
+    "dotnet msbuild tests/netDxf.Conformance/netDxf.Conformance.csproj -t:Build -p:Configuration=Release -p:TargetFrameworks=net8.0 -p:UseSharedCompilation=false -m:1",
+    "DXF_TEST_FILTER=hatch-source/ DXF_TEST_ARTIFACTS=<output> dotnet tests/netDxf.Conformance/bin/<configuration>/net8.0/netDxf.Conformance.dll",
+    "python3 tools/verify_hatch_source_relations.py <output>",
+    "dotnet msbuild netDxf/netDxf.csproj -t:Restore -p:TargetFrameworks=netstandard2.0",
+    "dotnet msbuild netDxf/netDxf.csproj -t:Build -p:Configuration=Release -p:TargetFrameworks=netstandard2.0 -p:UseSharedCompilation=false -m:1"
+  ],
+  "adjacent_full_suite": "Delegated to coordinated integration; isolated duplicate run stopped without a pass claim.",
+  "scope": "Stored source identity/count/order/owner closure and bounded association lifecycle. No native CAD execution, rendering, automatic geometry update or general dependency remapping.",
+  "receipt_sha256": {
+    "atomic-review/Probe.csproj": "54cbc5641dc8af25eae028bb0c43b1c8132003f9f40265e1dd3f311725efddcf",
+    "atomic-review/Program.cs": "dbf6e1719ba0a99a68070b99bed02d2ab458f56311d55278b44097393ee43910",
+    "atomic-review/REVIEW.md": "b32c31f1b913d95bb91c966b237777263275fb63cb9525d6369b251af1b1728d",
+    "atomic-review/after.json": "a77b1e9668b35798be7d4d80fff14fbbc63be0c089206b24781f3b20c94db93f",
+    "atomic-review/before.json": "a5e5e6bf30d0660b0e272cc58e72235ccdb23094126230e422e62d910a503ac0",
+    "atomic-review/review-result.json": "f8831c58a402b5d09587bbb0f5cf890fc3b80f7c59c4daaf6e77ff536399fecb",
+    "baseline-source-review/Probe.csproj": "54cbc5641dc8af25eae028bb0c43b1c8132003f9f40265e1dd3f311725efddcf",
+    "baseline-source-review/Program.cs": "a4b3186ae1992f280ddd5d9fcafa154cc7c0149c9d37b3b079eedf2d6e0656de",
+    "baseline-source-review/README.md": "d305a540e0336634a800c49cf87c976c5642ef0144f8d468ca970c8a27339c40",
+    "baseline-source-review/after.json": "b2f9aca9acf1a2dc222b805457fef1e4fa0637e365d9eb4ceab8f99d380212a9",
+    "baseline-source-review/before.json": "b94725045e5d16731dbc7cd193d769554640939fbfe02e70e309587af77e7e4a",
+    "baseline-source-review/inputs.tar.gz": "aa2f40dfc07f7c9613b8613aff0e3dac1a65105bb6782838250b449cac4a62a2",
+    "baseline-source-review/manifest.json": "dfeb0a2e81c96098814c7af828e7f47b27cf1953204ef1d7e5cc259f6f2aa690",
+    "debug-build.txt": "369a30ae8bbedb4d01f1b6134502a547f8247deb18ea86c59a7a50e51535bc18",
+    "debug-independent.json": "e0c9ca92f6e7d02b767720d5fb4aa3bbef6fe8f3edd1a2e59494ddc18c4cf1e9",
+    "debug-results.json": "4c0e1b4062d44bef234c483204daeddfff0eaa72dbf0011d39a1a6d08d80c380",
+    "debug-run.txt": "bf05c1e197f2d6175c1a74a6b156907a31ce7d1856245943d323b2b9c5c296b3",
+    "missing-output-control.json": "604347981fcefc1fd06fe0b813644e0ddd0f7baf3236348ee35e9e69e6ea5ff3",
+    "native-inventory.json": "05deb06884a00c439ab5a3c84e807e2c9e64e8529fd60bbedf2cb56fe441cd7c",
+    "netstandard-release-build.txt": "82c5aa5c3f14d080e5f9b352b7c7f20adf377d6ffff95270982ad47ba95d3b6c",
+    "release-build.txt": "f3f73879b7a1c1820a03854b458cea4b9e7405c3c81559b0d455391f513d9508",
+    "release-independent.json": "e0c9ca92f6e7d02b767720d5fb4aa3bbef6fe8f3edd1a2e59494ddc18c4cf1e9",
+    "release-results.json": "4c0e1b4062d44bef234c483204daeddfff0eaa72dbf0011d39a1a6d08d80c380",
+    "release-run.txt": "bf05c1e197f2d6175c1a74a6b156907a31ce7d1856245943d323b2b9c5c296b3",
+    "source-evidence.json": "e3557aa623323de064305563f8382188dc12739409975bb94c324be1140a815e"
+  }
+}

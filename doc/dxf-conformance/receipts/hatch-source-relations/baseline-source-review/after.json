@@ -1,0 +1,677 @@
+{
+  "library_sha256": "8d1f2a514dc317e112ee20a369bf2c34bc5b4018ed189418625b9c1742c2b63f",
+  "results": [
+    {
+      "file": "2000-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2000-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2000-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2000-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2000-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2004-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2004-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2004-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2004-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2004-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2007-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2007-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2007-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2007-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2007-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2010-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2010-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2010-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2010-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2010-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2013-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2013-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2013-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2013-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2013-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2018-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2018-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2018-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    },
+    {
+      "file": "2018-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference FFFF must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 source boundary reference 34 must identify a retained source entity in the same block."
+    },
+    {
+      "file": "2018-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": false,
+      "error": "InvalidDataException: HATCH 30 has source boundary objects on a non-associative path; this typed combination is not supported."
+    }
+  ]
+}

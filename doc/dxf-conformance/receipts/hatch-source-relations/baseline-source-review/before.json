@@ -1,0 +1,821 @@
+{
+  "library_sha256": "79fd1c1f54fb8edcdae61e374623df23d7f6758b99001704de834cf8dfe6268e",
+  "results": [
+    {
+      "file": "2000-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2000-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2000-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2000-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2000-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2004-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2004-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2004-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2004-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2004-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2007-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2007-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2007-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2007-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2007-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2010-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2010-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2010-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2010-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2010-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2013-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2013-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2013-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2013-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2013-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2018-False-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2018-False-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-False-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2018-True-polyline-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-polyline-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-polyline-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-polyline-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    },
+    {
+      "file": "2018-True-edges-positive.dxf",
+      "scenario": "positive",
+      "accepted": true,
+      "source_refs": [
+        "2F"
+      ],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-edges-absent.dxf",
+      "scenario": "absent",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-edges-wrong-owner.dxf",
+      "scenario": "wrong-owner",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": true
+    },
+    {
+      "file": "2018-True-edges-nonassociative.dxf",
+      "scenario": "nonassociative",
+      "accepted": true,
+      "source_refs": [],
+      "saved": true,
+      "associative": false
+    }
+  ]
+}

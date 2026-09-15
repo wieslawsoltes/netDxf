@@ -3568,6 +3568,7 @@ namespace netDxf.IO
         {
             SourceRecordIdentity source = this.CurrentSourceRecord;
             string handle = null;
+            bool duplicateHandle = false;
             string owner = null;
             Layer layer = Layer.Default;
             AciColor color = AciColor.ByLayer;
@@ -3591,6 +3592,7 @@ namespace netDxf.IO
                     case 0:
                         throw new Exception(string.Format("Premature end of entity {0} definition.", dxfCode));
                     case 5:
+                        if (handle != null) duplicateHandle = true;
                         handle = this.chunk.ReadHex();
                         this.chunk.Next();
                         break;
@@ -3819,17 +3821,12 @@ namespace netDxf.IO
                 return null;
             }
 
-            //if (string.IsNullOrEmpty(handle))
-            //{
-            //    Debug.Assert(false, "Entity without handle.");
-            //    this.doc.NumHandles = dxfObject.AssignHandle(this.doc.NumHandles);
-            //}
-            //else
-            //{
-            //    dxfObject.Handle = handle;
-            //}
-            
-            Debug.Assert(!string.IsNullOrEmpty(handle), "Entity without handle.");
+            // Only retained entities require an identity here. Legacy sequence records are
+            // decoded by their dedicated readers and unknown skipped entities return above.
+            if (string.IsNullOrEmpty(handle) || handle == "0")
+                throw new FormatException("A retained DXF entity requires a nonzero common handle: " + dxfCode);
+            if (duplicateHandle)
+                throw new FormatException("A retained DXF entity repeats its common handle: " + dxfCode);
             dxfObject.Handle = handle;
             this.RecordSourceObject(dxfObject, source);
 
@@ -10934,13 +10931,12 @@ namespace netDxf.IO
                     List<string> entities = this.hatchContours[path];
                     foreach (string handle in entities)
                     {
-                        if (this.doc.GetObjectByHandle(handle) is EntityObject entity)
-                        {
-                            if (ReferenceEquals(hatch.Owner, entity.Owner))
-                            {
-                                path.AddContour(entity);
-                            }
-                        }
+                        if (!hatch.Associative)
+                            throw new InvalidDataException("HATCH " + hatch.Handle + " has source boundary objects on a non-associative path; this typed combination is not supported.");
+                        EntityObject entity = this.GetObjectBySourceHandle(handle) as EntityObject;
+                        if (entity == null || ReferenceEquals(entity, hatch) || !ReferenceEquals(hatch.Owner, entity.Owner))
+                            throw new InvalidDataException("HATCH " + hatch.Handle + " source boundary reference " + handle + " must identify a retained source entity in the same block.");
+                        path.AddContour(entity);
                     }
                     hatch.BoundaryPaths.Add(path);
                 }

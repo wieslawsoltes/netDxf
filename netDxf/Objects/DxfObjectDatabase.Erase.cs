@@ -52,6 +52,7 @@ namespace netDxf.Objects
                 if (value is DxfStoredTableContent) throw new NotSupportedException("Stored TABLECONTENT erasure requires its complete application schema.");
                 if (value is DxfStoredField) throw new NotSupportedException("Stored FIELD erasure requires its complete evaluator graph schema.");
                 if (value is DxfStoredDimAssoc) throw new NotSupportedException("Stored DIMASSOC erasure requires the complete dimension association lifecycle.");
+                if (value is DxfStoredSectionManager) throw new NotSupportedException("Stored section-manager erasure requires the complete manager lifecycle.");
                 if (value is DxfOpaqueObject) throw new NotSupportedException("An opaque object requires its application schema before erasure: " + value.CodeName);
                 tree.Add(value);
                 if (children.TryGetValue(item, out List<DxfObject> next)) foreach (DxfObject child in next) pending.Enqueue(child);

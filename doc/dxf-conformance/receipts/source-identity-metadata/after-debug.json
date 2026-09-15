@@ -1,0 +1,93 @@
+{
+  "library_sha256": "e4669b57474f490352700285abd72bc9ff1e2fa9a439af2813c099be79ceefa3",
+  "results": [
+    {
+      "binary": false,
+      "duplicateBefore": false,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": false,
+      "duplicateBefore": false,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": false,
+      "duplicateBefore": true,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": false,
+      "duplicateBefore": true,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": true,
+      "duplicateBefore": false,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": true,
+      "duplicateBefore": false,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": true,
+      "duplicateBefore": true,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    },
+    {
+      "binary": true,
+      "duplicateBefore": true,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": "FormatException: A retained DXF object has an ambiguous physical source identity: 22"
+    }
+  ]
+}

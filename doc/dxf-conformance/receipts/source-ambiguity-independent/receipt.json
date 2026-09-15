@@ -1,0 +1,111 @@
+{
+  "description": "Independent physical-source identity ambiguity and balanced private dictionary control regressions",
+  "runtime": ".NET8.0",
+  "production_commits": {
+    "shared_lookup_strictness": "894195f",
+    "balanced_dictionary_controls": "45358ea",
+    "eager_retained_identity_validation": "a4332d209a0f1eb5d995131d56fe659da4092173"
+  },
+  "regression_test_commit": "10c1d2a",
+  "sources": {
+    "manager-probe/Program.cs": "3147e9ba22980966d0f67fb18101258451165dd51eb9a99510fd1f7eb49be960",
+    "regression-probe/Harness.cs": "818cd9b588929fe7466d7e04cf3ae4693d9d19c5a358fa3e0526aab61cb09f89",
+    "tests/netDxf.Conformance/SourceAmbiguityTests.cs": "c5d8c1ebe4f56cbce90c520ffe674ce4d98a4b0db003458fe4745c9ed58a1027"
+  },
+  "libraries_sha256": {
+    "section-manager-before": "f063676c5c01775f03d27889fd9dbd9cbb37b81170684d881d1b6ea58ca9828a",
+    "lookup-strict-debug": "a4232cdb04c6421dbbd4b2ebf2b8b440e911ff586efa65908b07afae2c1f145f",
+    "lookup-strict-release": "2d559f8d8e84aa02aeb126308cc635deaa9f5e695c79bbd985e88e67848ed716",
+    "final-debug": "e4669b57474f490352700285abd72bc9ff1e2fa9a439af2813c099be79ceefa3",
+    "final-release": "5b5d7f988cb24c27466e572dc6d896cfb371c289e4096f6f1a5b03b7aa62fa9c"
+  },
+  "runs": [
+    {
+      "name": "manager-before",
+      "harness": "manager",
+      "library": "section-manager-before",
+      "results": "results/manager-before.json",
+      "results_sha256": "1e2acba23bc06e773d8b9f8da8a44bfa366eb64a25c576a7564f8e56f3009b35",
+      "passed": 4,
+      "failed": 4,
+      "total": 8
+    },
+    {
+      "name": "manager-lookup-strict-debug",
+      "harness": "manager",
+      "library": "lookup-strict-debug",
+      "results": "results/manager-lookup-strict-debug.json",
+      "results_sha256": "5a690bda5bb6852439f935eea4fead841bf6380544efef9aa8aa6d935b97b504",
+      "passed": 8,
+      "failed": 0,
+      "total": 8
+    },
+    {
+      "name": "manager-lookup-strict-release",
+      "harness": "manager",
+      "library": "lookup-strict-release",
+      "results": "results/manager-lookup-strict-release.json",
+      "results_sha256": "db00bb0a106bcf7262a10389c2baa9c71c2d699eba6f0e72b563059d33b23130",
+      "passed": 8,
+      "failed": 0,
+      "total": 8
+    },
+    {
+      "name": "manager-final-debug",
+      "harness": "manager",
+      "library": "final-debug",
+      "results": "results/manager-final-debug.json",
+      "results_sha256": "ab2acf2360bc2d4fbd08a52688b8f6a544a48f17011b0abcf82c5e5c3a353e9c",
+      "passed": 8,
+      "failed": 0,
+      "total": 8
+    },
+    {
+      "name": "manager-final-release",
+      "harness": "manager",
+      "library": "final-release",
+      "results": "results/manager-final-release.json",
+      "results_sha256": "db00bb0a106bcf7262a10389c2baa9c71c2d699eba6f0e72b563059d33b23130",
+      "passed": 8,
+      "failed": 0,
+      "total": 8
+    },
+    {
+      "name": "regression-before-nested-fix",
+      "harness": "regression",
+      "library": "lookup-strict-debug",
+      "results": "results/regression-before-nested-fix.json",
+      "results_sha256": "35a1c4423acd6c5682bd189b5d21e638ea28613b181b928fc5bc049efd88a9f4",
+      "passed": 16,
+      "failed": 4,
+      "total": 20
+    },
+    {
+      "name": "regression-final-debug",
+      "harness": "regression",
+      "library": "final-debug",
+      "results": "results/regression-final-debug.json",
+      "results_sha256": "6b524995e0686f8591d815573a0d7bfd3cb7bef8e8e065a10ea848862df6190e",
+      "passed": 20,
+      "failed": 0,
+      "total": 20
+    },
+    {
+      "name": "regression-final-release",
+      "harness": "regression",
+      "library": "final-release",
+      "results": "results/regression-final-release.json",
+      "results_sha256": "6b524995e0686f8591d815573a0d7bfd3cb7bef8e8e065a10ea848862df6190e",
+      "passed": 20,
+      "failed": 0,
+      "total": 20
+    }
+  ],
+  "notes": [
+    "The manager probe source is identical across all five library runs.",
+    "The 20-case regression source is identical for before-nested-fix and both final runs.",
+    "The actual executable dependency entry of the original standalone manager harness was corrected to netDxf.netstandard before its first successful run; no probe source or compiled test logic changed.",
+    "Relocatable project files are reproduction aids; actual runs used identical copied source in scratch projects and selected libraries by copying their exact netDxf.netstandard.dll basename.",
+    "Build and public loader configuration differ: Debug throws normal FormatException for invalid input; Release returns null. Both outcomes are admitted by negative regression tests."
+  ]
+}

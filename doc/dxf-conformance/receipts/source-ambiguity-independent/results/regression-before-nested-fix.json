@@ -1,0 +1,102 @@
+[
+  {
+    "name": "source-ambiguity/section-manager/native/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/before/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/after/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/native/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/duplicate-entity/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-private/False",
+    "passed": false,
+    "error": "System.FormatException: Unterminated database control group.\n   at netDxf.IO.DxfReader.ReadDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadDictionaryDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadObjects()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at NetDxf.Conformance.Program.SourceAmbiguityLoad(DxfRawDocument raw, Boolean binary, Boolean reject) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 47\n   at NetDxf.Conformance.Program.SourceAmbiguityLayerDictionary(String placement, Boolean binary) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass8_2.\u003CRunSourceAmbiguityTests\u003Eb__1() in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 18\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/c6901be8789f/source-ambiguity-tests-runner/Harness.cs:line 11"
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-standard-lookalikes/False",
+    "passed": false,
+    "error": "System.FormatException: Unterminated database control group.\n   at netDxf.IO.DxfReader.ReadDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadDictionaryDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadObjects()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at NetDxf.Conformance.Program.SourceAmbiguityLoad(DxfRawDocument raw, Boolean binary, Boolean reject) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 47\n   at NetDxf.Conformance.Program.SourceAmbiguityLayerDictionary(String placement, Boolean binary) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass8_2.\u003CRunSourceAmbiguityTests\u003Eb__1() in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 18\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/c6901be8789f/source-ambiguity-tests-runner/Harness.cs:line 11"
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/unbalanced-private/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/native/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/before/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/after/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/section-manager/private/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/native/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/duplicate-entity/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/private/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-private/True",
+    "passed": false,
+    "error": "System.FormatException: Unterminated database control group.\n   at netDxf.IO.DxfReader.ReadDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadDictionaryDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadObjects()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at NetDxf.Conformance.Program.SourceAmbiguityLoad(DxfRawDocument raw, Boolean binary, Boolean reject) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 47\n   at NetDxf.Conformance.Program.SourceAmbiguityLayerDictionary(String placement, Boolean binary) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass8_2.\u003CRunSourceAmbiguityTests\u003Eb__1() in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 18\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/c6901be8789f/source-ambiguity-tests-runner/Harness.cs:line 11"
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/nested-standard-lookalikes/True",
+    "passed": false,
+    "error": "System.FormatException: Unterminated database control group.\n   at netDxf.IO.DxfReader.ReadDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadDictionaryDatabaseRecord()\n   at netDxf.IO.DxfReader.ReadObjects()\n   at netDxf.IO.DxfReader.Read(Stream stream, SupportFolders supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream, IEnumerable\u00601 supportFolders)\n   at netDxf.DxfDocument.Load(Stream stream)\n   at NetDxf.Conformance.Program.SourceAmbiguityLoad(DxfRawDocument raw, Boolean binary, Boolean reject) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 47\n   at NetDxf.Conformance.Program.SourceAmbiguityLayerDictionary(String placement, Boolean binary) in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 110\n   at NetDxf.Conformance.Program.\u003C\u003Ec__DisplayClass8_2.\u003CRunSourceAmbiguityTests\u003Eb__1() in /workspace/scratch/c6901be8789f/netDxf-source-ambiguity-tests/tests/netDxf.Conformance/SourceAmbiguityTests.cs:line 18\n   at NetDxf.Conformance.Program.Run(String name, Action test) in /workspace/scratch/c6901be8789f/source-ambiguity-tests-runner/Harness.cs:line 11"
+  },
+  {
+    "name": "source-ambiguity/consumed-layer-dictionary/unbalanced-private/True",
+    "passed": true,
+    "error": null
+  }
+]

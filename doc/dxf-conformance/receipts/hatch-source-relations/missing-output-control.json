@@ -1,0 +1,8 @@
+{
+  "command": "python3 tools/verify_hatch_source_relations.py <47-output-directory>",
+  "outputs_present": 47,
+  "omitted": "hatch-source-native-AutoCad2000-False-False.dxf",
+  "exit_code": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/workspace/scratch/c6901be8789f/netDxf-hatch-source/tools/verify_hatch_source_relations.py\", line 324, in <module>\n    main()\n  File \"/workspace/scratch/c6901be8789f/netDxf-hatch-source/tools/verify_hatch_source_relations.py\", line 309, in main\n    check(path.is_file(), \"Missing mandatory output: \" + filename)\n  File \"/workspace/scratch/c6901be8789f/netDxf-hatch-source/tools/verify_hatch_source_relations.py\", line 29, in check\n    raise ValueError(message)\nValueError: Missing mandatory output: hatch-source-native-AutoCad2000-False-False.dxf\n",
+  "verifier_sha256": "6b54ad2c65049a8bb93ed919f6fba33ac191b77c8cb548243d3aec95d21b627d"
+}
