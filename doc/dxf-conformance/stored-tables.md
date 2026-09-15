@@ -76,3 +76,11 @@ The pinned native corpus contains none of these three variants. Their focused
 regressions and `verify_stored_table_fields.py` therefore qualify explicitly
 synthetic public-schema carriers, without adding a native rendering or FIELD
 schema qualification claim.
+
+Named STYLE and display-block dependencies snapshot the actual bound resource's
+initial name. Case-insensitive source matches retain their original raw spelling
+until that exact resource is renamed; a private field with the same text remains
+unchanged. `RegisterStoredTableNameSpellingTests` covers both resource kinds and
+both transports, including opposite-transport output after rename. The independent
+`tools/verify_stored_table_name_spelling.py` checks all eight output packets and
+eight parsed-field corruption controls.

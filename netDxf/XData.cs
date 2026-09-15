@@ -86,6 +86,11 @@ namespace netDxf
 
         #endregion
 
+        internal XData CopyStoredGraph()
+        {
+            return this.CopyForRegistry(this.appReg.CloneStoredGraph());
+        }
+
         internal XData CopyForRegistry(ApplicationRegistry registry)
         {
             var copy = new XData(registry);

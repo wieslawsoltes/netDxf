@@ -26,7 +26,8 @@ namespace netDxf
                 if (block == null || !visited.Add(block) || this.Blocks.Contains(block.Name)) return;
                 foreach (EntityObject entity in block.Entities)
                 {
-                    if (entity is StoredTable table) table.ValidateIncoming(this);
+                    if (entity is Section section) section.Validate(this);
+                    else if (entity is StoredTable table) table.ValidateIncoming(this);
                     else if (entity is Insert insert) visit(insert.Block);
                     else if (entity is Dimension dimension) visit(dimension.Block);
                 }
@@ -57,8 +58,11 @@ namespace netDxf
                 foreach (var entity in block.Entities) add(entity);
                 foreach (var definition in block.AttributeDefinitions.Values) add(definition);
             }
+            if (this.SectionReferencesRemoval(removed)) return true;
             foreach (StoredTable table in this.AddedObjects.Values.OfType<StoredTable>())
                 if (!removed.Contains(table) && table.References.Any(removed.Contains)) return true;
+            foreach (DxfTableStyle style in this.AddedObjects.Values.OfType<DxfTableStyle>())
+                if (!removed.Contains(style) && style.References.Any(removed.Contains)) return true;
             return false;
         }
     }

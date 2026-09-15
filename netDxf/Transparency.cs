@@ -42,6 +42,7 @@ namespace netDxf
         #region private fields
 
         private short transparency;
+        private int? storedAlphaValue;
 
         #endregion
 
@@ -112,11 +113,16 @@ namespace netDxf
         }
 
         /// <summary>
-        /// Gets or sets the transparency value range from 0 to 90.
+        /// Gets the exact packed alpha value supplied to FromAlphaValue, or null for percentage-authored values.
         /// </summary>
-        /// <remarks>
-        /// Accepted transparency values range from 0 to 90, the reserved values -1 and 100 represents ByLayer and ByBlock.
-        /// </remarks>
+        /// <remarks>Stored bits remain independent of the legacy percentage/index interpretation and equality. Unknown flag bits are retained without interpretation.</remarks>
+        public int? StoredAlphaValue
+        {
+            get { return this.storedAlphaValue; }
+        }
+
+        /// <summary>Gets or sets the effective percentage retained by the legacy transparency API.</summary>
+        /// <remarks>A successful edit discards the imported packed value. Failed edits leave it unchanged.</remarks>
         public short Value
         {
             get { return this.transparency; }
@@ -127,6 +133,7 @@ namespace netDxf
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Accepted transparency values range from 0 to 90.");
                 }
                 this.transparency = value;
+                this.storedAlphaValue = null;
             }
         }
 
@@ -146,6 +153,8 @@ namespace netDxf
                 throw new ArgumentNullException(nameof(transparency));
             }
 
+            if (transparency.storedAlphaValue.HasValue) return transparency.storedAlphaValue.Value;
+
             byte alpha = (byte) (255 * (100 - transparency.Value) / 100.0);
             byte[] bytes = transparency.IsByBlock ? new byte[] {0, 0, 0, 1} : new byte[] {alpha, 0, 0, 2};
             return BitConverter.ToInt32(bytes, 0);
@@ -160,7 +169,9 @@ namespace netDxf
         {
             byte[] bytes = BitConverter.GetBytes(value);
             short alpha = (short) (100 - (bytes[0] / 255.0) * 100);
-            return FromCadIndex(alpha);
+            Transparency result = FromCadIndex(alpha);
+            result.storedAlphaValue = value;
+            return result;
         }
 
         public static Transparency FromCadIndex(short alpha)
@@ -195,7 +206,7 @@ namespace netDxf
         /// <returns>A new transparency that is a copy of this instance.</returns>
         public object Clone()
         {
-            return FromCadIndex(this.transparency);
+            return new Transparency { transparency = this.transparency, storedAlphaValue = this.storedAlphaValue };
         }
 
         #endregion

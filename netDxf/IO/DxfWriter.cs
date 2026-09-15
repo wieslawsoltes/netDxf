@@ -102,6 +102,7 @@ namespace netDxf.IO
             this.ValidateLightVersions();
             this.ValidateMultiLeaders();
             this.ValidateStoredTables();
+            this.ValidateSections();
             this.ValidateHatchBoundaryPresence();
             this.ValidateOutputSettings();
             IReadOnlyList<string> databaseErrors = this.doc.Objects.Validate();
@@ -1589,7 +1590,7 @@ namespace netDxf.IO
             }
 
             // transparency is stored in XData
-            if (layer.Transparency.Value > 0)
+            if (layer.Transparency.Value >= 0 && (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 || layer.XData.ContainsAppId("AcCmTransparency")))
             {
                 AddLayerTransparencyXData(layer);
             }
@@ -1949,6 +1950,9 @@ namespace netDxf.IO
                     break;
                 case EntityType.Ole2Frame:
                     this.WriteOle2Frame((Ole2Frame) entity);
+                    break;
+                case EntityType.Section:
+                    this.WriteSection((Section)entity);
                     break;
                 case EntityType.StoredTable:
                     this.WriteStoredTable((StoredTable)entity);

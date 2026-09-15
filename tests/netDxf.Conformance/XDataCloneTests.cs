@@ -12,6 +12,7 @@ internal static partial class Program
 
     private static void RegisterXDataCloneTests()
     {
+        RegisterInternalMetadataCopyTests();
         foreach (int count in new[] { 0, 1, 127 })
         {
             int length = count;

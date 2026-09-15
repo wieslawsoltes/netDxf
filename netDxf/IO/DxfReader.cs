@@ -331,6 +331,7 @@ namespace netDxf.IO
             this.ImportDatabaseObjects();
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
+            this.ResolveSections();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -3746,6 +3747,10 @@ namespace netDxf.IO
                     break;
                 case DxfObjectCode.Ole2Frame:
                     dxfObject = this.ReadOle2Frame();
+                    break;
+                case "SECTION":
+                case "SECTIONOBJECT":
+                    dxfObject = this.ReadSection(dxfCode);
                     break;
                 case "MULTILEADER":
                 case "MLEADER":

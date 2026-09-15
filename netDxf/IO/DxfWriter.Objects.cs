@@ -23,6 +23,8 @@ namespace netDxf.IO
                     foreach (DxfTag tag in record.Data) if (tag.Value is string text) CheckDatabaseText(text);
                 if (item is DxfOpaqueObject opaque)
                     foreach (DxfTag tag in opaque.Tags) if (tag.Value is string text) CheckDatabaseText(text);
+                if (item is DxfTableStyle style)
+                    foreach (DxfTag tag in style.Tags) if (tag.Value is string text) CheckDatabaseText(text);
                 foreach (XData data in item.XData.Values)
                     foreach (XDataRecord tag in data.XDataRecord) if (tag.Value is string text) CheckDatabaseText(text);
             }
@@ -76,6 +78,8 @@ namespace netDxf.IO
             this.PrepareLayerIndexClass(definitions);
             this.PrepareMultiLeaderClasses(definitions);
             this.PrepareStoredTableClasses(definitions);
+            this.PrepareSectionClasses(definitions);
+            this.PrepareTableStyleClass(definitions);
             this.PrepareLightListClass(definitions);
             this.PrepareDataTableClass(definitions);
         }
@@ -121,6 +125,7 @@ namespace netDxf.IO
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
             else if (this.WriteLayerIndexPayload(item)) { }
+            else if (this.WriteSectionSettingsPayload(item)) { }
             else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }
@@ -129,6 +134,7 @@ namespace netDxf.IO
             else if (this.WriteLayerFilterPointerPayload(item)) { }
             else if (this.WriteLightListPayload(item)) { }
             else if (this.WriteDataTablePayload(item)) { }
+            else if (this.WriteTableStylePayload(item)) { }
             else if (item is DxfOpaqueObject opaque)
                 foreach (DxfTag tag in opaque.Tags) this.WriteDatabaseTag(tag, false);
             this.WriteXData(item.XData);

@@ -738,6 +738,7 @@ namespace netDxf.Blocks
 
         private void Entities_BeforeAddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
+            if (e.Item is Section section && this.Record.Owner != null) section.Validate(this.Record.Owner.Owner);
             if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
             if (e.Item is StoredTable storedTable && e.Item.Owner == null) storedTable.ValidateIncoming(this.Record.Owner?.Owner);
             if (e.Item != null && e.Item.Owner == null && this.Record.Owner != null) this.Record.Owner.Owner.ValidateStoredTableEntityAdoption(e.Item);
@@ -759,6 +760,9 @@ namespace netDxf.Blocks
                 e.Cancel = false;
             }
         }
+
+        internal void AddPreparedSection(Section section) { this.entities.AddPreparedSection(section); section.Owner = this; }
+        internal void RemovePreparedSection(Section section) { this.entities.RemovePreparedSection(section); }
 
         private void Entities_AddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {

@@ -79,6 +79,7 @@ namespace netDxf.Collections
             foreach (EntityObject entity in block.Entities)
             {
                 if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this.Owner);
+                if (entity is Section section) section.Validate(this.Owner);
                 if (entity is StoredTable storedTable) storedTable.ValidateIncoming(this.Owner);
             }
 

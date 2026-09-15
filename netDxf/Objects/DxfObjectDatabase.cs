@@ -155,7 +155,7 @@ namespace netDxf.Objects
                 original.CopyDatabaseReferencesTo(clone, resolve);
                 foreach (XData data in original.XData.Values)
                 {
-                    clone.XData.Add((XData)data.Clone());
+                    clone.XData.Add(data.CopyStoredGraph());
                     foreach (XDataRecord tag in data.XDataRecord)
                         if (tag.Code == XDataCode.DatabaseHandle && !IsNullHandle((string)tag.Value))
                         {
@@ -304,7 +304,7 @@ namespace netDxf.Objects
                 this.Document.NumHandles = item.AssignHandle(this.Document.NumHandles);
             }
             // XData may have been shared with a foreign document; never transfer its application registry.
-            foreach (XData data in item.XData.Values.ToList()) item.XData.ReplaceForBinding(data.ApplicationRegistry.Name, (XData)data.Clone());
+            foreach (XData data in item.XData.Values.ToList()) item.XData.ReplaceForBinding(data.ApplicationRegistry.Name, data.CopyStoredGraph());
             item.Database = this;
             this.objects.Add(item.Handle, item);
             this.Document.AddedObjects.Add(item.Handle, item);

@@ -1,0 +1,72 @@
+{
+  "production_commit": "4cfa377",
+  "source_base": "fd95680",
+  "implementation_commits": [
+    "3132764",
+    "90f4e15",
+    "5e8d437"
+  ],
+  "related_table_name_commit": "4cfa377",
+  "read_only_source_review": {
+    "reviewed_commit": "90f4e15",
+    "result": "No concrete blocker within the reviewed immutable projection, dependency, lifecycle and token scope. Later dispatch, CLASS and spelling boundaries have executable regression coverage."
+  },
+  "test_registrations": [
+    "RegisterTableStyleTests",
+    "RegisterStoredTableNameSpellingTests",
+    "RegisterStoredTableFidelityTests"
+  ],
+  "per_configuration": {
+    "Debug": {
+      "target_framework": "net8.0",
+      "passed": 137,
+      "failed": 0,
+      "table_style_cases": 89,
+      "dll_sha256": "56ac933508fce3ff2a6572c2bee1a5e9e34adeb068710d69c01f36b7563b1367",
+      "results_sha256": "932cbe4b6a470b80d291a956ef739d8d169684451cadb940e23d782f85fff51c",
+      "independent_gates": "passed"
+    },
+    "Release": {
+      "target_framework": "net8.0",
+      "passed": 137,
+      "failed": 0,
+      "table_style_cases": 89,
+      "dll_sha256": "be2223433d284f71f2888f3a0116bfa07cc50aa29ca541bec0b843462473eaa3",
+      "results_sha256": "932cbe4b6a470b80d291a956ef739d8d169684451cadb940e23d782f85fff51c",
+      "independent_gates": "passed"
+    }
+  },
+  "native_scope": {
+    "pinned_source_sets": 5,
+    "scoped_native_outputs": 10,
+    "full_native_outputs": 4,
+    "full_native_sources": [
+      "acad_table_simple.dxf",
+      "acad_table_with_blk_ref.dxf"
+    ],
+    "external_reactors_in_scoped_carriers": "Explicit placeholder objects retain original handles. This does not qualify their native entity graph.",
+    "additional_R2004_owned_child": "XRECORD1401 from ACAD_XREC_ROUNDTRIP is included unchanged."
+  },
+  "independent_gates": [
+    {
+      "script": "tools/verify_table_styles.py",
+      "outputs": 70,
+      "corruption_controls": 98
+    },
+    {
+      "script": "tools/verify_stored_table_name_spelling.py",
+      "outputs": 8,
+      "corruption_controls": 8
+    },
+    {
+      "script": "tools/verify_stored_table_fields.py",
+      "outputs": 44,
+      "corruption_controls": 44
+    }
+  ],
+  "limits": [
+    "net8.0 Debug/Release builds and focused suites; combined integration owns remaining target-framework checks.",
+    "Immutable stored fields only; no style editing, table regeneration, CELLSTYLEMAP semantics or external renderer qualification.",
+    "Three source drawings have unrelated whole-document MULTILEADER or ACIS history limitations; their extracted TABLESTYLE graphs are qualified separately."
+  ]
+}

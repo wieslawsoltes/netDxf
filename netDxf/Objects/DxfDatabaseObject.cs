@@ -27,7 +27,7 @@ namespace netDxf.Objects
         {
             if (this.Database != null)
             {
-                this.XData.ReplaceForBinding(item.Name, (XData)this.XData[item.Name].Clone());
+                this.XData.ReplaceForBinding(item.Name, this.XData[item.Name].CopyStoredGraph());
                 foreach (XDataRecord tag in this.XData[item.Name].XDataRecord)
                     if (tag.Code == XDataCode.DatabaseHandle) this.Database.ReserveUnresolvedReference(new DxfTag(1005, tag.Value));
             }
