@@ -37,6 +37,7 @@ namespace netDxf.IO
             Debug.Assert(this.chunk.ReadString() == SubclassMarker.View);
             string name = string.Empty;
             string sunHandle = null;
+            string liveSectionHandle = null;
             var sunContext = new SunOwnerContext(SubclassMarker.View);
             Vector2 center = Vector2.Zero;
             Vector3 direction = Vector3.UnitZ;
@@ -55,6 +56,10 @@ namespace netDxf.IO
                 if (this.TryReadViewUcs(associatedUcs)) continue;
                 switch (this.chunk.Code)
                 {
+                    case 334:
+                        if (!sunContext.IsPublic) break;
+                        if (liveSectionHandle != null) throw new FormatException("Repeated VIEW live-section group 334.");
+                        liveSectionHandle = this.chunk.ReadHex(); break;
                     case 361:
                         if (!sunContext.IsPublic) break;
                         if (sunHandle != null) throw new FormatException("Repeated VIEW SUN group 361.");
@@ -117,6 +122,7 @@ namespace netDxf.IO
                 IsCameraPlottable = cameraPlottable
             };
             if (sunHandle != null) this.AddSunReference(view, sunHandle);
+            if (liveSectionHandle != null) this.loadedViewSections.Add(Tuple.Create(view, liveSectionHandle));
             this.CompleteViewUcs(view, associatedUcs);
             if (xData.Count > 0) this.tableEntryXData.Add(view, xData);
             return view;

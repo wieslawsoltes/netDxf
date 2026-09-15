@@ -75,6 +75,7 @@ namespace netDxf.Collections
             if (view.Owner != null && view.Owner != this) throw new ArgumentException("Clone the table record before moving it between documents.", nameof(view));
             UcsReferences.ValidateXData(view, this.Owner);
             UcsReferences.Validate(view, this.Owner);
+            view.ValidateLiveSection(this.Owner);
 
             if (assignHandle || string.IsNullOrEmpty(view.Handle))
             {

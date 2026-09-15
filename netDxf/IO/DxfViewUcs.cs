@@ -105,7 +105,11 @@ namespace netDxf.IO
         private void ValidateUcsReferences()
         {
             foreach (UCS ucs in this.doc.UCSs) UcsReferences.Validate(ucs, this.doc);
-            foreach (View view in this.doc.Views) UcsReferences.Validate(view, this.doc);
+            foreach (View view in this.doc.Views)
+            {
+                UcsReferences.Validate(view, this.doc);
+                view.ValidateLiveSection(this.doc);
+            }
             foreach (VPort port in this.doc.VPorts.Records) UcsReferences.Validate(port, this.doc);
         }
         private void WriteViewUcs(ViewUcs value)

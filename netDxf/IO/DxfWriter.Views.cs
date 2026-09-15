@@ -68,6 +68,7 @@ namespace netDxf.IO
             {
                 this.chunk.Write(73, view.IsCameraPlottable ? (short)1 : (short)0);
             }
+            if (view.HasStoredLiveSection) this.chunk.Write(334, view.LiveSection == null ? "0" : view.LiveSection.Handle);
             this.WriteSunReference(view);
             this.WriteXData(view.XData);
         }

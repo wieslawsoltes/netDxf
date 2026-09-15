@@ -58,7 +58,7 @@ namespace netDxf.IO
                 {
                     if (resource is TableObject table && record.OriginalResourceNames.TryGetValue(i, out string original))
                     {
-                        if (original == table.Name) this.WriteDatabaseTag(tag, false);
+                        if (!record.IsAuthored && original == table.Name) this.WriteDatabaseTag(tag, false);
                         else this.chunk.Write(tag.Code, this.EncodeNonAsciiCharacters(table.Name));
                     }
                     else this.chunk.Write(tag.Code, resource.Handle);

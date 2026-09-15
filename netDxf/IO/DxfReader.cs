@@ -333,6 +333,7 @@ namespace netDxf.IO
             this.ResolveMultiLeaderReferences();
             this.ResolveStoredTables();
             this.ResolveSections();
+            this.ResolveViewSections();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
