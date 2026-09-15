@@ -73,6 +73,7 @@ namespace netDxf.IO
             this.PrepareStoredEnvelopeClasses(definitions);
             this.PrepareGeoDataClass(definitions);
             this.PrepareLayerFilterPointerClasses(definitions);
+            this.PrepareLayerIndexClass(definitions);
             this.PrepareMultiLeaderClasses(definitions);
             this.PrepareLightListClass(definitions);
         }
@@ -117,6 +118,7 @@ namespace netDxf.IO
                 this.chunk.Write(1, this.EncodeDatabaseString(variable.Value));
             }
             else if (item is DxfPlaceholder) { /* ACDBPLACEHOLDER has no subclass payload. */ }
+            else if (this.WriteLayerIndexPayload(item)) { }
             else if (this.WriteStoredEnvelopePayload(item)) { }
             else if (this.WriteContainerPayload(item)) { }
             else if (this.WriteGeoDataPayload(item)) { }

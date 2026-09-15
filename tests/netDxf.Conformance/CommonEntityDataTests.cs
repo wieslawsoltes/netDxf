@@ -12,6 +12,7 @@ internal static partial class Program
 {
     private static void RegisterCommonEntityDataTests()
     {
+        RegisterCommonProxy160Tests();
         foreach (DxfVersion version in SupportedVersions)
         foreach (bool binary in new[] { false, true })
         {
