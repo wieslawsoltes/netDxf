@@ -4506,6 +4506,7 @@ namespace netDxf.IO
             int subdivisionLevel = 0;
             bool blendCrease = false;
             bool creaseListRead = false, publicSubclass = true, xdataStarted = false;
+            bool overrideDeclarationRead = false;
             int privateDepth = 0;
             List<Vector3> vertexes = null;
             List<int[]> faces = null;
@@ -4533,6 +4534,11 @@ namespace netDxf.IO
                 }
                 if (this.chunk.Code == 1001) xdataStarted = true;
                 else if (!publicSubclass || xdataStarted) { this.ReadNextMeshTag(); continue; }
+                if (overrideDeclarationRead && (this.chunk.Code == 71 || this.chunk.Code == 72 ||
+                    this.chunk.Code == 90 || this.chunk.Code == 91 || this.chunk.Code == 92 ||
+                    this.chunk.Code == 93 || this.chunk.Code == 94 || this.chunk.Code == 95 ||
+                    this.chunk.Code == 10 || this.chunk.Code == 20 || this.chunk.Code == 30 || this.chunk.Code == 140))
+                    throw this.MeshReadError(this.chunk.Code, "A public mesh field cannot follow the terminal subentity override declaration.");
                 switch (this.chunk.Code)
                 {
                     case 90:
@@ -4541,6 +4547,7 @@ namespace netDxf.IO
                             int overrides = this.chunk.ReadInt();
                             if (overrides < 0) throw this.MeshReadError(90, "The subentity override count cannot be negative.");
                             if (overrides != 0) throw this.MeshReadError(90, "Subentity property overrides are not supported.");
+                            overrideDeclarationRead = true;
                         }
                         this.ReadNextMeshTag();
                         break;
