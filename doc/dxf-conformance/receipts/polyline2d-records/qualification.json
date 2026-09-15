@@ -184,7 +184,25 @@
     "requested_elevation": 7
   },
   "independent_review": {
-    "status": "Final source replay and degenerate/sparse review pending while reviewer completes urgent PR94 interop work",
+    "status": "Final source review complete; no remaining production defect",
+    "source_commit": "3ded8912b17eaea2177a7db5020e2b9933c6a693",
+    "receipt": "independent/review.json",
+    "receipt_sha256": "64cb372d5f73e82e6ccff9f7fa5d911c57ed53db1479d5336cb539bf614a24d0",
+    "passed_cases_per_configuration": 220,
+    "audited_outputs_per_configuration": 372,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "audit_removed_entities": 0,
+    "same_compiled_harness_binary_sha256": "ce5a56de3dbd1f73f1a22a440b020c8e53a58f4eeb16a5e96871e6349048677a",
+    "baseline_source_commit": "48919492bb3fbec4140251884208aa2fa56c68c0",
+    "baseline_passed_cases": 112,
+    "baseline_failed_cases": 108,
+    "baseline_failure_breakdown": {
+      "previously_unsupported_empty_singleton": 24,
+      "previously_accepted_partial_dummy_point": 72,
+      "incomplete_edited_omitted_point": 12
+    },
+    "archived_actual_outputs": 972,
     "previous_candidate": "4891949",
     "previous_passed_cases": 112,
     "previous_library_sha256": "a9201845f8e4f9e572d62096040bf65511b2b208cb5818d312e35ebc01ab4459"

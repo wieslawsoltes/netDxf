@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "c36ad134bd6bde912db2dfe20d040f46540b0072c66c554fca82200e538ef204",
-    "bytes": 3186
+    "sha256": "ff54d7b004668d2678d8ba2eba85cc4b624e7fafb05091bf9a04e92b99d2eae1",
+    "bytes": 4089
   },
   {
     "path": "debug/build.txt",
@@ -130,14 +130,89 @@
     "bytes": 566
   },
   {
+    "path": "independent/README.md",
+    "sha256": "c4ac5aa820784d4954f2c54d3fb3deddd8fca3f568c17ac58e8aab1d74b0e50f",
+    "bytes": 1614
+  },
+  {
+    "path": "independent/audit_outputs.py",
+    "sha256": "bf2026ac08a67057a8306fac00f5b660ebf2875b95bdabe22d0daa0a37fa7592",
+    "bytes": 3966
+  },
+  {
+    "path": "independent/before/audit.json",
+    "sha256": "a008446a351db8a09d7a1c3c68f367e3a043ecfe57aba61ab1a7d3979acf5b2f",
+    "bytes": 64574
+  },
+  {
+    "path": "independent/before/results.json",
+    "sha256": "3a398b2108c1e00ad46624b1ee45d9f3f920e8197bb71ff7470646a1c4549b9d",
+    "bytes": 104866
+  },
+  {
+    "path": "independent/debug/audit.json",
+    "sha256": "07f41083659e35b9a7141c343d2b7b3cfe6d7285c347741206bf8601e51b64b6",
+    "bytes": 114051
+  },
+  {
+    "path": "independent/debug/results.json",
+    "sha256": "981ae675525f047bf8a2b7c804c213f5124f7fee396fbe5c7f88a5bb6f65ed64",
+    "bytes": 20518
+  },
+  {
+    "path": "independent/output-packets-manifest.json",
+    "sha256": "d5210d6c25a248781c7ae87c055885b0158590ba70d9338705b1e6135e2b9323",
+    "bytes": 170853
+  },
+  {
+    "path": "independent/output-packets.tar.gz",
+    "sha256": "abaa78803408898e94624219de8581a5c0bcd0854459ab7b1ea7f9df5966b7f0",
+    "bytes": 1652968
+  },
+  {
+    "path": "independent/probe/Boundaries.cs",
+    "sha256": "3753368e400ff9555918f99d6be454af098adf7519987af6d3eabbcff3e390c4",
+    "bytes": 4849
+  },
+  {
+    "path": "independent/probe/Degenerates.cs",
+    "sha256": "05db6bc5f8c2296229b5701df45b965b3aace21eb226b1c9b30af4f9d58b7d05",
+    "bytes": 6624
+  },
+  {
+    "path": "independent/probe/Probe.csproj",
+    "sha256": "50dd62d55b04516fd69ea1c2cad2cd4696e19bee5455a848d23e3c60ebec2361",
+    "bytes": 376
+  },
+  {
+    "path": "independent/probe/Program.cs",
+    "sha256": "88630c39b3d47ab45b2f2398e1210ab89995ff216ef8521294f7f7d68d07737c",
+    "bytes": 16990
+  },
+  {
+    "path": "independent/release/audit.json",
+    "sha256": "07f41083659e35b9a7141c343d2b7b3cfe6d7285c347741206bf8601e51b64b6",
+    "bytes": 114051
+  },
+  {
+    "path": "independent/release/results.json",
+    "sha256": "981ae675525f047bf8a2b7c804c213f5124f7fee396fbe5c7f88a5bb6f65ed64",
+    "bytes": 20518
+  },
+  {
+    "path": "independent/review.json",
+    "sha256": "64cb372d5f73e82e6ccff9f7fa5d911c57ed53db1479d5336cb539bf614a24d0",
+    "bytes": 19096
+  },
+  {
     "path": "production-source-hashes.json",
     "sha256": "aba3992e2693cee5043108661b22e47f59750e3b4483577635c857c9298882ca",
     "bytes": 3502
   },
   {
     "path": "qualification.json",
-    "sha256": "f58f415abcf50d023d5cd1af57afd31bc5af43b34fba98c9992d646343cc3274",
-    "bytes": 7307
+    "sha256": "0037ad4e552eda3e817a71759bf08fd4c65d053d39d8ce8807a16bb7b70e997e",
+    "bytes": 8108
   },
   {
     "path": "release/build.txt",
