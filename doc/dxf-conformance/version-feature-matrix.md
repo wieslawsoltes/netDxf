@@ -2,12 +2,12 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-15**. Implementation snapshot for PR **#86**: [`0f924c892b94840cf85519d57837c3839c582a2e`](https://github.com/wieslawsoltes/netDxf/tree/0f924c892b94840cf85519d57837c3839c582a2e).
-Source tree: `55d3de29002c9f40d68499280ec737129731d082`. Branch: `netstandard`.
+Audit date: **2026-09-15**. Implementation snapshot for PR **#87**: [`295e5eef289036dcdc7e0d2134f21d370a239404`](https://github.com/wieslawsoltes/netDxf/tree/295e5eef289036dcdc7e0d2134f21d370a239404).
+Source tree: `f7a1d389a0144d2f5e55434a943cba2cb3aa3cc2`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
-**244 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
+**251 scoped feature rows; 6 typed format families; 9 raw-preservation format families. Full AutoCAD DXF capability is not yet achieved.**
 
 `DxfDocument` is the existing typed geometry/database API. `DxfRawDocument` is a separate immutable ordered-tag/record API. Raw preservation is now implemented; it is not an automatic preservation fallback inside typed `DxfDocument.Load/Save`. A raw file containing an unfamiliar entity can survive while that entity is still missing from the typed API.
 
@@ -126,7 +126,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | DGNUNDERLAY / DWFUNDERLAY / PDFUNDERLAY · typed | X | X | X | P | P | P | P | P | P | References/definitions/clipping; historical admission not comprehensively gated. `ReadUnderlay/WriteUnderlay`. [B](version-feature-matrix-2026-09-12.md) |
 | WIPEOUT · typed | X | X | X | P | P | P | P | P | P | Boundary and IO; full variable/dependency coverage not certified. `ReadWipeout/WriteWipeout`. [B](version-feature-matrix-2026-09-12.md) |
 | VIEWPORT entity · typed | X | X | X | P | P | P | P | P | P | Paper-space viewport model, distinct from VPORT table. `ReadViewport/WriteViewport`. [B](version-feature-matrix-2026-09-12.md) |
-| ACAD_TABLE / TABLE · typed | X | X | X | L | L | L | L | L | L | Imported as INSERT; cells/formulas/formatting/table semantics lost. `ReadAcadTable`. [B](version-feature-matrix-2026-09-12.md) |
+| ACAD_TABLE / TABLE · typed | X | X | X | P | P | P | P | P | P | Loaded StoredTable preserves immutable ordered subclass payloads in its source document/profile, exposes recognized literal grids and protects exposed dependencies. Clone, reattachment and geometry/version changes reject. Cell editing, complete backing schemas and rendering remain open; synthetic older-profile storage is not native release qualification. [STABLE](stored-tables.md) |
 | MULTILEADER · typed | X | X | X | V | V | P | P | P | P | Editable single stored context with typed MTEXT/block content, nested leaders, references and MLEADERSTYLE. Annotation-scale graphs, style evaluation, tolerance content and rendering remain outside the implementation. [MLEAD](multileader-contexts.md) |
 | LIGHT · typed | X | X | X | V | V | P | P | P | P | Published AcDbLight parameters, editing, persistence, cloning and similarity transforms. Conservative 2007+ export; pre-2007 import permissive. Photometric/private schemas, SUN and LIGHTLIST remain separate. [LIGHT](light.md), [LNAME](light-name-transport.md) |
 | SECTION · typed | X | X | X | M | M | M | M | M | M | Section-plane entity and dependency graph. [B](version-feature-matrix-2026-09-12.md) |
@@ -140,6 +140,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | MULTILEADER nested stored context grammar · typed | X | X | X | V | V | T | T | T | T | One context with none/block/MTEXT content, complete vectors, branch and indexed breaks, optional matrix, repeated arrows and ATTDEF values. Exact identity transforms only; no layout or style evaluation. [MLEAD](multileader-contexts.md) |
 | MULTILEADER resource identity and lifecycle · typed | X | X | X | V | V | T | T | T | T | Current nested references contribute exact use counts and protect STYLE/LTYPE/BLOCK/ATTDEF removal. Callback-safe rename and block-record unregistration retain coherent identity; legacy association teardown is unchanged. [MLEAD](multileader-contexts.md) |
 | ATTDEF / ATTRIB empty-value invariants · typed | X | X | X | T | T | T | T | T | T | Constructor defaults, null values and null prompts become explicit empty strings in both transports. Cloning, INSERT synchronization and missing input fields preserve the same meaning; null style arguments reject consistently. [ATTEMPTY](attribute-default-values.md) |
+| TABLE ordered source payload preservation · typed | X | X | X | T | T | T | T | T | T | Exact immutable subclass data with scoped display-block and public STYLE-name bindings, source normal/position, independent common metadata and guarded source-document lifecycle. Unresolved/private data remains stored; no whole-drawing rendering claim. [STABLE](stored-tables.md) |
 
 ## 6. Implemented field-level increments
 
@@ -233,6 +234,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | Independent BLOCK and ENDBLK XData packets · typed | X | X | X | T | T | T | T | T | T | Each record reads and writes its own packets in all admitted profiles/transports. Block clones preserve ENDBLK data with independent bytes and registry bindings. [APPIDLIFE](appid-xdata-lifecycle.md) |
 | Native MLEADER optional stored fields · typed | X | X | X | V | V | T | T | T | T | Absent entity 270 and style 179 retain stored absence while using effective value 2; nullable line 92 retains absence with effective ByBlock color. Known malformed values reject; unknown style payloads preserve their full body and discard only abandoned typed reference fixups. Extracted native fixtures do not certify whole drawings. [NATMLEAD](mleader-native-inputs.md) |
 | Native R2010 proxy graphics length fields · typed | X | X | X | V | V | V | T | T | T | Group 160 input is accepted from R2010 with existing length and allocation checks. Canonical output remains group 92 through R2010 and group 160 from R2013. Pinned native caches qualify only the common stored byte envelope. [PROXYCOMP](common-entity-data.md) |
+| TABLE stored literal grid projection · typed | X | X | X | P | T | T | T | T | T | Recognized fixed row/column packets, independent type/flags/absence, scoped FIELD precedence and legacy text continuations. Unknown or ambiguous values do not become evaluated literals; optional backing scalar comparison declines incomplete schemas. [STABLE](stored-tables.md) |
 
 ## 7. Symbol tables
 
@@ -267,12 +269,12 @@ Product release years and database-format families are separate: an AC1032 file 
 | ACAD_PROXY_OBJECT / ACDBPLACEHOLDER · typed | X | X | X | P | P | P | P | P | P | ACDBPLACEHOLDER is typed with common metadata and CLASSES. ACAD_PROXY_OBJECT retains only the generic opaque OBJECTS payload subset; class-specific proxy semantics remain unimplemented. [NODO](named-object-database.md), [CLS](class-definitions.md) |
 | ACDBDICTIONARYWDFLT / DICTIONARYVAR · typed | X | X | X | T | T | T | T | T | T | Typed default dictionary identity/lookup and dictionary variable schema/value; generated CLASSES metadata; six profile text/binary regression fixtures. [NODO](named-object-database.md) |
 | ACDBNAVISWORKSMODELDEF · typed | X | X | X | M | M | M | M | M | M | Coordination-model definition. [B](version-feature-matrix-2026-09-12.md) |
-| DATATABLE · typed | X | X | X | M | M | M | M | M | M | Object data table schema. [B](version-feature-matrix-2026-09-12.md) |
+| DATATABLE · typed | X | X | X | V | T | T | T | T | T | Stored version-2 rectangular columns with all eleven published data-cell types, explicit nullable object identities, reciprocal owner cells, callback-safe replacement, clone maps and erasure. Native R2004 extracted tables and owned XRecords qualify stored packets; private variants remain opaque. [DATATABLE](datatable.md) |
 | DIMASSOC · typed | X | X | X | M | M | M | M | M | M | Associative dimension records/links. [B](version-feature-matrix-2026-09-12.md) |
 | FIELD · typed | X | X | X | M | M | M | M | M | M | Field expression/evaluation records. [B](version-feature-matrix-2026-09-12.md) |
 | GEODATA · typed | X | X | X | V | V | V | T | T | T | Public version-2 schema: host ownership, coordinate metadata, chunked coordinate-system XML, observation strings and mesh point/face data. Explicit clone mappings and atomic attachment. Version 1/3 and private schemas remain opaque; no CRS evaluation or geographic transformation service. [GEODATA](geodata.md) |
 | IDBUFFER / OBJECT_PTR · typed | X | X | X | P | P | P | P | P | P | IDBUFFER has ordered references, repeated identities, null handles and explicit graph-clone mappings. OBJECT_PTR stores its published common-only envelope; no undocumented pointer field or placement semantics are invented. [CONT](typed-containers.md), [FILTERPTR](layer-filter-pointer.md) |
-| LAYER_FILTER / LAYER_INDEX · typed | X | X | X | P | P | P | P | P | P | LAYER_FILTER stores ordered unresolved names with exact duplicates and case preservation. Layer evaluation and LAYER_INDEX remain unimplemented. [FILTERPTR](layer-filter-pointer.md) |
+| LAYER_FILTER / LAYER_INDEX · typed | X | X | X | P | P | P | P | P | P | LAYER_FILTER retains ordered unresolved names. LAYER_INDEX retains finite timestamps and ordered names owning distinct IDBUFFERs, validates full repeated/null reference counts, and supports explicit clone maps and erasure. Layer/index evaluation remains open. [FILTERPTR](layer-filter-pointer.md), [LINDEX](layer-index.md) |
 | LIGHTLIST · typed | X | X | X | V | V | T | T | T | T | Explicit stored Int32 version, ordered LIGHT references, repeated targets and independently stored names. Common metadata, lifecycle and clone maps are qualified from R2007; older input stays opaque. No rendering or native CAD qualification. [LIGHTLIST](lightlist.md) |
 | MATERIAL · typed | X | X | X | M | M | M | M | M | M | Materials/textures/mappers and references. [B](version-feature-matrix-2026-09-12.md) |
 | RENDERSETTINGS / MENTALRAYRENDERSETTINGS · typed | X | X | X | M | M | M | M | M | M | Rendering setting families. [B](version-feature-matrix-2026-09-12.md) |
@@ -293,6 +295,7 @@ Product release years and database-format families are separate: an AC1032 file 
 | LAYER_FILTER ordered stored names · typed | X | X | X | T | T | T | T | T | T | Published AcDbFilter/AcDbLayerFilter repeated group 8 names, including duplicates, case distinctions and unresolved layers; common metadata, compatible CLASS counts and graph clones. No filter evaluation. [FILTERPTR](layer-filter-pointer.md) |
 | OBJECT_PTR published common envelope · typed | X | X | X | T | T | T | T | T | T | Published common metadata only, with exact CAseDLPNTableRecord class spelling where declared. No undocumented payload or dictionary placement is invented; private variants remain opaque. [FILTERPTR](layer-filter-pointer.md) |
 | SPATIAL_INDEX stored timestamp · typed | X | X | X | T | T | T | T | T | T | Finite group 40 value retained bit-exactly through both transports and graph clones. Unknown/private packets stay opaque; the timestamp is not interpreted as a rebuilt index. [STOREDENV](stored-envelopes.md) |
+| LAYER_INDEX owned IDBUFFER entries · typed | X | X | X | T | T | T | T | T | T | Grouped and interleaved public arrays retain ordinal correspondence. Input counts include duplicates and null entries and must match exactly. Edits derive output counts from buffer contents; undocumented private leading counts remain wholly opaque. [LINDEX](layer-index.md) |
 
 ## 9. Common fields and dependency graphs
 
@@ -364,6 +367,10 @@ Product release years and database-format families are separate: an AC1032 file 
 | Terminal EraseOwnedTree · typed | X | X | X | T | T | T | T | T | T | Actual-owner closure, alias and extension teardown after incoming-reference validation before mutation. Tombstone handles remain and reattachment rejects. Opaque subtrees, managed legacy owners and hidden private dependencies remain excluded. [ERASE](typed-object-erasure.md) |
 | TABLE roundtrip declared ownership · typed | X | X | X | T | T | T | T | T | T | Exact XRECORD 360 TABLECONTENT and 361 TABLEGEOMETRY ownership binding, adoption and clone safeguards; extracted native ownership packets retained. Composite R2004 DATATABLE envelopes stay unbound. Full TABLE cells/backing schemas remain separate. [TABLEOWN](table-ownership-prerequisites.md) |
 | Mixed object clone, APPID rename and erasure · typed | X | X | X | T | T | T | T | T | T | Twelve combined scenarios, 36 drawings and 12 exact maps; LIGHTLIST joins from R2007. Payloads, semantic remapping, arbitrary 320 values, rejected/committed erasure and surviving external resources are independently checked. [MIX4](fourth-mixed-modules.md) |
+| Imported retained source identities · typed | X | X | X | T | T | T | T | T | T | Scoped typed-reference resolution requires the accepted instance from the same physical common-header record. Explicit legacy collection conversions retain source bindings; discarded or generated objects cannot satisfy those source references. [SOURCEID](source-reference-identity.md) |
+| Numeric handle identity and null references · typed | X | X | X | T | T | T | T | T | T | Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320–329 values preserve lexical data and do not become clone dependencies. [SOURCEID](source-reference-identity.md), [MIX5](../FifthMixedModulesQualification.md) |
+| DATATABLE declared cell ownership · typed | X | X | X | V | T | T | T | T | T | Separate object-ID, hard/soft pointer and hard/soft owner kinds; reciprocal owned-child graphs, null handles, exact external mappings and atomic registered-column replacement. Terminal erasure follows owned cells and rejects outside references. [DATATABLE](datatable.md) |
+| Mixed TABLE, DATATABLE and index lifecycle · typed | X | X | X | T | T | T | T | T | T | Cross-family stored graphs with source-bound native TABLE payloads, exact mapped copies of cloneable records, source/destination erasure, APPID rename and independent emitted-file checks. Synthetic TABLE pointer targets are disclosed separately from native application semantics. [MIX5](../FifthMixedModulesQualification.md) |
 
 ## 15. Remaining implementation sequence
 
@@ -371,8 +378,8 @@ Product release years and database-format families are separate: an AC1032 file 
 |---|---|
 | Class-specific dependencies and typed integration | Embedded/private payload grammars, standalone BLOCK/POLYLINE aggregate extraction, universal dependency import and typed unknown-entity preservation. Typed graph copying requires explicit external maps and rejects opaque subtrees. Scoped raw transactions and terminal typed erasure are implemented with documented graph boundaries. |
 | Finish partial typed records | HATCH spline relations, full affine geometry and associative source closure; MESH subentity overrides; UCS-record base references, frozen VPORT layers and extended rendering relationships; internal VERTEX common metadata. Public VIEW/VPORT UCS relationships, common entity color/shadow/proxy fields and LWP optional width/identifier fields are implemented with scoped profile gates. MTEXT rendering, layout and annotation contexts remain open. SaveAtomic remains opt-in. |
-| Missing typed entity families | Structured TABLE, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Stored MULTILEADER contexts and pre-2013 inert SAT now join HELIX, LIGHT and OLE frame subsets; rendering and private graphs remain unqualified. |
-| Missing object families | TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, LAYER_INDEX/DATATABLE, MATERIAL/VISUALSTYLE/rendering and sun families. Public OBJECT_PTR/LAYER_FILTER/SPATIAL_INDEX/LIGHTLIST and inert VBA_PROJECT storage join earlier stored object subsets; private variants and evaluation remain separate. |
+| Missing typed entity families | Editable TABLE and complete backing schemas, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Source-bound TABLE payloads and literal grids join stored MULTILEADER contexts and inert pre-2013 SAT; rendering, regeneration and private graphs remain unqualified. |
+| Missing object families | TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, material/rendering and sun families. Public stored DATATABLE and LAYER_INDEX graphs join the earlier objects; private schemas and evaluation remain separate. |
 | Historical typed dialects and schema-aware down-save | R12/R13/R14 typed grammar, earlier raw profiles, headerless inference and explicit per-property downgrade reports. Marker safety on raw profiles is not proof of historical feature legality. |
 | Native interoperability and robustness | Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Expand independent corpora, resource accounting, fuzzing and actual older-runtime execution; netstandard2.0 compilation is not execution on every consumer runtime. |
 
@@ -380,7 +387,7 @@ Feature changes require reviewable PRs, independently authored positive and malf
 
 ## 16. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **22,994 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **23,879 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 

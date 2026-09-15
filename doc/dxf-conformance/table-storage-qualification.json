@@ -1,0 +1,68 @@
+{
+  "implementation_commit": "295e5eef289036dcdc7e0d2134f21d370a239404",
+  "implementation_tree": "f7a1d389a0144d2f5e55434a943cba2cb3aa3cc2",
+  "base_merge_commit": "5d61266a589e0fc7198b4b48b7c2096561d60237",
+  "sdk": "8.0.408",
+  "runtime": "net8.0",
+  "independent_reader": "ezdxf 1.4.4",
+  "configurations": {
+    "debug": {
+      "passed": 23879,
+      "failed": 0,
+      "unique_names": 23879,
+      "results_sha256": "25b52371e9d60d961af381aa153262057b8f87ce7db62a115a014d2e7b2fad72",
+      "dxf_artifacts": 2397,
+      "independent_scripts_passed": 78,
+      "independent_scripts_failed": 0,
+      "distinct_dxfs_opened": 2296
+    },
+    "release": {
+      "passed": 23879,
+      "failed": 0,
+      "unique_names": 23879,
+      "results_sha256": "25b52371e9d60d961af381aa153262057b8f87ce7db62a115a014d2e7b2fad72",
+      "dxf_artifacts": 2397,
+      "independent_scripts_passed": 78,
+      "independent_scripts_failed": 0,
+      "distinct_dxfs_opened": 2296
+    }
+  },
+  "release_targets": [
+    "netstandard2.0",
+    "net471",
+    "net48",
+    "net6.0",
+    "net8.0"
+  ],
+  "debug_additional_targets": [
+    "netstandard2.0"
+  ],
+  "xml_documentation_warnings_per_target": 561,
+  "build_errors": 0,
+  "python_tests": 18,
+  "field_audit": {
+    "self_test": true,
+    "io_files": 77,
+    "io_methods": 633,
+    "model_header_files": 232,
+    "all_file_hashes_match_implementation": true
+  },
+  "coverage_rows": 251,
+  "added_cases": {
+    "datatable": 467,
+    "stored_table": 174,
+    "layer_index": 140,
+    "shared_source_references": 76,
+    "numeric_handles": 16,
+    "fifth_mixed": 12
+  },
+  "independent_source_reference_review": {
+    "existing_matrix_cases": 106,
+    "consumed_extension_cases": 2,
+    "existing_provenance_observations": 36,
+    "provenance_valid_dictionary_controls": 12,
+    "failed": 0
+  },
+  "full_standard_complete": false,
+  "autocad_executed": false
+}

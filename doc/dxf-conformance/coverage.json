@@ -4,18 +4,18 @@
   "source": {
     "repository": "wieslawsoltes/netDxf",
     "branch": "netstandard",
-    "commit": "0f924c892b94840cf85519d57837c3839c582a2e",
-    "tree": "55d3de29002c9f40d68499280ec737129731d082"
+    "commit": "295e5eef289036dcdc7e0d2134f21d370a239404",
+    "tree": "f7a1d389a0144d2f5e55434a943cba2cb3aa3cc2"
   },
   "qualification": {
     "full_standard_complete": false,
     "autocad_executed": false,
     "dotnet_runtime": "8.0",
-    "test_cases": 22994,
+    "test_cases": 23879,
     "test_failures": 0,
     "independent_reader": "ezdxf 1.4.4",
-    "last_implementation_pr": 86,
-    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/86/checks"
+    "last_implementation_pr": 87,
+    "ci_workflow": "https://github.com/wieslawsoltes/netDxf/pull/87/checks"
   },
   "status_definitions": {
     "T": "Executed regression coverage for precisely the stated subset; never an entire-family certificate.",
@@ -551,6 +551,26 @@
     "PROXYCOMP": {
       "label": "Native R2010 proxy count compatibility",
       "path": "doc/dxf-conformance/common-entity-data.md"
+    },
+    "STABLE": {
+      "label": "Stored TABLE payloads and literal grids",
+      "path": "doc/dxf-conformance/stored-tables.md"
+    },
+    "DATATABLE": {
+      "label": "DATATABLE columns and cell ownership",
+      "path": "doc/dxf-conformance/datatable.md"
+    },
+    "LINDEX": {
+      "label": "LAYER_INDEX stored graphs",
+      "path": "doc/dxf-conformance/layer-index.md"
+    },
+    "MIX5": {
+      "label": "Mixed table and index lifecycle",
+      "path": "doc/FifthMixedModulesQualification.md"
+    },
+    "SOURCEID": {
+      "label": "Retained source identities and numeric handle semantics",
+      "path": "doc/dxf-conformance/source-reference-identity.md"
     }
   },
   "features": [
@@ -1701,16 +1721,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "L",
-        "AC1018": "L",
-        "AC1021": "L",
-        "AC1024": "L",
-        "AC1027": "L",
-        "AC1032": "L"
+        "AC1015": "P",
+        "AC1018": "P",
+        "AC1021": "P",
+        "AC1024": "P",
+        "AC1027": "P",
+        "AC1032": "P"
       },
-      "scope": "Imported as INSERT; cells/formulas/formatting/table semantics lost. `ReadAcadTable`.",
+      "scope": "Loaded StoredTable preserves immutable ordered subclass payloads in its source document/profile, exposes recognized literal grids and protects exposed dependencies. Clone, reattachment and geometry/version changes reject. Cell editing, complete backing schemas and rendering remain open; synthetic older-profile storage is not native release qualification.",
       "evidence": [
-        "B"
+        "STABLE"
       ]
     },
     {
@@ -2389,16 +2409,16 @@
         "AC1009": "X",
         "AC1012": "X",
         "AC1014": "X",
-        "AC1015": "M",
-        "AC1018": "M",
-        "AC1021": "M",
-        "AC1024": "M",
-        "AC1027": "M",
-        "AC1032": "M"
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
       },
-      "scope": "Object data table schema.",
+      "scope": "Stored version-2 rectangular columns with all eleven published data-cell types, explicit nullable object identities, reciprocal owner cells, callback-safe replacement, clone maps and erasure. Native R2004 extracted tables and owned XRecords qualify stored packets; private variants remain opaque.",
       "evidence": [
-        "B"
+        "DATATABLE"
       ]
     },
     {
@@ -2502,9 +2522,10 @@
         "AC1027": "P",
         "AC1032": "P"
       },
-      "scope": "LAYER_FILTER stores ordered unresolved names with exact duplicates and case preservation. Layer evaluation and LAYER_INDEX remain unimplemented.",
+      "scope": "LAYER_FILTER retains ordered unresolved names. LAYER_INDEX retains finite timestamps and ordered names owning distinct IDBUFFERs, validates full repeated/null reference counts, and supports explicit clone maps and erasure. Layer/index evaluation remains open.",
       "evidence": [
-        "FILTERPTR"
+        "FILTERPTR",
+        "LINDEX"
       ]
     },
     {
@@ -5772,6 +5793,154 @@
         "AC1027": "T",
         "AC1032": "T"
       }
+    },
+    {
+      "id": "typed-retained-source-identities",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Imported retained source identities",
+      "scope": "Scoped typed-reference resolution requires the accepted instance from the same physical common-header record. Explicit legacy collection conversions retain source bindings; discarded or generated objects cannot satisfy those source references.",
+      "evidence": [
+        "SOURCEID"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-numeric-handle-semantics",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Numeric handle identity and null references",
+      "scope": "Public lookup, semantic XRECORD/XData validation and mapped cloning agree on case-insensitive one-to-sixteen-digit hexadecimal identities. Zero references remain absent; arbitrary 320–329 values preserve lexical data and do not become clone dependencies.",
+      "evidence": [
+        "SOURCEID",
+        "MIX5"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-stored-payload",
+      "area": "Entities",
+      "pipeline": "typed",
+      "feature": "TABLE ordered source payload preservation",
+      "scope": "Exact immutable subclass data with scoped display-block and public STYLE-name bindings, source normal/position, independent common metadata and guarded source-document lifecycle. Unresolved/private data remains stored; no whole-drawing rendering claim.",
+      "evidence": [
+        "STABLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-literal-grid",
+      "area": "Implemented field-level increments",
+      "pipeline": "typed",
+      "feature": "TABLE stored literal grid projection",
+      "scope": "Recognized fixed row/column packets, independent type/flags/absence, scoped FIELD precedence and legacy text continuations. Unknown or ambiguous values do not become evaluated literals; optional backing scalar comparison declines incomplete schemas.",
+      "evidence": [
+        "STABLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "P",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-datatable-owner-cells",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "DATATABLE declared cell ownership",
+      "scope": "Separate object-ID, hard/soft pointer and hard/soft owner kinds; reciprocal owned-child graphs, null handles, exact external mappings and atomic registered-column replacement. Terminal erasure follows owned cells and rejects outside references.",
+      "evidence": [
+        "DATATABLE"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "V",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-layer-index-owned-buffers",
+      "area": "Objects",
+      "pipeline": "typed",
+      "feature": "LAYER_INDEX owned IDBUFFER entries",
+      "scope": "Grouped and interleaved public arrays retain ordinal correspondence. Input counts include duplicates and null entries and must match exactly. Edits derive output counts from buffer contents; undocumented private leading counts remain wholly opaque.",
+      "evidence": [
+        "LINDEX"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
+    },
+    {
+      "id": "typed-table-index-mixed-lifecycle",
+      "area": "Typed object lifecycle",
+      "pipeline": "typed",
+      "feature": "Mixed TABLE, DATATABLE and index lifecycle",
+      "scope": "Cross-family stored graphs with source-bound native TABLE payloads, exact mapped copies of cloneable records, source/destination erasure, APPID rename and independent emitted-file checks. Synthetic TABLE pointer targets are disclosed separately from native application semantics.",
+      "evidence": [
+        "MIX5"
+      ],
+      "status": {
+        "AC1009": "X",
+        "AC1012": "X",
+        "AC1014": "X",
+        "AC1015": "T",
+        "AC1018": "T",
+        "AC1021": "T",
+        "AC1024": "T",
+        "AC1027": "T",
+        "AC1032": "T"
+      }
     }
   ],
   "next_work": [
@@ -5788,12 +5957,12 @@
     {
       "id": "new-entities",
       "title": "Missing typed entity families",
-      "scope": "Structured TABLE, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Stored MULTILEADER contexts and pre-2013 inert SAT now join HELIX, LIGHT and OLE frame subsets; rendering and private graphs remain unqualified."
+      "scope": "Editable TABLE and complete backing schemas, SECTION, proxy variants, modern SAB/ACDSDATA and surface families. Source-bound TABLE payloads and literal grids join stored MULTILEADER contexts and inert pre-2013 SAT; rendering, regeneration and private graphs remain unqualified."
     },
     {
       "id": "new-objects",
       "title": "Missing object families",
-      "scope": "TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, LAYER_INDEX/DATATABLE, MATERIAL/VISUALSTYLE/rendering and sun families. Public OBJECT_PTR/LAYER_FILTER/SPATIAL_INDEX/LIGHTLIST and inert VBA_PROJECT storage join earlier stored object subsets; private variants and evaluation remain separate."
+      "scope": "TABLESTYLE/TABLECONTENT/TABLEGEOMETRY/CELLSTYLEMAP, FIELD/DIMASSOC, material/rendering and sun families. Public stored DATATABLE and LAYER_INDEX graphs join the earlier objects; private schemas and evaluation remain separate."
     },
     {
       "id": "historical-typed",
