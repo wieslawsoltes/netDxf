@@ -2,7 +2,9 @@
 
 Start with the [current version and feature comparison](version-feature-matrix.md), with typed editing distinguished from raw preservation and each format family shown separately. The machine-readable source is [coverage.json](coverage.json). It includes evidence links, a pinned production commit/tree, explicit missing/lossy/rejected states, and the remaining implementation sequence.
 
-The latest [SECTION_MANAGER, HATCH and source identity checkpoint](checkpoint-section-hatch-2026-09-15.md) records PR #90: 27,555 passing cases, 98 independent gates per configuration and 272 scoped rows. The [association and child-record recovery checkpoint](checkpoint-recovery-2026-09-15.md) records PR #89: 26,980 passing cases, 96 independent gates in each local configuration, all five Release library targets, and a 270-row scoped comparison. It follows the [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) for PR #88 and the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
+The latest [POLYFACE and PolygonMesh integrity checkpoint](checkpoint-polyline-integrity-2026-09-15.md) records PR #91: 28,627 passing cases and 100 independent gates in each local configuration, all five Release library targets, and 272 scoped rows. All four implementation CI jobs passed; Linux Release also passed all 100 independent gates. Signed face topology, independent clones and exact polygon-grid cardinality have explicit evidence; arbitrary child metadata and native smooth-surface regeneration remain outside this increment.
+
+The merged [SECTION_MANAGER, HATCH and source identity checkpoint](checkpoint-section-hatch-2026-09-15.md) records PR #90: 27,555 passing cases, 98 independent gates per configuration and 272 scoped rows. The [association and child-record recovery checkpoint](checkpoint-recovery-2026-09-15.md) records PR #89: 26,980 passing cases, 96 independent gates in each local configuration, all five Release library targets, and a 270-row scoped comparison. It follows the [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) for PR #88 and the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
 
 `DxfDocument` admits the six 2000–2018 format families. `DxfRawDocument` additionally admits R11/R12, R13 and R14 for ordered preservation and scoped immutable edits. Unknown raw records surviving is not evidence that the typed model can edit or evaluate them. No completeness percentage is inferred from test count.
 
@@ -46,3 +48,7 @@ The [immutable section manager](section-manager.md) retains the stored update fl
 ordered section pointers and exact source identities with root-anchor and lifecycle
 guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
 storage; live sectioning and automatic membership maintenance remain separate.
+
+[POLYFACE face grammar and clone isolation](polyface-grammar.md) qualify signed indices,
+zero termination, advisory counts and independent face lifecycles across both
+transports. Arbitrary POLYFACE child metadata remains outside that geometry scope.

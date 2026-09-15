@@ -1,0 +1,2082 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "scope": "Independent authored packets and disclosed mutations; no native application evidence",
+  "cases": [
+    {
+      "name": "polyface-2000-quad-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "fde63aced3b3a1f4799644746f7defdf4969de5891bac9220a57f60e7cbc3858"
+    },
+    {
+      "name": "polyface-2000-quad-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c8f1652993ba2fb6177f5d63a6ed4f7482784a7bf5b5ca3121856cd04d71029b"
+    },
+    {
+      "name": "polyface-2000-triangle-zero-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "100339b72c6e7dfaa31e927cbbfec50042c75810023baa6ceef24634f5137959"
+    },
+    {
+      "name": "polyface-2000-triangle-zero-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "86e7403b81f8ca51d26b267c29cdee9bf30c23721f0c863c151b8eab0ddace22"
+    },
+    {
+      "name": "polyface-2000-line-face-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "8741492535f8015781c52d4951d7ee3c9a8e9e621061824535fe526cb28e184f"
+    },
+    {
+      "name": "polyface-2000-line-face-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "32e70264eb03295723290b740f7ecb27d01a3af004865f454859149eb66913ee"
+    },
+    {
+      "name": "polyface-2000-point-face-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "d8088b9f26c14c90f8e1d1f940133ea07572085131c395c08966eae94bf61c54"
+    },
+    {
+      "name": "polyface-2000-point-face-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "e8f22c4e01e46ee179ea20ced3f50638f9205d8460ee28e2805f91a0806a43a3"
+    },
+    {
+      "name": "polyface-2000-out-of-range-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "0cb9389d75b938ddce52b405bbfcbde85b8c110e5823ba7debd1ad7fbff9b806"
+    },
+    {
+      "name": "polyface-2000-out-of-range-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "4d226793f32d9d94c17ef2b777b3b2aa9c7345d1bd6db56fdc5d49449c604b9b"
+    },
+    {
+      "name": "polyface-2000-signed-minimum-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "3e67c8fbadf6688098d6b21cf2d6d78256dda201e2181db4cf3842ff8a5cd549"
+    },
+    {
+      "name": "polyface-2000-signed-minimum-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "4696b824a66f4927563be9d8bfeb9b683c495c7403362d0ce551dad47a1957f4"
+    },
+    {
+      "name": "polyface-2000-bad-first-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "905af43c95488022f505b3bcbd4cc781991681a42985867a512a000791d5d41e"
+    },
+    {
+      "name": "polyface-2000-bad-first-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "6495e0a45a28c123b923d53dda7f82e553300667f3d1825bd8246361c92a0057"
+    },
+    {
+      "name": "polyface-2000-trailing-after-zero-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "b34a54e749cf4b344023716b72b474c92a32c852687a5b64bd6d9c19a1b64a50"
+    },
+    {
+      "name": "polyface-2000-trailing-after-zero-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "aadb9620b3285058ca2c0c397668c2e9486a3baec033fb9a1886d97a50c17d6c"
+    },
+    {
+      "name": "polyface-2000-missing-middle-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "1b95f6cbbad1c16cbbe8901427aa3fd6a2ecd7b04dc46154344110f68e4fa55d"
+    },
+    {
+      "name": "polyface-2000-missing-middle-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "7116399549c95f6608f8dbceb88b394fc7448aee1077f790f1ea5d41712d51c7"
+    },
+    {
+      "name": "polyface-2000-reordered-slots-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "417f69c4e6a3952415de12338b1d29f8d688f48faf4d8f449e74584ed5ad799a"
+    },
+    {
+      "name": "polyface-2000-reordered-slots-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "c450f00a773b3b64f17b866949d52fe52c2ce46869b57777457360156f27d881"
+    },
+    {
+      "name": "polyface-2000-duplicate-slot-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "145c5bd3ef0c89ad7e2e0611c8803a366cfbf2c6dfd437a50bdff196d142a9a5"
+    },
+    {
+      "name": "polyface-2000-duplicate-slot-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "d21b2f6b8e94133b2688937f84936796bcd2c2acfab7b20929f33b111346c717"
+    },
+    {
+      "name": "polyface-2000-zero-first-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "9855fe569bfe227f77cc6b03dde20c145f04f9647100b09befa0ad93cab453ef"
+    },
+    {
+      "name": "polyface-2000-zero-first-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "3249437ee91f43a664ef9a2b232d46cb6e2cd22f860bb4f6e80d883ab6d3ec6c"
+    },
+    {
+      "name": "polyface-2000-advisory-counts-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "845bbdcacf4cef9bb0f270e1aa65dfde76376ea764f309ad4bb4ef7d27edf8ec"
+    },
+    {
+      "name": "polyface-2000-advisory-counts-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c790311c46221f76026e5d2827052efd973f2c253e25bcca4cd4b925468d1dc1"
+    },
+    {
+      "name": "polyface-2000-face-before-coordinates-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "087f10b8bb14f3329c85548082ffed8fc6e5e41bd5d6822d59d57b524a38560a"
+    },
+    {
+      "name": "polyface-2000-face-before-coordinates-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "5a1330e6b396be209f838425156e9e58e69381b66d8878ba8cc994dc4c3e1c2f"
+    },
+    {
+      "name": "polyface-2000-interleaved-face-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "161bfb5e5c6267861da7158f1bcd883735681e78d7820d907ffadf09129b2117"
+    },
+    {
+      "name": "polyface-2000-interleaved-face-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "51c058b23eb95c86fa088a6a530216c2791706d458cdebb20f6b8479798698ef"
+    },
+    {
+      "name": "polyface-2004-quad-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0e0d07cd6669c8c64f6c1cce66e691e9e0067e32d49e85d06484176964e795fb"
+    },
+    {
+      "name": "polyface-2004-quad-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "20af1ec29af4f1bddeed91f39c3be551c5bd9eb7d85369556bf72c3739ee25a8"
+    },
+    {
+      "name": "polyface-2004-triangle-zero-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "6d05578a8e093c7262274991c43348574e452bb790a618ed10dd332f10cce5d4"
+    },
+    {
+      "name": "polyface-2004-triangle-zero-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "0568edab0cb4288dc104efb9dadd64699b259dce8cd35842b20c9b3b1d5e874e"
+    },
+    {
+      "name": "polyface-2004-line-face-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "76bf8df27c411dbbc23b805279d3411576850348decfec03a6b33801bc1b1e1c"
+    },
+    {
+      "name": "polyface-2004-line-face-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "ad886a8137a94d0e618b96f154e25a167cb08298457213b0ae37b05e769aed20"
+    },
+    {
+      "name": "polyface-2004-point-face-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "deef3a9e8ea07c42e571b54bd0d55738132915f003fa158ef3cd7dcb790b79b5"
+    },
+    {
+      "name": "polyface-2004-point-face-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "85128e95e7c59a950934244b0d55db8c2a97a4f42a298ddf7dcd41cbf72e911b"
+    },
+    {
+      "name": "polyface-2004-out-of-range-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "5d2f5985901c64dd6551ba715bd8502ea541c8ac29f43b107fb6bd5860798217"
+    },
+    {
+      "name": "polyface-2004-out-of-range-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "05f427c9a294d5b36f7d7d82a0b273939a11e501580358dabf07fc25563fbfe3"
+    },
+    {
+      "name": "polyface-2004-signed-minimum-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "89593da7e568a5e8ba853d8bfb21d55be9be746b3fba2e8bf6bc6d2184dbcd18"
+    },
+    {
+      "name": "polyface-2004-signed-minimum-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "62e0fef6972ebd3aceaa4c654f415e29f06dd469fd0f07c8c5dcc1f8dd113bd8"
+    },
+    {
+      "name": "polyface-2004-bad-first-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "6298d046de0e0f589332603eba3d096825011e7e1379e210ce2bf3f814d2b777"
+    },
+    {
+      "name": "polyface-2004-bad-first-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "7968a52ac0ab97f28e418886abdcc8d56f8d3f11db5e34f34a3f58f4d9959773"
+    },
+    {
+      "name": "polyface-2004-trailing-after-zero-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "604e9ec3969350f5df7f78a4dd5c3868979b32a36abb01a13599b593ccba836d"
+    },
+    {
+      "name": "polyface-2004-trailing-after-zero-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "56ab9fc05786dd62340b62e6b573febc44f7edf102aad16f132cb5e7bf462f17"
+    },
+    {
+      "name": "polyface-2004-missing-middle-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "d17baef31f57c4e8e41086e55b9ef1d44646ad4aefaf50db11f9db497504398a"
+    },
+    {
+      "name": "polyface-2004-missing-middle-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "2cfe33948a5036d17bc32133fe9c634c35a16220fe8a61bc01c87985d3311208"
+    },
+    {
+      "name": "polyface-2004-reordered-slots-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "c6c35985973561237e5abfcae4590b3fa8f978e5cc60792330189442e664e9cc"
+    },
+    {
+      "name": "polyface-2004-reordered-slots-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "225a11cef353a246ba28bc637ed18bc3adf0171d29124c8fd22b3f96b4810da7"
+    },
+    {
+      "name": "polyface-2004-duplicate-slot-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "5c5c1fb246ae74a36a1c94faeb5afdab6cb25195f23f2a2ca9424099c2e5b615"
+    },
+    {
+      "name": "polyface-2004-duplicate-slot-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "e68441299c33e191a03027954a942c68a04366a94f92bb32817921857bb7b88c"
+    },
+    {
+      "name": "polyface-2004-zero-first-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "09a88f2276b2f0f31bd20d902c65ec3ee16e43107bc39afed5ca099378030003"
+    },
+    {
+      "name": "polyface-2004-zero-first-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "b2cb70a49390d48a85413c79a7a96b4249b287f9bed58a3a6865079028fe3360"
+    },
+    {
+      "name": "polyface-2004-advisory-counts-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "a9b2ddf6c76881a704fb8642fb6a6d861227e5b43cc10451db6ae6608d61d2f8"
+    },
+    {
+      "name": "polyface-2004-advisory-counts-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c262aeda123712dba7083f11a88cf094e798fece15d4649ddba58969ae7b32d2"
+    },
+    {
+      "name": "polyface-2004-face-before-coordinates-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "88e3905753e0f4d66867c4ddd0b00b8a7e3acbe0052b0cd862647f095fafb7e7"
+    },
+    {
+      "name": "polyface-2004-face-before-coordinates-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0c40f1c15b6d6fc0b4ec081fe452e35919b5f7d2baed2c8135de5797e98a7f79"
+    },
+    {
+      "name": "polyface-2004-interleaved-face-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "be9a455cf0826e380d8c6ce415aab8bbeca2bf3afe24e316c4dd506c898d06b3"
+    },
+    {
+      "name": "polyface-2004-interleaved-face-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "836152668661db54b2ed0728a798199b8ae04f3c60db95fedad233d038596a3b"
+    },
+    {
+      "name": "polyface-2007-quad-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "1201424a081631bb8c5810bb5eddad5ca2e393af75e3766ed4b06b917e834f46"
+    },
+    {
+      "name": "polyface-2007-quad-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "880062c2f581e108de12f88c3cbde989045883af417f64b3736bc19528cbc5d0"
+    },
+    {
+      "name": "polyface-2007-triangle-zero-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "a91fc4e87f61c2297897074002bb4bb7adfada54c3ab4a8bae420cfba81085c5"
+    },
+    {
+      "name": "polyface-2007-triangle-zero-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "bde22243c882025c9746c37d0292ebc377ec19685379c9f63c63c20ed84d0c1a"
+    },
+    {
+      "name": "polyface-2007-line-face-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "c5a781000295e0e6887344334d928fce9637f8b33f4bfb58c991f917fd6c9d53"
+    },
+    {
+      "name": "polyface-2007-line-face-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "431c81b30502285b825657fab37f74237ca3e483687fefe50798f8c2a7ef6672"
+    },
+    {
+      "name": "polyface-2007-point-face-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "44b02f3ca2656770af449203871f8ef0cbc05dd1b45d844377e6f7d026da650f"
+    },
+    {
+      "name": "polyface-2007-point-face-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "e8d1e76a780787bde0250935d0fefdc7103908ad028cdc29610c9b80c0c97a48"
+    },
+    {
+      "name": "polyface-2007-out-of-range-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "a54677f7b0744d01a77be4c4bff43012d3476b32f56bddefb784d971ca15f896"
+    },
+    {
+      "name": "polyface-2007-out-of-range-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "0fd1f8c8849517f10e78f3a2e5526ea85dc02c21679821e4e0c2fc6693d8fffb"
+    },
+    {
+      "name": "polyface-2007-signed-minimum-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "ba5fef1a493dc85442f5137d9c14e2877e88ccaf43dc7bd0a16a6a0cb407e1e5"
+    },
+    {
+      "name": "polyface-2007-signed-minimum-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "88d9fd6cbb3663418091fa5e0cf6dee0bedea52aa07144b46b0e2caa3fa78503"
+    },
+    {
+      "name": "polyface-2007-bad-first-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "ad125ec4f3db3f3267768c505b3f29ede6ef63c88d7cab32d64a8d09ecd0f4dd"
+    },
+    {
+      "name": "polyface-2007-bad-first-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "281ba0458a951110046ece415d9bd394f02622a16d9ff18659af6a0d83691c5a"
+    },
+    {
+      "name": "polyface-2007-trailing-after-zero-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "ac405d66f9deb878addb62f72c4ab2c56be5d075e77727e1782e157eae9b9e4a"
+    },
+    {
+      "name": "polyface-2007-trailing-after-zero-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "b3714889015cce642d2a2e88dd16554b2f61533d57ea508a35aa3626280bb284"
+    },
+    {
+      "name": "polyface-2007-missing-middle-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "a5e308da004a770349e810484b129bd6277bf67fb357a1e41a2cae486b1ccbf8"
+    },
+    {
+      "name": "polyface-2007-missing-middle-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "c75b237646bae7ec4037bede672b72f185d6e6435d28c2aeb69463675a63cbfb"
+    },
+    {
+      "name": "polyface-2007-reordered-slots-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "2c23151672ef809e108f53cbeba846513004b6319602f3f255b5fa273bb79fb3"
+    },
+    {
+      "name": "polyface-2007-reordered-slots-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "b6ce7b1aedace3a237f82660719ee7cc4f801732534036bb46b5ab70b0bf7d49"
+    },
+    {
+      "name": "polyface-2007-duplicate-slot-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "4ae49956447baff5ab5b436f0bf1d4edfc3af8e3fdb828173694aab80d59bd6b"
+    },
+    {
+      "name": "polyface-2007-duplicate-slot-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "f32a7d88ef0819936025d706da8895704fa35a73d5278bcb0d3395fe795bba5e"
+    },
+    {
+      "name": "polyface-2007-zero-first-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "1b26a0a47f4b449956b6e21ffcc30036d6b7383239ba1beb66edd4ef45b565c6"
+    },
+    {
+      "name": "polyface-2007-zero-first-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "a5977137e826b0d3dd5315fcfac2244d91df5f47fefad8e717fc5fe5af7f10e9"
+    },
+    {
+      "name": "polyface-2007-advisory-counts-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "bb986ee26e743510eec6040ee210c718f4cbdd22a8bf74277d547fcf7a9f4562"
+    },
+    {
+      "name": "polyface-2007-advisory-counts-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0471a72a336389dd9acc955a09c400a4fb103e6dc335639ef5afdaea7fd6df60"
+    },
+    {
+      "name": "polyface-2007-face-before-coordinates-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "754e4af97281ccc00c31981e8800c622458a80d3a12501f1fff150472baf0019"
+    },
+    {
+      "name": "polyface-2007-face-before-coordinates-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "ea2351bee0358465654f63064487e1740f7b9e8fcb007fa4f9a3ec334b7d0eef"
+    },
+    {
+      "name": "polyface-2007-interleaved-face-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "64e2db8e663bdbe06209f961544161e45862d665ead8cb9467c645e780040573"
+    },
+    {
+      "name": "polyface-2007-interleaved-face-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "047652506333d10630c10a6def572311b6af76292d81362f9610ce84dae0ff71"
+    },
+    {
+      "name": "polyface-2010-quad-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b7141e776e5e154eaab2a44e4e06392068fa670742885f9d0f9043eeda793a13"
+    },
+    {
+      "name": "polyface-2010-quad-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "ec9c26876c96638747c1f01bf513c5fa30d9b79993c908a1760a94144dbba44f"
+    },
+    {
+      "name": "polyface-2010-triangle-zero-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "2322a862ca141aa0120c0b99113e42ac8b231f30538bb33ed7b2ae6be231979a"
+    },
+    {
+      "name": "polyface-2010-triangle-zero-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "831b9bd45125e29a4b19b546bc72e86e57004450432bf373f5058523cb6b9494"
+    },
+    {
+      "name": "polyface-2010-line-face-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "b5d2235ca8677588cb7132adb721e38c0ae863726b7aaaafe8034660fae91e72"
+    },
+    {
+      "name": "polyface-2010-line-face-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "3b619055ab5ad428c65e3c6f5a555e95b1c086ab62831a840ace6c55a976fce7"
+    },
+    {
+      "name": "polyface-2010-point-face-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "9a911535add8cffd397efae2250971c13dd64e2e2d7061cf3908aa9bd5025624"
+    },
+    {
+      "name": "polyface-2010-point-face-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "54ad2f1bbf057d96e92580a2ef7c999cf61632a964f9bf72b89d68637acf895c"
+    },
+    {
+      "name": "polyface-2010-out-of-range-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "6dcd5517d62598973c8edd35cdcc66cedb9e666392f5bb0ac3fa1f1efeea9868"
+    },
+    {
+      "name": "polyface-2010-out-of-range-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "c38758abdf977e4962dd19256241151fa8833ed15ecb6a6fcb59fe76964de319"
+    },
+    {
+      "name": "polyface-2010-signed-minimum-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "8e6c04a107a298efacf118083caf740b542c06dbc66ef25748a647ac8949fd00"
+    },
+    {
+      "name": "polyface-2010-signed-minimum-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "3647669abe8bac76e82d993f5ec6e1f6f4fd3d88c3330df4b26689c4531bf3fc"
+    },
+    {
+      "name": "polyface-2010-bad-first-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "707e03b936de8f58cdf55753df6533c428f37d74d21fa6a8e08328e376c83c3e"
+    },
+    {
+      "name": "polyface-2010-bad-first-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "1d98cf8c12618aec1fdb0f96c80f4764fa4d4dd9b74217368acfd5f90746f028"
+    },
+    {
+      "name": "polyface-2010-trailing-after-zero-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "cdb1843cc13d31a244c90eb059584d5916e90aa2bfa1475a9de177a85d81f262"
+    },
+    {
+      "name": "polyface-2010-trailing-after-zero-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "b0588be6c6ffdc566fb466ab9e2a7ff91b5f2e8d972100f3d69898db27c8ee00"
+    },
+    {
+      "name": "polyface-2010-missing-middle-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "3364f380e0020f3747088a756be9e0802cea2e214c867ecd9d0a4a7988c8d3a3"
+    },
+    {
+      "name": "polyface-2010-missing-middle-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "8f9e1bffc373e9dd50889d781f95a287401252ff8bf7c79dee09e524808c3b89"
+    },
+    {
+      "name": "polyface-2010-reordered-slots-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "a797a6cdaeb2eb2c748b9c69199967258ff9297143fc3d72582f1d82e2f91e26"
+    },
+    {
+      "name": "polyface-2010-reordered-slots-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "a7beaff16c7c5f8270098d0c91b00cce82c5561eec4d9e10966e37ca7dd38ea4"
+    },
+    {
+      "name": "polyface-2010-duplicate-slot-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "245e7c1e3dc71248af7da5997d7a7fd46aec05bb826f7609b1a5ad36abe9a3dc"
+    },
+    {
+      "name": "polyface-2010-duplicate-slot-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "bc04fcd040dc059ed6bb367c8342201a598aa19e16abe2dacf4361c403a32e1d"
+    },
+    {
+      "name": "polyface-2010-zero-first-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "b22e7bd6033372a7781e2d6460fb6ec5baf156ad3bf75c60ca3e02a68873a981"
+    },
+    {
+      "name": "polyface-2010-zero-first-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "63bdb067b3fe83b186cf7b5e514c18350e6750f57b24cd61d46a8201c358f7e4"
+    },
+    {
+      "name": "polyface-2010-advisory-counts-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "629c43214bd4b0aa3b9aa1eaa0b0fe7612a7de4a381e6e388225f6c54de3a527"
+    },
+    {
+      "name": "polyface-2010-advisory-counts-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "f1d7dc1fd8c732eb1878170fa3aa43a3a49e8f1f13215ed9962310ab6d6e2de4"
+    },
+    {
+      "name": "polyface-2010-face-before-coordinates-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "bf96c48de9e68bed1ad3a7b5a0d00f69d701f0496c11e030ddbe72edd62a309d"
+    },
+    {
+      "name": "polyface-2010-face-before-coordinates-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "b998dfc54a84fef9a4651698ff81e866dd8fccdfcff547e02d3e5ad8cf91b1e9"
+    },
+    {
+      "name": "polyface-2010-interleaved-face-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "54be9fd40eb9ee50e93e8c946b837b7ec949e4df7833b7963df1b95e7524e2b4"
+    },
+    {
+      "name": "polyface-2010-interleaved-face-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "5e4c7cb6c76899f809ed6d93d0143d07fa554fe3854fb4f5c03a7d1240ed4a91"
+    },
+    {
+      "name": "polyface-2013-quad-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "2c61c68d7ad7db94dfefe2469cd00cb76adb0bf7439a89240699116e5046bb65"
+    },
+    {
+      "name": "polyface-2013-quad-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "5d4fb47ead52b777637bc65293ef783f4dfff9ebccf427b954e2889d37cdb8b9"
+    },
+    {
+      "name": "polyface-2013-triangle-zero-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "530f22c199294e05595d0abf051289e6ee63ba2517f84a5e9f8a41da936cc121"
+    },
+    {
+      "name": "polyface-2013-triangle-zero-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "14b4b6671e0fac51941da87b4bac7e03756d6d26ee6e57804b46748887c96620"
+    },
+    {
+      "name": "polyface-2013-line-face-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "c0ef033eae3a56df29eeef69b35eb6eb08ded3cf3fcaf30bfca7f3a96cd32879"
+    },
+    {
+      "name": "polyface-2013-line-face-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "ef06ffcf339233f8772be8b6069e7359f87d2a02bc12af6401116c82ff51af2a"
+    },
+    {
+      "name": "polyface-2013-point-face-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "315c9588f57178b9a0a6442a09e79bcd14af5a0873e36ee947f410d58148c198"
+    },
+    {
+      "name": "polyface-2013-point-face-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "6b2b06f6334b9d8eeed9a5f10c676e5675d99d9028f88483046b57fceb528d84"
+    },
+    {
+      "name": "polyface-2013-out-of-range-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "35236e1200be931fd65a5a0d368283f11d82ef1ae72d5a9b8ce7280d2d43cb80"
+    },
+    {
+      "name": "polyface-2013-out-of-range-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "c82d8b161279357dd8a27c2eca2118f4b7db584ffc89035a336c5150a4178151"
+    },
+    {
+      "name": "polyface-2013-signed-minimum-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "4ce5c776f9174fe0b9b8135e0a194ccb8125274513b401eca9b35381724f9819"
+    },
+    {
+      "name": "polyface-2013-signed-minimum-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "4ab0729d05756c2eb5c48b196d5c593a1e1d1ca7edd99c30cfd574bbfa565b5d"
+    },
+    {
+      "name": "polyface-2013-bad-first-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "77f969135bc6f232436568a40e48d8e9ab0744562a3d6c34f6893fafc53c0f28"
+    },
+    {
+      "name": "polyface-2013-bad-first-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "30a2437676bd89b7b870cb57d8677ec4d4b924b6ef715cedd3f449acb89e9606"
+    },
+    {
+      "name": "polyface-2013-trailing-after-zero-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "d8f146afa899d861860b3a7833ba19c719d0b98afea2f8bbfc8e34833c677610"
+    },
+    {
+      "name": "polyface-2013-trailing-after-zero-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "f19bc70f63ac251f6b5694d721f5f77cd9a8a76a100ab6b3c69d54377701df3b"
+    },
+    {
+      "name": "polyface-2013-missing-middle-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "d48fda22eeb3df065b5935208d5981c5434bed0a64c196bc7ed35d44c1ad7324"
+    },
+    {
+      "name": "polyface-2013-missing-middle-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "1313dde7565151fab26d547157e2311a8eea9a6e5ce6aa583e4cc29d8dd06c64"
+    },
+    {
+      "name": "polyface-2013-reordered-slots-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "b226bd2b26e957263149f7801c225eddbdb3d383547045a715944d42dc00af5b"
+    },
+    {
+      "name": "polyface-2013-reordered-slots-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "deff8f968644c7f484f7790e87cceca6e45bd124680377869e82c7804566fcea"
+    },
+    {
+      "name": "polyface-2013-duplicate-slot-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "85ada31890a060131947d72c9fdd27797721cf10edd36ee989868e03e296dccd"
+    },
+    {
+      "name": "polyface-2013-duplicate-slot-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "050e7d8fffd5203d4b660c184ab0722d3b5b8a63650b1ddcb5570876aa4e0aae"
+    },
+    {
+      "name": "polyface-2013-zero-first-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "3958455f70e3d3203e66d7caf9c334ed8c2634fb8a551263525de775143a9caa"
+    },
+    {
+      "name": "polyface-2013-zero-first-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "b642c293f8ccc36493b93d5cb6ab1e018a3733f64abf8554dfb2e8bb0ea66c20"
+    },
+    {
+      "name": "polyface-2013-advisory-counts-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c6040ca51a2cad01571e32b4df1fc9bce98ec5d9d80fddb02451883685b3ae19"
+    },
+    {
+      "name": "polyface-2013-advisory-counts-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "12a3729b329181e2ea25888b74c593da6d8f763afa3b49471227d6fe21770686"
+    },
+    {
+      "name": "polyface-2013-face-before-coordinates-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "72345112593d4d0e56a88a0a2ecb3f1d494456ac82f0487cc50dfb4b12146202"
+    },
+    {
+      "name": "polyface-2013-face-before-coordinates-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e56ffaf308d01484f77478e2a305da86c81ac5ae91d26536e215801581ab5164"
+    },
+    {
+      "name": "polyface-2013-interleaved-face-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "0b5c1c0c050c154d6ee23f7fe340b25a319b42557838d072498b88c52c975150"
+    },
+    {
+      "name": "polyface-2013-interleaved-face-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "ca913b86cca18adbebe41d65f29ad367d66b93470fdcd4f8eb70b7406b2695df"
+    },
+    {
+      "name": "polyface-2018-quad-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "c24bc7d0c3e32a9a61f46841af316f7a65f706eb36b8ae9ef71462d95d43f2a2"
+    },
+    {
+      "name": "polyface-2018-quad-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "quad",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "a2580d726a4490e2cc9b6cc0372a84fd2c945cc16681a1f0d2fc9299e9c4d578"
+    },
+    {
+      "name": "polyface-2018-triangle-zero-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "976927c24567c4133f877906ad0b225d40548e3e91d82a4b00753e7320165771"
+    },
+    {
+      "name": "polyface-2018-triangle-zero-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "triangle-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "630186c51fb3a3dfeb89f5bb19e4e76f5f3a06682572b3f0fc5a79338537bada"
+    },
+    {
+      "name": "polyface-2018-line-face-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "e65b34e281510f34d0a75a298e5130cfce9d4e3883752390fb896e8c7b0746ce"
+    },
+    {
+      "name": "polyface-2018-line-face-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "line-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "1c931e46c4d5a0419c20f332fc56934a8d13657fcf2e6a994fbf7b766be8c2c6"
+    },
+    {
+      "name": "polyface-2018-point-face-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "4427746ab50ca5eab7316fa8e923f771ad453b3eecb405acced1758c6b8c8972"
+    },
+    {
+      "name": "polyface-2018-point-face-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "point-face",
+      "reject": false,
+      "expected": [
+        2
+      ],
+      "sha256": "cefa5548b58012b764e7247674a1373c047f694efb737479509fe6073113d579"
+    },
+    {
+      "name": "polyface-2018-out-of-range-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "71b37db2dd8b7788a21fd30e394ec688d6b334ac6154593ebb08e96a4fc93b22"
+    },
+    {
+      "name": "polyface-2018-out-of-range-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "out-of-range",
+      "reject": true,
+      "expected": [],
+      "sha256": "c9d874bc6aedc651c561c85e4fa123bfe4c16f9d3cab907a4f6adbb217a687c0"
+    },
+    {
+      "name": "polyface-2018-signed-minimum-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "1ba22bb4650f53210764fad831449534f7d62843d539f4955fb24b3e093df0a4"
+    },
+    {
+      "name": "polyface-2018-signed-minimum-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "signed-minimum",
+      "reject": true,
+      "expected": [],
+      "sha256": "d6c82a3a126734a81756ae0f8b38b480bc36ebf3ff28fd43253795cacf44dc28"
+    },
+    {
+      "name": "polyface-2018-bad-first-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "9384f5621372c393beee7dcb8acd03582c804593908c1aed47629d5c90a6fd64"
+    },
+    {
+      "name": "polyface-2018-bad-first-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "bad-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "269399567aab26a4eb6eac5907894f6dd8facca160c63b8ca7c2f07baa679a58"
+    },
+    {
+      "name": "polyface-2018-trailing-after-zero-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "cd378410a1d8e8e17c9345a2a19465c2d8f70120e3c4da9a4eed156a5beadd6e"
+    },
+    {
+      "name": "polyface-2018-trailing-after-zero-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "trailing-after-zero",
+      "reject": false,
+      "expected": [
+        1,
+        -2
+      ],
+      "sha256": "49ee19c3e7d92992b1d414c6d18f94756b68169347a7ce5d3c17541d610081dd"
+    },
+    {
+      "name": "polyface-2018-missing-middle-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "c1b3493fcab86f97e82824a3ac156be4867e82293d83d6b749a0e16b3fb61cf2"
+    },
+    {
+      "name": "polyface-2018-missing-middle-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "missing-middle",
+      "reject": false,
+      "expected": [
+        1
+      ],
+      "sha256": "45116f9dd37b5696bcb9482d6d7f54edc6e6e628c91a6eb45edbfcb236d947d4"
+    },
+    {
+      "name": "polyface-2018-reordered-slots-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "eaf07e62e306b4049037a697ce114ed8ee0c06e07b4bdfdc6c523dce6102394b"
+    },
+    {
+      "name": "polyface-2018-reordered-slots-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "reordered-slots",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3
+      ],
+      "sha256": "8bcb57052ae18ef76a3cadec839a7a598d2dc57e97780e3a9586240db64c51d2"
+    },
+    {
+      "name": "polyface-2018-duplicate-slot-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "d553d80f3d889b1f289c495add6c53ef16f6c04373c57fe872bc03f0f32d1664"
+    },
+    {
+      "name": "polyface-2018-duplicate-slot-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "duplicate-slot",
+      "reject": true,
+      "expected": [],
+      "sha256": "177bcef7800f4b2b006232c9c3db54c2f719423654ac93eb1aeec2b1cc7b4b47"
+    },
+    {
+      "name": "polyface-2018-zero-first-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "4d386e0712facb73368a86321b92d0820efa38abf99c1693a6b88d22a692d206"
+    },
+    {
+      "name": "polyface-2018-zero-first-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "zero-first",
+      "reject": true,
+      "expected": [],
+      "sha256": "942c54b4b478f2b926f045714621b837f6fe37b6467d71ec2077a98d7b774088"
+    },
+    {
+      "name": "polyface-2018-advisory-counts-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "cde2f3ed463c463fd87903e667ec24f4759bc2669e08d4208a12b61b62955ae4"
+    },
+    {
+      "name": "polyface-2018-advisory-counts-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "advisory-counts",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "9e78fbc03c79bc0b4c38ad8ba11028f3be1f9f4b8a9c452ca4a103ae1cf94827"
+    },
+    {
+      "name": "polyface-2018-face-before-coordinates-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "e1b9a6f3a3f24d3c13303d1b9a98d186565285a45b3b852cd85b6764a6adba34"
+    },
+    {
+      "name": "polyface-2018-face-before-coordinates-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "face-before-coordinates",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "7d836a00c53d07a172bc0805db2f99e0c9d186ff0fec12ee6add4278ab29b3a1"
+    },
+    {
+      "name": "polyface-2018-interleaved-face-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "714d7849a8d4ae326d92a8fc61805c4f55ca6061f2a786e646714a4902b7cb64"
+    },
+    {
+      "name": "polyface-2018-interleaved-face-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "scenario": "interleaved-face",
+      "reject": false,
+      "expected": [
+        1,
+        -2,
+        3,
+        -4
+      ],
+      "sha256": "1e30a8de015f8bf57bdd68b4a40706a08d3f64d4c9f57c1e5ec8abb62ea9e4f3"
+    }
+  ]
+}

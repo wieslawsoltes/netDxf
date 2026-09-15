@@ -1,0 +1,48 @@
+from pathlib import Path
+import ezdxf,json,copy,hashlib
+root=Path(__file__).parent;out=root/'fixtures';out.mkdir(exist_ok=True);cases=[]
+def tags(path):
+ lines=path.read_text().splitlines();return [[int(lines[i]),lines[i+1]] for i in range(0,len(lines),2)]
+def record_ranges(rows):
+ starts=[i for i,t in enumerate(rows) if t[0]==0];return [(a,starts[j+1] if j+1<len(starts) else len(rows)) for j,a in enumerate(starts)]
+def put(rows,begin,end,code,value):
+ at=next((i for i in range(begin,end) if rows[i][0]==code),None)
+ if at is None:rows.insert(end,[code,str(value)])
+ else:rows[at][1]=str(value)
+def add(name,rows,desc):
+ path=out/(name+'.dxf');path.write_text(''.join(f'{c:3d}\n{v}\n' for c,v in rows));meta=dict(name=name,input=str(path),**desc);j=out/(name+'.json');j.write_text(json.dumps(meta));cases.append(str(j))
+for year in [2000,2004,2007,2010,2013,2018]:
+ doc=ezdxf.new('R'+str(year));mesh=doc.modelspace().add_polymesh((3,3));points=[[i*2+0.25,j*3+0.5,i+j+0.75] for i in range(3) for j in range(3)]
+ for k,p in enumerate(points):mesh.set_mesh_vertex((k//3,k%3),p)
+ doc.modelspace().add_line((101,102,103),(104,105,106));base=out/f'producer-R{year}.dxf';doc.saveas(base);raw=tags(base)
+ desc={'reject':False,'kind':'polygon','m':3,'n':3,'points':points,'provenance':'ezdxf 1.4.4 original producer'}
+ add(f'R{year}-ordinary',raw,desc)
+ verts=[(a,b) for a,b in record_ranges(raw) if raw[a][1]=='VERTEX'];head=next((a,b) for a,b in record_ranges(raw) if raw[a][1]=='POLYLINE');endseq=next(a for a,b in record_ranges(raw) if raw[a][1]=='SEQEND')
+ for variant in ['missing','surplus','m-negative','n-zero','m-too-large','max-short-product','short-overflow']:
+  r=copy.deepcopy(raw)
+  if variant=='missing':a,b=verts[-1];del r[a:b]
+  elif variant=='surplus':a,b=verts[-1];v=copy.deepcopy(r[a:b]);put(v,0,len(v),5,'FFFF0');r[endseq:endseq]=v
+  else:
+   code,value={'m-negative':(71,-1),'n-zero':(72,0),'m-too-large':(71,257),'max-short-product':(71,32767),'short-overflow':(71,32768)}[variant];put(r,*head,code,value)
+   if variant=='max-short-product':put(r,*head,72,32767)
+  add(f'R{year}-{variant}',r,dict(desc,reject=True,provenance='explicit malformed producer mutation'))
+ # Preserve M*N=9 control vertices while emitted fitting density is 4*5=20.
+ smooth=copy.deepcopy(raw);put(smooth,*head,70,20);put(smooth,*head,73,4);put(smooth,*head,74,5);put(smooth,*head,75,5)
+ verts2=[(a,b) for a,b in record_ranges(smooth) if smooth[a][1]=='VERTEX']
+ for a,b in verts2:put(smooth,a,b,70,80)
+ endseq2=next(a for a,b in record_ranges(smooth) if smooth[a][1]=='SEQEND');extras=[]
+ for i in range(20):
+  a,b=verts2[0];v=copy.deepcopy(smooth[a:b]);put(v,0,len(v),5,f'{0xF000+i:X}');put(v,0,len(v),70,72);put(v,0,len(v),10,1000+i);put(v,0,len(v),20,2000+i);put(v,0,len(v),30,3000+i);extras+=v
+ smooth[endseq2:endseq2]=extras;sdesc=dict(desc,densityM=4,densityN=5,provenance='explicit schema fixture with separate control and fitted vertices')
+ add(f'R{year}-smooth-density-distinct',smooth,sdesc)
+ for variant in ['smooth-missing-control','smooth-surplus-control']:
+  r=copy.deepcopy(smooth);vr=[(a,b) for a,b in record_ranges(r) if r[a][1]=='VERTEX'];a,b=vr[0]
+  if 'missing' in variant:del r[a:b]
+  else:
+   v=copy.deepcopy(r[a:b]);put(v,0,len(v),5,'FFFF1');r[b:b]=v
+  add(f'R{year}-{variant}',r,dict(sdesc,reject=True))
+ face=ezdxf.new('R'+str(year));pf=face.modelspace().add_polyface();pf.append_faces([[(0,0,0),(1,0,0),(1,1,0),(0,1,0)]]);face.modelspace().add_line((101,102,103),(104,105,106));p=out/f'polyface-producer-R{year}.dxf';face.saveas(p);fr=tags(p);fh=next((a,b) for a,b in record_ranges(fr) if fr[a][1]=='POLYLINE')
+ for count in [0,32767]:
+  r=copy.deepcopy(fr);put(r,*fh,71,count);put(r,*fh,72,count);add(f'R{year}-polyface-advisory-{count}',r,{'reject':False,'kind':'polyface','provenance':'advisory count mutation, real face indices untouched'})
+(root/'cases.json').write_text(json.dumps(cases,indent=2))
+print(len(cases),'cases')

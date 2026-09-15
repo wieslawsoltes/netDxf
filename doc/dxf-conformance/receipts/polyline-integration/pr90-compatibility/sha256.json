@@ -1,0 +1,14 @@
+{
+  "Debug/hatch/previous-integration.json": "32954ff74f5e9ad410ec45754cdecff4433ab9d7ea44e1b7628a4c30b30a55f4",
+  "Debug/hatch/results.json": "0ae84e1eb024607192308a5c1d7b60af59fe4cb87afa3e07d9ef0da550db3268",
+  "Debug/source-metadata/previous-integration.json": "e90ceb495a4f4eb2551d882f1085817fcb590bbbdf103754aa499b9e41e3d04d",
+  "Debug/source-metadata/results.json": "95bbcd9184966a113b7d87ad410fc1d8771377b3713a30941388ed0a748f96c3",
+  "README.md": "a5d21c3b4fa0021fa9545a0618232fc270170366003be47ec2667ecc7f9f974f",
+  "Release/hatch/previous-integration.json": "507a09a2dfc35c62a5ea84d885e793b97e9c15e04474ec20d9130cc07c2333a1",
+  "Release/hatch/results.json": "dad9c8211062a535bf843e34abca68785360b75265c8a259583894a6578df8e8",
+  "Release/source-metadata/previous-integration.json": "c2398ccec230ff0f5209004430fe91b791b833d90839e08ff2022fe90c91b556",
+  "Release/source-metadata/results.json": "5f348d1eeb2f5808c01651cce157c755f78612a0a96ada7b6f5bb447fd770919",
+  "hatch-Program.cs": "dbf6e1719ba0a99a68070b99bed02d2ab458f56311d55278b44097393ee43910",
+  "review-result.json": "bce5766b9db0b74e619b08ed68c6ed7ea8a1cdd40c3b95eca9dda9d88a4ddc28",
+  "source-metadata-Program.cs": "2e466169a5d0700ec497ce04aa5c990119556c8085acfb6f87cd3832fd7a86f1"
+}

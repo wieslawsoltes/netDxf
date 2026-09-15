@@ -1,6 +1,7 @@
 # SECTION_MANAGER, HATCH and source identity checkpoint
 
-[PR #90](https://github.com/wieslawsoltes/netDxf/pull/90) follows the merged
+[PR #90](https://github.com/wieslawsoltes/netDxf/pull/90) merged as
+`311504fe9c9220bdca69344c85d2b8d44794a7ae` and follows the merged
 [recovery batch](checkpoint-recovery-2026-09-15.md). Its published implementation
 is `a0b9fdb350988c456f9717dfe89dce62ffb77109`, with tree `83299c4ff79430bd4232ff258345e751a88f1c7b`. The local
 implementation `98541734c6d21145e016518510be340ceb88bc90` has the same complete Git tree.
@@ -51,7 +52,10 @@ Both configurations have result SHA-256
 `98d761fba236442457f0469d3fe99f5bf2d7e30069abca06b6d6cbab0c8c6e94`. The
 [implementation CI](https://github.com/wieslawsoltes/netDxf/actions/runs/34963947082)
 passed all four Windows/Linux Debug/Release jobs; Linux Release also ran every
-independent verifier. Final documentation-head CI is required before merge.
+independent verifier. The
+[final documentation-head CI](https://github.com/wieslawsoltes/netDxf/actions/runs/34964658658)
+also passed all four jobs with 27,555 cases each and all 98 Linux Release
+independent verifiers before merge.
 
 ## Qualification boundaries
 

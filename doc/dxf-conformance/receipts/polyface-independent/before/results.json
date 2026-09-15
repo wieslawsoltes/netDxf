@@ -1,0 +1,1597 @@
+{
+  "librarySha256": "47055d1ce91d300a36d594ae3db83566373a776dd4295e03078ee9b344ae9a4c",
+  "passed": 50,
+  "failed": 143,
+  "results": [
+    {
+      "name": "wire/polyface-2000-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-triangle-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-triangle-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-line-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-line-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-point-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-point-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-out-of-range-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-out-of-range-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-signed-minimum-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-signed-minimum-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-bad-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-bad-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-trailing-after-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-trailing-after-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-missing-middle-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-missing-middle-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-reordered-slots-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-reordered-slots-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-duplicate-slot-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-duplicate-slot-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-zero-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-zero-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2000-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2000-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-triangle-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-triangle-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-line-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-line-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-point-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-point-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-out-of-range-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-out-of-range-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-signed-minimum-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-signed-minimum-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-bad-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-bad-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-trailing-after-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-trailing-after-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-missing-middle-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-missing-middle-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-reordered-slots-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-reordered-slots-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-duplicate-slot-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-duplicate-slot-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-zero-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-zero-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2004-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2004-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-triangle-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-triangle-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-line-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-line-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-point-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-point-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-out-of-range-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-out-of-range-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-signed-minimum-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-signed-minimum-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-bad-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-bad-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-trailing-after-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-trailing-after-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-missing-middle-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-missing-middle-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-reordered-slots-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-reordered-slots-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-duplicate-slot-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-duplicate-slot-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-zero-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-zero-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2007-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2007-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-triangle-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-triangle-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-line-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-line-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-point-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-point-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-out-of-range-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-out-of-range-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-signed-minimum-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-signed-minimum-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-bad-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-bad-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-trailing-after-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-trailing-after-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-missing-middle-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-missing-middle-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-reordered-slots-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-reordered-slots-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-duplicate-slot-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-duplicate-slot-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-zero-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-zero-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2010-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2010-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-triangle-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-triangle-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-line-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-line-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-point-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-point-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-out-of-range-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-out-of-range-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-signed-minimum-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-signed-minimum-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-bad-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-bad-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-trailing-after-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-trailing-after-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-missing-middle-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-missing-middle-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-reordered-slots-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-reordered-slots-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-duplicate-slot-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-duplicate-slot-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-zero-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-zero-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2013-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2013-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-quad-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-quad-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-triangle-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-triangle-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,3,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-line-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-line-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-point-face-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-point-face-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 2,0,0,0\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-out-of-range-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-out-of-range-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-signed-minimum-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-signed-minimum-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-bad-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-bad-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-trailing-after-zero-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-trailing-after-zero-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,-2,0,32767\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-missing-middle-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-missing-middle-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 1,3,4\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-reordered-slots-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-reordered-slots-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Face slot/first-zero/signed-index semantics changed: 0,-2,1,3\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 44\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-duplicate-slot-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-duplicate-slot-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-zero-first-ascii.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-zero-first-binary.dxf",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Malformed active face index/duplicate/empty face was accepted\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_2.\u003C\u003CMain\u003E$\u003Eb__13() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 37\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "wire/polyface-2018-advisory-counts-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-advisory-counts-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-face-before-coordinates-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-face-before-coordinates-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-interleaved-face-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-2018-interleaved-face-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "clone/face-null-inheritance",
+      "passed": false,
+      "detail": null,
+      "error": "System.NullReferenceException: Object reference not set to an instance of an object.\n   at netDxf.Entities.PolyfaceMeshFace.Clone()\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_4() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 63\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "clone/mesh-face-identity",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Mesh clone shares mutable face identity\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_5() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 70\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "clone/mesh-face-indices",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Clone edit changed source face index\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_6() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 75\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "clone/clone-layer-events",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Clone edit invoked source event or changed source layer\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_7() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 82\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "clone/source-layer-events",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Source edit invoked clone event or changed clone layer\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_8() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 89\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "clone/assigned-resources",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "clone/coordinates-control",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "author/zero-placeholder-rejection",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Empty default face admitted to complete mesh\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_11() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 106\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "author/trailing-zero-semantics",
+      "passed": false,
+      "detail": null,
+      "error": "System.IndexOutOfRangeException: Index was outside the bounds of the array.\n   at netDxf.Entities.PolyfaceMesh.Explode()\n   at Program.\u003C\u003Ec.\u003C\u003CMain\u003E$\u003Eb__0_12() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 111\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "author/mutable-preflight/5",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Invalid mutable face exported\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_5.\u003C\u003CMain\u003E$\u003Eb__19() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 123\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "author/mutable-preflight/-32768",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Invalid mutable face exported\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_5.\u003C\u003CMain\u003E$\u003Eb__19() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 123\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "author/mutable-preflight/32767",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Invalid mutable face exported\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_5.\u003C\u003CMain\u003E$\u003Eb__19() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 123\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    },
+    {
+      "name": "author/mutable-preflight/0",
+      "passed": false,
+      "detail": null,
+      "error": "System.InvalidOperationException: Invalid mutable face exported\n   at Program.\u003C\u003CMain\u003E$\u003Eg__Check|0_0(Boolean value, String text) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_5.\u003C\u003CMain\u003E$\u003Eb__19() in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 123\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Run|1(String name, Func\u00601 action) in /workspace/scratch/c6901be8789f/polyface-independent/probe/Program.cs:line 17"
+    }
+  ]
+}

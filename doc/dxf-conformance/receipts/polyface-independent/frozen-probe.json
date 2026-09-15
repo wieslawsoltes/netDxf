@@ -1,0 +1,25 @@
+{
+  "scope": "Independent POLYFACE public index grammar, first-zero termination, advisory counts/order tolerance, clone isolation and atomic invalid-write probes. Synthetic producer/mutated fixtures; no native application validation.",
+  "probeFiles": {
+    "probe/Program.cs": "62430f824552a4ce11096efcb1dc608dac47b650c326dee502942c9a8ba60c6c",
+    "probe/Probe.csproj": "9a0301d0911401def00b7c5499f639429df53cff0fbbe795964968197e7e1d89",
+    "generate_fixtures.py": "df3fefef1be34a346bdcba68d029831ec29829d796aa01b6fa2d19a4f34f6492",
+    "manifest.json": "08bbf11b7eb2b01bc55c47ead334ab51064975e5dff2ed84c9a31faf9d5be8f1"
+  },
+  "baselineLibrarySha256": "47055d1ce91d300a36d594ae3db83566373a776dd4295e03078ee9b344ae9a4c",
+  "baselineSourceRoot": "/workspace/scratch/c6901be8789f/netDxf",
+  "targetSourceGitBlobs": {
+    "netDxf/Entities/PolyfaceMesh.cs": "dfd6f4a03491b77c067587db2f7957eee39fc1a2",
+    "netDxf/Entities/PolyfaceMeshFace.cs": "930923eddacb7b9cc2d6c82764eb8c83c43544ea"
+  },
+  "beforeResultSha256": "bd92d394bea4ec10a5e938dbabc8559767860d569844077c7519ea35bfb69386",
+  "before": {
+    "passed": 50,
+    "failed": 143,
+    "cases": 193
+  },
+  "primarySources": [
+    "https://help.autodesk.com/cloudhelp/2021/ENU/AutoCAD-DXF/files/GUID-0741E831-599E-4CBF-91E1-8ADBCFD6556D.htm",
+    "https://help.autodesk.com/cloudhelp/2016/ENU/AutoCAD-DXF/files/GUID-96B6288E-F413-46C0-968A-A314171C0AAE.htm"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "source_commit": "13a937bf0e95ee85fe6cdff154b7d6cb04cd7927",
+  "scope": "Focused PolygonMesh cardinality and safe sampling/export qualification; full merged regression and CI are separate integration evidence.",
+  "tests": {
+    "Debug": {
+      "passed": 727,
+      "failed": 0,
+      "results_sha256": "0bce1f664342113ab5eaf18f546b25c4b43f035776508afb4be5d5a85ec72c7a"
+    },
+    "Release": {
+      "passed": 727,
+      "failed": 0,
+      "results_sha256": "0bce1f664342113ab5eaf18f546b25c4b43f035776508afb4be5d5a85ec72c7a"
+    }
+  },
+  "output_gates": {
+    "Debug": {
+      "required_outputs": 116,
+      "physical_corruption_controls": 12,
+      "native_packet_chains": 2,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    },
+    "Release": {
+      "required_outputs": 116,
+      "physical_corruption_controls": 12,
+      "native_packet_chains": 2,
+      "audit_errors": 0,
+      "audit_fixes": 0
+    }
+  },
+  "assemblies": {
+    "Debug/netDxf.netstandard.dll": "8d43357f749928acd2e02c27f5957df0ba1f575af3bdf5e727f5e3a242663930",
+    "Debug/netDxf.Conformance.dll": "8ac042a52252127db67e2685aa12ec397d75b6d95e39929571fa2bd1f8b2a49e",
+    "Release/netDxf.netstandard.dll": "8f07105379c4f9850e2c6d46fda97f06efbd30fb1a37f18050ba29d438d09190",
+    "Release/netDxf.Conformance.dll": "30384de4973242f505cb1f2a8c450c7aa88176dbcd0bc581ecc8c8b7881c40de"
+  },
+  "commands": [
+    "DXF_TEST_FILTER=polygonmesh/ DXF_TEST_ARTIFACTS=<directory> dotnet tests/netDxf.Conformance/bin/<configuration>/net8.0/netDxf.Conformance.dll",
+    "python tools/verify_polygonmesh_cardinality.py <directory>"
+  ],
+  "api_build": {
+    "target": "netstandard2.0",
+    "configuration": "Release",
+    "exit_code": 0,
+    "errors": 0,
+    "existing_cs1591_warnings": 561,
+    "assembly_sha256": "fff870f5f9293d89fd4bbdfeb0978b1fe6541dffddc4f91add2e044cc88b6820",
+    "command": "dotnet sdk/8.0.408/MSBuild.dll netDxf/netDxf.csproj -t:Build -p:Configuration=Release -p:TargetFramework=netstandard2.0 -p:UseSharedCompilation=false -m:1 -nr:false -v:q",
+    "note": "Separate successful restore and fresh project evaluation used so the restored NETStandard.Library targets were imported."
+  },
+  "verifier_sha256": "f5fd7fdeff13bc10ccdb4c41833b04236d22b4d6dc8875c7746eb49a50749fed",
+  "runtime": ".NET 8.0.15",
+  "sdk": "8.0.408",
+  "worktree_base_commit": "d4a236a281e112451af4734922dd91924f57add6",
+  "assembly_provenance_note": "source_commit identifies the committed module source snapshot; worktree_base_commit identifies checkout ancestry. Test assemblies were compiled while implementation was pending, before its commit. Frozen DLL SHA256 values identify tested artifacts; assembly informational-version commit strings alone do not establish a clean source snapshot. See independent-review/receipt.json for baseline and candidate capture paths and assembly metadata."
+}

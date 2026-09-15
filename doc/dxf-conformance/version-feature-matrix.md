@@ -2,8 +2,8 @@
 
 > Generated from `coverage.json` by `tools/generate_dxf_coverage.py`; edit the ledger, not this file.
 
-Audit date: **2026-09-15**. Implementation snapshot for PR **#90**: [`a0b9fdb350988c456f9717dfe89dce62ffb77109`](https://github.com/wieslawsoltes/netDxf/tree/a0b9fdb350988c456f9717dfe89dce62ffb77109).
-Source tree: `83299c4ff79430bd4232ff258345e751a88f1c7b`. Branch: `netstandard`.
+Audit date: **2026-09-15**. Implementation snapshot for PR **#91**: [`b77d731ef874fc21b594ffc208d30b92e7f48db6`](https://github.com/wieslawsoltes/netDxf/tree/b77d731ef874fc21b594ffc208d30b92e7f48db6).
+Source tree: `27b6fa0145322aa5af26e486e6232486ce08d540`. Branch: `netstandard`.
 
 ## 1. Current result and scope
 
@@ -103,8 +103,8 @@ Product release years and database-format families are separate: an AC1032 file 
 | LWPOLYLINE · typed | X | X | X | P | P | P | P | P | P | Typed vertex packets, optional constant/per-vertex widths and vertex identifiers, taper-preserving reversal and guarded wide transforms. Centerline explosion retains its existing width-loss contract; native rendering is not evaluated. [LWPFID](lwpolyline-fidelity.md) |
 | POLYLINE: 2D / VERTEX / SEQEND · typed | X | X | X | P | P | P | P | P | P | Legacy entity representation in modern files, not a legacy file dialect. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
 | POLYLINE: 3D · typed | X | X | X | P | P | P | P | P | P | 3D polyline geometry remains editable. Loaded ordinary unsmoothed variants retain source-bound child VERTEX/SEQEND identities and qualified metadata with explicit lifecycle and source-profile limits. Fitted/smoothed vertices and complete aggregate semantics remain partial. [B](version-feature-matrix-2026-09-12.md), [VERTEXREC](polyline3d-records.md) |
-| POLYLINE: polyface mesh · typed | X | X | X | P | P | P | P | P | P | Topology modeled; index/invisible-edge validation needs fixtures. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
-| POLYLINE: polygon mesh · typed | X | X | X | P | P | P | P | P | P | PolygonMesh and smoothing preprocessing. `ReadPolyline/WritePolyline`. [B](version-feature-matrix-2026-09-12.md) |
+| POLYLINE: polyface mesh · typed | X | X | X | P | P | P | P | P | P | Signed one-based face slots, first-zero termination, complete-coordinate range checks, advisory counts and unusual input order have explicit schema coverage. Face/mesh clones preserve null inheritance and isolate faces, arrays and events. Arbitrary child metadata and original child identities remain outside this typed geometry scope. [B](version-feature-matrix-2026-09-12.md), [POLYFACEGRAMMAR](polyface-grammar.md) |
+| POLYLINE: polygon mesh · typed | X | X | X | P | P | P | P | P | P | Declared M/N grids require exactly M x N ordinary or spline-control vertices with supported flags and surface types. Native ordinary grids and synthetic smooth grids have explicit evidence. Export checks finite coordinates and spline degree/closure bounds before mutation; generated samples and child identities are not preserved. [B](version-feature-matrix-2026-09-12.md), [POLYGONCARDINALITY](POLYGONMESH_CARDINALITY.md) |
 | RAY · typed | X | X | X | P | P | P | P | P | P | Origin/direction; common fields partial. `ReadRay/WriteRay`. [B](version-feature-matrix-2026-09-12.md) |
 | XLINE · typed | X | X | X | P | P | P | P | P | P | Origin/direction; common fields partial. `ReadXLine/WriteXLine`. [B](version-feature-matrix-2026-09-12.md) |
 | SHAPE · typed | X | X | X | P | P | P | P | P | P | Number/SHX style resolution; SHX geometry is a separate resource concern. `ReadShape/WriteShape`. [B](version-feature-matrix-2026-09-12.md) |
@@ -413,7 +413,7 @@ Feature changes require reviewable PRs, independently authored positive and malf
 
 ## 17. Evidence and qualification
 
-At the pinned production baseline, the .NET 8.0 conformance harness reports **27,555 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
+At the pinned production baseline, the .NET 8.0 conformance harness reports **28,627 passed / 0 failed** in Debug and Release. Linux/Windows GitHub Actions execute the SDK harness and compile netstandard2.0. These counts are regression evidence, not a percentage of DXF completeness.
 
 Selected retained fixtures are also checked with **ezdxf 1.4.4** using the development-only `tools/verify_*.py` scripts. Linux Release CI runs every checked-in verifier and retains each log plus a machine-readable result manifest. Some scripts compare ordered tags; others invoke that implementation's audit. Their individual notes specify which claim was actually tested. **No AutoCAD process was executed for this qualification.**
 

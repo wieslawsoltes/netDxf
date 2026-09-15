@@ -1,0 +1,38 @@
+[
+  {
+    "file": "/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/dimassoc/originals-gzip/example_2000.dxf.gz",
+    "sha256": "43284cbdddbeb8720a4895be73f493fc94e670909e76f5871fdcd87b25170597",
+    "parsed": true,
+    "meshes": []
+  },
+  {
+    "file": "/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/dimassoc/originals-gzip/example_2004.dxf.gz",
+    "sha256": "4689329440cd8d3c0a5c850966426b6e5b588cd87e6b5bd7b3a080d0226e445c",
+    "parsed": true,
+    "meshes": []
+  },
+  {
+    "file": "/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/dimassoc/originals-gzip/example_2007.dxf.gz",
+    "sha256": "c51b813e30c5686090ee3fefb6a04cd5f75bcad4eec994ad6e17b3b19d129d43",
+    "parsed": true,
+    "meshes": []
+  },
+  {
+    "file": "/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/dimassoc/originals-gzip/example_2010.dxf.gz",
+    "sha256": "fcd9ce4b2cf58c5b1bed2b6353a71c6350640d4038e31875c97a763a63744124",
+    "parsed": true,
+    "meshes": []
+  },
+  {
+    "file": "/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/dimassoc/originals-gzip/example_2013.dxf.gz",
+    "sha256": "951f7910d1ea8ccc2d1eae9556c2f3f05a0197e6379fbf13d40f660df95a9ce3",
+    "parsed": true,
+    "meshes": []
+  },
+  {
+    "file": "/workspace/scratch/c6901be8789f/netDxf-section-hatch/tests/fixtures/dimassoc/originals-gzip/example_2018.dxf.gz",
+    "sha256": "e64b0cfb6e1587f9d2bb4387d59064efa5bc667cda9ecbc00313459b304bb997",
+    "parsed": true,
+    "meshes": []
+  }
+]

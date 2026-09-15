@@ -1,0 +1,16 @@
+from pathlib import Path
+import subprocess,json,concurrent.futures,hashlib,resource,sys
+resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+root=Path(__file__).parent;label=sys.argv[1];runtime=root/label;cases=json.loads((root/'cases.json').read_text())
+isolated=[p for p in cases if label=='before-debug' and any(k in json.loads(Path(p).read_text())['name'] for k in ['m-negative','n-zero','m-too-large','max-short-product'])]
+batch=[p for p in cases if p not in isolated];batchfile=root/(label+'-batch.json');batchfile.write_text(json.dumps(batch));tasks=[(path,mode) for path in isolated for mode in ['ascii','binary']]
+def run(t):
+ path,mode=t;meta=json.loads(Path(path).read_text());cmd=['/workspace/runtime/dotnet8/dotnet',str(runtime/'Probe.dll'),path,mode]
+ try:
+  r=subprocess.run(cmd,capture_output=True,text=True,timeout=30);lines=[l for l in r.stdout.splitlines() if l.startswith('{')];item=json.loads(lines[-1]) if lines else {'name':meta['name'],'binary':mode=='binary','passed':False,'published':False,'error':'process ended before probe result'};item.update(exitCode=r.returncode,stderr=r.stderr[-2500:]);return item
+ except subprocess.TimeoutExpired:return {'name':meta['name'],'binary':mode=='binary','passed':False,'error':'process timeout'}
+cmd=['/workspace/runtime/dotnet8/dotnet',str(runtime/'Probe.dll'),'--batch',str(batchfile)]
+r=subprocess.run(cmd,capture_output=True,text=True,timeout=120);results=[json.loads(l) for l in r.stdout.splitlines() if l.startswith('{')];(root/(label+'-batch.log')).write_text(r.stdout+r.stderr)
+with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:results+=list(pool.map(run,tasks))
+results.sort(key=lambda r:(r['name'],r['binary']));expected={(json.loads(Path(p).read_text())['name'],b) for p in cases for b in [False,True]};actual={(r['name'],r['binary']) for r in results};assert len(results)==len(actual)==len(expected) and expected==actual,('Incomplete or duplicate execution',len(results),len(expected))
+report={'label':label,'caseCount':len(results),'passed':sum(x['passed'] for x in results),'failed':sum(not x['passed'] for x in results),'librarySha256':hashlib.sha256((runtime/'netDxf.netstandard.dll').read_bytes()).hexdigest(),'probeSha256':hashlib.sha256((runtime/'Probe.dll').read_bytes()).hexdigest(),'sourceSha256':hashlib.sha256((root/'Program.cs').read_bytes()).hexdigest(),'results':results};(root/(label+'-results.json')).write_text(json.dumps(report,indent=2));print(label,report['passed'],report['failed']);print('failed names',[x['name']+'/'+str(x['binary']) for x in results if not x['passed']][:16])

@@ -1,0 +1,93 @@
+{
+  "library_sha256": "5b5d7f988cb24c27466e572dc6d896cfb371c289e4096f6f1a5b03b7aa62fa9c",
+  "results": [
+    {
+      "binary": false,
+      "duplicateBefore": false,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": false,
+      "duplicateBefore": false,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": false,
+      "duplicateBefore": true,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": false,
+      "duplicateBefore": true,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": true,
+      "duplicateBefore": false,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": true,
+      "duplicateBefore": false,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": true,
+      "duplicateBefore": true,
+      "metadata": false,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 0,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    },
+    {
+      "binary": true,
+      "duplicateBefore": true,
+      "metadata": true,
+      "source": "22",
+      "reactor": "23",
+      "before_reactors": 1,
+      "accepted": false,
+      "after_reactors": null,
+      "error": null
+    }
+  ]
+}

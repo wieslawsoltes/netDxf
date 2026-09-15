@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "status": "qualified_implementation",
+  "source": {
+    "local_commit": "f4dd7268df1ed13427073fb73ead8ffe2415351c",
+    "local_tree": "27b6fa0145322aa5af26e486e6232486ce08d540",
+    "dotnet_test_build_source": "93f37735db35aae25bec6fcaef15cc0406e8368d",
+    "dotnet_and_test_sources_unchanged": true,
+    "published_commit": "b77d731ef874fc21b594ffc208d30b92e7f48db6",
+    "published_tree": "27b6fa0145322aa5af26e486e6232486ce08d540",
+    "publication_verified": true,
+    "verification": "Published Git tree exactly matches the local implementation; netDxf and tests trees are unchanged from the conformance build source. Runtime dependency hashes below come from the conformance executable directories.",
+    "dotnet_test_assembly_informational_version": "3.0.1+93f37735db35aae25bec6fcaef15cc0406e8368d"
+  },
+  "baseline": {
+    "pr": 90,
+    "cases": 27555,
+    "merge": "311504fe9c9220bdca69344c85d2b8d44794a7ae",
+    "additional_cases": 1072,
+    "final_ci_run": 34964658658,
+    "final_ci_jobs_passed": 4,
+    "final_ci_cases_per_job": 27555,
+    "linux_release_independent_gates": 98
+  },
+  "configurations": {
+    "Debug": {
+      "cases": 28627,
+      "unique_cases": 28627,
+      "failed": 0,
+      "result_sha256": "534ff8c17990ac1fe693051f0731cdef879523a1b7c2c36cebc11dd05c7a45cf",
+      "independent_gates": 100,
+      "gates_sha256": "0a223e44b9b7e897e87a41275f3158ac3677f4ca0aceabd5f4a03bfa88226b43",
+      "dxfs": 3803,
+      "las": 96,
+      "library_sha256": "f85f25e948be658c012c2b3d7b22a84de3e180227c3e5f124168c1ca14622e25",
+      "test_executable_sha256": "5e2637624306386c609db8d20fbc73fad4a99002cd06b69e908727e13011a55c"
+    },
+    "Release": {
+      "cases": 28627,
+      "unique_cases": 28627,
+      "failed": 0,
+      "result_sha256": "534ff8c17990ac1fe693051f0731cdef879523a1b7c2c36cebc11dd05c7a45cf",
+      "independent_gates": 100,
+      "gates_sha256": "1241e7f67a919a22ec456103aef8476910a4c0f58359f0a7eae9f74acab6eafc",
+      "dxfs": 3803,
+      "las": 96,
+      "library_sha256": "2747a0db34d160003fd5f7e232cb3f58ba957aae4cbc194f75eec0db0c007e22",
+      "test_executable_sha256": "d3f9ebe29d731863fed7609db8949c93db9b1ff3810d41f12d9fe2efd69d82c2"
+    }
+  },
+  "same_case_outcomes": true,
+  "builds": {
+    "sdk": "8.0.408",
+    "build_source": "f4dd7268df1ed13427073fb73ead8ffe2415351c",
+    "invocation": "Standalone /t:Restore followed by separate direct SDK MSBuild /t:Build calls; /m:1 /nr:false /p:UseSharedCompilation=false; only netDxf/netDxf.csproj built",
+    "restore": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    "targets": [
+      {
+        "configuration": "Release",
+        "target": "netstandard2.0",
+        "errors": 0,
+        "existing_CS1591_warnings": 561,
+        "dll_sha256": "40ccb9c01e5bc2e29c5d863333fce1f45c9ae61866addfdce108c2375b8b7122",
+        "assembly_informational_version": "3.0.1+f4dd7268df1ed13427073fb73ead8ffe2415351c"
+      },
+      {
+        "configuration": "Release",
+        "target": "net471",
+        "errors": 0,
+        "existing_CS1591_warnings": 561,
+        "dll_sha256": "d47625ecabb955eb20c1918cd21cc42c3342aef93ae348fe5ebe0d1e56ee1c92",
+        "assembly_informational_version": "3.0.1+f4dd7268df1ed13427073fb73ead8ffe2415351c"
+      },
+      {
+        "configuration": "Release",
+        "target": "net48",
+        "errors": 0,
+        "existing_CS1591_warnings": 561,
+        "dll_sha256": "8cd90125edebba44e08b38b78303721c77f5ed0129569dcd50ce6319386f720e",
+        "assembly_informational_version": "3.0.1+f4dd7268df1ed13427073fb73ead8ffe2415351c"
+      },
+      {
+        "configuration": "Release",
+        "target": "net6.0",
+        "errors": 0,
+        "existing_CS1591_warnings": 561,
+        "dll_sha256": "fa8a860237743576169745a767f536bd4b5f581d5887657effb5a204dc9774e4",
+        "assembly_informational_version": "3.0.1+f4dd7268df1ed13427073fb73ead8ffe2415351c"
+      },
+      {
+        "configuration": "Release",
+        "target": "net8.0",
+        "errors": 0,
+        "existing_CS1591_warnings": 561,
+        "dll_sha256": "01554daf02b1b3495ecffe483f8a144d86f355e75b116e13ed54fb64caf4bdc9",
+        "assembly_informational_version": "3.0.1+f4dd7268df1ed13427073fb73ead8ffe2415351c"
+      },
+      {
+        "configuration": "Debug",
+        "target": "netstandard2.0",
+        "errors": 0,
+        "existing_CS1591_warnings": 561,
+        "dll_sha256": "8883332dc148ab8fc0c6e8e62fbd7dc52cc070d77dad3a691703f85dad868c21",
+        "assembly_informational_version": "3.0.1+f4dd7268df1ed13427073fb73ead8ffe2415351c"
+      }
+    ],
+    "errors": 0,
+    "existing_CS1591_warnings_per_target": 561,
+    "conformance_assemblies_and_dependency_copies_unchanged": true,
+    "scope": "These additional target builds compile the library; the full net8.0 suite executed using the separately hash-pinned conformance runtime dependencies above."
+  },
+  "audit": {
+    "self_test_passed": true,
+    "io_files": 100,
+    "methods": 703,
+    "model_header_files": 250,
+    "all_350_source_file_hashes_verified": true,
+    "original_binary_reused_after_empty_diff_and_exact_source_proof": true,
+    "source_proof": "polyline-final-field-audit-source-proof.json",
+    "inventory_generator": "tools/dxf_audit_inventory.py",
+    "inventory_sha256": "f636d817b3e063cfc65abfc3ee1294cdd071bc1f8a1d861e63c79518718f50e1",
+    "field_inventory_generator": "tools/netDxf.FieldAudit",
+    "field_inventory_sha256": "f7adfcad3433f0d35a69ef84011d6937b0fecbb0ba97dafcf819988105946d13",
+    "scope": "The reported IO/method/model-header counts come from the Roslyn FieldAudit inventory. Source syntax and field inventory do not prove semantic completeness."
+  },
+  "python_tests": {
+    "passed": 18,
+    "failed": 0
+  },
+  "coverage_rows": 272,
+  "focused_integration": {
+    "receipt": "receipts/polyline-integration/receipt.json",
+    "cases_per_configuration": 2239,
+    "failed": 0,
+    "polyface_gate": {
+      "outputs_per_configuration": 96,
+      "decoded_corruption_controls_per_configuration": 576
+    },
+    "polygonmesh_gate": {
+      "outputs_per_configuration": 116,
+      "physical_corruption_controls_per_configuration": 12,
+      "native_packet_chains": 2
+    }
+  },
+  "independent_reviews": {
+    "polyface_cases_per_configuration": 279,
+    "polygonmesh_cases_per_configuration": 160,
+    "hatch_cases_per_configuration": 16,
+    "source_metadata_cases_per_configuration": 8,
+    "scope": "Separate frozen review inventories, not extra unique full-suite cases."
+  },
+  "recovery_audit": {
+    "captured_utc": "2026-09-15T11:37:16.045694+00:00",
+    "total_worktrees_and_checkouts": 45,
+    "original_worktrees": 35,
+    "original_dirty_worktrees": 0,
+    "current_worktrees": 10,
+    "dirty_worktrees_at_capture": 1,
+    "dirty_owner_at_capture": "root: active PR90 documentation and ledger changes",
+    "completed_agent_implementation_uncommitted": false,
+    "source_file": "final-recovery-accounting.json",
+    "source_sha256": "babf051c76a23de50ff68f8d7e7754b4df697217e97ad019012055fe9a0ac0be",
+    "scope": "Dated recovery accounting; these are the recorded audit states.",
+    "source_location": "/workspace/scratch/c6901be8789f/final-recovery-accounting.json",
+    "source_file_scope": "Original external execution artifact, not a repository-relative evidence path."
+  },
+  "ci": {
+    "pr": 91,
+    "head_sha": "b77d731ef874fc21b594ffc208d30b92e7f48db6",
+    "tree_sha": "27b6fa0145322aa5af26e486e6232486ce08d540",
+    "run_id": 34965166782,
+    "url": "https://github.com/wieslawsoltes/netDxf/actions/runs/34965166782",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 104367787089,
+        "name": "conformance (ubuntu-latest, Release)",
+        "status": "completed",
+        "conclusion": "success",
+        "conformance": [
+          {
+            "passed": 28627,
+            "failed": 0
+          }
+        ],
+        "independent": [
+          {
+            "passed": 100,
+            "failed": 0
+          }
+        ]
+      },
+      {
+        "id": 104367787376,
+        "name": "conformance (windows-latest, Debug)",
+        "status": "completed",
+        "conclusion": "success",
+        "conformance": [
+          {
+            "passed": 28627,
+            "failed": 0
+          }
+        ],
+        "independent": []
+      },
+      {
+        "id": 104367787399,
+        "name": "conformance (windows-latest, Release)",
+        "status": "completed",
+        "conclusion": "success",
+        "conformance": [
+          {
+            "passed": 28627,
+            "failed": 0
+          }
+        ],
+        "independent": []
+      },
+      {
+        "id": 104367787405,
+        "name": "conformance (ubuntu-latest, Debug)",
+        "status": "completed",
+        "conclusion": "success",
+        "conformance": [
+          {
+            "passed": 28627,
+            "failed": 0
+          }
+        ],
+        "independent": []
+      }
+    ],
+    "implementation_run": 34965166782,
+    "commit": "b77d731ef874fc21b594ffc208d30b92e7f48db6",
+    "linux_release_independent_gates": 100,
+    "source_archive_byte_verification": false,
+    "evidence": "Completed workflow status and decoded logs from all four jobs; published Git tree equality verified separately.",
+    "final_documentation_head_ci": "Required after this documentation commit is published and before merge."
+  },
+  "boundaries": [
+    "POLYFACE signed active-prefix topology and independent clones are qualified separately from arbitrary child metadata and original child identities.",
+    "PolygonMesh dimensions 2..256 are the existing typed library admission bound, not an Autodesk wire-format cap or an Int32 overflow claim.",
+    "Native evidence covers two ordinary 3x4 grid packet chains; smooth-grid examples are synthetic.",
+    "Generated samples and child identities are regenerated; source sample streams and arbitrary child metadata are not newly preserved.",
+    "Native AutoCAD execution, rendering, native smooth regeneration and full DXF interoperability are not claimed."
+  ],
+  "coverage_version_columns": 9,
+  "artifact_sha256": {
+    "polyline-final-release-targets-restore.log": "daa02a2ca8752ca7d72ac1ec29f572151eeb0e8a7c4c0bfdb400813598eb7fe3",
+    "polyline-final-release-targets-build.log": "c84315a452d8330c3d16ed36095582fa69b1ce78ee09deb3e0394cdd1648c956",
+    "polyline-final-debug-netstandard-build.log": "8f40f1e69f3404746d54efb7904dbe2662ee8e29a37e9fcad9649caa24360e4b",
+    "polyline-final-python-tests.log": "f357a31f41144f719642f11ce665f8098c301e7145f19863770105894cd19677",
+    "polyline-final-coverage-check.log": "ff47d852a66c99a0153308a68e29a9f723b34cdf7b178b4ec8c9565792ffb23a",
+    "polyline-final-inventory.json": "f636d817b3e063cfc65abfc3ee1294cdd071bc1f8a1d861e63c79518718f50e1",
+    "polyline-final-field-audit-self-test.log": "923f25b7e2150f22c87fe42de4e453b90be65dd924b6cdebbdc913e28614d8d5",
+    "polyline-final-field-audit-inventory.log": "3c005ef198592f2c79dbff4eca8ef003603832bcea0d598778e72e62bf6bb240",
+    "polyline-final-field-audit-source-proof.json": "1f7fb03cd1ef4a72db522534f1d5d36c77cef161a986740e5c2a95d8a9984caa",
+    "polyline-final-qualified-source-proof.json": "9431e8eac56329039304cb46f32fda1f5a79e3e0a560e65358396e3bc1efdb3e",
+    "polyline-final-field-audit/field-inventory.json": "f7adfcad3433f0d35a69ef84011d6937b0fecbb0ba97dafcf819988105946d13",
+    "polyline-final-field-audit/field-inventory.md": "dcb7402be1f5980513787ce180e43de3b44dd8f08c72ce294065a68250254be1",
+    "polyline-qualification-summary.json": "17833ccff82bd1f2189fc72550333e75e7062c956bf72e5b3cd537b74d1ade36",
+    "polyline-final-target-qualification.json": "f77f887560e43c87998522786a2c5d57018f9ba03bd904330feb8c14e3456075",
+    "pr91-ci-summary.json": "080eb35e0e0c57201b5981537a0573fbf7008075a39acb461cae467a079e52fd"
+  },
+  "execution_artifact_provenance": {
+    "original_base_directory": "/workspace/scratch/c6901be8789f",
+    "artifact_sha256_key_paths": "Relative to the original execution base directory, not this repository or the receipt directory.",
+    "scope": "Hash pins of original external execution artifacts; aggregate results, target-build details and inventory summaries are embedded in this receipt. Module and independent-review paths under receipts/ refer to separately committed evidence."
+  }
+}

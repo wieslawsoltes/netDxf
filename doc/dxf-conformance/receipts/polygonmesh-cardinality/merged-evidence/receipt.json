@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "sourceIncludes": [
+    "POLYFACE index validation",
+    "PolygonMesh cardinality validation"
+  ],
+  "verification": "Identical frozen Program.cs and Probe.dll against merged Debug and Release libraries",
+  "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+  "probeSourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+  "baselineAndStandaloneReceipt": "../independent-review/receipt.json",
+  "frozenInputsSha256": "47971652df4a631864ca5e445c3655e8e4b88c4e7cb394e67a573395ea3fa357",
+  "runs": [
+    {
+      "label": "merged-debug",
+      "caseCount": 160,
+      "passed": 160,
+      "failed": 0,
+      "librarySha256": "f85f25e948be658c012c2b3d7b22a84de3e180227c3e5f124168c1ca14622e25",
+      "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+      "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+      "resultsFile": "merged-debug-results.json",
+      "resultsSha256": "051849d093da06a3a39f8eec1906d347c184c2badb5f04ed75aa6eb8e47048d4",
+      "uniqueOutcomes": 160,
+      "positive": 52,
+      "typedMalformedRejected": 96,
+      "rawOverflowRejected": 12
+    },
+    {
+      "label": "merged-release",
+      "caseCount": 160,
+      "passed": 160,
+      "failed": 0,
+      "librarySha256": "2747a0db34d160003fd5f7e232cb3f58ba957aae4cbc194f75eec0db0c007e22",
+      "probeSha256": "d88a9263f6c934ad08e9adc1c32f6ef815837d4a92afde2688d9d64f20b3efcc",
+      "sourceSha256": "5cccb3907f3b3442a223b06f7e74795f38760150db191ea748c24652c138d4d2",
+      "resultsFile": "merged-release-results.json",
+      "resultsSha256": "ef453c87b89e622be3a3146574a04f9454c6bfa9d111c4ddb9b1a06988354f1d",
+      "uniqueOutcomes": 160,
+      "positive": 52,
+      "typedMalformedRejected": 96,
+      "rawOverflowRejected": 12
+    }
+  ],
+  "scope": "The 160 distinct outcomes and qualification limits are unchanged from the standalone independent review. This is a merged-source recheck, not 320 new coverage cases.",
+  "buildSourceCommit": "93f37735db35aae25bec6fcaef15cc0406e8368d",
+  "reviewedCheckoutCommit": "65e7374",
+  "assemblyInformationalVersion": "3.0.1+93f37735db35aae25bec6fcaef15cc0406e8368d",
+  "sourceRelation": "Reviewed checkout adds POLYFACE documentation only; production source is identical to the build revision."
+}

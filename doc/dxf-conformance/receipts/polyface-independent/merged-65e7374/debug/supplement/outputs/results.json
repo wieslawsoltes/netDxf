@@ -1,0 +1,1279 @@
+{
+  "librarySha256": "f85f25e948be658c012c2b3d7b22a84de3e180227c3e5f124168c1ca14622e25",
+  "passed": 86,
+  "failed": 0,
+  "results": [
+    {
+      "name": "wire/polyface-boundary-2000-private-before-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-private-before-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-private-after-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-private-after-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-private-nested-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-private-nested-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-unknown-subclass-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-unknown-subclass-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-public-resumes-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-public-resumes-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-xdata-boundary-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-xdata-boundary-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-xdata-control-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2000-xdata-control-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-private-before-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-private-before-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-private-after-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-private-after-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-private-nested-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-private-nested-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-unknown-subclass-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-unknown-subclass-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-public-resumes-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-public-resumes-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-xdata-boundary-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-xdata-boundary-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-xdata-control-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2004-xdata-control-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-private-before-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-private-before-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-private-after-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-private-after-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-private-nested-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-private-nested-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-unknown-subclass-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-unknown-subclass-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-public-resumes-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-public-resumes-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-xdata-boundary-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-xdata-boundary-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-xdata-control-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2007-xdata-control-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-private-before-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-private-before-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-private-after-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-private-after-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-private-nested-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-private-nested-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-unknown-subclass-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-unknown-subclass-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-public-resumes-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-public-resumes-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-xdata-boundary-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-xdata-boundary-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-xdata-control-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2010-xdata-control-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-private-before-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-private-before-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-private-after-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-private-after-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-private-nested-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-private-nested-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-unknown-subclass-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-unknown-subclass-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-public-resumes-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-public-resumes-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-xdata-boundary-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-xdata-boundary-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-xdata-control-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2013-xdata-control-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-private-before-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-private-before-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-private-after-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-private-after-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-private-nested-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-private-nested-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-unknown-subclass-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-unknown-subclass-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-public-resumes-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-public-resumes-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-xdata-boundary-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-xdata-boundary-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-xdata-control-ascii.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": false
+      },
+      "error": null
+    },
+    {
+      "name": "wire/polyface-boundary-2018-xdata-control-binary.dxf",
+      "passed": true,
+      "detail": {
+        "vertices": 4,
+        "faceIndices": [
+          1,
+          -2,
+          3,
+          -4
+        ],
+        "binary": true
+      },
+      "error": null
+    },
+    {
+      "name": "magnitude/min-short-existing-coordinate",
+      "passed": true,
+      "detail": null,
+      "error": null
+    },
+    {
+      "name": "magnitude/unreferenced-extra-coordinates",
+      "passed": true,
+      "detail": null,
+      "error": null
+    }
+  ]
+}

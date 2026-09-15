@@ -38,6 +38,8 @@ namespace netDxf.IO
                 {
                     Mesh mesh = entity as Mesh;
                     if (mesh != null) ValidateMeshOutput(mesh, block.Name);
+                    PolygonMesh polygon = entity as PolygonMesh;
+                    if (polygon != null) polygon.ValidateSurface();
                 }
         }
 
