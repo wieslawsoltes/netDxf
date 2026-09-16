@@ -575,7 +575,7 @@ namespace netDxf.IO
                         break;
                     case HeaderVariableCode.TdCreate:
                         julian = this.chunk.ReadDouble();
-                        if (julian < 1721426 || julian > 5373484)
+                        if (julian < DrawingTime.MinimumJulianDate || julian >= DrawingTime.MaximumJulianDateExclusive)
                         {
                             this.doc.DrawingVariables.TdCreate = DateTime.Now;
                         }
@@ -587,7 +587,7 @@ namespace netDxf.IO
                         break;
                     case HeaderVariableCode.TduCreate:
                         julian = this.chunk.ReadDouble();
-                        if (julian < 1721426 || julian > 5373484)
+                        if (julian < DrawingTime.MinimumJulianDate || julian >= DrawingTime.MaximumJulianDateExclusive)
                         {
                             this.doc.DrawingVariables.TduCreate = DateTime.Now;
                         }
@@ -599,7 +599,7 @@ namespace netDxf.IO
                         break;
                     case HeaderVariableCode.TdUpdate:
                         julian = this.chunk.ReadDouble();
-                        if (julian < 1721426 || julian > 5373484)
+                        if (julian < DrawingTime.MinimumJulianDate || julian >= DrawingTime.MaximumJulianDateExclusive)
                         {
                             this.doc.DrawingVariables.TdUpdate = DateTime.Now;
                         }
@@ -611,7 +611,7 @@ namespace netDxf.IO
                         break;
                     case HeaderVariableCode.TduUpdate:
                         julian = this.chunk.ReadDouble();
-                        if (julian < 1721426 || julian > 5373484)
+                        if (julian < DrawingTime.MinimumJulianDate || julian >= DrawingTime.MaximumJulianDateExclusive)
                         {
                             this.doc.DrawingVariables.TduUpdate = DateTime.Now;
                         }

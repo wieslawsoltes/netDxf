@@ -406,14 +406,19 @@ namespace netDxf
         /// A list that contains the indexed colors, the key represents the color index and the value the RGB components of the color.
         /// </summary>
         /// <remarks>
-        /// This is the AutoCad default ACI color index to RGB values table.
+        /// This returns an independent deep snapshot of the default ACI-to-RGB table.
         /// Changes in the actual view background color in AutoCad might produce changes in the RGB equivalents in some ACI color indexes,
         /// specially the darkest ones.<br />
         /// The color at index zero is not used, represents the RGB values for abstract colors such as ByLayer or ByBlock
         /// </remarks>
         public static IReadOnlyList<byte[]> IndexRgb
         {
-            get { return indexRgb; }
+            get
+            {
+                var snapshot = new byte[indexRgb.Count][];
+                for (int i = 0; i < snapshot.Length; i++) snapshot[i] = (byte[])indexRgb[i].Clone();
+                return Array.AsReadOnly(snapshot);
+            }
         }
 
         #endregion
@@ -434,7 +439,7 @@ namespace netDxf
         /// <param name="rgb">RGB components (input values range from 0 to 255). The array must contain three values.</param>
         /// <remarks>By default the UseTrueColor will be set to true.</remarks>
         public AciColor(byte[] rgb)
-            : this(rgb[0], rgb[1], rgb[2])
+            : this(ValidateRgb(rgb)[0], rgb[1], rgb[2])
         {
         }
 
@@ -460,7 +465,7 @@ namespace netDxf
         /// <param name="rgb">RGB components (input values range from 0 to 1). The array must contain three values.</param>
         /// <remarks>By default the UseTrueColor will be set to true.</remarks>
         public AciColor(double[] rgb)
-            : this(rgb[0], rgb[1], rgb[2])
+            : this(ValidateRgb(rgb)[0], rgb[1], rgb[2])
         {
         }
 
@@ -473,15 +478,15 @@ namespace netDxf
         /// <remarks>By default the UseTrueColor will be set to true.</remarks>
         public AciColor(double r, double g, double b)
         {
-            if (r < 0 || r > 1)
+            if (double.IsNaN(r) || r < 0 || r > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(r), r, "Red component input values range from 0 to 1.");
             }
-            if (g < 0 || g > 1)
+            if (double.IsNaN(g) || g < 0 || g > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(g), g, "Green component input values range from 0 to 1.");
             }
-            if (b < 0 || b > 1)
+            if (double.IsNaN(b) || b < 0 || b > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(b), b, "Blue component input values range from 0 to 1.");
             }
@@ -510,7 +515,7 @@ namespace netDxf
         /// <remarks>
         /// By default the UseTrueColor will be set to false.<br />
         /// Accepted color index values range from 1 to 255.<br />
-        /// Indexes from 1 to 255 represents a color, the index 0 and 256 are reserved for ByLayer and ByBlock colors.
+        /// Indices 1 to 255 represent colors; 0 is ByBlock and 256 is ByLayer.
         /// </remarks>
         public AciColor(short index)
         {
@@ -519,7 +524,7 @@ namespace netDxf
                 throw new ArgumentOutOfRangeException(nameof(index), index, "Accepted color index values range from 1 to 255.");
             }
 
-            byte[] rgb = IndexRgb[(byte) index];
+            byte[] rgb = indexRgb[(byte) index];
             this.r = rgb[0];
             this.g = rgb[1];
             this.b = rgb[2];
@@ -528,6 +533,13 @@ namespace netDxf
         }
 
         #endregion
+
+        private static T[] ValidateRgb<T>(T[] rgb)
+        {
+            if (rgb == null) throw new ArgumentNullException(nameof(rgb));
+            if (rgb.Length != 3) throw new ArgumentException("An RGB array must contain exactly three components.", nameof(rgb));
+            return rgb;
+        }
 
         #region public properties
 
@@ -589,7 +601,7 @@ namespace netDxf
         /// </summary>
         /// <remarks>
         /// Accepted color index values range from 1 to 255.
-        /// Indexes from 1 to 255 represents a color, the index 0 and 256 are reserved for ByLayer and ByBlock colors.
+        /// Indices 1 to 255 represent colors; 0 is ByBlock and 256 is ByLayer.
         /// </remarks>
         public short Index
         {
@@ -602,7 +614,7 @@ namespace netDxf
                 }
 
                 this.index = value;
-                byte[] rgb = IndexRgb[(byte) this.index];
+                byte[] rgb = indexRgb[(byte) this.index];
                 this.r = rgb[0];
                 this.g = rgb[1];
                 this.b = rgb[2];
@@ -627,7 +639,7 @@ namespace netDxf
             byte index = 0;
             for (int i = 1; i < 256; i++)
             {
-                byte[] color = IndexRgb[i];
+                byte[] color = indexRgb[i];
                 int red = r - color[0];
                 int green = g - color[1];
                 int blue = b - color[2];
@@ -665,15 +677,15 @@ namespace netDxf
         /// <returns>An <see cref="Color">AciColor</see> that represents the actual HSL value.</returns>
         public static AciColor FromHsl(double hue, double saturation, double lightness)
         {
-            if (hue < 0 || hue > 1)
+            if (double.IsNaN(hue) || hue < 0 || hue > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(hue), hue, "Hue input values range from 0 to 1.");
             }
-            if (saturation < 0 || saturation > 1)
+            if (double.IsNaN(saturation) || saturation < 0 || saturation > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(saturation), saturation, "Saturation input values range from 0 to 1.");
             }
-            if (lightness < 0 || lightness > 1)
+            if (double.IsNaN(lightness) || lightness < 0 || lightness > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(lightness), lightness, "Lightness input values range from 0 to 1.");
             }
@@ -885,8 +897,7 @@ namespace netDxf
         /// <returns>A <see cref="AciColor">color</see>.</returns>
         public static AciColor FromTrueColor(int value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
-            return new AciColor(bytes[2], bytes[1], bytes[0]);
+            return new AciColor((byte)((value >> 16) & 255), (byte)((value >> 8) & 255), (byte)(value & 255));
         }
 
         /// <summary>
@@ -906,7 +917,7 @@ namespace netDxf
             // when AutoCad saves a layer color as a true color this fourth byte is always 0,
             // when the layer color is read it seems that it doesn't care about the value of this fourth byte 
             // but if the fourth byte is not set as 194 the layer state color will be shown as an index color
-            return BitConverter.ToInt32(new byte[] { color.B, color.G, color.R, 194 }, 0);
+            return unchecked((int)0xC2000000) | (color.R << 16) | (color.G << 8) | color.B;
         }
 
         #endregion
