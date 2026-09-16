@@ -177,6 +177,9 @@ def main():
             for binary in (False, True):
                 prefix = "table-style-borders-" + kind
                 pairs.append((f"{prefix}-before-{file}-{binary}.dxf", f"{prefix}-after-{file}-{binary}.dxf", binary, False, None))
+    expected = {name for before_name, after_name, _, _, _ in pairs for name in (before_name, after_name)}
+    check({path.name for path in args.directory.glob("table-style-borders-*.dxf")} == expected,
+          "Expected the exact border-edit before/after inventory")
     controls = 0
     for before_name, after_name, binary, combined, profile in pairs:
         before_path, after_path = args.directory / before_name, args.directory / after_name
