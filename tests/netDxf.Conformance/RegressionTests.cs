@@ -5,6 +5,7 @@ internal static partial class Program
     static partial void RunAdditionalTests()
     {
         RegisterTableStyleBorderTests();
+        RegisterTableRowSettingsTests();
         RegisterFourthMixedModuleTests();
         RegisterStoredEnvelopeTests();
         RegisterDeclaredOwnershipTests();
