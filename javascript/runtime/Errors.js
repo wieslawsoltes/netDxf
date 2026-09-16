@@ -16,6 +16,7 @@ export class ArgumentOutOfRangeException extends ArgumentException {
   }
 }
 export class OverflowException extends Exception {}
+export class KeyNotFoundException extends Exception {}
 export class IOException extends Exception {}
 export class InvalidCastException extends Exception {}
 export class NullReferenceException extends Exception {}

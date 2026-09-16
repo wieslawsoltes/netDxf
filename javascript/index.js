@@ -10,3 +10,6 @@ export { MemoryStream } from './runtime/MemoryStream.js';
 export { DxfRawHandleRole, DxfRawHandleDiagnosticKind, DxfRawHandleOccurrence, DxfRawHandleDiagnostic, DxfRawHandleIndexOptions } from './netDxf/IO/DxfRawHandleModel.js';
 export { DxfRawHandleIndex } from './netDxf/IO/DxfRawHandleIndex.js';
 export { DxfRawReferenceTraversal, DxfRawDependencyClosure } from './netDxf/IO/DxfRawHandleOperations.js';
+export * from './netDxf/IO/DxfRawObjectModel.js';
+export { DxfRawObjectStore } from './netDxf/IO/DxfRawObjectStore.js';
+export { DxfRawObjectTransaction } from './netDxf/IO/DxfRawObjectTransaction.js';

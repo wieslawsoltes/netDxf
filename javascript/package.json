@@ -5,17 +5,38 @@
   "description": "Native JavaScript port of netDxf with pinned .NET differential verification (in progress)",
   "type": "module",
   "license": "MIT",
-  "engines": { "node": ">=22" },
-  "exports": { ".": "./index.js", "./netDxf/*": "./netDxf/*", "./runtime/*": "./runtime/*" },
-  "files": ["netDxf", "runtime", "index.js", "README.md", "LICENSE", "baseline.json"],
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./netDxf/*": "./netDxf/*",
+    "./runtime/*": "./runtime/*"
+  },
+  "files": [
+    "netDxf",
+    "runtime",
+    "index.js",
+    "Enums.generated.js",
+    "README.md",
+    "LICENSE",
+    "baseline.json"
+  ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
-    "test:unit": "node --test tests/unit/*.js",
+    "test:unit": "node tools/run-unit.mjs",
     "verify": "node tools/verify.mjs",
     "verify:complete": "node tools/verify.mjs --require-complete",
     "oracle": "node tools/dotnet.mjs oracle",
     "inventory": "node tools/dotnet.mjs inventory",
-    "benchmark": "node tools/benchmark.mjs"
+    "benchmark": "node tools/benchmark.mjs",
+    "test:package": "node tools/package-check.mjs",
+    "test:differential": "node tools/differential.mjs && node tools/handle-differential.mjs && node tools/object-differential.mjs && node tools/casing-differential.mjs",
+    "prepublishOnly": "node tools/verify.mjs --require-complete"
   },
-  "repository": { "type": "git", "url": "https://github.com/wieslawsoltes/netDxf.git", "directory": "javascript" }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wieslawsoltes/netDxf.git",
+    "directory": "javascript"
+  }
 }

@@ -1,0 +1,27 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { javascriptRoot } from './dotnet.mjs';
+import { runtimeFingerprint, verificationFingerprint } from './evidence.mjs';
+const proof={runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint()};
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'netdxf-package-'));
+const npm=process.platform==='win32'?'npm.cmd':'npm';
+function run(command,args,cwd){const r=spawnSync(command,args,{cwd,encoding:'utf8',shell:process.platform==='win32' && command===npm});if(r.status!==0)throw r.error||new Error(r.stdout+'\n'+r.stderr);return r.stdout;}
+try {
+  const [info]=JSON.parse(run(npm,['pack','--ignore-scripts','--json','--pack-destination',temp],javascriptRoot));
+  if(!info.files.some(f=>f.path==='Enums.generated.js')) throw new Error('Packed enum barrel is missing.');
+  if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
+  const install=path.join(temp,'install');fs.mkdirSync(install);
+  run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
+  const script=`import {DxfRawDocument,DxfRawObjectStore,DxfTag} from '@netdxf/javascript';
+    const tags=[[0,'SECTION'],[2,'HEADER'],[9,'$ACADVER'],[1,'AC1032'],[0,'ENDSEC'],[0,'EOF']].map(([c,v])=>new DxfTag(c,v));
+    const tx=DxfRawObjectStore.Open(DxfRawDocument.Create(tags)).BeginEdit();
+    const root=tx.EnsureRootDictionary();tx.CreateVariable(root,'Test','Zażółć 東京');
+    const result=DxfRawObjectStore.Open(DxfRawDocument.Load(tx.Commit().ToBytes(true)));
+    if(result.Get(result.RootDictionary.Find('test').Handle).Value!=='Zażółć 東京')throw new Error('Packed round trip failed');`;
+  run(process.execPath,['--input-type=module','-e',script],install);
+  const dir=path.join(javascriptRoot,'artifacts/package');fs.mkdirSync(dir,{recursive:true});
+  fs.writeFileSync(path.join(dir,'results.json'),JSON.stringify({...proof,completed:true,private:true,files:info.files.length,packedBytes:info.size,unpackedBytes:info.unpackedSize},null,2)+'\n');
+  console.log(`Packed-package offline import and binary object round trip passed (${info.files.length} files).`);
+} finally {fs.rmSync(temp,{recursive:true,force:true});}

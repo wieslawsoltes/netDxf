@@ -111,6 +111,73 @@ internal static class Program
                 index = d.TagIndex, handle = d.Handle, message = d.Message }).ToArray(),
             closure, remapped };
     }
+    private static object StoredObject(DxfRawStoredObject value) => new {
+        kind = value.GetType().Name, typeName = value.TypeName, handle = value.Handle, ownerHandle = value.OwnerHandle,
+        tags = value.Tags.Select(Wire).ToArray(),
+        data = value switch {
+            DxfRawDictionary d => (object)new { d.HardOwnerFlag, d.CloningFlag, d.HasDefault, d.DefaultHandle, d.Entries },
+            DxfRawXRecord x => new { x.CloningFlag, tags = x.Data.Select(Wire).ToArray() },
+            DxfRawDictionaryVariable v => new { v.SchemaNumber, v.Value },
+            DxfRawIdBuffer b => new { b.Handles },
+            DxfRawSortentsTable t => new { t.BlockRecordHandle, t.Entries },
+            DxfRawOpaqueStoredObject o => new { opaque = true, reasonAvailable = o.Reason.Length > 0 },
+            _ => (object?)null
+        }
+    };
+    private static object Objects(JsonElement input)
+    {
+        var doc = ReadDocument(input);
+        DxfRawObjectStoreOptions? options = null;
+        if (input.TryGetProperty("storeOptions", out var o)) options = new DxfRawObjectStoreOptions(
+            o.TryGetProperty("maximumObjects", out var mo) ? mo.GetInt32() : 100000,
+            o.TryGetProperty("maximumPayloadTags", out var mp) ? mp.GetInt32() : 1000000,
+            o.TryGetProperty("maximumChanges", out var mc) ? mc.GetInt32() : 100000);
+        var store = DxfRawObjectStore.Open(doc, options);
+        var results = new List<object>(); var references = new Dictionary<string, string>();
+        DxfRawObjectTransaction? transaction = null;
+        string? Resolve(JsonElement e) => e.ValueKind == JsonValueKind.Null ? null :
+            e.ValueKind == JsonValueKind.Object ? references[e.GetProperty("ref").GetString()!] : e.GetString();
+        object? DecodeArgument(JsonElement e, Type type)
+        {
+            if (e.ValueKind == JsonValueKind.Null) return null;
+            type = Nullable.GetUnderlyingType(type) ?? type;
+            if (type == typeof(string)) return Resolve(e);
+            if (type == typeof(bool)) return e.GetBoolean();
+            if (type == typeof(short)) return e.GetInt16();
+            if (type.IsEnum) return Enum.ToObject(type, e.GetInt32());
+            if (type == typeof(IEnumerable<DxfTag>)) return e.EnumerateArray().Select(t=>t[2].ValueKind==JsonValueKind.Object?new DxfTag(t[0].GetInt16(),Resolve(t[2])!):Tag(t)).ToArray();
+            if (type == typeof(IEnumerable<string>)) return e.EnumerateArray().Select(x=>Resolve(x)!).ToArray();
+            if (type == typeof(IEnumerable<DxfRawSortOrderEntry>)) return e.EnumerateArray()
+                .Select(x=>new DxfRawSortOrderEntry(Resolve(x[0])!,Resolve(x[1])!)).ToArray();
+            throw new ArgumentException("Unsupported test protocol parameter " + type.Name);
+        }
+        try
+        {
+            if (input.TryGetProperty("steps", out var steps)) foreach (var step in steps.EnumerateArray())
+            {
+                results.Add(Attempt(() => {
+                    string method = step.GetProperty("method").GetString()!;
+                    if (method == "BeginEdit") { transaction?.Dispose(); transaction = DxfRawObjectStore.Open(doc,options).BeginEdit(); return null!; }
+                    if (transaction == null) throw new InvalidOperationException("BeginEdit is required.");
+                    var member = typeof(DxfRawObjectTransaction).GetMethod(method) ?? throw new ArgumentException("Unknown operation.");
+                    var supplied = step.TryGetProperty("args",out var a) ? a.EnumerateArray().ToArray() : Array.Empty<JsonElement>();
+                    var parameters = member.GetParameters();
+                    if (supplied.Length > parameters.Length) throw new ArgumentException("Too many test arguments.");
+                    var arguments = parameters.Select((parameter,i)=>i<supplied.Length?DecodeArgument(supplied[i],parameter.ParameterType):parameter.DefaultValue).ToArray();
+                    object? value;
+                    try { value = member.Invoke(transaction,arguments); }
+                    catch (System.Reflection.TargetInvocationException ex) { throw ex.InnerException!; }
+                    if (step.TryGetProperty("as",out var id)) references[id.GetString()!]=(string)value!;
+                    if (value is DxfRawDocument saved) { doc=saved; return new { committed=true }; }
+                    if (value is DxfRawStoredObject stored) return StoredObject(stored);
+                    return value!;
+                }));
+            }
+            var current = DxfRawObjectStore.Open(doc,options);
+            return new { results, references, document=Snapshot(doc), objects=current.Objects.Select(StoredObject).ToArray() };
+        }
+        finally { transaction?.Dispose(); }
+    }
     private static object Format(JsonElement input)
     {
         // Exercise the production writer rather than duplicating its formatting rule.
@@ -147,6 +214,18 @@ internal static class Program
             lines = doc.Entities.Lines.Select(l => new[] { Bits(l.StartPoint.X), Bits(l.StartPoint.Y), Bits(l.StartPoint.Z), Bits(l.EndPoint.X), Bits(l.EndPoint.Y), Bits(l.EndPoint.Z) }).ToArray(),
             circles = doc.Entities.Circles.Select(c => new[] { Bits(c.Center.X), Bits(c.Center.Y), Bits(c.Center.Z), Bits(c.Radius) }).ToArray() };
     }
+    private static object OrdinalMap()
+    {
+        var map = new List<int[]>();
+        for (int i=0;i<=0x10ffff;i++)
+        {
+            if (!Rune.IsValid(i)) continue;
+            var rune=new Rune(i); var upper=Rune.ToUpperInvariant(rune);
+            if (rune!=upper && StringComparer.OrdinalIgnoreCase.Equals(rune.ToString(),upper.ToString()))
+                map.Add(new[]{i,upper.Value});
+        }
+        return map;
+    }
     public static int Main()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -157,7 +236,8 @@ internal static class Program
                 using var document = JsonDocument.Parse(line);
                 var input = document.RootElement;
                 return input.GetProperty("op").GetString() switch {
-                    "raw" => Raw(input), "handles" => Handles(input), "format" => Format(input), "encoding" => EncodingOperation(input),
+                    "ordinal" => input.GetProperty("pairs").EnumerateArray().Select(p=>StringComparer.OrdinalIgnoreCase.Equals(p[0].GetString(),p[1].GetString())).ToArray(),
+                    "ordinal-map" => OrdinalMap(), "raw" => Raw(input), "handles" => Handles(input), "objects" => Objects(input), "format" => Format(input), "encoding" => EncodingOperation(input),
                     "typed-fixture" => TypedFixture(input), "typed-read" => TypedRead(input),
                     _ => throw new ArgumentException("Unknown oracle operation.")
                 };

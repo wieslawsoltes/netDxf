@@ -22,6 +22,8 @@ export async function differential() {
   if (inventory.sourceFingerprint !== baseline.sourceFingerprint) throw new Error('Oracle source fingerprint does not match the pinned baseline.');
   if (inventory.fixtures.length !== baseline.counts.dxfFixtures) throw new Error('Fixture count changed.');
   const oracle = new OracleClient(), results = [];
+  const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
+  let completed = false, fatal = null;
   const stats = { sourceFixtures: 0, acceptedSourceFixtures: 0, rejectedSourceFixtures: 0, rawComparisons: 0,
     emittedByteComparisons: 0, exactRetainedSaves: 0, normalizedSaves: 0, crossRuntimeLoads: 0,
     doubleFormats: 0, encodingComparisons: 0, typedSemanticChecks: 0, failures: 0 };
@@ -142,13 +144,18 @@ export async function differential() {
         await check(`typed-fixture/${version}/${binary}/${target}`, { bytes });
       }
     }
-  } finally {
-    await oracle.close();
-    fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint(),baseline: baseline.ref, sourceFingerprint: inventory.sourceFingerprint,
+    completed = true;
+  } catch (error) { fatal = error.stack; throw error; }
+  finally {
+    try { await oracle.close(); } catch (error) { fatal ??= error.stack; completed = false; }
+    if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) {
+      fatal = "Code changed during verification."; completed = false;
+    }
+    fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ ...proof,completed,fatal,baseline: baseline.ref, sourceFingerprint: inventory.sourceFingerprint,
       configuration, comparison: 'Exact bytes and exact numeric bits; no metadata stripping, handle remapping, rounding or tolerance.',
       scope: 'Raw document/tag layer and .NET typed-reader controls, not JavaScript typed API parity.', stats, results }, null, 2) + '\n');
   }
-  if (stats.failures) throw new Error(`${stats.failures} differential comparisons failed.`);
+  if (!completed || fatal || stats.failures) throw new Error(`${stats.failures} differential comparisons failed.`);
   console.log(JSON.stringify(stats, null, 2));
   return stats;
 }

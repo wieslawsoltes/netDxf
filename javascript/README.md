@@ -1,25 +1,89 @@
 # netDxf JavaScript port
 
-Work-in-progress native JavaScript port of the pinned C# implementation. This directory is isolated from the existing .NET library. Do not interpret a passing subset of tests as full parity.
+Native ECMAScript modules, with the original C# relative paths and PascalCase names. **Work in progress: this is not yet a complete port of `DxfDocument` or the original test suite.** Development remains on PR #98. The package is private and its publication gate rejects incomplete parity.
 
-## Source contract
+The behavioral baseline is `3496ab91893a1e4ec9261b4833479f1799149cdc`. The original C# implementation and all DXF fixtures remain unchanged. Production JavaScript does not load .NET, WebAssembly, an external DXF library, or a server-side conversion service.
 
-- Repository: `wieslawsoltes/netDxf`
-- Baseline: `3496ab91893a1e4ec9261b4833479f1799149cdc`
-- C# library: `netDxf/`; JavaScript library: `javascript/netDxf/`.
-- C# conformance suite: `tests/netDxf.Conformance/`; JavaScript suite: `javascript/tests/netDxf.Conformance/`.
-- C# examples: `TestDxfDocument/`; JavaScript examples: `javascript/TestDxfDocument/`.
-- Original fixtures and support files are shared, not silently rewritten or replaced.
-- Relative source filenames, public class/member names and test names are retained. Language-specific adaptations must be documented.
+## Implemented scope
 
-## Completion gates
+The native raw layer includes text/binary codecs, exact unedited same-transport preservation, immutable tag/section/record views, record replacement/removal, contextual handle indexing, dependency traversal, and guarded simultaneous remapping. The OBJECTS layer adds public dictionary/default-dictionary, XRECORD, dictionary-variable, placeholder, ID-buffer, and SORTENTSTABLE schemas; immutable object views; staged edits; owned-tree cloning/deletion; extension dictionaries; draw order; and commit-time graph/handle validation. Unsupported/private schemas remain explicitly opaque.
 
-1. Every source file and API member is accounted for; an unimplemented declaration is not a completed port.
-2. Original test cases run in JavaScript under their original names, with no missing or silently skipped cases.
-3. Direct .NET/JavaScript comparison checks success and rejection behavior, object graphs, ordered DXF tags and exact emitted bytes.
-4. Cross-runtime round trips cover both directions, all supported versions, text/binary transports, original fixtures and generated cases.
-5. Exact-byte equality is reported separately from any explicitly normalized comparison. Raw byte retention is not typed editing parity.
-6. Numeric precision, ownership, cloning, reference identity, handle lifecycles, encoding, malformed-input behavior and atomic-save guarantees are verified.
-7. Browser/Node packaging and repeatable performance measurements are validated before release.
+There are also 77 mirrored enum files, strict code-page tables generated from the pinned .NET runtime, a G17 numeric formatter, exact 64-bit integer/handle storage, and ordinal dictionary-name comparison. See [architecture](doc/ARCHITECTURE.md), [language adaptations](doc/LANGUAGE_ADAPTATIONS.md), and [verification](doc/VERIFICATION.md).
 
-The PR remains a draft while these gates are incomplete. The .NET implementation is the behavioral oracle, not an implied certificate of complete AutoCAD compatibility.
+**Not implemented:** the JavaScript typed `DxfDocument`/entity/table/geometry engine, all original tests/examples, raw filesystem/atomic-save integration, full arbitrary-stream adapters, and exhaustive platform/performance qualification. A raw byte-preservation or raw OBJECTS test is not counted as a port of a test that constructs the typed JavaScript API.
+
+## Source layout
+
+| Original | Native JavaScript |
+|---|---|
+| `netDxf/IO/DxfRawDocument.cs` | `javascript/netDxf/IO/DxfRawDocument.js` |
+| `netDxf/IO/DxfRawObjectTransaction.cs` | `javascript/netDxf/IO/DxfRawObjectTransaction.js` |
+| `tests/netDxf.Conformance/RawRecordTests.cs` | `javascript/tests/netDxf.Conformance/RawRecordTests.js` |
+| `TestDxfDocument/` | Reserved matching `javascript/TestDxfDocument/` paths; examples still unported |
+| `tests/fixtures/`, original sample DXFs | Shared unchanged inputs; hashes checked before comparison |
+
+Files that have not been ported are absent and reported as missing. There are no generated throwing stubs masquerading as completed implementations. C# partial classes remain split across their original filenames; private shared implementation state connects those files.
+
+## Native usage
+
+```js
+import {
+  DxfRawDocument, DxfRawObjectStore, DxfTag,
+} from './javascript/index.js';
+
+// Explicit raw authoring, not the not-yet-ported typed DxfDocument factory.
+const tags = [
+  [0, 'SECTION'], [2, 'HEADER'], [9, '$ACADVER'], [1, 'AC1032'],
+  [0, 'ENDSEC'], [0, 'EOF'],
+].map(([code, value]) => new DxfTag(code, value));
+
+const source = DxfRawDocument.Create(tags);
+const edit = DxfRawObjectStore.Open(source).BeginEdit();
+const root = edit.EnsureRootDictionary();
+const folder = edit.CreateDictionary(root, 'Application');
+edit.CreateVariable(folder, 'Project', 'Zażółć 東京');
+edit.CreateXRecord(folder, 'Measurements', [
+  new DxfTag(10, 1.2345678901234567),
+  new DxfTag(160, 9223372036854775807n),
+]);
+const updated = edit.Commit();
+const bytes = updated.ToBytes(true); // Uint8Array, binary DXF
+const loaded = DxfRawObjectStore.Open(DxfRawDocument.Load(bytes));
+console.log(loaded.RootDictionary.Find('application').Handle);
+```
+
+For existing files, pass a `Uint8Array` to `DxfRawDocument.Load`; browser `await file.arrayBuffer()` is also accepted. File/network access belongs to the caller. `Save(stream, binary, cancellationToken)` keeps the C# method name; the included synchronous `MemoryStream` adapter preserves caller ownership. `ToBytes` is an explicitly documented JavaScript convenience method.
+
+Node uses native ESM. Browser applications can import `javascript/index.js` from an HTTP(S) origin. No bundler or package installation is needed for the source modules. The internal npm tarball is also tested through an offline install; it is **not published**.
+
+## Run the tests
+
+From this directory, with the pinned .NET 8.0.425 SDK / 8.0.31 runtime and Node 22.16.0 available:
+
+```sh
+# NETDXF_SOURCE_ROOT must point at the exact pinned C# checkout if the main branch has advanced.
+# Example: export NETDXF_SOURCE_ROOT=/path/to/netDxf-pinned
+export CONFIGURATION=Release
+node tools/dotnet.mjs inventory
+node tools/dotnet.mjs oracle
+node tools/dotnet.mjs conformance
+npm test
+npm run test:unit
+npm run test:differential
+node tools/ordinal-casing.mjs --check
+node tools/browser-corpus.mjs
+python -m pip install -r tools/requirements-browser.txt
+python -m playwright install chromium
+python tools/browser-check.py
+npm run test:package
+npm run benchmark
+npm run verify
+```
+
+`DOTNET_ROOT` or `DOTNET` can select an isolated toolchain. `CHROMIUM` can select an already installed browser executable. Browser checks require a real Chromium process, not a mocked DOM. Repeat with `CONFIGURATION=Debug` to compare with the Debug .NET oracle.
+
+`npm run verify` validates the implemented scope and writes every missing source file and original test identity. **`npm run verify:complete` fails while the full-port gates remain unmet.** A successful subset does not turn the completion gate green. See [the verification contract](doc/VERIFICATION.md) for report locations and the distinction between preserved input bytes, normalized writer bytes, object semantics, and typed-reader controls.
+
+## License
+
+MIT; original netDxf copyright Daniel Carvajal. The port retains the original license and attribution. Generated .NET-derived development tables are committed native JavaScript data; .NET itself is not distributed in the package.

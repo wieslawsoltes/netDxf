@@ -10,42 +10,109 @@ concurrency:
   group: javascript-port-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
-  checkpoint:
+  implemented-scope:
+    name: Implemented scope / ${{ matrix.configuration }}
     runs-on: ubuntu-22.04
-    timeout-minutes: 15
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
-      - name: Verify committed generated data and package imports
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inventory and compile the pinned production oracle
         run: |
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import { createHash } from 'node:crypto';
-          const baseline = JSON.parse(fs.readFileSync('javascript/baseline.json'));
-          const manifest = JSON.parse(fs.readFileSync('javascript/generated-manifest.json'));
-          if (manifest.sourceFingerprint !== baseline.sourceFingerprint) throw new Error('Source fingerprint mismatch.');
-          for (const entry of manifest.files) {
-            const actual = createHash('sha256').update(fs.readFileSync('javascript/'+entry.path)).digest('hex');
-            if (actual !== entry.sha256) throw new Error('Generated file changed: '+entry.path);
-          }
-          const api = await import('./javascript/index.js');
-          if (!api.DxfRawDocument || !api.DxfTag) throw new Error('Missing package exports.');
-          console.log('Generated integrity and module imports passed. Full parity remains unverified.');
-          NODE
-      - name: Retain reproducible source checkpoint
+          node javascript/tools/dotnet.mjs inventory
+          node javascript/tools/dotnet.mjs oracle
+      - name: Execute the complete original C# suite
+        run: node javascript/tools/dotnet.mjs conformance
+      - name: Execute mirrored and supplemental native JavaScript tests
+        working-directory: javascript
+        run: |
+          npm test
+          npm run test:unit
+      - name: Exact differential comparisons and generated casing integrity
+        working-directory: javascript
+        run: |
+          npm run test:differential
+          node tools/ordinal-casing.mjs --check
+      - name: Browser differential on all shared fixtures
+        working-directory: javascript
+        run: |
+          python -m pip install -r tools/requirements-browser.txt
+          python -m playwright install --with-deps chromium
+          node tools/browser-corpus.mjs
+          python tools/browser-check.py
+      - name: Offline package install and reproducible measurements
+        working-directory: javascript
+        run: |
+          npm run test:package
+          npm run benchmark
+      - name: Verify implemented scope and enumerate missing parity
+        run: node javascript/tools/verify.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-evidence-${{ matrix.configuration }}
+          path: |
+            javascript/artifacts/**/*.json
+            javascript/artifacts/**/*.log
+            !javascript/artifacts/browser/corpus.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain exact source checkpoint
+        if: matrix.configuration == 'Release'
         run: |
           mkdir -p artifacts/javascript
           git archive --format=tar.gz --output=artifacts/javascript/source-checkpoint.tar.gz HEAD
           git rev-parse HEAD > artifacts/javascript/source-commit.txt
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: matrix.configuration == 'Release'
         with:
           name: javascript-source-checkpoint
           path: artifacts/javascript
           if-no-files-found: error
           retention-days: 7
+  full-port-completion:
+    name: Full-port completion (blocked while parity is incomplete)
+    needs: implemented-scope
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: javascript-evidence-Release
+          path: evidence
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Require full completion, not merely a passing subset
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const report = JSON.parse(fs.readFileSync('evidence/verification/Release/report.json'));
+          if (report.fullParityVerified !== true) {
+            console.error('Full parity is BLOCKED. Missing original cases:', report.tests.missingCount);
+            console.error('Missing source-file mirrors:', report.library.missing.length);
+            process.exit(1);
+          }
+          NODE

@@ -15,7 +15,8 @@ export function runtimeFingerprint(root = javascriptRoot) {
 /** Tests and oracle inputs must be re-executed after an implementation of the verifier changes. */
 export function verificationFingerprint(root = javascriptRoot) {
   const files = ['tests', 'tools'].flatMap(dir => walk(path.join(root, dir)))
-    .filter(file => /\.(?:cs|js|mjs)$/.test(file));
+    .filter(file => /\.(?:cs|js|mjs|py|html|txt)$/.test(file));
+  files.push(...['package.json','baseline.json','generated-manifest.json'].map(file => path.join(root,file)));
   return sha256(files.sort().map(file => relative(root, file) + '\0' + sha256(fs.readFileSync(file)) + '\n').join(''));
 }
 export function compareCaseCoverage(expected, actual) {

@@ -20,6 +20,8 @@ export async function handleDifferential() {
   if (inventory.sourceFingerprint !== baseline.sourceFingerprint || inventory.fixtures.length !== baseline.counts.dxfFixtures)
     throw new Error('Unpinned source/fixture inventory.');
   const oracle = new OracleClient(), results = [];
+  const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
+  let completed = false, fatal = null;
   const stats = { sourceFixtures: 0, acceptedSourceFixtures: 0, rejectedSourceFixtures: 0,
     indexComparisons: 0, occurrenceComparisons: 0, diagnosticComparisons: 0, closureComparisons: 0,
     remapComparisons: 0, rejectedRemaps: 0, emittedByteComparisons: 0, crossRuntimeRemapLoads: 0, typedSemanticChecks: 0, failures: 0 };
@@ -133,14 +135,19 @@ export async function handleDifferential() {
         if (!isDeepStrictEqual(actual, expected)) fail(`typed-remap/${version}/${binary}/${key}`, { bytes }, expected, actual);
       }
     }
-  } finally {
-    await oracle.close();
-    const report = { runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint(),schemaVersion: 1, sourceRef: baseline.ref, sourceFingerprint: baseline.sourceFingerprint,
+    completed = true;
+  } catch (error) { fatal = error.stack; throw error; }
+  finally {
+    try { await oracle.close(); } catch (error) { fatal ??= error.stack; completed = false; }
+    if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) {
+      fatal = "Code changed during verification."; completed = false;
+    }
+    const report = { ...proof,completed,fatal,schemaVersion: 1, sourceRef: baseline.ref, sourceFingerprint: baseline.sourceFingerprint,
       configuration, stats, results, fullParityVerified: false };
     fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify(report, null, 2) + '\n');
   }
   console.log('Handle differential: ' + JSON.stringify(stats));
-  if (stats.failures) throw new Error(`${stats.failures} handle differential mismatches.`);
+  if (!completed || fatal || stats.failures) throw new Error(`${stats.failures} handle differential mismatches.`);
   return stats;
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await handleDifferential();

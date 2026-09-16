@@ -1,6 +1,9 @@
+import { runtimeFingerprint, verificationFingerprint } from '../../tools/evidence.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as RawObjectBoundaryTests from './RawObjectBoundaryTests.js';
+import * as RawRecordTests from './RawRecordTests.js';
 import * as Harness from './TestHarness.js';
 import * as RawTagTests from './RawTagTests.js';
 import * as RawDocumentTests from './RawDocumentTests.js';
@@ -10,9 +13,10 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
+  const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
   Harness.cases.length = 0;
   for (const [filename, module] of Object.entries(modules))
     Harness.WithSource(`tests/netDxf.Conformance/${filename}.cs`, () => module[`Register${filename}`]());
@@ -33,6 +37,8 @@ export async function Main() {
   const output = path.resolve(process.env.DXF_JS_TEST_ARTIFACTS || path.join(root, 'artifacts', 'conformance'));
   fs.mkdirSync(output, { recursive: true });
   fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify(results, null, 2) + '\n');
+  if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed during conformance tests.');
+  fs.writeFileSync(path.join(output, 'metadata.json'), JSON.stringify({ ...proof, fullSuite: !filter, filter: filter || null }, null, 2) + '\n');
   const failed = results.filter(result => !result.passed).length;
   console.log(`JavaScript conformance: ${results.length - failed} passed; ${failed} failed. This is a partial port, not the full .NET suite.`);
   return failed ? 1 : 0;
