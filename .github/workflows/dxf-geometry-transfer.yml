@@ -1,0 +1,58 @@
+name: Materialize reviewed circular geometry
+on:
+  push:
+    branches: [codex/source-geometry-transfer-20260916]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/source-geometry-transfer-20260916'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Validate exact reviewed patch and publish clean source commits
+        shell: bash
+        env:
+          BASE: 661c00703dc24dc3a7fcfe2edb12317a96c57c50
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          git config core.autocrlf false
+          python - <<'PY'
+          import base64, gzip, hashlib, os
+          from pathlib import Path
+          parts = [Path(f'.github/dxf-geometry-transfer/{i}.bin').read_bytes() for i in range(3)]
+          # Correct one identified repeated quartet in the tool-serialized first chunk.
+          # The original blob, complete patch and both output trees are independently locked below.
+          text = base64.b64encode(parts[0]).decode('ascii')
+          assert text.count('Ovvntvvntvvntvvntvvnt/t/') == 1
+          parts[0] = base64.b64decode(text.replace('Ovvntvvntvvntvvntvvnt/t/', 'Ovvntvvntvvntvvnt/t/', 1), validate=True)
+          expected = ['d5acee8890ad39f3498d6f45dd78323b4cfed981', 'fcf6081105684a24d0d7963e95db0ad41a6544ac', 'fca720144e0cb05e0541c881e4da4201df3b2499']
+          for part, digest in zip(parts, expected):
+              assert hashlib.sha1(b'blob ' + str(len(part)).encode() + b'\0' + part).hexdigest() == digest
+          data = gzip.decompress(b''.join(parts))
+          assert hashlib.sha256(data).hexdigest() == '09fc74f02f7dc7206f33dbe34e1ed82f669851a788a730be9e96a3112064848c'
+          Path(os.environ['RUNNER_TEMP'], 'geometry.patch').write_bytes(data)
+          PY
+          git apply --check --index "$RUNNER_TEMP/geometry.patch"
+          git apply --index "$RUNNER_TEMP/geometry.patch"
+          git rm -r -- .github/dxf-geometry-transfer .github/workflows/dxf-geometry-transfer.yml
+          FULL_TREE=$(git write-tree)
+          test "$FULL_TREE" = 6ce0223799a576edcde11d2d72cdc77150ac16f7
+          export GIT_INDEX_FILE="$RUNNER_TEMP/production.index"
+          git read-tree "$BASE"
+          git add -- netDxf/Entities/Arc.cs netDxf/Entities/Circle.cs netDxf/Entities/CircularEntityTransform.cs netDxf/Entities/EntityObject.CommonData.cs
+          PROD_TREE=$(git write-tree)
+          test "$PROD_TREE" = 4e647d32aef61cc694c877d8967d297a77d4aad0
+          unset GIT_INDEX_FILE
+          PROD=$(printf '%s\n' 'Preserve circular geometry, oriented normals and signed extrusion under affine transforms' | git commit-tree "$PROD_TREE" -p "$BASE")
+          FINAL=$(printf '%s\n' 'Verify circular transforms, atomic rejection and world-space DXF persistence' | git commit-tree "$FULL_TREE" -p "$PROD")
+          git push origin "$FINAL:refs/heads/codex/geometry-reviewed-source-20260916"
+          echo "Published clean source head $FINAL, tree $FULL_TREE"
