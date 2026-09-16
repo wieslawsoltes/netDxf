@@ -14,6 +14,7 @@ internal static partial class Program
         RegisterCellStyleConsumerRemapTests();
         RegisterCellStyleConsumerQualificationTests();
         RegisterTableCalculationTests();
+        RegisterTableLayoutTests();
         RegisterFourthMixedModuleTests();
         RegisterStoredEnvelopeTests();
         RegisterDeclaredOwnershipTests();

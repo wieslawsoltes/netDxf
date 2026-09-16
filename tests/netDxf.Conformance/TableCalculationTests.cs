@@ -129,8 +129,9 @@ internal static partial class Program
     private static void ApplyContentFormula(bool binary)
     {
         var doc = FormulaDocument(binary); var content = doc.Objects.Items.OfType<DxfStoredTableContent>().First();
-        var old = content.GetGrid(); long seed = OwnershipSeed(doc);
+        var old = content.GetGrid();
         TableContentSave(doc, binary, $"table-calculation-before-{binary}.dxf");
+        long seed = OwnershipSeed(doc); // Saving can allocate default objects; isolate the edit itself.
         content.ApplyFormulaResults(FormulaRequest());
         Equal(7d, content.GetGrid()[Address("A1")].Contents.Single().Value, "first calculated cell");
         Equal(21d, content.GetGrid()[Address("A2")].Contents.Single().Value, "dependent cell");
