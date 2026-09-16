@@ -61,6 +61,8 @@ Both pipelines now offer an explicit [SaveAtomic API](doc/dxf-conformance/atomic
 
 Full AutoCAD DXF capability is not yet achieved. Passing regression tests and preserving opaque records are not a native AutoCAD interoperability certificate. The [conformance guide](doc/dxf-conformance/README.md) records scope, verification commands and remaining work.
 
+[Coordinated cell-style consumer remapping](doc/dxf-conformance/cell-style-consumers.md) now updates qualified TABLECONTENT column, row and cell IDs atomically with their TABLESTYLE-owned CELLSTYLEMAP. Renames, cycles and explicit deletion fallbacks are supported; unqualified consumers reject before publication. This does not regenerate TABLE layout or private rendering caches.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
