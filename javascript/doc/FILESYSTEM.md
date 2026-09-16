@@ -10,7 +10,7 @@ The default package entry imports no Node filesystem module and does not gain fi
 
 ## Save sequence
 
-The implementation validates arguments/cancellation, resolves the path and validates the existing destination before creating any staging file. It creates a random `.netdxf-*.tmp` sibling with exclusive creation, serializes into it, checks cancellation, performs a real file flush, closes the staging handle, rechecks cancellation and destination existence, then publishes. Serialization, invalid transport, budget, cancellation, flush and detected existence-change failures do not publish the staged prefix. A held reader retains the previous file while later opens observe the replacement.
+The implementation validates arguments/cancellation, resolves the path and validates the existing destination before creating any staging file. It creates a random `.netdxf-*.tmp` sibling with exclusive creation, serializes into it, checks cancellation, performs a real file flush, closes the staging handle, rechecks cancellation and destination existence, then publishes. Serialization, invalid transport, budget, cancellation, flush and detected existence-change failures do not publish the staged prefix. On the qualified Linux run, a held reader retains the previous file while later opens observe the replacement. The default Node host does not yet meet this behavior on Windows; see the qualification failure below.
 
 Cleanup is attempted on success and failure. IO or access errors during cleanup do not conceal the original error. A cleanup failure may leave an inert sibling; it is not a guarantee that every possible disk failure leaves no temporary file. An asynchronous serializer is rejected instead of reporting success before its work is done.
 
@@ -40,3 +40,11 @@ DXF_TEST_FILTER=atomic/ npm test
 ```
 
 No release or full-port gate is relaxed by adding this host capability.
+
+## Windows held-reader qualification failure
+
+CI at `4fb1c72` ran the unchanged original `atomic/reader-observes-old-or-new` case on Windows Server 2022 with Node 22.16.0. The other 81 raw/helper cases passed, but replacing the file with a held reader failed with `EPERM`, mapped to `UnauthorizedAccessException`. **Windows filesystem parity is not qualified.** This is not a permitted skip, a changed expected result, or a reason to mark the full-port gate green.
+
+The pinned [Node/libuv Windows rename implementation](https://github.com/nodejs/node/blob/v22.16.0/deps/uv/src/win/fs.c#L2079) calls `MoveFileExW` with `MOVEFILE_REPLACE_EXISTING`. The C# helper in `netDxf/IO/DxfAtomicFile.cs` instead calls `File.Replace` for existing destinations. The Node host has not implemented an equivalent held-reader replacement mechanism. An in-place copy, delete-and-rename sequence, or closing another caller's reader would violate the tested atomicity/ownership contract and is deliberately not used as a fallback.
+
+The Windows CI job continues the full 1,782-scenario differential and offline package checks after this original case fails, retaining all results while the job remains failed. The filesystem differential holds a reader for every existing-destination scenario; it therefore tests more than the one named original held-reader case. Its report, not the initial 81/82 count, gives the total cross-runtime mismatch count. Linux and Windows evidence must not be conflated.

@@ -173,8 +173,10 @@ jobs:
           DXF_TEST_FILTER: atomic/
         run: node javascript/tests/netDxf.Conformance/Program.js
       - name: Compare real filesystem output and rejection behavior
+        if: ${{ !cancelled() }}
         run: node javascript/tools/filesystem-differential.mjs
       - name: Validate offline Node package installation
+        if: ${{ !cancelled() }}
         run: node javascript/tools/package-check.mjs
       - uses: actions/upload-artifact@v4
         if: always()
