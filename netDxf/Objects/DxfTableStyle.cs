@@ -10,12 +10,12 @@ using netDxf.Tables;
 namespace netDxf.Objects
 {
     /// <summary>A loaded TABLESTYLE with immutable payload snapshots and conservative classic projections.</summary>
-    /// <remarks>ReplaceStyle supports explicit qualified classic/version-zero header, row scalar and border edits. Map interpretation and table regeneration are not supported.</remarks>
+    /// <remarks>ReplaceStyle supports explicit qualified classic/version-zero header, row scalar, border and data/unit edits plus explicit STYLE reassignment. Map interpretation and table regeneration are not supported.</remarks>
     public sealed partial class DxfTableStyle : DxfDatabaseObject
     {
         private readonly DxfDocument source;
-        private readonly List<DxfObject> references = new List<DxfObject>();
-        private readonly Dictionary<DxfTag, Tuple<TextStyle, string>> namedStyles = new Dictionary<DxfTag, Tuple<TextStyle, string>>();
+        private List<DxfObject> references = new List<DxfObject>();
+        private Dictionary<DxfTag, Tuple<TextStyle, string>> namedStyles = new Dictionary<DxfTag, Tuple<TextStyle, string>>();
         private readonly Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
         private List<DxfTag> publicTags;
         private bool resolved;
@@ -45,7 +45,7 @@ namespace netDxf.Objects
         /// <summary>Gets three ordered classic row packets, or an empty list when their count is not recognized.</summary>
         /// <remarks>Order is retained without assigning data, title or header roles. Unknown and unprojected values remain in Tags.</remarks>
         public IReadOnlyList<DxfTableStyleRow> Rows { get; private set; }
-        /// <summary>Gets exact registered STYLE and exposed semantic handle dependencies.</summary>
+        /// <summary>Gets an immutable membership snapshot of exact registered STYLE and exposed semantic handle dependencies.</summary>
         public IReadOnlyList<DxfObject> References { get { return this.references.AsReadOnly(); } }
         /// <summary>Gets the retained owned CELLSTYLEMAP when the known extension dictionary slot identifies it.</summary>
         /// <remarks>This reference does not qualify the map's custom cell-style schema or synchronization.</remarks>
