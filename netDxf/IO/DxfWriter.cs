@@ -1580,10 +1580,7 @@ namespace netDxf.IO
                 this.chunk.Write(62, (short) -layer.Color.Index);
             }
 
-            if (layer.Color.UseTrueColor)
-            {
-                this.chunk.Write(420, AciColor.ToTrueColor(layer.Color));
-            }
+            this.WriteTrueColor(layer.Color);
 
             this.chunk.Write(6, this.EncodeNonAsciiCharacters(layer.Linetype.Name));
 
@@ -2030,10 +2027,7 @@ namespace netDxf.IO
             this.chunk.Write(8, this.EncodeNonAsciiCharacters(entity.Layer.Name));
 
             this.chunk.Write(62, entity.Color.Index);
-            if (entity.Color.UseTrueColor)
-            {
-                this.chunk.Write(420, AciColor.ToTrueColor(entity.Color));
-            }
+            this.WriteTrueColor(entity.Color);
 
             if (entity.Transparency.Value >= 0)
             {
@@ -2826,10 +2820,7 @@ namespace netDxf.IO
                 {
                     this.chunk.Write(8, layerName); // the vertex layer should be the same as the polyline layer
                     this.chunk.Write(62, polyline.Color.Index); // the vertex color should be the same as the polyline color
-                    if (polyline.Color.UseTrueColor)
-                    {
-                        this.chunk.Write(420, AciColor.ToTrueColor(polyline.Color));
-                    }
+                    this.WriteTrueColor(polyline.Color);
                     this.chunk.Write(100, SubclassMarker.Vertex);
                     this.chunk.Write(100, v.SubclassMarker);
                 }
@@ -2845,10 +2836,7 @@ namespace netDxf.IO
                     if (v.Color != null)
                     {
                         this.chunk.Write(62, v.Color.Index);
-                        if (v.Color.UseTrueColor)
-                        {
-                            this.chunk.Write(420, AciColor.ToTrueColor(v.Color));
-                        }
+                        this.WriteTrueColor(v.Color);
                     }
 
                     this.chunk.Write(100, v.SubclassMarker);
@@ -4315,10 +4303,7 @@ namespace netDxf.IO
             this.chunk.Write(8, this.EncodeNonAsciiCharacters(def.Layer.Name));
 
             this.chunk.Write(62, def.Color.Index);
-            if (def.Color.UseTrueColor)
-            {
-                this.chunk.Write(420, AciColor.ToTrueColor(def.Color));
-            }
+            this.WriteTrueColor(def.Color);
 
             if (def.Transparency.Value >= 0)
             {
@@ -4480,10 +4465,7 @@ namespace netDxf.IO
             this.chunk.Write(8, this.EncodeNonAsciiCharacters(attrib.Layer.Name));
 
             this.chunk.Write(62, attrib.Color.Index);
-            if (attrib.Color.UseTrueColor)
-            {
-                this.chunk.Write(420, AciColor.ToTrueColor(attrib.Color));
-            }
+            this.WriteTrueColor(attrib.Color);
 
             if (attrib.Transparency.Value >= 0)
             {
@@ -4855,10 +4837,7 @@ namespace netDxf.IO
             this.chunk.Write(3, this.EncodeNonAsciiCharacters(style.Description));
 
             this.chunk.Write(62, style.FillColor.Index);
-            if (style.FillColor.UseTrueColor) // && this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
-            {
-                this.chunk.Write(420, AciColor.ToTrueColor(style.FillColor));
-            }
+            this.WriteTrueColor(style.FillColor);
             this.chunk.Write(51, style.StartAngle);
             this.chunk.Write(52, style.EndAngle);
             this.chunk.Write(71, (short) style.Elements.Count);
@@ -4866,10 +4845,7 @@ namespace netDxf.IO
             {
                 this.chunk.Write(49, element.Offset);
                 this.chunk.Write(62, element.Color.Index);
-                if (element.Color.UseTrueColor) // && this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
-                {
-                    this.chunk.Write(420, AciColor.ToTrueColor(element.Color));
-                }
+                this.WriteTrueColor(element.Color);
 
                 this.chunk.Write(6, this.EncodeNonAsciiCharacters(element.Linetype.Name));
             }

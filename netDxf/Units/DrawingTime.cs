@@ -24,112 +24,60 @@
 #endregion
 
 using System;
+using System.Numerics;
 
 namespace netDxf.Units
 {
-    /// <summary>
-    /// Utility functions to handle DateTime conversions.
-    /// </summary>
+    /// <summary>Converts DXF midnight-based Julian day serials and elapsed-day values.</summary>
+    /// <remarks>The calendar is DateTime's proleptic Gregorian calendar. DateTime.Kind is not
+    /// used to infer a timezone or convert the supplied clock fields. Serial precision is
+    /// limited by binary64; decoded values use the nearest representable DateTime tick.</remarks>
     public static class DrawingTime
     {
-        /// <summary>
-        /// Calculates a date represented as &lt;Julian date&gt;.&lt;Fraction of day&gt; from a <see cref="DateTime">DateTime</see> instance.
-        /// </summary>
-        /// <param name="date"><see cref="DateTime">DateTime</see> instance.</param>
-        /// <returns>The date represented as &lt;Julian date&gt;.&lt;Fraction of day&gt; equivalent to the <see cref="DateTime">DateTime</see> instance.</returns>
+        /// <summary>Serial of January 1, year 1 at midnight.</summary>
+        public const double MinimumJulianDate = 1721426.0;
+        /// <summary>Exclusive upper serial bound, January 1, year 10000.</summary>
+        public const double MaximumJulianDateExclusive = 5373485.0;
+
+        /// <summary>Converts DateTime clock fields to a DXF day number plus fraction since midnight.</summary>
+        /// <remarks>Sub-millisecond ticks are included. At the last representable day, rounding
+        /// that would leave DateTime's range is clamped to the greatest in-range double.
+        /// This is not the astronomical Julian convention with its noon boundary.</remarks>
         public static double ToJulianCalendar(DateTime date)
         {
-            int year = date.Year;
-            int month = date.Month;
-            int day = date.Day;
-            double hour = date.Hour;
-            double minute = date.Minute;
-            double second = date.Second;
-            double millisecond = date.Millisecond;
-            double fraction = day + hour/24.0 + minute/1440.0 + (second + millisecond/1000)/86400.0;
-
-            if (month < 3)
-            {
-                year -= 1;
-                month += 12;
-            }
-
-            int a = year / 100;
-            int b = 2 - a + a / 4;
-            int c;
-            if (year < 0)
-            {
-                c = (int) (365.25 * year - 0.75);
-            }
-            else
-            {
-                c = (int) (365.25 * year);
-            }
-
-            int d = (int) (30.6001 * (month + 1));
-            return b + c + d + 1720995 + fraction;
+            long days = date.Ticks / TimeSpan.TicksPerDay;
+            long remainder = date.Ticks % TimeSpan.TicksPerDay;
+            double serial = MinimumJulianDate + days + remainder / (double)TimeSpan.TicksPerDay;
+            if (serial >= MaximumJulianDateExclusive)
+                return BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(MaximumJulianDateExclusive) - 1);
+            return serial;
         }
 
-        /// <summary>
-        /// Calculates the <see cref="DateTime">DateTime</see> from a date represented as &lt;Julian date&gt;&lt;.Fraction of day&gt;.
-        /// </summary>
-        /// <param name="date">A date represented as &lt;Julian date&gt;.&lt;Fraction of day&gt;.</param>
-        /// <returns>The <see cref="DateTime">DateTime</see> equivalent to the Julian date.</returns>
+        /// <summary>Decodes a finite in-range DXF serial, including times on December 31, 9999.</summary>
+        /// <remarks>The returned DateTime has Kind Unspecified. Day fractions are rounded once
+        /// to ticks with midpoint ties to even, rather than truncating each clock component.</remarks>
         public static DateTime FromJulianCalendar(double date)
         {
-            if (date < 1721426 || date > 5373484)
-            {
-                throw new ArgumentOutOfRangeException(nameof(date), "The valid values range from 1721426 and 5373484 that correspond to January 1, 1 and December 31, 9999 respectively.");
-            }
-
-            double julian = (int) date;
-            double fraction = date - julian;
-
-            int temp = (int) ((julian - 1867216.25) / 36524.25);
-            julian = julian + 1 + temp - (int) (temp / 4.0);
-
-            int a = (int) julian + 1524;
-            int b = (int) ((a - 122.1) / 365.25);
-            int c = (int) (365.25 * b);
-            int d = (int) ((a - c) / 30.6001);
-
-            int months = d < 14 ? d - 1 : d - 13;
-            int years = months > 2 ? b - 4716 : b - 4715;
-            int days = a - c - (int) (30.6001 * d);
-
-            int hours = (int) (fraction * 24);
-            fraction -= hours / 24.0;
-            int minutes = (int) (fraction * 1440);
-            fraction -= minutes / 1440.0;
-
-            double decimalSeconds = fraction * 86400;
-            int seconds = (int) decimalSeconds;
-            int milliseconds = (int) ((decimalSeconds - seconds) * 1000);
-
-            return new DateTime(years, months, days, hours, minutes, seconds, milliseconds);
+            UnitFormatMath.CheckFinite(date, nameof(date));
+            if (date < MinimumJulianDate || date >= MaximumJulianDateExclusive)
+                throw new ArgumentOutOfRangeException(nameof(date), "The date is outside years 1 through 9999.");
+            long day = (long)Math.Floor(date);
+            long fraction = (long)UnitFormatMath.RoundMagnitude(date - day, new BigInteger(TimeSpan.TicksPerDay));
+            long ticks = (day - (long)MinimumJulianDate) * TimeSpan.TicksPerDay + fraction;
+            return new DateTime(ticks, DateTimeKind.Unspecified);
         }
 
-        /// <summary>
-        /// Calculates the <see cref="TimeSpan">TimeSpan</see> from a elapsed time represented as &lt;Number of days&gt;.&lt;Fraction of day&gt;.
-        /// </summary>
-        /// <param name="elapsed">An elapsed time represented as &lt;Number of days&gt;.&lt;Fraction of day&gt;.</param>
-        /// <returns>The <see cref="TimeSpan">TimeSpan</see> equivalent to the elapsed time.</returns>
+        /// <summary>Converts a finite signed elapsed-day value to the nearest TimeSpan tick.</summary>
+        /// <remarks>Uses midpoint ties to even and rejects values outside TimeSpan's range.
+        /// Negative durations remain supported; drawing-specific nonnegative policy is separate.</remarks>
         public static TimeSpan EditingTime(double elapsed)
         {
-            int days = (int) elapsed;
-            double fraction = elapsed - days;
-
-            int hours = (int) (fraction * 24);
-            fraction -= hours / 24.0;
-
-            int minutes = (int) (fraction * 1440);
-            fraction -= minutes / 1440.0;
-
-            double decimalSeconds = fraction * 86400;
-            int seconds = (int) decimalSeconds;
-            int milliseconds = (int) ((decimalSeconds - seconds) * 1000);
-
-            return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+            UnitFormatMath.CheckFinite(elapsed, nameof(elapsed));
+            BigInteger ticks = UnitFormatMath.RoundMagnitude(elapsed, new BigInteger(TimeSpan.TicksPerDay));
+            if (elapsed < 0) ticks = -ticks;
+            if (ticks < long.MinValue || ticks > long.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(elapsed), "The elapsed value is outside TimeSpan's range.");
+            return new TimeSpan((long)ticks);
         }
     }
 }

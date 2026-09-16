@@ -219,6 +219,7 @@ namespace netDxf.Entities
                 Lineweight = this.Lineweight,
                 Transparency = (Transparency) this.Transparency.Clone(),
                 LinetypeScale = this.LinetypeScale,
+                IsVisible = this.IsVisible,
                 Normal = this.Normal,
                 Elevation = ocsCenter.Z,
                 Thickness = this.Thickness,
@@ -241,59 +242,30 @@ namespace netDxf.Entities
         /// <param name="transformation">Transformation matrix.</param>
         /// <param name="translation">Translation vector.</param>
         /// <remarks>
-        /// Non-uniform scaling is not supported, create an ellipse arc from the arc data and transform that instead.<br />
+        /// The transformed circular plane must remain orthogonal and equally scaled (relative tolerance 1e-12).<br />
+        /// Plane orientation, counterclockwise sweep and signed thickness follow the actual transformed axes, including mirrors.<br />
+        /// Unsupported elliptic/sheared/collapsed geometry rejects before mutation; successful changes clear stale proxy graphics.<br />
         /// Matrix3 adopts the convention of using column vectors to represent a transformation matrix.
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newCenter = transformation * this.Center + translation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
+            var result = CircularEntityTransform.Prepare(transformation, translation,
+                this.center, this.Normal, this.radius, this.thickness);
+            double start = result.Angle(this.startAngle), end = result.Angle(this.endAngle);
+            if (result.IsIdentity) return;
+            // All geometry validation is complete before publishing any state.
+            base.Normal = result.Normal;
+            this.center = result.Center; this.radius = result.Radius; this.thickness = result.Thickness;
+            this.startAngle = start; this.endAngle = end;
+            this.ClearProxyGraphics();
+        }
 
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
-
-            Vector3 axis = transOW * new Vector3(this.Radius, 0.0, 0.0);
-            axis = transformation * axis;
-            axis = transWO * axis;
-            Vector2 axisPoint = new Vector2(axis.X, axis.Y);
-            double newRadius = axisPoint.Modulus();
-            if (MathHelper.IsZero(newRadius))
-            {
-                newRadius = MathHelper.Epsilon;
-            }
-
-            Vector2 start = Vector2.Rotate(new Vector2(this.Radius, 0.0), this.StartAngle * MathHelper.DegToRad);
-            Vector2 end = Vector2.Rotate(new Vector2(this.Radius, 0.0), this.EndAngle * MathHelper.DegToRad);
-
-            Vector3 vStart = transOW * new Vector3(start.X, start.Y, 0.0);
-            vStart = transformation * vStart;
-            vStart = transWO * vStart;
-
-            Vector3 vEnd = transOW * new Vector3(end.X, end.Y, 0.0);
-            vEnd = transformation * vEnd;
-            vEnd = transWO * vEnd;
-
-            Vector2 startPoint = new Vector2(vStart.X, vStart.Y);
-            Vector2 endPoint = new Vector2(vEnd.X, vEnd.Y);
-
-            this.Normal = newNormal;
-            this.Center = newCenter;
-            this.Radius = newRadius;
-
-            if (Math.Sign(transformation.M11 * transformation.M22 * transformation.M33) < 0)
-            {
-                this.EndAngle = Vector2.Angle(startPoint) * MathHelper.RadToDeg;
-                this.StartAngle = Vector2.Angle(endPoint) * MathHelper.RadToDeg;
-            }
-            else
-            {
-                this.StartAngle = Vector2.Angle(startPoint) * MathHelper.RadToDeg;
-                this.EndAngle = Vector2.Angle(endPoint) * MathHelper.RadToDeg;
-            }
+        /// <summary>Applies a finite affine four-by-four transform; projective matrices reject.</summary>
+        /// <remarks>The same circular-plane and extrusion requirements as the three-by-three overload apply.</remarks>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            CircularEntityTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>

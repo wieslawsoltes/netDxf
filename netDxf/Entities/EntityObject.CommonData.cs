@@ -66,8 +66,9 @@ namespace netDxf.Entities
         /// <remarks>
         /// Null omits the packet; an empty array retains an explicit zero byte count.
         /// The payload is bounded by MaximumProxyGraphicsBytes and is never decoded or executed.
-        /// Cloning and geometry operations preserve these stored bytes. Geometry edits do not
-        /// regenerate this cache: callers must clear it or supply regenerated data when appropriate.
+        /// Cloning and most geometry operations preserve these stored bytes. ARC/CIRCLE affine transforms
+        /// and explicit TABLE display replacement clear the cache when they change geometry. Other geometry
+        /// edits do not regenerate it: callers must clear or supply regenerated data when appropriate.
         /// </remarks>
         public byte[] ProxyGraphics
         {

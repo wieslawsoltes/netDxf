@@ -25,318 +25,100 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 
 namespace netDxf.Units
 {
-    /// <summary>
-    /// Utility methods to format a decimal number to its different string representations.
-    /// </summary>
+    /// <summary>Formats finite lengths with explicit DXF precision and unit symbols.</summary>
+    /// <remarks>Engineering and architectural values are in inches. Precision is 0–8.
+    /// Fixed/fractional output rounds exact binary64 input once, with midpoint ties to even.</remarks>
     public static class LinearUnitFormat
     {
-        #region public methods
-
-        /// <summary>
-        /// Converts a length value into its scientific string representation.
-        /// </summary>
-        /// <param name="length">The length value.</param>
-        /// <param name="format">The unit style format.</param>
-        /// <returns>A string that represents the length in scientific units.</returns>
+        /// <summary>Formats a finite length using scientific notation.</summary>
         public static string ToScientific(double length, UnitStyleFormat format)
         {
-            if (format == null)
-            {
-                throw new ArgumentNullException(nameof(format));
-            }
-
-            NumberFormatInfo numberFormat = new NumberFormatInfo
-            {
-                NumberDecimalSeparator = format.DecimalSeparator
-            };
-
-            return length.ToString(DecimalNumberFormat(format) + "E+00", numberFormat);
+            int places = UnitFormatMath.Validate(length, format, false);
+            string pattern = (format.SuppressLinearLeadingZeros ? "#" : "0") + "."
+                + new string(format.SuppressLinearTrailingZeros ? '#' : '0', places) + "E+00";
+            return length.ToString(pattern, new NumberFormatInfo { NumberDecimalSeparator = format.DecimalSeparator });
         }
 
-        /// <summary>
-        /// Converts a length value into its decimal string representation.
-        /// </summary>
-        /// <param name="length">The length value.</param>
-        /// <param name="format">The unit style format.</param>
-        /// <returns>A string that represents the length in decimal units.</returns>
+        /// <summary>Formats a finite length as a fixed decimal value.</summary>
         public static string ToDecimal(double length, UnitStyleFormat format)
         {
-            if (format == null)
-            {
-                throw new ArgumentNullException(nameof(format));
-            }
-
-            NumberFormatInfo numberFormat = new NumberFormatInfo
-            {
-                NumberDecimalSeparator = format.DecimalSeparator
-            };
-
-            return length.ToString(DecimalNumberFormat(format), numberFormat);
+            int places = UnitFormatMath.Validate(length, format, false);
+            return UnitFormatMath.Fixed(length, places, format.DecimalSeparator,
+                format.SuppressLinearLeadingZeros, format.SuppressLinearTrailingZeros);
         }
 
-        /// <summary>
-        /// Converts a length value into its feet and fractional inches string representation.
-        /// </summary>
-        /// <param name="length">The length value.</param>
-        /// <param name="format">The unit style format.</param>
-        /// <returns>A string that represents the length in feet and fractional inches.</returns>
-        /// <remarks>The Architectural format assumes that each drawing unit represents one inch.</remarks>
-        public static string ToArchitectural(double length, UnitStyleFormat format)
-        {
-            if (format == null)
-            {
-                throw new ArgumentNullException(nameof(format));
-            }
-
-            int feet = (int) (length/12);
-            double inchesDec = length - 12*feet;
-            int inches = (int) inchesDec;
-
-            if (MathHelper.IsZero(inchesDec))
-            {
-                if (feet == 0)
-                {
-                    if (format.SuppressZeroFeet)
-                    {
-                        return string.Format("0{0}", format.InchesSymbol);
-                    }
-
-                    if (format.SuppressZeroInches)
-                    {
-                        return string.Format("0{0}", format.FeetSymbol);
-                    }
-
-                    return string.Format("0{0}{1}0{2}", format.FeetSymbol, format.FeetInchesSeparator, format.InchesSymbol);
-                }
-
-                if (format.SuppressZeroInches)
-                {
-                    return string.Format("{0}{1}", feet, format.FeetSymbol);
-                }
-
-                return string.Format("{0}{1}{2}0{3}", feet, format.FeetSymbol, format.FeetInchesSeparator, format.InchesSymbol);
-            }
-
-            GetFraction(inchesDec, (short) Math.Pow(2, format.LinearDecimalPlaces), out int numerator, out int denominator);
-
-            if (numerator == 0)
-            {
-                if (inches == 0)
-                {
-                    if (feet == 0)
-                    {
-                        if (format.SuppressZeroFeet)
-                        {
-                            return string.Format("0{0}", format.InchesSymbol);
-                        }
-
-                        if (format.SuppressZeroInches)
-                        {
-                            return string.Format("0{0}", format.FeetSymbol);
-                        }
-
-                        return string.Format("0{0}{1}0{2}", format.FeetSymbol, format.FeetInchesSeparator, format.InchesSymbol);
-                    }
-
-                    if (format.SuppressZeroInches)
-                    {
-                        return string.Format("{0}{1}", feet, format.FeetSymbol);
-                    }
-
-                    return string.Format("{0}{1}{2}0{3}", feet, format.FeetSymbol, format.FeetInchesSeparator, format.InchesSymbol);
-                }
-                if (feet == 0)
-                {
-                    if (format.SuppressZeroFeet)
-                    {
-                        return string.Format("{0}{1}", inches, format.InchesSymbol );
-                    }
-
-                    return string.Format("0{0}{1}{2}{3}", format.FeetSymbol, format.FeetInchesSeparator, inches, format.InchesSymbol);
-                }
-
-                return string.Format("{0}{1}{2}{3}{4}", feet, format.FeetSymbol, format.FeetInchesSeparator, inches, format.InchesSymbol);
-            }
-
-            string text = string.Empty;
-            string feetStr;
-            if (format.SuppressZeroFeet && feet == 0)
-            {
-                feetStr = string.Empty;
-            }
-            else
-            {
-                feetStr = feet + format.FeetSymbol + format.FeetInchesSeparator;
-            }
-            switch (format.FractionType)
-            {
-                case FractionFormatType.Diagonal:
-                    text = "\\A1;" + feetStr + inches + "{\\H" + format.FractionHeightScale + "x;\\S" + numerator + "#" + denominator + ";}" + format.InchesSymbol;
-                    break;
-                case FractionFormatType.Horizontal:
-                    text = "\\A1;" + feetStr + inches + "{\\H" + format.FractionHeightScale + "x;\\S" + numerator + "/" + denominator + ";}" + format.InchesSymbol;
-                    break;
-                case FractionFormatType.NotStacked:
-                    text = feetStr + inches + " " + numerator + "/" + denominator + format.InchesSymbol;
-                    break;
-            }
-            return text;
-        }
-
-        /// <summary>
-        /// Converts a length value into its feet and decimal inches string representation.
-        /// </summary>
-        /// <param name="length">The length value.</param>
-        /// <param name="format">The unit style format.</param>
-        /// <returns>A string that represents the length in feet and decimal inches.</returns>
-        /// <remarks>The Engineering format assumes that each drawing unit represents one inch.</remarks>
+        /// <summary>Formats inches as feet and decimal inches, carrying rounded inches into feet.</summary>
         public static string ToEngineering(double length, UnitStyleFormat format)
         {
-            if (format == null)
-            {
-                throw new ArgumentNullException(nameof(format));
-            }
-
-            NumberFormatInfo numberFormat = new NumberFormatInfo
-            {
-                NumberDecimalSeparator = format.DecimalSeparator
-            };
-            int feet = (int) (length/12);
-            double inches = length - 12*feet;
-
-            if (MathHelper.IsZero(inches))
-            {
-                if (feet == 0)
-                {
-                    if (format.SuppressZeroFeet)
-                    {
-                        return string.Format("0{0}", format.InchesSymbol);
-                    }
-
-                    if (format.SuppressZeroInches)
-                    {
-                        return string.Format("0{0}", format.FeetSymbol);
-                    }
-                    return string.Format("0{0}{1}0{2}", format.FeetSymbol, format.FeetInchesSeparator, format.InchesSymbol);
-                }
-
-                if (format.SuppressZeroInches)
-                {
-                    return string.Format("{0}{1}", feet, format.FeetSymbol);
-                }
-
-                return string.Format("{0}{1}{2}0{3}", feet, format.FeetSymbol, format.FeetInchesSeparator, format.InchesSymbol);
-            }
-
-            string inchesDec = inches.ToString(DecimalNumberFormat(format), numberFormat);
-            if (feet == 0)
-            {
-                if (format.SuppressZeroFeet)
-                {
-                    return string.Format("{0}{1}", inches, format.InchesSymbol);
-                }
-
-                return string.Format("0{0}{1}{2}{3}", format.FeetSymbol, format.FeetInchesSeparator, inchesDec, format.InchesSymbol);
-            }
-            return string.Format("{0}{1}{2}{3}{4}", feet, format.FeetSymbol, format.FeetInchesSeparator, inchesDec, format.InchesSymbol);
+            int places = UnitFormatMath.Validate(length, format, false);
+            BigInteger scale = BigInteger.Pow(10, places);
+            BigInteger rounded = UnitFormatMath.RoundMagnitude(length, scale);
+            BigInteger feet = BigInteger.DivRem(rounded, 12 * scale, out BigInteger inches);
+            string text = UnitFormatMath.Decimal(inches, places, format.DecimalSeparator,
+                format.SuppressLinearLeadingZeros, format.SuppressLinearTrailingZeros);
+            return Sign(length, rounded) + FeetAndInches(feet, text, inches.IsZero, format);
         }
 
-        /// <summary>
-        /// Converts a length value into its fractional string representation.
-        /// </summary>
-        /// <param name="length">The length value.</param>
-        /// <param name="format">The unit style format.</param>
-        /// <returns>A string that represents the length in fractional units.</returns>
+        /// <summary>Formats inches as feet and fractional inches, with normalized fractions and carries.</summary>
+        public static string ToArchitectural(double length, UnitStyleFormat format)
+        {
+            int places = ValidateFraction(length, format);
+            BigInteger denominator = BigInteger.One << places;
+            BigInteger rounded = UnitFormatMath.RoundMagnitude(length, denominator);
+            BigInteger feet = BigInteger.DivRem(rounded, 12 * denominator, out BigInteger inchUnits);
+            BigInteger whole = BigInteger.DivRem(inchUnits, denominator, out BigInteger numerator);
+            string inches = FractionText(whole, numerator, denominator, format);
+            string text = Sign(length, rounded) + FeetAndInches(feet, inches, inchUnits.IsZero, format);
+            return !numerator.IsZero && format.FractionType != FractionFormatType.NotStacked ? "\\A1;" + text : text;
+        }
+
+        /// <summary>Formats a length as a whole number and a reduced fraction.</summary>
         public static string ToFractional(double length, UnitStyleFormat format)
         {
-            if (format == null)
-            {
-                throw new ArgumentNullException(nameof(format));
-            }
-
-            int num = (int) length;
-            GetFraction(length, (short) Math.Pow(2, format.LinearDecimalPlaces), out int numerator, out int denominator);
-            if (numerator == 0)
-            {
-                return string.Format("{0}", (int) length);
-            }
-
-            string text = string.Empty;
-            switch (format.FractionType)
-            {
-                case FractionFormatType.Diagonal:
-                    text = "\\A1;" + num + "{\\H" + format.FractionHeightScale + "x;\\S" + numerator + "#" + denominator + ";}";
-                    break;
-                case FractionFormatType.Horizontal:
-                    text = "\\A1;" + num + "{\\H" + format.FractionHeightScale + "x;\\S" + numerator + "/" + denominator + ";}";
-                    break;
-                case FractionFormatType.NotStacked:
-                    text = num + " " + numerator + "/" + denominator;
-                    break;
-            }
-            return text;
+            int places = ValidateFraction(length, format);
+            BigInteger denominator = BigInteger.One << places;
+            BigInteger rounded = UnitFormatMath.RoundMagnitude(length, denominator);
+            BigInteger whole = BigInteger.DivRem(rounded, denominator, out BigInteger numerator);
+            string text = Sign(length, rounded) + FractionText(whole, numerator, denominator, format);
+            return !numerator.IsZero && format.FractionType != FractionFormatType.NotStacked ? "\\A1;" + text : text;
         }
 
-        #endregion
-
-        #region private methods
-
-        private static string DecimalNumberFormat(UnitStyleFormat format)
+        private static int ValidateFraction(double length, UnitStyleFormat format)
         {
-            char[] zeroes = new char[format.LinearDecimalPlaces + 2];
-            if (format.SuppressLinearLeadingZeros)
-            {
-                zeroes[0] = '#';
-            }
-            else
-            {
-                zeroes[0] = '0';
-            }
-
-            zeroes[1] = '.';
-
-            for (int i = 2; i < zeroes.Length; i++)
-            {
-                if (format.SuppressLinearTrailingZeros)
-                {
-                    zeroes[i] = '#';
-                }
-                else
-                {
-                    zeroes[i] = '0';
-                }
-            }
-            return new string(zeroes);
+            int places = UnitFormatMath.Validate(length, format, false);
+            if (format.FractionType != FractionFormatType.NotStacked && format.FractionType != FractionFormatType.Horizontal && format.FractionType != FractionFormatType.Diagonal)
+                throw new ArgumentOutOfRangeException(nameof(format), "Unknown fraction style.");
+            if (double.IsNaN(format.FractionHeightScale) || double.IsInfinity(format.FractionHeightScale) || format.FractionHeightScale <= 0)
+                throw new ArgumentOutOfRangeException(nameof(format), "The fraction height scale must be finite and positive.");
+            return places;
         }
 
-        private static void GetFraction(double number, int precision, out int numerator, out int denominator)
+        private static string Sign(double value, BigInteger rounded)
+        { return value < 0 && !rounded.IsZero ? "-" : string.Empty; }
+
+        private static string FractionText(BigInteger whole, BigInteger numerator, BigInteger denominator, UnitStyleFormat format)
         {
-            numerator = Convert.ToInt32((number - (int) number)*precision);
-            int commonFactor = GetGCD(numerator, precision);
-            if (commonFactor <= 0)
-            {
-                commonFactor = 1;
-            }
-            numerator = numerator/commonFactor;
-            denominator = precision/commonFactor;
+            string text = whole.ToString(CultureInfo.InvariantCulture);
+            if (numerator.IsZero) return text;
+            BigInteger gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
+            string n = (numerator / gcd).ToString(CultureInfo.InvariantCulture);
+            string d = (denominator / gcd).ToString(CultureInfo.InvariantCulture);
+            if (format.FractionType == FractionFormatType.NotStacked) return text + " " + n + "/" + d;
+            string separator = format.FractionType == FractionFormatType.Diagonal ? "#" : "/";
+            return text + "{\\H" + format.FractionHeightScale.ToString("R", CultureInfo.InvariantCulture)
+                + "x;\\S" + n + separator + d + ";}";
         }
 
-        private static int GetGCD(int number1, int number2)
+        private static string FeetAndInches(BigInteger feet, string inches, bool zeroInches, UnitStyleFormat format)
         {
-            int a = number1;
-            int b = number2;
-            while (b != 0)
-            {
-                int count = a%b;
-                a = b;
-                b = count;
-            }
-            return a;
+            if (feet.IsZero && format.SuppressZeroFeet) return inches + format.InchesSymbol;
+            string text = feet.ToString(CultureInfo.InvariantCulture) + format.FeetSymbol;
+            if (zeroInches && format.SuppressZeroInches) return text;
+            return text + format.FeetInchesSeparator + inches + format.InchesSymbol;
         }
-
-        #endregion
     }
 }
