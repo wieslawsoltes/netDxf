@@ -12,6 +12,7 @@ internal static partial class Program
         RegisterCellMapStructureBoundaryTests();
         RegisterValueFormatTests();
         RegisterCellStyleConsumerRemapTests();
+        RegisterCellStyleConsumerQualificationTests();
         RegisterFourthMixedModuleTests();
         RegisterStoredEnvelopeTests();
         RegisterDeclaredOwnershipTests();
