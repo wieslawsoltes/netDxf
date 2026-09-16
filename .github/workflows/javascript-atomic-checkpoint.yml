@@ -1,0 +1,56 @@
+name: Commit JavaScript atomic-save checkpoint
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['.github/js-atomic-checkpoint/**', '.github/workflows/javascript-atomic-checkpoint.yml']
+permissions:
+  contents: read
+jobs:
+  commit-source:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'codex/javascript-port'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Commit the exact tested JavaScript sources and recovery archive
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 <<'PY'
+          import hashlib, lzma, os, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          if git('rev-parse', 'HEAD^') != '6a4a1198066b03f41185fb439b1563966afed7a0':
+              raise RuntimeError('Unexpected checkpoint parent.')
+          parts = [pathlib.Path('.github/js-atomic-checkpoint/%02d.part' % i) for i in range(10)]
+          packed = b''.join(p.read_bytes() for p in parts)
+          if len(packed) != 81892 or hashlib.sha256(packed).hexdigest() != '54a301a5ea8f44b1a557b259f57b232b720ca58948d077b1fb130cf9268355d0':
+              raise RuntimeError('Checkpoint transport integrity failure.')
+          patch = lzma.decompress(packed)
+          if len(patch) != 161310 or hashlib.sha256(patch).hexdigest() != 'f27c6eecbbf5dd026acf8c6e612a7daded1cb794e0fc42558e6fe714f94cbcc2':
+              raise RuntimeError('Checkpoint patch integrity failure.')
+          filename = pathlib.Path(os.environ['RUNNER_TEMP']) / 'atomic-source.patch'
+          filename.write_bytes(patch)
+          git('apply', '--check', '--index', str(filename))
+          git('apply', '--index', '--whitespace=error-all', str(filename))
+          changed = git('diff', '--cached', '--name-only').splitlines()
+          if len(changed) != 28 or any(not p.startswith('javascript/') for p in changed):
+              raise RuntimeError('Unexpected checkpoint source paths.')
+          tree = git('write-tree')
+          if git('rev-parse', tree + ':javascript') != 'fc38b73b725cf2a714820245e165f89a1d39f7f9':
+              raise RuntimeError('JavaScript subtree differs from the locally verified checkpoint.')
+          git('rm', '--', *[str(p) for p in parts])
+          if git('ls-remote', 'origin', 'refs/heads/codex/javascript-port').split()[0] != os.environ['EXPECTED_HEAD']:
+              raise RuntimeError('Branch advanced concurrently; refusing to overwrite work.')
+          git('config', 'user.name', 'github-actions[bot]')
+          git('config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com')
+          git('commit', '-m', 'feat(js): port raw atomic filesystem saves and retain complete foundations recovery archive')
+          git('push', 'origin', 'HEAD:refs/heads/codex/javascript-port')
+          print('Committed source:', git('rev-parse', 'HEAD'))
+          print('Verified JavaScript tree:', git('rev-parse', 'HEAD:javascript'))
+          PY
