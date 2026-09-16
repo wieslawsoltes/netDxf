@@ -76,7 +76,7 @@ internal static partial class Program
         {
             var doc = new DxfDocument(); var prior = LayoutDefinition(doc);
             var one = LayoutDefinition(doc, (int)DxfCellProperty.TextHeight, 1); var two = LayoutDefinition(doc, (int)DxfCellProperty.TextHeight, 2);
-            var result = DxfCellStyleResolver.Resolve(prior, new[] { one, DxfCellStyleFormatDefinition.Empty(), two });
+            var result = DxfCellStyleResolver.Resolve(prior, new[] { one, new DxfCellStyleFormatDefinition(5), two });
             Equal(4d, result.Format.Content.TextHeight, "last selected layer wins"); Equal(3, result.PropertySources[DxfCellProperty.TextHeight], "layer provenance");
         });
         foreach (string fault in new[] { "unknown-property", "unknown-value-flag", "unknown-merge-flag", "unknown-grid-property", "unknown-edge", "negative-edge", "too-many-layers", "empty-base" })
@@ -89,7 +89,7 @@ internal static partial class Program
                 if (fault == "unknown-grid-property") next = LayoutDefinition(doc, borderProperties: 64);
                 if (fault == "unknown-edge") next = LayoutDefinition(doc, borderMask: 64);
                 if (fault == "negative-edge") next = LayoutDefinition(doc, borderMask: -1);
-                if (fault == "empty-base") prior = DxfCellStyleFormatDefinition.Empty();
+                if (fault == "empty-base") prior = new DxfCellStyleFormatDefinition(5);
                 bool rejected = false;
                 try { DxfCellStyleResolver.Resolve(prior, Enumerable.Repeat(next, fault == "too-many-layers" ? 65 : 1)); }
                 catch (Exception e) when (e is NotSupportedException || e is ArgumentException) { rejected = true; }
