@@ -1,0 +1,44 @@
+{
+  "implementation_commit": "1614047",
+  "review_method": "standalone independent public API metamorphic and transport probe",
+  "total_cases": 488,
+  "failures": 0,
+  "runs": [
+    {
+      "source": "edited-table-style-native-before-acad_table_simple.dxf-False.dxf",
+      "source_sha256": "A9A155982EB8C8BE42484D149EAD19F846628830054704219E05E62B9116C356",
+      "profile": "AutoCad2013",
+      "library_sha256": "25729BE4B4A856EE80413AC5A8921F24BF7D9396ABA532314745B8A78C618044",
+      "cases": 244,
+      "failures": 0,
+      "result_sha256": "745266c21fc281ec167e2ad5fb51f4013e2df0428658b180b7d049bf3ca842be",
+      "unique_case_names": 244
+    },
+    {
+      "source": "edited-table-style-native-before-sample_AC1018_ascii.dxf-False.dxf",
+      "source_sha256": "CEAE1D3E398F27A588B9727A4B7EA3B4CD149997F1B4FF082DAE89BD20BCDA73",
+      "profile": "AutoCad2004",
+      "library_sha256": "25729BE4B4A856EE80413AC5A8921F24BF7D9396ABA532314745B8A78C618044",
+      "cases": 244,
+      "failures": 0,
+      "result_sha256": "4c0d433d0baed820c62009d7cab232816ff3f9fd0c0833bb377ae14ef4eaf6b5",
+      "unique_case_names": 244
+    }
+  ],
+  "probe_source": "tools/table_style_edit_review/Program.cs",
+  "probe_sha256": "32f671e0b9d445b5d3bcd7571e18b06d2bab9196d0dad006c302b9401e3a7153",
+  "covered_invariants": [
+    "bulk editing equals sequential edits in three row orders",
+    "previous snapshots remain unchanged",
+    "STYLE reference identity inventory remains unchanged",
+    "IEEE-754 bit-exact finite scalar reload in text and binary",
+    "signed alignment/color scalar reload",
+    "decoded Unicode and literal escape text reload",
+    "caught reentry rejects outer edit at all four enumerator callback positions"
+  ],
+  "scope_limits": [
+    "No native AutoCAD execution",
+    "No table layout or cell-style regeneration",
+    "Source fixtures supplied by existing native-carrier conformance infrastructure; independent probe logic did not use implementation test helpers"
+  ]
+}

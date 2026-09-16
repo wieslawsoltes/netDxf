@@ -1,0 +1,49 @@
+{
+  "configuration": "release",
+  "passed": 16,
+  "failed": 0,
+  "tests": [
+    "eleventh-mixed/edit-graph/acad_table_simple.dxf/False/False",
+    "eleventh-mixed/atomic-retry/acad_table_simple.dxf/False/False",
+    "eleventh-mixed/edit-graph/acad_table_simple.dxf/False/True",
+    "eleventh-mixed/atomic-retry/acad_table_simple.dxf/False/True",
+    "eleventh-mixed/edit-graph/acad_table_simple.dxf/True/False",
+    "eleventh-mixed/atomic-retry/acad_table_simple.dxf/True/False",
+    "eleventh-mixed/edit-graph/acad_table_simple.dxf/True/True",
+    "eleventh-mixed/atomic-retry/acad_table_simple.dxf/True/True",
+    "eleventh-mixed/edit-graph/acad_table_with_blk_ref.dxf/False/False",
+    "eleventh-mixed/atomic-retry/acad_table_with_blk_ref.dxf/False/False",
+    "eleventh-mixed/edit-graph/acad_table_with_blk_ref.dxf/False/True",
+    "eleventh-mixed/atomic-retry/acad_table_with_blk_ref.dxf/False/True",
+    "eleventh-mixed/edit-graph/acad_table_with_blk_ref.dxf/True/False",
+    "eleventh-mixed/atomic-retry/acad_table_with_blk_ref.dxf/True/False",
+    "eleventh-mixed/edit-graph/acad_table_with_blk_ref.dxf/True/True",
+    "eleventh-mixed/atomic-retry/acad_table_with_blk_ref.dxf/True/True"
+  ],
+  "independent_reader": "ezdxf 1.4.4",
+  "independent": {
+    "actual_output_negative_controls": 60,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "edited_native_graphs": 8,
+    "independent_curve_samples": 256,
+    "maximum_world_error": 9.607118501968132e-15,
+    "native_cad_execution": false,
+    "outputs": 24
+  },
+  "source_dependencies": {
+    "integration": "68910e0",
+    "hatch": [
+      "fbdf8b6",
+      "6c2a607"
+    ],
+    "tablestyle": "1614047"
+  },
+  "fixture_augmentation": "Native TABLE graph with explicit cloned STYLE binding and authored cross-module references.",
+  "verifier_sha256": "14688b5de71670ad3a21206f287109d423b94dccb5973f959334daaa58e362f4",
+  "review_regressions": [
+    "complete HATCH knots/weights/rational flag/fit points/tangents",
+    "complete requested TABLESTYLE header",
+    "ordered actual retained-child manager XData and reload guard"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "run_id": 35029062734,
+  "commit": "ec085f403eb56f361f8ba05574b2bb2f94a24e1f",
+  "all_jobs_success": true,
+  "jobs": [
+    {
+      "id": 104583005328,
+      "name": "conformance (windows-latest, Debug)",
+      "status": "completed",
+      "conclusion": "success",
+      "conformance_passed": 34836,
+      "conformance_failed": 0
+    },
+    {
+      "id": 104583005578,
+      "name": "conformance (windows-latest, Release)",
+      "status": "completed",
+      "conclusion": "success",
+      "conformance_passed": 34836,
+      "conformance_failed": 0
+    },
+    {
+      "id": 104583005607,
+      "name": "conformance (ubuntu-latest, Debug)",
+      "status": "completed",
+      "conclusion": "success",
+      "conformance_passed": 34836,
+      "conformance_failed": 0
+    },
+    {
+      "id": 104583005784,
+      "name": "conformance (ubuntu-latest, Release)",
+      "status": "completed",
+      "conclusion": "success",
+      "conformance_passed": 34836,
+      "conformance_failed": 0
+    }
+  ],
+  "linux_release_independent_verifiers": 127,
+  "linux_debug_source_files_verified": 2986,
+  "artifacts": [
+    {
+      "id": 10421065699,
+      "name": "dxf-conformance-windows-latest-Release",
+      "size": 30363811,
+      "digest": "sha256:285909614256e0815625332169bc2ac0bd429f6824d78885fc7ef2a895ec7e8b"
+    },
+    {
+      "id": 10420349401,
+      "name": "dxf-conformance-ubuntu-latest-Debug",
+      "size": 56839162,
+      "digest": "sha256:1a0d3c559c70269d7b43b153645c0c44e400d57b1a234acba1e1bfa2c4a19411"
+    },
+    {
+      "id": 10420084083,
+      "name": "dxf-conformance-ubuntu-latest-Release",
+      "size": 29871306,
+      "digest": "sha256:00f1fb0c708cad00e47604318f21280929c9ac28dde304731d3cd2cd39a23c5f"
+    }
+  ]
+}

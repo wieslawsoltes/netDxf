@@ -10,11 +10,12 @@ namespace netDxf.Objects
     /// <summary>One immutable stored CELLSTYLEMAP entry.</summary>
     public sealed class DxfStoredCellStyleMapEntry
     {
-        internal DxfStoredCellStyleMapEntry(int id, int type, string name, IList<DxfTag> format)
+        internal DxfStoredCellStyleMapEntry(int id, int type, string name, IList<DxfTag> format, int nameIndex)
         {
-            this.Id = id; this.StoredType = type; this.Name = name;
+            this.Id = id; this.StoredType = type; this.Name = name; this.NameIndex = nameIndex;
             this.FormatPayload = new List<DxfTag>(format).AsReadOnly();
         }
+        internal int NameIndex { get; }
         /// <summary>Gets the stored group-90 entry identifier.</summary>
         public int Id { get; }
         /// <summary>Gets the uninterpreted group-91 entry type.</summary>
@@ -29,10 +30,10 @@ namespace netDxf.Objects
     /// <summary>A loaded CELLSTYLEMAP with immutable ordered entries and exact source dependencies.</summary>
     /// <remarks>
     /// Entry identifiers, types, names and formatting packets remain in their source document and
-    /// DXF version. Editing, cross-document cloning, erasure and style regeneration require the
+    /// DXF version. Entry names support explicit replacement; formatting changes, cross-document cloning, erasure and style regeneration require the
     /// complete application schema. Common metadata and XData retain their ordinary interfaces.
     /// </remarks>
-    public sealed class DxfStoredCellStyleMap : DxfDatabaseObject
+    public sealed partial class DxfStoredCellStyleMap : DxfDatabaseObject
     {
         internal const int MaximumPayloadTags = 1048576;
         internal static readonly string[] FrameNames = { "TABLEFORMAT", "CONTENTFORMAT", "CELLMARGIN", "GRIDFORMAT", "CELLSTYLE" };
@@ -81,9 +82,10 @@ namespace netDxf.Objects
                 Marker(tags, ref index, 1, "CELLSTYLE_BEGIN");
                 int id = (int)Read(tags, ref index, 90).Value;
                 int type = (int)Read(tags, ref index, 91).Value;
+                int nameIndex = index;
                 string name = decode((string)Read(tags, ref index, 300).Value);
                 Marker(tags, ref index, 309, "CELLSTYLE_END");
-                entries.Add(new DxfStoredCellStyleMapEntry(id, type, name, format));
+                entries.Add(new DxfStoredCellStyleMapEntry(id, type, name, format, nameIndex));
             }
             if (index != tags.Count) throw new FormatException("CELLSTYLEMAP contains unexpected data after its counted entries.");
             this.Entries = entries.AsReadOnly();
@@ -91,9 +93,9 @@ namespace netDxf.Objects
         /// <summary>Gets the source DXF version. Conversion to another version is not supported.</summary>
         public DxfVersion SourceVersion { get; }
         /// <summary>Gets the complete immutable subclass payload, excluding common metadata and XData.</summary>
-        public IReadOnlyList<DxfTag> Payload { get; }
+        public IReadOnlyList<DxfTag> Payload { get; private set; }
         /// <summary>Gets entries in stored order without imposing identifier uniqueness or fixed roles.</summary>
-        public IReadOnlyList<DxfStoredCellStyleMapEntry> Entries { get; }
+        public IReadOnlyList<DxfStoredCellStyleMapEntry> Entries { get; private set; }
         /// <summary>Gets exact source identities for nonzero semantic handles, including repetitions.</summary>
         public IReadOnlyList<DxfObject> References { get { return this.references.AsReadOnly(); } }
         internal override IEnumerable<DxfObject> DatabaseReferences

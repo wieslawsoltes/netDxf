@@ -221,9 +221,11 @@ namespace netDxf.Entities
             get { return this.smoothType; }
             set
             {
+                if (this.HasStoredRecords && value != PolylineSmoothType.NoSmooth)
+                    throw new NotSupportedException("Smoothing retained legacy 2D records requires complete schema regeneration.");
                 if (value == PolylineSmoothType.NoSmooth)
                 {
-                    this.CodeName = DxfObjectCode.LwPolyline;
+                    this.CodeName = this.HasStoredRecords ? DxfObjectCode.Polyline : DxfObjectCode.LwPolyline;
                     this.flags &= ~PolylineTypeFlags.SplineFit;
                 }
                 else
@@ -257,12 +259,14 @@ namespace netDxf.Entities
         /// </summary>
         public void Reverse()
         {
+            this.ValidateStoredRecordGeometry();
             if (this.vertexes.Count < 2)
             {
                 return;
             }
 
             this.vertexes.Reverse();
+            this.ReverseStoredRecords();
 
             double firstBulge = this.vertexes[0].Bulge;
             double? firstStartWidth = this.vertexes[0].StartWidthOverride;
@@ -294,6 +298,7 @@ namespace netDxf.Entities
         public void SetConstantWidth(double width)
         {
             ValidateWidth(width, nameof(width));
+            this.ValidateStoredRecordGeometry();
             this.ValidateVertexFidelity();
             // Preserve this method's established per-vertex editing behavior.
             // Clear an explicit group 43 so it cannot mask the requested widths.
@@ -634,6 +639,7 @@ namespace netDxf.Entities
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
+            if (this.HasStoredRecords) { this.TransformStoredRecords(transformation, translation); return; }
             double widthScale = this.GetWidthTransformScale(transformation);
             double newElevation = this.Elevation;
             Vector3 newNormal = transformation * this.Normal;
@@ -669,6 +675,7 @@ namespace netDxf.Entities
         /// <returns>A new Polyline2D that is a copy of this instance.</returns>
         public override object Clone()
         {
+            this.RejectStoredRecordClone();
             Polyline2D entity = new Polyline2D
             {
                 //EntityObject properties
@@ -698,6 +705,7 @@ namespace netDxf.Entities
                 entity.XData.Add((XData) data.Clone());
             }
 
+            this.CopyStoredRecordsTo(entity);
             this.CopyCommonDataTo(entity);
             return entity;
         }

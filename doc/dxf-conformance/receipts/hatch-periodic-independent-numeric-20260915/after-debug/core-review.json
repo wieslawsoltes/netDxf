@@ -1,0 +1,109 @@
+{
+  "cases": 365,
+  "samples": 4609,
+  "constant_coordinates_checked": 1938,
+  "issues": [],
+  "rejections": [
+    {
+      "name": "knots-scaled-1-5e-324",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-1-1e+16-9",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-1-1e+308-9",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-1--1e+16-9",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-1--1e+308-9",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-scaled-2-5e-324",
+      "error": "NotSupportedException: Periodic SPLINE conversion/evaluation requires strictly increasing knots."
+    },
+    {
+      "name": "knots-offset-2-1e+16-11",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-2-1e+308-11",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-2--1e+16-11",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-2--1e+308-11",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-scaled-3-5e-324",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-3-1e+16-13",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-3-1e+308-13",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-3--1e+16-13",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-3--1e+308-13",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-scaled-5-5e-324",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-5-1e+16-17",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-5-1e+308-17",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-5--1e+16-17",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-5--1e+308-17",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-scaled-10-5e-324",
+      "error": "NotSupportedException: Periodic SPLINE conversion/evaluation requires strictly increasing knots."
+    },
+    {
+      "name": "knots-offset-10-1e+16-27",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-10-1e+308-27",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-10--1e+16-27",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    },
+    {
+      "name": "knots-offset-10--1e+308-27",
+      "error": "ArgumentException: The requested periodic SPLINE sampling parameters cannot be represented."
+    }
+  ],
+  "reverse_issues": []
+}

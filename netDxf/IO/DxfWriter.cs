@@ -91,6 +91,7 @@ namespace netDxf.IO
             this.ValidateStoredPolylineRecords();
             this.ValidateStoredPolygonMeshRecords();
             this.ValidateStoredPolyfaceMeshRecords();
+            this.ValidateStoredPolyline2DRecords();
             this.ValidateStoredDimensionHeaders();
             this.ValidateTextStyleStrings();
             this.ValidateAcisEntities();
@@ -1872,7 +1873,7 @@ namespace netDxf.IO
                 return;
             }
 
-            if (entity.Type == EntityType.Polyline2D && ((Polyline2D)entity).Vertexes.Count < 2)
+            if (entity.Type == EntityType.Polyline2D && ((Polyline2D)entity).Vertexes.Count < 2 && !((Polyline2D)entity).HasStoredRecords)
             {
                 Debug.Assert(false, "Polyline2D entities with less than two vertexes are not allowed." + "Entity handle: " + entity.Handle);
                 return;
@@ -1927,7 +1928,8 @@ namespace netDxf.IO
                     break;
                 case EntityType.Polyline2D:
                     Polyline2D polyline2D = (Polyline2D) entity;
-                    if (polyline2D.SmoothType == PolylineSmoothType.NoSmooth)
+                    if (polyline2D.HasStoredRecords) this.WriteStoredPolyline2DRecords(polyline2D);
+                    else if (polyline2D.SmoothType == PolylineSmoothType.NoSmooth)
                     {
                         this.WriteLwPolyline(polyline2D);
                     }

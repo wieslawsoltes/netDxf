@@ -1,0 +1,210 @@
+{
+  "production_commit": "3ded8912b17eaea2177a7db5020e2b9933c6a693",
+  "qualified_test_commit": "3ded8912b17eaea2177a7db5020e2b9933c6a693",
+  "qualified_source_tree": "d3a6e2052dfaa69a78ce3d779686a7e9d8ebd6df",
+  "remote_checkpoint": "ae754cb464fa99a768adffdb13674097ef770ed7",
+  "production_file_count": 20,
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "library_sha256": "19389d1b53964fbffd2fd9872dd33fb80bfe6783b0e496cfcbd0be5eae66d811",
+      "test_groups": [
+        {
+          "group": "legacy",
+          "passed": 280,
+          "failed": 0,
+          "result_sha256": "caa255d6ccfaf3ec47919fe685bdda6c64762d4bf55e5616c7b20bbc2ca8b261",
+          "artifact_dxf_count": 100
+        },
+        {
+          "group": "siblings",
+          "passed": 2578,
+          "failed": 0,
+          "result_sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+          "artifact_dxf_count": 624
+        },
+        {
+          "group": "lw",
+          "passed": 328,
+          "failed": 0,
+          "result_sha256": "6861d00bd252a6e2803dcba5d0a004465d3ab6365fcb08d12a69076f2f068aef",
+          "artifact_dxf_count": 120
+        }
+      ],
+      "gates": [
+        {
+          "gate": "tools/verify_polyline2d_records.py",
+          "positive_outputs": 100,
+          "corruption_controls": 72,
+          "transcript_sha256": "ae39893e3ee8a8bba22708ad56d211858864aba11b30e5aa5867e20b8efbe307"
+        },
+        {
+          "gate": "tools/verify_polyface_records.py",
+          "positive_outputs": 142,
+          "corruption_controls": 240,
+          "transcript_sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac"
+        },
+        {
+          "gate": "tools/verify_polyface_grammar.py",
+          "positive_outputs": 96,
+          "corruption_controls": 576,
+          "transcript_sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674"
+        },
+        {
+          "gate": "tools/verify_polygonmesh_records.py",
+          "positive_outputs": 70,
+          "corruption_controls": 8,
+          "transcript_sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3"
+        },
+        {
+          "gate": "tools/verify_polygonmesh_cardinality.py",
+          "positive_outputs": 116,
+          "corruption_controls": 12,
+          "transcript_sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba"
+        },
+        {
+          "gate": "tools/verify_polyline3d_records.py",
+          "positive_outputs": 90,
+          "corruption_controls": 6,
+          "transcript_sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b"
+        },
+        {
+          "gate": "tools/verify_polyline_topology.py",
+          "positive_outputs": 98,
+          "corruption_controls": 8,
+          "transcript_sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463"
+        },
+        {
+          "gate": "tools/verify_lwpolyline_fidelity.py",
+          "positive_outputs": 120,
+          "corruption_controls": 0,
+          "transcript_sha256": "092578438fae96a628969cf748e5fdd6f034fbb1da8277e82e3fa5551291c374"
+        }
+      ],
+      "existing_cs1591_warning_count": 561,
+      "passed_cases": 3186,
+      "positive_outputs": 832,
+      "corruption_controls": 922,
+      "lw_reversed_cross_sections": 2448
+    },
+    {
+      "configuration": "Release",
+      "library_sha256": "47276bb19f744f04b9a6cf87a1effffb8e7e9b98d95a906b355cf865f812702e",
+      "test_groups": [
+        {
+          "group": "legacy",
+          "passed": 280,
+          "failed": 0,
+          "result_sha256": "caa255d6ccfaf3ec47919fe685bdda6c64762d4bf55e5616c7b20bbc2ca8b261",
+          "artifact_dxf_count": 100
+        },
+        {
+          "group": "siblings",
+          "passed": 2578,
+          "failed": 0,
+          "result_sha256": "65e6bf951a83c1545a2a344904f393d3fcffbebc965ecfc84b4422b060191e04",
+          "artifact_dxf_count": 624
+        },
+        {
+          "group": "lw",
+          "passed": 328,
+          "failed": 0,
+          "result_sha256": "6861d00bd252a6e2803dcba5d0a004465d3ab6365fcb08d12a69076f2f068aef",
+          "artifact_dxf_count": 120
+        }
+      ],
+      "gates": [
+        {
+          "gate": "tools/verify_polyline2d_records.py",
+          "positive_outputs": 100,
+          "corruption_controls": 72,
+          "transcript_sha256": "ae39893e3ee8a8bba22708ad56d211858864aba11b30e5aa5867e20b8efbe307"
+        },
+        {
+          "gate": "tools/verify_polyface_records.py",
+          "positive_outputs": 142,
+          "corruption_controls": 240,
+          "transcript_sha256": "f8fa82fcde2ad96478f868e61b159c3d17940b869997c94dffa39ea9c6bf3cac"
+        },
+        {
+          "gate": "tools/verify_polyface_grammar.py",
+          "positive_outputs": 96,
+          "corruption_controls": 576,
+          "transcript_sha256": "843fda397ef80293c8a4d8c2bed6ab2bb3f132f076ecdc4d26302f3e65e51674"
+        },
+        {
+          "gate": "tools/verify_polygonmesh_records.py",
+          "positive_outputs": 70,
+          "corruption_controls": 8,
+          "transcript_sha256": "7349ac2058cb7fd3731c361940fe8c698d5bce24423e8bca446528a3327581e3"
+        },
+        {
+          "gate": "tools/verify_polygonmesh_cardinality.py",
+          "positive_outputs": 116,
+          "corruption_controls": 12,
+          "transcript_sha256": "88746ce5e18227aa25a293f1ae096aaf04cb7e94ae9220f77c6293091ad6c3ba"
+        },
+        {
+          "gate": "tools/verify_polyline3d_records.py",
+          "positive_outputs": 90,
+          "corruption_controls": 6,
+          "transcript_sha256": "053765df5fd15979e78bbe5bf532bd679add2ff1c91414439db74ed28e4e337b"
+        },
+        {
+          "gate": "tools/verify_polyline_topology.py",
+          "positive_outputs": 98,
+          "corruption_controls": 8,
+          "transcript_sha256": "4abd8f9e587b2c1947751783bfa5f4024d24fc53afa3b508d2e527f05fbcd463"
+        },
+        {
+          "gate": "tools/verify_lwpolyline_fidelity.py",
+          "positive_outputs": 120,
+          "corruption_controls": 0,
+          "transcript_sha256": "092578438fae96a628969cf748e5fdd6f034fbb1da8277e82e3fa5551291c374"
+        }
+      ],
+      "existing_cs1591_warning_count": 561,
+      "passed_cases": 3186,
+      "positive_outputs": 832,
+      "corruption_controls": 922,
+      "lw_reversed_cross_sections": 2448
+    }
+  ],
+  "source_evidence": {
+    "native": "two genuine R2000 chains, eight complete packets, declared carrier parent-owner mapping",
+    "producer": "twelve unchanged ezdxf1.4.4 files, six profiles x both transports",
+    "native_manifest": "tests/fixtures/polyline2d-records/native-manifest.json",
+    "producer_manifest": "tests/fixtures/polyline2d-records/manifest.json"
+  },
+  "same_harness_sparse_header_proof": {
+    "before": "header-before/results.json",
+    "after": "header-after/results.json",
+    "before_elevation": 0,
+    "after_elevation": 7,
+    "requested_elevation": 7
+  },
+  "independent_review": {
+    "status": "Final source review complete; no remaining production defect",
+    "source_commit": "3ded8912b17eaea2177a7db5020e2b9933c6a693",
+    "receipt": "independent/review.json",
+    "receipt_sha256": "64cb372d5f73e82e6ccff9f7fa5d911c57ed53db1479d5336cb539bf614a24d0",
+    "passed_cases_per_configuration": 220,
+    "audited_outputs_per_configuration": 372,
+    "audit_errors": 0,
+    "audit_repairs": 0,
+    "audit_removed_entities": 0,
+    "same_compiled_harness_binary_sha256": "ce5a56de3dbd1f73f1a22a440b020c8e53a58f4eeb16a5e96871e6349048677a",
+    "baseline_source_commit": "48919492bb3fbec4140251884208aa2fa56c68c0",
+    "baseline_passed_cases": 112,
+    "baseline_failed_cases": 108,
+    "baseline_failure_breakdown": {
+      "previously_unsupported_empty_singleton": 24,
+      "previously_accepted_partial_dummy_point": 72,
+      "incomplete_edited_omitted_point": 12
+    },
+    "archived_actual_outputs": 972,
+    "previous_candidate": "4891949",
+    "previous_passed_cases": 112,
+    "previous_library_sha256": "a9201845f8e4f9e572d62096040bf65511b2b208cb5818d312e35ebc01ab4459"
+  }
+}

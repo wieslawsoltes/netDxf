@@ -1,0 +1,1 @@
+{"passed": true, "schema_outputs": 10, "native_outputs": 10, "native_changed_names": 30, "source_carrier_records": 316, "retained_carrier_appearances": 632, "actual_output_corruption_controls": 254, "audit_errors": 0, "audit_repairs": 0, "audit_removed_entities": 0, "ezdxf": "1.4.4"}

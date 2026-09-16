@@ -16,7 +16,8 @@ namespace netDxf.IO
             {
                 int count = item is PolygonMeshRecord mesh ? mesh.TopologyTagCount()
                     : item is Polyline3DRecord polylineRecord ? polylineRecord.TopologyTagCount()
-                    : item is PolyfaceMeshRecord polyfaceRecord ? polyfaceRecord.TopologyTagCount() : 0;
+                    : item is PolyfaceMeshRecord polyfaceRecord ? polyfaceRecord.TopologyTagCount()
+                    : item is Polyline2DRecord legacyRecord ? legacyRecord.TopologyTagCount() : 0;
                 if (count > 4096)
                     throw new NotSupportedException("A retained VERTEX/SEQEND exceeds the 4096-tag packet admission budget.");
                 total += count;

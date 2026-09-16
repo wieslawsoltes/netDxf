@@ -24,6 +24,7 @@ namespace netDxf
                     references=opaqueStudy.Tags.Where(DxfObjectDatabase.IsReference).Select(tag=>this.StoredTableHandleTarget((string)tag.Value)).Where(value=>value!=null);
                 else if(item is PolygonMeshRecord meshRecord)references=meshRecord.References;
                 else if(item is PolyfaceMeshRecord polyfaceRecord)references=polyfaceRecord.References;
+                else if(item is Polyline2DRecord legacyRecord)references=legacyRecord.References;
                 else if(item is DxfStoredField field)references=field.References;
                 else if(item is StoredTable table)references=table.References;
                 else if(item is Section section)references=section.GeometrySettings==null?new DxfObject[0]:new DxfObject[]{section.GeometrySettings};

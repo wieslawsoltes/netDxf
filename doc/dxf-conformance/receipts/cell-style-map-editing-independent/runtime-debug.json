@@ -1,0 +1,128 @@
+{
+  "passed": true,
+  "cases": 30,
+  "failures": 0,
+  "library_sha256": "7a19b03048da13494a5a5d311f35e8795040aa19cc212fcbeed08e77a3dd785d",
+  "results": [
+    {
+      "name": "reentry/2004/enumerator",
+      "passed": true
+    },
+    {
+      "name": "version/2004/enumerator",
+      "passed": true
+    },
+    {
+      "name": "reentry/2004/move",
+      "passed": true
+    },
+    {
+      "name": "version/2004/move",
+      "passed": true
+    },
+    {
+      "name": "reentry/2004/current",
+      "passed": true
+    },
+    {
+      "name": "version/2004/current",
+      "passed": true
+    },
+    {
+      "name": "reentry/2004/dispose",
+      "passed": true
+    },
+    {
+      "name": "version/2004/dispose",
+      "passed": true
+    },
+    {
+      "name": "ownership/2004",
+      "passed": true
+    },
+    {
+      "name": "reactor/2004",
+      "passed": true
+    },
+    {
+      "name": "external-side-effect/2004",
+      "passed": true
+    },
+    {
+      "name": "escapes/2004",
+      "passed": true
+    },
+    {
+      "name": "exact-escaped-limit/2004",
+      "passed": true
+    },
+    {
+      "name": "exact-plain-limit/2004",
+      "passed": true
+    },
+    {
+      "name": "line-breaks/2004",
+      "passed": true
+    },
+    {
+      "name": "reentry/2018/enumerator",
+      "passed": true
+    },
+    {
+      "name": "version/2018/enumerator",
+      "passed": true
+    },
+    {
+      "name": "reentry/2018/move",
+      "passed": true
+    },
+    {
+      "name": "version/2018/move",
+      "passed": true
+    },
+    {
+      "name": "reentry/2018/current",
+      "passed": true
+    },
+    {
+      "name": "version/2018/current",
+      "passed": true
+    },
+    {
+      "name": "reentry/2018/dispose",
+      "passed": true
+    },
+    {
+      "name": "version/2018/dispose",
+      "passed": true
+    },
+    {
+      "name": "ownership/2018",
+      "passed": true
+    },
+    {
+      "name": "reactor/2018",
+      "passed": true
+    },
+    {
+      "name": "external-side-effect/2018",
+      "passed": true
+    },
+    {
+      "name": "escapes/2018",
+      "passed": true
+    },
+    {
+      "name": "exact-escaped-limit/2018",
+      "passed": true
+    },
+    {
+      "name": "exact-plain-limit/2018",
+      "passed": true
+    },
+    {
+      "name": "line-breaks/2018",
+      "passed": true
+    }
+  ]
+}

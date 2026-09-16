@@ -1,0 +1,105 @@
+{
+  "production_commit": "3ded8912b17eaea2177a7db5020e2b9933c6a693",
+  "files": [
+    {
+      "path": "netDxf/DxfDocument.MetadataReferences.cs",
+      "sha256": "8470ef8a07b3d576b9b4d5b7820dbe65772b1328a3669bd9173c51066be5904a",
+      "bytes": 4663
+    },
+    {
+      "path": "netDxf/DxfDocument.MultiLeader.cs",
+      "sha256": "ac645367ab6e561f651ec92adaec34a2ace68031c5b6d11ebd6e2550ad7f43e5",
+      "bytes": 2639
+    },
+    {
+      "path": "netDxf/DxfDocument.Polyline2DRecords.cs",
+      "sha256": "de1a413960d4c006d8959da4b6dfef78c9155ab5d48a6b81a43b029503f7a19f",
+      "bytes": 1395
+    },
+    {
+      "path": "netDxf/DxfDocument.PolylineRecords.cs",
+      "sha256": "896d4f2aba999f8725381f08add5090a6318039ea82b8e93afa77ff3545169a9",
+      "bytes": 7334
+    },
+    {
+      "path": "netDxf/DxfDocument.PolylineTopology.cs",
+      "sha256": "6e7739f56a828ae00fcd4407ba02f2ccc7026e7446699d9a9aac52cb94bb120b",
+      "bytes": 5388
+    },
+    {
+      "path": "netDxf/DxfDocument.StoredTable.cs",
+      "sha256": "3aec347a9c29a7fcc9717239326311ded76e5fd918c5dbf4a78d6c48f72e8682",
+      "bytes": 6661
+    },
+    {
+      "path": "netDxf/DxfDocument.cs",
+      "sha256": "bc4d24ec20e5ec21cb7b23b010681ddc68cdc37cb5d12238e2b930e6d2fdc360",
+      "bytes": 84952
+    },
+    {
+      "path": "netDxf/Entities/Polyline2D.Fidelity.cs",
+      "sha256": "9a155c4d5886506b6a39d099a464bfb71e2341cec713f4c7e9f090dd6ebd5126",
+      "bytes": 6155
+    },
+    {
+      "path": "netDxf/Entities/Polyline2D.StoredRecords.cs",
+      "sha256": "c342a56817fa32e91776867c6cadfd2d3b7bf1c88cbdc26c554d1712617a3a2a",
+      "bytes": 12432
+    },
+    {
+      "path": "netDxf/Entities/Polyline2D.cs",
+      "sha256": "b56b2c807beb19e82fe9588862b86b8f5bc6a2f383c932240804158a2633055a",
+      "bytes": 31007
+    },
+    {
+      "path": "netDxf/Entities/Polyline2DRecord.cs",
+      "sha256": "5a81c811511689cae34a19a22f84c45e77ed9ccf05d5126cb1bd164db5a2474f",
+      "bytes": 10267
+    },
+    {
+      "path": "netDxf/Entities/Polyline3D.StoredRecords.cs",
+      "sha256": "4231e1dc1b862632d667e65bcd3f5e9cac819abf50021557ffe6afe48542eab4",
+      "bytes": 6360
+    },
+    {
+      "path": "netDxf/IO/DxfLwPolyline.cs",
+      "sha256": "bf4bc3ddb8f44d23332a90a082322a768aad10d2f015e477d943f08944840ab8",
+      "bytes": 8347
+    },
+    {
+      "path": "netDxf/IO/DxfReader.Polyline2DRecords.cs",
+      "sha256": "36447686a475c81417716b45a81127a60e87a63ee93c2113aca70900e908a5a4",
+      "bytes": 18690
+    },
+    {
+      "path": "netDxf/IO/DxfReader.cs",
+      "sha256": "0d16bf5e4b8256df216af5dbb8721a1c0d41c6acd2d4929b8143391a765c809c",
+      "bytes": 510874
+    },
+    {
+      "path": "netDxf/IO/DxfWriter.PolygonMeshRecords.cs",
+      "sha256": "d5cc5697812ad44ad572663a56e89a9b7cd375b67f00879a7ecba2d7f8465af9",
+      "bytes": 5641
+    },
+    {
+      "path": "netDxf/IO/DxfWriter.Polyline2DRecords.cs",
+      "sha256": "9babd29e454c66afc19affddd77a5e379943e6b1112ea8909b8f95aa47840a53",
+      "bytes": 6376
+    },
+    {
+      "path": "netDxf/IO/DxfWriter.cs",
+      "sha256": "d2335c377edae54d2a9bb4e5eea3b0adc501ba34b8dd2243335a829eac95d510",
+      "bytes": 241766
+    },
+    {
+      "path": "netDxf/Objects/DxfObjectDatabase.Erase.cs",
+      "sha256": "c7113ea82c8fb654cc8528550fc420670eb5a57996856bbf32d989fc0c6f03fe",
+      "bytes": 13739
+    },
+    {
+      "path": "netDxf/Objects/DxfObjectDatabase.Section.cs",
+      "sha256": "97ee285fa14287d5201e7be3e9be272c1eeeda7c0df4fe558faf2876f1adea79",
+      "bytes": 18602
+    }
+  ]
+}

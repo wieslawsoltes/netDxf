@@ -1,0 +1,333 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "source": "https://github.com/mozman/ezdxf/tree/v1.4.4",
+  "unchanged_producer_bytes": true,
+  "native_application_execution": false,
+  "owner_form": "VERTEX -> actual containing BLOCK_RECORD; SEQEND -> POLYLINE",
+  "fixtures": [
+    {
+      "file": "producer-R2000-ascii.dxf",
+      "year": 2000,
+      "binary": false,
+      "sha256": "7ccfac230d2df55b8f25e600fe2a836f4b5df846de4e8c69bbfea9b23ca9d94e",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2000-binary.dxf",
+      "year": 2000,
+      "binary": true,
+      "sha256": "0c261f23fcf4793d8fc5afbecba0f5e63b1c00cad4b8eb77563c5b2b1c911f97",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2004-ascii.dxf",
+      "year": 2004,
+      "binary": false,
+      "sha256": "6b74c0ed0c291aec6fdd7e3379bb035f12e3e36b5fc4db8ac210e76d9b2aef5a",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2004-binary.dxf",
+      "year": 2004,
+      "binary": true,
+      "sha256": "b693a2717ca1f471be056a2cdd8bf28a694a8ae6d25090d791852381f61d51eb",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2007-ascii.dxf",
+      "year": 2007,
+      "binary": false,
+      "sha256": "e08df7f6a661c889edbd0cd2c025521689b0b649b9234589ea2ed2af529f0163",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2007-binary.dxf",
+      "year": 2007,
+      "binary": true,
+      "sha256": "80988862ee3942e0351d2a5142558595e4f5ff187929e9f4d3e701ecc29ebece",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2010-ascii.dxf",
+      "year": 2010,
+      "binary": false,
+      "sha256": "b1a7cd692ff1bde03a8d76aca2497d17552466115f15d0059fe4c3ab95000322",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2010-binary.dxf",
+      "year": 2010,
+      "binary": true,
+      "sha256": "d590b8938113ddc79fab4bdc7fd84957da77a844b15d28cfcf5f34d3863f8be9",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2013-ascii.dxf",
+      "year": 2013,
+      "binary": false,
+      "sha256": "6935ea757ff41ba8e16f34c71257ee5bba80e8c52332d5efb1f4f30d16f79a9e",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2013-binary.dxf",
+      "year": 2013,
+      "binary": true,
+      "sha256": "6b79648717fed086eba82fa858fdd294ef7e6a995e2650872d4682cb4fdd3f89",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2018-ascii.dxf",
+      "year": 2018,
+      "binary": false,
+      "sha256": "b77327926e84818f19c91286cdba151af03f0aa6eadf78e2d76a6be1e327ea34",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    },
+    {
+      "file": "producer-R2018-binary.dxf",
+      "year": 2018,
+      "binary": true,
+      "sha256": "45ff724523df71db2ace803cda16cccedbe959ea2d4939016289f4fa4d8065fb",
+      "handles": {
+        "polyline": "33",
+        "vertices": [
+          "35",
+          "36",
+          "37",
+          "38"
+        ],
+        "seqend": "34",
+        "vertex_xrecord": "3A",
+        "seqend_xrecord": "3C",
+        "block_record": "17",
+        "plain_polyline": "3D",
+        "plain_vertices": [
+          "3F",
+          "40",
+          "41",
+          "42"
+        ],
+        "plain_seqend": "3E"
+      }
+    }
+  ]
+}

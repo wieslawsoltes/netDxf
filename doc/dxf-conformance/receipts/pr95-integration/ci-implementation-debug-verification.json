@@ -1,0 +1,12 @@
+{
+  "artifact_id": 10420349401,
+  "zip_sha256": "1a0d3c559c70269d7b43b153645c0c44e400d57b1a234acba1e1bfa2c4a19411",
+  "commit": "ec085f403eb56f361f8ba05574b2bb2f94a24e1f",
+  "source_tree": "cde35e08b2dbce2d4f7ff0c665e20301f9c9a52a",
+  "source_files": 2986,
+  "source_blob_hashes_match": true,
+  "unique_passing_cases": 34836,
+  "results_by_name_match_local": true,
+  "case_execution_order_matches_local": false,
+  "dxf_files": 7363
+}

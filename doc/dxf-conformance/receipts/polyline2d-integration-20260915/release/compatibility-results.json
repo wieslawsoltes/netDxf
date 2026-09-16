@@ -1,0 +1,3672 @@
+[
+  {
+    "name": "version-compatibility/writer/color/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/color/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shadow/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mesh/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/helix/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/light/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/section/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/vertex-id/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/background/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/frame/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-direct/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-embedded/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/columns-linked/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/hatch-fit/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-optional/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleader-extend/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sat-history/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/camera/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/live-section-null/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-view/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-vport/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun-viewport/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-layout/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/shade-page/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/datatable/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/geodata/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/lightlist/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sun/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/mleaderstyle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sectionsettings/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/writer/sortents/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/table/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablestyle/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablecontent/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/tablegeometry/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2013/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/cellstylemap-r2018/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/field/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/dimassoc/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/section-manager/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/sunstudy/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/stored/polyline-records/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/omissions/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/defined-height/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/traversal/model",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/traversal/paper",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/traversal/unused-block",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/traversal/nested-block",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/traversal/attdef",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/traversal/attrib",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/table/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/tablestyle/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/tablecontent/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/tablegeometry/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/field/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/dimassoc/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/section-manager/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/polyline-records/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/table/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/tablestyle/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/tablecontent/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/tablegeometry/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/field/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/dimassoc/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/section-manager/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/upgrade/polyline-records/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEW/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VPORT/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/sun-null/VIEWPORT/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polygonmesh/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/pristine-purity",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/live-reference-snapshot",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/metadata-callbacks",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/bounded-not-save-promise",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/opaque-exclusion/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2000/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2000/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2000/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2000/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2004/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2004/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2004/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2004/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2007/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2007/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2007/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2007/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2010/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2010/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2010/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2010/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2013/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2013/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2013/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2013/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2018/False/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2018/False/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2018/True/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/polyface/AutoCad2018/True/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2000/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2004/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2007/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2010/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2013/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2000/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2000/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2004/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2004/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2007/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2007/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2010/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2010/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2013/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2013/True",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2018/False",
+    "passed": true,
+    "error": null
+  },
+  {
+    "name": "version-compatibility/legacy2d/AutoCad2018/AutoCad2018/True",
+    "passed": true,
+    "error": null
+  }
+]

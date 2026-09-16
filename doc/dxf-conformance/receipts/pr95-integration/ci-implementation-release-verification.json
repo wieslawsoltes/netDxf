@@ -1,0 +1,11 @@
+{
+  "artifact_id": 10420084083,
+  "zip_sha256": "00f1fb0c708cad00e47604318f21280929c9ac28dde304731d3cd2cd39a23c5f",
+  "commit": "ec085f403eb56f361f8ba05574b2bb2f94a24e1f",
+  "unique_passing_cases": 34836,
+  "results_by_name_match_local": true,
+  "dxf_files": 7363,
+  "independent_verifiers": 127,
+  "failed_independent_verifiers": 0,
+  "independent_script_inventory_matches_local": true
+}

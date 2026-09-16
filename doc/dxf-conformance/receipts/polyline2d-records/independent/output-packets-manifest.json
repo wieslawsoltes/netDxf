@@ -1,0 +1,4862 @@
+[
+  {
+    "path": "before/native-1EF-False-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "before/native-1EF-False-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "before/native-1EF-True-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "before/native-1EF-True-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "before/native-1FF-False-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "before/native-1FF-False-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "before/native-1FF-True-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "before/native-1FF-True-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "before/owned-metadata-False.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "path": "before/owned-metadata-True.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2000-ascii-child-link.dxf",
+    "sha256": "293c9d0ce55d5321ae1dbaaf74ae1721e46550c790a478f99db2d28627f9c1dc",
+    "bytes": 15167
+  },
+  {
+    "path": "before/producer-R2000-ascii-lifecycle.dxf",
+    "sha256": "a1ca3ca10f51c7b002f98e96722434da43de0a51cd64341f6eba443e491f571c",
+    "bytes": 15486
+  },
+  {
+    "path": "before/producer-R2000-ascii-omitted-point-edit-False.dxf",
+    "sha256": "e7fcdb2e30979ad43e758818f1b00eb78f09af7d157b7162a665eacdcd6d7987",
+    "bytes": 15283
+  },
+  {
+    "path": "before/producer-R2000-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "6847d89e2a02d7ebeb740f6c656ccd90a7d52c434f1d6c019e6f76b6830dc189",
+    "bytes": 15276
+  },
+  {
+    "path": "before/producer-R2000-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "68f647547c2625c4126c78a88652aa20d3e100565263a8983d9c7376eb529fc5",
+    "bytes": 14832
+  },
+  {
+    "path": "before/producer-R2000-ascii-packet-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "before/producer-R2000-ascii-packet-True.dxf",
+    "sha256": "fb89b77c9872b37ef3ff26599cbaa36b9d7d3ef9ff3b3d5224a6d60b0c6d2b4b",
+    "bytes": 14862
+  },
+  {
+    "path": "before/producer-R2000-ascii-reverse-False.dxf",
+    "sha256": "f19a9d7f26de48150b549e1a6695b088f80343825e6d91d206379e3366d6da12",
+    "bytes": 14872
+  },
+  {
+    "path": "before/producer-R2000-ascii-reverse-True.dxf",
+    "sha256": "8d10e4971c0e06b92b75b53c3dec0038a551a3ac15d9b608fb983fddb501669e",
+    "bytes": 14872
+  },
+  {
+    "path": "before/producer-R2000-ascii-transform.dxf",
+    "sha256": "089b1bd21a9ba17c57192762c20df6fa387a556084e1ce566d16e5c3f561fff5",
+    "bytes": 14862
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-0.dxf",
+    "sha256": "0cd2a86e3cb10c8106f38e7222ea65e964409cfb77d2138d66dd5c59ecaa4836",
+    "bytes": 14862
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-1.dxf",
+    "sha256": "1bb43133e7df253d0ee2fdc76b1b46dd14ab4e950dc3416d8ecf89bd7eb65774",
+    "bytes": 14872
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-2.dxf",
+    "sha256": "becc0852fc5167128261618869ee92242ad7b5f3635eaaea0590c4f7041ce4bd",
+    "bytes": 14872
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-3.dxf",
+    "sha256": "a95a89a1ffda1cd503e2a018a2b1f7fd547a3138ef9940a44c07095c08c6eac9",
+    "bytes": 14882
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-reverse-scale-0.dxf",
+    "sha256": "3fcb2114d8a3e86a5d097d1a01028c9a68c97d6c523f8600c84f205387b3d10a",
+    "bytes": 15297
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-reverse-scale-1.dxf",
+    "sha256": "0b5e5e6a864f1461e30e0cfbdff7fde109ecf4dcbf9000aaaebed92366ccb189",
+    "bytes": 15304
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-reverse-scale-2.dxf",
+    "sha256": "b5f45821664796b50dbd5f23f9974efb9816b7dc2e922911be380a5c54e6c06c",
+    "bytes": 15304
+  },
+  {
+    "path": "before/producer-R2000-ascii-width-reverse-scale-3.dxf",
+    "sha256": "83f64aabc7483045bf8acfa070f64e4bcaab507eb220d2a0bc1543440b34efed",
+    "bytes": 15311
+  },
+  {
+    "path": "before/producer-R2000-binary-child-link.dxf",
+    "sha256": "3e65ca60f4a02f4f0707987e1a6a4da389d0462bc9f5d001a61da181118eb612",
+    "bytes": 15599
+  },
+  {
+    "path": "before/producer-R2000-binary-lifecycle.dxf",
+    "sha256": "5a208b6b99079655a10d72b648818517396a1627ff809b3848225460a0e33a88",
+    "bytes": 15951
+  },
+  {
+    "path": "before/producer-R2000-binary-omitted-point-edit-False.dxf",
+    "sha256": "e7fcdb2e30979ad43e758818f1b00eb78f09af7d157b7162a665eacdcd6d7987",
+    "bytes": 15283
+  },
+  {
+    "path": "before/producer-R2000-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "6847d89e2a02d7ebeb740f6c656ccd90a7d52c434f1d6c019e6f76b6830dc189",
+    "bytes": 15276
+  },
+  {
+    "path": "before/producer-R2000-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "68f647547c2625c4126c78a88652aa20d3e100565263a8983d9c7376eb529fc5",
+    "bytes": 14832
+  },
+  {
+    "path": "before/producer-R2000-binary-packet-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "before/producer-R2000-binary-packet-True.dxf",
+    "sha256": "fb89b77c9872b37ef3ff26599cbaa36b9d7d3ef9ff3b3d5224a6d60b0c6d2b4b",
+    "bytes": 14862
+  },
+  {
+    "path": "before/producer-R2000-binary-reverse-False.dxf",
+    "sha256": "76bea9ef8373da8f8fa3f12180d5035fa5a68d729358eb0004c854cb4ba47aa0",
+    "bytes": 15305
+  },
+  {
+    "path": "before/producer-R2000-binary-reverse-True.dxf",
+    "sha256": "a0fbee908991fa925c1ff001eaacfd6af1b2825a35ee2e4254d0d387d10e29aa",
+    "bytes": 15305
+  },
+  {
+    "path": "before/producer-R2000-binary-transform.dxf",
+    "sha256": "0041a6c98c2471438bf67d3bff80c4fe550b42abbf7e847041b64748ddda56a9",
+    "bytes": 15300
+  },
+  {
+    "path": "before/producer-R2000-binary-width-0.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "before/producer-R2000-binary-width-1.dxf",
+    "sha256": "02570fb24d570e357a336c45b3acdf01b4cbb8614f6c03e80180c2640a4b756e",
+    "bytes": 15304
+  },
+  {
+    "path": "before/producer-R2000-binary-width-2.dxf",
+    "sha256": "84ae323139fd2fe9a0190a0006206dffeee03e97a2b2145facfa29a8395f29e5",
+    "bytes": 15304
+  },
+  {
+    "path": "before/producer-R2000-binary-width-3.dxf",
+    "sha256": "92c9f26a00d5a990883fa4dacd0fd011af231f4d2027b57f35f4c3b8fc3a6659",
+    "bytes": 15311
+  },
+  {
+    "path": "before/producer-R2000-binary-width-reverse-scale-0.dxf",
+    "sha256": "dcb98a8c704d553fcdd1f695c785cdf3a24cf5ece55a96e98c4155072d8209b2",
+    "bytes": 14862
+  },
+  {
+    "path": "before/producer-R2000-binary-width-reverse-scale-1.dxf",
+    "sha256": "f89e1f3217232d2897cf5f574589100c1efe384dd35a153b6c1adddb470c3db2",
+    "bytes": 14872
+  },
+  {
+    "path": "before/producer-R2000-binary-width-reverse-scale-2.dxf",
+    "sha256": "ca113eadb97e05e839fb79d0878d9ec4b74297e523a5d47ba84a4c7dc12617d4",
+    "bytes": 14872
+  },
+  {
+    "path": "before/producer-R2000-binary-width-reverse-scale-3.dxf",
+    "sha256": "23007d2cb4a24da7710b71e3ef99a32ae09d6bb89eaa4da3085108a3587e06ab",
+    "bytes": 14882
+  },
+  {
+    "path": "before/producer-R2004-ascii-child-link.dxf",
+    "sha256": "fb5c436152014a1d137f50890dd2df712f83d23b455e11bced2f0f6bed809a72",
+    "bytes": 15490
+  },
+  {
+    "path": "before/producer-R2004-ascii-lifecycle.dxf",
+    "sha256": "c0f7060e2e9302c2ee2b9c73b90870552e6b47ca813cdc870ac3f6ee3d7e847c",
+    "bytes": 15809
+  },
+  {
+    "path": "before/producer-R2004-ascii-omitted-point-edit-False.dxf",
+    "sha256": "4604457cff631200706009327d0eb84a9dc3946f7d3c43e62a3e0de6f4016f20",
+    "bytes": 15629
+  },
+  {
+    "path": "before/producer-R2004-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "d829abf7f96fd2cf478d92caf99e646ae89ab7d583ff801b316442559efa6c25",
+    "bytes": 15622
+  },
+  {
+    "path": "before/producer-R2004-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "569216a9bcb71b04a0ff3797aabe443d5bc9953ed942dc88a04327903dc16cc6",
+    "bytes": 15155
+  },
+  {
+    "path": "before/producer-R2004-ascii-packet-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "before/producer-R2004-ascii-packet-True.dxf",
+    "sha256": "f4aab2ba2d2beaa0a6552bddb0cfec12ba23c30fbfe726df620befc782b92886",
+    "bytes": 15185
+  },
+  {
+    "path": "before/producer-R2004-ascii-reverse-False.dxf",
+    "sha256": "25ccb0da7cf84cbff4a1fde7d11f783fa09f1e2b667094fb4cf87b1c02048f0e",
+    "bytes": 15195
+  },
+  {
+    "path": "before/producer-R2004-ascii-reverse-True.dxf",
+    "sha256": "f0c82b3c7f9ffa54d24953599ba4ff330899908ac5393f901d793ead9f951b1d",
+    "bytes": 15195
+  },
+  {
+    "path": "before/producer-R2004-ascii-transform.dxf",
+    "sha256": "8c11ddc1ba90a90f1dd5129502b9f77b5eadfa36fef7fd4928d1a599edfcf928",
+    "bytes": 15185
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-0.dxf",
+    "sha256": "73282985c9febd0c3356c387eef1576f6fab0b421f46148ae00c339da2da08bf",
+    "bytes": 15185
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-1.dxf",
+    "sha256": "9d034e126534a88273cf179014d4939854a08f9ff3fbfa243e3a8dd7dce689f0",
+    "bytes": 15195
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-2.dxf",
+    "sha256": "790d55d9796852da09a6769ab02e1b4b5413cd24c0b513cf25df9b591cd854a1",
+    "bytes": 15195
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-3.dxf",
+    "sha256": "6ffb9b6789080d93defb7bd8fd52b32b6b88da6ba437ea16314fbc87fcb93d33",
+    "bytes": 15205
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-reverse-scale-0.dxf",
+    "sha256": "0c2551997c77c8db7f3c2db040976376172006b771f0370856d18e7e6489908d",
+    "bytes": 15643
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-reverse-scale-1.dxf",
+    "sha256": "6ba3d31076ebaf7752d4036eea91ee099095daa9fafb94718dd09c18ceeb0b82",
+    "bytes": 15650
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-reverse-scale-2.dxf",
+    "sha256": "83d4e0cd620758cb88af5638c95ded6c31a891b118dea1c4762c6aea4802accf",
+    "bytes": 15650
+  },
+  {
+    "path": "before/producer-R2004-ascii-width-reverse-scale-3.dxf",
+    "sha256": "e760826f1d7759e807f605108e5fb61556b3b3832393339a031be951f14fd0bf",
+    "bytes": 15657
+  },
+  {
+    "path": "before/producer-R2004-binary-child-link.dxf",
+    "sha256": "19d7fcb933180a894175fe5f5853157532278fead9293aae9c7d9c0e1f68b5f6",
+    "bytes": 15945
+  },
+  {
+    "path": "before/producer-R2004-binary-lifecycle.dxf",
+    "sha256": "03068c61b8bf4bb5535aae28aadd523f5e91c1a009226f6c0de9b5eb02e303a8",
+    "bytes": 16297
+  },
+  {
+    "path": "before/producer-R2004-binary-omitted-point-edit-False.dxf",
+    "sha256": "4604457cff631200706009327d0eb84a9dc3946f7d3c43e62a3e0de6f4016f20",
+    "bytes": 15629
+  },
+  {
+    "path": "before/producer-R2004-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "d829abf7f96fd2cf478d92caf99e646ae89ab7d583ff801b316442559efa6c25",
+    "bytes": 15622
+  },
+  {
+    "path": "before/producer-R2004-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "569216a9bcb71b04a0ff3797aabe443d5bc9953ed942dc88a04327903dc16cc6",
+    "bytes": 15155
+  },
+  {
+    "path": "before/producer-R2004-binary-packet-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "before/producer-R2004-binary-packet-True.dxf",
+    "sha256": "f4aab2ba2d2beaa0a6552bddb0cfec12ba23c30fbfe726df620befc782b92886",
+    "bytes": 15185
+  },
+  {
+    "path": "before/producer-R2004-binary-reverse-False.dxf",
+    "sha256": "3279dc272ba1f91d4d05408321b292e0625411196ab88cc8b294555560412c4a",
+    "bytes": 15651
+  },
+  {
+    "path": "before/producer-R2004-binary-reverse-True.dxf",
+    "sha256": "caf945cc184d38cfdd4b992cc0f0510e338cbacc890b9e689e97c589e55eba0c",
+    "bytes": 15651
+  },
+  {
+    "path": "before/producer-R2004-binary-transform.dxf",
+    "sha256": "4bef43348356484cf0170eabccdc20ff4e0d0cded6ca8e4fae89ff13be1f2a37",
+    "bytes": 15646
+  },
+  {
+    "path": "before/producer-R2004-binary-width-0.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "before/producer-R2004-binary-width-1.dxf",
+    "sha256": "d7d1bbe0db9bbf0674b1e13d2c95b4734e6325e85b7b8f7ea9c23058237f6f2c",
+    "bytes": 15650
+  },
+  {
+    "path": "before/producer-R2004-binary-width-2.dxf",
+    "sha256": "d13f667a30b62ea892a561e1436ea2b518c22e575eaec9b74d522c6cfb265eb8",
+    "bytes": 15650
+  },
+  {
+    "path": "before/producer-R2004-binary-width-3.dxf",
+    "sha256": "dd110a1fa655cefd5a14653d70d3305a5ea927adc4bffc477f901638f7471315",
+    "bytes": 15657
+  },
+  {
+    "path": "before/producer-R2004-binary-width-reverse-scale-0.dxf",
+    "sha256": "c772e4c8bad9e7a54228dd8ac1b12b47fd1a01432642640e77dae85738a7d038",
+    "bytes": 15185
+  },
+  {
+    "path": "before/producer-R2004-binary-width-reverse-scale-1.dxf",
+    "sha256": "c148a12f445c202e4ead21b6794b6c66ce015edf8fad2743a4ae881b5f5ea210",
+    "bytes": 15195
+  },
+  {
+    "path": "before/producer-R2004-binary-width-reverse-scale-2.dxf",
+    "sha256": "1b66f6f4fc9407c15815df553f144c7dbcaca68b93360dced04c62a4d6fe54c7",
+    "bytes": 15195
+  },
+  {
+    "path": "before/producer-R2004-binary-width-reverse-scale-3.dxf",
+    "sha256": "75b6c21676054c9f2b7b0d1b5f6d03db98c9e36c1d8b3a086c7b2ef86a7ec8c6",
+    "bytes": 15205
+  },
+  {
+    "path": "before/producer-R2007-ascii-child-link.dxf",
+    "sha256": "7686f229fd763a645433b9dd56fb583659be250101412b89ce65a93b9418765b",
+    "bytes": 16115
+  },
+  {
+    "path": "before/producer-R2007-ascii-lifecycle.dxf",
+    "sha256": "7702b8cdc52995b0d461157bcf6058617f555f404aff7b838e9d4d7b31983823",
+    "bytes": 16434
+  },
+  {
+    "path": "before/producer-R2007-ascii-omitted-point-edit-False.dxf",
+    "sha256": "3e1181879252fff3f93c46297258a74505e99021d0084b71ccc913ff0df6a31a",
+    "bytes": 16334
+  },
+  {
+    "path": "before/producer-R2007-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "7f3b6b514734f7c3858572d9516342841d76aa2d5872581e5c3cf3dc11726a04",
+    "bytes": 16327
+  },
+  {
+    "path": "before/producer-R2007-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "6d422e8e3dcef3bcb054c87b578beec706a2dca09f77ef0fe4bd451a983ef305",
+    "bytes": 15780
+  },
+  {
+    "path": "before/producer-R2007-ascii-packet-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2007-ascii-packet-True.dxf",
+    "sha256": "f2ff6eaedff57c936b1eaf1132ef2d51d0348ddfb1957633cf8d173c3d813315",
+    "bytes": 15810
+  },
+  {
+    "path": "before/producer-R2007-ascii-reverse-False.dxf",
+    "sha256": "e37de5cfd616223133dd393bb6bde14831f7d5f64f1d23fedad6a4ea01201653",
+    "bytes": 15820
+  },
+  {
+    "path": "before/producer-R2007-ascii-reverse-True.dxf",
+    "sha256": "df9860efe149a09ede355ee328ee3d44b09129eed5143af86118aff0fdfb65a3",
+    "bytes": 15820
+  },
+  {
+    "path": "before/producer-R2007-ascii-transform.dxf",
+    "sha256": "1ff5ca36cba9a5abfbf716d636e95c8fd0d452d83c50c810422243e5e1ef9b3e",
+    "bytes": 15810
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-0.dxf",
+    "sha256": "3c7fe5625573076a73cb8cf64a0a7748a2b86599d5ac11fe6dc3a2584862f77e",
+    "bytes": 15810
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-1.dxf",
+    "sha256": "f7f7c1639704c867945c5c2fd64ed582dbb3ab0a490dde7006f6cc47ce9d48e3",
+    "bytes": 15820
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-2.dxf",
+    "sha256": "61799e31c3b9570f5e35d876821a6ed3ee7e125a87cabf5d24bcfc5c728ca36c",
+    "bytes": 15820
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-3.dxf",
+    "sha256": "d11274560d94b73f547577f3440b7a557c97cc1d4a078afa5b5f087a8cc802dd",
+    "bytes": 15830
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-reverse-scale-0.dxf",
+    "sha256": "5516107031972b8d0e25255602f4c2d00ad49b21efa0b0b398dee7e8a7c5387a",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-reverse-scale-1.dxf",
+    "sha256": "35d23f4c24a4d412fb322166cbf11fa8df59d768cd5070e4b9e8b51329f54bc3",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-reverse-scale-2.dxf",
+    "sha256": "701095ea1a30b2162892eb82e5336054b96c9118475d14d75898b2e0d09c8045",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2007-ascii-width-reverse-scale-3.dxf",
+    "sha256": "a980dd2ede28f3205de96db6e5ded9621a9fa491a8404ce081ff3161810d4ecc",
+    "bytes": 16362
+  },
+  {
+    "path": "before/producer-R2007-binary-child-link.dxf",
+    "sha256": "064477eb24ac8ec0193fb537e59114509e6d080d50292185f36f2576db647d6c",
+    "bytes": 16650
+  },
+  {
+    "path": "before/producer-R2007-binary-lifecycle.dxf",
+    "sha256": "b373836cd1ad11626039f6daaedf822d52279d6355e86177fbef7b9107e0826c",
+    "bytes": 17002
+  },
+  {
+    "path": "before/producer-R2007-binary-omitted-point-edit-False.dxf",
+    "sha256": "3e1181879252fff3f93c46297258a74505e99021d0084b71ccc913ff0df6a31a",
+    "bytes": 16334
+  },
+  {
+    "path": "before/producer-R2007-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "7f3b6b514734f7c3858572d9516342841d76aa2d5872581e5c3cf3dc11726a04",
+    "bytes": 16327
+  },
+  {
+    "path": "before/producer-R2007-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "6d422e8e3dcef3bcb054c87b578beec706a2dca09f77ef0fe4bd451a983ef305",
+    "bytes": 15780
+  },
+  {
+    "path": "before/producer-R2007-binary-packet-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2007-binary-packet-True.dxf",
+    "sha256": "f2ff6eaedff57c936b1eaf1132ef2d51d0348ddfb1957633cf8d173c3d813315",
+    "bytes": 15810
+  },
+  {
+    "path": "before/producer-R2007-binary-reverse-False.dxf",
+    "sha256": "87e69090abbae5ccf406d3e483fc005441c58b669ad7c734042ad581b5f1314e",
+    "bytes": 16356
+  },
+  {
+    "path": "before/producer-R2007-binary-reverse-True.dxf",
+    "sha256": "097658a6b3f70d09e168c3b2c9852967a88b68031c056619b381906bc21d0e3c",
+    "bytes": 16356
+  },
+  {
+    "path": "before/producer-R2007-binary-transform.dxf",
+    "sha256": "449a7081a26ae32843b322e9a4344f0089dab6da7c24e1781bc91074c4920860",
+    "bytes": 16351
+  },
+  {
+    "path": "before/producer-R2007-binary-width-0.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2007-binary-width-1.dxf",
+    "sha256": "df82aea7d5fd40e83b909a5618c4faa4f3561985a565b4b9fae079d139ff30ae",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2007-binary-width-2.dxf",
+    "sha256": "8c98353cf2bdd332e08261a6f66bbecd3a05729a901d35addaf95e6b0488a3ef",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2007-binary-width-3.dxf",
+    "sha256": "af3e5c6116d08cc907acb91ce25b2d0b5001674f880178179b748641e5bcbd99",
+    "bytes": 16362
+  },
+  {
+    "path": "before/producer-R2007-binary-width-reverse-scale-0.dxf",
+    "sha256": "3bd7b5760bf13797166042a93d3f1674886091e4c672ddb28be72a3041426624",
+    "bytes": 15810
+  },
+  {
+    "path": "before/producer-R2007-binary-width-reverse-scale-1.dxf",
+    "sha256": "87e9b66ed348602ffca3885d156861c0bb0cfff6cc28af7da56cfe8185d80e77",
+    "bytes": 15820
+  },
+  {
+    "path": "before/producer-R2007-binary-width-reverse-scale-2.dxf",
+    "sha256": "44eb8eacabad726f05712e446c98dee22885c08e91440ededd226b6d229d4790",
+    "bytes": 15820
+  },
+  {
+    "path": "before/producer-R2007-binary-width-reverse-scale-3.dxf",
+    "sha256": "5beca9ba53bf89c917412719397a09231411da256516633e3f084ad5b98ccaf0",
+    "bytes": 15830
+  },
+  {
+    "path": "before/producer-R2010-ascii-child-link.dxf",
+    "sha256": "eb2e38b221c79e1b86bd836dfd7d5fb23be7ed6c855a0921a77b8d947f94bcde",
+    "bytes": 16116
+  },
+  {
+    "path": "before/producer-R2010-ascii-lifecycle.dxf",
+    "sha256": "71cc3bba86dee96ed7669fb8f49204a5ea7cee6f1f8dc6e1431bd6581ee36b84",
+    "bytes": 16435
+  },
+  {
+    "path": "before/producer-R2010-ascii-omitted-point-edit-False.dxf",
+    "sha256": "97dacda1d8ea08b5c48b3a303889090163217560c68f343e5e91e11f65b182c0",
+    "bytes": 16334
+  },
+  {
+    "path": "before/producer-R2010-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "745b90136dbeedfd647a3bd9120741184dc52e643e75e56dd258f4b3ad1db845",
+    "bytes": 16327
+  },
+  {
+    "path": "before/producer-R2010-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "715fca3e8768c604a9c77a9211a6c31df5bec51bd31ef58bf66fd0d5569c2f19",
+    "bytes": 15781
+  },
+  {
+    "path": "before/producer-R2010-ascii-packet-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2010-ascii-packet-True.dxf",
+    "sha256": "cc2aa11cbea12fb5f5e59b0a1285ff82b65bd01aa41c0b88ae93aa33982e9133",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2010-ascii-reverse-False.dxf",
+    "sha256": "b07d52e27a510413879318aa2fe7426f0986839e721f2e42c6638a6354b415ec",
+    "bytes": 15821
+  },
+  {
+    "path": "before/producer-R2010-ascii-reverse-True.dxf",
+    "sha256": "30fee1f01fcb5b8a8cf842679469ecc3bc37333a6e202fae4ca2f409128c9333",
+    "bytes": 15821
+  },
+  {
+    "path": "before/producer-R2010-ascii-transform.dxf",
+    "sha256": "d9bd9691564a6b7116b8cfe38b1ed1ca48c1242097887b0c4ef06c5d791c9a6a",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-0.dxf",
+    "sha256": "f5d402e0fec5e40b7bb2936f7cfecb4be2b6a870b57ccd1d06d5727c14fd6610",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-1.dxf",
+    "sha256": "12ab74f5d69ee0af02342ca59f2c024599a99aeb18a6812e096a5a8005449b5d",
+    "bytes": 15821
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-2.dxf",
+    "sha256": "a17c5610ab95fa406cbbf9b82c9e6cf9ca086c63e66394f9e79fe529cdc77af3",
+    "bytes": 15821
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-3.dxf",
+    "sha256": "c3cc7976493bc5620ea9876cd55df1fbf9921424d11616113c3d03450ba941e1",
+    "bytes": 15831
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-reverse-scale-0.dxf",
+    "sha256": "69fe3971c6b5a4a368b8ee20904fcdc8efbf409752cae7a936f25fccac8bb9ee",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-reverse-scale-1.dxf",
+    "sha256": "b73e442243660d013700d2cacff2d9f1c422c8d1b4ed7fc8d44e51637473fbd9",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-reverse-scale-2.dxf",
+    "sha256": "14cdae474351334159067ba2a75a2a4715ed63608821d7e9d5a6d1ddbb999f40",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2010-ascii-width-reverse-scale-3.dxf",
+    "sha256": "5b291e5febb0e61f81f552278dcc8586562e650da7139e257f26cb9f79f34366",
+    "bytes": 16362
+  },
+  {
+    "path": "before/producer-R2010-binary-child-link.dxf",
+    "sha256": "1ca4bd15d0c31f3d932850d144514fe1f3f7c01044fbb923c0e7d2dd8ceed82f",
+    "bytes": 16650
+  },
+  {
+    "path": "before/producer-R2010-binary-lifecycle.dxf",
+    "sha256": "72dfb8e38f954a2dbf9ad5e9c577fb246df0a68162b94f1903693390ca8b5256",
+    "bytes": 17002
+  },
+  {
+    "path": "before/producer-R2010-binary-omitted-point-edit-False.dxf",
+    "sha256": "97dacda1d8ea08b5c48b3a303889090163217560c68f343e5e91e11f65b182c0",
+    "bytes": 16334
+  },
+  {
+    "path": "before/producer-R2010-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "745b90136dbeedfd647a3bd9120741184dc52e643e75e56dd258f4b3ad1db845",
+    "bytes": 16327
+  },
+  {
+    "path": "before/producer-R2010-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "715fca3e8768c604a9c77a9211a6c31df5bec51bd31ef58bf66fd0d5569c2f19",
+    "bytes": 15781
+  },
+  {
+    "path": "before/producer-R2010-binary-packet-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2010-binary-packet-True.dxf",
+    "sha256": "cc2aa11cbea12fb5f5e59b0a1285ff82b65bd01aa41c0b88ae93aa33982e9133",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2010-binary-reverse-False.dxf",
+    "sha256": "f4d8ebf588f7d7c169abe6dad7845100f7cd1679cb542167d508e2c3c6133e25",
+    "bytes": 16356
+  },
+  {
+    "path": "before/producer-R2010-binary-reverse-True.dxf",
+    "sha256": "b77ba4bbe4b47b933f388f9430a10819c0884bd743a91ea23102af4a96de149f",
+    "bytes": 16356
+  },
+  {
+    "path": "before/producer-R2010-binary-transform.dxf",
+    "sha256": "c33a8aed4eb49a2a6e166f5d3c280ae21f847a89c60923b5aa2ca7343c508376",
+    "bytes": 16351
+  },
+  {
+    "path": "before/producer-R2010-binary-width-0.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "before/producer-R2010-binary-width-1.dxf",
+    "sha256": "c86bd3dc2fd1a128c53b833b4efd4ce724c1c9777b5ac5f31973fe08716ba47e",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2010-binary-width-2.dxf",
+    "sha256": "711b41437f768c8e4ecb21bdadffa8b416d214110833e2c2480fb81987a4cc7b",
+    "bytes": 16355
+  },
+  {
+    "path": "before/producer-R2010-binary-width-3.dxf",
+    "sha256": "a3667fb497d9e51d261fbf1229b5b6c2c640c17b2c19b5a1af572da760b757bc",
+    "bytes": 16362
+  },
+  {
+    "path": "before/producer-R2010-binary-width-reverse-scale-0.dxf",
+    "sha256": "eb498dfb655212c552323eea9f658d9971c58e671bb639fe0e79adda00a6bee0",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2010-binary-width-reverse-scale-1.dxf",
+    "sha256": "dd50f9579e2d83999f0a9b77af64083c02ad6f9a48677fa1286dfa9ac6f9a2ed",
+    "bytes": 15821
+  },
+  {
+    "path": "before/producer-R2010-binary-width-reverse-scale-2.dxf",
+    "sha256": "05c1d7d4258cc02b0ce27e1c18f418d9058c06c78dd0f7f4716048c5454c4c7c",
+    "bytes": 15821
+  },
+  {
+    "path": "before/producer-R2010-binary-width-reverse-scale-3.dxf",
+    "sha256": "67ac00a63f0bdfde0b108b7c74cc155e74e8f8d9c7ddf1fe1c6762794ceb58e5",
+    "bytes": 15831
+  },
+  {
+    "path": "before/producer-R2013-ascii-child-link.dxf",
+    "sha256": "c3fcc58157f777ff1f4d1937c8f69c4992f71c8ea2b241f4f9181d2c2ab16903",
+    "bytes": 16146
+  },
+  {
+    "path": "before/producer-R2013-ascii-lifecycle.dxf",
+    "sha256": "5563c8de9e04cebdc4d0bd907b46087d7997fce677192520e47943be792afe32",
+    "bytes": 16465
+  },
+  {
+    "path": "before/producer-R2013-ascii-omitted-point-edit-False.dxf",
+    "sha256": "3b94eb963c5355e9e4e25f4cafc7a92b37a8fbbebe1f263d487421daefb84228",
+    "bytes": 16360
+  },
+  {
+    "path": "before/producer-R2013-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "45245bbfce50b8c090193eece7cf324731f095e2c398b6bae9f9566dcabcb303",
+    "bytes": 16353
+  },
+  {
+    "path": "before/producer-R2013-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "7a383513c46b4a7672070bfbc6988a370d2eeb0d2decf769f746344b7d7dbcc7",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2013-ascii-packet-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2013-ascii-packet-True.dxf",
+    "sha256": "06ed87d2e28aa0454e15048beddb2879050cecb8b7dacd911b7f9df9e8d9d928",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2013-ascii-reverse-False.dxf",
+    "sha256": "ba7589b7ff463a3f560c5c44493be030eb0c8740e3aa7bafd639659d7fc9cf18",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2013-ascii-reverse-True.dxf",
+    "sha256": "382a262559b0855d18ff72ad19a3ca9166d42354ea7ac3c56fc91699e6c20b55",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2013-ascii-transform.dxf",
+    "sha256": "e59efd5d5bbe414f31f85662ae5a0dd60b2f1669ffb9a87c0a911804b1961b31",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-0.dxf",
+    "sha256": "729b31b8f00f5d3e81f5e4b696996e2dd5cdaa5ed89f51e09dcd71831de5f1cb",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-1.dxf",
+    "sha256": "38d7b6791be6ebb706508657189b446b4d05a59d9486d1c88a60cef725ae5a5b",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-2.dxf",
+    "sha256": "028992dd1ccc96f33239fae377f65509fb405dc43c22e69d7db07c39fa02d095",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-3.dxf",
+    "sha256": "326b8b55d2d00f11ec833d3d5cd6257407574f58b176d495f3a6c373c193406e",
+    "bytes": 15861
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-reverse-scale-0.dxf",
+    "sha256": "db4c8a5ad81b7a666af2d884063f1e9a629c700fc21a916aa1ee1391b6307ced",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-reverse-scale-1.dxf",
+    "sha256": "52f4a7a1795c7013056fd70d4772cf0898cab785afc0e4dba0c5b083ded2374a",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-reverse-scale-2.dxf",
+    "sha256": "0fe4fe94f18f40086a5eb42f89b7a14132cf2792c18371e7f1a71cadea1b2d18",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2013-ascii-width-reverse-scale-3.dxf",
+    "sha256": "c9364111773e867c286f2ad3100c4e49157485cec0c89f577d925a0e9a337dff",
+    "bytes": 16388
+  },
+  {
+    "path": "before/producer-R2013-binary-child-link.dxf",
+    "sha256": "2a877a18bb7c86e5353e24610fd8b60681fa8e2be226376effd7f4369fdc5b39",
+    "bytes": 16676
+  },
+  {
+    "path": "before/producer-R2013-binary-lifecycle.dxf",
+    "sha256": "48c85de2cc277d219d8ff98082f84597ca9028b6f6152a34d1add9afee1e0398",
+    "bytes": 17028
+  },
+  {
+    "path": "before/producer-R2013-binary-omitted-point-edit-False.dxf",
+    "sha256": "3b94eb963c5355e9e4e25f4cafc7a92b37a8fbbebe1f263d487421daefb84228",
+    "bytes": 16360
+  },
+  {
+    "path": "before/producer-R2013-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "45245bbfce50b8c090193eece7cf324731f095e2c398b6bae9f9566dcabcb303",
+    "bytes": 16353
+  },
+  {
+    "path": "before/producer-R2013-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "7a383513c46b4a7672070bfbc6988a370d2eeb0d2decf769f746344b7d7dbcc7",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2013-binary-packet-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2013-binary-packet-True.dxf",
+    "sha256": "06ed87d2e28aa0454e15048beddb2879050cecb8b7dacd911b7f9df9e8d9d928",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2013-binary-reverse-False.dxf",
+    "sha256": "01b3f25a697700aa59792ec5e44c6696c0982f1eb50dd50cfad48d8b1cddb84f",
+    "bytes": 16382
+  },
+  {
+    "path": "before/producer-R2013-binary-reverse-True.dxf",
+    "sha256": "42fbbb9b2b825a5e02c7008ff08145af76e5b1d4c8d6532f390bc37b5f9ab3c8",
+    "bytes": 16382
+  },
+  {
+    "path": "before/producer-R2013-binary-transform.dxf",
+    "sha256": "d04729a424baa37797317b70dd709ab2ef7a6603720c986f671ac92988583693",
+    "bytes": 16377
+  },
+  {
+    "path": "before/producer-R2013-binary-width-0.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2013-binary-width-1.dxf",
+    "sha256": "9f607de798a3f30ace3d4b6f0bbac4b1f3b8094d67a40b0736eeecce033704b9",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2013-binary-width-2.dxf",
+    "sha256": "15c08204d1feee06979f7d8f8fde1e1978009ba76eebb5650946a16174d16179",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2013-binary-width-3.dxf",
+    "sha256": "6fe7585a2dbbc1963e7c0d4b51af5f2ff6c0036e2969e749a3aef9df9350994b",
+    "bytes": 16388
+  },
+  {
+    "path": "before/producer-R2013-binary-width-reverse-scale-0.dxf",
+    "sha256": "f40c1409bf91dfca9905803eeeb84424a92b01378693d4abce0316c7fc53c9b7",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2013-binary-width-reverse-scale-1.dxf",
+    "sha256": "c4d25ba8d6b50846fcdfb8d0cb70f27c5d52acb2c9607180ac75dd2217a5ca6a",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2013-binary-width-reverse-scale-2.dxf",
+    "sha256": "b060f977fd05771951f3522005533ac39e1a55894bc4c46baa971787da90049e",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2013-binary-width-reverse-scale-3.dxf",
+    "sha256": "2076fa63532462339b1d80fd83d76a23cde4907c5fd32cd5cddaae0a8ac3842a",
+    "bytes": 15861
+  },
+  {
+    "path": "before/producer-R2018-ascii-child-link.dxf",
+    "sha256": "6e2a70dbb903723190a6e06364f9e4003fe2331370326e10d64050397c145d3f",
+    "bytes": 16146
+  },
+  {
+    "path": "before/producer-R2018-ascii-lifecycle.dxf",
+    "sha256": "eaa773919ecc2678eebdeab205a5be5712811a9bc4578904dd41c0551f56dd23",
+    "bytes": 16465
+  },
+  {
+    "path": "before/producer-R2018-ascii-omitted-point-edit-False.dxf",
+    "sha256": "e33ddb689397c14fc9ee75c1f97e40c13071896a5daf84b01e1c7d9cdecfe40e",
+    "bytes": 16360
+  },
+  {
+    "path": "before/producer-R2018-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "abdd0c2703bcc885434f47a2bec6b2b07ca187ecd3cb8ccdfbfbccf24278bebb",
+    "bytes": 16353
+  },
+  {
+    "path": "before/producer-R2018-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "fc5aec47b5c87139901e9d88a1f8213a464741c7e8c58f7d54ad2a4a7b9aa205",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2018-ascii-packet-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2018-ascii-packet-True.dxf",
+    "sha256": "da63e923ec11cc98afac064e205c14702506a5f9ccbc2c09defe048c57964718",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2018-ascii-reverse-False.dxf",
+    "sha256": "db018b33098408ac17bf6922558aec5b3193da728f10c77bd1311b83e51c21be",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2018-ascii-reverse-True.dxf",
+    "sha256": "8e964555dcbb7c1d7a75b47867abf3472e9e1b58cad7934b19bde202390a8a20",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2018-ascii-transform.dxf",
+    "sha256": "1162244075d87604230229bd78b51c8fcc7bea0240547f964f3b5091853b816e",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-0.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-1.dxf",
+    "sha256": "5ff0fa774c7fc93f80380f4dc4b8d508c736bf78ddd16cda97042121fcba5313",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-2.dxf",
+    "sha256": "64ae84ab53cafa8aa5183f77f7656b66cee84bdbf1b6f0a300e0e31b839fc76e",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-3.dxf",
+    "sha256": "cfe659fc27fc5da3c64defdb7db48c8b3d473c34092952c9186f0dbcbfb712f0",
+    "bytes": 15861
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-reverse-scale-0.dxf",
+    "sha256": "f6439da3defa7853ff87290adde79cb9ccc8ffe2f61a05cc51092190d5fcef22",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-reverse-scale-1.dxf",
+    "sha256": "25d1b702b0774bba4d81d6bd7d64de496fc088ab65736521ee83490de303a41f",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-reverse-scale-2.dxf",
+    "sha256": "f025334e04190198710771f316fde632cda270ce87a91551ed6435c6bdbe7c3a",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2018-ascii-width-reverse-scale-3.dxf",
+    "sha256": "eabf1313d40d0f33574493a53cfda352dd7f325c8fe979293ed8c5d955dad36d",
+    "bytes": 16388
+  },
+  {
+    "path": "before/producer-R2018-binary-child-link.dxf",
+    "sha256": "fd109995d703af55bc1400c769827fd5c1ef036f2f73c9d936df9d143fdfacfe",
+    "bytes": 16676
+  },
+  {
+    "path": "before/producer-R2018-binary-lifecycle.dxf",
+    "sha256": "14eff915c1395864c666d4714a941c643944585af724cb300ba8024b40ab0689",
+    "bytes": 17028
+  },
+  {
+    "path": "before/producer-R2018-binary-omitted-point-edit-False.dxf",
+    "sha256": "e33ddb689397c14fc9ee75c1f97e40c13071896a5daf84b01e1c7d9cdecfe40e",
+    "bytes": 16360
+  },
+  {
+    "path": "before/producer-R2018-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "abdd0c2703bcc885434f47a2bec6b2b07ca187ecd3cb8ccdfbfbccf24278bebb",
+    "bytes": 16353
+  },
+  {
+    "path": "before/producer-R2018-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "fc5aec47b5c87139901e9d88a1f8213a464741c7e8c58f7d54ad2a4a7b9aa205",
+    "bytes": 15811
+  },
+  {
+    "path": "before/producer-R2018-binary-packet-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2018-binary-packet-True.dxf",
+    "sha256": "da63e923ec11cc98afac064e205c14702506a5f9ccbc2c09defe048c57964718",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2018-binary-reverse-False.dxf",
+    "sha256": "d41cc9dac8f796e006a92c161e4acb7a165e880a06932414ca90ea957c29b98a",
+    "bytes": 16382
+  },
+  {
+    "path": "before/producer-R2018-binary-reverse-True.dxf",
+    "sha256": "53394e77650b9175a7d570922163d159897c516aa5b2c72eb045ee976cade2a6",
+    "bytes": 16382
+  },
+  {
+    "path": "before/producer-R2018-binary-transform.dxf",
+    "sha256": "e620810c75e8ad380ca41c431fd826e50387ddfb39ef5c3f36e010119a32ec33",
+    "bytes": 16377
+  },
+  {
+    "path": "before/producer-R2018-binary-width-0.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "before/producer-R2018-binary-width-1.dxf",
+    "sha256": "901272071d03576183dda1eda267c10acaccec363b069163c1c9fd816e7b61f6",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2018-binary-width-2.dxf",
+    "sha256": "ba594ecd9948e5ec4281cc600390ed10b70b69cafcde944b252ce4ead2be09a3",
+    "bytes": 16381
+  },
+  {
+    "path": "before/producer-R2018-binary-width-3.dxf",
+    "sha256": "ee7ae071b1073d0a6505d071f812687616948acf072c20519475bb6afe000345",
+    "bytes": 16388
+  },
+  {
+    "path": "before/producer-R2018-binary-width-reverse-scale-0.dxf",
+    "sha256": "b3f9a41ae6065ba820e93fece88d804255b23ba29e85210f812c6a5f693a81a3",
+    "bytes": 15841
+  },
+  {
+    "path": "before/producer-R2018-binary-width-reverse-scale-1.dxf",
+    "sha256": "2185bb47bb858f3309fbf9558c92d3f3042b143bf61c520184cd501365a570b3",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2018-binary-width-reverse-scale-2.dxf",
+    "sha256": "ee0661a15079a04afe3756d9b3e3be44e866d4bf74f02814efde8930e1e4ec54",
+    "bytes": 15851
+  },
+  {
+    "path": "before/producer-R2018-binary-width-reverse-scale-3.dxf",
+    "sha256": "3d38b37ceba9483992ff2772398087bc5c36eedd474e792c2ec643262b8ca37b",
+    "bytes": 15861
+  },
+  {
+    "path": "before/tilted-plane-False.dxf",
+    "sha256": "f9c305d0b27da708274f98ba02036a51825737ede418f8a6621ca11cedd21e45",
+    "bytes": 15871
+  },
+  {
+    "path": "before/tilted-plane-True.dxf",
+    "sha256": "61426bbf6ac32c78f09e1d585e44b1021026331899a76aea4f7b57cf3c87f206",
+    "bytes": 16402
+  },
+  {
+    "path": "debug/native-1EF-False-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "debug/native-1EF-False-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "debug/native-1EF-True-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "debug/native-1EF-True-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "debug/native-1FF-False-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "debug/native-1FF-False-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "debug/native-1FF-True-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "debug/native-1FF-True-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "debug/owned-metadata-False.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/owned-metadata-True.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2000-ascii-child-link.dxf",
+    "sha256": "293c9d0ce55d5321ae1dbaaf74ae1721e46550c790a478f99db2d28627f9c1dc",
+    "bytes": 15167
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "c4a9a57f67b1a7aee97726282741ea66c66b809438a600a178785c452b919750",
+    "bytes": 15111
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "dfecf931aa1cb6b7384f41b3bddc5a47196b3b7a5ebff4faf17b2da33637a251",
+    "bytes": 14830
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "44357e41220303fdc68970903e2571217a278dbf3a9133a23d43d63d4f5f6caf",
+    "bytes": 14423
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "cb6b3654d7f7ef34152b5794cee85ed641c93338bb23e675bb81277c417cabca",
+    "bytes": 15017
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "4bf8de36bc820435f26edae8bf56cecfbe9d001aa5a1991c55213d9511441d06",
+    "bytes": 14608
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "6fea45f17b66157968fd9586179e02cc60615288c43a8566bc31ecfb4b5f8338",
+    "bytes": 15433
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "cde427d07a33d2cf03047c7347b93addcb629311b79bab9c753a91cd8ed9a44d",
+    "bytes": 14991
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "31977d016b753b7046f2881deb61117d85c6c87c12edb4757525bfa308aa4f7c",
+    "bytes": 14568
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "bc03fda5cbf6590debdb20aabd88355353f302e1d2177eaa8929fa65b1ef33f2",
+    "bytes": 15339
+  },
+  {
+    "path": "debug/producer-R2000-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "513b3b3b4814367b71bad90806b69c39e54d0cb0e74a38e7eba5d7c8566c69a2",
+    "bytes": 14898
+  },
+  {
+    "path": "debug/producer-R2000-ascii-lifecycle.dxf",
+    "sha256": "a1ca3ca10f51c7b002f98e96722434da43de0a51cd64341f6eba443e491f571c",
+    "bytes": 15486
+  },
+  {
+    "path": "debug/producer-R2000-ascii-omitted-point-edit-False.dxf",
+    "sha256": "2fd0c20ac64db1e235dd03db47eb9956d51329471df748074cfdf277b0c4715b",
+    "bytes": 15297
+  },
+  {
+    "path": "debug/producer-R2000-ascii-omitted-point-edit-True.dxf",
+    "sha256": "63c2d69fc2b07621ef9db6111203c47f59c22c474dcf66ed68ef160c40308f06",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-ascii-omitted-point-transform.dxf",
+    "sha256": "3ef3b9b721355f93ea11568676c54f34b7abaa8e4c5bb5ad44cbeb6692b0308b",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "6847d89e2a02d7ebeb740f6c656ccd90a7d52c434f1d6c019e6f76b6830dc189",
+    "bytes": 15276
+  },
+  {
+    "path": "debug/producer-R2000-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "68f647547c2625c4126c78a88652aa20d3e100565263a8983d9c7376eb529fc5",
+    "bytes": 14832
+  },
+  {
+    "path": "debug/producer-R2000-ascii-packet-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "debug/producer-R2000-ascii-packet-True.dxf",
+    "sha256": "fb89b77c9872b37ef3ff26599cbaa36b9d7d3ef9ff3b3d5224a6d60b0c6d2b4b",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-ascii-reverse-False.dxf",
+    "sha256": "f19a9d7f26de48150b549e1a6695b088f80343825e6d91d206379e3366d6da12",
+    "bytes": 14872
+  },
+  {
+    "path": "debug/producer-R2000-ascii-reverse-True.dxf",
+    "sha256": "8d10e4971c0e06b92b75b53c3dec0038a551a3ac15d9b608fb983fddb501669e",
+    "bytes": 14872
+  },
+  {
+    "path": "debug/producer-R2000-ascii-transform.dxf",
+    "sha256": "089b1bd21a9ba17c57192762c20df6fa387a556084e1ce566d16e5c3f561fff5",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-0.dxf",
+    "sha256": "0cd2a86e3cb10c8106f38e7222ea65e964409cfb77d2138d66dd5c59ecaa4836",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-1.dxf",
+    "sha256": "1bb43133e7df253d0ee2fdc76b1b46dd14ab4e950dc3416d8ecf89bd7eb65774",
+    "bytes": 14872
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-2.dxf",
+    "sha256": "becc0852fc5167128261618869ee92242ad7b5f3635eaaea0590c4f7041ce4bd",
+    "bytes": 14872
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-3.dxf",
+    "sha256": "a95a89a1ffda1cd503e2a018a2b1f7fd547a3138ef9940a44c07095c08c6eac9",
+    "bytes": 14882
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-reverse-scale-0.dxf",
+    "sha256": "3fcb2114d8a3e86a5d097d1a01028c9a68c97d6c523f8600c84f205387b3d10a",
+    "bytes": 15297
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-reverse-scale-1.dxf",
+    "sha256": "0b5e5e6a864f1461e30e0cfbdff7fde109ecf4dcbf9000aaaebed92366ccb189",
+    "bytes": 15304
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-reverse-scale-2.dxf",
+    "sha256": "b5f45821664796b50dbd5f23f9974efb9816b7dc2e922911be380a5c54e6c06c",
+    "bytes": 15304
+  },
+  {
+    "path": "debug/producer-R2000-ascii-width-reverse-scale-3.dxf",
+    "sha256": "83f64aabc7483045bf8acfa070f64e4bcaab507eb220d2a0bc1543440b34efed",
+    "bytes": 15311
+  },
+  {
+    "path": "debug/producer-R2000-binary-child-link.dxf",
+    "sha256": "3e65ca60f4a02f4f0707987e1a6a4da389d0462bc9f5d001a61da181118eb612",
+    "bytes": 15599
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "fb208911df44959a84c41e40687a7914154f09e7a2d733c604e8a9ff2f0864ca",
+    "bytes": 14695
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-0-stored-False.dxf",
+    "sha256": "dfecf931aa1cb6b7384f41b3bddc5a47196b3b7a5ebff4faf17b2da33637a251",
+    "bytes": 14830
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-0-stored-True.dxf",
+    "sha256": "44357e41220303fdc68970903e2571217a278dbf3a9133a23d43d63d4f5f6caf",
+    "bytes": 14423
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-0-transform-False.dxf",
+    "sha256": "cb6b3654d7f7ef34152b5794cee85ed641c93338bb23e675bb81277c417cabca",
+    "bytes": 15017
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-0-transform-True.dxf",
+    "sha256": "4bf8de36bc820435f26edae8bf56cecfbe9d001aa5a1991c55213d9511441d06",
+    "bytes": 14608
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "2aa6affb7a0e97c4b3901cd23390d01de3cbac7cb6b8437a359f88b56e297c8b",
+    "bytes": 14985
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-1-stored-False.dxf",
+    "sha256": "cde427d07a33d2cf03047c7347b93addcb629311b79bab9c753a91cd8ed9a44d",
+    "bytes": 14991
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-1-stored-True.dxf",
+    "sha256": "31977d016b753b7046f2881deb61117d85c6c87c12edb4757525bfa308aa4f7c",
+    "bytes": 14568
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-1-transform-False.dxf",
+    "sha256": "bc03fda5cbf6590debdb20aabd88355353f302e1d2177eaa8929fa65b1ef33f2",
+    "bytes": 15339
+  },
+  {
+    "path": "debug/producer-R2000-binary-degenerate-1-transform-True.dxf",
+    "sha256": "513b3b3b4814367b71bad90806b69c39e54d0cb0e74a38e7eba5d7c8566c69a2",
+    "bytes": 14898
+  },
+  {
+    "path": "debug/producer-R2000-binary-lifecycle.dxf",
+    "sha256": "5a208b6b99079655a10d72b648818517396a1627ff809b3848225460a0e33a88",
+    "bytes": 15951
+  },
+  {
+    "path": "debug/producer-R2000-binary-omitted-point-edit-False.dxf",
+    "sha256": "2fd0c20ac64db1e235dd03db47eb9956d51329471df748074cfdf277b0c4715b",
+    "bytes": 15297
+  },
+  {
+    "path": "debug/producer-R2000-binary-omitted-point-edit-True.dxf",
+    "sha256": "63c2d69fc2b07621ef9db6111203c47f59c22c474dcf66ed68ef160c40308f06",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-binary-omitted-point-transform.dxf",
+    "sha256": "c16d63f0e8d3b0e35a8e280a1022f12318a50efb5acf4ed7129b8ebbceb5b164",
+    "bytes": 15298
+  },
+  {
+    "path": "debug/producer-R2000-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "6847d89e2a02d7ebeb740f6c656ccd90a7d52c434f1d6c019e6f76b6830dc189",
+    "bytes": 15276
+  },
+  {
+    "path": "debug/producer-R2000-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "68f647547c2625c4126c78a88652aa20d3e100565263a8983d9c7376eb529fc5",
+    "bytes": 14832
+  },
+  {
+    "path": "debug/producer-R2000-binary-packet-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "debug/producer-R2000-binary-packet-True.dxf",
+    "sha256": "fb89b77c9872b37ef3ff26599cbaa36b9d7d3ef9ff3b3d5224a6d60b0c6d2b4b",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-binary-reverse-False.dxf",
+    "sha256": "76bea9ef8373da8f8fa3f12180d5035fa5a68d729358eb0004c854cb4ba47aa0",
+    "bytes": 15305
+  },
+  {
+    "path": "debug/producer-R2000-binary-reverse-True.dxf",
+    "sha256": "a0fbee908991fa925c1ff001eaacfd6af1b2825a35ee2e4254d0d387d10e29aa",
+    "bytes": 15305
+  },
+  {
+    "path": "debug/producer-R2000-binary-transform.dxf",
+    "sha256": "0041a6c98c2471438bf67d3bff80c4fe550b42abbf7e847041b64748ddda56a9",
+    "bytes": 15300
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-0.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-1.dxf",
+    "sha256": "02570fb24d570e357a336c45b3acdf01b4cbb8614f6c03e80180c2640a4b756e",
+    "bytes": 15304
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-2.dxf",
+    "sha256": "84ae323139fd2fe9a0190a0006206dffeee03e97a2b2145facfa29a8395f29e5",
+    "bytes": 15304
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-3.dxf",
+    "sha256": "92c9f26a00d5a990883fa4dacd0fd011af231f4d2027b57f35f4c3b8fc3a6659",
+    "bytes": 15311
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-reverse-scale-0.dxf",
+    "sha256": "dcb98a8c704d553fcdd1f695c785cdf3a24cf5ece55a96e98c4155072d8209b2",
+    "bytes": 14862
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-reverse-scale-1.dxf",
+    "sha256": "f89e1f3217232d2897cf5f574589100c1efe384dd35a153b6c1adddb470c3db2",
+    "bytes": 14872
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-reverse-scale-2.dxf",
+    "sha256": "ca113eadb97e05e839fb79d0878d9ec4b74297e523a5d47ba84a4c7dc12617d4",
+    "bytes": 14872
+  },
+  {
+    "path": "debug/producer-R2000-binary-width-reverse-scale-3.dxf",
+    "sha256": "23007d2cb4a24da7710b71e3ef99a32ae09d6bb89eaa4da3085108a3587e06ab",
+    "bytes": 14882
+  },
+  {
+    "path": "debug/producer-R2004-ascii-child-link.dxf",
+    "sha256": "fb5c436152014a1d137f50890dd2df712f83d23b455e11bced2f0f6bed809a72",
+    "bytes": 15490
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "523ad219016984293bc87331e5f477aac4d8936cd502bd41aa40b66555f9885b",
+    "bytes": 15457
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "685ec934cf0aa3c66e6c927605a36c1ef4bad33486bf22ad52d83c540776c1ae",
+    "bytes": 15176
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "c05f64732b51a4cd7f01046a0dd385d9961a25c7526f5949948f58c295314047",
+    "bytes": 14746
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "269cd5e8898eec4eba185246ba74d57badb283355b9e2a6b3d02aace7e1725c0",
+    "bytes": 15363
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "0e1ced6aedeae34cdfc2d5dd6b11aff97039fc22b6fc74f5fffdba41e672d8db",
+    "bytes": 14931
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "14cd51e60f41423a32a01772c263e619bc9ce21e12d2f68d6102a559f9e01803",
+    "bytes": 15779
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "aa1834bd6087699c34db31cded462310606a8eaded424c2cb3fe6bc435bd9d0a",
+    "bytes": 15337
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "de9452cbc31fd9e52e00f726ee585a27a29c146aef1c85849aeec8bf4ae9b990",
+    "bytes": 14891
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "bf944cd8f91704be02afbb6e8c18016249ecd207466c8b7df8bfdd7677379d38",
+    "bytes": 15685
+  },
+  {
+    "path": "debug/producer-R2004-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "cdf90fc226ccceba1d3a895d2dc16d83c48899f790a128c0ab9b2ef0216a2482",
+    "bytes": 15221
+  },
+  {
+    "path": "debug/producer-R2004-ascii-lifecycle.dxf",
+    "sha256": "c0f7060e2e9302c2ee2b9c73b90870552e6b47ca813cdc870ac3f6ee3d7e847c",
+    "bytes": 15809
+  },
+  {
+    "path": "debug/producer-R2004-ascii-omitted-point-edit-False.dxf",
+    "sha256": "a978cf0c9e1abe89210548a783b13211809b682491247c85794f2ae181b64067",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2004-ascii-omitted-point-edit-True.dxf",
+    "sha256": "1c3015d88c6bfa5da75376e6ba0bfa086ca91fd925fab154d6906f8d999ee5f9",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-ascii-omitted-point-transform.dxf",
+    "sha256": "24cc4ea9c33ce221a9f8300ccaf56d09330bc6c65248bf29320c30f66c6625ca",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "d829abf7f96fd2cf478d92caf99e646ae89ab7d583ff801b316442559efa6c25",
+    "bytes": 15622
+  },
+  {
+    "path": "debug/producer-R2004-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "569216a9bcb71b04a0ff3797aabe443d5bc9953ed942dc88a04327903dc16cc6",
+    "bytes": 15155
+  },
+  {
+    "path": "debug/producer-R2004-ascii-packet-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2004-ascii-packet-True.dxf",
+    "sha256": "f4aab2ba2d2beaa0a6552bddb0cfec12ba23c30fbfe726df620befc782b92886",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-ascii-reverse-False.dxf",
+    "sha256": "25ccb0da7cf84cbff4a1fde7d11f783fa09f1e2b667094fb4cf87b1c02048f0e",
+    "bytes": 15195
+  },
+  {
+    "path": "debug/producer-R2004-ascii-reverse-True.dxf",
+    "sha256": "f0c82b3c7f9ffa54d24953599ba4ff330899908ac5393f901d793ead9f951b1d",
+    "bytes": 15195
+  },
+  {
+    "path": "debug/producer-R2004-ascii-transform.dxf",
+    "sha256": "8c11ddc1ba90a90f1dd5129502b9f77b5eadfa36fef7fd4928d1a599edfcf928",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-0.dxf",
+    "sha256": "73282985c9febd0c3356c387eef1576f6fab0b421f46148ae00c339da2da08bf",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-1.dxf",
+    "sha256": "9d034e126534a88273cf179014d4939854a08f9ff3fbfa243e3a8dd7dce689f0",
+    "bytes": 15195
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-2.dxf",
+    "sha256": "790d55d9796852da09a6769ab02e1b4b5413cd24c0b513cf25df9b591cd854a1",
+    "bytes": 15195
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-3.dxf",
+    "sha256": "6ffb9b6789080d93defb7bd8fd52b32b6b88da6ba437ea16314fbc87fcb93d33",
+    "bytes": 15205
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-reverse-scale-0.dxf",
+    "sha256": "0c2551997c77c8db7f3c2db040976376172006b771f0370856d18e7e6489908d",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-reverse-scale-1.dxf",
+    "sha256": "6ba3d31076ebaf7752d4036eea91ee099095daa9fafb94718dd09c18ceeb0b82",
+    "bytes": 15650
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-reverse-scale-2.dxf",
+    "sha256": "83d4e0cd620758cb88af5638c95ded6c31a891b118dea1c4762c6aea4802accf",
+    "bytes": 15650
+  },
+  {
+    "path": "debug/producer-R2004-ascii-width-reverse-scale-3.dxf",
+    "sha256": "e760826f1d7759e807f605108e5fb61556b3b3832393339a031be951f14fd0bf",
+    "bytes": 15657
+  },
+  {
+    "path": "debug/producer-R2004-binary-child-link.dxf",
+    "sha256": "19d7fcb933180a894175fe5f5853157532278fead9293aae9c7d9c0e1f68b5f6",
+    "bytes": 15945
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "230edd3b332dac471719c879805bd2d53fbc928e546d6d9b3e84736a03a24243",
+    "bytes": 15018
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-0-stored-False.dxf",
+    "sha256": "685ec934cf0aa3c66e6c927605a36c1ef4bad33486bf22ad52d83c540776c1ae",
+    "bytes": 15176
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-0-stored-True.dxf",
+    "sha256": "c05f64732b51a4cd7f01046a0dd385d9961a25c7526f5949948f58c295314047",
+    "bytes": 14746
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-0-transform-False.dxf",
+    "sha256": "269cd5e8898eec4eba185246ba74d57badb283355b9e2a6b3d02aace7e1725c0",
+    "bytes": 15363
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-0-transform-True.dxf",
+    "sha256": "0e1ced6aedeae34cdfc2d5dd6b11aff97039fc22b6fc74f5fffdba41e672d8db",
+    "bytes": 14931
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "8aa68d38afe0b91cde59bb8af7e85eca52adafb8366b298f9889aaf931a1f175",
+    "bytes": 15308
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-1-stored-False.dxf",
+    "sha256": "aa1834bd6087699c34db31cded462310606a8eaded424c2cb3fe6bc435bd9d0a",
+    "bytes": 15337
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-1-stored-True.dxf",
+    "sha256": "de9452cbc31fd9e52e00f726ee585a27a29c146aef1c85849aeec8bf4ae9b990",
+    "bytes": 14891
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-1-transform-False.dxf",
+    "sha256": "bf944cd8f91704be02afbb6e8c18016249ecd207466c8b7df8bfdd7677379d38",
+    "bytes": 15685
+  },
+  {
+    "path": "debug/producer-R2004-binary-degenerate-1-transform-True.dxf",
+    "sha256": "cdf90fc226ccceba1d3a895d2dc16d83c48899f790a128c0ab9b2ef0216a2482",
+    "bytes": 15221
+  },
+  {
+    "path": "debug/producer-R2004-binary-lifecycle.dxf",
+    "sha256": "03068c61b8bf4bb5535aae28aadd523f5e91c1a009226f6c0de9b5eb02e303a8",
+    "bytes": 16297
+  },
+  {
+    "path": "debug/producer-R2004-binary-omitted-point-edit-False.dxf",
+    "sha256": "a978cf0c9e1abe89210548a783b13211809b682491247c85794f2ae181b64067",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2004-binary-omitted-point-edit-True.dxf",
+    "sha256": "1c3015d88c6bfa5da75376e6ba0bfa086ca91fd925fab154d6906f8d999ee5f9",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-binary-omitted-point-transform.dxf",
+    "sha256": "1327fbd6086ca3a5b3a5ff375b6afea0cd5264386cb19298e281d07dba907f94",
+    "bytes": 15644
+  },
+  {
+    "path": "debug/producer-R2004-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "d829abf7f96fd2cf478d92caf99e646ae89ab7d583ff801b316442559efa6c25",
+    "bytes": 15622
+  },
+  {
+    "path": "debug/producer-R2004-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "569216a9bcb71b04a0ff3797aabe443d5bc9953ed942dc88a04327903dc16cc6",
+    "bytes": 15155
+  },
+  {
+    "path": "debug/producer-R2004-binary-packet-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2004-binary-packet-True.dxf",
+    "sha256": "f4aab2ba2d2beaa0a6552bddb0cfec12ba23c30fbfe726df620befc782b92886",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-binary-reverse-False.dxf",
+    "sha256": "3279dc272ba1f91d4d05408321b292e0625411196ab88cc8b294555560412c4a",
+    "bytes": 15651
+  },
+  {
+    "path": "debug/producer-R2004-binary-reverse-True.dxf",
+    "sha256": "caf945cc184d38cfdd4b992cc0f0510e338cbacc890b9e689e97c589e55eba0c",
+    "bytes": 15651
+  },
+  {
+    "path": "debug/producer-R2004-binary-transform.dxf",
+    "sha256": "4bef43348356484cf0170eabccdc20ff4e0d0cded6ca8e4fae89ff13be1f2a37",
+    "bytes": 15646
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-0.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-1.dxf",
+    "sha256": "d7d1bbe0db9bbf0674b1e13d2c95b4734e6325e85b7b8f7ea9c23058237f6f2c",
+    "bytes": 15650
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-2.dxf",
+    "sha256": "d13f667a30b62ea892a561e1436ea2b518c22e575eaec9b74d522c6cfb265eb8",
+    "bytes": 15650
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-3.dxf",
+    "sha256": "dd110a1fa655cefd5a14653d70d3305a5ea927adc4bffc477f901638f7471315",
+    "bytes": 15657
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-reverse-scale-0.dxf",
+    "sha256": "c772e4c8bad9e7a54228dd8ac1b12b47fd1a01432642640e77dae85738a7d038",
+    "bytes": 15185
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-reverse-scale-1.dxf",
+    "sha256": "c148a12f445c202e4ead21b6794b6c66ce015edf8fad2743a4ae881b5f5ea210",
+    "bytes": 15195
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-reverse-scale-2.dxf",
+    "sha256": "1b66f6f4fc9407c15815df553f144c7dbcaca68b93360dced04c62a4d6fe54c7",
+    "bytes": 15195
+  },
+  {
+    "path": "debug/producer-R2004-binary-width-reverse-scale-3.dxf",
+    "sha256": "75b6c21676054c9f2b7b0d1b5f6d03db98c9e36c1d8b3a086c7b2ef86a7ec8c6",
+    "bytes": 15205
+  },
+  {
+    "path": "debug/producer-R2007-ascii-child-link.dxf",
+    "sha256": "7686f229fd763a645433b9dd56fb583659be250101412b89ce65a93b9418765b",
+    "bytes": 16115
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "4168c8d93fce1122c43697ae3e370cf31805d9b93598019831aa9ff315094fad",
+    "bytes": 16162
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "613e4db801eac9a636896496cee49d955c211762294f3cb72dd18ca18b119c05",
+    "bytes": 15881
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "6547156007fd9dce0412b255fdfefc81b6d01666414789417686e9af891ea5d3",
+    "bytes": 15371
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "a042a6aa4613ad41eea9deca9d0161432bb25c7437910c87dc874352ab036bde",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "119ac2e315b1a4b8be97d40aa9b7e8a4aa379e8fdc29349b849dc2cc3cf160a5",
+    "bytes": 15556
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "0cdf22a6a0349596072e8a495d654b9c79c6569b1239299590c1594b5f29fbb6",
+    "bytes": 16484
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "27585e7d180e19a3f97e6a8750d960e6878ea248008e35b4478736c2c9fe560e",
+    "bytes": 16042
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "c1b3ef268c9b2679cc8ed75edf66eee8bf650781e7ebe580a9a8a31e9a7a0e4e",
+    "bytes": 15516
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "6596e16406416046d60710f1e09e56d9f5b9f942f356b6d8dd067650aafcb0b4",
+    "bytes": 16390
+  },
+  {
+    "path": "debug/producer-R2007-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "69b2061bebafa35ad592d1f3da6b7fbd8f9d45e58766c9d57df01c611685bbd7",
+    "bytes": 15846
+  },
+  {
+    "path": "debug/producer-R2007-ascii-lifecycle.dxf",
+    "sha256": "7702b8cdc52995b0d461157bcf6058617f555f404aff7b838e9d4d7b31983823",
+    "bytes": 16434
+  },
+  {
+    "path": "debug/producer-R2007-ascii-omitted-point-edit-False.dxf",
+    "sha256": "0c33379bbd71b732543ceeddcce111f07c63eb124985b8a82c768148f08b7416",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2007-ascii-omitted-point-edit-True.dxf",
+    "sha256": "6d8a646eefee69be46df1aabf4be91ade4dc3fb8d01d19854d9d6936242779e5",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-ascii-omitted-point-transform.dxf",
+    "sha256": "0caaae4a77860bd5936e3cd7cc18fe83c5c735527f536c7e4b308c00d7f9c05f",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "7f3b6b514734f7c3858572d9516342841d76aa2d5872581e5c3cf3dc11726a04",
+    "bytes": 16327
+  },
+  {
+    "path": "debug/producer-R2007-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "6d422e8e3dcef3bcb054c87b578beec706a2dca09f77ef0fe4bd451a983ef305",
+    "bytes": 15780
+  },
+  {
+    "path": "debug/producer-R2007-ascii-packet-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2007-ascii-packet-True.dxf",
+    "sha256": "f2ff6eaedff57c936b1eaf1132ef2d51d0348ddfb1957633cf8d173c3d813315",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-ascii-reverse-False.dxf",
+    "sha256": "e37de5cfd616223133dd393bb6bde14831f7d5f64f1d23fedad6a4ea01201653",
+    "bytes": 15820
+  },
+  {
+    "path": "debug/producer-R2007-ascii-reverse-True.dxf",
+    "sha256": "df9860efe149a09ede355ee328ee3d44b09129eed5143af86118aff0fdfb65a3",
+    "bytes": 15820
+  },
+  {
+    "path": "debug/producer-R2007-ascii-transform.dxf",
+    "sha256": "1ff5ca36cba9a5abfbf716d636e95c8fd0d452d83c50c810422243e5e1ef9b3e",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-0.dxf",
+    "sha256": "3c7fe5625573076a73cb8cf64a0a7748a2b86599d5ac11fe6dc3a2584862f77e",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-1.dxf",
+    "sha256": "f7f7c1639704c867945c5c2fd64ed582dbb3ab0a490dde7006f6cc47ce9d48e3",
+    "bytes": 15820
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-2.dxf",
+    "sha256": "61799e31c3b9570f5e35d876821a6ed3ee7e125a87cabf5d24bcfc5c728ca36c",
+    "bytes": 15820
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-3.dxf",
+    "sha256": "d11274560d94b73f547577f3440b7a557c97cc1d4a078afa5b5f087a8cc802dd",
+    "bytes": 15830
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-reverse-scale-0.dxf",
+    "sha256": "5516107031972b8d0e25255602f4c2d00ad49b21efa0b0b398dee7e8a7c5387a",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-reverse-scale-1.dxf",
+    "sha256": "35d23f4c24a4d412fb322166cbf11fa8df59d768cd5070e4b9e8b51329f54bc3",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-reverse-scale-2.dxf",
+    "sha256": "701095ea1a30b2162892eb82e5336054b96c9118475d14d75898b2e0d09c8045",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2007-ascii-width-reverse-scale-3.dxf",
+    "sha256": "a980dd2ede28f3205de96db6e5ded9621a9fa491a8404ce081ff3161810d4ecc",
+    "bytes": 16362
+  },
+  {
+    "path": "debug/producer-R2007-binary-child-link.dxf",
+    "sha256": "064477eb24ac8ec0193fb537e59114509e6d080d50292185f36f2576db647d6c",
+    "bytes": 16650
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "90d9d9dac9136c73c4ce1e81a4682a87c0ae09bbd3ddf3a86c1f4bf66b1e0961",
+    "bytes": 15643
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-0-stored-False.dxf",
+    "sha256": "613e4db801eac9a636896496cee49d955c211762294f3cb72dd18ca18b119c05",
+    "bytes": 15881
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-0-stored-True.dxf",
+    "sha256": "6547156007fd9dce0412b255fdfefc81b6d01666414789417686e9af891ea5d3",
+    "bytes": 15371
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-0-transform-False.dxf",
+    "sha256": "a042a6aa4613ad41eea9deca9d0161432bb25c7437910c87dc874352ab036bde",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-0-transform-True.dxf",
+    "sha256": "119ac2e315b1a4b8be97d40aa9b7e8a4aa379e8fdc29349b849dc2cc3cf160a5",
+    "bytes": 15556
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "d6db7a4e927bdbb35e92487106d38bf4e05504cca809b7158a0604b6150eba24",
+    "bytes": 15933
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-1-stored-False.dxf",
+    "sha256": "27585e7d180e19a3f97e6a8750d960e6878ea248008e35b4478736c2c9fe560e",
+    "bytes": 16042
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-1-stored-True.dxf",
+    "sha256": "c1b3ef268c9b2679cc8ed75edf66eee8bf650781e7ebe580a9a8a31e9a7a0e4e",
+    "bytes": 15516
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-1-transform-False.dxf",
+    "sha256": "6596e16406416046d60710f1e09e56d9f5b9f942f356b6d8dd067650aafcb0b4",
+    "bytes": 16390
+  },
+  {
+    "path": "debug/producer-R2007-binary-degenerate-1-transform-True.dxf",
+    "sha256": "69b2061bebafa35ad592d1f3da6b7fbd8f9d45e58766c9d57df01c611685bbd7",
+    "bytes": 15846
+  },
+  {
+    "path": "debug/producer-R2007-binary-lifecycle.dxf",
+    "sha256": "b373836cd1ad11626039f6daaedf822d52279d6355e86177fbef7b9107e0826c",
+    "bytes": 17002
+  },
+  {
+    "path": "debug/producer-R2007-binary-omitted-point-edit-False.dxf",
+    "sha256": "0c33379bbd71b732543ceeddcce111f07c63eb124985b8a82c768148f08b7416",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2007-binary-omitted-point-edit-True.dxf",
+    "sha256": "6d8a646eefee69be46df1aabf4be91ade4dc3fb8d01d19854d9d6936242779e5",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-binary-omitted-point-transform.dxf",
+    "sha256": "ec221c7ca9961c20246c44777da01a05844094ff09c12e362b7921527e651c7f",
+    "bytes": 16349
+  },
+  {
+    "path": "debug/producer-R2007-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "7f3b6b514734f7c3858572d9516342841d76aa2d5872581e5c3cf3dc11726a04",
+    "bytes": 16327
+  },
+  {
+    "path": "debug/producer-R2007-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "6d422e8e3dcef3bcb054c87b578beec706a2dca09f77ef0fe4bd451a983ef305",
+    "bytes": 15780
+  },
+  {
+    "path": "debug/producer-R2007-binary-packet-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2007-binary-packet-True.dxf",
+    "sha256": "f2ff6eaedff57c936b1eaf1132ef2d51d0348ddfb1957633cf8d173c3d813315",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-binary-reverse-False.dxf",
+    "sha256": "87e69090abbae5ccf406d3e483fc005441c58b669ad7c734042ad581b5f1314e",
+    "bytes": 16356
+  },
+  {
+    "path": "debug/producer-R2007-binary-reverse-True.dxf",
+    "sha256": "097658a6b3f70d09e168c3b2c9852967a88b68031c056619b381906bc21d0e3c",
+    "bytes": 16356
+  },
+  {
+    "path": "debug/producer-R2007-binary-transform.dxf",
+    "sha256": "449a7081a26ae32843b322e9a4344f0089dab6da7c24e1781bc91074c4920860",
+    "bytes": 16351
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-0.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-1.dxf",
+    "sha256": "df82aea7d5fd40e83b909a5618c4faa4f3561985a565b4b9fae079d139ff30ae",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-2.dxf",
+    "sha256": "8c98353cf2bdd332e08261a6f66bbecd3a05729a901d35addaf95e6b0488a3ef",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-3.dxf",
+    "sha256": "af3e5c6116d08cc907acb91ce25b2d0b5001674f880178179b748641e5bcbd99",
+    "bytes": 16362
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-reverse-scale-0.dxf",
+    "sha256": "3bd7b5760bf13797166042a93d3f1674886091e4c672ddb28be72a3041426624",
+    "bytes": 15810
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-reverse-scale-1.dxf",
+    "sha256": "87e9b66ed348602ffca3885d156861c0bb0cfff6cc28af7da56cfe8185d80e77",
+    "bytes": 15820
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-reverse-scale-2.dxf",
+    "sha256": "44eb8eacabad726f05712e446c98dee22885c08e91440ededd226b6d229d4790",
+    "bytes": 15820
+  },
+  {
+    "path": "debug/producer-R2007-binary-width-reverse-scale-3.dxf",
+    "sha256": "5beca9ba53bf89c917412719397a09231411da256516633e3f084ad5b98ccaf0",
+    "bytes": 15830
+  },
+  {
+    "path": "debug/producer-R2010-ascii-child-link.dxf",
+    "sha256": "eb2e38b221c79e1b86bd836dfd7d5fb23be7ed6c855a0921a77b8d947f94bcde",
+    "bytes": 16116
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "46aaada2f83a6e3a31e826c157d881a18f7f67eb7b8a6cf0894e2b1f952f829e",
+    "bytes": 16162
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "6ae76d794bec09546a8d633bdfb965445a1af9acc879d224207558e494b3e95c",
+    "bytes": 15881
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "44911377e1fc08620c713e5a6916889ea3c550b0adb68a3e937c275da4089770",
+    "bytes": 15372
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "2499b7c67b6ed5d7657eabecf333584e482d0e127b355451eb81bce2508106a2",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "b6f9508f599df9e5b0a401b4a4767c0de025c1b9b451a32d39ca649cc914dd4a",
+    "bytes": 15557
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "aea26f89a73e8bc1c7ffb1466965f18c3f869e388d32f1bceb310cfe1c84a694",
+    "bytes": 16484
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "49d1c94b682f1a1bf4802cc69e91ccad044851cfde23df8f2b27afb39d6d7c6a",
+    "bytes": 16042
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "dd620bb99f8c782b9039fe0824cf43772df61bcc97390c6c74ccf05d3f7f6fa3",
+    "bytes": 15517
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "18ac978a26d054e289bcf07bc0e8ca27acac5ae4c07d07e57a1747e176d2f9f0",
+    "bytes": 16390
+  },
+  {
+    "path": "debug/producer-R2010-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "3659683fff6c22b53db483310cd55522121cd8743e5893d3d54df631d1c12c2d",
+    "bytes": 15847
+  },
+  {
+    "path": "debug/producer-R2010-ascii-lifecycle.dxf",
+    "sha256": "71cc3bba86dee96ed7669fb8f49204a5ea7cee6f1f8dc6e1431bd6581ee36b84",
+    "bytes": 16435
+  },
+  {
+    "path": "debug/producer-R2010-ascii-omitted-point-edit-False.dxf",
+    "sha256": "9b70f91efe3f6e4830446da4d6ec61495a0bd24286faf83ff780c01eb76b5908",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2010-ascii-omitted-point-edit-True.dxf",
+    "sha256": "c41100007e77332633f889e1cee5ed0051c9558978065177520fcba397cb2145",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-ascii-omitted-point-transform.dxf",
+    "sha256": "ec2b9c19f40cf5a574d0da02fd6cf811fbf6b055123fe105164d88fe7d0b8ce8",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "745b90136dbeedfd647a3bd9120741184dc52e643e75e56dd258f4b3ad1db845",
+    "bytes": 16327
+  },
+  {
+    "path": "debug/producer-R2010-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "715fca3e8768c604a9c77a9211a6c31df5bec51bd31ef58bf66fd0d5569c2f19",
+    "bytes": 15781
+  },
+  {
+    "path": "debug/producer-R2010-ascii-packet-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2010-ascii-packet-True.dxf",
+    "sha256": "cc2aa11cbea12fb5f5e59b0a1285ff82b65bd01aa41c0b88ae93aa33982e9133",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-ascii-reverse-False.dxf",
+    "sha256": "b07d52e27a510413879318aa2fe7426f0986839e721f2e42c6638a6354b415ec",
+    "bytes": 15821
+  },
+  {
+    "path": "debug/producer-R2010-ascii-reverse-True.dxf",
+    "sha256": "30fee1f01fcb5b8a8cf842679469ecc3bc37333a6e202fae4ca2f409128c9333",
+    "bytes": 15821
+  },
+  {
+    "path": "debug/producer-R2010-ascii-transform.dxf",
+    "sha256": "d9bd9691564a6b7116b8cfe38b1ed1ca48c1242097887b0c4ef06c5d791c9a6a",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-0.dxf",
+    "sha256": "f5d402e0fec5e40b7bb2936f7cfecb4be2b6a870b57ccd1d06d5727c14fd6610",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-1.dxf",
+    "sha256": "12ab74f5d69ee0af02342ca59f2c024599a99aeb18a6812e096a5a8005449b5d",
+    "bytes": 15821
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-2.dxf",
+    "sha256": "a17c5610ab95fa406cbbf9b82c9e6cf9ca086c63e66394f9e79fe529cdc77af3",
+    "bytes": 15821
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-3.dxf",
+    "sha256": "c3cc7976493bc5620ea9876cd55df1fbf9921424d11616113c3d03450ba941e1",
+    "bytes": 15831
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-reverse-scale-0.dxf",
+    "sha256": "69fe3971c6b5a4a368b8ee20904fcdc8efbf409752cae7a936f25fccac8bb9ee",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-reverse-scale-1.dxf",
+    "sha256": "b73e442243660d013700d2cacff2d9f1c422c8d1b4ed7fc8d44e51637473fbd9",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-reverse-scale-2.dxf",
+    "sha256": "14cdae474351334159067ba2a75a2a4715ed63608821d7e9d5a6d1ddbb999f40",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2010-ascii-width-reverse-scale-3.dxf",
+    "sha256": "5b291e5febb0e61f81f552278dcc8586562e650da7139e257f26cb9f79f34366",
+    "bytes": 16362
+  },
+  {
+    "path": "debug/producer-R2010-binary-child-link.dxf",
+    "sha256": "1ca4bd15d0c31f3d932850d144514fe1f3f7c01044fbb923c0e7d2dd8ceed82f",
+    "bytes": 16650
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "44cab7654ad1630e86946261bdb002fcabc9552dde2c78d996d6704e3c2a7bdb",
+    "bytes": 15644
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-0-stored-False.dxf",
+    "sha256": "6ae76d794bec09546a8d633bdfb965445a1af9acc879d224207558e494b3e95c",
+    "bytes": 15881
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-0-stored-True.dxf",
+    "sha256": "44911377e1fc08620c713e5a6916889ea3c550b0adb68a3e937c275da4089770",
+    "bytes": 15372
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-0-transform-False.dxf",
+    "sha256": "2499b7c67b6ed5d7657eabecf333584e482d0e127b355451eb81bce2508106a2",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-0-transform-True.dxf",
+    "sha256": "b6f9508f599df9e5b0a401b4a4767c0de025c1b9b451a32d39ca649cc914dd4a",
+    "bytes": 15557
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "0a33e5a45282273e6a4d129bfa0df9a89ae981c4ac300669852d07ac97911bff",
+    "bytes": 15934
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-1-stored-False.dxf",
+    "sha256": "49d1c94b682f1a1bf4802cc69e91ccad044851cfde23df8f2b27afb39d6d7c6a",
+    "bytes": 16042
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-1-stored-True.dxf",
+    "sha256": "dd620bb99f8c782b9039fe0824cf43772df61bcc97390c6c74ccf05d3f7f6fa3",
+    "bytes": 15517
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-1-transform-False.dxf",
+    "sha256": "18ac978a26d054e289bcf07bc0e8ca27acac5ae4c07d07e57a1747e176d2f9f0",
+    "bytes": 16390
+  },
+  {
+    "path": "debug/producer-R2010-binary-degenerate-1-transform-True.dxf",
+    "sha256": "3659683fff6c22b53db483310cd55522121cd8743e5893d3d54df631d1c12c2d",
+    "bytes": 15847
+  },
+  {
+    "path": "debug/producer-R2010-binary-lifecycle.dxf",
+    "sha256": "72dfb8e38f954a2dbf9ad5e9c577fb246df0a68162b94f1903693390ca8b5256",
+    "bytes": 17002
+  },
+  {
+    "path": "debug/producer-R2010-binary-omitted-point-edit-False.dxf",
+    "sha256": "9b70f91efe3f6e4830446da4d6ec61495a0bd24286faf83ff780c01eb76b5908",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2010-binary-omitted-point-edit-True.dxf",
+    "sha256": "c41100007e77332633f889e1cee5ed0051c9558978065177520fcba397cb2145",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-binary-omitted-point-transform.dxf",
+    "sha256": "61bddaf41aaabe8619c663dc74b0471d245f2f8114837a6ee5d6fbdf0c567d51",
+    "bytes": 16349
+  },
+  {
+    "path": "debug/producer-R2010-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "745b90136dbeedfd647a3bd9120741184dc52e643e75e56dd258f4b3ad1db845",
+    "bytes": 16327
+  },
+  {
+    "path": "debug/producer-R2010-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "715fca3e8768c604a9c77a9211a6c31df5bec51bd31ef58bf66fd0d5569c2f19",
+    "bytes": 15781
+  },
+  {
+    "path": "debug/producer-R2010-binary-packet-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2010-binary-packet-True.dxf",
+    "sha256": "cc2aa11cbea12fb5f5e59b0a1285ff82b65bd01aa41c0b88ae93aa33982e9133",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-binary-reverse-False.dxf",
+    "sha256": "f4d8ebf588f7d7c169abe6dad7845100f7cd1679cb542167d508e2c3c6133e25",
+    "bytes": 16356
+  },
+  {
+    "path": "debug/producer-R2010-binary-reverse-True.dxf",
+    "sha256": "b77ba4bbe4b47b933f388f9430a10819c0884bd743a91ea23102af4a96de149f",
+    "bytes": 16356
+  },
+  {
+    "path": "debug/producer-R2010-binary-transform.dxf",
+    "sha256": "c33a8aed4eb49a2a6e166f5d3c280ae21f847a89c60923b5aa2ca7343c508376",
+    "bytes": 16351
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-0.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-1.dxf",
+    "sha256": "c86bd3dc2fd1a128c53b833b4efd4ce724c1c9777b5ac5f31973fe08716ba47e",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-2.dxf",
+    "sha256": "711b41437f768c8e4ecb21bdadffa8b416d214110833e2c2480fb81987a4cc7b",
+    "bytes": 16355
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-3.dxf",
+    "sha256": "a3667fb497d9e51d261fbf1229b5b6c2c640c17b2c19b5a1af572da760b757bc",
+    "bytes": 16362
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-reverse-scale-0.dxf",
+    "sha256": "eb498dfb655212c552323eea9f658d9971c58e671bb639fe0e79adda00a6bee0",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-reverse-scale-1.dxf",
+    "sha256": "dd50f9579e2d83999f0a9b77af64083c02ad6f9a48677fa1286dfa9ac6f9a2ed",
+    "bytes": 15821
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-reverse-scale-2.dxf",
+    "sha256": "05c1d7d4258cc02b0ce27e1c18f418d9058c06c78dd0f7f4716048c5454c4c7c",
+    "bytes": 15821
+  },
+  {
+    "path": "debug/producer-R2010-binary-width-reverse-scale-3.dxf",
+    "sha256": "67ac00a63f0bdfde0b108b7c74cc155e74e8f8d9c7ddf1fe1c6762794ceb58e5",
+    "bytes": 15831
+  },
+  {
+    "path": "debug/producer-R2013-ascii-child-link.dxf",
+    "sha256": "c3fcc58157f777ff1f4d1937c8f69c4992f71c8ea2b241f4f9181d2c2ab16903",
+    "bytes": 16146
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "49e0b7aa113f21bde63cb15db8a616f096765440046a4c2f47e28ba051a74137",
+    "bytes": 16188
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "fad27376b8c2101d500679c8358dfd159f17514d8c4bdfd4d74a1a75c63e9fcf",
+    "bytes": 15907
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "f5477de64cf63403d30a317a86f3edccdef84ce2168b945688cb788e23ce17fb",
+    "bytes": 15402
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "4a86e0cad64fe7ecc4c10f6b1316e0b3ce11e4f5c244ecbcf4702b75d2b10abe",
+    "bytes": 16094
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "f68186ddc66787613c4eb71cf800e61f23def4789ff69611aa921269737066cc",
+    "bytes": 15587
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "9ac761c559a5858fbab9c8ca28b8202aa35fa07c538ecad6875b8b30e65d5c1a",
+    "bytes": 16510
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "83da60606a230b2743daa7d46b4dc5f3619c50f06a597b6de68de773e17193b2",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "1a9820a3c000844dc23e48b4078baa8139a9f226c00db6c9f76c276b31e3929f",
+    "bytes": 15547
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "b651af1e3dd33be27c598d1511b595b12a011ec4c0b977723996ead34c48c14a",
+    "bytes": 16416
+  },
+  {
+    "path": "debug/producer-R2013-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "ef3f43a8b8e1af554fe1f48c7c29dbebaae2e1657a0fb547155509bf85568471",
+    "bytes": 15877
+  },
+  {
+    "path": "debug/producer-R2013-ascii-lifecycle.dxf",
+    "sha256": "5563c8de9e04cebdc4d0bd907b46087d7997fce677192520e47943be792afe32",
+    "bytes": 16465
+  },
+  {
+    "path": "debug/producer-R2013-ascii-omitted-point-edit-False.dxf",
+    "sha256": "6ea8e0f1a26f172f1c59228d2b46096c4cc08bb6f5e6d0be276035010237bf67",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2013-ascii-omitted-point-edit-True.dxf",
+    "sha256": "c32e43c572dd37b1a47402febf9c01bda77be1dbd83f613cf019373b7d452934",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-ascii-omitted-point-transform.dxf",
+    "sha256": "eceb1b5cec591adab4591a0dcd4f584ca6cb680f3f77e29a5dc46e2a9d3e27c4",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "45245bbfce50b8c090193eece7cf324731f095e2c398b6bae9f9566dcabcb303",
+    "bytes": 16353
+  },
+  {
+    "path": "debug/producer-R2013-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "7a383513c46b4a7672070bfbc6988a370d2eeb0d2decf769f746344b7d7dbcc7",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2013-ascii-packet-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2013-ascii-packet-True.dxf",
+    "sha256": "06ed87d2e28aa0454e15048beddb2879050cecb8b7dacd911b7f9df9e8d9d928",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-ascii-reverse-False.dxf",
+    "sha256": "ba7589b7ff463a3f560c5c44493be030eb0c8740e3aa7bafd639659d7fc9cf18",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2013-ascii-reverse-True.dxf",
+    "sha256": "382a262559b0855d18ff72ad19a3ca9166d42354ea7ac3c56fc91699e6c20b55",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2013-ascii-transform.dxf",
+    "sha256": "e59efd5d5bbe414f31f85662ae5a0dd60b2f1669ffb9a87c0a911804b1961b31",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-0.dxf",
+    "sha256": "729b31b8f00f5d3e81f5e4b696996e2dd5cdaa5ed89f51e09dcd71831de5f1cb",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-1.dxf",
+    "sha256": "38d7b6791be6ebb706508657189b446b4d05a59d9486d1c88a60cef725ae5a5b",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-2.dxf",
+    "sha256": "028992dd1ccc96f33239fae377f65509fb405dc43c22e69d7db07c39fa02d095",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-3.dxf",
+    "sha256": "326b8b55d2d00f11ec833d3d5cd6257407574f58b176d495f3a6c373c193406e",
+    "bytes": 15861
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-reverse-scale-0.dxf",
+    "sha256": "db4c8a5ad81b7a666af2d884063f1e9a629c700fc21a916aa1ee1391b6307ced",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-reverse-scale-1.dxf",
+    "sha256": "52f4a7a1795c7013056fd70d4772cf0898cab785afc0e4dba0c5b083ded2374a",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-reverse-scale-2.dxf",
+    "sha256": "0fe4fe94f18f40086a5eb42f89b7a14132cf2792c18371e7f1a71cadea1b2d18",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2013-ascii-width-reverse-scale-3.dxf",
+    "sha256": "c9364111773e867c286f2ad3100c4e49157485cec0c89f577d925a0e9a337dff",
+    "bytes": 16388
+  },
+  {
+    "path": "debug/producer-R2013-binary-child-link.dxf",
+    "sha256": "2a877a18bb7c86e5353e24610fd8b60681fa8e2be226376effd7f4369fdc5b39",
+    "bytes": 16676
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "8705d5a19d2f96729c69a19c85f5905c35b449c695dba8216abadb17a6dc1e7b",
+    "bytes": 15674
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-0-stored-False.dxf",
+    "sha256": "fad27376b8c2101d500679c8358dfd159f17514d8c4bdfd4d74a1a75c63e9fcf",
+    "bytes": 15907
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-0-stored-True.dxf",
+    "sha256": "f5477de64cf63403d30a317a86f3edccdef84ce2168b945688cb788e23ce17fb",
+    "bytes": 15402
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-0-transform-False.dxf",
+    "sha256": "4a86e0cad64fe7ecc4c10f6b1316e0b3ce11e4f5c244ecbcf4702b75d2b10abe",
+    "bytes": 16094
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-0-transform-True.dxf",
+    "sha256": "f68186ddc66787613c4eb71cf800e61f23def4789ff69611aa921269737066cc",
+    "bytes": 15587
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "04f740248afe5b5f6030f760ebfbdfd637b5c1490998727e433818712e28b23f",
+    "bytes": 15964
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-1-stored-False.dxf",
+    "sha256": "83da60606a230b2743daa7d46b4dc5f3619c50f06a597b6de68de773e17193b2",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-1-stored-True.dxf",
+    "sha256": "1a9820a3c000844dc23e48b4078baa8139a9f226c00db6c9f76c276b31e3929f",
+    "bytes": 15547
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-1-transform-False.dxf",
+    "sha256": "b651af1e3dd33be27c598d1511b595b12a011ec4c0b977723996ead34c48c14a",
+    "bytes": 16416
+  },
+  {
+    "path": "debug/producer-R2013-binary-degenerate-1-transform-True.dxf",
+    "sha256": "ef3f43a8b8e1af554fe1f48c7c29dbebaae2e1657a0fb547155509bf85568471",
+    "bytes": 15877
+  },
+  {
+    "path": "debug/producer-R2013-binary-lifecycle.dxf",
+    "sha256": "48c85de2cc277d219d8ff98082f84597ca9028b6f6152a34d1add9afee1e0398",
+    "bytes": 17028
+  },
+  {
+    "path": "debug/producer-R2013-binary-omitted-point-edit-False.dxf",
+    "sha256": "6ea8e0f1a26f172f1c59228d2b46096c4cc08bb6f5e6d0be276035010237bf67",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2013-binary-omitted-point-edit-True.dxf",
+    "sha256": "c32e43c572dd37b1a47402febf9c01bda77be1dbd83f613cf019373b7d452934",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-binary-omitted-point-transform.dxf",
+    "sha256": "545126cc96d4231fe19a91382c79fade0767984a6a143b9badbae48b5af5b55a",
+    "bytes": 16375
+  },
+  {
+    "path": "debug/producer-R2013-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "45245bbfce50b8c090193eece7cf324731f095e2c398b6bae9f9566dcabcb303",
+    "bytes": 16353
+  },
+  {
+    "path": "debug/producer-R2013-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "7a383513c46b4a7672070bfbc6988a370d2eeb0d2decf769f746344b7d7dbcc7",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2013-binary-packet-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2013-binary-packet-True.dxf",
+    "sha256": "06ed87d2e28aa0454e15048beddb2879050cecb8b7dacd911b7f9df9e8d9d928",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-binary-reverse-False.dxf",
+    "sha256": "01b3f25a697700aa59792ec5e44c6696c0982f1eb50dd50cfad48d8b1cddb84f",
+    "bytes": 16382
+  },
+  {
+    "path": "debug/producer-R2013-binary-reverse-True.dxf",
+    "sha256": "42fbbb9b2b825a5e02c7008ff08145af76e5b1d4c8d6532f390bc37b5f9ab3c8",
+    "bytes": 16382
+  },
+  {
+    "path": "debug/producer-R2013-binary-transform.dxf",
+    "sha256": "d04729a424baa37797317b70dd709ab2ef7a6603720c986f671ac92988583693",
+    "bytes": 16377
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-0.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-1.dxf",
+    "sha256": "9f607de798a3f30ace3d4b6f0bbac4b1f3b8094d67a40b0736eeecce033704b9",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-2.dxf",
+    "sha256": "15c08204d1feee06979f7d8f8fde1e1978009ba76eebb5650946a16174d16179",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-3.dxf",
+    "sha256": "6fe7585a2dbbc1963e7c0d4b51af5f2ff6c0036e2969e749a3aef9df9350994b",
+    "bytes": 16388
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-reverse-scale-0.dxf",
+    "sha256": "f40c1409bf91dfca9905803eeeb84424a92b01378693d4abce0316c7fc53c9b7",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-reverse-scale-1.dxf",
+    "sha256": "c4d25ba8d6b50846fcdfb8d0cb70f27c5d52acb2c9607180ac75dd2217a5ca6a",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-reverse-scale-2.dxf",
+    "sha256": "b060f977fd05771951f3522005533ac39e1a55894bc4c46baa971787da90049e",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2013-binary-width-reverse-scale-3.dxf",
+    "sha256": "2076fa63532462339b1d80fd83d76a23cde4907c5fd32cd5cddaae0a8ac3842a",
+    "bytes": 15861
+  },
+  {
+    "path": "debug/producer-R2018-ascii-child-link.dxf",
+    "sha256": "6e2a70dbb903723190a6e06364f9e4003fe2331370326e10d64050397c145d3f",
+    "bytes": 16146
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "8a7ad7b9971bbbb352ebb71533b62c428f4a6a142984f7fba7edf91f90a4f3b4",
+    "bytes": 16188
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "af2333e2865ecbc2c9bcc0d51b889f0c380411c95977e5a2bff231b3153d2380",
+    "bytes": 15907
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "efb9a539bf190ba2defa03433851d05e34719fa69a0af3c4db0686717b4fcda8",
+    "bytes": 15402
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "1508b3cad3afb1d30cc2e318eab8b33d5249e4b8de98105ee97a2f87a72c83ca",
+    "bytes": 16094
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "39ef1819c3b44300abd6a08c93d2225b58f539e4dfeecf787c74e9181befab7a",
+    "bytes": 15587
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "64cfeea3f71f1af1437f53dfc3661a00b4f18a7fcd6c859dc3487f652db41566",
+    "bytes": 16510
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "c2365040ae81b4a3a52c266195c21d5368f142a5d4164fb50070f7301b0901bd",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "a8debcf1a52bc4a42e2153f6a63dd42ef97c8cf8e423556e88ec578df78e75c4",
+    "bytes": 15547
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "7f4d3cdabdc46cc2df03c3835b6fd85af3d32103b895d558d5808f8e2bf66afd",
+    "bytes": 16416
+  },
+  {
+    "path": "debug/producer-R2018-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "52bd4128e7f4ec8ad2153b3a8470f62020dbc0ae2d931f6ae10c475e7fb9fd0e",
+    "bytes": 15877
+  },
+  {
+    "path": "debug/producer-R2018-ascii-lifecycle.dxf",
+    "sha256": "eaa773919ecc2678eebdeab205a5be5712811a9bc4578904dd41c0551f56dd23",
+    "bytes": 16465
+  },
+  {
+    "path": "debug/producer-R2018-ascii-omitted-point-edit-False.dxf",
+    "sha256": "bef1a9c62e2957647ef8a236834345a723361c456b45ee9e6e31d0094eb380d5",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2018-ascii-omitted-point-edit-True.dxf",
+    "sha256": "f7530bfcc1565b6d698334c7d6af9ea1828d011e1674672d332ee173c8fa07c9",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-ascii-omitted-point-transform.dxf",
+    "sha256": "861e355b7977b5811b56adeea8293827e680abca08bb1eec393115a94e73ff6e",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "abdd0c2703bcc885434f47a2bec6b2b07ca187ecd3cb8ccdfbfbccf24278bebb",
+    "bytes": 16353
+  },
+  {
+    "path": "debug/producer-R2018-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "fc5aec47b5c87139901e9d88a1f8213a464741c7e8c58f7d54ad2a4a7b9aa205",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2018-ascii-packet-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2018-ascii-packet-True.dxf",
+    "sha256": "da63e923ec11cc98afac064e205c14702506a5f9ccbc2c09defe048c57964718",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-ascii-reverse-False.dxf",
+    "sha256": "db018b33098408ac17bf6922558aec5b3193da728f10c77bd1311b83e51c21be",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2018-ascii-reverse-True.dxf",
+    "sha256": "8e964555dcbb7c1d7a75b47867abf3472e9e1b58cad7934b19bde202390a8a20",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2018-ascii-transform.dxf",
+    "sha256": "1162244075d87604230229bd78b51c8fcc7bea0240547f964f3b5091853b816e",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-0.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-1.dxf",
+    "sha256": "5ff0fa774c7fc93f80380f4dc4b8d508c736bf78ddd16cda97042121fcba5313",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-2.dxf",
+    "sha256": "64ae84ab53cafa8aa5183f77f7656b66cee84bdbf1b6f0a300e0e31b839fc76e",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-3.dxf",
+    "sha256": "cfe659fc27fc5da3c64defdb7db48c8b3d473c34092952c9186f0dbcbfb712f0",
+    "bytes": 15861
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-reverse-scale-0.dxf",
+    "sha256": "f6439da3defa7853ff87290adde79cb9ccc8ffe2f61a05cc51092190d5fcef22",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-reverse-scale-1.dxf",
+    "sha256": "25d1b702b0774bba4d81d6bd7d64de496fc088ab65736521ee83490de303a41f",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-reverse-scale-2.dxf",
+    "sha256": "f025334e04190198710771f316fde632cda270ce87a91551ed6435c6bdbe7c3a",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2018-ascii-width-reverse-scale-3.dxf",
+    "sha256": "eabf1313d40d0f33574493a53cfda352dd7f325c8fe979293ed8c5d955dad36d",
+    "bytes": 16388
+  },
+  {
+    "path": "debug/producer-R2018-binary-child-link.dxf",
+    "sha256": "fd109995d703af55bc1400c769827fd5c1ef036f2f73c9d936df9d143fdfacfe",
+    "bytes": 16676
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "d02d7bc04274f1a67b391965d80509a3248829736a7867449ff271ff0dedc666",
+    "bytes": 15674
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-0-stored-False.dxf",
+    "sha256": "af2333e2865ecbc2c9bcc0d51b889f0c380411c95977e5a2bff231b3153d2380",
+    "bytes": 15907
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-0-stored-True.dxf",
+    "sha256": "efb9a539bf190ba2defa03433851d05e34719fa69a0af3c4db0686717b4fcda8",
+    "bytes": 15402
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-0-transform-False.dxf",
+    "sha256": "1508b3cad3afb1d30cc2e318eab8b33d5249e4b8de98105ee97a2f87a72c83ca",
+    "bytes": 16094
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-0-transform-True.dxf",
+    "sha256": "39ef1819c3b44300abd6a08c93d2225b58f539e4dfeecf787c74e9181befab7a",
+    "bytes": 15587
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "66c3d97f926422c20c28bf004b8b4e7b9e48986853810a523b70804bc7e540d4",
+    "bytes": 15964
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-1-stored-False.dxf",
+    "sha256": "c2365040ae81b4a3a52c266195c21d5368f142a5d4164fb50070f7301b0901bd",
+    "bytes": 16068
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-1-stored-True.dxf",
+    "sha256": "a8debcf1a52bc4a42e2153f6a63dd42ef97c8cf8e423556e88ec578df78e75c4",
+    "bytes": 15547
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-1-transform-False.dxf",
+    "sha256": "7f4d3cdabdc46cc2df03c3835b6fd85af3d32103b895d558d5808f8e2bf66afd",
+    "bytes": 16416
+  },
+  {
+    "path": "debug/producer-R2018-binary-degenerate-1-transform-True.dxf",
+    "sha256": "52bd4128e7f4ec8ad2153b3a8470f62020dbc0ae2d931f6ae10c475e7fb9fd0e",
+    "bytes": 15877
+  },
+  {
+    "path": "debug/producer-R2018-binary-lifecycle.dxf",
+    "sha256": "14eff915c1395864c666d4714a941c643944585af724cb300ba8024b40ab0689",
+    "bytes": 17028
+  },
+  {
+    "path": "debug/producer-R2018-binary-omitted-point-edit-False.dxf",
+    "sha256": "bef1a9c62e2957647ef8a236834345a723361c456b45ee9e6e31d0094eb380d5",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2018-binary-omitted-point-edit-True.dxf",
+    "sha256": "f7530bfcc1565b6d698334c7d6af9ea1828d011e1674672d332ee173c8fa07c9",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-binary-omitted-point-transform.dxf",
+    "sha256": "1da9ab2916e6c48383f2c08ae681ffa919fdd9c0364718229dc4296b1a2fc9b3",
+    "bytes": 16375
+  },
+  {
+    "path": "debug/producer-R2018-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "abdd0c2703bcc885434f47a2bec6b2b07ca187ecd3cb8ccdfbfbccf24278bebb",
+    "bytes": 16353
+  },
+  {
+    "path": "debug/producer-R2018-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "fc5aec47b5c87139901e9d88a1f8213a464741c7e8c58f7d54ad2a4a7b9aa205",
+    "bytes": 15811
+  },
+  {
+    "path": "debug/producer-R2018-binary-packet-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2018-binary-packet-True.dxf",
+    "sha256": "da63e923ec11cc98afac064e205c14702506a5f9ccbc2c09defe048c57964718",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-binary-reverse-False.dxf",
+    "sha256": "d41cc9dac8f796e006a92c161e4acb7a165e880a06932414ca90ea957c29b98a",
+    "bytes": 16382
+  },
+  {
+    "path": "debug/producer-R2018-binary-reverse-True.dxf",
+    "sha256": "53394e77650b9175a7d570922163d159897c516aa5b2c72eb045ee976cade2a6",
+    "bytes": 16382
+  },
+  {
+    "path": "debug/producer-R2018-binary-transform.dxf",
+    "sha256": "e620810c75e8ad380ca41c431fd826e50387ddfb39ef5c3f36e010119a32ec33",
+    "bytes": 16377
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-0.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-1.dxf",
+    "sha256": "901272071d03576183dda1eda267c10acaccec363b069163c1c9fd816e7b61f6",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-2.dxf",
+    "sha256": "ba594ecd9948e5ec4281cc600390ed10b70b69cafcde944b252ce4ead2be09a3",
+    "bytes": 16381
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-3.dxf",
+    "sha256": "ee7ae071b1073d0a6505d071f812687616948acf072c20519475bb6afe000345",
+    "bytes": 16388
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-reverse-scale-0.dxf",
+    "sha256": "b3f9a41ae6065ba820e93fece88d804255b23ba29e85210f812c6a5f693a81a3",
+    "bytes": 15841
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-reverse-scale-1.dxf",
+    "sha256": "2185bb47bb858f3309fbf9558c92d3f3042b143bf61c520184cd501365a570b3",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-reverse-scale-2.dxf",
+    "sha256": "ee0661a15079a04afe3756d9b3e3be44e866d4bf74f02814efde8930e1e4ec54",
+    "bytes": 15851
+  },
+  {
+    "path": "debug/producer-R2018-binary-width-reverse-scale-3.dxf",
+    "sha256": "3d38b37ceba9483992ff2772398087bc5c36eedd474e792c2ec643262b8ca37b",
+    "bytes": 15861
+  },
+  {
+    "path": "debug/tilted-plane-False.dxf",
+    "sha256": "f9c305d0b27da708274f98ba02036a51825737ede418f8a6621ca11cedd21e45",
+    "bytes": 15871
+  },
+  {
+    "path": "debug/tilted-plane-True.dxf",
+    "sha256": "61426bbf6ac32c78f09e1d585e44b1021026331899a76aea4f7b57cf3c87f206",
+    "bytes": 16402
+  },
+  {
+    "path": "release/native-1EF-False-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "release/native-1EF-False-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "release/native-1EF-True-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "release/native-1EF-True-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "release/native-1FF-False-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "release/native-1FF-False-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "release/native-1FF-True-False.dxf",
+    "sha256": "b3a1ce0ca04e0d4906d63caf5b1ea8fb4fb16f377894585ca2b7bb75925b6fca",
+    "bytes": 13809
+  },
+  {
+    "path": "release/native-1FF-True-True.dxf",
+    "sha256": "79b45382c2c67c0fca8f66b6799732737e1bc7be4025545aa71c603d1e905492",
+    "bytes": 13512
+  },
+  {
+    "path": "release/owned-metadata-False.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "path": "release/owned-metadata-True.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2000-ascii-child-link.dxf",
+    "sha256": "293c9d0ce55d5321ae1dbaaf74ae1721e46550c790a478f99db2d28627f9c1dc",
+    "bytes": 15167
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "c4a9a57f67b1a7aee97726282741ea66c66b809438a600a178785c452b919750",
+    "bytes": 15111
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "dfecf931aa1cb6b7384f41b3bddc5a47196b3b7a5ebff4faf17b2da33637a251",
+    "bytes": 14830
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "44357e41220303fdc68970903e2571217a278dbf3a9133a23d43d63d4f5f6caf",
+    "bytes": 14423
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "cb6b3654d7f7ef34152b5794cee85ed641c93338bb23e675bb81277c417cabca",
+    "bytes": 15017
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "4bf8de36bc820435f26edae8bf56cecfbe9d001aa5a1991c55213d9511441d06",
+    "bytes": 14608
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "6fea45f17b66157968fd9586179e02cc60615288c43a8566bc31ecfb4b5f8338",
+    "bytes": 15433
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "cde427d07a33d2cf03047c7347b93addcb629311b79bab9c753a91cd8ed9a44d",
+    "bytes": 14991
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "31977d016b753b7046f2881deb61117d85c6c87c12edb4757525bfa308aa4f7c",
+    "bytes": 14568
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "bc03fda5cbf6590debdb20aabd88355353f302e1d2177eaa8929fa65b1ef33f2",
+    "bytes": 15339
+  },
+  {
+    "path": "release/producer-R2000-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "513b3b3b4814367b71bad90806b69c39e54d0cb0e74a38e7eba5d7c8566c69a2",
+    "bytes": 14898
+  },
+  {
+    "path": "release/producer-R2000-ascii-lifecycle.dxf",
+    "sha256": "a1ca3ca10f51c7b002f98e96722434da43de0a51cd64341f6eba443e491f571c",
+    "bytes": 15486
+  },
+  {
+    "path": "release/producer-R2000-ascii-omitted-point-edit-False.dxf",
+    "sha256": "2fd0c20ac64db1e235dd03db47eb9956d51329471df748074cfdf277b0c4715b",
+    "bytes": 15297
+  },
+  {
+    "path": "release/producer-R2000-ascii-omitted-point-edit-True.dxf",
+    "sha256": "63c2d69fc2b07621ef9db6111203c47f59c22c474dcf66ed68ef160c40308f06",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-ascii-omitted-point-transform.dxf",
+    "sha256": "3ef3b9b721355f93ea11568676c54f34b7abaa8e4c5bb5ad44cbeb6692b0308b",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "6847d89e2a02d7ebeb740f6c656ccd90a7d52c434f1d6c019e6f76b6830dc189",
+    "bytes": 15276
+  },
+  {
+    "path": "release/producer-R2000-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "68f647547c2625c4126c78a88652aa20d3e100565263a8983d9c7376eb529fc5",
+    "bytes": 14832
+  },
+  {
+    "path": "release/producer-R2000-ascii-packet-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "release/producer-R2000-ascii-packet-True.dxf",
+    "sha256": "fb89b77c9872b37ef3ff26599cbaa36b9d7d3ef9ff3b3d5224a6d60b0c6d2b4b",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-ascii-reverse-False.dxf",
+    "sha256": "f19a9d7f26de48150b549e1a6695b088f80343825e6d91d206379e3366d6da12",
+    "bytes": 14872
+  },
+  {
+    "path": "release/producer-R2000-ascii-reverse-True.dxf",
+    "sha256": "8d10e4971c0e06b92b75b53c3dec0038a551a3ac15d9b608fb983fddb501669e",
+    "bytes": 14872
+  },
+  {
+    "path": "release/producer-R2000-ascii-transform.dxf",
+    "sha256": "089b1bd21a9ba17c57192762c20df6fa387a556084e1ce566d16e5c3f561fff5",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-0.dxf",
+    "sha256": "0cd2a86e3cb10c8106f38e7222ea65e964409cfb77d2138d66dd5c59ecaa4836",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-1.dxf",
+    "sha256": "1bb43133e7df253d0ee2fdc76b1b46dd14ab4e950dc3416d8ecf89bd7eb65774",
+    "bytes": 14872
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-2.dxf",
+    "sha256": "becc0852fc5167128261618869ee92242ad7b5f3635eaaea0590c4f7041ce4bd",
+    "bytes": 14872
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-3.dxf",
+    "sha256": "a95a89a1ffda1cd503e2a018a2b1f7fd547a3138ef9940a44c07095c08c6eac9",
+    "bytes": 14882
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-reverse-scale-0.dxf",
+    "sha256": "3fcb2114d8a3e86a5d097d1a01028c9a68c97d6c523f8600c84f205387b3d10a",
+    "bytes": 15297
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-reverse-scale-1.dxf",
+    "sha256": "0b5e5e6a864f1461e30e0cfbdff7fde109ecf4dcbf9000aaaebed92366ccb189",
+    "bytes": 15304
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-reverse-scale-2.dxf",
+    "sha256": "b5f45821664796b50dbd5f23f9974efb9816b7dc2e922911be380a5c54e6c06c",
+    "bytes": 15304
+  },
+  {
+    "path": "release/producer-R2000-ascii-width-reverse-scale-3.dxf",
+    "sha256": "83f64aabc7483045bf8acfa070f64e4bcaab507eb220d2a0bc1543440b34efed",
+    "bytes": 15311
+  },
+  {
+    "path": "release/producer-R2000-binary-child-link.dxf",
+    "sha256": "3e65ca60f4a02f4f0707987e1a6a4da389d0462bc9f5d001a61da181118eb612",
+    "bytes": 15599
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "fb208911df44959a84c41e40687a7914154f09e7a2d733c604e8a9ff2f0864ca",
+    "bytes": 14695
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-0-stored-False.dxf",
+    "sha256": "dfecf931aa1cb6b7384f41b3bddc5a47196b3b7a5ebff4faf17b2da33637a251",
+    "bytes": 14830
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-0-stored-True.dxf",
+    "sha256": "44357e41220303fdc68970903e2571217a278dbf3a9133a23d43d63d4f5f6caf",
+    "bytes": 14423
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-0-transform-False.dxf",
+    "sha256": "cb6b3654d7f7ef34152b5794cee85ed641c93338bb23e675bb81277c417cabca",
+    "bytes": 15017
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-0-transform-True.dxf",
+    "sha256": "4bf8de36bc820435f26edae8bf56cecfbe9d001aa5a1991c55213d9511441d06",
+    "bytes": 14608
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "2aa6affb7a0e97c4b3901cd23390d01de3cbac7cb6b8437a359f88b56e297c8b",
+    "bytes": 14985
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-1-stored-False.dxf",
+    "sha256": "cde427d07a33d2cf03047c7347b93addcb629311b79bab9c753a91cd8ed9a44d",
+    "bytes": 14991
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-1-stored-True.dxf",
+    "sha256": "31977d016b753b7046f2881deb61117d85c6c87c12edb4757525bfa308aa4f7c",
+    "bytes": 14568
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-1-transform-False.dxf",
+    "sha256": "bc03fda5cbf6590debdb20aabd88355353f302e1d2177eaa8929fa65b1ef33f2",
+    "bytes": 15339
+  },
+  {
+    "path": "release/producer-R2000-binary-degenerate-1-transform-True.dxf",
+    "sha256": "513b3b3b4814367b71bad90806b69c39e54d0cb0e74a38e7eba5d7c8566c69a2",
+    "bytes": 14898
+  },
+  {
+    "path": "release/producer-R2000-binary-lifecycle.dxf",
+    "sha256": "5a208b6b99079655a10d72b648818517396a1627ff809b3848225460a0e33a88",
+    "bytes": 15951
+  },
+  {
+    "path": "release/producer-R2000-binary-omitted-point-edit-False.dxf",
+    "sha256": "2fd0c20ac64db1e235dd03db47eb9956d51329471df748074cfdf277b0c4715b",
+    "bytes": 15297
+  },
+  {
+    "path": "release/producer-R2000-binary-omitted-point-edit-True.dxf",
+    "sha256": "63c2d69fc2b07621ef9db6111203c47f59c22c474dcf66ed68ef160c40308f06",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-binary-omitted-point-transform.dxf",
+    "sha256": "c16d63f0e8d3b0e35a8e280a1022f12318a50efb5acf4ed7129b8ebbceb5b164",
+    "bytes": 15298
+  },
+  {
+    "path": "release/producer-R2000-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "6847d89e2a02d7ebeb740f6c656ccd90a7d52c434f1d6c019e6f76b6830dc189",
+    "bytes": 15276
+  },
+  {
+    "path": "release/producer-R2000-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "68f647547c2625c4126c78a88652aa20d3e100565263a8983d9c7376eb529fc5",
+    "bytes": 14832
+  },
+  {
+    "path": "release/producer-R2000-binary-packet-False.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "release/producer-R2000-binary-packet-True.dxf",
+    "sha256": "fb89b77c9872b37ef3ff26599cbaa36b9d7d3ef9ff3b3d5224a6d60b0c6d2b4b",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-binary-reverse-False.dxf",
+    "sha256": "76bea9ef8373da8f8fa3f12180d5035fa5a68d729358eb0004c854cb4ba47aa0",
+    "bytes": 15305
+  },
+  {
+    "path": "release/producer-R2000-binary-reverse-True.dxf",
+    "sha256": "a0fbee908991fa925c1ff001eaacfd6af1b2825a35ee2e4254d0d387d10e29aa",
+    "bytes": 15305
+  },
+  {
+    "path": "release/producer-R2000-binary-transform.dxf",
+    "sha256": "0041a6c98c2471438bf67d3bff80c4fe550b42abbf7e847041b64748ddda56a9",
+    "bytes": 15300
+  },
+  {
+    "path": "release/producer-R2000-binary-width-0.dxf",
+    "sha256": "ba2a6f396fcc6066d1e40933411aaa54eb44e51bf0a64e25fda2fbdd44580ada",
+    "bytes": 15297
+  },
+  {
+    "path": "release/producer-R2000-binary-width-1.dxf",
+    "sha256": "02570fb24d570e357a336c45b3acdf01b4cbb8614f6c03e80180c2640a4b756e",
+    "bytes": 15304
+  },
+  {
+    "path": "release/producer-R2000-binary-width-2.dxf",
+    "sha256": "84ae323139fd2fe9a0190a0006206dffeee03e97a2b2145facfa29a8395f29e5",
+    "bytes": 15304
+  },
+  {
+    "path": "release/producer-R2000-binary-width-3.dxf",
+    "sha256": "92c9f26a00d5a990883fa4dacd0fd011af231f4d2027b57f35f4c3b8fc3a6659",
+    "bytes": 15311
+  },
+  {
+    "path": "release/producer-R2000-binary-width-reverse-scale-0.dxf",
+    "sha256": "dcb98a8c704d553fcdd1f695c785cdf3a24cf5ece55a96e98c4155072d8209b2",
+    "bytes": 14862
+  },
+  {
+    "path": "release/producer-R2000-binary-width-reverse-scale-1.dxf",
+    "sha256": "f89e1f3217232d2897cf5f574589100c1efe384dd35a153b6c1adddb470c3db2",
+    "bytes": 14872
+  },
+  {
+    "path": "release/producer-R2000-binary-width-reverse-scale-2.dxf",
+    "sha256": "ca113eadb97e05e839fb79d0878d9ec4b74297e523a5d47ba84a4c7dc12617d4",
+    "bytes": 14872
+  },
+  {
+    "path": "release/producer-R2000-binary-width-reverse-scale-3.dxf",
+    "sha256": "23007d2cb4a24da7710b71e3ef99a32ae09d6bb89eaa4da3085108a3587e06ab",
+    "bytes": 14882
+  },
+  {
+    "path": "release/producer-R2004-ascii-child-link.dxf",
+    "sha256": "fb5c436152014a1d137f50890dd2df712f83d23b455e11bced2f0f6bed809a72",
+    "bytes": 15490
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "523ad219016984293bc87331e5f477aac4d8936cd502bd41aa40b66555f9885b",
+    "bytes": 15457
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "685ec934cf0aa3c66e6c927605a36c1ef4bad33486bf22ad52d83c540776c1ae",
+    "bytes": 15176
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "c05f64732b51a4cd7f01046a0dd385d9961a25c7526f5949948f58c295314047",
+    "bytes": 14746
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "269cd5e8898eec4eba185246ba74d57badb283355b9e2a6b3d02aace7e1725c0",
+    "bytes": 15363
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "0e1ced6aedeae34cdfc2d5dd6b11aff97039fc22b6fc74f5fffdba41e672d8db",
+    "bytes": 14931
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "14cd51e60f41423a32a01772c263e619bc9ce21e12d2f68d6102a559f9e01803",
+    "bytes": 15779
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "aa1834bd6087699c34db31cded462310606a8eaded424c2cb3fe6bc435bd9d0a",
+    "bytes": 15337
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "de9452cbc31fd9e52e00f726ee585a27a29c146aef1c85849aeec8bf4ae9b990",
+    "bytes": 14891
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "bf944cd8f91704be02afbb6e8c18016249ecd207466c8b7df8bfdd7677379d38",
+    "bytes": 15685
+  },
+  {
+    "path": "release/producer-R2004-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "cdf90fc226ccceba1d3a895d2dc16d83c48899f790a128c0ab9b2ef0216a2482",
+    "bytes": 15221
+  },
+  {
+    "path": "release/producer-R2004-ascii-lifecycle.dxf",
+    "sha256": "c0f7060e2e9302c2ee2b9c73b90870552e6b47ca813cdc870ac3f6ee3d7e847c",
+    "bytes": 15809
+  },
+  {
+    "path": "release/producer-R2004-ascii-omitted-point-edit-False.dxf",
+    "sha256": "a978cf0c9e1abe89210548a783b13211809b682491247c85794f2ae181b64067",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2004-ascii-omitted-point-edit-True.dxf",
+    "sha256": "1c3015d88c6bfa5da75376e6ba0bfa086ca91fd925fab154d6906f8d999ee5f9",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-ascii-omitted-point-transform.dxf",
+    "sha256": "24cc4ea9c33ce221a9f8300ccaf56d09330bc6c65248bf29320c30f66c6625ca",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "d829abf7f96fd2cf478d92caf99e646ae89ab7d583ff801b316442559efa6c25",
+    "bytes": 15622
+  },
+  {
+    "path": "release/producer-R2004-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "569216a9bcb71b04a0ff3797aabe443d5bc9953ed942dc88a04327903dc16cc6",
+    "bytes": 15155
+  },
+  {
+    "path": "release/producer-R2004-ascii-packet-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2004-ascii-packet-True.dxf",
+    "sha256": "f4aab2ba2d2beaa0a6552bddb0cfec12ba23c30fbfe726df620befc782b92886",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-ascii-reverse-False.dxf",
+    "sha256": "25ccb0da7cf84cbff4a1fde7d11f783fa09f1e2b667094fb4cf87b1c02048f0e",
+    "bytes": 15195
+  },
+  {
+    "path": "release/producer-R2004-ascii-reverse-True.dxf",
+    "sha256": "f0c82b3c7f9ffa54d24953599ba4ff330899908ac5393f901d793ead9f951b1d",
+    "bytes": 15195
+  },
+  {
+    "path": "release/producer-R2004-ascii-transform.dxf",
+    "sha256": "8c11ddc1ba90a90f1dd5129502b9f77b5eadfa36fef7fd4928d1a599edfcf928",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-0.dxf",
+    "sha256": "73282985c9febd0c3356c387eef1576f6fab0b421f46148ae00c339da2da08bf",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-1.dxf",
+    "sha256": "9d034e126534a88273cf179014d4939854a08f9ff3fbfa243e3a8dd7dce689f0",
+    "bytes": 15195
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-2.dxf",
+    "sha256": "790d55d9796852da09a6769ab02e1b4b5413cd24c0b513cf25df9b591cd854a1",
+    "bytes": 15195
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-3.dxf",
+    "sha256": "6ffb9b6789080d93defb7bd8fd52b32b6b88da6ba437ea16314fbc87fcb93d33",
+    "bytes": 15205
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-reverse-scale-0.dxf",
+    "sha256": "0c2551997c77c8db7f3c2db040976376172006b771f0370856d18e7e6489908d",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-reverse-scale-1.dxf",
+    "sha256": "6ba3d31076ebaf7752d4036eea91ee099095daa9fafb94718dd09c18ceeb0b82",
+    "bytes": 15650
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-reverse-scale-2.dxf",
+    "sha256": "83d4e0cd620758cb88af5638c95ded6c31a891b118dea1c4762c6aea4802accf",
+    "bytes": 15650
+  },
+  {
+    "path": "release/producer-R2004-ascii-width-reverse-scale-3.dxf",
+    "sha256": "e760826f1d7759e807f605108e5fb61556b3b3832393339a031be951f14fd0bf",
+    "bytes": 15657
+  },
+  {
+    "path": "release/producer-R2004-binary-child-link.dxf",
+    "sha256": "19d7fcb933180a894175fe5f5853157532278fead9293aae9c7d9c0e1f68b5f6",
+    "bytes": 15945
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "230edd3b332dac471719c879805bd2d53fbc928e546d6d9b3e84736a03a24243",
+    "bytes": 15018
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-0-stored-False.dxf",
+    "sha256": "685ec934cf0aa3c66e6c927605a36c1ef4bad33486bf22ad52d83c540776c1ae",
+    "bytes": 15176
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-0-stored-True.dxf",
+    "sha256": "c05f64732b51a4cd7f01046a0dd385d9961a25c7526f5949948f58c295314047",
+    "bytes": 14746
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-0-transform-False.dxf",
+    "sha256": "269cd5e8898eec4eba185246ba74d57badb283355b9e2a6b3d02aace7e1725c0",
+    "bytes": 15363
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-0-transform-True.dxf",
+    "sha256": "0e1ced6aedeae34cdfc2d5dd6b11aff97039fc22b6fc74f5fffdba41e672d8db",
+    "bytes": 14931
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "8aa68d38afe0b91cde59bb8af7e85eca52adafb8366b298f9889aaf931a1f175",
+    "bytes": 15308
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-1-stored-False.dxf",
+    "sha256": "aa1834bd6087699c34db31cded462310606a8eaded424c2cb3fe6bc435bd9d0a",
+    "bytes": 15337
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-1-stored-True.dxf",
+    "sha256": "de9452cbc31fd9e52e00f726ee585a27a29c146aef1c85849aeec8bf4ae9b990",
+    "bytes": 14891
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-1-transform-False.dxf",
+    "sha256": "bf944cd8f91704be02afbb6e8c18016249ecd207466c8b7df8bfdd7677379d38",
+    "bytes": 15685
+  },
+  {
+    "path": "release/producer-R2004-binary-degenerate-1-transform-True.dxf",
+    "sha256": "cdf90fc226ccceba1d3a895d2dc16d83c48899f790a128c0ab9b2ef0216a2482",
+    "bytes": 15221
+  },
+  {
+    "path": "release/producer-R2004-binary-lifecycle.dxf",
+    "sha256": "03068c61b8bf4bb5535aae28aadd523f5e91c1a009226f6c0de9b5eb02e303a8",
+    "bytes": 16297
+  },
+  {
+    "path": "release/producer-R2004-binary-omitted-point-edit-False.dxf",
+    "sha256": "a978cf0c9e1abe89210548a783b13211809b682491247c85794f2ae181b64067",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2004-binary-omitted-point-edit-True.dxf",
+    "sha256": "1c3015d88c6bfa5da75376e6ba0bfa086ca91fd925fab154d6906f8d999ee5f9",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-binary-omitted-point-transform.dxf",
+    "sha256": "1327fbd6086ca3a5b3a5ff375b6afea0cd5264386cb19298e281d07dba907f94",
+    "bytes": 15644
+  },
+  {
+    "path": "release/producer-R2004-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "d829abf7f96fd2cf478d92caf99e646ae89ab7d583ff801b316442559efa6c25",
+    "bytes": 15622
+  },
+  {
+    "path": "release/producer-R2004-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "569216a9bcb71b04a0ff3797aabe443d5bc9953ed942dc88a04327903dc16cc6",
+    "bytes": 15155
+  },
+  {
+    "path": "release/producer-R2004-binary-packet-False.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2004-binary-packet-True.dxf",
+    "sha256": "f4aab2ba2d2beaa0a6552bddb0cfec12ba23c30fbfe726df620befc782b92886",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-binary-reverse-False.dxf",
+    "sha256": "3279dc272ba1f91d4d05408321b292e0625411196ab88cc8b294555560412c4a",
+    "bytes": 15651
+  },
+  {
+    "path": "release/producer-R2004-binary-reverse-True.dxf",
+    "sha256": "caf945cc184d38cfdd4b992cc0f0510e338cbacc890b9e689e97c589e55eba0c",
+    "bytes": 15651
+  },
+  {
+    "path": "release/producer-R2004-binary-transform.dxf",
+    "sha256": "4bef43348356484cf0170eabccdc20ff4e0d0cded6ca8e4fae89ff13be1f2a37",
+    "bytes": 15646
+  },
+  {
+    "path": "release/producer-R2004-binary-width-0.dxf",
+    "sha256": "d06f6295e5eb14317e7cb405d0b5947dc982ab192534b8babfa32ca959987928",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2004-binary-width-1.dxf",
+    "sha256": "d7d1bbe0db9bbf0674b1e13d2c95b4734e6325e85b7b8f7ea9c23058237f6f2c",
+    "bytes": 15650
+  },
+  {
+    "path": "release/producer-R2004-binary-width-2.dxf",
+    "sha256": "d13f667a30b62ea892a561e1436ea2b518c22e575eaec9b74d522c6cfb265eb8",
+    "bytes": 15650
+  },
+  {
+    "path": "release/producer-R2004-binary-width-3.dxf",
+    "sha256": "dd110a1fa655cefd5a14653d70d3305a5ea927adc4bffc477f901638f7471315",
+    "bytes": 15657
+  },
+  {
+    "path": "release/producer-R2004-binary-width-reverse-scale-0.dxf",
+    "sha256": "c772e4c8bad9e7a54228dd8ac1b12b47fd1a01432642640e77dae85738a7d038",
+    "bytes": 15185
+  },
+  {
+    "path": "release/producer-R2004-binary-width-reverse-scale-1.dxf",
+    "sha256": "c148a12f445c202e4ead21b6794b6c66ce015edf8fad2743a4ae881b5f5ea210",
+    "bytes": 15195
+  },
+  {
+    "path": "release/producer-R2004-binary-width-reverse-scale-2.dxf",
+    "sha256": "1b66f6f4fc9407c15815df553f144c7dbcaca68b93360dced04c62a4d6fe54c7",
+    "bytes": 15195
+  },
+  {
+    "path": "release/producer-R2004-binary-width-reverse-scale-3.dxf",
+    "sha256": "75b6c21676054c9f2b7b0d1b5f6d03db98c9e36c1d8b3a086c7b2ef86a7ec8c6",
+    "bytes": 15205
+  },
+  {
+    "path": "release/producer-R2007-ascii-child-link.dxf",
+    "sha256": "7686f229fd763a645433b9dd56fb583659be250101412b89ce65a93b9418765b",
+    "bytes": 16115
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "4168c8d93fce1122c43697ae3e370cf31805d9b93598019831aa9ff315094fad",
+    "bytes": 16162
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "613e4db801eac9a636896496cee49d955c211762294f3cb72dd18ca18b119c05",
+    "bytes": 15881
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "6547156007fd9dce0412b255fdfefc81b6d01666414789417686e9af891ea5d3",
+    "bytes": 15371
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "a042a6aa4613ad41eea9deca9d0161432bb25c7437910c87dc874352ab036bde",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "119ac2e315b1a4b8be97d40aa9b7e8a4aa379e8fdc29349b849dc2cc3cf160a5",
+    "bytes": 15556
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "0cdf22a6a0349596072e8a495d654b9c79c6569b1239299590c1594b5f29fbb6",
+    "bytes": 16484
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "27585e7d180e19a3f97e6a8750d960e6878ea248008e35b4478736c2c9fe560e",
+    "bytes": 16042
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "c1b3ef268c9b2679cc8ed75edf66eee8bf650781e7ebe580a9a8a31e9a7a0e4e",
+    "bytes": 15516
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "6596e16406416046d60710f1e09e56d9f5b9f942f356b6d8dd067650aafcb0b4",
+    "bytes": 16390
+  },
+  {
+    "path": "release/producer-R2007-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "69b2061bebafa35ad592d1f3da6b7fbd8f9d45e58766c9d57df01c611685bbd7",
+    "bytes": 15846
+  },
+  {
+    "path": "release/producer-R2007-ascii-lifecycle.dxf",
+    "sha256": "7702b8cdc52995b0d461157bcf6058617f555f404aff7b838e9d4d7b31983823",
+    "bytes": 16434
+  },
+  {
+    "path": "release/producer-R2007-ascii-omitted-point-edit-False.dxf",
+    "sha256": "0c33379bbd71b732543ceeddcce111f07c63eb124985b8a82c768148f08b7416",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2007-ascii-omitted-point-edit-True.dxf",
+    "sha256": "6d8a646eefee69be46df1aabf4be91ade4dc3fb8d01d19854d9d6936242779e5",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-ascii-omitted-point-transform.dxf",
+    "sha256": "0caaae4a77860bd5936e3cd7cc18fe83c5c735527f536c7e4b308c00d7f9c05f",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "7f3b6b514734f7c3858572d9516342841d76aa2d5872581e5c3cf3dc11726a04",
+    "bytes": 16327
+  },
+  {
+    "path": "release/producer-R2007-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "6d422e8e3dcef3bcb054c87b578beec706a2dca09f77ef0fe4bd451a983ef305",
+    "bytes": 15780
+  },
+  {
+    "path": "release/producer-R2007-ascii-packet-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2007-ascii-packet-True.dxf",
+    "sha256": "f2ff6eaedff57c936b1eaf1132ef2d51d0348ddfb1957633cf8d173c3d813315",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-ascii-reverse-False.dxf",
+    "sha256": "e37de5cfd616223133dd393bb6bde14831f7d5f64f1d23fedad6a4ea01201653",
+    "bytes": 15820
+  },
+  {
+    "path": "release/producer-R2007-ascii-reverse-True.dxf",
+    "sha256": "df9860efe149a09ede355ee328ee3d44b09129eed5143af86118aff0fdfb65a3",
+    "bytes": 15820
+  },
+  {
+    "path": "release/producer-R2007-ascii-transform.dxf",
+    "sha256": "1ff5ca36cba9a5abfbf716d636e95c8fd0d452d83c50c810422243e5e1ef9b3e",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-0.dxf",
+    "sha256": "3c7fe5625573076a73cb8cf64a0a7748a2b86599d5ac11fe6dc3a2584862f77e",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-1.dxf",
+    "sha256": "f7f7c1639704c867945c5c2fd64ed582dbb3ab0a490dde7006f6cc47ce9d48e3",
+    "bytes": 15820
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-2.dxf",
+    "sha256": "61799e31c3b9570f5e35d876821a6ed3ee7e125a87cabf5d24bcfc5c728ca36c",
+    "bytes": 15820
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-3.dxf",
+    "sha256": "d11274560d94b73f547577f3440b7a557c97cc1d4a078afa5b5f087a8cc802dd",
+    "bytes": 15830
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-reverse-scale-0.dxf",
+    "sha256": "5516107031972b8d0e25255602f4c2d00ad49b21efa0b0b398dee7e8a7c5387a",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-reverse-scale-1.dxf",
+    "sha256": "35d23f4c24a4d412fb322166cbf11fa8df59d768cd5070e4b9e8b51329f54bc3",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-reverse-scale-2.dxf",
+    "sha256": "701095ea1a30b2162892eb82e5336054b96c9118475d14d75898b2e0d09c8045",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2007-ascii-width-reverse-scale-3.dxf",
+    "sha256": "a980dd2ede28f3205de96db6e5ded9621a9fa491a8404ce081ff3161810d4ecc",
+    "bytes": 16362
+  },
+  {
+    "path": "release/producer-R2007-binary-child-link.dxf",
+    "sha256": "064477eb24ac8ec0193fb537e59114509e6d080d50292185f36f2576db647d6c",
+    "bytes": 16650
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "90d9d9dac9136c73c4ce1e81a4682a87c0ae09bbd3ddf3a86c1f4bf66b1e0961",
+    "bytes": 15643
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-0-stored-False.dxf",
+    "sha256": "613e4db801eac9a636896496cee49d955c211762294f3cb72dd18ca18b119c05",
+    "bytes": 15881
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-0-stored-True.dxf",
+    "sha256": "6547156007fd9dce0412b255fdfefc81b6d01666414789417686e9af891ea5d3",
+    "bytes": 15371
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-0-transform-False.dxf",
+    "sha256": "a042a6aa4613ad41eea9deca9d0161432bb25c7437910c87dc874352ab036bde",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-0-transform-True.dxf",
+    "sha256": "119ac2e315b1a4b8be97d40aa9b7e8a4aa379e8fdc29349b849dc2cc3cf160a5",
+    "bytes": 15556
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "d6db7a4e927bdbb35e92487106d38bf4e05504cca809b7158a0604b6150eba24",
+    "bytes": 15933
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-1-stored-False.dxf",
+    "sha256": "27585e7d180e19a3f97e6a8750d960e6878ea248008e35b4478736c2c9fe560e",
+    "bytes": 16042
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-1-stored-True.dxf",
+    "sha256": "c1b3ef268c9b2679cc8ed75edf66eee8bf650781e7ebe580a9a8a31e9a7a0e4e",
+    "bytes": 15516
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-1-transform-False.dxf",
+    "sha256": "6596e16406416046d60710f1e09e56d9f5b9f942f356b6d8dd067650aafcb0b4",
+    "bytes": 16390
+  },
+  {
+    "path": "release/producer-R2007-binary-degenerate-1-transform-True.dxf",
+    "sha256": "69b2061bebafa35ad592d1f3da6b7fbd8f9d45e58766c9d57df01c611685bbd7",
+    "bytes": 15846
+  },
+  {
+    "path": "release/producer-R2007-binary-lifecycle.dxf",
+    "sha256": "b373836cd1ad11626039f6daaedf822d52279d6355e86177fbef7b9107e0826c",
+    "bytes": 17002
+  },
+  {
+    "path": "release/producer-R2007-binary-omitted-point-edit-False.dxf",
+    "sha256": "0c33379bbd71b732543ceeddcce111f07c63eb124985b8a82c768148f08b7416",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2007-binary-omitted-point-edit-True.dxf",
+    "sha256": "6d8a646eefee69be46df1aabf4be91ade4dc3fb8d01d19854d9d6936242779e5",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-binary-omitted-point-transform.dxf",
+    "sha256": "ec221c7ca9961c20246c44777da01a05844094ff09c12e362b7921527e651c7f",
+    "bytes": 16349
+  },
+  {
+    "path": "release/producer-R2007-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "7f3b6b514734f7c3858572d9516342841d76aa2d5872581e5c3cf3dc11726a04",
+    "bytes": 16327
+  },
+  {
+    "path": "release/producer-R2007-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "6d422e8e3dcef3bcb054c87b578beec706a2dca09f77ef0fe4bd451a983ef305",
+    "bytes": 15780
+  },
+  {
+    "path": "release/producer-R2007-binary-packet-False.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2007-binary-packet-True.dxf",
+    "sha256": "f2ff6eaedff57c936b1eaf1132ef2d51d0348ddfb1957633cf8d173c3d813315",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-binary-reverse-False.dxf",
+    "sha256": "87e69090abbae5ccf406d3e483fc005441c58b669ad7c734042ad581b5f1314e",
+    "bytes": 16356
+  },
+  {
+    "path": "release/producer-R2007-binary-reverse-True.dxf",
+    "sha256": "097658a6b3f70d09e168c3b2c9852967a88b68031c056619b381906bc21d0e3c",
+    "bytes": 16356
+  },
+  {
+    "path": "release/producer-R2007-binary-transform.dxf",
+    "sha256": "449a7081a26ae32843b322e9a4344f0089dab6da7c24e1781bc91074c4920860",
+    "bytes": 16351
+  },
+  {
+    "path": "release/producer-R2007-binary-width-0.dxf",
+    "sha256": "b3156734906a606f1a5787518791fab96ab28f688533da53a70370c64e6cc01d",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2007-binary-width-1.dxf",
+    "sha256": "df82aea7d5fd40e83b909a5618c4faa4f3561985a565b4b9fae079d139ff30ae",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2007-binary-width-2.dxf",
+    "sha256": "8c98353cf2bdd332e08261a6f66bbecd3a05729a901d35addaf95e6b0488a3ef",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2007-binary-width-3.dxf",
+    "sha256": "af3e5c6116d08cc907acb91ce25b2d0b5001674f880178179b748641e5bcbd99",
+    "bytes": 16362
+  },
+  {
+    "path": "release/producer-R2007-binary-width-reverse-scale-0.dxf",
+    "sha256": "3bd7b5760bf13797166042a93d3f1674886091e4c672ddb28be72a3041426624",
+    "bytes": 15810
+  },
+  {
+    "path": "release/producer-R2007-binary-width-reverse-scale-1.dxf",
+    "sha256": "87e9b66ed348602ffca3885d156861c0bb0cfff6cc28af7da56cfe8185d80e77",
+    "bytes": 15820
+  },
+  {
+    "path": "release/producer-R2007-binary-width-reverse-scale-2.dxf",
+    "sha256": "44eb8eacabad726f05712e446c98dee22885c08e91440ededd226b6d229d4790",
+    "bytes": 15820
+  },
+  {
+    "path": "release/producer-R2007-binary-width-reverse-scale-3.dxf",
+    "sha256": "5beca9ba53bf89c917412719397a09231411da256516633e3f084ad5b98ccaf0",
+    "bytes": 15830
+  },
+  {
+    "path": "release/producer-R2010-ascii-child-link.dxf",
+    "sha256": "eb2e38b221c79e1b86bd836dfd7d5fb23be7ed6c855a0921a77b8d947f94bcde",
+    "bytes": 16116
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "46aaada2f83a6e3a31e826c157d881a18f7f67eb7b8a6cf0894e2b1f952f829e",
+    "bytes": 16162
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "6ae76d794bec09546a8d633bdfb965445a1af9acc879d224207558e494b3e95c",
+    "bytes": 15881
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "44911377e1fc08620c713e5a6916889ea3c550b0adb68a3e937c275da4089770",
+    "bytes": 15372
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "2499b7c67b6ed5d7657eabecf333584e482d0e127b355451eb81bce2508106a2",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "b6f9508f599df9e5b0a401b4a4767c0de025c1b9b451a32d39ca649cc914dd4a",
+    "bytes": 15557
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "aea26f89a73e8bc1c7ffb1466965f18c3f869e388d32f1bceb310cfe1c84a694",
+    "bytes": 16484
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "49d1c94b682f1a1bf4802cc69e91ccad044851cfde23df8f2b27afb39d6d7c6a",
+    "bytes": 16042
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "dd620bb99f8c782b9039fe0824cf43772df61bcc97390c6c74ccf05d3f7f6fa3",
+    "bytes": 15517
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "18ac978a26d054e289bcf07bc0e8ca27acac5ae4c07d07e57a1747e176d2f9f0",
+    "bytes": 16390
+  },
+  {
+    "path": "release/producer-R2010-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "3659683fff6c22b53db483310cd55522121cd8743e5893d3d54df631d1c12c2d",
+    "bytes": 15847
+  },
+  {
+    "path": "release/producer-R2010-ascii-lifecycle.dxf",
+    "sha256": "71cc3bba86dee96ed7669fb8f49204a5ea7cee6f1f8dc6e1431bd6581ee36b84",
+    "bytes": 16435
+  },
+  {
+    "path": "release/producer-R2010-ascii-omitted-point-edit-False.dxf",
+    "sha256": "9b70f91efe3f6e4830446da4d6ec61495a0bd24286faf83ff780c01eb76b5908",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2010-ascii-omitted-point-edit-True.dxf",
+    "sha256": "c41100007e77332633f889e1cee5ed0051c9558978065177520fcba397cb2145",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-ascii-omitted-point-transform.dxf",
+    "sha256": "ec2b9c19f40cf5a574d0da02fd6cf811fbf6b055123fe105164d88fe7d0b8ce8",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "745b90136dbeedfd647a3bd9120741184dc52e643e75e56dd258f4b3ad1db845",
+    "bytes": 16327
+  },
+  {
+    "path": "release/producer-R2010-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "715fca3e8768c604a9c77a9211a6c31df5bec51bd31ef58bf66fd0d5569c2f19",
+    "bytes": 15781
+  },
+  {
+    "path": "release/producer-R2010-ascii-packet-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2010-ascii-packet-True.dxf",
+    "sha256": "cc2aa11cbea12fb5f5e59b0a1285ff82b65bd01aa41c0b88ae93aa33982e9133",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-ascii-reverse-False.dxf",
+    "sha256": "b07d52e27a510413879318aa2fe7426f0986839e721f2e42c6638a6354b415ec",
+    "bytes": 15821
+  },
+  {
+    "path": "release/producer-R2010-ascii-reverse-True.dxf",
+    "sha256": "30fee1f01fcb5b8a8cf842679469ecc3bc37333a6e202fae4ca2f409128c9333",
+    "bytes": 15821
+  },
+  {
+    "path": "release/producer-R2010-ascii-transform.dxf",
+    "sha256": "d9bd9691564a6b7116b8cfe38b1ed1ca48c1242097887b0c4ef06c5d791c9a6a",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-0.dxf",
+    "sha256": "f5d402e0fec5e40b7bb2936f7cfecb4be2b6a870b57ccd1d06d5727c14fd6610",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-1.dxf",
+    "sha256": "12ab74f5d69ee0af02342ca59f2c024599a99aeb18a6812e096a5a8005449b5d",
+    "bytes": 15821
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-2.dxf",
+    "sha256": "a17c5610ab95fa406cbbf9b82c9e6cf9ca086c63e66394f9e79fe529cdc77af3",
+    "bytes": 15821
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-3.dxf",
+    "sha256": "c3cc7976493bc5620ea9876cd55df1fbf9921424d11616113c3d03450ba941e1",
+    "bytes": 15831
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-reverse-scale-0.dxf",
+    "sha256": "69fe3971c6b5a4a368b8ee20904fcdc8efbf409752cae7a936f25fccac8bb9ee",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-reverse-scale-1.dxf",
+    "sha256": "b73e442243660d013700d2cacff2d9f1c422c8d1b4ed7fc8d44e51637473fbd9",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-reverse-scale-2.dxf",
+    "sha256": "14cdae474351334159067ba2a75a2a4715ed63608821d7e9d5a6d1ddbb999f40",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2010-ascii-width-reverse-scale-3.dxf",
+    "sha256": "5b291e5febb0e61f81f552278dcc8586562e650da7139e257f26cb9f79f34366",
+    "bytes": 16362
+  },
+  {
+    "path": "release/producer-R2010-binary-child-link.dxf",
+    "sha256": "1ca4bd15d0c31f3d932850d144514fe1f3f7c01044fbb923c0e7d2dd8ceed82f",
+    "bytes": 16650
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "44cab7654ad1630e86946261bdb002fcabc9552dde2c78d996d6704e3c2a7bdb",
+    "bytes": 15644
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-0-stored-False.dxf",
+    "sha256": "6ae76d794bec09546a8d633bdfb965445a1af9acc879d224207558e494b3e95c",
+    "bytes": 15881
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-0-stored-True.dxf",
+    "sha256": "44911377e1fc08620c713e5a6916889ea3c550b0adb68a3e937c275da4089770",
+    "bytes": 15372
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-0-transform-False.dxf",
+    "sha256": "2499b7c67b6ed5d7657eabecf333584e482d0e127b355451eb81bce2508106a2",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-0-transform-True.dxf",
+    "sha256": "b6f9508f599df9e5b0a401b4a4767c0de025c1b9b451a32d39ca649cc914dd4a",
+    "bytes": 15557
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "0a33e5a45282273e6a4d129bfa0df9a89ae981c4ac300669852d07ac97911bff",
+    "bytes": 15934
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-1-stored-False.dxf",
+    "sha256": "49d1c94b682f1a1bf4802cc69e91ccad044851cfde23df8f2b27afb39d6d7c6a",
+    "bytes": 16042
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-1-stored-True.dxf",
+    "sha256": "dd620bb99f8c782b9039fe0824cf43772df61bcc97390c6c74ccf05d3f7f6fa3",
+    "bytes": 15517
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-1-transform-False.dxf",
+    "sha256": "18ac978a26d054e289bcf07bc0e8ca27acac5ae4c07d07e57a1747e176d2f9f0",
+    "bytes": 16390
+  },
+  {
+    "path": "release/producer-R2010-binary-degenerate-1-transform-True.dxf",
+    "sha256": "3659683fff6c22b53db483310cd55522121cd8743e5893d3d54df631d1c12c2d",
+    "bytes": 15847
+  },
+  {
+    "path": "release/producer-R2010-binary-lifecycle.dxf",
+    "sha256": "72dfb8e38f954a2dbf9ad5e9c577fb246df0a68162b94f1903693390ca8b5256",
+    "bytes": 17002
+  },
+  {
+    "path": "release/producer-R2010-binary-omitted-point-edit-False.dxf",
+    "sha256": "9b70f91efe3f6e4830446da4d6ec61495a0bd24286faf83ff780c01eb76b5908",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2010-binary-omitted-point-edit-True.dxf",
+    "sha256": "c41100007e77332633f889e1cee5ed0051c9558978065177520fcba397cb2145",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-binary-omitted-point-transform.dxf",
+    "sha256": "61bddaf41aaabe8619c663dc74b0471d245f2f8114837a6ee5d6fbdf0c567d51",
+    "bytes": 16349
+  },
+  {
+    "path": "release/producer-R2010-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "745b90136dbeedfd647a3bd9120741184dc52e643e75e56dd258f4b3ad1db845",
+    "bytes": 16327
+  },
+  {
+    "path": "release/producer-R2010-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "715fca3e8768c604a9c77a9211a6c31df5bec51bd31ef58bf66fd0d5569c2f19",
+    "bytes": 15781
+  },
+  {
+    "path": "release/producer-R2010-binary-packet-False.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2010-binary-packet-True.dxf",
+    "sha256": "cc2aa11cbea12fb5f5e59b0a1285ff82b65bd01aa41c0b88ae93aa33982e9133",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-binary-reverse-False.dxf",
+    "sha256": "f4d8ebf588f7d7c169abe6dad7845100f7cd1679cb542167d508e2c3c6133e25",
+    "bytes": 16356
+  },
+  {
+    "path": "release/producer-R2010-binary-reverse-True.dxf",
+    "sha256": "b77ba4bbe4b47b933f388f9430a10819c0884bd743a91ea23102af4a96de149f",
+    "bytes": 16356
+  },
+  {
+    "path": "release/producer-R2010-binary-transform.dxf",
+    "sha256": "c33a8aed4eb49a2a6e166f5d3c280ae21f847a89c60923b5aa2ca7343c508376",
+    "bytes": 16351
+  },
+  {
+    "path": "release/producer-R2010-binary-width-0.dxf",
+    "sha256": "bface1c1e489be97f1b7eba036dbcc44cd7f6051a031be80ba0cec0837c69aa9",
+    "bytes": 16348
+  },
+  {
+    "path": "release/producer-R2010-binary-width-1.dxf",
+    "sha256": "c86bd3dc2fd1a128c53b833b4efd4ce724c1c9777b5ac5f31973fe08716ba47e",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2010-binary-width-2.dxf",
+    "sha256": "711b41437f768c8e4ecb21bdadffa8b416d214110833e2c2480fb81987a4cc7b",
+    "bytes": 16355
+  },
+  {
+    "path": "release/producer-R2010-binary-width-3.dxf",
+    "sha256": "a3667fb497d9e51d261fbf1229b5b6c2c640c17b2c19b5a1af572da760b757bc",
+    "bytes": 16362
+  },
+  {
+    "path": "release/producer-R2010-binary-width-reverse-scale-0.dxf",
+    "sha256": "eb498dfb655212c552323eea9f658d9971c58e671bb639fe0e79adda00a6bee0",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2010-binary-width-reverse-scale-1.dxf",
+    "sha256": "dd50f9579e2d83999f0a9b77af64083c02ad6f9a48677fa1286dfa9ac6f9a2ed",
+    "bytes": 15821
+  },
+  {
+    "path": "release/producer-R2010-binary-width-reverse-scale-2.dxf",
+    "sha256": "05c1d7d4258cc02b0ce27e1c18f418d9058c06c78dd0f7f4716048c5454c4c7c",
+    "bytes": 15821
+  },
+  {
+    "path": "release/producer-R2010-binary-width-reverse-scale-3.dxf",
+    "sha256": "67ac00a63f0bdfde0b108b7c74cc155e74e8f8d9c7ddf1fe1c6762794ceb58e5",
+    "bytes": 15831
+  },
+  {
+    "path": "release/producer-R2013-ascii-child-link.dxf",
+    "sha256": "c3fcc58157f777ff1f4d1937c8f69c4992f71c8ea2b241f4f9181d2c2ab16903",
+    "bytes": 16146
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "49e0b7aa113f21bde63cb15db8a616f096765440046a4c2f47e28ba051a74137",
+    "bytes": 16188
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "fad27376b8c2101d500679c8358dfd159f17514d8c4bdfd4d74a1a75c63e9fcf",
+    "bytes": 15907
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "f5477de64cf63403d30a317a86f3edccdef84ce2168b945688cb788e23ce17fb",
+    "bytes": 15402
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "4a86e0cad64fe7ecc4c10f6b1316e0b3ce11e4f5c244ecbcf4702b75d2b10abe",
+    "bytes": 16094
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "f68186ddc66787613c4eb71cf800e61f23def4789ff69611aa921269737066cc",
+    "bytes": 15587
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "9ac761c559a5858fbab9c8ca28b8202aa35fa07c538ecad6875b8b30e65d5c1a",
+    "bytes": 16510
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "83da60606a230b2743daa7d46b4dc5f3619c50f06a597b6de68de773e17193b2",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "1a9820a3c000844dc23e48b4078baa8139a9f226c00db6c9f76c276b31e3929f",
+    "bytes": 15547
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "b651af1e3dd33be27c598d1511b595b12a011ec4c0b977723996ead34c48c14a",
+    "bytes": 16416
+  },
+  {
+    "path": "release/producer-R2013-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "ef3f43a8b8e1af554fe1f48c7c29dbebaae2e1657a0fb547155509bf85568471",
+    "bytes": 15877
+  },
+  {
+    "path": "release/producer-R2013-ascii-lifecycle.dxf",
+    "sha256": "5563c8de9e04cebdc4d0bd907b46087d7997fce677192520e47943be792afe32",
+    "bytes": 16465
+  },
+  {
+    "path": "release/producer-R2013-ascii-omitted-point-edit-False.dxf",
+    "sha256": "6ea8e0f1a26f172f1c59228d2b46096c4cc08bb6f5e6d0be276035010237bf67",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2013-ascii-omitted-point-edit-True.dxf",
+    "sha256": "c32e43c572dd37b1a47402febf9c01bda77be1dbd83f613cf019373b7d452934",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-ascii-omitted-point-transform.dxf",
+    "sha256": "eceb1b5cec591adab4591a0dcd4f584ca6cb680f3f77e29a5dc46e2a9d3e27c4",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "45245bbfce50b8c090193eece7cf324731f095e2c398b6bae9f9566dcabcb303",
+    "bytes": 16353
+  },
+  {
+    "path": "release/producer-R2013-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "7a383513c46b4a7672070bfbc6988a370d2eeb0d2decf769f746344b7d7dbcc7",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2013-ascii-packet-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2013-ascii-packet-True.dxf",
+    "sha256": "06ed87d2e28aa0454e15048beddb2879050cecb8b7dacd911b7f9df9e8d9d928",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-ascii-reverse-False.dxf",
+    "sha256": "ba7589b7ff463a3f560c5c44493be030eb0c8740e3aa7bafd639659d7fc9cf18",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2013-ascii-reverse-True.dxf",
+    "sha256": "382a262559b0855d18ff72ad19a3ca9166d42354ea7ac3c56fc91699e6c20b55",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2013-ascii-transform.dxf",
+    "sha256": "e59efd5d5bbe414f31f85662ae5a0dd60b2f1669ffb9a87c0a911804b1961b31",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-0.dxf",
+    "sha256": "729b31b8f00f5d3e81f5e4b696996e2dd5cdaa5ed89f51e09dcd71831de5f1cb",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-1.dxf",
+    "sha256": "38d7b6791be6ebb706508657189b446b4d05a59d9486d1c88a60cef725ae5a5b",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-2.dxf",
+    "sha256": "028992dd1ccc96f33239fae377f65509fb405dc43c22e69d7db07c39fa02d095",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-3.dxf",
+    "sha256": "326b8b55d2d00f11ec833d3d5cd6257407574f58b176d495f3a6c373c193406e",
+    "bytes": 15861
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-reverse-scale-0.dxf",
+    "sha256": "db4c8a5ad81b7a666af2d884063f1e9a629c700fc21a916aa1ee1391b6307ced",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-reverse-scale-1.dxf",
+    "sha256": "52f4a7a1795c7013056fd70d4772cf0898cab785afc0e4dba0c5b083ded2374a",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-reverse-scale-2.dxf",
+    "sha256": "0fe4fe94f18f40086a5eb42f89b7a14132cf2792c18371e7f1a71cadea1b2d18",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2013-ascii-width-reverse-scale-3.dxf",
+    "sha256": "c9364111773e867c286f2ad3100c4e49157485cec0c89f577d925a0e9a337dff",
+    "bytes": 16388
+  },
+  {
+    "path": "release/producer-R2013-binary-child-link.dxf",
+    "sha256": "2a877a18bb7c86e5353e24610fd8b60681fa8e2be226376effd7f4369fdc5b39",
+    "bytes": 16676
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "8705d5a19d2f96729c69a19c85f5905c35b449c695dba8216abadb17a6dc1e7b",
+    "bytes": 15674
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-0-stored-False.dxf",
+    "sha256": "fad27376b8c2101d500679c8358dfd159f17514d8c4bdfd4d74a1a75c63e9fcf",
+    "bytes": 15907
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-0-stored-True.dxf",
+    "sha256": "f5477de64cf63403d30a317a86f3edccdef84ce2168b945688cb788e23ce17fb",
+    "bytes": 15402
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-0-transform-False.dxf",
+    "sha256": "4a86e0cad64fe7ecc4c10f6b1316e0b3ce11e4f5c244ecbcf4702b75d2b10abe",
+    "bytes": 16094
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-0-transform-True.dxf",
+    "sha256": "f68186ddc66787613c4eb71cf800e61f23def4789ff69611aa921269737066cc",
+    "bytes": 15587
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "04f740248afe5b5f6030f760ebfbdfd637b5c1490998727e433818712e28b23f",
+    "bytes": 15964
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-1-stored-False.dxf",
+    "sha256": "83da60606a230b2743daa7d46b4dc5f3619c50f06a597b6de68de773e17193b2",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-1-stored-True.dxf",
+    "sha256": "1a9820a3c000844dc23e48b4078baa8139a9f226c00db6c9f76c276b31e3929f",
+    "bytes": 15547
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-1-transform-False.dxf",
+    "sha256": "b651af1e3dd33be27c598d1511b595b12a011ec4c0b977723996ead34c48c14a",
+    "bytes": 16416
+  },
+  {
+    "path": "release/producer-R2013-binary-degenerate-1-transform-True.dxf",
+    "sha256": "ef3f43a8b8e1af554fe1f48c7c29dbebaae2e1657a0fb547155509bf85568471",
+    "bytes": 15877
+  },
+  {
+    "path": "release/producer-R2013-binary-lifecycle.dxf",
+    "sha256": "48c85de2cc277d219d8ff98082f84597ca9028b6f6152a34d1add9afee1e0398",
+    "bytes": 17028
+  },
+  {
+    "path": "release/producer-R2013-binary-omitted-point-edit-False.dxf",
+    "sha256": "6ea8e0f1a26f172f1c59228d2b46096c4cc08bb6f5e6d0be276035010237bf67",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2013-binary-omitted-point-edit-True.dxf",
+    "sha256": "c32e43c572dd37b1a47402febf9c01bda77be1dbd83f613cf019373b7d452934",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-binary-omitted-point-transform.dxf",
+    "sha256": "545126cc96d4231fe19a91382c79fade0767984a6a143b9badbae48b5af5b55a",
+    "bytes": 16375
+  },
+  {
+    "path": "release/producer-R2013-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "45245bbfce50b8c090193eece7cf324731f095e2c398b6bae9f9566dcabcb303",
+    "bytes": 16353
+  },
+  {
+    "path": "release/producer-R2013-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "7a383513c46b4a7672070bfbc6988a370d2eeb0d2decf769f746344b7d7dbcc7",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2013-binary-packet-False.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2013-binary-packet-True.dxf",
+    "sha256": "06ed87d2e28aa0454e15048beddb2879050cecb8b7dacd911b7f9df9e8d9d928",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-binary-reverse-False.dxf",
+    "sha256": "01b3f25a697700aa59792ec5e44c6696c0982f1eb50dd50cfad48d8b1cddb84f",
+    "bytes": 16382
+  },
+  {
+    "path": "release/producer-R2013-binary-reverse-True.dxf",
+    "sha256": "42fbbb9b2b825a5e02c7008ff08145af76e5b1d4c8d6532f390bc37b5f9ab3c8",
+    "bytes": 16382
+  },
+  {
+    "path": "release/producer-R2013-binary-transform.dxf",
+    "sha256": "d04729a424baa37797317b70dd709ab2ef7a6603720c986f671ac92988583693",
+    "bytes": 16377
+  },
+  {
+    "path": "release/producer-R2013-binary-width-0.dxf",
+    "sha256": "b590bda6128cc70475e9433652d20688bf1b972693c0fe849debaa1330db5626",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2013-binary-width-1.dxf",
+    "sha256": "9f607de798a3f30ace3d4b6f0bbac4b1f3b8094d67a40b0736eeecce033704b9",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2013-binary-width-2.dxf",
+    "sha256": "15c08204d1feee06979f7d8f8fde1e1978009ba76eebb5650946a16174d16179",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2013-binary-width-3.dxf",
+    "sha256": "6fe7585a2dbbc1963e7c0d4b51af5f2ff6c0036e2969e749a3aef9df9350994b",
+    "bytes": 16388
+  },
+  {
+    "path": "release/producer-R2013-binary-width-reverse-scale-0.dxf",
+    "sha256": "f40c1409bf91dfca9905803eeeb84424a92b01378693d4abce0316c7fc53c9b7",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2013-binary-width-reverse-scale-1.dxf",
+    "sha256": "c4d25ba8d6b50846fcdfb8d0cb70f27c5d52acb2c9607180ac75dd2217a5ca6a",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2013-binary-width-reverse-scale-2.dxf",
+    "sha256": "b060f977fd05771951f3522005533ac39e1a55894bc4c46baa971787da90049e",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2013-binary-width-reverse-scale-3.dxf",
+    "sha256": "2076fa63532462339b1d80fd83d76a23cde4907c5fd32cd5cddaae0a8ac3842a",
+    "bytes": 15861
+  },
+  {
+    "path": "release/producer-R2018-ascii-child-link.dxf",
+    "sha256": "6e2a70dbb903723190a6e06364f9e4003fe2331370326e10d64050397c145d3f",
+    "bytes": 16146
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-0-lifecycle.dxf",
+    "sha256": "8a7ad7b9971bbbb352ebb71533b62c428f4a6a142984f7fba7edf91f90a4f3b4",
+    "bytes": 16188
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-0-stored-False.dxf",
+    "sha256": "af2333e2865ecbc2c9bcc0d51b889f0c380411c95977e5a2bff231b3153d2380",
+    "bytes": 15907
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-0-stored-True.dxf",
+    "sha256": "efb9a539bf190ba2defa03433851d05e34719fa69a0af3c4db0686717b4fcda8",
+    "bytes": 15402
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-0-transform-False.dxf",
+    "sha256": "1508b3cad3afb1d30cc2e318eab8b33d5249e4b8de98105ee97a2f87a72c83ca",
+    "bytes": 16094
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-0-transform-True.dxf",
+    "sha256": "39ef1819c3b44300abd6a08c93d2225b58f539e4dfeecf787c74e9181befab7a",
+    "bytes": 15587
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-1-lifecycle.dxf",
+    "sha256": "64cfeea3f71f1af1437f53dfc3661a00b4f18a7fcd6c859dc3487f652db41566",
+    "bytes": 16510
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-1-stored-False.dxf",
+    "sha256": "c2365040ae81b4a3a52c266195c21d5368f142a5d4164fb50070f7301b0901bd",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-1-stored-True.dxf",
+    "sha256": "a8debcf1a52bc4a42e2153f6a63dd42ef97c8cf8e423556e88ec578df78e75c4",
+    "bytes": 15547
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-1-transform-False.dxf",
+    "sha256": "7f4d3cdabdc46cc2df03c3835b6fd85af3d32103b895d558d5808f8e2bf66afd",
+    "bytes": 16416
+  },
+  {
+    "path": "release/producer-R2018-ascii-degenerate-1-transform-True.dxf",
+    "sha256": "52bd4128e7f4ec8ad2153b3a8470f62020dbc0ae2d931f6ae10c475e7fb9fd0e",
+    "bytes": 15877
+  },
+  {
+    "path": "release/producer-R2018-ascii-lifecycle.dxf",
+    "sha256": "eaa773919ecc2678eebdeab205a5be5712811a9bc4578904dd41c0551f56dd23",
+    "bytes": 16465
+  },
+  {
+    "path": "release/producer-R2018-ascii-omitted-point-edit-False.dxf",
+    "sha256": "bef1a9c62e2957647ef8a236834345a723361c456b45ee9e6e31d0094eb380d5",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2018-ascii-omitted-point-edit-True.dxf",
+    "sha256": "f7530bfcc1565b6d698334c7d6af9ea1828d011e1674672d332ee173c8fa07c9",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-ascii-omitted-point-transform.dxf",
+    "sha256": "861e355b7977b5811b56adeea8293827e680abca08bb1eec393115a94e73ff6e",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-ascii-omitted-point-unchanged-False.dxf",
+    "sha256": "abdd0c2703bcc885434f47a2bec6b2b07ca187ecd3cb8ccdfbfbccf24278bebb",
+    "bytes": 16353
+  },
+  {
+    "path": "release/producer-R2018-ascii-omitted-point-unchanged-True.dxf",
+    "sha256": "fc5aec47b5c87139901e9d88a1f8213a464741c7e8c58f7d54ad2a4a7b9aa205",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2018-ascii-packet-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2018-ascii-packet-True.dxf",
+    "sha256": "da63e923ec11cc98afac064e205c14702506a5f9ccbc2c09defe048c57964718",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-ascii-reverse-False.dxf",
+    "sha256": "db018b33098408ac17bf6922558aec5b3193da728f10c77bd1311b83e51c21be",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2018-ascii-reverse-True.dxf",
+    "sha256": "8e964555dcbb7c1d7a75b47867abf3472e9e1b58cad7934b19bde202390a8a20",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2018-ascii-transform.dxf",
+    "sha256": "1162244075d87604230229bd78b51c8fcc7bea0240547f964f3b5091853b816e",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-0.dxf",
+    "sha256": "54afdab5b7909055d4946d73426556203de67a76ef7a9f4c380db2d8eb272a86",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-1.dxf",
+    "sha256": "5ff0fa774c7fc93f80380f4dc4b8d508c736bf78ddd16cda97042121fcba5313",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-2.dxf",
+    "sha256": "64ae84ab53cafa8aa5183f77f7656b66cee84bdbf1b6f0a300e0e31b839fc76e",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-3.dxf",
+    "sha256": "cfe659fc27fc5da3c64defdb7db48c8b3d473c34092952c9186f0dbcbfb712f0",
+    "bytes": 15861
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-reverse-scale-0.dxf",
+    "sha256": "f6439da3defa7853ff87290adde79cb9ccc8ffe2f61a05cc51092190d5fcef22",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-reverse-scale-1.dxf",
+    "sha256": "25d1b702b0774bba4d81d6bd7d64de496fc088ab65736521ee83490de303a41f",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-reverse-scale-2.dxf",
+    "sha256": "f025334e04190198710771f316fde632cda270ce87a91551ed6435c6bdbe7c3a",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2018-ascii-width-reverse-scale-3.dxf",
+    "sha256": "eabf1313d40d0f33574493a53cfda352dd7f325c8fe979293ed8c5d955dad36d",
+    "bytes": 16388
+  },
+  {
+    "path": "release/producer-R2018-binary-child-link.dxf",
+    "sha256": "fd109995d703af55bc1400c769827fd5c1ef036f2f73c9d936df9d143fdfacfe",
+    "bytes": 16676
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-0-lifecycle.dxf",
+    "sha256": "d02d7bc04274f1a67b391965d80509a3248829736a7867449ff271ff0dedc666",
+    "bytes": 15674
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-0-stored-False.dxf",
+    "sha256": "af2333e2865ecbc2c9bcc0d51b889f0c380411c95977e5a2bff231b3153d2380",
+    "bytes": 15907
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-0-stored-True.dxf",
+    "sha256": "efb9a539bf190ba2defa03433851d05e34719fa69a0af3c4db0686717b4fcda8",
+    "bytes": 15402
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-0-transform-False.dxf",
+    "sha256": "1508b3cad3afb1d30cc2e318eab8b33d5249e4b8de98105ee97a2f87a72c83ca",
+    "bytes": 16094
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-0-transform-True.dxf",
+    "sha256": "39ef1819c3b44300abd6a08c93d2225b58f539e4dfeecf787c74e9181befab7a",
+    "bytes": 15587
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-1-lifecycle.dxf",
+    "sha256": "66c3d97f926422c20c28bf004b8b4e7b9e48986853810a523b70804bc7e540d4",
+    "bytes": 15964
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-1-stored-False.dxf",
+    "sha256": "c2365040ae81b4a3a52c266195c21d5368f142a5d4164fb50070f7301b0901bd",
+    "bytes": 16068
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-1-stored-True.dxf",
+    "sha256": "a8debcf1a52bc4a42e2153f6a63dd42ef97c8cf8e423556e88ec578df78e75c4",
+    "bytes": 15547
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-1-transform-False.dxf",
+    "sha256": "7f4d3cdabdc46cc2df03c3835b6fd85af3d32103b895d558d5808f8e2bf66afd",
+    "bytes": 16416
+  },
+  {
+    "path": "release/producer-R2018-binary-degenerate-1-transform-True.dxf",
+    "sha256": "52bd4128e7f4ec8ad2153b3a8470f62020dbc0ae2d931f6ae10c475e7fb9fd0e",
+    "bytes": 15877
+  },
+  {
+    "path": "release/producer-R2018-binary-lifecycle.dxf",
+    "sha256": "14eff915c1395864c666d4714a941c643944585af724cb300ba8024b40ab0689",
+    "bytes": 17028
+  },
+  {
+    "path": "release/producer-R2018-binary-omitted-point-edit-False.dxf",
+    "sha256": "bef1a9c62e2957647ef8a236834345a723361c456b45ee9e6e31d0094eb380d5",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2018-binary-omitted-point-edit-True.dxf",
+    "sha256": "f7530bfcc1565b6d698334c7d6af9ea1828d011e1674672d332ee173c8fa07c9",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-binary-omitted-point-transform.dxf",
+    "sha256": "1da9ab2916e6c48383f2c08ae681ffa919fdd9c0364718229dc4296b1a2fc9b3",
+    "bytes": 16375
+  },
+  {
+    "path": "release/producer-R2018-binary-omitted-point-unchanged-False.dxf",
+    "sha256": "abdd0c2703bcc885434f47a2bec6b2b07ca187ecd3cb8ccdfbfbccf24278bebb",
+    "bytes": 16353
+  },
+  {
+    "path": "release/producer-R2018-binary-omitted-point-unchanged-True.dxf",
+    "sha256": "fc5aec47b5c87139901e9d88a1f8213a464741c7e8c58f7d54ad2a4a7b9aa205",
+    "bytes": 15811
+  },
+  {
+    "path": "release/producer-R2018-binary-packet-False.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2018-binary-packet-True.dxf",
+    "sha256": "da63e923ec11cc98afac064e205c14702506a5f9ccbc2c09defe048c57964718",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-binary-reverse-False.dxf",
+    "sha256": "d41cc9dac8f796e006a92c161e4acb7a165e880a06932414ca90ea957c29b98a",
+    "bytes": 16382
+  },
+  {
+    "path": "release/producer-R2018-binary-reverse-True.dxf",
+    "sha256": "53394e77650b9175a7d570922163d159897c516aa5b2c72eb045ee976cade2a6",
+    "bytes": 16382
+  },
+  {
+    "path": "release/producer-R2018-binary-transform.dxf",
+    "sha256": "e620810c75e8ad380ca41c431fd826e50387ddfb39ef5c3f36e010119a32ec33",
+    "bytes": 16377
+  },
+  {
+    "path": "release/producer-R2018-binary-width-0.dxf",
+    "sha256": "fe4e6f14d735df359f13b6c52ae68071ca31a9156ce09d03254e011c226a8225",
+    "bytes": 16374
+  },
+  {
+    "path": "release/producer-R2018-binary-width-1.dxf",
+    "sha256": "901272071d03576183dda1eda267c10acaccec363b069163c1c9fd816e7b61f6",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2018-binary-width-2.dxf",
+    "sha256": "ba594ecd9948e5ec4281cc600390ed10b70b69cafcde944b252ce4ead2be09a3",
+    "bytes": 16381
+  },
+  {
+    "path": "release/producer-R2018-binary-width-3.dxf",
+    "sha256": "ee7ae071b1073d0a6505d071f812687616948acf072c20519475bb6afe000345",
+    "bytes": 16388
+  },
+  {
+    "path": "release/producer-R2018-binary-width-reverse-scale-0.dxf",
+    "sha256": "b3f9a41ae6065ba820e93fece88d804255b23ba29e85210f812c6a5f693a81a3",
+    "bytes": 15841
+  },
+  {
+    "path": "release/producer-R2018-binary-width-reverse-scale-1.dxf",
+    "sha256": "2185bb47bb858f3309fbf9558c92d3f3042b143bf61c520184cd501365a570b3",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2018-binary-width-reverse-scale-2.dxf",
+    "sha256": "ee0661a15079a04afe3756d9b3e3be44e866d4bf74f02814efde8930e1e4ec54",
+    "bytes": 15851
+  },
+  {
+    "path": "release/producer-R2018-binary-width-reverse-scale-3.dxf",
+    "sha256": "3d38b37ceba9483992ff2772398087bc5c36eedd474e792c2ec643262b8ca37b",
+    "bytes": 15861
+  },
+  {
+    "path": "release/tilted-plane-False.dxf",
+    "sha256": "f9c305d0b27da708274f98ba02036a51825737ede418f8a6621ca11cedd21e45",
+    "bytes": 15871
+  },
+  {
+    "path": "release/tilted-plane-True.dxf",
+    "sha256": "61426bbf6ac32c78f09e1d585e44b1021026331899a76aea4f7b57cf3c87f206",
+    "bytes": 16402
+  }
+]

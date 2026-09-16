@@ -9,15 +9,15 @@ using netDxf.Tables;
 
 namespace netDxf.Objects
 {
-    /// <summary>A loaded TABLESTYLE with immutable source payload and conservative classic projections.</summary>
-    /// <remarks>Style editing, map interpretation and table regeneration are not supported. Common metadata and XData retain their ordinary interfaces.</remarks>
+    /// <summary>A loaded TABLESTYLE with immutable payload snapshots and conservative classic projections.</summary>
+    /// <remarks>ReplaceStyle supports explicit qualified header and row scalar edits. Map interpretation and table regeneration are not supported.</remarks>
     public sealed partial class DxfTableStyle : DxfDatabaseObject
     {
         private readonly DxfDocument source;
         private readonly List<DxfObject> references = new List<DxfObject>();
         private readonly Dictionary<DxfTag, Tuple<TextStyle, string>> namedStyles = new Dictionary<DxfTag, Tuple<TextStyle, string>>();
         private readonly Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
-        private readonly List<DxfTag> publicTags;
+        private List<DxfTag> publicTags;
         private bool resolved;
 
         internal DxfTableStyle(DxfDocument source, IList<DxfTag> tags, Func<string, string> decode) : base("TABLESTYLE")
@@ -39,12 +39,12 @@ namespace netDxf.Objects
         /// <summary>Gets the source DXF version. Cross-version output is not qualified.</summary>
         public DxfVersion SourceVersion { get; }
         /// <summary>Gets the complete immutable retained packet, excluding recognized common metadata and XData.</summary>
-        public IReadOnlyList<DxfTag> Tags { get; }
+        public IReadOnlyList<DxfTag> Tags { get; private set; }
         /// <summary>Gets classic header values, or null for an incomplete, ambiguous or unknown header.</summary>
-        public DxfTableStyleHeader Header { get; }
+        public DxfTableStyleHeader Header { get; private set; }
         /// <summary>Gets three ordered classic row packets, or an empty list when their count is not recognized.</summary>
         /// <remarks>Order is retained without assigning data, title or header roles. Unknown and unprojected values remain in Tags.</remarks>
-        public IReadOnlyList<DxfTableStyleRow> Rows { get; }
+        public IReadOnlyList<DxfTableStyleRow> Rows { get; private set; }
         /// <summary>Gets exact registered STYLE and exposed semantic handle dependencies.</summary>
         public IReadOnlyList<DxfObject> References { get { return this.references.AsReadOnly(); } }
         /// <summary>Gets the retained owned CELLSTYLEMAP when the known extension dictionary slot identifies it.</summary>

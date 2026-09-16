@@ -63,8 +63,10 @@ Cloning a style or a containing dictionary is rejected before source or destinat
 allocation because complete application-specific handle remapping is not known.
 Foreign adoption and cross-profile output are likewise rejected before mutation
 or output. No additional generic erasure rule is imposed for unknown style fields.
-Common metadata and XData keep their ordinary interfaces; `Tags`, projections and
-map payload have no style-editing interfaces.
+Common metadata and XData keep their ordinary interfaces. The subsequent
+[explicit stored-style edit API](table-style-editing.md) replaces qualified
+classic header and row scalar values through immutable snapshots. All other
+style fields and map formatting remain outside that editing contract.
 
 When a typed style is present, output checks the TABLESTYLE CLASS's object kind
 and `AcDbTableStyle` C++ name before any write. It preserves compatible application

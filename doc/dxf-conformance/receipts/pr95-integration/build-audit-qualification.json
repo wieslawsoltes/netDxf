@@ -1,0 +1,124 @@
+{
+  "qualified_commit": "71b082eaa218f3db0742176d1fa97b0a14339900",
+  "qualified_tree": "cde35e08b2dbce2d4f7ff0c665e20301f9c9a52a",
+  "library_tree": "2c698b8f3be601264bc08152c64235468b7758fb",
+  "audit_tool_tree": "292d4fd0b83ab21ccddda5c53657524433b609b1",
+  "clean_worktree": true,
+  "sdk": "8.0.408",
+  "runtime": "8.0.15",
+  "builds": [
+    {
+      "configuration": "Release",
+      "framework": "netstandard2.0",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 561,
+      "warning_codes": {
+        "CS1591": 561
+      },
+      "binary": "/workspace/scratch/85d8ec6c7a27/netDxf-final-qualification/netDxf/bin/Release/netstandard2.0/netDxf.netstandard.dll",
+      "binary_bytes": 1664512,
+      "binary_sha256": "81ecf9b800c46821bb5be7e2a59967b41b463d9053d2c697f325f3a02f243806",
+      "log": "build-all-frameworks-release.log",
+      "log_sha256": "9b4d649e10a9d06ebd69f26f53450bd63f8e737478fc3fe7fb67ce47b50645ee"
+    },
+    {
+      "configuration": "Release",
+      "framework": "net471",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 561,
+      "warning_codes": {
+        "CS1591": 561
+      },
+      "binary": "/workspace/scratch/85d8ec6c7a27/netDxf-final-qualification/netDxf/bin/Release/net471/netDxf.netstandard.dll",
+      "binary_bytes": 1665024,
+      "binary_sha256": "f2d1a717b936f07ca37ef18e34d4fe04bd5cef4e629daae47b539481e49945de",
+      "log": "build-all-frameworks-release.log",
+      "log_sha256": "9b4d649e10a9d06ebd69f26f53450bd63f8e737478fc3fe7fb67ce47b50645ee"
+    },
+    {
+      "configuration": "Release",
+      "framework": "net48",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 561,
+      "warning_codes": {
+        "CS1591": 561
+      },
+      "binary": "/workspace/scratch/85d8ec6c7a27/netDxf-final-qualification/netDxf/bin/Release/net48/netDxf.netstandard.dll",
+      "binary_bytes": 1665024,
+      "binary_sha256": "befc270823b7538799e0d9cd99970e7d2b645ec5fb7f377710c0189162b3e837",
+      "log": "build-all-frameworks-release.log",
+      "log_sha256": "9b4d649e10a9d06ebd69f26f53450bd63f8e737478fc3fe7fb67ce47b50645ee"
+    },
+    {
+      "configuration": "Release",
+      "framework": "net6.0",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 561,
+      "warning_codes": {
+        "CS1591": 561
+      },
+      "binary": "/workspace/scratch/85d8ec6c7a27/netDxf-final-qualification/netDxf/bin/Release/net6.0/netDxf.netstandard.dll",
+      "binary_bytes": 1667072,
+      "binary_sha256": "ea731b13ae1cd7b734569b922d3145b5a704c9a4fcec6cd5a100ae44093f4483",
+      "log": "build-all-frameworks-release.log",
+      "log_sha256": "9b4d649e10a9d06ebd69f26f53450bd63f8e737478fc3fe7fb67ce47b50645ee"
+    },
+    {
+      "configuration": "Release",
+      "framework": "net8.0",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 561,
+      "warning_codes": {
+        "CS1591": 561
+      },
+      "binary": "/workspace/scratch/85d8ec6c7a27/netDxf-final-qualification/netDxf/bin/Release/net8.0/netDxf.netstandard.dll",
+      "binary_bytes": 1666560,
+      "binary_sha256": "1727357ca26218618db4a4cd9661737d4228687ac667ecea5ab1b8123324bb59",
+      "log": "build-all-frameworks-release.log",
+      "log_sha256": "9b4d649e10a9d06ebd69f26f53450bd63f8e737478fc3fe7fb67ce47b50645ee"
+    },
+    {
+      "configuration": "Debug",
+      "framework": "netstandard2.0",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 561,
+      "warning_codes": {
+        "CS1591": 561
+      },
+      "binary": "/workspace/scratch/85d8ec6c7a27/netDxf-final-qualification/netDxf/bin/Debug/netstandard2.0/netDxf.netstandard.dll",
+      "binary_bytes": 1845248,
+      "binary_sha256": "25ce128549d070ad15b2db0be3ed987c126c77ab7d74bf6d4ebd5e29dff7ed58",
+      "log": "build-netstandard-debug.log",
+      "log_sha256": "590a064908765de864bcd8e870bb6d009068e189401604780f376c22569df707"
+    }
+  ],
+  "source_manifest": {
+    "path": "source-manifest.json",
+    "sha256": "43137f9af4e9dabfa16c68af4954f185705da49ca7530bef81952042d13d79d9",
+    "tracked_cs_csproj_files": 511,
+    "all_current_source_hashes_match": true
+  },
+  "field_audit": {
+    "self_test_passed": true,
+    "self_test_build_commit": "841860e",
+    "self_test_tool_tree_matches_qualified_commit": true,
+    "build_exit_code": 0,
+    "inventory_exit_code": 0,
+    "source_revision": "71b082eaa218f3db0742176d1fa97b0a14339900",
+    "io_files": 115,
+    "io_methods": 756,
+    "model_header_files": 274,
+    "all_389_inventory_source_hashes_match": true,
+    "inventory": "field-audit/field-inventory.json",
+    "inventory_sha256": "5a9a6f9a61ecd0ed9ee12ce7408e18e86e916a83a33bb40106a36034f5e0bac4",
+    "binary_sha256": "44f70d2049460f3eeb487add92fe52ae428947fcf6796c2120ed3b7b6e77dff1",
+    "note": "Syntax inventory; this does not establish semantic DXF conformance."
+  },
+  "scope": "All five Release library targets and netstandard2.0 Debug compilation. Full conformance and all independent fixture gates are run separately by the integration owner."
+}
