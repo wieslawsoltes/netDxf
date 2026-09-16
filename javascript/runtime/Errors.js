@@ -15,6 +15,9 @@ export class ArgumentOutOfRangeException extends ArgumentException {
     super(message, paramName); this.ActualValue = actualValue;
   }
 }
+export class IOException extends Exception {}
+export class InvalidCastException extends Exception {}
+export class NullReferenceException extends Exception {}
 export class FormatException extends Exception {}
 export class InvalidDataException extends Exception {}
 export class EndOfStreamException extends Exception {}

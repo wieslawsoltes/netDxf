@@ -1,0 +1,21 @@
+{
+  "name": "@netdxf/javascript",
+  "version": "0.1.0-dev.0",
+  "private": true,
+  "description": "Native JavaScript port of netDxf with pinned .NET differential verification (in progress)",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "exports": { ".": "./index.js", "./netDxf/*": "./netDxf/*", "./runtime/*": "./runtime/*" },
+  "files": ["netDxf", "runtime", "index.js", "README.md", "LICENSE", "baseline.json"],
+  "scripts": {
+    "test": "node tests/netDxf.Conformance/Program.js",
+    "test:unit": "node --test tests/unit/*.js",
+    "verify": "node tools/verify.mjs",
+    "verify:complete": "node tools/verify.mjs --require-complete",
+    "oracle": "node tools/dotnet.mjs oracle",
+    "inventory": "node tools/dotnet.mjs inventory",
+    "benchmark": "node tools/benchmark.mjs"
+  },
+  "repository": { "type": "git", "url": "https://github.com/wieslawsoltes/netDxf.git", "directory": "javascript" }
+}
