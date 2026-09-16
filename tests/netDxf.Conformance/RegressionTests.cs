@@ -4,6 +4,7 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterFieldResultTests();
         RegisterEllipseAffineReviewTests();
         RegisterTrueColorWireReviewTests();
         RegisterLegacyUtilityReviewTests();
