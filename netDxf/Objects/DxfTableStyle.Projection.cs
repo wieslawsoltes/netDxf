@@ -72,8 +72,9 @@ namespace netDxf.Objects
             this.StoredTextStyleName = decode((string)tags[0].Value);
             this.Values = DxfTableStyleRowValues.TryRead(tags);
             this.Borders = DxfTableStyleRowBorders.TryRead(tags);
+            this.DataTypes = DxfTableStyleRowDataTypes.TryRead(tags);
         }
-        /// <summary>Gets the decoded source STYLE name before any resource rename.</summary>
+        /// <summary>Gets the decoded stored STYLE name at this snapshot, before subsequent resource renames.</summary>
         public string StoredTextStyleName { get; }
         /// <summary>Gets the exact registered STYLE resource, or null for an unresolved source name.</summary>
         public TextStyle TextStyle { get; private set; }
@@ -81,6 +82,8 @@ namespace netDxf.Objects
         public DxfTableStyleRowValues Values { get; }
         /// <summary>Gets all six stored border triples, or null when any field is missing, repeated or invalid.</summary>
         public DxfTableStyleRowBorders Borders { get; }
+        /// <summary>Gets the stored data/unit type pair, or null when either public field is missing or repeated.</summary>
+        public DxfTableStyleRowDataTypes DataTypes { get; }
         /// <summary>Gets the ordered public row packet; private application groups remain in the parent object's complete Tags.</summary>
         public IReadOnlyList<DxfTag> Tags { get; }
         /// <summary>Creates a scalar edit bound to this row snapshot.</summary>
@@ -97,28 +100,67 @@ namespace netDxf.Objects
             if (this.Borders == null) throw new NotSupportedException("The stored row borders are not qualified for editing.");
             return new DxfTableStyleRowEdit(this, null, borders);
         }
+        /// <summary>Creates a data/unit-type edit bound to this row snapshot.</summary>
+        public DxfTableStyleRowEdit WithDataTypes(DxfTableStyleRowDataTypes dataTypes)
+        {
+            if (dataTypes == null) throw new ArgumentNullException(nameof(dataTypes));
+            if (this.DataTypes == null) throw new NotSupportedException("The stored row data/unit fields are not qualified for editing.");
+            return new DxfTableStyleRowEdit(this, null, dataTypes: dataTypes);
+        }
+        /// <summary>Creates an explicit STYLE reassignment bound to this row snapshot.</summary>
+        /// <remarks>The target must be the actual registered TextStyle in the source document when ReplaceStyle validates the request. No resource is imported or created.</remarks>
+        public DxfTableStyleRowEdit WithTextStyle(TextStyle textStyle)
+        {
+            if (textStyle == null) throw new ArgumentNullException(nameof(textStyle));
+            return new DxfTableStyleRowEdit(this, null, textStyle: textStyle);
+        }
         internal void BindTextStyle(TextStyle style) { this.TextStyle = style; }
     }
-    /// <summary>An immutable scalar and/or border replacement tied to one current TABLESTYLE row snapshot.</summary>
+    /// <summary>An immutable scalar, border, data/unit or STYLE replacement tied to one current TABLESTYLE row snapshot.</summary>
     public sealed class DxfTableStyleRowEdit
     {
-        internal DxfTableStyleRowEdit(DxfTableStyleRow original, DxfTableStyleRowValues values, DxfTableStyleRowBorders borders = null)
-        { this.Original = original; this.Values = values; this.Borders = borders; }
+        internal DxfTableStyleRowEdit(DxfTableStyleRow original, DxfTableStyleRowValues values,
+            DxfTableStyleRowBorders borders = null, DxfTableStyleRowDataTypes dataTypes = null, TextStyle textStyle = null)
+        { this.Original = original; this.Values = values; this.Borders = borders; this.DataTypes = dataTypes; this.TextStyle = textStyle; }
         /// <summary>Gets the original row snapshot.</summary>
         public DxfTableStyleRow Original { get; }
         /// <summary>Gets the replacement scalar values, or null to preserve them.</summary>
         public DxfTableStyleRowValues Values { get; }
         /// <summary>Gets replacement border values, or null to preserve them.</summary>
         public DxfTableStyleRowBorders Borders { get; }
-        /// <summary>Creates a new edit combining the existing scalar request with these border values.</summary>
+        /// <summary>Gets replacement data/unit values, or null to preserve them.</summary>
+        public DxfTableStyleRowDataTypes DataTypes { get; }
+        /// <summary>Gets an explicitly selected STYLE identity, or null to preserve the current binding.</summary>
+        public TextStyle TextStyle { get; }
+        /// <summary>Creates a new edit replacing scalars while retaining its other requested changes.</summary>
+        public DxfTableStyleRowEdit WithValues(DxfTableStyleRowValues values)
+        {
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            if (this.Original.Values == null) throw new NotSupportedException("The stored row scalars are not qualified for editing.");
+            return new DxfTableStyleRowEdit(this.Original, values, this.Borders, this.DataTypes, this.TextStyle);
+        }
+        /// <summary>Creates a new edit replacing borders while retaining its other requested changes.</summary>
         public DxfTableStyleRowEdit WithBorders(DxfTableStyleRowBorders borders)
         {
             if (borders == null) throw new ArgumentNullException(nameof(borders));
             if (this.Original.Borders == null) throw new NotSupportedException("The stored row borders are not qualified for editing.");
-            return new DxfTableStyleRowEdit(this.Original, this.Values, borders);
+            return new DxfTableStyleRowEdit(this.Original, this.Values, borders, this.DataTypes, this.TextStyle);
+        }
+        /// <summary>Creates a new edit replacing data/unit codes while retaining its other requested changes.</summary>
+        public DxfTableStyleRowEdit WithDataTypes(DxfTableStyleRowDataTypes dataTypes)
+        {
+            if (dataTypes == null) throw new ArgumentNullException(nameof(dataTypes));
+            if (this.Original.DataTypes == null) throw new NotSupportedException("The stored row data/unit fields are not qualified for editing.");
+            return new DxfTableStyleRowEdit(this.Original, this.Values, this.Borders, dataTypes, this.TextStyle);
+        }
+        /// <summary>Creates a new edit selecting a STYLE while retaining its other requested changes.</summary>
+        public DxfTableStyleRowEdit WithTextStyle(TextStyle textStyle)
+        {
+            if (textStyle == null) throw new ArgumentNullException(nameof(textStyle));
+            return new DxfTableStyleRowEdit(this.Original, this.Values, this.Borders, this.DataTypes, textStyle);
         }
     }
-    /// <summary>Immutable public row scalars; raw data/unit and border fields are not interpreted.</summary>
+    /// <summary>Immutable public row scalars; stored data/unit and border sets are exposed separately.</summary>
     public sealed class DxfTableStyleRowValues
     {
         private DxfTableStyleRowValues() { }
