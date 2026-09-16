@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 export const javascriptRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const sourceRoot = path.resolve(process.env.NETDXF_SOURCE_ROOT || path.join(javascriptRoot, '..'));
 export const configuration = process.env.CONFIGURATION || 'Release';
@@ -12,7 +13,7 @@ const command = process.env.DOTNET || (process.env.DOTNET_ROOT ? path.join(proce
 export function run(executable, args, options = {}) {
   const result = spawnSync(executable, args, { cwd: sourceRoot, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, ...options });
   if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error(`${executable} failed (${result.status})\n${result.stdout || ''}\n${result.stderr || ''}`);
+  if (result.status !== 0) throw new Error(`${executable} failed (${result.status}; signal ${result.signal ?? 'none'})\n${result.stdout || ''}\n${result.stderr || ''}`);
   return result.stdout;
 }
 function toolchain() {
@@ -37,6 +38,14 @@ export function walk(root) {
     return entry.isDirectory() ? walk(filename) : entry.isFile() ? [filename] : [];
   }).sort();
 }
+export function computeSourceFingerprint(root = sourceRoot) {
+  const rows = ['netDxf', 'tests', 'TestDxfDocument'].flatMap(dir => walk(path.join(root, dir))).sort().map(file => {
+    const bytes = fs.readFileSync(file);
+    const blob = createHash('sha1').update(Buffer.from(`blob ${bytes.length}\0`)).update(bytes).digest('hex');
+    return path.relative(root, file).split(path.sep).join('/') + '\0' + blob + '\n';
+  });
+  return createHash('sha256').update(rows.join('')).digest('hex');
+}
 function compile(tool, name, files, executable = false, extra = []) {
   fs.mkdirSync(oracleRoot, { recursive: true });
   const flags = ['-nologo', `-target:${executable ? 'exe' : 'library'}`, '-langversion:latest', '-deterministic+',
@@ -54,6 +63,8 @@ function compile(tool, name, files, executable = false, extra = []) {
 }
 export function build(mode = 'oracle') {
   if (!['Debug','Release'].includes(configuration)) throw new Error('CONFIGURATION must be Debug or Release.');
+  const sourceFingerprint = computeSourceFingerprint();
+  if (sourceFingerprint !== baseline.sourceFingerprint) throw new Error('Oracle source drift: use the pinned checkout '+baseline.ref+'; actual fingerprint '+sourceFingerprint);
   const tool = toolchain();
   compile(tool,'netDxf.netstandard',walk(path.join(sourceRoot,'netDxf')).filter(f=>f.endsWith('.cs')),false,['-keyfile:'+path.join(sourceRoot,'netDxf','netDxf.snk')]);
   const library = '-r:'+path.join(oracleRoot,'netDxf.netstandard.dll');
@@ -69,9 +80,10 @@ export function build(mode = 'oracle') {
     compile(tool,'netDxf.Conformance',[...walk(path.join(sourceRoot,'tests','netDxf.Conformance')).filter(f=>f.endsWith('.cs')),globalUsings],true,[library,'-nullable:enable']);
     const artifactPath = process.env.DXF_TEST_ARTIFACTS || path.join(javascriptRoot,'artifacts','dotnet-'+configuration.toLowerCase());
     const log = path.join(oracleRoot,'conformance.log'), fd = fs.openSync(log,'w');
-    try { run(command,[path.join(oracleRoot,'netDxf.Conformance.dll')],{stdio:['ignore',fd,fd],env:{...process.env,DXF_TEST_ARTIFACTS:artifactPath}}); }
+    try { run(command,[path.join(oracleRoot,'netDxf.Conformance.dll')],{stdio:['ignore',fd,fd],env:{...process.env,DOTNET_GCHeapHardLimit:process.env.DOTNET_GCHeapHardLimit || '0x20000000',DXF_TEST_ARTIFACTS:artifactPath}}); }
     finally { fs.closeSync(fd); }
     console.log(fs.readFileSync(log,'utf8').trim().split(/\r?\n/).at(-1));
+    fs.writeFileSync(path.join(artifactPath,'metadata.json'),JSON.stringify({sourceRef:baseline.ref,sourceFingerprint,configuration,toolchain:baseline.toolchain,filter:process.env.DXF_TEST_FILTER||null,fullSuite:!process.env.DXF_TEST_FILTER},null,2)+'\n');
   } else if (mode === 'oracle') {
     compile(tool,'Oracle',[path.join(javascriptRoot,'tools','Oracle','Program.cs')],true,[library,'-nullable:enable']);
   } else throw new Error('Usage: node tools/dotnet.mjs oracle|inventory [--generate]|conformance');

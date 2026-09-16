@@ -48,7 +48,7 @@ internal static class Program
     }
     private static byte[] Save(DxfRawDocument document, bool binary)
     { using var output = new MemoryStream(); document.Save(output, binary); return output.ToArray(); }
-    private static object Raw(JsonElement input)
+    private static DxfRawDocument ReadDocument(JsonElement input)
     {
         var options = Options(input);
         var doc = input.TryGetProperty("tags", out var tags)
@@ -61,6 +61,11 @@ internal static class Program
             doc = doc.WithTags(replacement);
         }
         if (input.TryGetProperty("normalize", out var normalize) && normalize.GetBoolean()) doc = doc.WithTags(doc.Tags);
+        return doc;
+    }
+    private static object Raw(JsonElement input) => Snapshot(ReadDocument(input));
+    private static object Snapshot(DxfRawDocument doc)
+    {
         return new {
             version = (int)doc.Version, binary = doc.IsBinary, original = doc.HasOriginalBytes, codePage = doc.EncodingCodePage,
             tags = doc.Tags.Select(Wire).ToArray(),
@@ -72,6 +77,39 @@ internal static class Program
             text = Attempt(() => Convert.ToBase64String(Save(doc, false))),
             binaryOutput = Attempt(() => Convert.ToBase64String(Save(doc, true)))
         };
+    }
+    private static object Occurrence(DxfRawHandleOccurrence item) => new {
+        record = item.Record?.StartTagIndex, index = item.TagIndex, code = item.Code, handle = item.Handle,
+        canonical = item.CanonicalHandle, numeric = item.NumericHandle.ToString(CultureInfo.InvariantCulture),
+        role = (int)item.Role, context = item.Context, subclass = item.Subclass, reference = item.IsReference
+    };
+    private static object Handles(JsonElement input)
+    {
+        var doc = ReadDocument(input);
+        DxfRawHandleIndexOptions? options = null;
+        if (input.TryGetProperty("indexOptions", out var o)) options = new DxfRawHandleIndexOptions(
+            o.TryGetProperty("maximumOccurrences", out var mo) ? mo.GetInt32() : 1000000,
+            o.TryGetProperty("maximumDiagnostics", out var md) ? md.GetInt32() : 100000);
+        var index = DxfRawHandleIndex.Create(doc, options);
+        object? closure = null, remapped = null;
+        if (input.TryGetProperty("roots", out var roots)) closure = Attempt(() => {
+            var records = doc.Sections.SelectMany(s => s.Records).ToDictionary(r => r.StartTagIndex);
+            var selected = roots.EnumerateArray().Select(r => records[r.GetInt32()]);
+            var c = index.GetDependencyClosure(selected, (DxfRawReferenceTraversal)input.GetProperty("traversal").GetInt32());
+            return new { records = c.Records.Select(r => r.StartTagIndex).ToArray(),
+                unresolved = c.UnresolvedReferences.Select(x => x.TagIndex).ToArray(),
+                ambiguous = c.AmbiguousReferences.Select(x => x.TagIndex).ToArray(),
+                opaque = c.UninterpretedHandles.Select(x => x.TagIndex).ToArray(), resolved = c.AreSelectedReferencesResolved };
+        });
+        if (input.TryGetProperty("mapping", out var mapping)) remapped = Attempt(() => {
+            var m = mapping.EnumerateArray().ToDictionary(r => r[0].GetString()!, r => r[1].GetString()!, StringComparer.Ordinal);
+            var result = index.RemapHandles(m);
+            return new { unchanged = ReferenceEquals(doc, result), document = Snapshot(result) };
+        });
+        return new { occurrences = index.Occurrences.Select(Occurrence).ToArray(),
+            diagnostics = index.Diagnostics.Select(d => new { kind = (int)d.Kind, record = d.Record?.StartTagIndex,
+                index = d.TagIndex, handle = d.Handle, message = d.Message }).ToArray(),
+            closure, remapped };
     }
     private static object Format(JsonElement input)
     {
@@ -119,7 +157,7 @@ internal static class Program
                 using var document = JsonDocument.Parse(line);
                 var input = document.RootElement;
                 return input.GetProperty("op").GetString() switch {
-                    "raw" => Raw(input), "format" => Format(input), "encoding" => EncodingOperation(input),
+                    "raw" => Raw(input), "handles" => Handles(input), "format" => Format(input), "encoding" => EncodingOperation(input),
                     "typed-fixture" => TypedFixture(input), "typed-read" => TypedRead(input),
                     _ => throw new ArgumentException("Unknown oracle operation.")
                 };
