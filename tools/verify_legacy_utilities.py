@@ -11,10 +11,12 @@ import copy
 import datetime as dt
 from fractions import Fraction
 import json
+import io
 import math
 from pathlib import Path
 import struct
 import ezdxf
+from ezdxf.lldxf.tagger import ascii_tags_loader, binary_tags_loader, tag_compiler
 from verify_mleader_inputs import check
 
 TICKS = 864000000000
@@ -111,6 +113,32 @@ def clock_ticks(year, month, day, hour=0, minute=0, second=0, subsecond=0):
     return (dt.date(year, month, day).toordinal() - 1) * TICKS + (hour * 3600 + minute * 60 + second) * 10000000 + subsecond
 
 
+def raw_clock_header(path):
+    # Drawing._setup_metadata() in ezdxf rewrites TDCREATE even when opening an
+    # existing file. Inspect its independent low-level tags for source fidelity.
+    data = path.read_bytes()
+    loader = binary_tags_loader(data) if data.startswith(b"AutoCAD Binary DXF") else ascii_tags_loader(io.StringIO(data.decode("utf-8-sig"), newline=None))
+    tags = list(tag_compiler(loader))
+    starts = [i for i in range(len(tags) - 1) if tags[i] == (0, "SECTION") and tags[i + 1] == (2, "HEADER")]
+    check(len(starts) == 1, "Expected one raw HEADER section")
+    start = starts[0] + 2
+    end = next(i for i in range(start, len(tags)) if tags[i] == (0, "ENDSEC"))
+    result = {}
+    for i in range(start, end):
+        if tags[i].code == 9 and tags[i].value in ("$TDCREATE", "$TDUCREATE", "$TDINDWG"):
+            name = tags[i].value
+            check(name not in result and i + 1 < end and tags[i + 1].code == 40, "Ambiguous clock header field")
+            result[name] = tags[i + 1].value
+    return result
+
+
+def check_clock_header(header):
+    check(set(header) == {"$TDCREATE", "$TDUCREATE", "$TDINDWG"}, "Clock header inventory changed")
+    check(header["$TDCREATE"] == expected_serial(clock_ticks(9999,12,31,21,58,35,1234567)), "Last-day clock serial changed")
+    check(header["$TDUCREATE"] == expected_serial(clock_ticks(100,3,1,1,2,3,7654321)), "Early-century clock serial changed")
+    check(round(Fraction.from_float(header["$TDINDWG"]) * TICKS) == 123456789, "Elapsed header resolution changed")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory', type=Path)
@@ -149,15 +177,18 @@ def main():
             check(path.read_bytes().startswith(b'AutoCAD Binary DXF') == binary, 'Transport changed')
             doc = ezdxf.readfile(path)
             check(doc.dxfversion == profile, 'DXF profile changed')
-            check(doc.header['$TDCREATE'] == expected_serial(clock_ticks(9999,12,31,21,58,35,1234567)), 'Last-day clock serial changed')
-            check(doc.header['$TDUCREATE'] == expected_serial(clock_ticks(100,3,1,1,2,3,7654321)), 'Early-century clock serial changed')
-            check(round(Fraction.from_float(doc.header['$TDINDWG']) * TICKS) == 123456789, 'Elapsed header resolution changed')
+            header = raw_clock_header(path)
+            check_clock_header(header)
+            for name in header:
+                corrupted = dict(header)
+                corrupted[name] += .5
+                negatives += expect_reject(check_clock_header, corrupted)
             line, = doc.modelspace().query('LINE')
             if version != 'AutoCad2000':
                 check(line.dxf.true_color == 0x12AB34, 'RGB encoding changed')
             else:
                 check(not line.dxf.hasattr('true_color'), 'R2000 gained an unsupported true-color field')
-                check(1 <= line.dxf.color <= 255, 'Palette fallback invalid')
+                check(line.dxf.color == 102, 'Declared R2000 nearest-palette fallback changed')
             audit = doc.audit()
             check(not audit.errors and not audit.fixes, 'Utility drawing needs graph repairs')
     print(f'PASS ezdxf {ezdxf.__version__}: 4320 exact formats, 75 calendar serials, 14 elapsed values, 12 DXF drawings; {negatives} corruptions rejected; no native formatter claim')
