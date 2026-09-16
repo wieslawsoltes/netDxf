@@ -2,9 +2,7 @@ name: JavaScript port
 on:
   pull_request:
     branches: [netstandard]
-    paths:
-      - 'javascript/**'
-      - '.github/workflows/javascript-port.yml'
+    paths: ['javascript/**', '.github/workflows/javascript-port.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,13 +10,18 @@ concurrency:
   group: javascript-port-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
-  baseline:
+  generated-checkpoint:
+    # Temporary, same-repository checkpoint only. Replaced by read-only verification
+    # once the generated native JS data files have been committed to this draft PR.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'codex/javascript-port'
     runs-on: ubuntu-22.04
     timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/checkout@v4
         with:
           ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
@@ -26,27 +29,49 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.0.425'
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      - name: Record pinned source contract
+          node-version: '22.16.0'
+      - name: Reproduce enum and encoding files from the pinned oracle
+        env:
+          NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+        run: node javascript/tools/dotnet.mjs inventory --generate
+      - name: Validate and commit only the generated checkpoint
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-          mkdir -p artifacts/javascript
-          node -e 'const fs=require("node:fs"); const b=JSON.parse(fs.readFileSync("javascript/baseline.json")); if(b.fullParityVerified) throw new Error("Full parity is not yet established"); console.log(JSON.stringify(b,null,2));' > artifacts/javascript/baseline.json
-          git -C _oracle ls-tree -r HEAD netDxf tests TestDxfDocument > artifacts/javascript/source-tree.txt
-          git -C _oracle archive --format=tar.gz --output="$GITHUB_WORKSPACE/artifacts/javascript/pinned-source.tar.gz" HEAD netDxf tests TestDxfDocument LICENSE doc tools
-      - name: Retain isolated development toolchain for offline differential work
-        run: |
-          root="${DOTNET_ROOT:-/usr/share/dotnet}"
-          sdk=$(dotnet --list-sdks | awk '$1 ~ /^8\./ {print $1}' | sort -V | tail -1)
-          runtime=$(find "$root/shared/Microsoft.NETCore.App" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
-          ref=$(find "$root/packs/Microsoft.NETCore.App.Ref" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
-          host=$(find "$root/host/fxr" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
-          tar -czf artifacts/javascript/dotnet8-toolchain.tar.gz -C "$root" dotnet LICENSE.txt ThirdPartyNotices.txt "sdk/$sdk" "shared/Microsoft.NETCore.App/$runtime" "host/fxr/$host" "packs/Microsoft.NETCore.App.Ref/$ref"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { createHash } from 'node:crypto';
+          import { execFileSync } from 'node:child_process';
+          const hash = b => createHash('sha256').update(b).digest('hex');
+          const bytes = fs.readFileSync('javascript/generated-manifest.json');
+          if (hash(bytes) !== '6be57de763995076209cb3c37c0916c70d7c6d4a4b7fc92531ee3f9403720f68') throw new Error('Generated manifest differs from the locally tested checkpoint.');
+          const manifest = JSON.parse(bytes);
+          if (manifest.files.length !== 79 || manifest.sourceFingerprint !== '97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d') throw new Error('Unpinned source or file set.');
+          const files = manifest.files.map(entry => {
+            if (!(entry.path.startsWith('netDxf/') && entry.path.endsWith('.js')) && !['runtime/CodePages.generated.js','Enums.generated.js'].includes(entry.path)) throw new Error('Unexpected generated path.');
+            if (entry.path.includes('..') || hash(fs.readFileSync('javascript/'+entry.path)) !== entry.sha256) throw new Error('Generated file integrity failed.');
+            return 'javascript/'+entry.path;
+          });
+          const git = args => execFileSync('git',args,{encoding:'utf8'}).trim();
+          if (git(['ls-remote','origin','refs/heads/codex/javascript-port']).split(/\s+/)[0] !== process.env.EXPECTED_HEAD) throw new Error('Branch advanced; do not overwrite concurrent work.');
+          git(['add','--',...files,'javascript/generated-manifest.json']);
+          if (!git(['diff','--cached','--name-only'])) process.exit(0);
+          git(['config','user.name','github-actions[bot]']);
+          git(['config','user.email','41898282+github-actions[bot]@users.noreply.github.com']);
+          git(['commit','-m','feat(js): generate 77 mirrored enums and pinned native code-page tables']);
+          git(['push','origin','HEAD:refs/heads/codex/javascript-port']);
+          console.log('Committed generated checkpoint '+git(['rev-parse','HEAD']));
+          NODE
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: javascript-port-baseline
-          path: artifacts/javascript
-          retention-days: 3
+          name: javascript-generated-checkpoint
+          path: |
+            javascript/artifacts/inventory
+            javascript/generated-manifest.json
+            javascript/artifacts/oracle/Release/toolchain.json
           if-no-files-found: error
+          retention-days: 7

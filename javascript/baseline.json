@@ -6,5 +6,8 @@
   "sampleRoot": "TestDxfDocument",
   "fixtureRoots": ["tests/fixtures", "TestDxfDocument"],
   "status": "in-progress",
-  "fullParityVerified": false
+  "fullParityVerified": false,
+  "sourceFingerprint": "97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d",
+  "toolchain": {"sdk": "8.0.425", "runtime": "8.0.31", "referencePack": "8.0.31"},
+  "counts": {"librarySourceFiles": 510, "conformanceSourceFiles": 193, "dxfFixtures": 399, "dotnetConformanceCases": 35309}
 }
