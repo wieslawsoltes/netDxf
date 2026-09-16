@@ -1,0 +1,10 @@
+{
+  "repository": "wieslawsoltes/netDxf",
+  "ref": "3496ab91893a1e4ec9261b4833479f1799149cdc",
+  "libraryRoot": "netDxf",
+  "testRoot": "tests/netDxf.Conformance",
+  "sampleRoot": "TestDxfDocument",
+  "fixtureRoots": ["tests/fixtures", "TestDxfDocument"],
+  "status": "in-progress",
+  "fullParityVerified": false
+}

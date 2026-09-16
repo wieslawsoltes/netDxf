@@ -1,0 +1,46 @@
+name: JavaScript port
+on:
+  pull_request:
+    branches: [netstandard]
+    paths:
+      - 'javascript/**'
+      - '.github/workflows/javascript-port.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: javascript-port-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  baseline:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Record pinned source contract
+        run: |
+          mkdir -p artifacts/javascript
+          node -e 'const fs=require("node:fs"); const b=JSON.parse(fs.readFileSync("javascript/baseline.json")); if(b.fullParityVerified) throw new Error("Full parity is not yet established"); console.log(JSON.stringify(b,null,2));' > artifacts/javascript/baseline.json
+          git ls-tree -r HEAD netDxf tests TestDxfDocument > artifacts/javascript/source-tree.txt
+      - name: Retain isolated development toolchain for offline differential work
+        run: |
+          root="${DOTNET_ROOT:-/usr/share/dotnet}"
+          sdk=$(dotnet --list-sdks | awk '$1 ~ /^8\./ {print $1}' | sort -V | tail -1)
+          runtime=$(find "$root/shared/Microsoft.NETCore.App" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          ref=$(find "$root/packs/Microsoft.NETCore.App.Ref" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          host=$(find "$root/host/fxr" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          tar -czf artifacts/javascript/dotnet8-toolchain.tar.gz -C "$root" dotnet LICENSE.txt ThirdPartyNotices.txt "sdk/$sdk" "shared/Microsoft.NETCore.App/$runtime" "host/fxr/$host" "packs/Microsoft.NETCore.App.Ref/$ref"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: javascript-port-baseline
+          path: artifacts/javascript
+          retention-days: 3
+          if-no-files-found: error
