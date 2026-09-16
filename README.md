@@ -65,6 +65,8 @@ Full AutoCAD DXF capability is not yet achieved. Passing regression tests and pr
 
 [Addressed table calculations and measured display layout](doc/dxf-conformance/table-calculation-layout.md) add bounded numeric formulas, atomic backing-scalar result updates, explicit cell-format cascades with provenance, and fresh detached display blocks with measured row growth and merged cells. These APIs do not automatically regenerate source TABLE inline/private caches, choose native style precedence, or execute persistent FIELD/date/angle expressions.
 
+The [legacy feature review](doc/dxf-conformance/legacy-feature-review.md) improves existing linear/angular unit formatting, DXF calendar/elapsed precision, palette isolation, ordinary RGB serialization, and ARC/CIRCLE/ELLIPSE affine geometry. It includes explicit finite/representation checks, source-version RGB fallback, immutable failure behavior, and independent world-space/file checks. This broadens the audit beyond TABLE features without claiming complete private-schema or native AutoCAD qualification.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
