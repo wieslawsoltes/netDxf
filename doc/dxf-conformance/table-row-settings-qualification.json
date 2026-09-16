@@ -1,0 +1,32 @@
+{
+  "implementation_commit": "6179754f2132a61e75b2f0d916530fcafd6158e2",
+  "implementation_tree": "452bc03c26f43b02919e0df88eeea45a74c11446",
+  "baseline_merge": "c7a0f9923584b279ac49e830516b824d2d6d39ec",
+  "source_sha256": {
+    "netDxf/Objects/DxfTableStyle.DataTypes.cs": "80119fa080f1315191b337560783793257663a9d5ac1a32d82bdf01fa2e6524b",
+    "netDxf/Objects/DxfTableStyle.Edit.cs": "4bcb4a22905e5590f2408001c4b3d602e09371c6b89c5d82fbf56fb078b7cc99",
+    "netDxf/Objects/DxfTableStyle.Projection.cs": "ecf78232f2c8865586e97582fbb0ef625839427240437d9957a9aa2f3f1a2af1",
+    "netDxf/Objects/DxfTableStyle.cs": "1c43447d634854e86bed023c3991e4f82f9a8ea1686c460680b80e7bb81c68ce",
+    "tests/netDxf.Conformance/TableRowSettingsTests.cs": "9d1b0756c30ff2288ad67dcd70a416e8da5a40abd3f0a88fed0e4c558b4e961b",
+    "tests/netDxf.Conformance/RegressionTests.cs": "411452071f76ef6298304afc509541f576dd2b57bc3ff0da5d825a826daf0948",
+    "tools/verify_table_row_settings.py": "9b89d6cdfe4239a984a5ed4aa449a8bd3e1ba07596a2668b7e2888550d90f168"
+  },
+  "windows_release_artifact": {
+    "id": 10439556723,
+    "sha256": "f2bfce673f30ee1f658c7340fecb1f91392b88a9d7c7098cde1f94191823bc18",
+    "verified": true,
+    "cases": 35309,
+    "new_cases": 216,
+    "failures": 0,
+    "dxf_files": 7575
+  },
+  "local_independent_check": {
+    "reader": "ezdxf 1.4.4",
+    "script": "tools/verify_table_row_settings.py",
+    "pairs": 72,
+    "corruption_controls": 2372,
+    "self_test_pairs": 18,
+    "self_test_corruption_controls": 528
+  },
+  "scope": "Implementation-stage evidence only; final-head CI is recorded separately in the PR. Native AutoCAD execution, complete formatting and regeneration are not claimed."
+}

@@ -1,10 +1,11 @@
 # Stored TABLESTYLE objects
 
 A recognized loaded TABLESTYLE is available as `DxfTableStyle` through
-`DxfDocument.Objects.Items` or `GetObjectByHandle`. This is an immutable stored
-object with conservative formatting projections. It does not create or edit
-table styles, evaluate custom cell-style maps, synchronize TABLECONTENT or
-regenerate TABLE display blocks and geometry.
+`DxfDocument.Objects.Items` or `GetObjectByHandle`. It has immutable stored
+snapshots and conservative formatting projections. Explicit existing-packet
+[scalar/border edits](table-style-editing.md) and [data/unit and STYLE edits](table-row-settings.md)
+are available. It does not author new table styles, evaluate custom cell-style
+maps, synchronize TABLECONTENT or regenerate TABLE display blocks and geometry.
 
 ## Profiles and projection
 
@@ -17,16 +18,19 @@ remain typed stored packets; individual projections can be unavailable.
 | --- | --- |
 | `SourceVersion` | Exact source DXF version; typed output must retain that version. |
 | `Tags` | Immutable complete retained packet, excluding recognized common metadata and XData. Unknown fields, raw escapes, binary chunks and private application/subclass packets remain stored. |
-| `Header` | Description, raw flags, flow direction, margins and title/heading suppression, only for the unambiguous classic sequence `3,70,71,40,41,280,281`. Otherwise null. |
+| `Header` | Description, raw flags, flow direction, margins and title/heading suppression, for the unambiguous classic sequence `3,70,71,40,41,280,281`, with an optional fixed leading `(280,0)` in R2010+. Otherwise null. |
 | `Rows` | Three ordered direct public group-7 packets, without assigning data/title/header roles. Empty when that count is not recognized. |
 | `Rows[i].TextStyle` | Exact accepted source STYLE object, or null when no retained source identity establishes the binding. |
 | `Rows[i].Values` | Unique finite nonnegative height, stored alignment and color values, and the background flag. Null when required scalar fields are missing, repeated or invalid. |
+| `Rows[i].Borders` | Six complete stored lineweight/visibility/color triples, or null when incomplete or ambiguous. |
+| `Rows[i].DataTypes` | Unique stored group-90 data and group-91 unit codes, or null when absent or ambiguous. |
 | `References` | Exact resolved direct public STYLE-name dependencies and exposed semantic handle dependencies. Arbitrary handles in groups 320–329 do not bind. |
 | `CellStyleMap` | The owned opaque CELLSTYLEMAP in the known extension dictionary slot, if its target type and reciprocal owner agree. No map schema interpretation is asserted. |
 
-The native AC1024 header has two group 280 fields in different positions. Its
-header projection is null; neither field is removed or conflated. Row groups
-90/91/1, border visibility and other unprojected values remain raw. The special
+The native AC1024 header has two group 280 fields in different positions.
+The first is a fixed version prefix; the later field is title suppression. They
+are projected separately and never conflated. Row data/unit and border values
+have explicit storage projections; group 1 format strings remain raw. The special
 stored fill color257 is retained as an integer rather than forced into a color
 object with narrower semantics. See the [primary reference and oracle assessment](table-style-assessment.md)
 for the native record inventory and known independent reader/writer inconsistencies.
@@ -34,7 +38,9 @@ for the native record inventory and known independent reader/writer inconsistenc
 Only direct group 7 fields inside the recognized public subclass bind by STYLE
 name. Private 102 application groups and later unknown subclasses do not supply
 STYLE names or projected row values. An actual STYLE rename updates each bound
-group 7 on output; unchanged names retain the original wire spelling. Other raw
+group 7 on output; unchanged names retain the original wire spelling. Explicit
+row STYLE selection additionally validates actual source-table membership and
+atomically replaces named dependency snapshots; it never imports resources. Other raw
 strings are not rewritten. Accepted source tokens must identify the same physical
 record and its actual constructor collection. A generated default, discarded
 entity or private group 5 cannot authorize a semantic or named STYLE dependency.
@@ -65,8 +71,10 @@ Foreign adoption and cross-profile output are likewise rejected before mutation
 or output. No additional generic erasure rule is imposed for unknown style fields.
 Common metadata and XData keep their ordinary interfaces. The subsequent
 [explicit stored-style edit API](table-style-editing.md) replaces qualified
-classic header and row scalar values through immutable snapshots. All other
-style fields and map formatting remain outside that editing contract.
+recognized header, row scalar and border values through immutable snapshots.
+The subsequent [row settings API](table-row-settings.md) adds data/unit pairs and
+explicit registered STYLE selection. Raw format strings, structural authoring,
+map synchronization and layout remain outside these editing contracts.
 
 When a typed style is present, output checks the TABLESTYLE CLASS's object kind
 and `AcDbTableStyle` C++ name before any write. It preserves compatible application
@@ -74,7 +82,10 @@ metadata and recomputes the instance count. Private CLASS records remain intact
 when all instances are opaque or no typed instance exists; their compatibility
 is not inferred from the DXF name alone.
 
-## Qualification
+## Historical stored-object qualification
+
+The following counts describe the original stored-object increment, not the
+current complete test suite. Later editing contracts and checks are linked above.
 
 `RegisterTableStyleTests` contains native, profile, lifecycle, ambiguity,
 malformed-envelope, semantic-reference, source-token and opaque-boundary cases
