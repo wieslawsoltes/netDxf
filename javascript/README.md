@@ -10,7 +10,9 @@ The native raw layer includes text/binary codecs, exact unedited same-transport 
 
 There are also 77 mirrored enum files, strict code-page tables generated from the pinned .NET runtime, a G17 numeric formatter, exact 64-bit integer/handle storage, and ordinal dictionary-name comparison. See [architecture](doc/ARCHITECTURE.md), [language adaptations](doc/LANGUAGE_ADAPTATIONS.md), and [verification](doc/VERIFICATION.md).
 
-**Not implemented:** the JavaScript typed `DxfDocument`/entity/table/geometry engine, all original tests/examples, raw filesystem/atomic-save integration, full arbitrary-stream adapters, and exhaustive platform/performance qualification. A raw byte-preservation or raw OBJECTS test is not counted as a port of a test that constructs the typed JavaScript API.
+**New typed foundations:** 29 semantically lowered source files now provide vectors, matrices, Bézier/bounding geometry, colors, CLASS metadata, formatting/settings models, and constants. Three collection files provide observable insertion/removal/event behavior and CLASS indexing. See [typed foundations](doc/TYPED_FOUNDATIONS.md) for overload/value-copy adapters and exact verification. A separate randomized geometry gate currently exposes unresolved trigonometric bit differences; the passing baseline must not be described as full geometry parity.
+
+**Still incomplete:** the JavaScript typed `DxfDocument`, full entities/tables/styles, typed reader/writer, all original tests/examples, raw filesystem/atomic-save integration, full arbitrary-stream adapters, exact native-math equivalence, and exhaustive platform/performance qualification. A raw byte-preservation or raw OBJECTS test is not counted as a port of a test that constructs the typed JavaScript API.
 
 ## Source layout
 
@@ -66,6 +68,7 @@ From this directory, with the pinned .NET 8.0.425 SDK / 8.0.31 runtime and Node 
 export CONFIGURATION=Release
 node tools/dotnet.mjs inventory
 node tools/dotnet.mjs oracle
+node tools/dotnet.mjs native-port --check
 node tools/dotnet.mjs conformance
 npm test
 npm run test:unit
@@ -79,6 +82,8 @@ npm run test:package
 npm run benchmark
 npm run verify
 ```
+
+Run `npm run test:geometry:exact` separately for the strict randomized numeric qualification. It **fails**, with full bit-level counterexamples, while the geometry/libm mismatch remains unresolved. CI preserves that failure as a required full-port gate.
 
 `DOTNET_ROOT` or `DOTNET` can select an isolated toolchain. `CHROMIUM` can select an already installed browser executable. Browser checks require a real Chromium process, not a mocked DOM. Repeat with `CONFIGURATION=Debug` to compare with the Debug .NET oracle.
 

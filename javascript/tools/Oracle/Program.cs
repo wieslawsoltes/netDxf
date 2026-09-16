@@ -237,7 +237,7 @@ internal static class Program
                 var input = document.RootElement;
                 return input.GetProperty("op").GetString() switch {
                     "ordinal" => input.GetProperty("pairs").EnumerateArray().Select(p=>StringComparer.OrdinalIgnoreCase.Equals(p[0].GetString(),p[1].GetString())).ToArray(),
-                    "ordinal-map" => OrdinalMap(), "raw" => Raw(input), "handles" => Handles(input), "objects" => Objects(input), "format" => Format(input), "encoding" => EncodingOperation(input),
+                    "ordinal-map" => OrdinalMap(), "geometry" => GeometryOracle.Execute(input), "collection" => CollectionOracle.Execute(input), "raw" => Raw(input), "handles" => Handles(input), "objects" => Objects(input), "format" => Format(input), "encoding" => EncodingOperation(input),
                     "typed-fixture" => TypedFixture(input), "typed-read" => TypedRead(input),
                     _ => throw new ArgumentException("Unknown oracle operation.")
                 };

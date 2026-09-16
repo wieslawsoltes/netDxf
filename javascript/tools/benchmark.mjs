@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { DxfTag, DxfRawDocument, DxfRawObjectStore, DxfRawHandleIndex } from '../index.js';
+import { DxfTag, DxfRawDocument, DxfRawObjectStore, DxfRawHandleIndex, Vector3, Matrix3, ObservableCollection, DxfClass, DxfClassCollection } from '../index.js';
 import { javascriptRoot } from './dotnet.mjs';
 import { runtimeFingerprint } from './evidence.mjs';
 const entities=Number(process.env.NETDXF_BENCHMARK_OBJECTS||2000);
@@ -23,9 +23,28 @@ measure('serialize-text',()=>doc.ToBytes());measure('serialize-binary',()=>doc.T
 measure('index-handles',()=>DxfRawHandleIndex.Create(doc));measure('open-object-store',()=>DxfRawObjectStore.Open(doc));
 measure('lookup-all-dictionary-entries',()=>{for(let i=0;i<entities;i++)if(!store.RootDictionary.Find('variable '+i))throw new Error('Missing dictionary entry.');});
 measure('clone-owned-tree-and-commit',()=>{const tx=store.BeginEdit();tx.CloneDictionaryTree('10','10','Copy');tx.Commit();});
+let geometryChecksum=0;
+measure('native-vector-matrix-operations',()=>{
+  const matrix=new Matrix3(1,2,0,0,1,0,0,0,1);
+  let value=new Vector3(1,2,3);
+  for(let i=0;i<entities;i++)value=Matrix3.Multiply(matrix,value);
+  geometryChecksum=value.X+value.Y+value.Z;
+  if(!Number.isFinite(geometryChecksum))throw new Error('Invalid geometry result.');
+});
+measure('observable-add-sort-enumerate',()=>{
+  const values=new ObservableCollection(0,'int');
+  for(let i=entities;i>0;i--)values.Add(i);
+  values.Sort();let sum=0;for(const item of values)sum+=item;
+  if(sum!==entities*(entities+1)/2)throw new Error('Invalid collection result.');
+});
+measure('class-add-lookup-all',()=>{
+  const values=new DxfClassCollection();
+  for(let i=0;i<entities;i++)values.Add(new DxfClass('CLASS'+i,'CPP'+i,'Application'));
+  for(let i=0;i<entities;i++)if(values.get_Item('CLASS'+i).CppClassName!=='CPP'+i)throw new Error('Missing CLASS entry.');
+});
 const report={runtimeFingerprint:runtimeFingerprint(),completed:true,node:process.version,v8:process.versions.v8,
   platform:process.platform,architecture:process.arch,cpu:os.cpus()[0]?.model,objects:entities,tags:tags.length,textBytes:text.length,binaryBytes:binary.length,
   warmups:3,samples:12,maxRSSKiB:process.resourceUsage().maxRSS,results,
-  scope:'Raw tag/object operations. Local process timings, not a .NET speed comparison or a release performance guarantee.'};
+  geometryChecksum,scope:'Raw operations and selected native geometry/collections. Local process timings, not a .NET speed comparison, exact math qualification, or release performance guarantee.'};
 const out=path.join(javascriptRoot,'artifacts/benchmark');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(report,null,2)+'\n');
 console.log(results.map(r=>`${r.name}: ${r.medianMs.toFixed(3)} ms median`).join('\n'));

@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en"><meta charset="utf-8"><title>netDxf native JavaScript verification</title>
-<body><h1>netDxf raw API browser verification</h1><pre id="status">Running…</pre>
+<body><h1>netDxf native API browser verification</h1><pre id="status">Running…</pre>
 <script type="module">
 import { jsRaw } from '../../tools/wire.mjs';
 import { jsHandles } from '../../tools/handle-wire.mjs';
 import { jsObjects } from '../../tools/object-wire.mjs';
+import { createGeometryCaller } from '../../tools/geometry-wire.mjs';
+import { collectionCall } from '../../tools/collection-wire.mjs';
 const methods = { raw: jsRaw, handles: jsHandles, objects: jsObjects };
 function canonical(value) {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
@@ -17,6 +19,10 @@ try {
   const response = await fetch('../../artifacts/browser/corpus.json');
   if (!response.ok) throw new Error('Missing pinned browser corpus.');
   const corpus = await response.json();
+  const native = await (await fetch('../../native-port-manifest.json')).json();
+  const geometry = createGeometryCaller(native);
+  methods.geometry = input => ({ok:true,value:geometry(input)});
+  methods.collection = input => ({ok:true,value:collectionCall(input)});
   report.runtimeFingerprint = corpus.runtimeFingerprint;
   report.verificationFingerprint = corpus.verificationFingerprint;
   report.sourceRef = corpus.sourceRef; report.sourceFingerprint = corpus.sourceFingerprint;

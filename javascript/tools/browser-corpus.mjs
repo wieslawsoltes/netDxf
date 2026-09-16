@@ -3,6 +3,8 @@ import path from 'node:path';
 import { OracleClient } from './OracleClient.mjs';
 import { baseline, sourceRoot, javascriptRoot, configuration } from './dotnet.mjs';
 import { runtimeFingerprint, verificationFingerprint, sha256 } from './evidence.mjs';
+import { geometryCorpus } from './geometry-differential.mjs';
+import { collectionCorpus } from './collection-differential.mjs';
 import { ObjectFixture } from '../tests/support/ObjectFixture.js';
 function canonical(value) {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
@@ -40,6 +42,18 @@ try {
     const expected = await oracle.request({ op: 'objects', ...input });
     if (!expected.ok || expected.value.results.some(r => !r.ok)) throw new Error('Browser transaction oracle failed.');
     cases.push({ name: `objects-transaction/${version}/${binary}`, input, expected: { objects: sha256(canonical(expected)) } });
+  }
+  const native=JSON.parse(fs.readFileSync(path.join(javascriptRoot,'native-port-manifest.json')));
+  const requests=geometryCorpus(native);
+  for(let at=0;at<requests.length;at+=256){
+    const batch=requests.slice(at,at+256), expected=await oracle.request({op:'geometry',requests:batch});
+    if(!expected.ok)throw new Error('Geometry oracle failed.');
+    for(let i=0;i<batch.length;i++)cases.push({name:batch[i].id,input:{requests:[batch[i]]},expected:{geometry:sha256(canonical({ok:true,value:[expected.value[i]]}))}});
+  }
+  for(const scenario of collectionCorpus()){
+    const input={scenarios:[scenario]},expected=await oracle.request({op:'collection',...input});
+    if(!expected.ok)throw new Error('Collection oracle failed.');
+    cases.push({name:'collection/'+cases.length,input,expected:{collection:sha256(canonical(expected))}});
   }
 } finally { await oracle.close(); }
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');

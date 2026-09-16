@@ -13,3 +13,7 @@ export { DxfRawReferenceTraversal, DxfRawDependencyClosure } from './netDxf/IO/D
 export * from './netDxf/IO/DxfRawObjectModel.js';
 export { DxfRawObjectStore } from './netDxf/IO/DxfRawObjectStore.js';
 export { DxfRawObjectTransaction } from './netDxf/IO/DxfRawObjectTransaction.js';
+export * from './geometry.js';
+export { ObservableCollection } from './netDxf/Collections/ObservableCollection.js';
+export { ObservableCollectionEventArgs } from './netDxf/Collections/ObservableCollectionEventArgs.js';
+export { DxfClassCollection } from './netDxf/Collections/DxfClassCollection.js';

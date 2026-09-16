@@ -6,7 +6,7 @@ The source oracle is the fixed C# tree declared in `baseline.json`, not whatever
 
 The implementation is native JavaScript. The .NET process appears only in `tools/`, where it acts as an independent behavioral oracle compiled directly from the pinned C# files. Production imports under `netDxf/`, `runtime/`, and the root entry point have no `node:` imports, network requests, native dependencies, generated-code execution, or .NET bridge. Browser verification exercises those same modules.
 
-The raw and typed products must remain distinct. `DxfRawDocument` models immutable ordered tags and exact input-byte retention. `DxfRawObjectStore` interprets a qualified subset of OBJECTS schemas and references. Neither is a replacement for the unfinished JavaScript typed `DxfDocument`, geometry, styles, tables, cloning, and automatic typed serialization engine.
+The raw and typed products must remain distinct. `DxfRawDocument` models immutable ordered tags and exact input-byte retention. `DxfRawObjectStore` interprets a qualified subset of OBJECTS schemas and references. Neither is a replacement for the unfinished typed `DxfDocument`, styles/tables/entity-ownership graph, and automatic typed serialization engine. The separate typed-foundation layer now supplies selected geometry and model dependencies; randomized geometry bit equivalence remains unqualified.
 
 ## Layers
 
@@ -21,6 +21,14 @@ The raw and typed products must remain distinct. `DxfRawDocument` models immutab
 **Raw OBJECTS.** `DxfRawObjectModel.js` contains the same stored-view classes and option types as its C# counterpart. `DxfRawObjectStore.js` discovers schema-qualified views, retains opaque ones, indexes names/handles, and opens transactions. No private schema is guessed. Dictionary names use .NET-compatible ordinal comparison, not locale comparison or JavaScript's expanding uppercase conversion.
 
 The three C# transaction partial files are mirrored by `DxfRawObjectTransaction.js`, `DxfRawObjectGraph.js`, and `DxfRawObjectCommit.js`. The public transaction holds private state; module-local/internal helpers implement common operations, graph changes, and final commit without exporting mutable state through the package root. Store state is in a private WeakMap. The source document remains immutable.
+
+## Typed source lowering and collection layer
+
+The development-only `NativePort` tool binds the original C# source using Roslyn. Its explicit file selection is lowered to standalone native JavaScript, with no C# interpreter or .NET bridge in the runtime. The source/output manifest retains overload signatures and member mappings. Unsupported constructs stop generation rather than emitting empty implementations. Value-type copying, default initialization, operators, constructor delegation, and indexers have explicit adapters; public API spelling remains PascalCase. Reproduction checks fail on generated-source drift.
+
+`ObservableCollection` preserves the original event and enumeration lifecycle. Subscription snapshots allow handlers to add/remove handlers without changing the current invocation; cancelled insertion and replacement preserve the source event order. Sorting uses an iterative-depth-bounded introsort to retain the .NET integer-list ordering, including ties in qualified comparator tests. `DxfClassCollection` maintains ordered items and maps for unique DXF/CPP names. Generic defaults and overload ambiguities are explicit adaptations rather than implicit guesses.
+
+See [typed foundations and numeric qualification](TYPED_FOUNDATIONS.md). Source-level formula fidelity is not sufficient for exact result bits: a strict randomized corpus currently finds native trigonometric differences. That qualification stays failing and blocks full completion even when the deterministic baseline suite passes.
 
 ## Transaction guarantees
 
@@ -45,3 +53,5 @@ Original conformance tests, supplemental JS tests, direct .NET differential test
 The JSON-lines oracle preserves float bits, Int64 decimal strings, binary data, section/record positions, schema fields, and operation outcomes. Direct output comparison includes both text and binary byte sequences with no handle renumbering, metadata deletion, tolerances, or rounding. Typed .NET writer/reader controls verify some raw JS output, but do not count as a JavaScript typed API implementation.
 
 Evidence binds both production and verifier file bytes to the results. Oracle crash, malformed response, deadline, nonzero exit, code drift, or incomplete enumeration prevents a successful result. Generated files and shared fixture hashes are checked separately. CI has a passing/failing implemented-scope check and a separate full-port completion check that remains blocked during this partial port.
+
+The baseline geometry and collection corpora are also executed by the browser harness using complete .NET-result digests. The randomized geometry qualification is a separate mandatory job; it retains exact failing inputs and is not normalized into a passing implemented-scope count.

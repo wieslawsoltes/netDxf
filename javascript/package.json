@@ -20,7 +20,9 @@
     "Enums.generated.js",
     "README.md",
     "LICENSE",
-    "baseline.json"
+    "baseline.json",
+    "geometry.js",
+    "native-port-manifest.json"
   ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
@@ -31,8 +33,11 @@
     "inventory": "node tools/dotnet.mjs inventory",
     "benchmark": "node tools/benchmark.mjs",
     "test:package": "node tools/package-check.mjs",
-    "test:differential": "node tools/differential.mjs && node tools/handle-differential.mjs && node tools/object-differential.mjs && node tools/casing-differential.mjs",
-    "prepublishOnly": "node tools/verify.mjs --require-complete"
+    "test:differential": "node tools/differential.mjs && node tools/handle-differential.mjs && node tools/object-differential.mjs && node tools/casing-differential.mjs && node tools/geometry-differential.mjs && node tools/collection-differential.mjs",
+    "prepublishOnly": "node tools/verify.mjs --require-complete",
+    "generate:native": "node tools/dotnet.mjs native-port",
+    "verify:native": "node tools/dotnet.mjs native-port --check",
+    "test:geometry:exact": "node tools/geometry-stress.mjs"
   },
   "repository": {
     "type": "git",

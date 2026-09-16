@@ -15,8 +15,10 @@ export class ArgumentOutOfRangeException extends ArgumentException {
     super(message, paramName); this.ActualValue = actualValue;
   }
 }
-export class OverflowException extends Exception {}
+export class ArithmeticException extends Exception {}
 export class KeyNotFoundException extends Exception {}
+export class IndexOutOfRangeException extends Exception {}
+export class OverflowException extends ArithmeticException {}
 export class IOException extends Exception {}
 export class InvalidCastException extends Exception {}
 export class NullReferenceException extends Exception {}

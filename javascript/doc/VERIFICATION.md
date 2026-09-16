@@ -16,6 +16,9 @@
 | Raw differential | Same accept/reject outcome, float bits, tag order, indexes, and exact serialized bytes | Typed JavaScript document/entity support |
 | Handle differential | Same contextual occurrences/diagnostics, traversal, remap outcomes, and resulting bytes | Interpretation of opaque/private references |
 | OBJECTS differential | Same schema views, transaction results, aliases/ownership, errors, and emitted bytes | General typed OBJECTS or private-schema parity |
+| Typed foundation differential | Actual constructor/method/property/operator results, mutation state, exceptions and exact numeric bits for the selected baseline | Complete geometry/libm equivalence or a typed document engine |
+| Observable collection differential | Actual event order, mutation results, invalid operations, enumerators and sorting in integer-list scenarios | Arbitrary generic comparer/collation and inherited overload parity |
+| Randomized geometry qualification | Reproducible exact-bit counterexamples; fails on any mismatch | Permission to round or ignore small differences |
 | Typed .NET controls | JS raw edits/remaps can be read back by the .NET typed reader in those scenarios | A port of the typed JS construction/editing API |
 | Browser differential | Native browser ESM execution matches .NET digests for the selected raw APIs and all shared fixtures | Every browser, worker/thread model, or missing typed feature |
 | Offline package install | The npm tarball contains required production modules and runs without fetching dependencies | Publication, semver/API stability, or full completion |
@@ -36,14 +39,15 @@ Run the commands in the parent README with `CONFIGURATION=Release` and repeat wi
 - `artifacts/inventory/source-inventory.json`: complete Roslyn inventory and unchanged fixture hashes.
 - `artifacts/dotnet-release/` or `dotnet-debug/`: original results and pin/configuration metadata.
 - `artifacts/conformance/`: JS original-case results and execution metadata.
-- `artifacts/differential/<configuration>/`, `handles-differential/`, `objects-differential/`, and `casing-differential/`: completion flag, exact-comparison counts, failure evidence, and fingerprints.
+- `artifacts/differential/<configuration>/`, `handles-differential/`, `objects-differential/`, `casing-differential/`, `geometry-differential/`, and `collection-differential/`: completion flag, exact-comparison counts, failure evidence, and fingerprints.
+- `artifacts/geometry-exact/<configuration>/results.json`: strict randomized geometry comparisons and every failing exact-bit input/output. This is a separate required qualification, not part of an implied all-geometry baseline pass.
 - `artifacts/unit/`, `browser/`, and `package/`: supplemental execution reports.
 - `artifacts/benchmark/results.json`: input shape, environment, warmups, all samples, median/p95, and memory observations.
 - `artifacts/verification/<configuration>/report.json`: implemented-scope result, every missing original case/source path, and outstanding completion gates.
 
 No report with a fatal error, incomplete run, missing corpus, stale runtime/verifier fingerprint, failing/duplicate/skipped/TODO case, or filtered original suite satisfies verification. The JSONL client rejects oracle exits, malformed or unsolicited output, and timeouts. Its shutdown promise is registered before execution so early process termination cannot leave cleanup indefinitely pending or hide the original failure. Supplemental tests deliberately inject those failures.
 
-Browser evidence is derived from .NET outputs, not JavaScript expected values. A corpus generator records canonical complete-result SHA-256 digests; a real Chromium page runs the production ESM modules, including both emitted byte streams within each result. The browser tests every shared fixture through raw, handle, and object views, plus authored transaction workflows. Code hashes are checked again after browser execution.
+Browser evidence is derived from .NET outputs, not JavaScript expected values. A corpus generator records canonical complete-result SHA-256 digests; a real Chromium page runs the production ESM modules, including both emitted byte streams within each result. The browser tests every shared fixture through raw, handle, and object views, plus authored transaction workflows, 4,254 typed-foundation calls and 282 observable-collection scenarios. Their combined baseline corpus has 5,745 result digests. The separate randomized numeric qualification is not silently omitted from full completion: it has its own mandatory failing CI job. Code hashes are checked again after browser execution.
 
 ## Gates
 
@@ -51,8 +55,8 @@ Browser evidence is derived from .NET outputs, not JavaScript expected values. A
 
 **Full-port completion** is `node tools/verify.mjs --require-complete`, also used by `prepublishOnly`. It remains a failing gate during this partial port, including when implemented-scope checks pass. The current gate explicitly records the outstanding typed API, test/example, signature/semantic, filesystem/atomic-save, and complete runtime/performance qualifications. Before enabling it, replace the remaining-gate declarations with actual executable evidence; do not simply flip `fullParityVerified` in a JSON file.
 
-CI runs Debug and Release implemented-scope jobs with read-only repository permissions and uploads evidence even after failure. A separate `full-port completion` job checks the Release report and fails unless full parity is verified. Its blocked status is expected during this draft PR and is **not** reported as a passing check. The package remains private, the PR remains a draft, and no npm publication is performed.
+CI runs Debug and Release implemented-scope jobs with read-only repository permissions and uploads evidence even after failure. A separate strict `geometry-exact-qualification` job retains and fails on randomized bit mismatches. The `full-port completion` job requires that qualification as well as both baseline configurations, checks the Release report, and fails unless all full-parity evidence is present. Its blocked status is expected during this draft PR and is **not** reported as a passing check. The package remains private, the PR remains a draft, and no npm publication is performed.
 
 ## Remaining work
 
-The typed `DxfDocument`, entity/table/math/style/collection model and typed writer/reader remain major missing areas. Original typed test factories, all sample scenarios, exhaustive API/member/signature migration, file save/atomic replacement, broad external stream behavior, and every platform/performance acceptance threshold still need implementation and qualification. Raw stored schemas preserve their documented limitations. None of this evidence is a native AutoCAD interoperability certificate.
+The typed `DxfDocument`, full entity/table/style/collection model and typed writer/reader remain major missing areas. Selected geometry/models and collections have native implementations, but exact randomized trigonometric equivalence is still a failing qualification. Original typed test factories, all sample scenarios, exhaustive API/member/signature migration, file save/atomic replacement, broad external stream behavior, and every platform/performance acceptance threshold still need implementation and qualification. Raw stored schemas preserve their documented limitations. None of this evidence is a native AutoCAD interoperability certificate.

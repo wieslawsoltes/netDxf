@@ -11,6 +11,11 @@ if(inventory.fixtures.length!==baseline.counts.dxfFixtures)throw new Error('Miss
 for(const f of inventory.fixtures)if(sha256(fs.readFileSync(path.join(sourceRoot,f.path)))!==f.sha256)throw new Error('Changed fixture '+f.path);
 const generated=read('generated-manifest.json');
 for(const file of generated.files)if(sha256(fs.readFileSync(path.join(javascriptRoot,file.path)))!==file.sha256)throw new Error('Generated file drift: '+file.path);
+const native=read('native-port-manifest.json');
+if(native.sourceRef!==baseline.ref)throw new Error('Unpinned native source lowering.');
+for(const file of native.files){
+  if(sha256(fs.readFileSync(path.join(sourceRoot,file.source)))!==file.sourceSha256 || sha256(fs.readFileSync(path.join(javascriptRoot,file.target)))!==file.outputSha256)throw new Error('Native mirror drift: '+file.target);
+}
 const expected=read(`artifacts/dotnet-${configuration.toLowerCase()}/results.json`),metadata=read(`artifacts/dotnet-${configuration.toLowerCase()}/metadata.json`);
 if(!metadata.fullSuite || metadata.sourceFingerprint!==baseline.sourceFingerprint || expected.length!==baseline.counts.dotnetConformanceCases)
   throw new Error('A fresh complete original .NET suite is required.');
@@ -23,12 +28,12 @@ checkProof(jsMetadata);if(!jsMetadata.fullSuite)throw new Error('Filtered JS tes
 const coverage=compareCaseCoverage(expected,actual);if(coverage.unexpected.length)throw new Error('Unmapped test identities.');
 const checks={};
 for(const [name,file] of Object.entries({raw:`differential/${configuration}`,handles:`handles-differential/${configuration}`,
-  objects:`objects-differential/${configuration}`,casing:`casing-differential/${configuration}`,unit:'unit',package:'package',browser:'browser'})){
+  objects:`objects-differential/${configuration}`,geometry:`geometry-differential/${configuration}`,collections:`collection-differential/${configuration}`,casing:`casing-differential/${configuration}`,unit:'unit',package:'package',browser:'browser'})){
   const report=read(`artifacts/${file}/results.json`);checkProof(report);
   if(!report.completed || report.fatal || report.stats?.failures || report.failures?.length || report.failed || report.skipped || report.todo)throw new Error('Failed or incomplete evidence: '+name);
   if(['raw','handles'].includes(name) && report.stats.sourceFixtures!==baseline.counts.dxfFixtures)throw new Error('Incomplete fixture corpus: '+name);
   if(name==='objects' && report.stats.fixtures!==baseline.counts.dxfFixtures)throw new Error('Incomplete OBJECTS corpus.');
-  if(name==='browser' && (report.fixtures!==baseline.counts.dxfFixtures || report.comparisons<1209))throw new Error('Incomplete browser corpus.');
+  if(name==='browser' && (report.fixtures!==baseline.counts.dxfFixtures || report.comparisons<5745))throw new Error('Incomplete browser corpus.');
   if(name==='unit' && !(report.tests>0))throw new Error('Empty unit suite.');
   checks[name]=report.stats||{tests:report.tests,files:report.files,comparisons:report.comparisons,browser:report.browser};
 }
@@ -45,6 +50,7 @@ const report={schemaVersion:1,sourceRef:baseline.ref,sourceFingerprint:baseline.
   remainingGates:['Complete typed DxfDocument/entity/table/math API and native typed serialization',
     'All original test methods and sample scenarios ported without omissions',
     'Exhaustive public member/signature migration audit','Filesystem/atomic-save and stream adapter qualification',
+    'Exact randomized trigonometric IEEE-754 parity: geometry-exact CI remains failing',
     'Full browser and performance qualification of every completed API'],
 };
 const out=path.join(javascriptRoot,'artifacts/verification',configuration);fs.mkdirSync(out,{recursive:true});

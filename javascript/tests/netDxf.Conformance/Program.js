@@ -4,6 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as RawObjectBoundaryTests from './RawObjectBoundaryTests.js';
 import * as RawRecordTests from './RawRecordTests.js';
+import * as ObservableCollectionInsertTests from './ObservableCollectionInsertTests.js';
+import * as ClassDefinitionTests from './ClassDefinitionTests.js';
 import * as Harness from './TestHarness.js';
 import * as RawTagTests from './RawTagTests.js';
 import * as RawDocumentTests from './RawDocumentTests.js';
@@ -13,7 +15,7 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
   const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
