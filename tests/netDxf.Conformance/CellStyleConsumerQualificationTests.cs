@@ -23,9 +23,12 @@ internal static partial class Program
         // whose producer normally stores zero. This is an explicit synthetic input.
         var doc = ConsumerLoad(file, binary, raw =>
         {
-            var contents = raw.Sections.SelectMany(s => s.Records).Where(r => r.Name == "TABLECONTENT").ToArray();
-            foreach (var content in contents)
+            var handles = raw.Sections.SelectMany(s => s.Records).Where(r => r.Name == "TABLECONTENT")
+                .Select(r => (string)r.Tags.Single(t => t.Code == 5).Value).ToArray();
+            foreach (string handle in handles)
             {
+                // Every WithRecord returns a new snapshot; reacquire the next physical record.
+                var content = SourceReferenceRecord(raw, handle);
                 var tags = content.Tags.ToList();
                 for (int i = 0; i < tags.Count - 1; i++)
                 {
