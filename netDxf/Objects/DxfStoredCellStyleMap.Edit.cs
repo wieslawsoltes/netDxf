@@ -56,7 +56,7 @@ namespace netDxf.Objects
                     string name = replacements[i];
                     if (name != original.Name) tags[original.NameIndex] = new DxfTag(300, this.EncodeEntryName(name));
                     entries.Add(new DxfStoredCellStyleMapEntry(original.Id, original.StoredType, name,
-                        original.FormatPayload.ToList(), original.NameIndex));
+                        original.FormatPayload.ToList(), original.NameIndex, original.Format));
                 }
                 var nextPayload = tags.AsReadOnly();
                 var nextEntries = entries.AsReadOnly();
