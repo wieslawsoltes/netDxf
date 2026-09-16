@@ -66,7 +66,7 @@ namespace netDxf.IO
                     if (!record.FaceColorUnchanged && record.Face.Color != null)
                     {
                         this.chunk.Write(62, record.Face.Color.Index);
-                        if (record.Face.Color.UseTrueColor) this.chunk.Write(420, AciColor.ToTrueColor(record.Face.Color));
+                        this.WriteTrueColor(record.Face.Color);
                     }
                 }
                 if (record.Face != null && !record.FaceColorUnchanged && record.FaceColorIndices.Contains(i)) continue;
