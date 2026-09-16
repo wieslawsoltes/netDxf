@@ -190,7 +190,7 @@ internal static partial class Program
         using var output = new MemoryStream(); Check(doc.Save(output, binary), "versioned header save"); output.Position = 0;
         var loaded = TableStyleObject(DxfDocument.Load(output)!);
         Equal(recognized, loaded.Header != null, "versioned header reloaded projection");
-        if (recognized) Equal(EditedStyleHeader().Description, loaded.Header.Description, "versioned header decoded roundtrip");
+        if (recognized) Equal(EditedStyleHeader().Description, loaded.Header!.Description, "versioned header decoded roundtrip");
     }
 
     private static void TableStyleBorderBoundary(bool binary, string scenario)
