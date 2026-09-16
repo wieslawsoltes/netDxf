@@ -60,3 +60,14 @@ CI runs Debug and Release implemented-scope jobs with read-only repository permi
 ## Remaining work
 
 The typed `DxfDocument`, full entity/table/style/collection model and typed writer/reader remain major missing areas. Selected geometry/models and collections have native implementations, but exact randomized trigonometric equivalence is still a failing qualification. Original typed test factories, all sample scenarios, exhaustive API/member/signature migration, file save/atomic replacement, broad external stream behavior, and every platform/performance acceptance threshold still need implementation and qualification. Raw stored schemas preserve their documented limitations. None of this evidence is a native AutoCAD interoperability certificate.
+
+
+## Reconciliation and raw filesystem qualification
+
+The source at `72e84d0` already contained a newer generated geometry port. Recovery keeps those implementations and adds the previous stateful corpus as `foundations-differential`, rather than overwriting them with the archived alternatives. Its fixed 5,185 scenarios/49,421 operations are required evidence and currently retain exact numeric failures. Source-file and original-case coverage therefore cannot be inferred from the older historical summary.
+
+Raw `AtomicSaveTests.js` registers only the 82 original raw/helper identities. Typed factory/path tests are still absent; analogous host checks live in supplemental tests instead of inflating original coverage. `filesystem-differential` executes the unchanged .NET SaveAtomic implementation and the JS host on real isolated directories, comparing all 399 fixtures across both requested transports and destination existence states. It compares rejection classes/parameters, exact destination bytes, held-reader contents, cleanup and cancellation behavior. The complete corpus contains 1,782 scenarios. CI also runs this corpus on Linux and Windows; each platform's actual result is retained independently.
+
+The browser corpus now preserves each 256-request geometry batch exactly as supplied to the .NET oracle. Static Epsilon mutations remain visible to later requests in the batch; only result objects are hashed separately. A regression test demonstrates that splitting this stateful batch changes the answer. The assertion count remains 5,745; the fix neither removes cases nor rewrites expected results.
+
+`tools/run-qualification.mjs` executes all independent comparisons without short-circuiting after one mismatch and returns nonzero if any fails. `verify.mjs` now writes its report even for negative or missing evidence, including the full missing-source and original-case lists where available. Both exact numerical corpora and the filesystem corpus are required. A passing raw or deterministic geometry subset cannot override a failed exact qualification. CI continues browser/package/report steps after failures while keeping the job unsuccessful.

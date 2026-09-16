@@ -1,60 +1,85 @@
+// Aggregate positive AND negative evidence. A failed comparison must still leave a complete ledger.
 import fs from 'node:fs';
 import path from 'node:path';
 import { javascriptRoot, sourceRoot, configuration, baseline, computeSourceFingerprint } from './dotnet.mjs';
 import { runtimeFingerprint, verificationFingerprint, sha256, compareCaseCoverage } from './evidence.mjs';
+import { evidenceProblems } from './verification-report.mjs';
+const proof={runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint()},problems={},checks={};
 const read=relative=>JSON.parse(fs.readFileSync(path.join(javascriptRoot,relative),'utf8'));
-const proof={runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint()};
-if(computeSourceFingerprint()!==baseline.sourceFingerprint)throw new Error('Pinned source drift.');
-const inventory=read('artifacts/inventory/source-inventory.json');
-if(inventory.sourceFingerprint!==baseline.sourceFingerprint)throw new Error('Stale source inventory.');
-if(inventory.fixtures.length!==baseline.counts.dxfFixtures)throw new Error('Missing shared fixtures.');
-for(const f of inventory.fixtures)if(sha256(fs.readFileSync(path.join(sourceRoot,f.path)))!==f.sha256)throw new Error('Changed fixture '+f.path);
-const generated=read('generated-manifest.json');
-for(const file of generated.files)if(sha256(fs.readFileSync(path.join(javascriptRoot,file.path)))!==file.sha256)throw new Error('Generated file drift: '+file.path);
-const native=read('native-port-manifest.json');
-if(native.sourceRef!==baseline.ref)throw new Error('Unpinned native source lowering.');
-for(const file of native.files){
-  if(sha256(fs.readFileSync(path.join(sourceRoot,file.source)))!==file.sourceSha256 || sha256(fs.readFileSync(path.join(javascriptRoot,file.target)))!==file.outputSha256)throw new Error('Native mirror drift: '+file.target);
-}
-const expected=read(`artifacts/dotnet-${configuration.toLowerCase()}/results.json`),metadata=read(`artifacts/dotnet-${configuration.toLowerCase()}/metadata.json`);
-if(!metadata.fullSuite || metadata.sourceFingerprint!==baseline.sourceFingerprint || expected.length!==baseline.counts.dotnetConformanceCases)
-  throw new Error('A fresh complete original .NET suite is required.');
-const actual=read('artifacts/conformance/results.json'),jsMetadata=read('artifacts/conformance/metadata.json');
-const checkProof=report=>{
-  if(report.runtimeFingerprint!==proof.runtimeFingerprint || report.verificationFingerprint!==proof.verificationFingerprint)
-    throw new Error('Evidence is stale for the current runtime or verifier.');
+function guard(name,action){try{return action();}catch(error){(problems[name]??=[]).push(error.message);return null;}}
+const assert=(condition,message)=>{if(!condition)throw new Error(message);};
+guard('source',()=>assert(computeSourceFingerprint()===baseline.sourceFingerprint,'Pinned source drift.'));
+const inventory=guard('inventory',()=>{
+  const value=read('artifacts/inventory/source-inventory.json');
+  assert(value.sourceFingerprint===baseline.sourceFingerprint,'Stale source inventory.');
+  assert(value.fixtures.length===baseline.counts.dxfFixtures,'Missing shared fixtures.');
+  for(const f of value.fixtures)assert(sha256(fs.readFileSync(path.join(sourceRoot,f.path)))===f.sha256,'Changed shared fixture: '+f.path);
+  return value;
+});
+guard('generated',()=>{
+  const generated=read('generated-manifest.json');
+  for(const f of generated.files)assert(sha256(fs.readFileSync(path.join(javascriptRoot,f.path)))===f.sha256,'Generated file drift: '+f.path);
+  const native=read('native-port-manifest.json');assert(native.sourceRef===baseline.ref,'Unpinned native lowering.');
+  for(const f of native.files)assert(sha256(fs.readFileSync(path.join(sourceRoot,f.source)))===f.sourceSha256&&
+    sha256(fs.readFileSync(path.join(javascriptRoot,f.target)))===f.outputSha256,'Native mirror drift: '+f.target);
+});
+const expected=guard('dotnet-tests',()=>{
+  const data=read(`artifacts/dotnet-${configuration.toLowerCase()}/results.json`),meta=read(`artifacts/dotnet-${configuration.toLowerCase()}/metadata.json`);
+  assert(meta.fullSuite&&meta.sourceFingerprint===baseline.sourceFingerprint&&data.length===baseline.counts.dotnetConformanceCases,'Complete pinned .NET result set is required.');
+  return data;
+});
+const actual=guard('javascript-tests',()=>{
+  const meta=read('artifacts/conformance/metadata.json'),data=read('artifacts/conformance/results.json');
+  assert(meta.runtimeFingerprint===proof.runtimeFingerprint&&meta.verificationFingerprint===proof.verificationFingerprint,'Stale JavaScript test evidence.');
+  assert(meta.fullSuite,'Filtered tests cannot satisfy verification.');return data;
+});
+const coverage=expected&&actual?guard('case-identities',()=>{
+  const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
+}):null;
+const specs={
+  raw:[`differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.emittedByteComparisons':8263}}],
+  handles:[`handles-differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.indexComparisons':2355}}],
+  objects:[`objects-differential/${configuration}`,{equal:{'stats.fixtures':399},minimum:{'stats.operations':4167}}],
+  geometry:[`geometry-differential/${configuration}`,{minimum:{'stats.comparisons':4254}}],
+  collections:[`collection-differential/${configuration}`,{minimum:{'stats.comparisons':282}}],
+  foundations:[`foundations-differential/${configuration}`,{equal:{'stats.scenarios':5185,'stats.operations':49421}}],
+  exactGeometry:[`geometry-exact/${configuration}`,{equal:{'stats.comparisons':2000}}],
+  filesystem:[`filesystem-differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.comparisons':1782}}],
+  casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
+  unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:5745}}],
 };
-checkProof(jsMetadata);if(!jsMetadata.fullSuite)throw new Error('Filtered JS tests cannot satisfy verification.');
-const coverage=compareCaseCoverage(expected,actual);if(coverage.unexpected.length)throw new Error('Unmapped test identities.');
-const checks={};
-for(const [name,file] of Object.entries({raw:`differential/${configuration}`,handles:`handles-differential/${configuration}`,
-  objects:`objects-differential/${configuration}`,geometry:`geometry-differential/${configuration}`,collections:`collection-differential/${configuration}`,casing:`casing-differential/${configuration}`,unit:'unit',package:'package',browser:'browser'})){
-  const report=read(`artifacts/${file}/results.json`);checkProof(report);
-  if(!report.completed || report.fatal || report.stats?.failures || report.failures?.length || report.failed || report.skipped || report.todo)throw new Error('Failed or incomplete evidence: '+name);
-  if(['raw','handles'].includes(name) && report.stats.sourceFixtures!==baseline.counts.dxfFixtures)throw new Error('Incomplete fixture corpus: '+name);
-  if(name==='objects' && report.stats.fixtures!==baseline.counts.dxfFixtures)throw new Error('Incomplete OBJECTS corpus.');
-  if(name==='browser' && (report.fixtures!==baseline.counts.dxfFixtures || report.comparisons<5745))throw new Error('Incomplete browser corpus.');
-  if(name==='unit' && !(report.tests>0))throw new Error('Empty unit suite.');
-  checks[name]=report.stats||{tests:report.tests,files:report.files,comparisons:report.comparisons,browser:report.browser};
+for(const [name,[location,requirements]] of Object.entries(specs)){
+  const report=guard(name,()=>read(`artifacts/${location}/results.json`));
+  if(!report)continue;
+  const errors=evidenceProblems(report,proof,requirements);
+  if(report.configuration!==undefined&&report.configuration!==configuration)errors.push('Wrong build configuration.');
+  if(errors.length)problems[name]=errors;
+  checks[name]={passed:errors.length===0,completed:report.completed,stats:report.stats??{
+    tests:report.tests,files:report.files,comparisons:report.comparisons,browser:report.browser},problems:errors};
 }
-const benchmark=read('artifacts/benchmark/results.json');
-if(!benchmark.completed||benchmark.runtimeFingerprint!==proof.runtimeFingerprint)throw new Error('Missing/stale performance evidence.');
-const library=inventory.files.filter(f=>f.source.startsWith('netDxf/'));
-const missingLibrary=library.filter(f=>!fs.existsSync(path.join(javascriptRoot,f.target))).map(f=>f.source);
-const missingTests=inventory.files.filter(f=>f.source.startsWith('tests/netDxf.Conformance/')&&!fs.existsSync(path.join(javascriptRoot,f.target))).map(f=>f.source);
-const report={schemaVersion:1,sourceRef:baseline.ref,sourceFingerprint:baseline.sourceFingerprint,configuration,...proof,
-  implementedScopePassed:true,fullParityVerified:false,checks,
-  library:{originalFiles:library.length,presentMirrors:library.length-missingLibrary.length,missing:missingLibrary,
-    note:'File presence is not complete API or semantic qualification.'},
-  tests:coverage,missingTestFiles:missingTests,
-  remainingGates:['Complete typed DxfDocument/entity/table/math API and native typed serialization',
-    'All original test methods and sample scenarios ported without omissions',
-    'Exhaustive public member/signature migration audit','Filesystem/atomic-save and stream adapter qualification',
-    'Exact randomized trigonometric IEEE-754 parity: geometry-exact CI remains failing',
-    'Full browser and performance qualification of every completed API'],
+guard('benchmark',()=>{
+  const report=read('artifacts/benchmark/results.json');assert(report.completed&&report.runtimeFingerprint===proof.runtimeFingerprint,'Missing/stale performance evidence.');
+  checks.benchmark={passed:true,descriptiveOnly:true};
+});
+const library=inventory?.files.filter(f=>f.source.startsWith('netDxf/'))??[];
+const absent=files=>files.filter(f=>!fs.existsSync(path.join(javascriptRoot,f.target))).map(f=>f.source);
+const missingLibrary=absent(library),missingTests=absent(inventory?.files.filter(f=>f.source.startsWith('tests/netDxf.Conformance/'))??[]);
+const report={schemaVersion:2,sourceRef:baseline.ref,sourceFingerprint:baseline.sourceFingerprint,configuration,...proof,
+  implementedScopePassed:Object.keys(problems).length===0,fullParityVerified:false,checks,problems,
+  library:{originalFiles:library.length||baseline.counts.librarySourceFiles,presentMirrors:inventory?library.length-missingLibrary.length:null,
+    missing:inventory?missingLibrary:null,note:'Source-file presence is not complete API or behavioral qualification.'},
+  tests:coverage??{originalCases:baseline.counts.dotnetConformanceCases,mirroredCases:actual?.length??null,missingCount:null,evidenceUnavailable:true},
+  missingTestFiles:inventory?missingTests:null,
+  remainingGates:['Complete typed DxfDocument, entity/table ownership, typed IO and remaining public APIs',
+    'Every original test identity, method and example ported and independently qualified',
+    'Exact numerical qualification: stateful foundations and randomized geometry remain blocking',
+    'All filesystem platforms, metadata/locking guarantees, browser hosts and performance acceptance',
+    'Exhaustive public member/signature and behavioral audit; file presence is not this audit'],
 };
 const out=path.join(javascriptRoot,'artifacts/verification',configuration);fs.mkdirSync(out,{recursive:true});
 fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
-console.log(`Verified implemented scope: ${coverage.mirroredCases}/${coverage.originalCases} original test identities; ${report.library.presentMirrors}/${library.length} library file mirrors.`);
-console.log(`Full parity remains BLOCKED: ${coverage.missingCount} original test identities and ${missingLibrary.length} source-file mirrors are missing.`);
-if(process.argv.includes('--require-complete'))throw new Error('Full-port release gate is not satisfied. See the explicit missing-work report.');
+console.log(`Original JavaScript cases: ${report.tests.mirroredCases}/${report.tests.originalCases}; source mirrors: ${report.library.presentMirrors}/${report.library.originalFiles}.`);
+for(const [name,errors] of Object.entries(problems))console.error(name+': '+errors.join(' '));
+console.log('Full parity is BLOCKED; the report retains missing work and every failed/unavailable verification category.');
+if(!report.implementedScopePassed||process.argv.includes('--require-complete'))process.exitCode=1;

@@ -11,7 +11,8 @@
   "exports": {
     ".": "./index.js",
     "./netDxf/*": "./netDxf/*",
-    "./runtime/*": "./runtime/*"
+    "./runtime/*": "./runtime/*",
+    "./node": "./node.js"
   },
   "files": [
     "netDxf",
@@ -22,7 +23,8 @@
     "LICENSE",
     "baseline.json",
     "geometry.js",
-    "native-port-manifest.json"
+    "native-port-manifest.json",
+    "node.js"
   ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
@@ -33,13 +35,14 @@
     "inventory": "node tools/dotnet.mjs inventory",
     "benchmark": "node tools/benchmark.mjs",
     "test:package": "node tools/package-check.mjs",
-    "test:differential": "node tools/differential.mjs && node tools/handle-differential.mjs && node tools/object-differential.mjs && node tools/casing-differential.mjs && node tools/geometry-differential.mjs && node tools/collection-differential.mjs",
+    "test:differential": "node tools/run-qualification.mjs",
     "prepublishOnly": "node tools/verify.mjs --require-complete",
     "generate:native": "node tools/dotnet.mjs native-port",
     "verify:native": "node tools/dotnet.mjs native-port --check",
     "test:geometry:exact": "node tools/geometry-stress.mjs",
     "test:foundations": "node tools/foundations-differential.mjs",
-    "test:unit-factors": "node tools/unit-factors.mjs --check"
+    "test:unit-factors": "node tools/unit-factors.mjs --check",
+    "test:filesystem": "node tools/filesystem-differential.mjs"
   },
   "repository": {
     "type": "git",

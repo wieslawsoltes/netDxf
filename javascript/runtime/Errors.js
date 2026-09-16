@@ -20,6 +20,9 @@ export class KeyNotFoundException extends Exception {}
 export class IndexOutOfRangeException extends Exception {}
 export class OverflowException extends ArithmeticException {}
 export class IOException extends Exception {}
+export class FileNotFoundException extends IOException {}
+export class DirectoryNotFoundException extends IOException {}
+export class UnauthorizedAccessException extends Exception {}
 export class InvalidCastException extends Exception {}
 export class NullReferenceException extends Exception {}
 export class FormatException extends Exception {}

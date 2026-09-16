@@ -10,6 +10,7 @@ const npm=process.platform==='win32'?'npm.cmd':'npm';
 function run(command,args,cwd){const r=spawnSync(command,args,{cwd,encoding:'utf8',shell:process.platform==='win32' && command===npm});if(r.status!==0)throw r.error||new Error(r.stdout+'\n'+r.stderr);return r.stdout;}
 try {
   const [info]=JSON.parse(run(npm,['pack','--ignore-scripts','--json','--pack-destination',temp],javascriptRoot));
+  if(!info.files.some(f=>f.path==='node.js')) throw new Error('Packed Node entry is missing.');
   if(!info.files.some(f=>f.path==='Enums.generated.js')) throw new Error('Packed enum barrel is missing.');
   if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
   const install=path.join(temp,'install');fs.mkdirSync(install);
@@ -26,6 +27,12 @@ try {
     const collection=new ObservableCollection();collection.Add(3);collection.Insert(0,2);
     if(collection.get_Item(0)!==2)throw new Error('Packed collection failed');`;
   run(process.execPath,['--input-type=module','-e',script],install);
+  run(process.execPath,['--input-type=module','-e',`import fs from 'node:fs';
+    import {DxfRawDocument,DxfTag,FileStream,UnitHelper,XDataRecord,XDataCode} from '@netdxf/javascript/node';
+    const tags=[[0,'SECTION'],[2,'HEADER'],[9,'$ACADVER'],[1,'AC1032'],[0,'ENDSEC'],[0,'EOF']].map(([c,v])=>new DxfTag(c,v));
+    const raw=DxfRawDocument.Create(tags);raw.SaveAtomic('packed.dxf');
+    const stream=new FileStream('packed.dxf');try{if(DxfRawDocument.Load(stream).Version!==18)throw new Error('Atomic packed read failed');}finally{stream.Dispose();fs.unlinkSync('packed.dxf');}
+    if(typeof UnitHelper.ConversionFactor!=='function'||new XDataRecord(XDataCode.Int16,12).Value!==12)throw new Error('Recovered exports missing');`],install);
   const dir=path.join(javascriptRoot,'artifacts/package');fs.mkdirSync(dir,{recursive:true});
   fs.writeFileSync(path.join(dir,'results.json'),JSON.stringify({...proof,completed:true,private:true,files:info.files.length,packedBytes:info.size,unpackedBytes:info.unpackedSize},null,2)+'\n');
   console.log(`Packed-package offline import and binary object round trip passed (${info.files.length} files).`);

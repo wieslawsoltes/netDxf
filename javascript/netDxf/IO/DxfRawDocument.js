@@ -1,3 +1,4 @@
+import { SaveAtomic } from './DxfRawDocument.AtomicSave.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { DxfTag } from './DxfTag.js';
 import { DxfTagValueType } from './DxfGroupCode.js';
@@ -196,6 +197,9 @@ export class DxfRawDocument {
     this.Version = parseVersion(profile.version); this.#codePageName = profile.codePage;
     this.#encoding = resolveEncoding(this.Version,profile.codePage); this.IsBinary = binary; this.#originalBytes = originalBytes;
     Object.freeze(this);
+  }
+  SaveAtomic(file, binary = this.IsBinary, cancellationToken = null) {
+    SaveAtomic(this, file, binary, cancellationToken);
   }
   get HasOriginalBytes() { return this.#originalBytes != null; }
   get EncodingCodePage() { return this.#encoding.CodePage; }

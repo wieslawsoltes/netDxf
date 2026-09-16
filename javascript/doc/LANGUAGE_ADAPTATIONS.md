@@ -43,3 +43,12 @@ Observable events expose `.Add(handler)` and `.Remove(handler)` in place of C# `
 The current collection differential qualifies integer-list operations and selected comparers, not arbitrary CLR equality/collation. Default culture-sensitive string sorting is deliberately unsupported pending a comparable collation contract. `DxfClassCollection` is not a claim that every inherited `KeyedCollection` overload and null-dispatch case has been exhaustively adapted.
 
 `System.Drawing.Color` is represented by an explicit ARGB component adapter sufficient for the selected `AciColor` conversion methods, not all `System.Drawing` APIs. Geometry display formatting has an invariant default and explicit culture providers; this is separate from the already qualified DXF G17 writer. Exact trigonometric and all-platform display/hash semantics remain blocked by their qualification gates.
+
+
+## Reconciled values and synchronous filesystem operations
+
+`UnitHelper.ConversionFactor(from,to,fromType,toType)` defaults to the DrawingUnits overload. Supply `ImageUnits` explicitly for an image-unit argument, since integer-valued enums do not preserve their CLR type in JavaScript. All 625 factors come from the actual C# Decimal operations. `XDataRecord` deliberately retains its distinct string, handle, unknown-enum and mutable-byte-array rules; it must not be replaced with the stricter immutable `DxfTag` rules.
+
+`DxfClassCollection` adds `TryGetValue(name, {value:null})`. The nullable DxfClass overloads of Contains/Remove use the optional explicit `DxfClass` selector rather than confusing a null item with a null dictionary key.
+
+The portable `SaveAtomic` method requires an explicit synchronous filesystem host; import the Node entry to register one. The host `FileStream` adapter supports Open/CreateNew/Create and Read/Write/ReadWrite, byte operations, Position/Length, SetLength, Flush and Dispose/Close. It is not every System.IO overload or FileShare/FileOptions combination. Physical destinations never receive a serialization prefix before commit. Existing-file rename and exclusive new-file hard-link publication are qualified as documented in FILESYSTEM.md; no browser filesystem adapter, metadata/ACL parity or power-loss guarantee is implied.

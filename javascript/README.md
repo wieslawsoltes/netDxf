@@ -12,7 +12,11 @@ There are also 77 mirrored enum files, strict code-page tables generated from th
 
 **New typed foundations:** 29 semantically lowered source files now provide vectors, matrices, Bézier/bounding geometry, colors, CLASS metadata, formatting/settings models, and constants. Three collection files provide observable insertion/removal/event behavior and CLASS indexing. See [typed foundations](doc/TYPED_FOUNDATIONS.md) for overload/value-copy adapters and exact verification. A separate randomized geometry gate currently exposes unresolved trigonometric bit differences; the passing baseline must not be described as full geometry parity.
 
-**Still incomplete:** the JavaScript typed `DxfDocument`, full entities/tables/styles, typed reader/writer, all original tests/examples, raw filesystem/atomic-save integration, full arbitrary-stream adapters, exact native-math equivalence, and exhaustive platform/performance qualification. A raw byte-preservation or raw OBJECTS test is not counted as a port of a test that constructs the typed JavaScript API.
+**Still incomplete:** the JavaScript typed `DxfDocument`, full entities/tables/styles, typed reader/writer, all original tests/examples, typed filesystem integration and full atomic-save platform semantics, full arbitrary-stream adapters, exact native-math equivalence, and exhaustive platform/performance qualification. A raw byte-preservation or raw OBJECTS test is not counted as a port of a test that constructs the typed JavaScript API.
+
+**Recovered and reconciled:** `UnitHelper`, `XDataRecord`, 625 exact Decimal-derived conversion factors, four original raw test files, and the stateful 5,185-scenario foundations corpus. The newer generated geometry remains canonical; the older complete alternative patch is retained under [recovery](recovery/README.md).
+
+**Raw atomic file saves:** the Node entry adds `DxfRawDocument.SaveAtomic` and a synchronous `FileStream` adapter. Eighty-two original raw/helper cases and direct real-filesystem comparisons are included; typed atomic-save tests remain unported. See [filesystem contracts](doc/FILESYSTEM.md).
 
 ## Source layout
 
@@ -68,6 +72,7 @@ From this directory, with the pinned .NET 8.0.425 SDK / 8.0.31 runtime and Node 
 export CONFIGURATION=Release
 node tools/dotnet.mjs inventory
 node tools/dotnet.mjs oracle
+node tools/dotnet.mjs geometry
 node tools/dotnet.mjs native-port --check
 node tools/dotnet.mjs conformance
 npm test
@@ -83,11 +88,29 @@ npm run benchmark
 npm run verify
 ```
 
-Run `npm run test:geometry:exact` separately for the strict randomized numeric qualification. It **fails**, with full bit-level counterexamples, while the geometry/libm mismatch remains unresolved. CI preserves that failure as a required full-port gate.
+`npm run test:differential` executes every independent comparison and retains each log even when an earlier category fails. It includes the recovered stateful foundations corpus, randomized geometry, filesystem operations and conversion-factor reproduction. The exact numeric categories currently **fail** with counterexamples; no tolerance or expected-failure allowlist is applied. Individual scripts `test:foundations`, `test:geometry:exact` and `test:filesystem` remain available. Continue the remaining verification commands after a failure to collect all evidence; CI does so automatically.
 
 `DOTNET_ROOT` or `DOTNET` can select an isolated toolchain. `CHROMIUM` can select an already installed browser executable. Browser checks require a real Chromium process, not a mocked DOM. Repeat with `CONFIGURATION=Debug` to compare with the Debug .NET oracle.
 
-`npm run verify` validates the implemented scope and writes every missing source file and original test identity. **`npm run verify:complete` fails while the full-port gates remain unmet.** A successful subset does not turn the completion gate green. See [the verification contract](doc/VERIFICATION.md) for report locations and the distinction between preserved input bytes, normalized writer bytes, object semantics, and typed-reader controls.
+`npm run verify` writes the missing-source/original-test ledger and every negative or unavailable evidence category before returning failure. It does not describe the enlarged implementation as qualified while exact foundations or geometry checks fail. **`npm run verify:complete` fails while the full-port gates remain unmet.** A successful subset does not turn the completion gate green. See [the verification contract](doc/VERIFICATION.md) for report locations and the distinction between preserved input bytes, normalized writer bytes, object semantics, and typed-reader controls.
+
+## Node filesystem usage
+
+After an internal/offline package installation, import the explicit Node entry:
+
+```js
+import { DxfRawDocument, FileStream } from '@netdxf/javascript/node';
+const input = new FileStream('input.dxf');
+try {
+  const document = DxfRawDocument.Load(input);
+  document.SaveAtomic('output.dxf'); // Same transport, exact retained source bytes.
+  document.SaveAtomic('output-binary.dxf', true);
+} finally {
+  input.Dispose(); // The library does not close the caller's input stream.
+}
+```
+
+The default entry stays browser-safe and rejects filesystem operations without a registered host. Node publication is synchronous and stages beside the destination; it never uses delete-and-copy fallback. This does not establish complete System.IO parity, metadata retention, concurrent-writer isolation, or power-loss durability.
 
 ## License
 
