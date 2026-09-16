@@ -10,10 +10,10 @@ using netDxf.IO;
 namespace netDxf.Objects
 {
     /// <summary>A loaded FIELD with immutable source payload and proven leading object relationships.</summary>
-    /// <remarks>Evaluator code, flags and caches are stored without execution or recomputation. Only the
+    /// <remarks>Evaluator code is never automatically executed. Qualified caches support explicit host-evaluated result transactions. Only the
     /// source document and DXF version can be saved. Private evaluator references prevent graph cloning
     /// and subtree erasure. Common object metadata and XData retain their ordinary interfaces.</remarks>
-    public sealed class DxfStoredField : DxfDatabaseObject
+    public sealed partial class DxfStoredField : DxfDatabaseObject
     {
         private sealed class IdentityComparer : IEqualityComparer<DxfObject>
         {
@@ -43,7 +43,7 @@ namespace netDxf.Objects
         public DxfVersion SourceVersion { get; }
         /// <summary>Gets immutable subclass tags, excluding common identity, ownership, reactors and XData.</summary>
         /// <remarks>Tags preserve typed values; numeric lexical spelling follows the normal reader contract.</remarks>
-        public IReadOnlyList<DxfTag> Payload { get; }
+        public IReadOnlyList<DxfTag> Payload { get; private set; }
         /// <summary>Gets the decoded evaluator identifier from the leading group 1.</summary>
         public string EvaluatorId { get; }
         /// <summary>Gets the decoded leading group 2 and ordered group 3 continuation text without evaluating it.</summary>
@@ -80,6 +80,7 @@ namespace netDxf.Objects
             }
             foreach (string handle in objects)
                 this.objects.Add(Canonical(handle) == "0" ? null : resolve(handle));
+            this.Evaluation = DxfFieldEvaluationSnapshot.TryRead(this, this.Payload);
             this.resolved = true;
             var errors = new List<string>();
             this.ValidateDatabaseSchema(this.Database, errors);
