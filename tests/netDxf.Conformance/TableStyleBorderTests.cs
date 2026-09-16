@@ -111,7 +111,9 @@ internal static partial class Program
             if (oldTags[i].Code == 7 || i == 1 && oldHeader.StoredVersion.HasValue)
                 Check(ReferenceEquals(oldTags[i], style.Tags[i]), "version or STYLE tag identity replaced");
         var saved = TableStyleSave(doc, binary, "table-style-borders-after-" + suffix);
-        using var output = new MemoryStream(); saved.Save(output, !binary); output.Position = 0;
+        // Raw binary output deliberately rejects ASCII comments; explicitly remove them for this transport conversion.
+        var converted = !binary ? saved.WithTags(saved.Tags.Where(t => t.Code != 999)) : saved;
+        using var output = new MemoryStream(); converted.Save(output, !binary); output.Position = 0;
         var reloaded = TableStyleObject(DxfDocument.Load(output)!);
         foreach (int row in new[] { 0, 2 }) for (int i = 0; i < 6; i++)
         {
