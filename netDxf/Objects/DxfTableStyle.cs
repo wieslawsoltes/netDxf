@@ -10,7 +10,7 @@ using netDxf.Tables;
 namespace netDxf.Objects
 {
     /// <summary>A loaded TABLESTYLE with immutable payload snapshots and conservative classic projections.</summary>
-    /// <remarks>ReplaceStyle supports explicit qualified header and row scalar edits. Map interpretation and table regeneration are not supported.</remarks>
+    /// <remarks>ReplaceStyle supports explicit qualified classic/version-zero header, row scalar and border edits. Map interpretation and table regeneration are not supported.</remarks>
     public sealed partial class DxfTableStyle : DxfDatabaseObject
     {
         private readonly DxfDocument source;
@@ -28,7 +28,7 @@ namespace netDxf.Objects
             this.Tags = new ReadOnlyCollection<DxfTag>(new List<DxfTag>(tags));
             this.publicTags = PublicTags(tags);
             int first = this.publicTags.FindIndex(t => t.Code == 7);
-            this.Header = DxfTableStyleHeader.TryRead(first < 0 ? this.publicTags : this.publicTags.Take(first).ToList(), decode);
+            this.Header = DxfTableStyleHeader.TryRead(first < 0 ? this.publicTags : this.publicTags.Take(first).ToList(), decode, this.SourceVersion);
             var rows = new List<DxfTableStyleRow>();
             var starts = this.publicTags.Select((tag, index) => new { tag, index }).Where(p => p.tag.Code == 7).Select(p => p.index).ToList();
             if (starts.Count == 3)

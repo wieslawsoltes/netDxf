@@ -13,12 +13,12 @@ namespace netDxf.Objects
     {
         private bool editing, reentered;
 
-        /// <summary>Atomically replaces qualified classic header and selected row scalar values.</summary>
-        /// <param name="header">New recognized classic header values, or null to keep the existing header unchanged.</param>
-        /// <param name="rows">Distinct scalar edits made from the current Rows snapshot; an empty sequence is allowed.</param>
+        /// <summary>Atomically replaces qualified header and selected row scalar or border values.</summary>
+        /// <param name="header">New recognized header values, or null to keep the existing header unchanged.</param>
+        /// <param name="rows">Distinct scalar and/or border edits made from the current Rows snapshot; an empty sequence is allowed.</param>
         /// <remarks>
-        /// Only the classic seven-field header and five projected row scalar groups are edited.
-        /// Unknown headers remain intact when header is null. Row order, STYLE identities and names,
+        /// Only recognized header scalars, five projected row scalars and six complete border triples are edited.
+        /// Unknown headers remain intact when header is null; a recognized leading version remains fixed. Row order, STYLE identities and names,
         /// raw formats, map contents, common metadata, source profile and ownership remain fixed.
         /// Enumeration and disposal finish before graph validation; caught reentry, stale and duplicate
         /// row snapshots reject before mutation. Equal requests retain current snapshots, and prior
@@ -54,29 +54,42 @@ namespace netDxf.Objects
                 var replacements = new Dictionary<DxfTag, DxfTag>();
                 if (header != null)
                 {
+                    int offset = this.Header.StoredVersion.HasValue ? 1 : 0;
                     if (header.Description != this.Header.Description)
-                        replacements.Add(this.publicTags[0], new DxfTag(3, this.EncodeEditedDescription(header.Description)));
-                    ReplaceScalar(replacements, this.publicTags[1], header.FlowDirection);
-                    ReplaceScalar(replacements, this.publicTags[2], header.StoredFlags);
-                    ReplaceScalar(replacements, this.publicTags[3], header.HorizontalCellMargin);
-                    ReplaceScalar(replacements, this.publicTags[4], header.VerticalCellMargin);
-                    ReplaceScalar(replacements, this.publicTags[5], header.SuppressTitle ? (short)1 : (short)0);
-                    ReplaceScalar(replacements, this.publicTags[6], header.SuppressColumnHeading ? (short)1 : (short)0);
+                        replacements.Add(this.publicTags[offset + 0], new DxfTag(3, this.EncodeEditedDescription(header.Description)));
+                    ReplaceScalar(replacements, this.publicTags[offset + 1], header.FlowDirection);
+                    ReplaceScalar(replacements, this.publicTags[offset + 2], header.StoredFlags);
+                    ReplaceScalar(replacements, this.publicTags[offset + 3], header.HorizontalCellMargin);
+                    ReplaceScalar(replacements, this.publicTags[offset + 4], header.VerticalCellMargin);
+                    ReplaceScalar(replacements, this.publicTags[offset + 5], header.SuppressTitle ? (short)1 : (short)0);
+                    ReplaceScalar(replacements, this.publicTags[offset + 6], header.SuppressColumnHeading ? (short)1 : (short)0);
                 }
                 foreach (DxfTableStyleRowEdit edit in edits)
                 {
                     var tags = edit.Original.Tags; var values = edit.Values;
-                    ReplaceScalar(replacements, tags.Single(t => t.Code == 140), values.TextHeight);
-                    ReplaceScalar(replacements, tags.Single(t => t.Code == 170), values.CellAlignment);
-                    ReplaceScalar(replacements, tags.Single(t => t.Code == 62), values.StoredTextColor);
-                    ReplaceScalar(replacements, tags.Single(t => t.Code == 63), values.StoredFillColor);
-                    ReplaceScalar(replacements, tags.Single(t => t.Code == 283), values.BackgroundColorEnabled ? (short)1 : (short)0);
+                    if (values != null)
+                    {
+                        ReplaceScalar(replacements, tags.Single(t => t.Code == 140), values.TextHeight);
+                        ReplaceScalar(replacements, tags.Single(t => t.Code == 170), values.CellAlignment);
+                        ReplaceScalar(replacements, tags.Single(t => t.Code == 62), values.StoredTextColor);
+                        ReplaceScalar(replacements, tags.Single(t => t.Code == 63), values.StoredFillColor);
+                        ReplaceScalar(replacements, tags.Single(t => t.Code == 283), values.BackgroundColorEnabled ? (short)1 : (short)0);
+                    }
+                    if (edit.Borders != null)
+                        for (int i = 0; i < DxfTableStyleRowBorders.BorderCount; i++)
+                        {
+                            DxfTableStyleBorderValues border = edit.Borders.Values[i];
+                            ReplaceScalar(replacements, tags.Single(t => t.Code == 274 + i), border.StoredLineweight);
+                            ReplaceScalar(replacements, tags.Single(t => t.Code == 284 + i), border.IsVisible ? (short)1 : (short)0);
+                            ReplaceScalar(replacements, tags.Single(t => t.Code == 64 + i), border.StoredColor);
+                        }
                 }
                 if (replacements.Count == 0) return;
                 var packet = this.Tags.Select(t => replacements.TryGetValue(t, out DxfTag value) ? value : t).ToList();
                 var candidate = new DxfTableStyle(this.source, packet, DecodeEditedDescription);
                 if (candidate.Rows.Count != this.Rows.Count || candidate.Rows.Where((row, index) =>
-                    (row.Values == null) != (this.Rows[index].Values == null)).Any())
+                    (row.Values == null) != (this.Rows[index].Values == null) ||
+                    (row.Borders == null) != (this.Rows[index].Borders == null)).Any())
                     throw new InvalidOperationException("Replacement changed the qualified row inventory.");
                 foreach (DxfTableStyleRow row in candidate.Rows)
                     if (this.namedStyles.TryGetValue(row.Tags[0], out Tuple<netDxf.Tables.TextStyle, string> binding))
