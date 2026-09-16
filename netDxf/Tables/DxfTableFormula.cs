@@ -20,6 +20,9 @@ namespace netDxf.Tables
         public const int MaximumLength = 4096;
         /// <summary>Maximum syntactic and formula dependency depth.</summary>
         public const int MaximumDepth = 128;
+        /// <summary>Maximum sum of expression depths across concurrently evaluated formula dependencies.</summary>
+        /// <remarks>This conservative stack budget is shared by the whole calculation, separately from the dependency-count and operation limits.</remarks>
+        public const int MaximumEvaluationDepth = 1024;
         private readonly Node root;
         private DxfTableFormula(string expression, Node root) { this.Expression = expression; this.root = root; }
         /// <summary>Gets the unmodified expression.</summary>
@@ -42,7 +45,12 @@ namespace netDxf.Tables
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             return this.Evaluate(new Evaluation(rowCount, columnCount, resolver));
         }
-        internal double Evaluate(Evaluation evaluation) { return Number(this.root.Evaluate(evaluation)); }
+        internal double Evaluate(Evaluation evaluation)
+        {
+            evaluation.EnterExpression(this.root.Depth);
+            try { return Number(this.root.Evaluate(evaluation)); }
+            finally { evaluation.LeaveExpression(this.root.Depth); }
+        }
         internal static double Number(object value)
         {
             if (value is int integer) return integer;
@@ -59,6 +67,14 @@ namespace netDxf.Tables
             private readonly Func<DxfTableCellAddress, object> resolver;
             private readonly Dictionary<DxfTableCellAddress, object> cache = new Dictionary<DxfTableCellAddress, object>();
             private int remaining = 1000000;
+            private int expressionDepth;
+            internal void EnterExpression(int depth)
+            {
+                if (depth > MaximumEvaluationDepth - this.expressionDepth)
+                    throw new InvalidOperationException("Combined expression and dependency depth exceeds the evaluation stack budget.");
+                this.expressionDepth += depth;
+            }
+            internal void LeaveExpression(int depth) { this.expressionDepth -= depth; }
             internal Evaluation(int rows, int columns, Func<DxfTableCellAddress, object> resolver)
             {
                 if (rows < 1 || columns < 1 || (long)rows * columns > 1000000) throw new ArgumentOutOfRangeException(nameof(rows), "A calculation is limited to one million cells.");
