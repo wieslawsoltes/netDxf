@@ -41,7 +41,7 @@ namespace netDxf.Objects
                 map.Handle = handle.ToString("X", CultureInfo.InvariantCulture);
                 // All caller code and validation completed; only internal registration and the checked dictionary slot remain.
                 this.Register(map, true); owner.AddLoaded(name, map, true);
-                if (owner.Owner is DxfTableStyle style && ReferenceEquals(style.ExtensionDictionary, owner) && name == "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP")
+                if (owner.Owner is DxfTableStyle style && ReferenceEquals(style.ExtensionDictionary, owner) && string.Equals(name, "ACAD_ROUNDTRIP_2008_TABLESTYLE_CELLSTYLEMAP", StringComparison.OrdinalIgnoreCase))
                     style.BindAuthoredCellStyleMap(map);
                 return map;
             }
