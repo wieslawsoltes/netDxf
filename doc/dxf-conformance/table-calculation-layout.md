@@ -3,7 +3,7 @@
 This increment adds reusable calculation and layout APIs above the stored TABLE
 and TABLECONTENT contracts. It does **not** turn every preserved TABLE packet
 into a fully regenerated native AutoCAD table. In particular, editing a backing
-scalar and building a detached display block are distinct, explicit operations.
+scalar, building a display block and selecting it for a source TABLE are distinct, explicit operations.
 
 ## Architecture and data flow
 
@@ -17,6 +17,7 @@ scalar and building a detached display block are distinct, explicit operations.
 | Formatting | `DxfCellStyleResolver.Resolve` | Complete base and explicitly ordered override definitions; detached flattened definition and per-property provenance. |
 | Layout | `DxfTableLayout.Create` | Addressed grid plus explicit style/text/measurement providers; immutable physical rectangles. |
 | Display | `DxfTableLayout.BuildDisplayBlock` | Fresh unregistered block with LINE, SOLID and MTEXT entities; no source TABLE cache mutation. |
+| Display selection | `StoredTable.ReplaceDisplayBlock` | Atomically selects an already registered flat display block and clears stale proxy graphics; inline/backing caches remain fixed. |
 
 The production APIs add no third-party runtime dependency. Independent Python
 verification remains development-only. Source-bound STYLE/LTYPE objects retain
@@ -232,13 +233,32 @@ digests are recorded in PR #103. Declared test inventories are not substituted
 for executed results. No native AutoCAD process or font-comparison run has been
 performed for this increment.
 
+## Combined calculation depth
+
+Expression and dependency limits alone do not bound their combined recursive
+call stack. The evaluator also limits the sum of full expression depths across
+active dependencies to `DxfTableFormula.MaximumEvaluationDepth` (1,024). It
+reserves that conservative depth before evaluating each formula and releases it
+in a finally block. An expression can therefore be independently valid while a
+chain containing it is rejected. Eight additional tests check accepted and
+rejected combinations at four expression depths, separately from operation and
+formula-count limits. This budget does not govern arbitrary recursion inside
+a caller-provided callback.
+
+## Source TABLE display selection
+
+The continuation adds [explicit display-block selection](table-display-binding.md).
+It updates the qualified TABLE block name and BLOCK_RECORD pointer together and
+clears stale proxy graphics, while leaving all inline and backing data unchanged.
+This closes the detached-block usability gap, not native all-cache regeneration.
+
 ## Remaining requested scope
 
 | Requested area | Result of this increment | Still not implemented/qualified |
 |---|---|---|
 | Inherited/duplicated formatting | Explicit property/grid cascade and provenance. | Native automatic scope selection/precedence and duplicated classic-style synchronization. |
 | Formulas | Bounded numeric formulas, dependency graph and atomic same-kind result writes. | Persistent native FIELD graphs, cross-table formulas, formula copy translation, full functions/options, date/angle FIELD formatting. |
-| Automatic layout/display blocks | Measured literal-cell layout and fresh detached LINE/SOLID/MTEXT blocks. | Transactional replacement of a source TABLE and all inline/backing/display caches; native text metrics and every layout mode. |
+| Automatic layout/display blocks | Measured literal-cell layout, fresh LINE/SOLID/MTEXT blocks, and explicit source TABLE display selection. | Transactional replacement of a source TABLE and all inline/backing/display caches; native text metrics and every layout mode. |
 | Modern/private TABLE schemas | Existing unsupported packets remain guarded and preserved. | Full interpretation, editing and regeneration of every inline/private schema. |
 | Private identifiers/colors | Existing qualification gates remain. | Complete private reference/color interpretation, including arbitrary hidden references. |
 | Recursive dependency import | Existing explicit resource-mapping API remains. | General dependency-complete typed graph import. |
