@@ -5,7 +5,7 @@ and exposes immutable ordered entries. Each entry provides its stored `Id`, raw
 `StoredType`, decoded `Name`, and complete immutable `FormatPayload`. The object
 remains in its source document and DXF profile. Formatting packets are retained
 without evaluating their fields or assigning fixed title, header or data roles.
-Explicit [entry-name replacement](cell-style-map-editing.md) edits names while retaining every other packet field. Public construction, formatting edits and style regeneration remain outside this API.
+Explicit [entry-name replacement](cell-style-map-editing.md) edits names while retaining every other packet field. Qualified [nested formatting and resource edits](cell-style-format-editing.md) are available through `ReplaceEntries`; public structural construction and style regeneration remain outside this API.
 
 ## Evidence and admitted grammar
 
@@ -37,7 +37,7 @@ handwritten; no external implementation code is incorporated.
 |---|---|---|
 | Object | 100 `AcDbCellStyleMap`, 90 | Subclass and entry count |
 | Entry prefix | 300 `CELLSTYLE` | Ordered entry boundary |
-| Formatting | 1 `TABLEFORMAT_BEGIN` through matching 309 `TABLEFORMAT_END` | Complete immutable tags |
+| Formatting | 1 `TABLEFORMAT_BEGIN` through matching 309 `TABLEFORMAT_END` | Complete immutable tags; optional [nested format projection](cell-style-format-editing.md) |
 | Entry fields | 1 `CELLSTYLE_BEGIN`, 90, 91, 300, 309 `CELLSTYLE_END` | Raw identifier, raw type, decoded name |
 
 The outer count must be nonnegative, bounded by the 1,048,576-tag storage limit,
@@ -124,7 +124,8 @@ The separately frozen independent review passed 58 runtime cases and audited
 [review receipt](cell-style-map-review/summary.json) and
 [reproducible harness](../../tools/cell_style_map_review/README.md) are retained.
 
-Native AutoCAD open/AUDIT/save/reopen remains unexecuted. Format evaluation,
-editable table styles, role assignment, cell regeneration, arbitrary private
-schema interpretation and full cross-document dependency import remain outside
-this stored module.
+Native AutoCAD open/AUDIT/save/reopen remains unexecuted. The later
+[nested formatting API](cell-style-format-editing.md) provides explicit
+existing-packet edits and exact resource selection. Format-expression evaluation,
+role assignment, cell regeneration, arbitrary private schema interpretation and
+full cross-document dependency import remain outside this stored module.

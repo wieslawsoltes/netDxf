@@ -1,0 +1,36 @@
+{
+  "implementation_commit": "a55a38e7520bbb80637f291c1b71c98be0ba6992",
+  "implementation_tree": "b0272f4f3157b370288bcee4c5fb9cad79c311c5",
+  "baseline_merge": "3496ab91893a1e4ec9261b4833479f1799149cdc",
+  "source_sha256": {
+    "netDxf/Objects/DxfCellStyleFormat.Values.cs": "53235ed434246920c52e622d40f0aee41f2e8f97f77da256a83649ab0bddd1e1",
+    "netDxf/Objects/DxfCellStyleFormat.cs": "3bb5ad3c916a6db0d3f733954a552a1d39a5ef6dc2d95d246944ac667a7a94ae",
+    "netDxf/Objects/DxfCellStyleFormat.Edit.cs": "64184c2e1d2725dd6ebd7e04f4c00677a7a62023946d8251b1e0ea4c0ec650f1",
+    "netDxf/Objects/DxfStoredCellStyleMap.FormatEdit.cs": "13addfa60e70a1559e6c861368ec7f6826d950a21cf30d5cf5d34c7144c1b1e0",
+    "netDxf/Objects/DxfStoredCellStyleMap.cs": "bc7a58fa2608cf7023e2b069736389e71a6af1ffbff0620a97fd1c846c416330",
+    "netDxf/Objects/DxfStoredCellStyleMap.Edit.cs": "6a5da9410999d5e64428be4e19bc93eb277f2d4ca530ba1055b0939fab70e7ec",
+    "tests/netDxf.Conformance/CellFormatEditingTests.cs": "e0208b8028cd6dcf09de8a0ffe592491bfd27cf6e29911475c9568672d7c8243",
+    "tests/netDxf.Conformance/RegressionTests.cs": "9e80beb5bd311ef6d20e3d499a3e7ff55778711e357cc74981305f52f72f1af2"
+  },
+  "linux_debug_artifact": {
+    "id": 10441191732,
+    "sha256": "c4d0fb42e1086599b0f697e1d3e280f0c4a1ede896b9850f11b2bd3ae805ecaf",
+    "digest_verified": true,
+    "source_files_verified": 3052,
+    "unique_cases": 35876,
+    "new_cases": 567,
+    "failures": 0,
+    "dxf_files": 7815
+  },
+  "ci_run": 35082633656,
+  "local_independent_check": {
+    "reader": "ezdxf 1.4.4",
+    "script": "tools/verify_cell_format_editing.py",
+    "script_sha256": "edba99d08a49a3595ab90a82557e9f0add0fd2776c8b8145bc7ef252347cf5ad",
+    "pairs": 120,
+    "corruption_controls": 27000,
+    "self_test_pairs": 30,
+    "self_test_corruption_controls": 6690
+  },
+  "scope": "Implementation-stage evidence. Final-head qualification is recorded separately in PR99; native AutoCAD execution, format-expression evaluation, synchronization and layout regeneration are not claimed."
+}
