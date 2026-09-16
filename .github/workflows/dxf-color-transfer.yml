@@ -1,0 +1,49 @@
+name: Materialize reviewed RGB wire fixes
+on:
+  push:
+    branches: [codex/source-color-transfer-20260916]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/source-color-transfer-20260916'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Validate exact reviewed patch and publish clean source commits
+        shell: bash
+        env:
+          BASE: 8dccc43b15a3fa1142a25e93d49f15185306d728
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          git config core.autocrlf false
+          python - <<'PY'
+          import gzip, hashlib, os
+          from pathlib import Path
+          data = gzip.decompress(b''.join(Path(f'.github/dxf-color-transfer/{i}.bin').read_bytes() for i in range(2)))
+          assert hashlib.sha256(data).hexdigest() == '983bd8c1d9ec373fde074aea3651cdab05748726afad8e99424116eb0bfb651d'
+          Path(os.environ['RUNNER_TEMP'], 'color.patch').write_bytes(data)
+          PY
+          git apply --check --index "$RUNNER_TEMP/color.patch"
+          git apply --index "$RUNNER_TEMP/color.patch"
+          git rm -r -- .github/dxf-color-transfer .github/workflows/dxf-color-transfer.yml
+          FULL_TREE=$(git write-tree)
+          test "$FULL_TREE" = 7830294d3a5d67d83c9a0af1862728f10105ff69
+          export GIT_INDEX_FILE="$RUNNER_TEMP/production.index"
+          git read-tree "$BASE"
+          git add -- netDxf/IO/DxfWriter.cs netDxf/IO/DxfWriter.PolyfaceMeshRecords.cs
+          PROD_TREE=$(git write-tree)
+          test "$PROD_TREE" = 8d0b18a9a113deee11d38f020e7e14428d321617
+          unset GIT_INDEX_FILE
+          PROD=$(printf '%s\n' 'Emit 24-bit standard RGB fields with profile-aware authored color fallback' | git commit-tree "$PROD_TREE" -p "$BASE")
+          FINAL=$(printf '%s\n' 'Verify RGB writer paths and inspect original DXF clock tags independently' | git commit-tree "$FULL_TREE" -p "$PROD")
+          git push origin "$FINAL:refs/heads/codex/color-reviewed-source-20260916"
+          echo "Published clean source head $FINAL, tree $FULL_TREE"
