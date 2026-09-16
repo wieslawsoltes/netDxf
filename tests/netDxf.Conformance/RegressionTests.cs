@@ -4,6 +4,7 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterTableDisplayBindingTests();
         RegisterTableStyleBorderTests();
         RegisterTableRowSettingsTests();
         RegisterCellFormatEditingTests();
