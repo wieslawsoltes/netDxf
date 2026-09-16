@@ -1,7 +1,7 @@
 # Explicit stored TABLESTYLE editing
 
 `DxfTableStyle.ReplaceStyle` atomically updates the recognized classic header
-and selected row scalars of a loaded TABLESTYLE. It keeps the source document,
+and selected row scalars or [complete border sets](table-style-borders.md) of a loaded TABLESTYLE. It keeps the source document,
 profile, ownership, physical row count and order, exact STYLE resource identities,
 and every untouched stored tag. Existing native TABLESTYLE and CELLSTYLEMAP
 packets supply the field framing. This is explicit stored-data editing: TABLE
@@ -24,10 +24,13 @@ a finite nonnegative height and stored signed alignment/color codes. The latter
 remain stored values; this API does not assign new meanings or normalize special
 values such as fill color 257. Negative zero is preserved as a distinct value.
 
-The only header sequence admitted is `3,70,71,40,41,280,281`. A non-null header
-replacement rejects when `Header` is unavailable. Passing null preserves it,
-so the native AC1024 header with its additional leading group 280 remains intact
-while qualified rows can be edited. A row exposes `WithValues` only when its
+The classic header sequence is `3,70,71,40,41,280,281`. R2010 and later
+source profiles also admit exactly one leading `(280,0)` format-version tag;
+`Header.StoredVersion` reports it, and edits retain that original tag unchanged.
+This is distinct from the later group-280 title-suppression flag. Other header
+variants remain unprojected. A non-null replacement rejects when `Header` is
+unavailable; passing null preserves any such header while qualified rows can
+be edited. A row exposes `WithValues` only when its
 five scalar groups `140,170,62,63,283` are unique and valid. Private application
 groups and unknown subclasses are never mistaken for these fields.
 
@@ -74,7 +77,7 @@ These tests qualify stored packet edits, not native AutoCAD execution, rendered
 formatting, table evaluation, or complete TABLESTYLE/CELLSTYLEMAP editing.
 
 The [source-pinned qualification receipt](receipts/table-style-editing/qualification.json)
-records passing Debug and Release executions: 154 cases in each configuration,
+records the earlier PR95 scalar-only Debug and Release executions: 154 cases in each configuration,
 including 61 new editing cases; fourteen edited native pairs with 322 corruption
 controls; and the unchanged-style gate's 70 outputs with 118 controls. It includes
 the implementation and oracle commits, source/assembly/result digests, compressed
