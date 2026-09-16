@@ -7,3 +7,6 @@ export { DxfRawSection } from './netDxf/IO/DxfRawSection.js';
 export { DxfRawRecord } from './netDxf/IO/DxfRawRecord.js';
 export { DxfVersionNotSupportedException } from './netDxf/IO/DxfVersionNotSupportedException.js';
 export { MemoryStream } from './runtime/MemoryStream.js';
+export { DxfRawHandleRole, DxfRawHandleDiagnosticKind, DxfRawHandleOccurrence, DxfRawHandleDiagnostic, DxfRawHandleIndexOptions } from './netDxf/IO/DxfRawHandleModel.js';
+export { DxfRawHandleIndex } from './netDxf/IO/DxfRawHandleIndex.js';
+export { DxfRawReferenceTraversal, DxfRawDependencyClosure } from './netDxf/IO/DxfRawHandleOperations.js';
