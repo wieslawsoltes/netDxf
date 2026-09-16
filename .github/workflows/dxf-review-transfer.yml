@@ -1,0 +1,49 @@
+name: Materialize reviewed utility source
+on:
+  push:
+    branches: [codex/source-review-transfer-20260916]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/source-review-transfer-20260916'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Apply checksum-locked review and publish only its clean source trees
+        shell: bash
+        env:
+          BASE: ccf22871ee5ce965902211115e09914f0aaf04ab
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          git config core.autocrlf false
+          python - <<'PY'
+          import gzip, hashlib, os
+          from pathlib import Path
+          data = gzip.decompress(b''.join(Path(f'.github/dxf-review-transfer/{i}.bin').read_bytes() for i in range(4)))
+          assert hashlib.sha256(data).hexdigest() == '365c114ed496c3ccebbaa502eb6e60090371b0223be61aec07ef218ac61b49b1'
+          Path(os.environ['RUNNER_TEMP'], 'review.patch').write_bytes(data)
+          PY
+          git apply --check --index "$RUNNER_TEMP/review.patch"
+          git apply --index "$RUNNER_TEMP/review.patch"
+          git rm -r -- .github/dxf-review-transfer .github/workflows/dxf-review-transfer.yml
+          FULL_TREE=$(git write-tree)
+          test "$FULL_TREE" = 39d0420220d47cdb5831df86031379b0729c7ee0
+          export GIT_INDEX_FILE="$RUNNER_TEMP/production.index"
+          git read-tree "$BASE"
+          git add -- netDxf/AciColor.cs netDxf/IO/DxfReader.cs netDxf/Units/AngleUnitFormat.cs netDxf/Units/DrawingTime.cs netDxf/Units/LinearUnitFormat.cs netDxf/Units/UnitFormatMath.cs
+          PROD_TREE=$(git write-tree)
+          test "$PROD_TREE" = 8a2dbca35d0167738b3325b412c046e332a9dafd
+          unset GIT_INDEX_FILE
+          PROD=$(printf '%s\n' 'Correct legacy angle/length rounding, DXF date boundaries and color isolation' | git commit-tree "$PROD_TREE" -p "$BASE")
+          FINAL=$(printf '%s\n' 'Verify legacy utilities across exact arithmetic, calendars, palettes and DXF transports' | git commit-tree "$FULL_TREE" -p "$PROD")
+          git push origin "$FINAL:refs/heads/codex/dxf-legacy-review-20260916"
+          echo "Published clean source head $FINAL, tree $FULL_TREE"
