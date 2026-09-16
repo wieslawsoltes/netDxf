@@ -6,6 +6,7 @@ internal static partial class Program
     {
         RegisterTableStyleBorderTests();
         RegisterTableRowSettingsTests();
+        RegisterCellFormatEditingTests();
         RegisterFourthMixedModuleTests();
         RegisterStoredEnvelopeTests();
         RegisterDeclaredOwnershipTests();
