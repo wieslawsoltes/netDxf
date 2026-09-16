@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "sourceFingerprint": "97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d",
+  "files": [
+    {
+      "path": "Enums.generated.js",
+      "sha256": "d4a6db95a3d2ecf94fdd2029d1fe5bc5577df0e03ec633079eff53444530c297"
+    },
+    {
+      "path": "netDxf/Blocks/BlockTypeFlags.js",
+      "sha256": "85f1d029aa7270592f154a939edaf85d6b1dcc7bf9aabedf23724c5af71c865c"
+    },
+    {
+      "path": "netDxf/ClippingBoundaryType.js",
+      "sha256": "6250257326890bca15d5a233dc945ca0ab5f2c300ae4c9e151f518a95d9ec1f9"
+    },
+    {
+      "path": "netDxf/CoordinateSystem.js",
+      "sha256": "e0052877cab7a2753215ef478582f4daf23e2eac5f812bb913353fa1cfa0d7ad"
+    },
+    {
+      "path": "netDxf/Entities/AttributeFlags.js",
+      "sha256": "432972fb2f5402208c788b3f222a3542c9dde262c71cc0e32e5bb3859a0b6ff4"
+    },
+    {
+      "path": "netDxf/Entities/DimensionType.js",
+      "sha256": "386808ec112b5fa3c9dfc89f768b75aac42a1164de71d307a44fb7dcab40ea96"
+    },
+    {
+      "path": "netDxf/Entities/DimensionTypeFlags.js",
+      "sha256": "34d238ed32a5780ff4834e02f5bcd85afbc8ac56c271654d177a24c95b2d8583"
+    },
+    {
+      "path": "netDxf/Entities/EntityType.js",
+      "sha256": "0f3a77acf6ee29f5f886ca1c32d5515338622e14cb5b0f77fd253d09593d6df4"
+    },
+    {
+      "path": "netDxf/Entities/Face3DEdgeFlags.js",
+      "sha256": "7447f13c4f026cece53052daa12ffe62d2da5cb9af1524a54fef555a4c587874"
+    },
+    {
+      "path": "netDxf/Entities/HatchBoundaryPathTypeFlags.js",
+      "sha256": "d7617179992c5061398d547bea882b43b4e8d127f1e1107d6b16a373dd6863d0"
+    },
+    {
+      "path": "netDxf/Entities/HatchFillType.js",
+      "sha256": "37776ce90a71feeaad2545b8206fab841d4de099a073397c1eda6a0fe57cc7b2"
+    },
+    {
+      "path": "netDxf/Entities/HatchGradientPatternType.js",
+      "sha256": "0cd39afec4a16e0edfba35a109f4c6f91d903744ff0b020f17c86b71543236a5"
+    },
+    {
+      "path": "netDxf/Entities/HatchStyle.js",
+      "sha256": "3bada86d796ba0bb815af20ad8dca2a7e79e695278d0f0609d8ea03923701f26"
+    },
+    {
+      "path": "netDxf/Entities/HatchType.js",
+      "sha256": "90691e7e8336d4e4b9483745cf245f77708fae32a9615fe60f17d1696bc48b5b"
+    },
+    {
+      "path": "netDxf/Entities/ImageDisplayFlags.js",
+      "sha256": "d921a933b80496a409d5faefd7e59412eb8bd5922257efc5b88c5340376d1dcb"
+    },
+    {
+      "path": "netDxf/Entities/LeaderPathType.js",
+      "sha256": "9264d26fa0abea5323ae329570e0c6ed299c26aaa8ffa95cd8bd827e2d61728d"
+    },
+    {
+      "path": "netDxf/Entities/MLineFlags.js",
+      "sha256": "08d8e4bb7cda4c57e7d9e7eae904c3366a7b799dcacea4f5640dece48c656d14"
+    },
+    {
+      "path": "netDxf/Entities/MLineJustification.js",
+      "sha256": "13810be7b92325e3de994c8cbee8546ce585198130cd16030888ec5747dbe2d8"
+    },
+    {
+      "path": "netDxf/Entities/MTextAttachmentPoint.js",
+      "sha256": "bcd74b45fb6a61a7fd271662e6180ca48b1cee8ff206b92867390458b77f94e1"
+    },
+    {
+      "path": "netDxf/Entities/MTextDrawingDirection.js",
+      "sha256": "0536e2a47d00ce425b5f00f8b4cef4b6452f412c8c721b68c354938d51842cd7"
+    },
+    {
+      "path": "netDxf/Entities/MTextLineSpacingStyle.js",
+      "sha256": "88263aba53d16b768ea0e1a96ae466e09afeaa52ac5c3726dad858425cd41b91"
+    },
+    {
+      "path": "netDxf/Entities/MTextParagraphAlignment.js",
+      "sha256": "dd3f413adbb1f981ae8d5e6414b6170d2e5d2a06f94528538dca788652d49383"
+    },
+    {
+      "path": "netDxf/Entities/MTextParagraphVerticalAlignment.js",
+      "sha256": "d83a97abfa0f3ce05fad626720a53d6395b8e5e5a652f1bf9d9bef443031805e"
+    },
+    {
+      "path": "netDxf/Entities/OrdinateDimensionAxis.js",
+      "sha256": "ff29eec3f9b9d642357611cf50d509ad6e3a9b46f23de61ec5ce671d6599a1fc"
+    },
+    {
+      "path": "netDxf/Entities/PolylineSmoothType.js",
+      "sha256": "7788ff0347487fc55e2f2bbac99a318d3fd21a59705bbd98c3f1990e65101ca5"
+    },
+    {
+      "path": "netDxf/Entities/PolylineTypeFlags.js",
+      "sha256": "9902ec67b0a609b303b91cb7d37d81ded89a30e5092ddb536b6dff1d2a6920fb"
+    },
+    {
+      "path": "netDxf/Entities/SplineCreationMethod.js",
+      "sha256": "c4e800a514ad25908702b7073ffc35ba890c0c2bc50728f41944ee8ce51cb096"
+    },
+    {
+      "path": "netDxf/Entities/SplineKnotParameterization.js",
+      "sha256": "f2a163d641a2f9dabed1298481b6f216b14cf8046588c6ecad068a0f820dfe40"
+    },
+    {
+      "path": "netDxf/Entities/SplineTypeFlags.js",
+      "sha256": "1633b5d6b9c4b959b02834c1b9f8e6350ad6be388ecfdba4b86cedb9401ae9d6"
+    },
+    {
+      "path": "netDxf/Entities/TextAligment.js",
+      "sha256": "a547923cab0190f195188d0d720ebd1bcb96f1f925ace3645c3736b46c278684"
+    },
+    {
+      "path": "netDxf/Entities/ToleranceGeometricSymbol.js",
+      "sha256": "a98b88342a78ecf547ee91577dd5139f2a57e69cd05c753f7a08fed17e24e9da"
+    },
+    {
+      "path": "netDxf/Entities/ToleranceMaterialCondition.js",
+      "sha256": "27841d3e04465e80826bbca0bc55ed0289f4448ac53a3c908178e07e3665794c"
+    },
+    {
+      "path": "netDxf/Entities/UnderlayDisplayFlags.js",
+      "sha256": "0b4f4c1add4ad0e126f30f0189c89a829505abcfcd966d48663b487ba14ba636"
+    },
+    {
+      "path": "netDxf/Entities/VertexTypeFlags.js",
+      "sha256": "b7730128d3a1a07bb7169e247123990c6bf33d4b53be0ee5e943fcfba3ab37c8"
+    },
+    {
+      "path": "netDxf/Entities/ViewportStatusFlags.js",
+      "sha256": "2519ac34af796743fe211438129ede1641b32037fbad0a86bc9f27f2ec81721f"
+    },
+    {
+      "path": "netDxf/Header/AttMode.js",
+      "sha256": "9c6a81ae9677e9dd92287fa0190b95811b11e4f2ac77fc9e3390bde8f104d62f"
+    },
+    {
+      "path": "netDxf/Header/DxfVersion.js",
+      "sha256": "6ae0322fe6a9285bfa4b5b56b5adebc3ffa9020c96aba434be32448d47eb08da"
+    },
+    {
+      "path": "netDxf/Header/PointShape.js",
+      "sha256": "5ceba27433e2163f858c1ac8de69c7135020e8990eb83e74ee74d1317d8437e4"
+    },
+    {
+      "path": "netDxf/Lineweight.js",
+      "sha256": "4357acc561e7f50f0913632c5c16f02a9c15a42e5ba685cd9714bdf3423e2717"
+    },
+    {
+      "path": "netDxf/Objects/DictionaryCloningFlags.js",
+      "sha256": "1fd06c429822efbea3d48159534425ef62edf188d2607a99b09a5d47f1cfd0c6"
+    },
+    {
+      "path": "netDxf/Objects/ImageDisplayQuality.js",
+      "sha256": "c2882370cb6d49a4f8fccadfba7e0d036f68db6a6ac52b19a3c46fb2eb49cef0"
+    },
+    {
+      "path": "netDxf/Objects/LayerPropertiesFlags.js",
+      "sha256": "9745c79a504a653e037f44cf97c5ec7b91d16686c5c87fd580a9e27cc4f4de60"
+    },
+    {
+      "path": "netDxf/Objects/LayerPropertiesRestoreFlags.js",
+      "sha256": "5973f14b9f30a0315e9653255165794a65a0214542514c82ec13b57d41323ba4"
+    },
+    {
+      "path": "netDxf/Objects/MLineStyleFlags.js",
+      "sha256": "7c7c9c7c29258eedb75645424b8880fdafc03bd9c8a87facb312d06f32a80167"
+    },
+    {
+      "path": "netDxf/Objects/PlotFlags.js",
+      "sha256": "c7183f5e7c3cc24cbff1e46ec4f3a3329d34933fd1c6230fef614c59c68ac2c6"
+    },
+    {
+      "path": "netDxf/Objects/PlotPaperUnits.js",
+      "sha256": "273c52864bc249ee3a48fc5f0aae0640e0c8e6711f8183efc5284dfe7e164e9b"
+    },
+    {
+      "path": "netDxf/Objects/PlotRotation.js",
+      "sha256": "c6508e67bd804e0c1d2fcd3a63ded8c3b4a6bb4e9aa7353a73732505ef9d51ce"
+    },
+    {
+      "path": "netDxf/Objects/PlotType.js",
+      "sha256": "cc7c79d08bfa4dfb95ac1a84b2fee44275a494ade2d84c18521ce490d73c8753"
+    },
+    {
+      "path": "netDxf/Objects/ShadePlotMode.js",
+      "sha256": "f56a38cbd8b8462f76bdbd57daf9ccbf5701a765ce6ded0d8546da4365939254"
+    },
+    {
+      "path": "netDxf/Objects/ShadePlotResolutionMode.js",
+      "sha256": "266832701c7dd126c20d011f6e206969e9517730c3db9c31ab78a969b7cf8abe"
+    },
+    {
+      "path": "netDxf/Objects/SupportedImageFormats.js",
+      "sha256": "950e81311153c7804fcbfc3257e6073cbf82874278cbbc27e828ea643f8fae26"
+    },
+    {
+      "path": "netDxf/Objects/UnderlayType.js",
+      "sha256": "416cbd1e76a29601adb571d330d47dd9780dd615797524f388a02d78c244fda8"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleFitOptions.js",
+      "sha256": "0c8bb8fdac802ca222ef77f2cd089e6d716d264853eeced749837da4d6204d22"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleFitTextMove.js",
+      "sha256": "22623feaddd0d2d855d5e8a845f109daf7dfcd8591a42b7ba69350f1324970b5"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleOverrideType.js",
+      "sha256": "239a06461186a6550373a991c5ede6f0693350817f47d838dcdb346d7172a3cb"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleTextDirection.js",
+      "sha256": "25f088e87080c557e9336173d4ca890aeba7af8b8587dca00cbcf0aaaa4fa443"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleTextHorizontalPlacement.js",
+      "sha256": "b249743185cd7a9eb51374a512fe4f0f37248002deec4f022db5f047a5b1933f"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleTextVerticalPlacement.js",
+      "sha256": "e5888476851c15f819e7cec6305956c882539e4326571f596ed796fb67d99bfb"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleTolerancesDisplayMethod.js",
+      "sha256": "1993fc3d956ccf66d92932c907e54f1eaf6b043ee44fd8e62eeeee6953bff5c7"
+    },
+    {
+      "path": "netDxf/Tables/DimensionStyleTolerancesVerticalPlacement.js",
+      "sha256": "94e80a7c01968c4079b6724b1fa2457fcffcb98e66d9f38f84f6c73e1a84588c"
+    },
+    {
+      "path": "netDxf/Tables/FontStyle.js",
+      "sha256": "c5a61f2a67032b83021a60f3ac6b67501eb63c65ef1e1fa12a5a5a25dc7a9df2"
+    },
+    {
+      "path": "netDxf/Tables/LayerFlags.js",
+      "sha256": "1be81f4f765e97d9edd4ec82511aa3a94961062537e68cdd29b4f07aee809f6c"
+    },
+    {
+      "path": "netDxf/Tables/LinetypeSegmentRotationType.js",
+      "sha256": "53ec85a478262028fdddb060098ae8f02446202c45a34957814820ad67920415"
+    },
+    {
+      "path": "netDxf/Tables/LinetypeSegmentType.js",
+      "sha256": "9176445c6cb9ed94c32d4978856e2de21f3f85253ddfeeb5f1851db88ea25ef4"
+    },
+    {
+      "path": "netDxf/Tables/TextStyleFlags.js",
+      "sha256": "54da3210995f52a5624f8c0e7c69414bd5beb80cb0034cbcbab2f19e9ec5ee52"
+    },
+    {
+      "path": "netDxf/Tables/UcsOrthographicType.js",
+      "sha256": "3b33844e9b89cb1d76a94adb51f9bd611e78b60ff732132b8abab55f006d17aa"
+    },
+    {
+      "path": "netDxf/Tables/VPortFlags.js",
+      "sha256": "8cc61a221a1d6bd3436448557740e470e00c968e37feb1a1258cdcae8546506e"
+    },
+    {
+      "path": "netDxf/Tables/ViewFlags.js",
+      "sha256": "920f2d12bd570a80e611f7b575a046d5bd5d067612597957cbb806457ccc4ea6"
+    },
+    {
+      "path": "netDxf/Tables/ViewMode.js",
+      "sha256": "5276e43f9b00c3438fdd857175669577b5f9ad65f9b1593fcc9b24e0f7cb894c"
+    },
+    {
+      "path": "netDxf/Tables/ViewRenderMode.js",
+      "sha256": "8e171316b3a9ced5b04dfc8344598a9a5e8be0dc5afc444fa4767e09ae37b046"
+    },
+    {
+      "path": "netDxf/Units/AngleDirection.js",
+      "sha256": "422d076e535ed4c9d618b2960e0650cdd2aa7792084c333af56782436408e921"
+    },
+    {
+      "path": "netDxf/Units/AngleUnitType.js",
+      "sha256": "76f97fa7c49cb43f96722dd26f8feadfcbffc3e36fd067c7b256da6f1c287eff"
+    },
+    {
+      "path": "netDxf/Units/DrawingUnits.js",
+      "sha256": "ec6e0c40ec4b9c64e1d56050388f6ee1d06941c2dd07683b201f7a1f47933a43"
+    },
+    {
+      "path": "netDxf/Units/FractionFormatType.js",
+      "sha256": "6003757c9e552ef4184686e7e1f82853f4dce83cfc3bfe9765eb11ca78263789"
+    },
+    {
+      "path": "netDxf/Units/ImageResolutionUnits.js",
+      "sha256": "752897093c68022979c1c983a6d8ca88608f164be77ce7bca38b12bcbfd7b6cd"
+    },
+    {
+      "path": "netDxf/Units/ImageUnits.js",
+      "sha256": "5193b9d0a75e73286b2011dfc53dec611cc23112e2dfb6420f7be7f66465f3c3"
+    },
+    {
+      "path": "netDxf/Units/LinearUnitType.js",
+      "sha256": "96aff5ca8bc939907fab1d4c8a91eabc8c7aee708b8a9ede753595ea57a6aa6e"
+    },
+    {
+      "path": "netDxf/XDataCode.js",
+      "sha256": "509e5451962f5d52d72f43da6f82bfbb3b9e64482b0f7ee0cdbd2f34e10b4d69"
+    },
+    {
+      "path": "runtime/CodePages.generated.js",
+      "sha256": "96c113d609a52fdba39bdce296ae022db38e18ea1af08631618fb7009e48cb9e"
+    }
+  ]
+}
