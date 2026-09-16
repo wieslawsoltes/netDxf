@@ -166,6 +166,7 @@ namespace netDxf.Entities
                 Lineweight = this.Lineweight,
                 Transparency = (Transparency) this.Transparency.Clone(),
                 LinetypeScale = this.LinetypeScale,
+                IsVisible = this.IsVisible,
                 Normal = this.Normal,
                 Elevation = ocsCenter.Z,
                 Thickness = this.thickness,
@@ -188,34 +189,28 @@ namespace netDxf.Entities
         /// <param name="transformation">Transformation matrix.</param>
         /// <param name="translation">Translation vector.</param>
         /// <remarks>
-        /// Non-uniform scaling is not supported, create an ellipse from the circle data and transform that instead.<br />
+        /// The transformed circular plane must remain orthogonal and equally scaled (relative tolerance 1e-12).<br />
+        /// Unsupported ellipses, shears, collapsed/non-finite geometry and oblique nonzero extrusion reject before mutation.<br />
+        /// Plane orientation and signed thickness follow the transformed geometry. Successful changes clear stale proxy graphics.<br />
         /// Matrix3 adopts the convention of using column vectors to represent a transformation matrix.
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newCenter = transformation * this.Center + translation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
+            var result = CircularEntityTransform.Prepare(transformation, translation,
+                this.center, this.Normal, this.radius, this.thickness);
+            if (result.IsIdentity) return;
+            // All geometry validation is complete before publishing any state.
+            base.Normal = result.Normal;
+            this.center = result.Center; this.radius = result.Radius; this.thickness = result.Thickness;
+            this.ClearProxyGraphics();
+        }
 
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
-
-            Vector3 axis = transOW * new Vector3(this.Radius, 0.0, 0.0);
-            axis = transformation * axis;
-            axis = transWO * axis;
-            Vector2 axisPoint = new Vector2(axis.X, axis.Y);
-            double newRadius = axisPoint.Modulus();
-            if (MathHelper.IsZero(newRadius))
-            {
-                newRadius = MathHelper.Epsilon;
-            }
-
-            this.Normal = newNormal;
-            this.Center = newCenter;
-            this.Radius = newRadius;
+        /// <summary>Applies a finite affine four-by-four transform; projective matrices reject.</summary>
+        /// <remarks>The same circular-plane and extrusion requirements as the three-by-three overload apply.</remarks>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            CircularEntityTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>
