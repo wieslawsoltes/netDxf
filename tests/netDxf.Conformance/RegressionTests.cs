@@ -8,6 +8,7 @@ internal static partial class Program
         RegisterTableRowSettingsTests();
         RegisterCellFormatEditingTests();
         RegisterCellFormatRequestTests();
+        RegisterCellMapStructureTests();
         RegisterFourthMixedModuleTests();
         RegisterStoredEnvelopeTests();
         RegisterDeclaredOwnershipTests();
