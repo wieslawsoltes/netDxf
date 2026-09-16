@@ -10,8 +10,8 @@ namespace netDxf.Tables
     /// <remarks>
     /// Supports invariant numbers, A1 references, rectangular ranges in SUM/AVERAGE/COUNT/MIN/MAX,
     /// unary signs, parentheses, +, -, *, / and right-associative ^. Exponentiation binds before
-    /// unary minus. COUNT counts addressed cells, including empty/text cells. Other aggregates
-    /// ignore empty/text range cells but reject nonnumeric direct arguments. Empty SUM is zero;
+    /// unary minus. Aggregates, including COUNT, ignore empty/text referenced cells.
+    /// COUNT counts numeric results, so referenced formulas are evaluated and cycles still reject. Empty SUM is zero;
     /// empty AVERAGE/MIN/MAX reject. Strings are never parsed as numbers or formulas.
     /// </remarks>
     public sealed class DxfTableFormula
@@ -156,13 +156,8 @@ namespace netDxf.Tables
                         context.Check(range.First); context.Check(range.Last);
                         for (int r = range.First.Row; r <= range.Last.Row; r++)
                         for (int c = range.First.Column; c <= range.Last.Column; c++)
-                            {
-                                if (this.name == "COUNT") { context.Step(); count++; }
-                                else this.Accumulate(context.Read(new DxfTableCellAddress(r, c)), true, ref sum, ref correction, ref extreme, ref count);
-                            }
+                            this.Accumulate(context.Read(new DxfTableCellAddress(r, c)), true, ref sum, ref correction, ref extreme, ref count);
                     }
-                    else if (this.name == "COUNT" && argument is Reference reference)
-                    { context.Check(reference.Address); context.Step(); count++; }
                     else this.Accumulate(argument.Evaluate(context), argument is Reference, ref sum, ref correction, ref extreme, ref count);
                 }
                 if (this.name == "COUNT") return (double)count;
@@ -172,9 +167,9 @@ namespace netDxf.Tables
             }
             private void Accumulate(object value, bool referenced, ref double sum, ref double correction, ref double extreme, ref int count)
             {
-                if (this.name == "COUNT") { count++; return; }
                 if (referenced && (value == null || value is string)) return;
                 double number = Number(value);
+                if (this.name == "COUNT") { count++; return; }
                 if (count++ == 0) extreme = number;
                 else extreme = this.name == "MIN" ? Math.Min(extreme, number) : Math.Max(extreme, number);
                 if (this.name != "SUM" && this.name != "AVERAGE") return;

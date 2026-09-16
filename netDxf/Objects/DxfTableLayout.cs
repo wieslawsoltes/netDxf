@@ -92,6 +92,9 @@ namespace netDxf.Objects
                 ValidateStyle(resolved);
                 string literal = text(cell) ?? throw new ArgumentException("A cell text provider returned null.", nameof(text));
                 DxfStoredTableContent.CheckEditableText(literal, nameof(text));
+                if (literal.IndexOf("%%", StringComparison.Ordinal) >= 0 || literal.IndexOf("%<", StringComparison.Ordinal) >= 0 ||
+                    literal.IndexOf(">%", StringComparison.Ordinal) >= 0)
+                    throw new NotSupportedException("Native symbol or FIELD sequences cannot be admitted as literal cell text.");
                 characters += literal.Length;
                 if (characters > 1048576) throw new NotSupportedException("A display layout is limited to one million text characters.");
                 var margin = resolved.Format.Margins;
@@ -199,8 +202,8 @@ namespace netDxf.Objects
         private static void ValidateStyle(DxfResolvedCellStyle resolved)
         {
             var format = resolved.Format; var c = format.Content; var m = format.Margins;
-            if (c.Rotation != 0 || c.StoredPropertyFlags != 0 || (format.Values.StoredMergeFlags & 65536) != 0 || format.Values.StoredContentLayout != 1)
-                throw new NotSupportedException("Layout requires horizontal, non-autoscaled, top-to-bottom literal text.");
+            if (c.Rotation != 0 || c.StoredPropertyFlags != 0 || format.Values.StoredMergeFlags != 0 || format.Values.StoredContentLayout != 1)
+                throw new NotSupportedException("Layout requires horizontal, non-autoscaled, top-to-bottom literal text without style-driven merge-all.");
             if (c.TextHeight <= 0 || format.TextStyle == null || c.StoredAlignment < 1 || c.StoredAlignment > 9)
                 throw new NotSupportedException("Layout requires positive text height, a STYLE and alignment 1 through 9.");
             if (m.HorizontalMargin < 0 || m.RightMargin < 0 || m.VerticalMargin < 0 || m.BottomMargin < 0 || m.HorizontalSpacing < 0 || m.VerticalSpacing < 0)
