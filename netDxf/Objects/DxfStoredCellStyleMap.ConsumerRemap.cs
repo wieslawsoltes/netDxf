@@ -56,7 +56,8 @@ namespace netDxf.Objects
                     if (!oldIds.Contains(pair.Key) || pair.Value != 0 && !newIds.Contains(pair.Value))
                         throw new ArgumentException("Every mapping must identify a source entry and an existing destination entry or zero.", nameof(identifierRemapping));
                 var objects = this.Database.Items;
-                if (objects.Any(item => item.CodeName == "TABLECONTENT" && !(item is DxfStoredTableContent)))
+                if (objects.Any(item => item.CodeName == "TABLETEMPLATE" ||
+                    item.CodeName == "TABLECONTENT" && !(item is DxfStoredTableContent)))
                     throw new NotSupportedException("Opaque TABLECONTENT prevents complete public consumer discovery.");
                 var graphical = this.source.Blocks.SelectMany(block => block.Entities).ToArray();
                 if (graphical.Any(entity => (entity.CodeName == "ACAD_TABLE" || entity.CodeName == "TABLE") && !(entity is StoredTable)))
@@ -64,6 +65,8 @@ namespace netDxf.Objects
                 foreach (var table in graphical.OfType<StoredTable>().Where(table => table.References.Contains(style)))
                 {
                     table.Validate(this.source);
+                    if (table.StoredBackingContent != null && !ReferenceEquals(table.StoredBackingContent.TableStyle, style))
+                        throw new NotSupportedException("A TABLE and its backing content disagree about their TABLESTYLE identity.");
                     var subclasses = table.Payload.Where(tag => tag.Code == 100).Select(tag => (string)tag.Value).ToArray();
                     if (!subclasses.SequenceEqual(new[] { "AcDbBlockReference", "AcDbTable" }))
                         throw new NotSupportedException("Inline or private TABLE schemas require their own qualified style-ID remapper.");

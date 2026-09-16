@@ -38,6 +38,7 @@ namespace netDxf.Objects
         {
             if (!this.ColumnCount.HasValue || !this.RowCount.HasValue || this.Name == null || this.Description == null)
                 throw new NotSupportedException("TABLECONTENT outer structure is not qualified for style-ID remapping.");
+            this.ValidateStyleReferenceFormatting();
             var tags = this.Subclasses[1].Tags;
             int offset = this.Subclasses[0].Tags.Count;
             int columns = this.ColumnCount.Value, rows = this.RowCount.Value;
@@ -89,6 +90,8 @@ namespace netDxf.Objects
                         result.Add(new DxfTableContentStyleReference(kind, id, offset + i + 1));
                         i = end; continue;
                     }
+                    if (frame == "TABLEFORMAT")
+                    { i = QualifiedStyleReferenceFormatEnd(tags, i); continue; }
                     if (frame == "LINKEDTABLEDATACOLUMN")
                     {
                         if (stack.Count != 0 || linkedRows != 0 || linkedColumns != columnRefs)
@@ -121,10 +124,6 @@ namespace netDxf.Objects
             }
             if (stack.Count != 0 || linkedColumns != columns || columnRefs != columns || linkedRows != rows || rowRefs != rows || (long)cellRefs != (long)rows * columns)
                 throw new NotSupportedException("TABLECONTENT style-reference counts are incomplete.");
-            // The formatted-data subclass has local overrides and merge rectangles, not style-ID frames.
-            foreach (DxfTag tag in this.Subclasses[2].Tags)
-                if (tag.Code == 1 && ((string)tag.Value == "TABLECELL_BEGIN" || (string)tag.Value == "TABLEROW_BEGIN" || (string)tag.Value == "TABLECOLUMN_BEGIN"))
-                    throw new NotSupportedException("Style-ID frames in an extended formatted-data subclass are not qualified.");
             return result.AsReadOnly();
         }
 
