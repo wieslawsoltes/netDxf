@@ -81,7 +81,7 @@ utility contract, not native AutoCAD qualification of ancient drawing dates.
 
 ## Color isolation and wire representations
 
-`AciColor.IndexRgb` returns a read-only dictionary containing independent RGB
+`AciColor.IndexRgb` returns a read-only collection containing independent RGB
 arrays. Mutating an array obtained from that property no longer changes global
 palette lookup or another color's result. Code that intentionally relied on
 modifying the process-global palette through this property must stop doing so.
