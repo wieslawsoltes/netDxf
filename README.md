@@ -63,6 +63,8 @@ Full AutoCAD DXF capability is not yet achieved. Passing regression tests and pr
 
 [Coordinated cell-style consumer remapping](doc/dxf-conformance/cell-style-consumers.md) now updates qualified TABLECONTENT column, row and cell IDs atomically with their TABLESTYLE-owned CELLSTYLEMAP. Renames, cycles and explicit deletion fallbacks are supported; unqualified consumers reject before publication. This does not regenerate TABLE layout or private rendering caches.
 
+[Addressed table calculations and measured display layout](doc/dxf-conformance/table-calculation-layout.md) add bounded numeric formulas, atomic backing-scalar result updates, explicit cell-format cascades with provenance, and fresh detached display blocks with measured row growth and merged cells. These APIs do not automatically regenerate source TABLE inline/private caches, choose native style precedence, or execute persistent FIELD/date/angle expressions.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
