@@ -1580,9 +1580,9 @@ namespace netDxf.IO
                 this.chunk.Write(62, (short) -layer.Color.Index);
             }
 
-            if (layer.Color.UseTrueColor)
+            if (layer.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
             {
-                this.chunk.Write(420, AciColor.ToTrueColor(layer.Color));
+                this.chunk.Write(420, AciColor.ToTrueColor(layer.Color) & 0xFFFFFF);
             }
 
             this.chunk.Write(6, this.EncodeNonAsciiCharacters(layer.Linetype.Name));
@@ -2030,9 +2030,9 @@ namespace netDxf.IO
             this.chunk.Write(8, this.EncodeNonAsciiCharacters(entity.Layer.Name));
 
             this.chunk.Write(62, entity.Color.Index);
-            if (entity.Color.UseTrueColor)
+            if (entity.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
             {
-                this.chunk.Write(420, AciColor.ToTrueColor(entity.Color));
+                this.chunk.Write(420, AciColor.ToTrueColor(entity.Color) & 0xFFFFFF);
             }
 
             if (entity.Transparency.Value >= 0)
@@ -2826,9 +2826,9 @@ namespace netDxf.IO
                 {
                     this.chunk.Write(8, layerName); // the vertex layer should be the same as the polyline layer
                     this.chunk.Write(62, polyline.Color.Index); // the vertex color should be the same as the polyline color
-                    if (polyline.Color.UseTrueColor)
+                    if (polyline.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
                     {
-                        this.chunk.Write(420, AciColor.ToTrueColor(polyline.Color));
+                        this.chunk.Write(420, AciColor.ToTrueColor(polyline.Color) & 0xFFFFFF);
                     }
                     this.chunk.Write(100, SubclassMarker.Vertex);
                     this.chunk.Write(100, v.SubclassMarker);
@@ -2845,9 +2845,9 @@ namespace netDxf.IO
                     if (v.Color != null)
                     {
                         this.chunk.Write(62, v.Color.Index);
-                        if (v.Color.UseTrueColor)
+                        if (v.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
                         {
-                            this.chunk.Write(420, AciColor.ToTrueColor(v.Color));
+                            this.chunk.Write(420, AciColor.ToTrueColor(v.Color) & 0xFFFFFF);
                         }
                     }
 
@@ -3343,12 +3343,12 @@ namespace netDxf.IO
             short? index1 = pattern.Color1AciIndex;
             if (index1.HasValue)
                 this.chunk.Write(63, index1.Value);
-            this.chunk.Write(421, AciColor.ToTrueColor(pattern.Color1));
+            this.chunk.Write(421, AciColor.ToTrueColor(pattern.Color1) & 0xFFFFFF);
             this.chunk.Write(463, 1.0);
             short? index2 = pattern.Color2AciIndex;
             if (index2.HasValue)
                 this.chunk.Write(63, index2.Value);
-            this.chunk.Write(421, AciColor.ToTrueColor(pattern.Color2));
+            this.chunk.Write(421, AciColor.ToTrueColor(pattern.Color2) & 0xFFFFFF);
             this.chunk.Write(470, StringEnum<HatchGradientPatternType>.GetStringValue(pattern.GradientType));
         }
 
@@ -4315,9 +4315,9 @@ namespace netDxf.IO
             this.chunk.Write(8, this.EncodeNonAsciiCharacters(def.Layer.Name));
 
             this.chunk.Write(62, def.Color.Index);
-            if (def.Color.UseTrueColor)
+            if (def.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
             {
-                this.chunk.Write(420, AciColor.ToTrueColor(def.Color));
+                this.chunk.Write(420, AciColor.ToTrueColor(def.Color) & 0xFFFFFF);
             }
 
             if (def.Transparency.Value >= 0)
@@ -4480,9 +4480,9 @@ namespace netDxf.IO
             this.chunk.Write(8, this.EncodeNonAsciiCharacters(attrib.Layer.Name));
 
             this.chunk.Write(62, attrib.Color.Index);
-            if (attrib.Color.UseTrueColor)
+            if (attrib.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
             {
-                this.chunk.Write(420, AciColor.ToTrueColor(attrib.Color));
+                this.chunk.Write(420, AciColor.ToTrueColor(attrib.Color) & 0xFFFFFF);
             }
 
             if (attrib.Transparency.Value >= 0)
@@ -4855,9 +4855,9 @@ namespace netDxf.IO
             this.chunk.Write(3, this.EncodeNonAsciiCharacters(style.Description));
 
             this.chunk.Write(62, style.FillColor.Index);
-            if (style.FillColor.UseTrueColor) // && this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
+            if (style.FillColor.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
             {
-                this.chunk.Write(420, AciColor.ToTrueColor(style.FillColor));
+                this.chunk.Write(420, AciColor.ToTrueColor(style.FillColor) & 0xFFFFFF);
             }
             this.chunk.Write(51, style.StartAngle);
             this.chunk.Write(52, style.EndAngle);
@@ -4866,9 +4866,9 @@ namespace netDxf.IO
             {
                 this.chunk.Write(49, element.Offset);
                 this.chunk.Write(62, element.Color.Index);
-                if (element.Color.UseTrueColor) // && this.doc.DrawingVariables.AcadVer > DxfVersion.AutoCad2000)
+                if (element.Color.UseTrueColor && this.doc.DrawingVariables.AcadVer >= DxfVersion.AutoCad2004)
                 {
-                    this.chunk.Write(420, AciColor.ToTrueColor(element.Color));
+                    this.chunk.Write(420, AciColor.ToTrueColor(element.Color) & 0xFFFFFF);
                 }
 
                 this.chunk.Write(6, this.EncodeNonAsciiCharacters(element.Linetype.Name));
