@@ -8,12 +8,13 @@ using netDxf.IO;
 namespace netDxf.Objects
 {
     /// <summary>One immutable stored CELLSTYLEMAP entry.</summary>
-    public sealed class DxfStoredCellStyleMapEntry
+    public sealed partial class DxfStoredCellStyleMapEntry
     {
-        internal DxfStoredCellStyleMapEntry(int id, int type, string name, IList<DxfTag> format, int nameIndex)
+        internal DxfStoredCellStyleMapEntry(int id, int type, string name, IList<DxfTag> format, int nameIndex, DxfCellStyleFormat projection = null)
         {
             this.Id = id; this.StoredType = type; this.Name = name; this.NameIndex = nameIndex;
             this.FormatPayload = new List<DxfTag>(format).AsReadOnly();
+            this.Format = projection;
         }
         internal int NameIndex { get; }
         /// <summary>Gets the stored group-90 entry identifier.</summary>
@@ -25,12 +26,14 @@ namespace netDxf.Objects
         /// <summary>Gets the complete immutable TABLEFORMAT packet, including its frame markers.</summary>
         /// <remarks>Formatting fields remain stored tags; this collection does not evaluate their meaning.</remarks>
         public IReadOnlyList<DxfTag> FormatPayload { get; }
+        /// <summary>Gets a qualified nested formatting projection, or null for an unsupported packet shape.</summary>
+        public DxfCellStyleFormat Format { get; }
     }
 
     /// <summary>A loaded CELLSTYLEMAP with immutable ordered entries and exact source dependencies.</summary>
     /// <remarks>
     /// Entry identifiers, types, names and formatting packets remain in their source document and
-    /// DXF version. Entry names support explicit replacement; formatting changes, cross-document cloning, erasure and style regeneration require the
+    /// DXF version. Entry names and qualified formatting support explicit replacement. Cross-document cloning, erasure and style regeneration require the
     /// complete application schema. Common metadata and XData retain their ordinary interfaces.
     /// </remarks>
     public sealed partial class DxfStoredCellStyleMap : DxfDatabaseObject
@@ -38,8 +41,8 @@ namespace netDxf.Objects
         internal const int MaximumPayloadTags = 1048576;
         internal static readonly string[] FrameNames = { "TABLEFORMAT", "CONTENTFORMAT", "CELLMARGIN", "GRIDFORMAT", "CELLSTYLE" };
         private readonly DxfDocument source;
-        private readonly List<DxfObject> references = new List<DxfObject>();
-        private readonly Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
+        private List<DxfObject> references = new List<DxfObject>();
+        private Dictionary<string, DxfObject> handles = new Dictionary<string, DxfObject>(StringComparer.OrdinalIgnoreCase);
         private DxfObject sourceOwner;
         private bool resolved;
 
@@ -85,7 +88,7 @@ namespace netDxf.Objects
                 int nameIndex = index;
                 string name = decode((string)Read(tags, ref index, 300).Value);
                 Marker(tags, ref index, 309, "CELLSTYLE_END");
-                entries.Add(new DxfStoredCellStyleMapEntry(id, type, name, format, nameIndex));
+                entries.Add(new DxfStoredCellStyleMapEntry(id, type, name, format, nameIndex, DxfCellStyleFormat.TryRead(format, decode)));
             }
             if (index != tags.Count) throw new FormatException("CELLSTYLEMAP contains unexpected data after its counted entries.");
             this.Entries = entries.AsReadOnly();
@@ -122,8 +125,11 @@ namespace netDxf.Objects
                 if (ReferenceEquals(ancestor, this) || !ancestry.Add(ancestor)) throw new FormatException("CELLSTYLEMAP source ownership contains a cycle.");
                 if (!ReferenceEquals(this.source.GetObjectByHandle(ancestor.Handle), ancestor)) throw new FormatException("CELLSTYLEMAP source ancestry contains an unregistered object.");
             }
+            this.BindFormats(this.handles);
             this.resolved = true;
         }
+        private void BindFormats(IReadOnlyDictionary<string, DxfObject> bindings)
+        { foreach (var entry in this.Entries) if (entry.Format != null) entry.Format.Bind(bindings); }
         internal override void ValidateDatabaseSchema(DxfObjectDatabase database, List<string> errors)
         {
             if (!this.resolved || !ReferenceEquals(database.Document, this.source))

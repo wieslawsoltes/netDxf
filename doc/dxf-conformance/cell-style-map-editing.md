@@ -47,3 +47,8 @@ reentry, version mutation during enumeration, and recovery after rejection.
 The independent packet verifier compares emitted native maps with the original
 producer packets and checks actual output corruptions. Native AutoCAD process
 execution and visual table regeneration are not established by these checks.
+
+The later [nested formatting API](cell-style-format-editing.md) adds snapshot-bound
+`ReplaceEntries` requests that can combine selected names, format values and
+resource selection. Both APIs share the same reentry guard. Name-only edits
+retain existing format projections without mutating their snapshots.
