@@ -70,8 +70,11 @@ namespace netDxf.Objects
             try
             {
                 var read = new Reader(tags);
-                read.Marker(100, "AcDbField"); read.Text(1); read.Text(2);
-                while (read.Has(3)) read.Text(3);
+                read.Marker(100, "AcDbField"); read.Text(1); read.Next(2);
+                while (read.Has(3)) read.Next(3);
+                // The leading code was already joined and decoded by the FIELD reader.
+                // Valid escapes/surrogate pairs may cross physical group-2/group-3 chunks.
+                DxfStoredTableContent.CheckEditableText(field.FieldCode, nameof(field));
                 int count = read.Count(90);
                 for (int i = 0; i < count; i++) read.Next(360);
                 count = read.Count(97);

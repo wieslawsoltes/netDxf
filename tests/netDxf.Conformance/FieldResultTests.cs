@@ -47,7 +47,8 @@ internal static partial class Program
         var raw = DxfRawDocument.Load(bytes); var tags = raw.Tags.ToList();
         int index = tags.FindIndex(t => t.Code == 9 && Equals(t.Value, "$ACADVER"));
         string profile = version switch { DxfVersion.AutoCad2000 => "AC1015", DxfVersion.AutoCad2004 => "AC1018", DxfVersion.AutoCad2007 => "AC1021", DxfVersion.AutoCad2010 => "AC1024", DxfVersion.AutoCad2013 => "AC1027", _ => "AC1032" };
-        tags[index + 1] = new DxfTag(1, profile); raw = raw.WithTags(tags);
+        // Construct an explicit synthetic source profile; immutable raw edits must not bypass version guards.
+        tags[index + 1] = new DxfTag(1, profile); raw = DxfRawDocument.Create(tags, binary);
         return StoredFieldLoad(mutate == null ? raw : mutate(raw), binary);
     }
     private static DxfStoredField ResultRoot(DxfDocument doc) => (DxfStoredField)doc.GetObjectByHandle("14E");
