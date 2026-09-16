@@ -85,6 +85,9 @@ def check_edit(before, after):
     start = expected.index([100, "AcDbTableStyle"]) + 1
     row_starts = [i for i in range(start, len(expected)) if expected[i][0] == 7]
     check(len(row_starts) == 3, "Expected three classic native row packets")
+    # The leading group 280 is a fixed format version, not title suppression.
+    if expected[start] == [280, 0] and [t[0] for t in expected[start + 1:row_starts[0]]] == [3, 70, 71, 40, 41, 280, 281]:
+        start += 1
     header_indices = range(start, row_starts[0])
     classic_header = [expected[i][0] for i in header_indices] == [3, 70, 71, 40, 41, 280, 281]
     check(len(actual) == len(expected), "TABLESTYLE packet length changed")

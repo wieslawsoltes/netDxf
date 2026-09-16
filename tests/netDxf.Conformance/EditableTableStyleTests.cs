@@ -92,14 +92,15 @@ internal static partial class Program
         using var output = new MemoryStream(); after.Save(output, binary); output.Position = 0;
         var reloaded = DxfDocument.Load(output)!; var actual = TableStyleObject(reloaded);
         Equal(4.125, actual.Rows[0].Values.TextHeight, "native stored edit reloaded");
-        Check((actual.Header == null) == file.Contains("AC1024"), "ambiguous native header remains unprojected");
+        Check(actual.Header != null, "recognized native header remains projected");
+        Equal(file.Contains("AC1024") ? (short?)0 : null, actual.Header!.StoredVersion, "native header format version stays fixed");
         if (actual.Header != null) Equal(EditedStyleHeader().Description, actual.Header.Description, "native header edit");
     }
 
     private static void EditableStyleBoundary(string scenario, bool binary)
     {
         var packet = TableStylePacket();
-        if (scenario == "unknown-header") packet.Insert(1, new DxfTag(280, (short)0));
+        if (scenario == "unknown-header") packet.Insert(1, new DxfTag(280, (short)1));
         if (scenario == "unknown-row") packet.RemoveAt(packet.FindIndex(t => t.Code == 140));
         if (scenario == "private-fields")
         {
