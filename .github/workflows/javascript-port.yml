@@ -10,68 +10,42 @@ concurrency:
   group: javascript-port-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
-  generated-checkpoint:
-    # Temporary, same-repository checkpoint only. Replaced by read-only verification
-    # once the generated native JS data files have been committed to this draft PR.
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'codex/javascript-port'
+  checkpoint:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/checkout@v4
-        with:
-          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
-          path: _oracle
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.425'
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
-      - name: Reproduce enum and encoding files from the pinned oracle
-        env:
-          NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
-        run: node javascript/tools/dotnet.mjs inventory --generate
-      - name: Validate and commit only the generated checkpoint
-        env:
-          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+      - name: Verify committed generated data and package imports
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           import { createHash } from 'node:crypto';
-          import { execFileSync } from 'node:child_process';
-          const hash = b => createHash('sha256').update(b).digest('hex');
-          const bytes = fs.readFileSync('javascript/generated-manifest.json');
-          if (hash(bytes) !== '6be57de763995076209cb3c37c0916c70d7c6d4a4b7fc92531ee3f9403720f68') throw new Error('Generated manifest differs from the locally tested checkpoint.');
-          const manifest = JSON.parse(bytes);
-          if (manifest.files.length !== 79 || manifest.sourceFingerprint !== '97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d') throw new Error('Unpinned source or file set.');
-          const files = manifest.files.map(entry => {
-            if (!(entry.path.startsWith('netDxf/') && entry.path.endsWith('.js')) && !['runtime/CodePages.generated.js','Enums.generated.js'].includes(entry.path)) throw new Error('Unexpected generated path.');
-            if (entry.path.includes('..') || hash(fs.readFileSync('javascript/'+entry.path)) !== entry.sha256) throw new Error('Generated file integrity failed.');
-            return 'javascript/'+entry.path;
-          });
-          const git = args => execFileSync('git',args,{encoding:'utf8'}).trim();
-          if (git(['ls-remote','origin','refs/heads/codex/javascript-port']).split(/\s+/)[0] !== process.env.EXPECTED_HEAD) throw new Error('Branch advanced; do not overwrite concurrent work.');
-          git(['add','--',...files,'javascript/generated-manifest.json']);
-          if (!git(['diff','--cached','--name-only'])) process.exit(0);
-          git(['config','user.name','github-actions[bot]']);
-          git(['config','user.email','41898282+github-actions[bot]@users.noreply.github.com']);
-          git(['commit','-m','feat(js): generate 77 mirrored enums and pinned native code-page tables']);
-          git(['push','origin','HEAD:refs/heads/codex/javascript-port']);
-          console.log('Committed generated checkpoint '+git(['rev-parse','HEAD']));
+          const baseline = JSON.parse(fs.readFileSync('javascript/baseline.json'));
+          const manifest = JSON.parse(fs.readFileSync('javascript/generated-manifest.json'));
+          if (manifest.sourceFingerprint !== baseline.sourceFingerprint) throw new Error('Source fingerprint mismatch.');
+          for (const entry of manifest.files) {
+            const actual = createHash('sha256').update(fs.readFileSync('javascript/'+entry.path)).digest('hex');
+            if (actual !== entry.sha256) throw new Error('Generated file changed: '+entry.path);
+          }
+          const api = await import('./javascript/index.js');
+          if (!api.DxfRawDocument || !api.DxfTag) throw new Error('Missing package exports.');
+          console.log('Generated integrity and module imports passed. Full parity remains unverified.');
           NODE
+      - name: Retain reproducible source checkpoint
+        run: |
+          mkdir -p artifacts/javascript
+          git archive --format=tar.gz --output=artifacts/javascript/source-checkpoint.tar.gz HEAD
+          git rev-parse HEAD > artifacts/javascript/source-commit.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: javascript-generated-checkpoint
-          path: |
-            javascript/artifacts/inventory
-            javascript/generated-manifest.json
-            javascript/artifacts/oracle/Release/toolchain.json
+          name: javascript-source-checkpoint
+          path: artifacts/javascript
           if-no-files-found: error
           retention-days: 7
