@@ -1,0 +1,49 @@
+name: Materialize reviewed legacy continuation
+on:
+  push:
+    branches: [codex/recover-legacy104-continuation]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify and materialize exact reviewed source
+        shell: bash
+        run: |
+          set -euo pipefail
+          transport=$(git rev-parse HEAD)
+          cp -R .recovery104 "$RUNNER_TEMP/legacy104"
+          python - "$RUNNER_TEMP/legacy104" <<'PY'
+          import base64, gzip, hashlib, pathlib, sys
+          folder = pathlib.Path(sys.argv[1])
+          # Repair the single transcription byte in the transport before decoding;
+          # only the original reviewed patch digest is admitted for application.
+          encoded = (folder / 'large.b64').read_text().strip()
+          assert encoded.count('IdjlMNplDN0') == 1
+          encoded = encoded.replace('IdjlMNplDN0', 'IdjlMNplMN0')
+          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
+          assert len(patch) == 22070
+          assert hashlib.sha256(patch).hexdigest() == 'eb6317ec604675ce571e48f99eb647d976ac29747af257728568ed8c4192e46b'
+          (folder / 'large.patch').write_bytes(patch)
+          PY
+          git config core.autocrlf false
+          git switch --detach 8dccc43b15a3fa1142a25e93d49f15185306d728
+          test "$(git rev-parse HEAD^{tree})" = 6ce0223799a576edcde11d2d72cdc77150ac16f7
+          git checkout "$transport" -- netDxf/Entities/Ellipse.Affine.cs netDxf/IO/DxfWriter.TrueColor.cs tests/netDxf.Conformance/EllipseAffineReviewTests.cs tests/netDxf.Conformance/TrueColorWireReviewTests.cs
+          git apply --index --whitespace=nowarn "$RUNNER_TEMP/legacy104/large.patch"
+          git apply --index --whitespace=nowarn "$RUNNER_TEMP/legacy104/edits.patch"
+          test "$(git write-tree)" = afed045d10b7a898e56d5f5bdbd763fc35c960df
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Correct affine ellipses and versioned RGB output; validate original date tags'
+          test "$(git rev-parse HEAD^)" = 8dccc43b15a3fa1142a25e93d49f15185306d728
+          test -z "$(git ls-tree --name-only HEAD .recovery104 .github/workflows/recover-legacy104-continuation.yml)"
+          test -z "$(git ls-remote --heads origin codex/recovered-legacy104-continuation)"
+          git push origin HEAD:refs/heads/codex/recovered-legacy104-continuation
+          git show --no-patch --format=fuller HEAD
+          git rev-parse HEAD^{tree}
