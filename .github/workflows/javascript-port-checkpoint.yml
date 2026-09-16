@@ -1,0 +1,56 @@
+name: Commit JavaScript checkpoint
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['.github/js-checkpoint/**', '.github/workflows/javascript-port-checkpoint.yml']
+permissions:
+  contents: read
+jobs:
+  commit-tested-tree:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'codex/javascript-port'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Apply the exact locally tested source checkpoint and remove transport files
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 <<'PY'
+          import base64, hashlib, lzma, os, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          if git('rev-parse', 'HEAD^') != 'd6c77f5174a73c8192a18613e779ef93b207a2e3':
+              raise RuntimeError('Unexpected checkpoint parent; refusing to apply.')
+          parts = [pathlib.Path('.github/js-checkpoint/part-%d.txt' % i) for i in range(4)]
+          encoded = ''.join(p.read_text().strip() for p in parts)
+          packed = base64.b64decode(encoded, validate=True)
+          if hashlib.sha256(packed).hexdigest() != 'c6d47e6f9c879026933c946b8e11cd0f44dd30ea0c035d58bf363357dd451d7f':
+              raise RuntimeError('Checkpoint payload integrity failure.')
+          patch = lzma.decompress(packed)
+          if len(patch) != 193892:
+              raise RuntimeError('Unexpected decoded patch length.')
+          patchfile = pathlib.Path(os.environ['RUNNER_TEMP']) / 'netdxf-js-checkpoint.patch'
+          patchfile.write_bytes(patch)
+          git('apply', '--check', '--index', str(patchfile))
+          git('apply', '--index', '--whitespace=error-all', str(patchfile))
+          changed = git('diff', '--cached', '--name-only').splitlines()
+          if len(changed) != 40 or any(not p.startswith('javascript/') and p != '.github/workflows/javascript-port.yml' for p in changed):
+              raise RuntimeError('Checkpoint changed an unexpected path.')
+          git('rm', '--', *[str(p) for p in parts], '.github/workflows/javascript-port-checkpoint.yml')
+          if git('write-tree') != '9157354209d0793ad186dc54e05563e494366c14':
+              raise RuntimeError('Resulting tree differs from the exact tested source tree.')
+          if git('ls-remote', 'origin', 'refs/heads/codex/javascript-port').split()[0] != os.environ['EXPECTED_HEAD']:
+              raise RuntimeError('Branch advanced concurrently; refusing to overwrite work.')
+          git('config', 'user.name', 'github-actions[bot]')
+          git('config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com')
+          git('commit', '-m', 'feat(js): port raw OBJECTS transactions with mirrored tests and exact .NET verification')
+          git('push', 'origin', 'HEAD:refs/heads/codex/javascript-port')
+          print('Committed native source checkpoint:', git('rev-parse', 'HEAD'))
+          print('Source tree:', git('write-tree'))
+          PY
