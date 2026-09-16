@@ -3,10 +3,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { OracleClient } from './OracleClient.mjs';
 import { javascriptRoot, baseline } from './dotnet.mjs';
+import { validateOrdinalProfile } from './globalization.mjs';
 const oracle = new OracleClient();
 try {
   const result = await oracle.request({ op: 'ordinal-map' });
   if (!result.ok) throw new Error('Ordinal case mapping failed: ' + result.error);
+  validateOrdinalProfile(result.value);
   const pairs = result.value, ranges = [];
   for (let i = 0; i < pairs.length;) {
     const [start, to] = pairs[i], delta = to - start;
@@ -17,7 +19,7 @@ try {
     ranges.push([start, end, step, delta]); i = j;
   }
   const text = '// Generated from .NET OrdinalIgnoreCase-compatible invariant Rune mappings.\n' +
-    '// Source pin: ' + baseline.ref + '; runtime: ' + baseline.toolchain.runtime + '.\n' +
+    '// Source pin: ' + baseline.ref + '; runtime: ' + baseline.toolchain.runtime + '; profile: ' + baseline.globalization.profile + '.\n' +
     'export const OrdinalCaseRanges = Object.freeze(' + JSON.stringify(ranges) + ');\n';
   const target = path.join(javascriptRoot, 'runtime', 'OrdinalCasing.generated.js');
   if (process.argv.includes('--check')) {

@@ -44,6 +44,7 @@ jobs:
         run: |
           node javascript/tools/dotnet.mjs inventory
           node javascript/tools/dotnet.mjs oracle
+          node javascript/tools/ordinal-casing.mjs --check
       - name: Execute the complete original C# suite
         run: node javascript/tools/dotnet.mjs conformance
       - name: Execute mirrored and supplemental native JavaScript tests
@@ -81,13 +82,13 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: Retain exact source checkpoint
-        if: matrix.configuration == 'Release'
+        if: always() && matrix.configuration == 'Release'
         run: |
           mkdir -p artifacts/javascript
           git archive --format=tar.gz --output=artifacts/javascript/source-checkpoint.tar.gz HEAD
           git rev-parse HEAD > artifacts/javascript/source-commit.txt
       - uses: actions/upload-artifact@v4
-        if: matrix.configuration == 'Release'
+        if: always() && matrix.configuration == 'Release'
         with:
           name: javascript-source-checkpoint
           path: artifacts/javascript
