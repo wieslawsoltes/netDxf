@@ -37,7 +37,9 @@
     "prepublishOnly": "node tools/verify.mjs --require-complete",
     "generate:native": "node tools/dotnet.mjs native-port",
     "verify:native": "node tools/dotnet.mjs native-port --check",
-    "test:geometry:exact": "node tools/geometry-stress.mjs"
+    "test:geometry:exact": "node tools/geometry-stress.mjs",
+    "test:foundations": "node tools/foundations-differential.mjs",
+    "test:unit-factors": "node tools/unit-factors.mjs --check"
   },
   "repository": {
     "type": "git",

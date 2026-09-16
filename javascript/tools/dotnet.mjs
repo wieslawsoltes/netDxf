@@ -92,6 +92,8 @@ export function build(mode = 'oracle') {
     finally { fs.closeSync(fd); }
     console.log(fs.readFileSync(log,'utf8').trim().split(/\r?\n/).at(-1));
     fs.writeFileSync(path.join(artifactPath,'metadata.json'),JSON.stringify({sourceRef:baseline.ref,sourceFingerprint,configuration,toolchain:baseline.toolchain,filter:process.env.DXF_TEST_FILTER||null,fullSuite:!process.env.DXF_TEST_FILTER},null,2)+'\n');
+  } else if (mode === 'geometry') {
+    compile(tool,'GeometryOracle',[path.join(javascriptRoot,'tools/GeometryOracle/Program.cs')],true,[library,'-nullable:enable']);
   } else if (mode === 'oracle') {
     compile(tool,'Oracle',walk(path.join(javascriptRoot,'tools','Oracle')).filter(f=>f.endsWith('.cs')),true,[library,'-nullable:enable']);
   } else throw new Error('Usage: node tools/dotnet.mjs oracle|inventory [--generate]|conformance|native-port [--check]');

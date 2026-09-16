@@ -26,25 +26,33 @@ export class DxfClassCollection {
   }
   InsertItem(index,item) {
     this.#validate(item,-1);
-    if (this.#names.has(item.Name)) throw new ArgumentException('An item with the same key has already been added.','key');
+    if (this.#names.has(item.Name)) throw new ArgumentException('An item with the same key has already been added.');
     RequireInteger(index,0,this.Count,'index');
     this.#names.set(item.Name,item);this.#cpp.set(item.CppClassName,item);this.#items.splice(index,0,item);this.#version++;
   }
   SetItem(index,item) {
     this.#validate(item,index);const previous=this.get_Item(index);
-    if (previous.Name !== item.Name && this.#names.has(item.Name)) throw new ArgumentException('An item with the same key has already been added.','key');
+    if (previous.Name !== item.Name && this.#names.has(item.Name)) throw new ArgumentException('An item with the same key has already been added.');
     this.#names.delete(previous.Name);this.#cpp.delete(previous.CppClassName);
     this.#names.set(item.Name,item);this.#cpp.set(item.CppClassName,item);this.#items[index]=item;this.#version++;
   }
   Add(item) { this.InsertItem(this.Count,item); }
   Insert(index,item) { RequireInteger(index,0,this.Count,'index');this.InsertItem(index,item); }
-  Contains(item) {
+  Contains(item, overload = null) {
+    if (overload === 'DxfClass') return this.#items.includes(item);
     if (typeof item === 'string') return this.#names.has(item);
     if (item == null) throw new ArgumentNullException('key');
     return this.#items.includes(item);
   }
+  TryGetValue(key, result) {
+    if (key == null) throw new ArgumentNullException('key');
+    const value = this.#names.get(key);
+    result.value = value ?? null;
+    return value !== undefined;
+  }
   IndexOf(item) { return this.#items.indexOf(item); }
-  Remove(item) {
+  Remove(item, overload = null) {
+    if (overload === 'DxfClass' && item == null) return false;
     if (item == null) throw new ArgumentNullException('key');
     const value=typeof item === 'string'?this.#names.get(item):item;
     const index=this.#items.indexOf(value);if(index<0)return false;

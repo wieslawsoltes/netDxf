@@ -17,3 +17,6 @@ export * from './geometry.js';
 export { ObservableCollection } from './netDxf/Collections/ObservableCollection.js';
 export { ObservableCollectionEventArgs } from './netDxf/Collections/ObservableCollectionEventArgs.js';
 export { DxfClassCollection } from './netDxf/Collections/DxfClassCollection.js';
+
+export { UnitHelper } from './netDxf/Units/UnitHelper.js';
+export { XDataRecord } from './netDxf/XDataRecord.js';

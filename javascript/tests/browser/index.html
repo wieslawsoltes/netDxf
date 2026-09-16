@@ -29,9 +29,18 @@ try {
   report.configuration = corpus.configuration; report.fixtures = corpus.fixtures;
   for (const test of corpus.cases) {
     for (const [op, expected] of Object.entries(test.expected)) {
-      const actual = await digest(methods[op](test.input));
-      report.comparisons++;
-      if (actual !== expected) report.failures.push({ name: test.name, op, expected, actual });
+      const result = methods[op](test.input);
+      if (Array.isArray(expected)) {
+        if (!result.ok || !Array.isArray(result.value) || result.value.length !== expected.length)
+          throw new Error('Incomplete browser batch: ' + test.name);
+        for (let i=0; i<expected.length; i++) {
+          const actual = await digest(result.value[i]); report.comparisons++;
+          if(actual!==expected[i]) report.failures.push({name:test.names[i],op,expected:expected[i],actual});
+        }
+      } else {
+        const actual = await digest(result); report.comparisons++;
+        if (actual !== expected) report.failures.push({ name: test.name, op, expected, actual });
+      }
     }
     if (report.failures.length > 10) throw new Error('Too many browser mismatches.');
     document.querySelector('#status').textContent = `${report.comparisons} comparisons; ${report.failures.length} failures`;

@@ -157,14 +157,24 @@ export class StringBuilder {
 }
 /** System.Drawing.Color migration adapter. AciColor's conversion uses only ARGB components. */
 export class Color {
-  constructor(a, r, g, b) {
+  #name = null;
+  #empty = false;
+  constructor(a = 0, r = 0, g = 0, b = 0) {
+    this.#empty = arguments.length === 0;
     for (const [name, value] of Object.entries({ A: a, R: r, G: g, B: b })) {
       RequireInteger(value, 0, 255, name); Object.defineProperty(this, name, { value, enumerable: true });
     }
     Object.freeze(this);
   }
-  static get White() { return new Color(255, 255, 255, 255); }
+  static get White() { const color = new Color(255, 255, 255, 255); color.#name = 'White'; return color; }
+  static get Empty() { return new Color(); }
+  get Name() { return this.#empty ? '0' : this.#name ?? (this.ToArgb() >>> 0).toString(16); }
+  get IsEmpty() { return this.#empty; }
+  get IsNamedColor() { return this.#name !== null; }
+  get IsKnownColor() { return this.#name !== null; }
+  Equals(other) { return other instanceof Color && this.ToArgb() === other.ToArgb() && this.#name === other.#name && this.#empty === other.#empty; }
   static FromArgb(...args) {
+    if (args.length === 2) return new Color(args[0], args[1].R, args[1].G, args[1].B);
     if (args.length === 3) return new Color(255, ...args);
     if (args.length === 4) return new Color(...args);
     if (args.length === 1) { const n = args[0]; return new Color((n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255); }

@@ -48,7 +48,8 @@ try {
   for(let at=0;at<requests.length;at+=256){
     const batch=requests.slice(at,at+256), expected=await oracle.request({op:'geometry',requests:batch});
     if(!expected.ok)throw new Error('Geometry oracle failed.');
-    for(let i=0;i<batch.length;i++)cases.push({name:batch[i].id,input:{requests:[batch[i]]},expected:{geometry:sha256(canonical({ok:true,value:[expected.value[i]]}))}});
+    cases.push({name:`geometry/batch/${at}`, names:batch.map(request=>request.id), input:{requests:batch},
+      expected:{geometry:expected.value.map(value=>sha256(canonical(value)))}});
   }
   for(const scenario of collectionCorpus()){
     const input={scenarios:[scenario]},expected=await oracle.request({op:'collection',...input});
@@ -60,4 +61,4 @@ if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFinge
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,
   sourceFingerprint: baseline.sourceFingerprint, fixtures: inventory.fixtures.length, cases }));
-console.log(`Prepared ${cases.length} browser inputs with ${cases.reduce((n,c) => n + Object.keys(c.expected).length,0)} exact .NET result digests.`);
+console.log(`Prepared ${cases.length} browser inputs with ${cases.reduce((n,c) => n + Object.values(c.expected).reduce((count,expected)=>count+(Array.isArray(expected)?expected.length:1),0),0)} exact .NET result digests.`);
