@@ -44,6 +44,7 @@ jobs:
         run: |
           node javascript/tools/dotnet.mjs inventory
           node javascript/tools/dotnet.mjs oracle
+          node javascript/tools/dotnet.mjs native-port --check
           node javascript/tools/ordinal-casing.mjs --check
       - name: Execute the complete original C# suite
         run: node javascript/tools/dotnet.mjs conformance
@@ -94,9 +95,44 @@ jobs:
           path: artifacts/javascript
           if-no-files-found: error
           retention-days: 7
+  geometry-exact-qualification:
+    name: Exact randomized geometry / Release
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      CONFIGURATION: Release
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Compile the unchanged pinned oracle
+        run: node javascript/tools/dotnet.mjs oracle
+      - name: Require exact randomized geometry without tolerances or allowlists
+        run: node javascript/tools/geometry-stress.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-geometry-exact-Release
+          path: javascript/artifacts/geometry-exact/Release/results.json
+          if-no-files-found: error
+          retention-days: 7
   full-port-completion:
     name: Full-port completion (blocked while parity is incomplete)
-    needs: implemented-scope
+    needs: [implemented-scope, geometry-exact-qualification]
+    if: always()
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/download-artifact@v4
@@ -107,11 +143,15 @@ jobs:
         with:
           node-version: '22.16.0'
       - name: Require full completion, not merely a passing subset
+        env:
+          BASELINE_RESULT: ${{ needs.implemented-scope.result }}
+          EXACT_GEOMETRY_RESULT: ${{ needs.geometry-exact-qualification.result }}
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const report = JSON.parse(fs.readFileSync('evidence/verification/Release/report.json'));
-          if (report.fullParityVerified !== true) {
+          if (report.fullParityVerified !== true || process.env.BASELINE_RESULT !== 'success' || process.env.EXACT_GEOMETRY_RESULT !== 'success') {
+            console.error('Implemented baseline:', process.env.BASELINE_RESULT, 'Exact randomized geometry:', process.env.EXACT_GEOMETRY_RESULT);
             console.error('Full parity is BLOCKED. Missing original cases:', report.tests.missingCount);
             console.error('Missing source-file mirrors:', report.library.missing.length);
             process.exit(1);
