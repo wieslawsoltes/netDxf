@@ -4,10 +4,13 @@ import { fileURLToPath } from 'node:url';
 import * as Harness from './TestHarness.js';
 import * as RawTagTests from './RawTagTests.js';
 import * as RawDocumentTests from './RawDocumentTests.js';
+import * as RawHandleIndexTests from './RawHandleIndexTests.js';
+import * as RawHandleOperationsTests from './RawHandleOperationsTests.js';
+import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { RawTagTests, RawDocumentTests };
+const modules = { RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
   Harness.cases.length = 0;
