@@ -242,7 +242,9 @@ def main():
             negative += reject_change(style, 340, lambda record: verify_exact(wanted, record))
             for code in (1, 5, 330): negative += reject_change(target, code, validate_target)
             checked += 1
-    check({p.name for p in args.directory.glob("table-style-*.dxf")} == expected, "Expected all TABLESTYLE output carriers")
+    # Border-edit before/after pairs own a separate exact inventory and whole-packet gate.
+    check({p.name for p in args.directory.glob("table-style-*.dxf") if not p.name.startswith("table-style-borders-")} == expected,
+          "Expected all unchanged TABLESTYLE output carriers")
     check({p.name for p in args.directory.glob("qualified-style-source-*.dxf")} == {
         f"qualified-style-source-{normalized}-{binary}.dxf" for normalized in (False, True) for binary in (False, True)},
         "Expected all four declared opaque source inputs")
