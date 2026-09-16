@@ -11,6 +11,7 @@ internal static partial class Program
     private static DxfTableCellAddress Address(string text) => DxfTableCellAddress.Parse(text);
     private static void RegisterTableCalculationTests()
     {
+        RegisterTableEngineBoundaryTests();
         foreach (string culture in new[] { "en-US", "pl-PL", "tr-TR" })
         {
             foreach (var pair in new[] {
@@ -18,7 +19,7 @@ internal static partial class Program
                 ("=(-2)^2", 4d), ("=2^-3", 0.125d), ("=1e2+.5", 100.5d), ("=SUM(1,2,3)", 6d),
                 ("=average(2,4)", 3d), ("=MIN(5,-2,6)", -2d), ("=MAX(5,-2,6)", 6d),
                 ("=SUM(1e16,1,-1e16)", 1d), ("=SUM(A1:B2)", 5d), ("=AVERAGE(B2:A1)", 2.5d),
-                ("=COUNT(A1:B2)", 4d), ("=COUNT(A1,B1)", 2d), ("=$A$1+$B$2", 5d),
+                ("=COUNT(A1:B2)", 2d), ("=COUNT(A1,B1)", 1d), ("=$A$1+$B$2", 5d),
                 ("=SUM(A1:B2,MAX(7,8))", 13d) })
                 Run($"table-calculation/formula/{culture}/{pair.Item1}", () =>
                 {
@@ -73,8 +74,8 @@ internal static partial class Program
         });
         Run("table-calculation/circular", () => Throws<InvalidOperationException>(() => DxfTableCalculation.Evaluate(1, 2, _ => 0,
             new Dictionary<DxfTableCellAddress, string> { [Address("A1")] = "=B1+1", [Address("B1")] = "=A1+1" })));
-        Run("table-calculation/self-count", () => Equal(1d, DxfTableCalculation.Evaluate(1, 1, _ => 0,
-            new Dictionary<DxfTableCellAddress, string> { [Address("A1")] = "=COUNT(A1)" })[Address("A1")], "COUNT depends on address, not value"));
+        Run("table-calculation/self-count", () => Throws<InvalidOperationException>(() => DxfTableCalculation.Evaluate(1, 1, _ => 0,
+            new Dictionary<DxfTableCellAddress, string> { [Address("A1")] = "=COUNT(A1)" })));
         Run("table-calculation/duplicate-address", () => Throws<ArgumentException>(() => DxfTableCalculation.Evaluate(1, 1, _ => throw new Exception("must materialize first"),
             new[] { new KeyValuePair<DxfTableCellAddress, string>(Address("A1"), "=1"), new KeyValuePair<DxfTableCellAddress, string>(Address("A1"), "=2") })));
         for (int n = 1; n <= 100; n++)
