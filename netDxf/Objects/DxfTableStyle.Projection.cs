@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using netDxf.IO;
+using netDxf.Header;
 using netDxf.Tables;
 
 namespace netDxf.Objects
@@ -40,15 +41,24 @@ namespace netDxf.Objects
         public bool SuppressTitle { get; private set; }
         /// <summary>Gets whether the column heading is suppressed.</summary>
         public bool SuppressColumnHeading { get; private set; }
-        internal static DxfTableStyleHeader TryRead(List<DxfTag> tags, Func<string, string> decode)
+        /// <summary>Gets the preserved leading format version, or null for a classic header or replacement values.</summary>
+        /// <remarks>The recognized version is zero in R2010 or later source profiles. ReplaceStyle never changes this field.</remarks>
+        public short? StoredVersion { get; private set; }
+        internal static DxfTableStyleHeader TryRead(List<DxfTag> tags, Func<string, string> decode, DxfVersion sourceVersion)
         {
+            short? storedVersion = null;
+            if (tags.Count == 8 && tags[0].Code == 280 && (short)tags[0].Value == 0 && sourceVersion >= DxfVersion.AutoCad2010)
+            {
+                storedVersion = 0;
+                tags = tags.Skip(1).ToList();
+            }
             if (!tags.Select(t => t.Code).SequenceEqual(new short[] { 3, 70, 71, 40, 41, 280, 281 })) return null;
             string description = decode((string)tags[0].Value);
             short flow = (short)tags[1].Value, title = (short)tags[5].Value, heading = (short)tags[6].Value;
             double horizontal = (double)tags[3].Value, vertical = (double)tags[4].Value;
             if (description.Length > 255 || flow < 0 || flow > 1 || title < 0 || title > 1 || heading < 0 || heading > 1 ||
                 !FiniteNonnegative(horizontal) || !FiniteNonnegative(vertical)) return null;
-            return new DxfTableStyleHeader { Description = description, FlowDirection = flow, StoredFlags = (short)tags[2].Value,
+            return new DxfTableStyleHeader { StoredVersion = storedVersion, Description = description, FlowDirection = flow, StoredFlags = (short)tags[2].Value,
                 HorizontalCellMargin = horizontal, VerticalCellMargin = vertical, SuppressTitle = title != 0, SuppressColumnHeading = heading != 0 };
         }
         internal static bool FiniteNonnegative(double value) { return !double.IsNaN(value) && !double.IsInfinity(value) && value >= 0; }
@@ -61,6 +71,7 @@ namespace netDxf.Objects
             this.Tags = new ReadOnlyCollection<DxfTag>(tags);
             this.StoredTextStyleName = decode((string)tags[0].Value);
             this.Values = DxfTableStyleRowValues.TryRead(tags);
+            this.Borders = DxfTableStyleRowBorders.TryRead(tags);
         }
         /// <summary>Gets the decoded source STYLE name before any resource rename.</summary>
         public string StoredTextStyleName { get; }
@@ -68,6 +79,8 @@ namespace netDxf.Objects
         public TextStyle TextStyle { get; private set; }
         /// <summary>Gets public row scalars, or null when they are missing, repeated or invalid.</summary>
         public DxfTableStyleRowValues Values { get; }
+        /// <summary>Gets all six stored border triples, or null when any field is missing, repeated or invalid.</summary>
+        public DxfTableStyleRowBorders Borders { get; }
         /// <summary>Gets the ordered public row packet; private application groups remain in the parent object's complete Tags.</summary>
         public IReadOnlyList<DxfTag> Tags { get; }
         /// <summary>Creates a scalar edit bound to this row snapshot.</summary>
@@ -77,17 +90,33 @@ namespace netDxf.Objects
             if (this.Values == null) throw new NotSupportedException("The stored row scalars are not qualified for editing.");
             return new DxfTableStyleRowEdit(this, values);
         }
+        /// <summary>Creates a border-only edit bound to this row snapshot; other row values remain unchanged.</summary>
+        public DxfTableStyleRowEdit WithBorders(DxfTableStyleRowBorders borders)
+        {
+            if (borders == null) throw new ArgumentNullException(nameof(borders));
+            if (this.Borders == null) throw new NotSupportedException("The stored row borders are not qualified for editing.");
+            return new DxfTableStyleRowEdit(this, null, borders);
+        }
         internal void BindTextStyle(TextStyle style) { this.TextStyle = style; }
     }
-    /// <summary>An immutable scalar replacement tied to one current TABLESTYLE row snapshot.</summary>
+    /// <summary>An immutable scalar and/or border replacement tied to one current TABLESTYLE row snapshot.</summary>
     public sealed class DxfTableStyleRowEdit
     {
-        internal DxfTableStyleRowEdit(DxfTableStyleRow original, DxfTableStyleRowValues values)
-        { this.Original = original; this.Values = values; }
+        internal DxfTableStyleRowEdit(DxfTableStyleRow original, DxfTableStyleRowValues values, DxfTableStyleRowBorders borders = null)
+        { this.Original = original; this.Values = values; this.Borders = borders; }
         /// <summary>Gets the original row snapshot.</summary>
         public DxfTableStyleRow Original { get; }
-        /// <summary>Gets the replacement scalar values.</summary>
+        /// <summary>Gets the replacement scalar values, or null to preserve them.</summary>
         public DxfTableStyleRowValues Values { get; }
+        /// <summary>Gets replacement border values, or null to preserve them.</summary>
+        public DxfTableStyleRowBorders Borders { get; }
+        /// <summary>Creates a new edit combining the existing scalar request with these border values.</summary>
+        public DxfTableStyleRowEdit WithBorders(DxfTableStyleRowBorders borders)
+        {
+            if (borders == null) throw new ArgumentNullException(nameof(borders));
+            if (this.Original.Borders == null) throw new NotSupportedException("The stored row borders are not qualified for editing.");
+            return new DxfTableStyleRowEdit(this.Original, this.Values, borders);
+        }
     }
     /// <summary>Immutable public row scalars; raw data/unit and border fields are not interpreted.</summary>
     public sealed class DxfTableStyleRowValues

@@ -131,7 +131,8 @@ internal static partial class Program
         var doc = DxfDocument.Load(input) ?? throw new Exception("Native TABLESTYLE drawing failed to load"); var style = TableStyleObject(doc);
         if (full) Check(doc.Entities.StoredTables.Any(t => t.References.Contains(style)), "native TABLE binds exact accepted TABLESTYLE source token");
         Equal(raw.Version, style.SourceVersion, "native TABLESTYLE profile"); Equal(3, style.Rows.Count, "native ordered row packets");
-        Check((style.Header == null) == file.Contains("AC1024"), "extra leading280 is not conflated with title suppression");
+        Check(style.Header != null, "recognized native header is projected");
+        Equal(file.Contains("AC1024") ? (short?)0 : null, style.Header!.StoredVersion, "leading format version is distinct from title suppression");
         if (style.Header != null) Equal(file.StartsWith("acad_table_") ? 1.5 : 0.06, style.Header.HorizontalCellMargin, "native header margin");
         Check(style.Rows.All(r => r.Values != null && ReferenceEquals(r.TextStyle, doc.GetObjectByHandle("11"))), "native exact STYLE identity and row scalars");
         Equal(file.StartsWith("acad_table_") ? 6.0 : 0.25, style.Rows[1].Values!.TextHeight, "native second ordered row height");
@@ -193,7 +194,8 @@ internal static partial class Program
             TableStyleSave(doc, binary, $"table-style-projection-{variant}-{binary}.dxf"); return;
         }
         var style = TableStyleObject(doc);
-        if (variant is "leading280" or "duplicate-margin" or "unknown-first") Check(style.Header == null, "ambiguous header declined");
+        if (variant is "duplicate-margin" or "unknown-first") Check(style.Header == null, "ambiguous header declined");
+        if (variant == "leading280") Equal((short?)0, style.Header!.StoredVersion, "recognized version-zero prefix");
         if (variant is "unknown-first" or "four-rows") Equal(0, style.Rows.Count, "unknown row schema declined");
         else
         {
