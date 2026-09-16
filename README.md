@@ -67,6 +67,8 @@ Full AutoCAD DXF capability is not yet achieved. Passing regression tests and pr
 
 The [legacy feature review](doc/dxf-conformance/legacy-feature-review.md) improves existing linear/angular unit formatting, DXF calendar/elapsed precision, palette isolation, ordinary RGB serialization, and ARC/CIRCLE/ELLIPSE affine geometry. It includes explicit finite/representation checks, source-version RGB fallback, immutable failure behavior, and independent world-space/file checks. This broadens the audit beyond TABLE features without claiming complete private-schema or native AutoCAD qualification.
 
+[Explicit FIELD result persistence](doc/dxf-conformance/field-results.md) adds immutable evaluation/cache projections, atomic cached-result batches and bounded child-first host evaluation of loaded FIELD ownership trees. Evaluator code, private data and host text/geometry remain unchanged; this is not automatic native FIELD execution or complete host-cache regeneration.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
