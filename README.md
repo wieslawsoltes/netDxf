@@ -69,6 +69,12 @@ The [legacy feature review](doc/dxf-conformance/legacy-feature-review.md) improv
 
 [Explicit FIELD result persistence](doc/dxf-conformance/field-results.md) adds immutable evaluation/cache projections, atomic cached-result batches and bounded child-first host evaluation of loaded FIELD ownership trees. Evaluator code, private data and host text/geometry remain unchanged; this is not automatic native FIELD execution or complete host-cache regeneration.
 
+[The standard FIELD evaluator continuation](doc/dxf-conformance/standard-field-evaluation.md)
+adds opt-in explicit AcVar bindings, bounded numeric AcExpr children, date masks,
+and angular format controls. **This continuation is uncompiled:** its new C#
+cases and emitted-output gate remain unrun. Its independent checker's model tests
+are not a substitute for C# or native AutoCAD qualification.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
