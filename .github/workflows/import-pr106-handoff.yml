@@ -1,0 +1,54 @@
+name: Import exact committed PR106 handoff
+on:
+  push:
+    branches: [codex/recover-pr106-finished-20260917]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify transferred bundle and import original commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RUNNER_TEMP/pr106.bundle" <<'PY'
+          import base64, hashlib, pathlib, sys
+          first = pathlib.Path('.handoff-pr106/bundle-0.b64').read_text().strip()
+          second = pathlib.Path('.handoff-pr106/bundle-1.b64').read_text().strip()
+          # Correct known transport transcription errors only. Source/commit bytes
+          # are admitted exclusively by the original handoff SHA-256 below.
+          assert first.count('svfUJhul2Rnm9x') == 1
+          first = first.replace('svfUJhul2Rnm9x', 'svfUJlul2Rnm9x')
+          assert second.count('f3h2f377h8dDQ') == 1
+          assert second.count('m5EviviDt2iTC') == 1
+          second = second.replace('f3h2f377h8dDQ', 'f3h2fHvz8TQ').replace('m5EviviDt2iTC', 'm5EviDt2iTC')
+          assert second.count('+SZuz9n') == 1
+          second = second[:second.rfind('+SZuz9n')] + '+SZuz9n2s4r/bg/UfzXVxAAIFEpSi0uKGbqu2H/lfai3JzVMvefg9d4d8deWhE/OZFQAAGfdG9hp4094nDvOuJBxgv7E0CIAEdgDguMcbSUftlsY1lsX4VAVjdJkyBVg'
+          assert hashlib.sha256(first.encode()).hexdigest() == 'b4d13fdc8d8becaef1dde276f1bfe3047fc845a622c4c062fa41c0bef12517a3'
+          assert hashlib.sha256(second.encode()).hexdigest() == 'c6886bbf3055bb8aebb6ca0f4d9c71ceb27a834180648a1faa0e6e73f81a8d72'
+          bundle = base64.b64decode(first + second, validate=True)
+          assert len(bundle) == 24549
+          assert hashlib.sha256(bundle).hexdigest() == '9d5ebe30e516901f829d7d4f14def2e67b485f54dfc46bb7acb4f32395a91882'
+          pathlib.Path(sys.argv[1]).write_bytes(bundle)
+          PY
+          base=898453361a9e87ef73c3e9046d8c0d81d4ae3980
+          first=8d66341bfec8a8e0ad0e4f41179f74ff61f2ea95
+          head=e0e6af0c5a2fb1894ee0a8462e0c7ca46783c219
+          git bundle verify "$RUNNER_TEMP/pr106.bundle"
+          git fetch --no-tags "$RUNNER_TEMP/pr106.bundle" refs/heads/codex/dxf-standard-fields-20260917
+          test "$(git rev-parse FETCH_HEAD)" = "$head"
+          test "$(git rev-parse "$head^")" = "$first"
+          test "$(git rev-parse "$first^")" = "$base"
+          test "$(git rev-parse "$first^{tree}")" = 41a67a570272de5806016e85a818d63b63c00540
+          test "$(git rev-parse "$head^{tree}")" = 68dd970d70c3d79c8759aef02e4c9f492f2a8f06
+          test "$(git rev-list --count "$base..$head")" = 2
+          test "$(git ls-tree -r --name-only "$head" | wc -l)" -eq 3135
+          test -z "$(git ls-tree --name-only "$head" .handoff-pr106 .github/workflows/import-pr106-handoff.yml)"
+          test -z "$(git ls-remote --heads origin codex/recovered-pr106-finished-20260917)"
+          git push origin "$head:refs/heads/codex/recovered-pr106-finished-20260917"
+          git log -2 --format='%H %T %s' "$head"
