@@ -39,11 +39,11 @@ try {
           throw new Error('Incomplete browser batch: ' + test.name);
         for (let i=0; i<expected.length; i++) {
           const actual = await digest(result.value[i]); report.comparisons++;
-          if(actual!==expected[i]) report.failures.push({name:test.names[i],op,expected:expected[i],actual});
+          if(actual!==expected[i]) report.failures.push({name:test.names[i],op,expected:expected[i],actual,result:result.value[i]});
         }
       } else {
         const actual = await digest(result); report.comparisons++;
-        if (actual !== expected) report.failures.push({ name: test.name, op, expected, actual });
+        if (actual !== expected) report.failures.push({ name: test.name, op, expected, actual, result });
       }
     }
     if (report.failures.length > 10) throw new Error('Too many browser mismatches.');
