@@ -4,6 +4,8 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterPlanarEntityTransformReviewTests();
+        RegisterEntityCloneReviewTests();
         RegisterFieldTextHostTests();
         RegisterAttributeHostMetadataTests();
         RegisterStandardFieldEvaluatorTests();
