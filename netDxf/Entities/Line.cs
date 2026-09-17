@@ -122,9 +122,11 @@ namespace netDxf.Entities
         /// </summary>
         public void Reverse()
         {
+            bool changed = !LineAffineTransform.Same(this.start, this.end);
             Vector3 tmp = this.start;
             this.start = this.end;
             this.end = tmp;
+            if (changed) this.ClearProxyGraphics();
         }
 
         #endregion
@@ -139,15 +141,28 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
+            LineAffineTransform.Apply(this, transformation, translation);
+        }
 
-            this.StartPoint = transformation * this.StartPoint + translation;
-            this.EndPoint = transformation * this.EndPoint + translation;
-            this.Normal = newNormal;
+        /// <summary>Transforms this LINE by an affine 4x4 matrix.</summary>
+        /// <param name="transformation">Finite affine matrix using column vectors.</param>
+        /// <remarks>Projective matrices and unrepresentable results reject before geometry changes.</remarks>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            LineAffineTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
+        }
+
+        // Use the actual stored normal, not user-overridden property callbacks,
+        // to stage and publish this primitive's own affine geometry atomically.
+        internal Vector3 AffineNormal { get { return base.Normal; } }
+        internal void PublishAffine(Vector3 nextStart, Vector3 nextEnd, Vector3 nextNormal, double nextThickness)
+        {
+            if (!LineAffineTransform.Same(nextNormal, base.Normal)) base.Normal = nextNormal;
+            this.start = nextStart;
+            this.end = nextEnd;
+            this.thickness = nextThickness;
+            this.ClearProxyGraphics();
         }
 
         /// <summary>

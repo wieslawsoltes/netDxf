@@ -402,6 +402,7 @@ namespace netDxf.Entities
                 Normal = this.Normal,
                 IsVisible = this.IsVisible,
                 //Polyline3D properties
+                smoothType = this.smoothType,
                 Flags = this.flags
             };
 
