@@ -56,7 +56,7 @@ namespace netDxf.Entities
         /// Initializes a new instance of the <c>XLine</c> class.
         /// </summary>
         /// <param name="origin">XLine <see cref="Vector2">origin.</see></param>
-        /// <param name="direction">XLine <see cref="Vector2">direction.</see></param>
+        /// <param name="direction">XLine <see cref="Vector2">direction vector.</see></param>
         public XLine(Vector2 origin, Vector2 direction)
             : this(new Vector3(origin.X, origin.Y, 0.0), new Vector3(direction.X, direction.Y, 0.0))
         {
@@ -66,16 +66,12 @@ namespace netDxf.Entities
         /// Initializes a new instance of the <c>XLine</c> class.
         /// </summary>
         /// <param name="origin">XLine <see cref="Vector3">origin.</see></param>
-        /// <param name="direction">XLine <see cref="Vector3">direction.</see></param>
+        /// <param name="direction">XLine <see cref="Vector3">direction vector.</see></param>
         public XLine(Vector3 origin, Vector3 direction)
             : base(EntityType.XLine, DxfObjectCode.XLine)
         {
             this.origin = origin;
-            this.direction = Vector3.Normalize(direction);
-            if (Vector3.IsZero(this.direction))
-            {
-                throw new ArgumentException("The direction can not be the zero vector.", nameof(direction));
-            }
+            this.direction = Vector3.NormalizeFiniteDirection(direction, nameof(direction));
         }
 
         #endregion
@@ -99,11 +95,7 @@ namespace netDxf.Entities
             get { return this.direction; }
             set
             {
-                this.direction = Vector3.Normalize(value);
-                if (Vector3.IsZero(this.direction))
-                {
-                    throw new ArgumentException("The direction can not be the zero vector.", nameof(value));
-                }
+                this.direction = Vector3.NormalizeFiniteDirection(value, nameof(value));
             }
         }
 

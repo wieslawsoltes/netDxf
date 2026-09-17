@@ -85,6 +85,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [The SOLID/TRACE transform audit](doc/dxf-conformance/planar-entity-transforms.md) derives actual transformed plane normals, preserves signed thickness, rejects unrepresentable/projective input before mutation, and invalidates stale proxies only after successful geometry changes. Its numerical admission limits and six-profile text/binary qualification are explicit; it does not establish every entity transform or native AutoCAD equivalence.
 
+[Finite normal and direction assignment](doc/dxf-conformance/direction-assignment.md) now rejects zero/nonfinite vectors before mutation and accepts very small or large finite directions without normalization overflow. The audit covers inherited entity normals, ATTRIB/ATTDEF normals and RAY/XLINE directions, with independent physical-tag and numerical checks. Public vector utilities, arbitrary transforms and native AutoCAD qualification retain their separate scope.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

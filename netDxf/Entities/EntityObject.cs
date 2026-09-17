@@ -219,11 +219,7 @@ namespace netDxf.Entities
             get { return this.normal; }
             set
             {
-                this.normal = Vector3.Normalize(value);
-                if (Vector3.IsZero(this.normal))
-                {
-                    throw new ArgumentException("The normal can not be the zero vector.", nameof(value));
-                }
+                this.normal = Vector3.NormalizeFiniteDirection(value, nameof(value));
             }
         }
 

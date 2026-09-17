@@ -185,7 +185,17 @@ internal static partial class Program
         if (fault == 0) line.Vertexes[0].Position = new Vector2(double.NaN, 0);
         else if (fault == 1) line.Vertexes[0].Bulge = double.PositiveInfinity;
         else if (fault == 2) line.Elevation = double.NaN;
-        else if (fault == 3) line.Normal = new Vector3(double.NaN, 0, 0);
+        else if (fault == 3)
+        {
+            var before = DirectionBits(line.Normal);
+            var invalid = new Vector3(double.NaN, 0, 0);
+            Throws<ArgumentException>(() => line.Normal = invalid);
+            Check(before.SequenceEqual(DirectionBits(line.Normal)), "invalid normal assignment changed legacy geometry");
+            // Preserve malformed in-memory save/clone coverage without relying
+            // on the former setter bug to manufacture the invalid state.
+            typeof(EntityObject).GetField("normal", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(line, invalid);
+        }
         else if (fault == 4) line.Thickness = double.PositiveInfinity;
         else if (fault == 5) line.Vertexes.Add(new Polyline2DVertex(1, 1));
         else if (fault == 6) line.Vertexes[0] = (Polyline2DVertex)line.Vertexes[0].Clone();
