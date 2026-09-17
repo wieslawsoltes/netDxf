@@ -71,10 +71,9 @@ The [legacy feature review](doc/dxf-conformance/legacy-feature-review.md) improv
 
 [The standard FIELD evaluator continuation](doc/dxf-conformance/standard-field-evaluation.md)
 adds opt-in explicit AcVar bindings, bounded numeric AcExpr children, date masks,
-and angular format controls. The C# suite and independent output gates were
-qualified in [merged PR #106](https://github.com/wieslawsoltes/netDxf/pull/106).
-See that PR and the linked guide for exact source and CI evidence; these checks
-are not native AutoCAD qualification.
+and angular format controls. The compiled C# suite and independent output gates
+were qualified in merged PR #106; see the linked guide and PR for exact source
+and CI evidence. These checks are not native AutoCAD qualification.
 
 [Atomic FIELD text-host updates](doc/dxf-conformance/field-text-hosts.md) optionally publish
 successful root outcomes to qualified TEXT, standalone MTEXT, ATTRIB and ATTDEF hosts
@@ -82,7 +81,7 @@ in the same guarded transaction. Literal escaping, stale-proxy invalidation and
 owner-held attribute metadata are qualified separately from native font/reflow or
 private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
-[The entity clone review](doc/dxf-conformance/entity-clone-review.md) corrects SOLID/TRACE elevation, SHAPE width factor, authored 3D POLYLINE smoothing, and LEADER direction/color isolation, including nested BLOCK/INSERT copies. Existing source-bound clone restrictions remain in force. This is a scoped clone correction, not dependency-complete import or installed-font qualification.
+[The entity clone audit](doc/dxf-conformance/entity-clone-review.md) corrects lost SOLID/TRACE elevation, SHAPE width, Polyline3D smoothing, LEADER direction and shared LEADER line-color state. Direct and nested clones retain their existing source-record guards; this does not add universal graph import.
 
 ## Samples and Demos 
 Are contained in the source code.
@@ -148,3 +147,5 @@ All DXF objects may contain extended data information.
 Qualified AutoCAD TABLE entities are retained as source-bound `StoredTable` packets with explicit backing-content and geometry edits. Complete TABLE authoring, formula/layout evaluation and automatic regeneration remain outside that storage contract.
 Both simple and complex line types are supported.
 Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families remain unimplemented. SAT and raw payload retention do not interpret or validate proprietary geometry.
+
+[Supplementary entity clone qualification](doc/dxf-conformance/entity-clone-qualification.md) preserves the original clone-review cases and adds registered/nested source checks, exact leader directions, retained-source guards, and a separate all-profile pair corpus. No additional production cloning behavior is introduced by this qualification task.

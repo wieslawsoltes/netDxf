@@ -994,8 +994,8 @@ namespace netDxf.Entities
                 LineColor = (AciColor) this.lineColor.Clone(),
                 Annotation = (EntityObject) this.annotation?.Clone(),
                 Offset = this.offset,
-                hasHookline = this.hasHookline,
-                direction = this.direction
+                direction = this.direction,
+                hasHookline = this.hasHookline
             };
 
             foreach (DimensionStyleOverride styleOverride in this.StyleOverrides.Values)

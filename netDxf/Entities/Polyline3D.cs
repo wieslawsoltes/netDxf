@@ -402,8 +402,8 @@ namespace netDxf.Entities
                 Normal = this.Normal,
                 IsVisible = this.IsVisible,
                 //Polyline3D properties
-                Flags = this.flags,
-                smoothType = this.smoothType
+                smoothType = this.smoothType,
+                Flags = this.flags
             };
 
             foreach (XData data in this.XData.Values)

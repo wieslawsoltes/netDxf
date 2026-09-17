@@ -1,220 +1,134 @@
 #!/usr/bin/env python3
-"""Independently verify authored entity clones, including nested block exports.
+"""Check clone state on the physical DXF wire with independent ezdxf decoding.
 
-Checks 540 source/clone pairs over six profiles and both transports. A complete
-ordered ENTITIES/BLOCKS comparison is supplemented by source-derived property
-expectations and graph audits. This is not installed-SHX or native visual QA.
+Two roots per drawing are compared with only their owned identities renamed.
+All other ordered root/child/annotation tags must agree. Author-supplied constants
+also prevent a matching pair of incorrect clone exports from passing. The test
+qualifies storage and clone fidelity, not SHX rendering or the spline fitter.
 """
 import argparse
-import io
-import math
+import copy
 from pathlib import Path
-
 import ezdxf
-from ezdxf.lldxf.tagger import ascii_tags_loader, binary_tags_loader
-from ezdxf.lldxf.types import cast_tag_value
-from ezdxf.math import OCS, Vec3
+from verify_editable_table_styles import records
 from verify_legacy_utilities import PROFILES
 from verify_mleader_inputs import check
 
-KINDS = ("solid", "trace", "shape", "polyline", "leader")
-NORMALS = (Vec3(0, 0, 1), Vec3(0, 0, -1), Vec3(1, 0, 0))
-ELEVATIONS = (13.75, -7.25, 128.5)
-CORNERS = ((1, 2), (5, 3), (2, 8), (7, 9))
-CONTROL_POINTS = [(1., 2., 3.), (5., 3., 7.), (2., 8., -2.), (7., 9., 11.)]
+KINDS = ('solid', 'trace', 'shape', 'quadratic', 'cubic', 'leader', 'annotated-leader')
+TYPES = dict(zip(KINDS, ('SOLID', 'TRACE', 'SHAPE', 'POLYLINE', 'POLYLINE', 'LEADER', 'LEADER')))
+POINTS = [[1., 2., 3.], [4., 6., -2.], [8., 5., 4.], [11., -3., 7.]]
+CORNERS = [[1., 2., -7.25], [4., 3., -7.25], [2., 7., -7.25], [6., 8., -7.25]]
 
 
-def inventory(directory):
-    expected = {
-        f"clone-review-{kind}-{variant}-{depth}-{version}-{binary}-{side}.dxf"
-        for kind in KINDS for variant in range(3) for depth in range(3)
-        for version in PROFILES for binary in (False, True)
-        for side in ("source", "clone")
-    }
-    actual = {path.name for path in directory.glob("clone-review-*.dxf")}
-    check(actual == expected, "Clone fixture inventory differs: missing or extra file")
-    return expected
+def one(tags, code):
+    values = [v for c, v in tags if c == code]
+    check(len(values) == 1, f'Expected exactly one group {code}')
+    return values[0]
 
 
-def packets(path, binary):
-    data = path.read_bytes()
-    check(data.startswith(b"AutoCAD Binary DXF") == binary, "Clone transport differs")
-    tags = list(binary_tags_loader(data) if binary else
-                ascii_tags_loader(io.StringIO(data.decode("ascii"))))
-    result, section = [], None
-    for index, tag in enumerate(tags):
-        if tag.code == 0 and tag.value == "SECTION":
-            check(tags[index + 1].code == 2, "Missing section name")
-            section = tags[index + 1].value
-        elif tag.code == 0 and tag.value == "ENDSEC":
-            section = None
-        elif section in ("ENTITIES", "BLOCKS"):
-            # Handles are independently checked by ezdxf's graph audit. Clone
-            # documents have distinct identity; only these two slots normalize.
-            if tag.code not in (5, 330):
-                if 310 <= tag.code <= 319 or tag.code == 1004:
-                    value = bytes.fromhex(tag.value) if isinstance(tag.value, str) else tag.value
-                else:
-                    value = cast_tag_value(tag.code, tag.value)
-                result.append((section, tag.code, value))
-    check(bool(result), "Empty clone record inventory")
-    return result
+def owned_graph(items, root):
+    packet = items[root]
+    check(one(packet, 5) == root, 'Physical root identity mismatch')
+    graph = [(root, packet)]
+    kind = packet[0][1]
+    if kind == 'POLYLINE':
+        graph += [(h, t) for h, t in items.items() if t[0][1] in ('VERTEX', 'SEQEND') and [330, root] in t]
+        check(len(graph) == 30, 'Expected four control vertices, 24 fit vertices and SEQEND')
+        check(graph[-1][1][0] == [0, 'SEQEND'], 'Missing/reordered SEQEND')
+        for _, tags in graph[1:5]:
+            check(one(tags, 70) == 48, 'Spline control vertex flags')
+        for _, tags in graph[5:-1]:
+            check(one(tags, 70) == 40, 'Spline fit vertex flags')
+    if kind == 'LEADER':
+        annotations = [v for c, v in packet if c == 340]
+        check(len(annotations) <= 1, 'Duplicate leader annotation')
+        for handle in annotations:
+            check(handle in items and items[handle][0] == [0, 'MTEXT'], 'Dangling/wrong-kind annotation')
+            check([330, root] in items[handle], 'Annotation lacks leader reactor')
+            graph.append((handle, items[handle]))
+    return graph
 
 
-def verify_proxy(records, variant):
-    # Several ezdxf simple entity loaders bypass proxy projection; inspect the
-    # actual wire packet rather than mistaking the absent projection for loss.
-    packet = [(code, value) for _, code, value in records if code in (92, 160, 310)]
-    check(len(packet) == 2 and packet[0][0] in (92, 160) and
-          packet[0][1] == 3 and packet[1] == (310, bytes((19, 83, variant))),
-          "Clone raw proxy packet differs")
+def normalized(graph):
+    mapping = {handle: f'<identity-{i}>' for i, (handle, _) in enumerate(graph)}
+    return [[[c, mapping.get(v, v) if isinstance(v, str) and (c in (5, 105, 1005) or 330 <= c <= 369) else v]
+             for c, v in tags] for _, tags in graph]
 
 
-def same_packets(before, after):
-    check(before == after, "Ordered source/clone ENTITIES/BLOCKS records differ")
+def verify(items, kind):
+    roots = [h for h, t in items.items() if t[0] == [0, TYPES[kind]]]
+    check(len(roots) == 2, 'Expected exactly one source and one clone')
+    graphs = [owned_graph(items, root) for root in roots]
+    check(normalized(graphs[0]) == normalized(graphs[1]), 'Clone changed an ordered entity, child or annotation packet')
+    for graph in graphs:
+        tags = graph[0][1]
+        check(one(tags, 8) == 'CloneReviewLayer' and one(tags, 62) == 5 and one(tags, 60) == 1, 'Common clone state')
+        check(one(tags, 48) == 2.25 and one(tags, 370) == 25, 'Common line appearance')
+        check([1001, 'CLONE_REVIEW'] in tags and [1000, 'independent clone'] in tags, 'Clone XData')
+        if kind in ('solid', 'trace'):
+            check([one(tags, c) for c in (10, 11, 12, 13)] == CORNERS, 'Lost planar vertices/elevation')
+            check(one(tags, 39) == -2.5 and one(tags, 210) == [0., 0., 1.], 'Planar thickness/normal')
+        elif kind == 'shape':
+            for code, value in {2: 'TRACK1', 10: [1., 2., 7.25], 40: 3.5, 41: -2.75, 50: 27., 51: 15., 39: -2.5}.items():
+                check(one(tags, code) == value, f'Shape group {code}')
+        elif kind in ('quadratic', 'cubic'):
+            check(one(tags, 70) == 12 and one(tags, 75) == (5 if kind == 'quadratic' else 6), 'Polyline smoothing flags/type')
+            check([one(t, 10) for _, t in graph[1:5]] == POINTS, 'Polyline control geometry')
+        else:
+            check(one(tags, 211) == [-0.6000000000000001, .8, 0.], 'Leader direction')
+            check(one(tags, 213) == [.5, -.75, -7.25], 'Leader offset/elevation')
+            check(one(tags, 77) == 138 and one(tags, 71) == 0 and one(tags, 72) == 1, 'Leader appearance')
+            annotated = kind == 'annotated-leader'
+            check(one(tags, 75) == int(annotated) and one(tags, 73) == (0 if annotated else 3), 'Leader annotation state')
+            expected = [[1., 2., -7.25], [4., 3., -7.25]]
+            if annotated: expected.append([6.108, 7.856, -7.25])
+            expected.append([6., 8., -7.25])
+            check([v for c, v in tags if c == 10] == expected and one(tags, 76) == len(expected), 'Leader vertices')
+            if annotated:
+                check(one(graph[1][1], 1) == 'clone annotation', 'Leader annotation text')
+    return graphs
 
 
-def near(actual, expected, label):
-    if isinstance(expected, (tuple, list, Vec3)):
-        check(len(actual) == len(expected), label + " cardinality")
-        check(all(math.isclose(a, b, rel_tol=1e-13, abs_tol=1e-13)
-                  for a, b in zip(actual, expected)), label)
-    else:
-        check(math.isclose(actual, expected, rel_tol=1e-13, abs_tol=1e-13), label)
-
-
-def subject(document, depth):
-    roots = list(document.modelspace())
-    check(len(roots) == 1, "Clone root inventory differs")
-    entity = roots[0]
-    for level in reversed(range(depth)):
-        check(entity.dxftype() == "INSERT", "Missing nested clone INSERT")
-        check(entity.dxf.name == "CLONE_AUDIT_BLOCK_" + str(level), "Nested block identity differs")
-        children = list(document.blocks[entity.dxf.name])
-        check(len(children) == 1, "Nested clone child inventory differs")
-        near(entity.dxf.insert, (0, 0, 0), "Nested insertion changed")
-        entity = children[0]
-    return entity
-
-
-def verify(entity, kind, variant):
-    expected_type = "POLYLINE" if kind == "polyline" else kind.upper()
-    check(entity.dxftype() == expected_type, "Clone subject kind differs")
-    check(entity.dxf.layer == "CLONE_AUDIT_LAYER", "Clone layer differs")
-    check(entity.dxf.color == 3 and entity.dxf.invisible == 1, "Clone appearance differs")
-    near(entity.dxf.ltscale, 1.75, "Clone linetype scale differs")
-    check([(tag.code, tag.value) for tag in entity.get_xdata("CLONE_AUDIT")] ==
-          [(1000, "clone-state-" + str(variant))], "Clone XData differs")
-    normal = NORMALS[variant]
-    normal_slot = "normal_vector" if kind == "leader" else "extrusion"
-    near(entity.dxf.get(normal_slot), normal, "Clone normal differs")
-    fields = ["layer", "color", "invisible", "ltscale", normal_slot]
-    if kind in ("solid", "trace"):
-        for index, (x, y) in enumerate(CORNERS):
-            near(entity.dxf.get("vtx" + str(index)), (x, y, ELEVATIONS[variant]), "Clone OCS corner/elevation differs")
-        near(entity.dxf.thickness, -2.5, "Clone thickness differs")
-        fields += ["vtx" + str(i) for i in range(4)] + ["thickness"]
-    elif kind == "shape":
-        near(entity.dxf.xscale, (.5, -2.25, 1.375)[variant], "SHAPE clone width factor differs")
-        near(entity.dxf.size, 2.25, "SHAPE clone size differs")
-        near(entity.dxf.rotation, 37, "SHAPE clone rotation differs")
-        near(entity.dxf.oblique, 15, "SHAPE clone oblique angle differs")
-        near(entity.dxf.thickness, -2.5, "SHAPE clone thickness differs")
-        check(entity.dxf.name == "CLONE_AUDIT_SHAPE", "SHAPE clone name differs")
-        fields += ["xscale", "size", "rotation", "oblique", "thickness", "name"]
-        # Position is compared verbatim between records, not certified against
-        # native SHAPE placement: this review corrects Clone, not the writer.
-    elif kind == "polyline":
-        smooth = (0, 5, 6)[variant]
-        check(entity.dxf.smooth_type == smooth, "POLYLINE clone smoothing differs")
-        check(entity.dxf.flags == 128 + 8 + (1 if variant == 1 else 0) + (4 if variant else 0),
-              "POLYLINE clone flags differ")
-        points = [tuple(vertex.dxf.location) for vertex in entity.vertices
-                  if not smooth or vertex.dxf.flags & 16]
-        check(points == CONTROL_POINTS, "POLYLINE clone control vertices differ")
-        fields += ["smooth_type", "flags"]
-    else:
-        direction = (Vec3(3/5, 4/5, 0), Vec3(0, 1, 0), Vec3(-5/13, -12/13, 0))[variant]
-        ocs = OCS(normal)
-        near(entity.dxf.horizontal_direction, ocs.to_wcs(direction), "LEADER clone horizontal direction differs")
-        check(entity.dxf.block_color == 120 + variant, "LEADER clone line color differs")
-        check(entity.dxf.has_arrowhead == 0 and entity.dxf.path_type == 0 and entity.dxf.has_hookline == 0,
-              "LEADER clone flags differ")
-        near(entity.dxf.leader_offset_annotation_placement,
-             ocs.to_wcs(Vec3(2.25, -1.5, ELEVATIONS[variant])), "LEADER clone offset differs")
-        check(len(entity.vertices) == 3, "LEADER clone vertex inventory differs")
-        for actual, (x, y) in zip(entity.vertices, ((1, 2), (5, 3), (7, 9))):
-            near(actual, ocs.to_wcs(Vec3(x, y, ELEVATIONS[variant])), "LEADER clone vertices differ")
-        fields += ["horizontal_direction", "block_color", "has_arrowhead", "path_type", "has_hookline",
-                   "leader_offset_annotation_placement"]
-    return fields
-
-
-def rejects(action, label):
-    try:
-        action()
-    except ValueError:
-        return 1
-    raise AssertionError("Corruption escaped clone verifier: " + label)
-
-
-def challenge_properties(entity, kind, variant):
+def corruption_controls(items, kind):
+    graphs = verify(items, kind)
     count = 0
-    # Bypass ezdxf attribute normalization deliberately, so the actual checker,
-    # rather than ezdxf's input validation, must reject each changed output.
-    for field in verify(entity, kind, variant):
-        value = entity.dxf.get(field)
-        corrupted = value + Vec3(.25, .5, .75) if isinstance(value, Vec3) else (
-            value + "_corrupt" if isinstance(value, str) else value + 1)
-        entity.dxf.__dict__[field] = corrupted
-        try:
-            count += rejects(lambda: verify(entity, kind, variant), field)
-        finally:
-            entity.dxf.__dict__[field] = value
+    # Challenge every actual ordered packet value, not only the fields repaired.
+    for handle, tags in graphs[1]:
+        for index, (code, value) in enumerate(tags):
+            if code == 5: continue  # identity is a declared rename, not copied state
+            bad = copy.deepcopy(tags)
+            if isinstance(value, list): changed = [v + 1 for v in value]
+            elif isinstance(value, str): changed = value + '_CORRUPT'
+            else: changed = value + 1
+            bad[index] = [code, changed]
+            candidate = dict(items); candidate[handle] = bad
+            try: verify(candidate, kind)
+            except (ValueError, KeyError): count += 1
+            else: raise AssertionError(f'Accepted corrupted {kind} packet group {code}')
+        candidate = dict(items); del candidate[handle]
+        try: verify(candidate, kind)
+        except (ValueError, KeyError): count += 1
+        else: raise AssertionError('Accepted missing clone/owned record')
     return count
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("directory", type=Path)
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('directory', type=Path)
     directory = parser.parse_args().directory
-    inventory(directory)
-    pair_controls = property_controls = pairs = 0
-    for version, profile in PROFILES.items():
-        for binary in (False, True):
-            for kind in KINDS:
-                for variant in range(3):
-                    for depth in range(3):
-                        stem = f"clone-review-{kind}-{variant}-{depth}-{version}-{binary}"
-                        source = directory / (stem + "-source.dxf")
-                        clone = directory / (stem + "-clone.dxf")
-                        before, after = packets(source, binary), packets(clone, binary)
-                        same_packets(before, after)
-                        verify_proxy(before, variant); verify_proxy(after, variant)
-                        # Every retained tag, including unrelated block headers,
-                        # is challenged through the positive pair comparator.
-                        for index, tag in enumerate(after):
-                            changed = list(after)
-                            value = tag[2]
-                            value = (value + b"\x00" if isinstance(value, bytes) else
-                                     value + "_corrupt" if isinstance(value, str) else value + 1)
-                            changed[index] = (tag[0], tag[1], value)
-                            pair_controls += rejects(lambda: same_packets(before, changed), "record tag")
-                        pair_controls += rejects(lambda: same_packets(before, after[:-1]), "missing tag")
-                        pair_controls += rejects(lambda: same_packets(before, after + after[-1:]), "extra tag")
-                        for path in (source, clone):
-                            document = ezdxf.readfile(path)
-                            check(document.dxfversion == profile, "Clone version differs")
-                            entity = subject(document, depth)
-                            verify(entity, kind, variant)
-                            property_controls += challenge_properties(entity, kind, variant)
-                            audit = document.audit()
-                            check(not audit.errors and not audit.fixes, "Clone output requires graph repair")
-                        pairs += 1
-    print(f"PASS ezdxf {ezdxf.__version__}: {pairs} clone pairs / {2*pairs} drawings; zero audit errors/repairs")
-    print(f"Rejected {pair_controls} record corruptions and {property_controls} property corruptions")
-    print("SHAPE width is qualified without installed SHX; native glyph rendering/placement is not certified")
+    wanted = {f'clone-review-{k}-{v}-{b}-{c}.dxf' for k in KINDS for v in PROFILES for b in (False, True) for c in (0, 1)}
+    check({p.name for p in directory.glob('clone-review-*.dxf')} == wanted, 'Exact clone output inventory required')
+    controls = 0
+    for kind in KINDS:
+        for version, profile in PROFILES.items():
+            for binary in (False, True):
+                for cycle in (0, 1):
+                    path = directory / f'clone-review-{kind}-{version}-{binary}-{cycle}.dxf'
+                    check(path.read_bytes().startswith(b'AutoCAD Binary DXF') == (binary if cycle == 0 else not binary), 'Clone transport')
+                    doc = ezdxf.readfile(path); check(doc.dxfversion == profile, 'Clone profile')
+                    controls += corruption_controls(records(path), kind)
+                    audit = doc.audit(); check(not audit.errors and not audit.fixes, 'Clone drawing requires audit repairs')
+    print(f'PASS ezdxf {ezdxf.__version__}: {len(wanted)} drawings; {controls} actual-packet corruptions rejected; zero audit errors/repairs')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
