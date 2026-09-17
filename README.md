@@ -151,3 +151,5 @@ Both simple and complex line types are supported.
 Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families remain unimplemented. SAT and raw payload retention do not interpret or validate proprietary geometry.
 
 [Supplementary entity clone qualification](doc/dxf-conformance/entity-clone-qualification.md) preserves the original clone-review cases and adds registered/nested source checks, exact leader directions, retained-source guards, and a separate all-profile pair corpus. No additional production cloning behavior is introduced by this qualification task.
+
+[LINE affine geometry review](doc/dxf-conformance/line-affine-review.md) corrects signed thickness, finite affine validation, atomic rejection and stale proxy handling, with exact once-rounded endpoint arithmetic and independent six-profile qualification.
