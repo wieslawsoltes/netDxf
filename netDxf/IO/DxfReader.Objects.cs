@@ -328,7 +328,7 @@ namespace netDxf.IO
                 DxfDatabaseObject item = record.Object;
                 if (record != root && record.Metadata.Owner != null && record.Metadata.Owner != "0")
                 {
-                    item.Owner = this.GetObjectBySourceHandle(record.Metadata.Owner);
+                    item.Owner = this.GetObjectBySourceHandle(record.Metadata.Owner, true);
                     if (item.Owner == null) throw new FormatException("Unresolved database owner: " + record.Metadata.Owner);
                 }
             }
@@ -354,7 +354,7 @@ namespace netDxf.IO
             }
             foreach (KeyValuePair<string, DatabaseMetadata> pair in this.entityDatabaseMetadata)
             {
-                DxfObject target = this.GetObjectBySourceHandle(pair.Key);
+                DxfObject target = this.GetObjectBySourceHandle(pair.Key, true);
                 if (target != null) this.ApplyDatabaseMetadata(target, pair.Value);
             }
             this.ResolveStoredDimAssocReferences();
@@ -389,7 +389,7 @@ namespace netDxf.IO
             }
             foreach (string handle in metadata.Reactors)
             {
-                DxfObject target = this.GetObjectBySourceHandle(handle);
+                DxfObject target = this.GetObjectBySourceHandle(handle, true);
                 if (target != null && !item.PersistentReactors.Contains(target)) item.PersistentReactors.Add(target);
                 else if (target == null && handle != "0" && !this.managedReactorHandles.Contains(handle))
                     throw new FormatException("Unresolved persistent reactor: " + handle);

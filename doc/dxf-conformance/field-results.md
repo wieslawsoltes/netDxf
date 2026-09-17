@@ -230,3 +230,10 @@ Automatic TABLE precedence, duplicated formatting, coordinated inline/backing/
 private cache regeneration, complete private/color schemas, recursive imports,
 general document-version conversion and native font/visual qualification remain
 unfinished. The historical PR95 matrix is not relabelled as complete by this guide.
+
+## Opt-in host publication
+
+The later [text-host transaction](field-text-hosts.md) adds explicit cache-plus-host
+publication for recognized ACAD_FIELD/TEXT roots. The cache-only APIs above retain
+their behavior. General host reflow, table caches and private evaluator metadata
+are not automatically regenerated.

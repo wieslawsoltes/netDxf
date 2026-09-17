@@ -4,6 +4,9 @@ internal static partial class Program
 {
     static partial void RunAdditionalTests()
     {
+        RegisterFieldTextHostTests();
+        RegisterAttributeHostMetadataTests();
+        RegisterStandardFieldEvaluatorTests();
         RegisterFieldResultTests();
         RegisterFieldResultBoundaryTests();
         RegisterFieldFailureTests();

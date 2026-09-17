@@ -78,7 +78,9 @@ namespace netDxf.Objects
                         if (IsReference(tag) && !IsNullHandle((string)tag.Value) && this.Document.GetObjectByHandle((string)tag.Value) == null)
                             errors.Add("Unresolved XRECORD reference " + tag.Code + ": " + tag.Value);
             }
-            foreach (DxfObject item in this.Document.AddedObjects.Values)
+            foreach (DxfObject item in this.Document.AddedObjects.Values.Concat(
+                this.Document.AddedObjects.Values.OfType<netDxf.Entities.Insert>()
+                    .SelectMany(insert => insert.Attributes).Cast<DxfObject>()))
             {
                 SunReferences.Validate(item, this, errors);
                 if (item.ExtensionDictionary != null && (!this.IsRegistered(item.ExtensionDictionary) || item.ExtensionDictionary.Owner != item)) errors.Add("Invalid extension dictionary: " + item.Handle);
@@ -219,7 +221,18 @@ namespace netDxf.Objects
                 if (current == possibleAncestor) return true;
             return false;
         }
-        internal bool IsRegistered(DxfObject item) { return item != null && item.Handle != null && this.Document.GetObjectByHandle(item.Handle) == item; }
+        internal bool IsRegistered(DxfObject item)
+        {
+            if (item == null || item.Handle == null) return false;
+            if (ReferenceEquals(this.Document.GetObjectByHandle(item.Handle), item)) return true;
+            // ATTRIB identities are retained by their INSERT, not AddedObjects. Prove
+            // actual owner membership and the unique live identity without changing
+            // the public GetObjectByHandle contract or admitting detached aliases.
+            if (!(item is netDxf.Entities.Attribute attribute) || attribute.Owner == null ||
+                !ReferenceEquals(this.Document.GetObjectByHandle(attribute.Owner.Handle), attribute.Owner) ||
+                !attribute.Owner.Attributes.Contains(attribute)) return false;
+            return ReferenceEquals(this.Document.StoredTableHandleTarget(attribute.Handle), attribute);
+        }
         internal void CheckRegistered(DxfObject item)
         { if (!this.IsRegistered(item)) throw new ArgumentException("The referenced object must be registered in this document.", nameof(item)); }
         internal void PrepareTarget(DxfObject target)

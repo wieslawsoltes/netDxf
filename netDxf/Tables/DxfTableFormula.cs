@@ -24,6 +24,7 @@ namespace netDxf.Tables
         /// <remarks>This conservative stack budget is shared by the whole calculation, separately from the dependency-count and operation limits.</remarks>
         public const int MaximumEvaluationDepth = 1024;
         private readonly Node root;
+        private bool scalarOnly;
         private DxfTableFormula(string expression, Node root) { this.Expression = expression; this.root = root; }
         /// <summary>Gets the unmodified expression.</summary>
         public string Expression { get; }
@@ -44,6 +45,23 @@ namespace netDxf.Tables
         {
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
             return this.Evaluate(new Evaluation(rowCount, columnCount, resolver));
+        }
+        /// <summary>Compiles numeric arithmetic and literal aggregates without cell/range references.</summary>
+        /// <remarks>Shares table-formula syntax, arithmetic and budgets, but never invokes a cell resolver.</remarks>
+        public static DxfTableFormula ParseScalar(string expression)
+        {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+            if (expression.Length < 2 || expression.Length > MaximumLength || expression[0] != '=')
+                throw new FormatException("A bounded scalar formula must start with equals.");
+            var parser = new Parser(expression, false);
+            Node node = parser.Expression(); parser.End();
+            return new DxfTableFormula(expression, node) { scalarOnly = true };
+        }
+        /// <summary>Evaluates a formula compiled by ParseScalar without implicit cell access.</summary>
+        public double EvaluateScalar()
+        {
+            if (!this.scalarOnly) throw new InvalidOperationException("Compile with ParseScalar before scalar evaluation.");
+            return this.Evaluate(new Evaluation(1, 1, _ => { throw new InvalidOperationException("A scalar formula cannot read cells."); }));
         }
         internal double Evaluate(Evaluation evaluation)
         {
@@ -198,7 +216,8 @@ namespace netDxf.Tables
         private sealed class Parser
         {
             private readonly string text; private int index = 1, depth;
-            internal Parser(string text) { this.text = text; }
+            private readonly bool allowReferences;
+            internal Parser(string text, bool allowReferences = true) { this.text = text; this.allowReferences = allowReferences; }
             internal void End() { this.Space(); if (this.index != this.text.Length) throw new FormatException("Unexpected formula input at " + this.index); }
             private void Space() { while (this.index < this.text.Length && (this.text[this.index] == ' ' || this.text[this.index] == '\t')) this.index++; }
             private bool Take(char value)
@@ -285,6 +304,7 @@ namespace netDxf.Tables
                     this.Require(')');
                     return new Aggregate(name, arguments.ToArray());
                 }
+                if (!this.allowReferences) throw new NotSupportedException("Scalar formulas cannot contain cell references.");
                 return new Reference(DxfTableCellAddress.Parse(token));
             }
         }
