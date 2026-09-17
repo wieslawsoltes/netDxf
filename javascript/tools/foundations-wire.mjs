@@ -8,7 +8,7 @@ import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
 
-const resolve = name => api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables)\./, '')];
+const resolve = name => api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects)\./, '')];
 function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };

@@ -5,6 +5,12 @@ export function entityWire(value, wire) {
   if (value instanceof api.MeshEdge) return {type:'MeshEdge',start:value.StartVertexIndex,end:value.EndVertexIndex,crease:wire(value.Crease)};
   if (value instanceof api.Polyline2DVertex) return {type:'Polyline2DVertex',position:wire(value.Position),bulge:wire(value.Bulge),
     start:wire(value.StartWidth),end:wire(value.EndWidth),startOverride:wire(value.StartWidthOverride),endOverride:wire(value.EndWidthOverride),identifier:wire(value.VertexIdentifier)};
+  if (value instanceof api.UnderlayDefinition) {
+    const definition = {type:value.constructor.name,name:value.Name,code:value.CodeName,kind:value.Type,file:value.File,xdata:Array.from(value.XData.Values,wire)};
+    if (value instanceof api.UnderlayPdfDefinition) return {definition,page:wire(value.Page)};
+    if (value instanceof api.UnderlayDgnDefinition) return {definition,layout:wire(value.Layout)};
+    return {definition};
+  }
   if (!(value instanceof api.EntityObject)) return undefined;
   const common = {type:value.constructor.name,kind:value.Type,code:value.CodeName,handle:value.Handle,
     owner:value.Owner?.CodeName??null,color:wire(value.Color),layer:wire(value.Layer),linetype:wire(value.Linetype),lineweight:value.Lineweight,
@@ -12,6 +18,8 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  if (value instanceof api.Underlay) return {common,definition:wire(value.Definition),position:wire(value.Position),scale:wire(value.Scale),rotation:wire(value.Rotation),
+    contrast:value.Contrast,fade:value.Fade,display:value.DisplayOptions,boundary:wire(value.ClippingBoundary)};
   if (value instanceof api.MText) return {common,position:wire(value.Position),rotation:wire(value.Rotation),height:wire(value.Height),width:wire(value.RectangleWidth),
     attachment:value.AttachmentPoint,spacing:wire(value.LineSpacingFactor),spacingStyle:value.LineSpacingStyle,direction:value.DrawingDirection,style:wire(value.Style),
     text:wire(value.Value),background:wire(value.BackgroundFill),columns:wire(value.Columns),definedHeight:wire(value.DefinedHeight)};

@@ -57,3 +57,8 @@ export { Shape } from './netDxf/Entities/Shape.js';
 export { Mesh } from './netDxf/Entities/Mesh.js';
 export { MText } from './netDxf/Entities/MText.js';
 export { MTextColumns, MTextColumnType, MTextColumnStorage } from './netDxf/Entities/MTextColumns.js';
+export { UnderlayDefinition } from './netDxf/Objects/UnderlayDefinition.js';
+export { UnderlayDgnDefinition } from './netDxf/Objects/UnderlayDgnDefinition.js';
+export { UnderlayDwfDefinition } from './netDxf/Objects/UnderlayDwfDefinition.js';
+export { UnderlayPdfDefinition } from './netDxf/Objects/UnderlayPdfDefinition.js';
+export { Underlay } from './netDxf/Entities/Underlay.js';

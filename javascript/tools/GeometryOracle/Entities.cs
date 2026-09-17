@@ -15,12 +15,21 @@ internal static partial class Program
                 startOverride=Wire(vertex.StartWidthOverride),endOverride=Wire(vertex.EndWidthOverride),identifier=Wire(vertex.VertexIdentifier)};
             return true;
         }
+        if (value is netDxf.Objects.UnderlayDefinition underlayDefinition) {
+            var definition=new {type=value.GetType().Name,name=underlayDefinition.Name,code=underlayDefinition.CodeName,kind=(int)underlayDefinition.Type,file=underlayDefinition.File,xdata=underlayDefinition.XData.Values.Select(Wire).ToArray()};
+            if(value is netDxf.Objects.UnderlayPdfDefinition pdf) result=new {definition,page=Wire(pdf.Page)};
+            else if(value is netDxf.Objects.UnderlayDgnDefinition dgn) result=new {definition,layout=Wire(dgn.Layout)};
+            else result=new {definition};
+            return true;
+        }
         if (value is not EntityObject entity) return false;
         var common = new {type=entity.GetType().Name,kind=(int)entity.Type,code=entity.CodeName,handle=entity.Handle,owner=entity.Owner?.CodeName,
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
-        if (entity is MText mtext) result=new {common,position=Wire(mtext.Position),rotation=Wire(mtext.Rotation),height=Wire(mtext.Height),width=Wire(mtext.RectangleWidth),
+        if (entity is Underlay underlay) result=new {common,definition=Wire(underlay.Definition),position=Wire(underlay.Position),scale=Wire(underlay.Scale),rotation=Wire(underlay.Rotation),
+            contrast=underlay.Contrast,fade=underlay.Fade,display=(int)underlay.DisplayOptions,boundary=Wire(underlay.ClippingBoundary)};
+        else if (entity is MText mtext) result=new {common,position=Wire(mtext.Position),rotation=Wire(mtext.Rotation),height=Wire(mtext.Height),width=Wire(mtext.RectangleWidth),
             attachment=(int)mtext.AttachmentPoint,spacing=Wire(mtext.LineSpacingFactor),spacingStyle=(int)mtext.LineSpacingStyle,direction=(int)mtext.DrawingDirection,style=Wire(mtext.Style),
             text=Wire(mtext.Value),background=Wire(mtext.BackgroundFill),columns=Wire(mtext.Columns),definedHeight=Wire(mtext.DefinedHeight)};
         else if (entity is Text text) result=new {common,position=Wire(text.Position),rotation=Wire(text.Rotation),height=Wire(text.Height),width=Wire(text.Width),
