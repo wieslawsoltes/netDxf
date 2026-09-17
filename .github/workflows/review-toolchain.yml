@@ -12,18 +12,25 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Recover and fingerprint uploaded patch
+      - name: Retain exact corrupted upload and readable prefix
         shell: python
         run: |
-          import gzip, hashlib, json, pathlib
+          import hashlib, json, pathlib, zlib
           source = pathlib.Path('.recovery/review.patch.gz').read_bytes()
           blob = hashlib.sha1(b'blob ' + str(len(source)).encode() + b'\0' + source).hexdigest()
           assert blob == 'f8ad428238fd059a4cee453883621543256a6f47'
-          data = gzip.decompress(source)
           output = pathlib.Path('recovered-review'); output.mkdir()
-          (output / 'recovered.patch').write_bytes(data)
-          (output / 'receipt.json').write_text(json.dumps({'blob': blob, 'compressed_sha256': hashlib.sha256(source).hexdigest(), 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}, indent=2) + '\n')
-          print(data.decode('utf-8')[:8000])
+          (output / 'original-corrupt.patch.gz').write_bytes(source)
+          decoder = zlib.decompressobj(31); chunks = []; error = None
+          for offset, value in enumerate(source):
+              try: chunks.append(decoder.decompress(bytes([value])))
+              except zlib.error as ex:
+                  error = str(ex); break
+          data = b''.join(chunks)
+          (output / 'UNVERIFIED-prefix.patch').write_bytes(data)
+          receipt = {'blob': blob, 'compressed_sha256': hashlib.sha256(source).hexdigest(), 'partial_sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data), 'error_offset': offset, 'error': error}
+          (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt)); print(data.decode('utf-8', 'replace')[:8000])
       - uses: actions/upload-artifact@v4
         with:
           name: recovered-csharp-review-patch
