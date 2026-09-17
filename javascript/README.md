@@ -112,6 +112,8 @@ try {
 }
 ```
 
+Existing-file replacement on Windows requires the separately built, optional Node-API host; run `npm run build:windows-host` before filesystem tests or packing for Windows. An unbuilt Windows package rejects replacement without touching the destination. See [Windows host requirements and tests](doc/WINDOWS_HOST.md). The portable DXF runtime remains JavaScript.
+
 The default entry stays browser-safe and rejects filesystem operations without a registered host. Node publication is synchronous and stages beside the destination; it never uses delete-and-copy fallback. This does not establish complete System.IO parity, metadata retention, concurrent-writer isolation, or power-loss durability.
 
 ## License

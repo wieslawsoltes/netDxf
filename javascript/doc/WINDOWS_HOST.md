@@ -46,3 +46,49 @@ all 1,782 filesystem differential comparisons without an exclusion or allowlist.
 Verification results are recorded separately; adding the adapter is not by itself
 a Windows qualification pass. New-file publication still uses the existing
 exclusive hard-link strategy.
+
+## Native-host regression evidence
+
+`npm run test:windows-host` requires a real Windows process and the built addon.
+It checks native arity/type/NUL/length guards, JS argument validation, Unicode
+filenames with held-reader identity preservation, missing-source byte protection,
+and two consecutive calls from an installation without a native binary. It writes
+`artifacts/windows-host/results.json` and the complete TAP log; five successful
+executed cases, matching source/binary hashes, and unchanged runtime/verifier
+fingerprints are required. A non-Windows invocation fails rather than skipping.
+
+The portable supplemental suite separately tests the loader contract. Failed or
+invalid loads do not poison its cache, successful loading retains the validated
+callable rather than a mutable export object, malformed statuses are errors, and
+native failures retain their original Win32 code. Those simulated error-path tests
+are not counted as Windows integration or original C# test cases.
+
+The package's Node entry is `node-entry.js`, still exposed as
+`@netdxf/javascript/node`. Do not rename it to `node.js`: on Windows, a package-root
+file with that name can shadow `node.exe` during extensionless npm shell lookup.
+The command-resolution regressions execute from the package root.
+
+## Executed checkpoint
+
+At `9b10188e181e87bc963ea145ea43f1e348e2934d`, the Windows Server 2022 x64 job
+passed the native build, all five real addon tests, all 93 supplemental tests,
+all 82 original raw/helper atomic-save cases, all 1,782 filesystem differential
+comparisons (1,686 exact byte comparisons), and offline packed-package testing.
+There were no skipped or TODO tests in either added test suite. The Windows pack
+contained 176 files, including its built host and build metadata. See
+[run 35206647072](https://github.com/wieslawsoltes/netDxf/actions/runs/35206647072).
+
+This is Windows filesystem evidence only: the exact foundation, randomized
+geometry, Debug NaN-sign and full-port completion gates still report failures.
+The host binary is not used to implement geometry or DXF processing.
+
+The downloaded Windows artifact has SHA-256
+`73b1c97a025ff0f0bd2ddcffbce8d140dfaf0a82b5e89edbb86e3029803f97f1`.
+Its runtime fingerprint is
+`b584a41ddfdc4e2274608ab85c0d37a1ce0a36711cc208e88bf91ca897fc881c`.
+The verifier fingerprints are platform-specific because the current recipe sorts
+native file paths before normalizing separators: Windows
+`1332d1698af4c9a61e077f8eccf2bf1d28af75c4dfbf4d430f4ad4f820dd7659`,
+POSIX `00d4e1f8e49179fbdfe1376cefe8dba469ac1d42f2c22742ee5ab08e8ec1ec4f`.
+Both were reproduced from the same committed file bytes using each platform's
+ordering. They must not be mistaken for identical cross-platform digest strings.
