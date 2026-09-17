@@ -83,6 +83,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [The entity clone audit](doc/dxf-conformance/entity-clone-review.md) corrects lost SOLID/TRACE elevation, SHAPE width, Polyline3D smoothing, LEADER direction and shared LEADER line-color state. Direct and nested clones retain their existing source-record guards; this does not add universal graph import.
 
+[The SOLID/TRACE transform audit](doc/dxf-conformance/planar-entity-transforms.md) derives actual transformed plane normals, preserves signed thickness, rejects unrepresentable/projective input before mutation, and invalidates stale proxies only after successful geometry changes. Its numerical admission limits and six-profile text/binary qualification are explicit; it does not establish every entity transform or native AutoCAD equivalence.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
