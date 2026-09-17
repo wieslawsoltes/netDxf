@@ -440,7 +440,16 @@ internal static partial class Program
         var mesh = authored ? new PolyfaceMesh(new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY }, new[] { new short[] { 1, 2, 3 } }) : doc.Entities.PolyfaceMeshes.Single(m => m.VertexRecords[0].PersistentReactors.Count == 0);
         if (authored) doc.Entities.Add(mesh);
         var clone = (PolyfaceMesh)mesh.Clone(); Vector3 invalid = variant == 0 ? new Vector3(double.NaN, 0, 1) : variant == 1 ? new Vector3(0, double.PositiveInfinity, 1) : Vector3.Zero;
-        foreach (var target in new[] { mesh, clone }) { try { target.Normal = invalid; } catch (ArgumentException) { } }
+        foreach (var target in new[] { mesh, clone })
+        {
+            var before = DirectionBits(target.Normal);
+            Throws<ArgumentException>(() => target.Normal = invalid);
+            Check(before.SequenceEqual(DirectionBits(target.Normal)), "invalid normal assignment changed retained geometry");
+            // The public setter is now atomic. Deliberately corrupt private state
+            // to retain the existing independent adoption/clone/save guards.
+            typeof(EntityObject).GetField("normal", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(target, invalid);
+        }
         Throws<InvalidOperationException>(() => mesh.Clone());
         var destination = new DxfDocument(DxfVersion.AutoCad2018); var objects = destination.Objects.Items.ToArray(); long targetSeed = OwnershipSeed(destination);
         Throws<InvalidOperationException>(() => destination.Entities.Add(clone));
