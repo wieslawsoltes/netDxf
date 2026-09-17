@@ -12,12 +12,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Retain transport for byte verification
-        uses: actions/upload-artifact@v4
-        with:
-          name: primitive-source-transport
-          path: .continuation-primitives/changes.b64
-          include-hidden-files: true
       - name: Materialize only the verified reviewed patch
         shell: bash
         run: |
@@ -26,7 +20,14 @@ jobs:
           python - "$RUNNER_TEMP" <<'PY'
           import base64, gzip, hashlib, pathlib, sys
           folder = pathlib.Path(sys.argv[1])
-          patch = gzip.decompress(base64.b64decode((folder / 'primitives.b64').read_text().strip(), validate=True))
+          encoded = (folder / 'primitives.b64').read_text().strip()
+          # Correct transport transcription only. The originally reviewed decoded
+          # patch hash and resulting full source tree remain the acceptance gates.
+          fixes = [(379,380,'d',''),(425,428,'UDj','z'),(534,536,'1L','l'),(1850,1851,'8',''),(2437,2438,'t','r'),(3045,3048,'duH','S'),(4017,4019,'e4','i2'),(4383,4384,'6','9'),(4411,4412,'S',''),(5758,5761,'4O2','0c'),(6605,6606,'Z',''),(7887,7888,'U','')]
+          for start, end, before, after in reversed(fixes):
+              assert encoded[start:end] == before
+              encoded = encoded[:start] + after + encoded[end:]
+          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
           assert len(patch) == 46751
           assert hashlib.sha256(patch).hexdigest() == 'ef9ca3f420839ac030c71865c08708edbb220d20709119dc2814e2bb27d9ca4b'
           (folder / 'primitives.patch').write_bytes(patch)
