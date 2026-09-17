@@ -3527,11 +3527,8 @@ namespace netDxf.IO
                     break;
             }
 
-            Debug.Assert(!string.IsNullOrEmpty(attTag), "The attribute tag cannot be null or empty.");
             if (string.IsNullOrEmpty(attTag))
-            {
-                return null;
-            }
+                throw new FormatException("The attribute tag cannot be null or empty.");
 
             Attribute attribute = new Attribute(attTag)
             {

@@ -25,6 +25,9 @@ namespace netDxf.Objects
         /// Failure results explicitly retain a bound cache or replace it with a caller-supplied fallback.
         /// No host TEXT/MTEXT/ATTRIB/TABLE display cache is rewritten. No handles are allocated.</remarks>
         public int ApplyFieldResults(IEnumerable<DxfFieldResultEdit> results)
+        { return this.ApplyFieldResultsCore(results, false); }
+
+        private int ApplyFieldResultsCore(IEnumerable<DxfFieldResultEdit> results, bool updateTextHosts)
         {
             this.BeginFieldResults();
             try
@@ -39,7 +42,7 @@ namespace netDxf.Objects
                     CountFieldResultSize(edit.Result, ref characters, ref binaryBytes);
                     edits.Add(edit);
                 }
-                return this.CommitFieldResults(edits);
+                return this.CommitFieldResults(edits, updateTextHosts);
             }
             finally { this.EndFieldResults(); }
         }
@@ -69,6 +72,10 @@ namespace netDxf.Objects
         /// Single-threaded API; host entities and native external evaluators are not updated or invoked.</remarks>
         public int EvaluateFieldTrees(IEnumerable<DxfStoredField> roots,
             Func<DxfFieldEvaluationInput, DxfFieldResult> evaluator, int evaluationContext = 32)
+        { return this.EvaluateFieldTreesCore(roots, evaluator, evaluationContext, false); }
+
+        private int EvaluateFieldTreesCore(IEnumerable<DxfStoredField> roots,
+            Func<DxfFieldEvaluationInput, DxfFieldResult> evaluator, int evaluationContext, bool updateTextHosts)
         {
             this.BeginFieldResults();
             try
@@ -110,6 +117,7 @@ namespace netDxf.Objects
                     for (int i = field.Children.Count - 1; i >= 0; i--)
                         stack.Push(Tuple.Create(field.Children[i], current.Item2 + 1, false));
                 }
+                var hosts = updateTextHosts ? this.CaptureFieldTextHosts(rootList) : null;
                 var evaluated = new Dictionary<DxfStoredField, DxfFieldResult>();
                 var edits = new List<DxfFieldResultEdit>();
                 long characters = 0, binaryBytes = 0;
@@ -122,7 +130,7 @@ namespace netDxf.Objects
                     CountFieldResultSize(result, ref characters, ref binaryBytes);
                     evaluated.Add(field, result); edits.Add(snapshots[field].WithResult(result));
                 }
-                return this.CommitFieldResults(edits);
+                return this.CommitFieldResults(edits, updateTextHosts, hosts);
             }
             finally { this.EndFieldResults(); }
         }
@@ -156,7 +164,8 @@ namespace netDxf.Objects
             field.ValidateSource(this.Document);
             if (field.Evaluation == null) throw new NotSupportedException("FIELD evaluation/cache framing is not qualified for result editing.");
         }
-        private int CommitFieldResults(List<DxfFieldResultEdit> edits)
+        private int CommitFieldResults(List<DxfFieldResultEdit> edits, bool updateTextHosts = false,
+            List<FieldTextHostState> hosts = null)
         {
             this.ValidateFieldResultGraph();
             var selected = new HashSet<DxfStoredField>();
@@ -169,14 +178,19 @@ namespace netDxf.Objects
             foreach (var field in selected)
                 if (field.Owner is DxfStoredField parent && !selected.Contains(parent))
                     throw new ArgumentException("Updating a child FIELD also requires every FIELD ancestor's explicit result.", nameof(edits));
+            if (updateTextHosts && hosts == null)
+                hosts = this.CaptureFieldTextHosts(edits.Select(edit => edit.Original.Field)
+                    .Where(field => !(field.Owner is DxfStoredField)));
             var prepared = new List<Tuple<DxfStoredField, DxfStoredField.PreparedResult>>();
             foreach (var edit in edits)
             {
                 var next = edit.Original.Field.PrepareResult(edit);
                 if (next != null) prepared.Add(Tuple.Create(edit.Original.Field, next));
             }
+            var hostUpdates = updateTextHosts ? this.PrepareFieldTextHosts(hosts, edits) : null;
             // No caller code, graph lookup, parsing or allocation remains in publication.
             foreach (var item in prepared) item.Item1.PublishResult(item.Item2);
+            if (hostUpdates != null) foreach (var update in hostUpdates) update.Publish();
             return prepared.Count;
         }
     }
