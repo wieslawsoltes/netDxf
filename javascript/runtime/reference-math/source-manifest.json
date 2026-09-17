@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/bminor/glibc",
+  "ref": "f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2",
+  "profile": "glibc-2.35-dbl64-x86_64",
+  "files": {
+    "sysdeps/ieee754/dbl-64/s_sin.c": "9aa66cb2c44f976d41c3b14e6daa9708066a6d341fca6d1842b959e4f127905f",
+    "sysdeps/ieee754/dbl-64/usncs.h": "c78fb520931e863618a60dc28206d5393f884ede9cbaffa3758b8dbc11553ee3",
+    "sysdeps/ieee754/dbl-64/sincostab.c": "1da08546d74c8efd2524c39bd57d26d81fcb7c8f8a920b61ad116fa41bfde218",
+    "sysdeps/ieee754/dbl-64/branred.c": "9d6ffd558a1155a5a42917ae0398c00a80482fbcbc752005fdb79761bf09cacc",
+    "sysdeps/ieee754/dbl-64/branred.h": "aecb3c4102bbe2d41b31f77dfd7ffbb6f7af41e5747964d7018ffc4d27a23975",
+    "sysdeps/ieee754/dbl-64/s_atan.c": "1939781b5f53b24de7887750b1e3fc2c6ae98bf4a65c69f65cae2bc4db773632",
+    "sysdeps/ieee754/dbl-64/atnat.h": "8eb209c977155f1f8d4799f65b179ff6be6276e030a140851cbe456b0f1b6465",
+    "sysdeps/ieee754/dbl-64/uatan.tbl": "0fae03e2d6171ec103984028676eb0335cd6cbda00a2d6613d4b212267e57dc6",
+    "sysdeps/ieee754/dbl-64/e_atan2.c": "5bf3d1b7d2fec59b300bd209c4332edd8b4151e80051cfa393488f8c04bee4ad",
+    "sysdeps/ieee754/dbl-64/atnat2.h": "981e46cb2c02e5aba0b390464f21eb127b55b59625860b58c6b5b44c25bc215d",
+    "sysdeps/ieee754/dbl-64/e_asin.c": "64e5fc7a20a3603bc6e472360cd6f2ceb5dc137e84a98ec9531f930d34858f4e",
+    "sysdeps/ieee754/dbl-64/uasncs.h": "958f16627dc4af37dc280af16b1bf2add6b92e98afaa620ea5a23b332750d1af",
+    "sysdeps/ieee754/dbl-64/asincos.tbl": "57dab0cf17f9387e9ea2f0c27a2bd682346921ff270114cf9eb8f7605fd60150",
+    "sysdeps/ieee754/dbl-64/root.tbl": "4871d910120aa2fe88668968b28fcd2ffd9bb373e5a56c410eca87106f176a57",
+    "sysdeps/ieee754/dbl-64/powtwo.tbl": "ba1947eda7e46bbb7e028358df45a97673851fef5af6dae785a1f12d27289453",
+    "sysdeps/ieee754/dbl-64/s_tan.c": "c860dc13c15147edc98356175e1d9c12a8e3a5fc1b2a8afa70c46a063910a10b",
+    "sysdeps/ieee754/dbl-64/utan.h": "949e53e47e96be9bc0e467b9d243e487d2aa1b5b3ad120aab37607b30308cabe",
+    "sysdeps/ieee754/dbl-64/utan.tbl": "299047629c20814cdb467609f0d62a1b494aca52b2ec0768ca673028b7efb3e3",
+    "sysdeps/ieee754/dbl-64/dla.h": "59719bac1e77b95cbc64dc6f9999d8d79b31d2b45018eb1f0c6638600587c33d",
+    "COPYING": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "COPYING.LIB": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "LICENSES": "b33d0bd9f685b46853548814893a6135e74430d12f6d94ab3eba42fc591f83bc"
+  }
+}
