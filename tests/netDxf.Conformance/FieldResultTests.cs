@@ -221,7 +221,7 @@ internal static partial class Program
     }
     private static void FieldResultConstructors()
     {
-        foreach (object value in new object[] { 1L, true, new byte[] { 1 }, double.NaN, double.PositiveInfinity, "\0", "\ud800" })
+        foreach (object value in new object[] { 1L, true, new ArraySegment<byte>(new byte[] { 1 }), double.NaN, double.PositiveInfinity, "\0", "\ud800" })
             Throws<ArgumentException>(() => new DxfFieldResult(value, "display"));
         Throws<ArgumentException>(() => new DxfFieldResult(1, null!));
         Throws<ArgumentException>(() => new DxfFieldResult(1, "display", "\0"));

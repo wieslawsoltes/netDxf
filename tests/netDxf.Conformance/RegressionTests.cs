@@ -7,6 +7,7 @@ internal static partial class Program
         RegisterFieldResultTests();
         RegisterFieldResultBoundaryTests();
         RegisterFieldFailureTests();
+        RegisterFieldBinaryValueTests();
         RegisterEllipseAffineReviewTests();
         RegisterTrueColorWireReviewTests();
         RegisterLegacyUtilityReviewTests();
