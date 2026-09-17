@@ -1,0 +1,34 @@
+name: JavaScript mathematical source reference
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['.github/workflows/javascript-math-reference.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-reference:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: bminor/glibc
+          ref: 'f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2'
+          path: mathematical-reference
+          persist-credentials: false
+          sparse-checkout: |
+            sysdeps/ieee754/dbl-64
+            sysdeps/x86_64/fpu/multiarch
+      - name: Retain the exact third-party source and license, not test-output replacements
+        run: |
+          mkdir -p artifacts
+          git -C mathematical-reference archive --format=tar.gz --output="$GITHUB_WORKSPACE/artifacts/glibc-2.35-math-source.tar.gz" HEAD sysdeps/ieee754/dbl-64 sysdeps/x86_64/fpu/multiarch COPYING COPYING.LIB LICENSES
+          git -C mathematical-reference rev-parse HEAD > artifacts/source-ref.txt
+          sha256sum artifacts/glibc-2.35-math-source.tar.gz > artifacts/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: javascript-math-source-reference
+          path: artifacts
+          if-no-files-found: error
+          retention-days: 7
