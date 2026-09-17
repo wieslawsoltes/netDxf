@@ -112,21 +112,22 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            this.Origin = transformation * this.Origin + translation;
+            var next = InfiniteLineTransform.Prepare(transformation, translation, this.origin, this.direction, base.Normal);
+            if (!next.Changed) return;
+            // No virtual property callbacks can interrupt publication.
+            base.Normal = next.Normal;
+            this.origin = next.Origin;
+            this.direction = next.Direction;
+            this.ClearProxyGraphics();
+        }
 
-            Vector3 newDirection = transformation * this.Direction;
-            if (Vector3.Equals(Vector3.Zero, newDirection))
-            {
-                newDirection = this.Direction;
-            }
-            this.Direction = newDirection;
-
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-            this.Normal = newNormal;
+        /// <summary>Applies a finite affine transform to this infinite line.</summary>
+        /// <param name="transformation">Affine matrix using column vectors.</param>
+        /// <remarks>Projective, collapsed or unrepresentable geometry rejects before mutation.</remarks>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            InfiniteLineTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>
