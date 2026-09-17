@@ -157,3 +157,5 @@ Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families rema
 [Supplementary entity clone qualification](doc/dxf-conformance/entity-clone-qualification.md) preserves the original clone-review cases and adds registered/nested source checks, exact leader directions, retained-source guards, and a separate all-profile pair corpus. No additional production cloning behavior is introduced by this qualification task.
 
 [LINE affine geometry review](doc/dxf-conformance/line-affine-review.md) corrects signed thickness, finite affine validation, atomic rejection and stale proxy handling, with exact once-rounded endpoint arithmetic and independent six-profile qualification.
+
+[MESH and 3DFACE affine review](doc/dxf-conformance/vertex-affine-review.md) adds atomic finite transforms, exact WCS coordinate evaluation, source-preserving rejection and changed-geometry proxy invalidation. The task preserves mesh topology and distinguishes the auxiliary normal from geometric face normals.
