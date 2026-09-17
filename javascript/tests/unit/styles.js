@@ -107,3 +107,16 @@ test('portable path profile is explicit and supports both host separator convent
   const old=SetSupportFileSystem({ReadAllBytes:()=>new Uint8Array(),Exists:()=>false,DirectorySeparators:'/\\',InvalidPathChars:'\0'});
   try{assert.equal(PathExtension('a.b\\file'), '');assert.equal(PathFileNameWithoutExtension('a.b\\file.shx'),'file');}finally{SetSupportFileSystem(old);}
 });
+
+test('LIN NaN offset bits survive warmed parsing and value copies',async()=>{
+  const {ParseInvariantFloat}=await import('../../runtime/InvariantFloat.js');
+  const {doubleBits}=await import('../../tools/wire.mjs');
+  for(let i=0;i<4096;i++){
+    ParseInvariantFloat(String((i%17)/4));
+    const axis=i%2?'X':'Y',token=['NaN','+NaN','-NaN'][i%3];
+    const line=Linetype.LoadText(`*L,d\nA,.5,[ZIG,shapes.shx,${axis}=${token}],-.25`,'L');
+    const segment=line.Segments.get_Item(0);
+    assert.equal(doubleBits(segment.Offset[axis]),'FFF8000000000000');
+    assert.equal(doubleBits(segment.Clone().Offset[axis]),'FFF8000000000000');
+  }
+});

@@ -1,12 +1,14 @@
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
-// Standalone original cases. Entity/layer/block/document cases remain unported, not skipped.
-import { ApplicationRegistry, XData, XDataRecord, XDataCode } from '../../index.js';
+// Standalone and detached entity/layer cases. Block/document cases remain unported, not skipped.
+import { ApplicationRegistry, XData, XDataRecord, XDataCode, Line, Layer, Vector3 } from '../../index.js';
 import { Run, Check, Equal } from './TestHarness.js';
 const CloneApplication = 'DXF_CLONE_CONFORMANCE';
 export function RegisterXDataCloneTests() {
   for (const length of [0,1,127]) Run(`xdata/clone/binary-length-${length}`,()=>CheckBinaryClone(length));
   Run('xdata/clone/shared-input-records',CheckSharedBinaryClone);
   Run('xdata/clone/scalar-records',CheckScalarClone);
+  Run('xdata/clone/entity',()=>CheckObjectClone(new Line(Vector3.Zero,Vector3.UnitX)));
+  Run('xdata/clone/layer',()=>CheckObjectClone(new Layer('CloneLayer')));
 }
 export function BinaryXData(bytes) { const data=new XData(new ApplicationRegistry(CloneApplication));data.XDataRecord.Add(new XDataRecord(XDataCode.BinaryData,bytes));return data; }
 export function BinaryValue(data,index=0){return data.XDataRecord.get_Item(index).Value;}
@@ -31,4 +33,10 @@ export function CheckScalarClone(){
   }
   const copy=source.Clone();Equal(source.XDataRecord.Count,copy.XDataRecord.Count);
   for(let i=0;i<source.XDataRecord.Count;i++){const a=source.XDataRecord.get_Item(i),b=copy.XDataRecord.get_Item(i);Equal(a.Code,b.Code);Equal(typeof a.Value,typeof b.Value);Equal(a.Value,b.Value);}
+}
+
+export function CheckObjectClone(source){
+  source.XData.Add(BinaryXData(Uint8Array.of(1,2,3)));const copy=source.Clone();
+  BinaryValue(copy.XData.get_Item(CloneApplication))[0]=99;
+  Equal(1,BinaryValue(source.XData.get_Item(CloneApplication))[0],'DxfObject clone payload isolation');
 }

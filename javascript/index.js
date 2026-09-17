@@ -40,3 +40,13 @@ export { LinetypeSegmentChangeEventArgs } from './netDxf/Tables/LinetypeSegmentC
 export { TextStyle } from './netDxf/Tables/TextStyle.js';
 export { TextStyleFontData } from './netDxf/Tables/TextStyleFontData.js';
 export { ShapeStyle } from './netDxf/Tables/ShapeStyle.js';
+
+export { EntityObject } from './netDxf/Entities/EntityObject.js';
+export { EntityShadowMode } from './netDxf/Entities/EntityObject.CommonData.js';
+export { Point } from './netDxf/Entities/Point.js';
+export { Line } from './netDxf/Entities/Line.js';
+export { Ray } from './netDxf/Entities/Ray.js';
+export { XLine } from './netDxf/Entities/XLine.js';
+export { Face3D } from './netDxf/Entities/Face3D.js';
+export { Solid } from './netDxf/Entities/Solid.js';
+export { Trace } from './netDxf/Entities/Trace.js';
