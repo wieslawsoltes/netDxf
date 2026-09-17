@@ -1,0 +1,47 @@
+name: Materialize checked primitive geometry review
+on:
+  push:
+    branches: [codex/materialize-primitives-20260917]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Retain transport for byte verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: primitive-source-transport
+          path: .continuation-primitives/changes.b64
+          include-hidden-files: true
+      - name: Materialize only the verified reviewed patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .continuation-primitives/changes.b64 "$RUNNER_TEMP/primitives.b64"
+          python - "$RUNNER_TEMP" <<'PY'
+          import base64, gzip, hashlib, pathlib, sys
+          folder = pathlib.Path(sys.argv[1])
+          patch = gzip.decompress(base64.b64decode((folder / 'primitives.b64').read_text().strip(), validate=True))
+          assert len(patch) == 46751
+          assert hashlib.sha256(patch).hexdigest() == 'ef9ca3f420839ac030c71865c08708edbb220d20709119dc2814e2bb27d9ca4b'
+          (folder / 'primitives.patch').write_bytes(patch)
+          PY
+          git config core.autocrlf false
+          git switch --detach 730944c59196c6a556cedc4943acad9108d7f8ed
+          test "$(git rev-parse HEAD^{tree})" = c127fd8d1f4f25ca81aea529e968927d1fd066b3
+          git apply --index --whitespace=nowarn "$RUNNER_TEMP/primitives.patch"
+          test "$(git write-tree)" = cbfb6f0f468c776c23b417e6cf80054c1e076f20
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Review eight primitive geometry families with atomic affine transforms and stable directions'
+          test "$(git rev-parse HEAD^)" = 730944c59196c6a556cedc4943acad9108d7f8ed
+          test -z "$(git ls-tree --name-only HEAD .continuation-primitives .github/workflows/materialize-primitives.yml)"
+          test -z "$(git ls-remote --heads origin codex/dxf-primitive-review-20260917)"
+          git push origin HEAD:refs/heads/codex/dxf-primitive-review-20260917
+          git show --no-patch --format=fuller HEAD
+          git rev-parse HEAD^{tree}
