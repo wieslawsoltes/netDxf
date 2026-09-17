@@ -1,38 +1,31 @@
-name: Offline C# review toolchain
+name: Recover interrupted C# review patch
 on:
   push:
     branches: [codex/review-toolchain-20260917]
 permissions:
   contents: read
 jobs:
-  toolchain:
+  recovery:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
-      - name: Fetch and verify official .NET SDK
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Recover and fingerprint uploaded patch
         shell: python
         run: |
-          import hashlib, json, pathlib, urllib.request
-          version = '8.0.425'
-          metadata_url = 'https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json'
-          with urllib.request.urlopen(metadata_url) as response:
-              metadata = json.load(response)
-          sdks = [sdk for release in metadata['releases'] for sdk in release.get('sdks', []) if sdk['version'] == version]
-          if not sdks:
-              raise RuntimeError('Pinned SDK is absent from official release metadata')
-          package = next(file for file in sdks[0]['files'] if file['rid'] == 'linux-x64' and file['name'].endswith('.tar.gz'))
-          if not package['url'].startswith('https://builds.dotnet.microsoft.com/dotnet/Sdk/' + version + '/'):
-              raise RuntimeError('Unexpected SDK download origin')
-          output = pathlib.Path('review-toolchain'); output.mkdir()
-          target = output / 'dotnet-sdk-linux-x64.tar.gz'
-          urllib.request.urlretrieve(package['url'], target)
-          digest = hashlib.sha512(target.read_bytes()).hexdigest()
-          if digest.lower() != package['hash'].lower():
-              raise RuntimeError('SDK SHA-512 mismatch')
-          (output / 'receipt.json').write_text(json.dumps({'sdk': version, 'metadata': metadata_url, 'url': package['url'], 'sha512': digest}, indent=2) + '\n')
+          import gzip, hashlib, json, pathlib
+          source = pathlib.Path('.recovery/review.patch.gz').read_bytes()
+          blob = hashlib.sha1(b'blob ' + str(len(source)).encode() + b'\0' + source).hexdigest()
+          assert blob == 'f8ad428238fd059a4cee453883621543256a6f47'
+          data = gzip.decompress(source)
+          output = pathlib.Path('recovered-review'); output.mkdir()
+          (output / 'recovered.patch').write_bytes(data)
+          (output / 'receipt.json').write_text(json.dumps({'blob': blob, 'compressed_sha256': hashlib.sha256(source).hexdigest(), 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}, indent=2) + '\n')
+          print(data.decode('utf-8')[:8000])
       - uses: actions/upload-artifact@v4
         with:
-          name: offline-csharp-review-toolchain
-          path: review-toolchain/
-          compression-level: 0
-          retention-days: 2
+          name: recovered-csharp-review-patch
+          path: recovered-review/
+          retention-days: 7
