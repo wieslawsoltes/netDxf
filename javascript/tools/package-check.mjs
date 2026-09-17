@@ -15,7 +15,11 @@ try {
   if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
   const install=path.join(temp,'install');fs.mkdirSync(install);
   run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
-  const script=`import {DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection} from '@netdxf/javascript';
+  const script=`import {DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    const registry=new ApplicationRegistry('REGISTRY'),data=new XData(registry);
+    data.XDataRecord.Add(new XDataRecord(XDataCode.BinaryData,Uint8Array.of(1,2)));registry.XData.Add(data);
+    const clone=registry.Clone('COPY');if(clone.XData.get_Item('COPY').ApplicationRegistry!==clone)throw new Error('Packed cyclic registry clone failed');
+    clone.Name='RENAMED';if(!clone.XData.ContainsAppId('RENAMED'))throw new Error('Packed registry binding failed');
     const tags=[[0,'SECTION'],[2,'HEADER'],[9,'$ACADVER'],[1,'AC1032'],[0,'ENDSEC'],[0,'EOF']].map(([c,v])=>new DxfTag(c,v));
     const tx=DxfRawObjectStore.Open(DxfRawDocument.Create(tags)).BeginEdit();
     const root=tx.EnsureRootDictionary();tx.CreateVariable(root,'Test','Zażółć 東京');

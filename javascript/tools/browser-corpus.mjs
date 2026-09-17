@@ -5,6 +5,7 @@ import { baseline, sourceRoot, javascriptRoot, configuration } from './dotnet.mj
 import { runtimeFingerprint, verificationFingerprint, sha256 } from './evidence.mjs';
 import { geometryCorpus } from './geometry-differential.mjs';
 import { collectionCorpus } from './collection-differential.mjs';
+import { lifecycleCorpus } from './lifecycle-differential.mjs';
 import { ObjectFixture } from '../tests/support/ObjectFixture.js';
 function canonical(value) {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
@@ -42,6 +43,11 @@ try {
     const expected = await oracle.request({ op: 'objects', ...input });
     if (!expected.ok || expected.value.results.some(r => !r.ok)) throw new Error('Browser transaction oracle failed.');
     cases.push({ name: `objects-transaction/${version}/${binary}`, input, expected: { objects: sha256(canonical(expected)) } });
+  }
+  for (const scenario of lifecycleCorpus()) {
+    const input = { scenarios: [scenario] }, expected = await oracle.request({ op: 'lifecycle', ...input });
+    if (!expected.ok) throw new Error('Typed lifecycle oracle failed.');
+    cases.push({ name: 'lifecycle/' + scenario.name, input, expected: { lifecycle: sha256(canonical(expected)) } });
   }
   const native=JSON.parse(fs.readFileSync(path.join(javascriptRoot,'native-port-manifest.json')));
   const requests=geometryCorpus(native);

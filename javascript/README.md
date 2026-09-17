@@ -18,6 +18,8 @@ There are also 77 mirrored enum files, strict code-page tables generated from th
 
 **Raw atomic file saves:** the Node entry adds `DxfRawDocument.SaveAtomic` and a synchronous `FileStream` adapter. Eighty-two original raw/helper cases and direct real-filesystem comparisons are included; typed atomic-save tests remain unported. See [filesystem contracts](doc/FILESYSTEM.md).
 
+**Typed lifecycle:** detached `DxfObject`, `XData`, application registries, name-binding events and cyclic cloning now have native original-path implementations. See [typed lifecycle](doc/TYPED_LIFECYCLE.md) for the exact differential corpus, API adaptations, and remaining registered-document boundaries.
+
 ## Source layout
 
 | Original | Native JavaScript |

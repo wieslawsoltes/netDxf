@@ -42,7 +42,8 @@
     "test:geometry:exact": "node tools/geometry-stress.mjs",
     "test:foundations": "node tools/foundations-differential.mjs",
     "test:unit-factors": "node tools/unit-factors.mjs --check",
-    "test:filesystem": "node tools/filesystem-differential.mjs"
+    "test:filesystem": "node tools/filesystem-differential.mjs",
+    "test:lifecycle": "node tools/lifecycle-differential.mjs"
   },
   "repository": {
     "type": "git",
