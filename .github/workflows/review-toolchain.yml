@@ -1,4 +1,4 @@
-name: Publish checksum-locked C# clone review
+name: Integrate supplemental clone qualification
 on:
   push:
     branches: [codex/review-toolchain-20260917]
@@ -15,10 +15,14 @@ jobs:
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
+          path: supplemental
+          ref: 5665a387d3fbc27087360e5951eeaa5ce9bc8242
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
           path: implementation
-          ref: cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb
-          persist-credentials: true
-      - name: Verify complete source tree and publish clean child commit
+          ref: f9261b741c1e8d5c5f51a6fdb6ecdaea1c6fc6fb
+      - name: Preserve PR107 and materialize exact reviewed supplemental tree
         shell: python
         env:
           GIT_AUTHOR_NAME: Wiesław Šoltés
@@ -26,40 +30,32 @@ jobs:
           GIT_COMMITTER_NAME: Wiesław Šoltés
           GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
         run: |
-          import gzip, hashlib, json, pathlib, subprocess
+          import hashlib, json, pathlib, subprocess
           work = pathlib.Path('implementation').resolve()
-          def git(*args, data=None):
-              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
-          base = 'cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb'
-          branch = 'codex/dxf-entity-clone-review-20260917'
-          expected = '8ab26e580a0395ebdadd4283e78fd61b7f8c524e'
+          def git(*args): return subprocess.check_output(['git', *args], cwd=work).decode().strip()
+          base = 'f9261b741c1e8d5c5f51a6fdb6ecdaea1c6fc6fb'
+          expected = '554b13c8419e33c2d0e8b5a29f4cc453b7d4bb3d'
+          branch = 'codex/review-qualified-clones-source-20260917'
           assert git('rev-parse', 'HEAD') == base
-          assert git('rev-parse', 'HEAD^{tree}') == '68dd970d70c3d79c8759aef02e4c9f492f2a8f06'
-          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Destination branch already exists'
-          sources = [
-              ('production', 'cb4eaa4f2fbda82d955f89ba1cd0d547bc2ca2464cd67781647a0597ff3a4012', '7c9d6bdd9aadd0049f85591d0c7fcc207f0f687ae0fa42a0e5c35654725a5ff7'),
-              ('tests', '4b0b52ebc907feba9963a8fc29891009d64b30221d276e8943758f5167c7fd74', 'f9fda8ec33b265647b72ebdd034871cd89a9e8eb61bb1db978756054a8b445bc'),
-              ('verifier', '6d40585a47c797f20824789699db98726bc3807dbe0efcb8cc67c7c94712cb19', 'e4c1ca5be664f86e56a68bd2f29c40e9be230eb1ff1c60e45bb132c6c0f5dfb0'),
-              ('docs', 'c53445f39b54e235a9024b518055570122b5180446bb252685cf9de6b62a3a98', 'd56bad0d4d7ce668807c05c094caf4217c0c3cf26d3fa3d988aa9cfcdfc3a3db'),
-          ]
-          for name, compressed_hash, patch_hash in sources:
-              compressed = pathlib.Path('transport/.recovery/clone/' + name + '.patch.gz').read_bytes()
-              assert hashlib.sha256(compressed).hexdigest() == compressed_hash
-              patch = gzip.decompress(compressed)
-              assert hashlib.sha256(patch).hexdigest() == patch_hash
-              git('apply', '--check', '-', data=patch)
-              git('apply', '--whitespace=nowarn', '-', data=patch)
+          assert git('rev-parse', 'HEAD^{tree}') == '664662aa92f0808c7cc3ca8a689980f6fdde3dec'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          for source, target, digest in [
+              ('tests/netDxf.Conformance/EntityCloneReviewTests.cs', 'tests/netDxf.Conformance/EntityCloneQualificationTests.cs', '8e2edf6db1be917bcb4830e8abf4e23c3dd91788cbc27ce202526501bacb5ba3'),
+              ('tools/verify_entity_clone_review.py', 'tools/verify_entity_clone_qualification.py', '644e056849edb4b27b428422b9743b7291900703590973068bb6c61a6db8417c')]:
+              text = (pathlib.Path('supplemental') / source).read_text()
+              text = text.replace('CloneReview', 'CloneQualification').replace('EntityCloneReview', 'EntityCloneQualification').replace('clone-review', 'clone-qualification')
+              data = text.encode()
+              assert hashlib.sha256(data).hexdigest() == digest
+              (work / target).write_bytes(data)
+          program = work / 'tests/netDxf.Conformance/Program.cs'
+          text = program.read_text()
+          assert text.count('        RunAdditionalTests();') == 1
+          program.write_text(text.replace('        RunAdditionalTests();', '        RegisterEntityCloneQualificationTests();\n        RunAdditionalTests();'))
+          readme = work / 'README.md'
+          readme.write_text(readme.read_text() + '\n[Supplementary entity clone qualification](doc/dxf-conformance/entity-clone-qualification.md) preserves the original clone-review cases and adds registered/nested source checks, exact leader directions, retained-source guards, and a separate all-profile pair corpus. No additional production cloning behavior is introduced by this qualification task.\n')
+          (work / 'doc/dxf-conformance/entity-clone-qualification.md').write_bytes(pathlib.Path('transport/.recovery/clone/qualification.md').read_bytes())
           git('add', '-A')
-          tree = git('write-tree')
-          assert tree == expected, 'Reviewed source tree mismatch'
-          sha = git('commit-tree', tree, '-p', base, '-m', 'fix: preserve authored entity state and isolation through nested clones')
+          tree = git('write-tree'); assert tree == expected, 'Complete integrated source mismatch'
+          sha = git('commit-tree', tree, '-p', base, '-m', 'test: retain PR107 and add independent nested clone qualification')
           git('push', 'origin', sha + ':refs/heads/' + branch)
-          receipt = {'base': base, 'branch': branch, 'commit': sha, 'tree': tree, 'patches': sources}
-          output = pathlib.Path('publication-receipt'); output.mkdir()
-          (output / 'clone-review.json').write_text(json.dumps(receipt, indent=2) + '\n')
-          print(json.dumps(receipt, indent=2))
-      - uses: actions/upload-artifact@v4
-        with:
-          name: clone-review-publication-receipt
-          path: publication-receipt/
-          retention-days: 14
+          print(json.dumps({'commit': sha, 'tree': tree, 'base': base, 'branch': branch}))
