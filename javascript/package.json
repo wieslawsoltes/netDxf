@@ -12,7 +12,7 @@
     ".": "./index.js",
     "./netDxf/*": "./netDxf/*",
     "./runtime/*": "./runtime/*",
-    "./node": "./node.js"
+    "./node": "./node-entry.js"
   },
   "files": [
     "netDxf",
@@ -24,7 +24,7 @@
     "baseline.json",
     "geometry.js",
     "native-port-manifest.json",
-    "node.js",
+    "node-entry.js",
     "native/bin",
     "native/windows/atomic_replace.cc",
     "native/windows/binding.gyp",

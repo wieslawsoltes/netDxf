@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { DxfRawDocument, DxfRawOptions, DxfTag, DxfVersion, MemoryStream, FileStream } from '../../node.js';
+import { DxfRawDocument, DxfRawOptions, DxfTag, DxfVersion, MemoryStream, FileStream } from '../../node-entry.js';
 import { DxfAtomicFile } from '../../netDxf/IO/DxfAtomicFile.js';
 import * as E from '../../runtime/Errors.js';
 import { Run, Check, Equal, Throws, SupportedVersions, HeaderVersion, VersionName, BooleanName } from './TestHarness.js';

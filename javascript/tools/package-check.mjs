@@ -10,7 +10,7 @@ const npm=process.platform==='win32'?'npm.cmd':'npm';
 function run(command,args,cwd){const r=spawnSync(command,args,{cwd,encoding:'utf8',shell:process.platform==='win32' && command===npm});if(r.status!==0)throw r.error||new Error(r.stdout+'\n'+r.stderr);return r.stdout;}
 try {
   const [info]=JSON.parse(run(npm,['pack','--ignore-scripts','--json','--pack-destination',temp],javascriptRoot));
-  if(!info.files.some(f=>f.path==='node.js')) throw new Error('Packed Node entry is missing.');
+  if(!info.files.some(f=>f.path==='node-entry.js')) throw new Error('Packed Node entry is missing.');
   if(!info.files.some(f=>f.path==='Enums.generated.js')) throw new Error('Packed enum barrel is missing.');
   if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
   const install=path.join(temp,'install');fs.mkdirSync(install);

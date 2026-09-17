@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { FileStream } from '../../node.js';
+import { FileStream } from '../../node-entry.js';
 import { DxfAtomicFile } from '../../netDxf/IO/DxfAtomicFile.js';
 import { NodeFileSystem } from '../../runtime/NodeFileSystem.js';
 import { SetFileSystemAdapter } from '../../runtime/FileSystem.js';

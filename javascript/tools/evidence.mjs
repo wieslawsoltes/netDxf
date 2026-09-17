@@ -10,7 +10,7 @@ export const sourceFingerprint = computeSourceFingerprint;
 export function runtimeFingerprint(root = javascriptRoot) {
   const files = ['netDxf', 'runtime'].flatMap(dir => walk(path.join(root, dir)));
   files.push(...['native/windows/atomic_replace.cc', 'native/windows/binding.gyp', 'native/build.mjs'].map(file => path.join(root, file)));
-  files.push(...['index.js','Enums.generated.js','geometry.js','node.js'].map(file=>path.join(root,file)));
+  files.push(...['index.js','Enums.generated.js','geometry.js','node-entry.js'].map(file=>path.join(root,file)));
   return sha256(files.sort().map(file => relative(root, file) + '\0' + sha256(fs.readFileSync(file)) + '\n').join(''));
 }
 /** Tests and oracle inputs must be re-executed after an implementation of the verifier changes. */

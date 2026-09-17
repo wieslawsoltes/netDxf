@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { DxfRawDocument, DxfRawOptions, FileStream } from '../node.js';
+import { DxfRawDocument, DxfRawOptions, FileStream } from '../node-entry.js';
 import { DxfAtomicFile } from '../netDxf/IO/DxfAtomicFile.js';
 import { IOException, ArgumentException } from '../runtime/Errors.js';
 const originalBytes=Uint8Array.from({length:257},(_,i)=>i);
