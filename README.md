@@ -149,3 +149,5 @@ All DXF objects may contain extended data information.
 Qualified AutoCAD TABLE entities are retained as source-bound `StoredTable` packets with explicit backing-content and geometry edits. Complete TABLE authoring, formula/layout evaluation and automatic regeneration remain outside that storage contract.
 Both simple and complex line types are supported.
 Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families remain unimplemented. SAT and raw payload retention do not interpret or validate proprietary geometry.
+
+[Supplementary entity clone qualification](doc/dxf-conformance/entity-clone-qualification.md) preserves the original clone-review cases and adds registered/nested source checks, exact leader directions, retained-source guards, and a separate all-profile pair corpus. No additional production cloning behavior is introduced by this qualification task.
