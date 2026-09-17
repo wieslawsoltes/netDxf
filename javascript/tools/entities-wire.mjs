@@ -1,5 +1,6 @@
 import * as api from '../index.js';
 export function entityWire(value, wire) {
+  if (value instanceof api.MeshEdge) return {type:'MeshEdge',start:value.StartVertexIndex,end:value.EndVertexIndex,crease:wire(value.Crease)};
   if (value instanceof api.Polyline2DVertex) return {type:'Polyline2DVertex',position:wire(value.Position),bulge:wire(value.Bulge),
     start:wire(value.StartWidth),end:wire(value.EndWidth),startOverride:wire(value.StartWidthOverride),endOverride:wire(value.EndWidthOverride),identifier:wire(value.VertexIdentifier)};
   if (!(value instanceof api.EntityObject)) return undefined;
@@ -9,6 +10,12 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  if (value instanceof api.Text) return {common,position:wire(value.Position),rotation:wire(value.Rotation),height:wire(value.Height),width:wire(value.Width),
+    widthFactor:wire(value.WidthFactor),oblique:wire(value.ObliqueAngle),alignment:value.Alignment,backward:value.IsBackward,upsideDown:value.IsUpsideDown,style:wire(value.Style),text:value.Value};
+  if (value instanceof api.Shape) return {common,name:value.Name,position:wire(value.Position),rotation:wire(value.Rotation),size:wire(value.Size),
+    widthFactor:wire(value.WidthFactor),oblique:wire(value.ObliqueAngle),thickness:wire(value.Thickness),style:wire(value.Style)};
+  if (value instanceof api.Mesh) return {common,vertexes:Array.from(value.Vertexes,wire),faces:Array.from(value.Faces,wire),edges:Array.from(value.Edges,wire),
+    subdivision:value.SubdivisionLevel,blend:value.BlendCrease};
   if (value instanceof api.Point) return {common,position:wire(value.Position),rotation:wire(value.Rotation),thickness:wire(value.Thickness)};
   if (value instanceof api.Line) return {common,start:wire(value.StartPoint),end:wire(value.EndPoint),direction:wire(value.Direction),thickness:wire(value.Thickness)};
   if (value instanceof api.Ray || value instanceof api.XLine) return {common,origin:wire(value.Origin),direction:wire(value.Direction)};

@@ -51,3 +51,7 @@ export { Face3D } from './netDxf/Entities/Face3D.js';
 export { Solid } from './netDxf/Entities/Solid.js';
 export { Trace } from './netDxf/Entities/Trace.js';
 export { Polyline2DVertex } from './netDxf/Entities/Polyline2DVertex.js';
+
+export { Text } from './netDxf/Entities/Text.js';
+export { Shape } from './netDxf/Entities/Shape.js';
+export { Mesh } from './netDxf/Entities/Mesh.js';

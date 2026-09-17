@@ -36,7 +36,7 @@ function wire(value) {
   }
   if (value instanceof api.XDataRecord) return {type:'XDataRecord',code:value.Code,value:wire(value.Value)};
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
-  if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named:value.IsNamedColor,empty:value.IsEmpty};
+  if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
   const entity=entityWire(value,wire); if(entity!==undefined)return entity;
   const style=styleWire(value,wire); if(style!==undefined)return style;
@@ -45,7 +45,7 @@ function wire(value) {
 }
 
 export function jsGeometry(input) {
-  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = '';
+  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = ''; api.Text.DefaultMirrText = false;
   const native = input.nativeManifest;
   const observers=new Map(), observations=[];
   function read(value) {

@@ -8,6 +8,7 @@ internal static partial class Program
     private static bool EntityWire(object value, out object? result)
     {
         result = null;
+        if (value is MeshEdge edge) { result=new {type="MeshEdge",start=edge.StartVertexIndex,end=edge.EndVertexIndex,crease=Wire(edge.Crease)};return true; }
         if (value is Polyline2DVertex vertex) {
             result = new {type="Polyline2DVertex",position=Wire(vertex.Position),bulge=Wire(vertex.Bulge),start=Wire(vertex.StartWidth),end=Wire(vertex.EndWidth),
                 startOverride=Wire(vertex.StartWidthOverride),endOverride=Wire(vertex.EndWidthOverride),identifier=Wire(vertex.VertexIdentifier)};
@@ -18,7 +19,13 @@ internal static partial class Program
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
-        if (entity is Point point) result=new {common,position=Wire(point.Position),rotation=Wire(point.Rotation),thickness=Wire(point.Thickness)};
+        if (entity is Text text) result=new {common,position=Wire(text.Position),rotation=Wire(text.Rotation),height=Wire(text.Height),width=Wire(text.Width),
+            widthFactor=Wire(text.WidthFactor),oblique=Wire(text.ObliqueAngle),alignment=(int)text.Alignment,backward=text.IsBackward,upsideDown=text.IsUpsideDown,style=Wire(text.Style),text=text.Value};
+        else if (entity is Shape shape) result=new {common,name=shape.Name,position=Wire(shape.Position),rotation=Wire(shape.Rotation),size=Wire(shape.Size),
+            widthFactor=Wire(shape.WidthFactor),oblique=Wire(shape.ObliqueAngle),thickness=Wire(shape.Thickness),style=Wire(shape.Style)};
+        else if (entity is Mesh mesh) result=new {common,vertexes=mesh.Vertexes.Select(v=>Wire(v)).ToArray(),faces=mesh.Faces.Select(Wire).ToArray(),edges=mesh.Edges.Select(Wire).ToArray(),
+            subdivision=mesh.SubdivisionLevel,blend=mesh.BlendCrease};
+        else if (entity is Point point) result=new {common,position=Wire(point.Position),rotation=Wire(point.Rotation),thickness=Wire(point.Thickness)};
         else if (entity is Line line) result=new {common,start=Wire(line.StartPoint),end=Wire(line.EndPoint),direction=Wire(line.Direction),thickness=Wire(line.Thickness)};
         else if (entity is Ray ray) result=new {common,origin=Wire(ray.Origin),direction=Wire(ray.Direction)};
         else if (entity is XLine xline) result=new {common,origin=Wire(xline.Origin),direction=Wire(xline.Direction)};
