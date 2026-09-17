@@ -20,3 +20,10 @@ export { DxfClassCollection } from './netDxf/Collections/DxfClassCollection.js';
 
 export { UnitHelper } from './netDxf/Units/UnitHelper.js';
 export { XDataRecord } from './netDxf/XDataRecord.js';
+export { DxfObject } from './netDxf/DxfObject.js';
+export { DxfObjectReference } from './netDxf/DxfObjectReference.js';
+export { XData } from './netDxf/XData.js';
+export { TableObject } from './netDxf/Tables/TableObject.js';
+export { TableObjectChangedEventArgs } from './netDxf/Tables/TableObjectChangedEventArgs.js';
+export { ApplicationRegistry } from './netDxf/Tables/ApplicationRegistry.js';
+export { XDataDictionary } from './netDxf/Collections/XDataDictionary.js';

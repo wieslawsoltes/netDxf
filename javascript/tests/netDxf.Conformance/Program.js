@@ -1,3 +1,6 @@
+import * as XDataCloneTests from './XDataCloneTests.js';
+import * as AppIdXDataLifecycleTests from './AppIdXDataLifecycleTests.js';
+import * as InternalMetadataCopyTests from './InternalMetadataCopyTests.js';
 import * as AtomicSaveTests from './AtomicSaveTests.js';
 import * as RawDimensionStyleNameTests from './RawDimensionStyleNameTests.js';
 import * as RawDocumentBoundaryTests from './RawDocumentBoundaryTests.js';
@@ -20,7 +23,7 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
   const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
