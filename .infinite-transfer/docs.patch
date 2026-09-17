@@ -1,0 +1,162 @@
+diff --git a/README.md b/README.md
+index 8496828..622e991 100644
+--- a/README.md
++++ b/README.md
+@@ -83,6 +83,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
+ 
+ [Finite normal and direction assignment](doc/dxf-conformance/direction-assignment.md) now rejects zero/nonfinite vectors before mutation and accepts very small or large finite directions without normalization overflow. The audit covers inherited entity normals, ATTRIB/ATTDEF normals and RAY/XLINE directions, with independent physical-tag and numerical checks. Public vector utilities, arbitrary transforms and native AutoCAD qualification retain their separate scope.
+ 
++[RAY/XLINE affine transforms](doc/dxf-conformance/infinite-line-transforms.md) now stage finite geometry atomically, retain representable extreme-scale directions and exact affine-origin cancellations, reject collapsed/projective results, and invalidate stale proxies after changed geometry. Independent Fraction/Decimal and physical-record checks document the numerical and version scope.
++
+ ## Samples and Demos 
+ Are contained in the source code.
+ Well, at the moment they are just tests for the work in progress.
+diff --git a/doc/dxf-conformance/infinite-line-transforms.md b/doc/dxf-conformance/infinite-line-transforms.md
+new file mode 100644
+index 0000000..09b22db
+--- /dev/null
++++ b/doc/dxf-conformance/infinite-line-transforms.md
+@@ -0,0 +1,143 @@
++# Atomic affine RAY and XLINE transforms
++
++This task is stacked on the cached-direction correction in PR111, commit
++`090d345db23094201a1bca07b0af88453b0320e1`, tree
++`f3f7f691479d7d20b83eeae7e45ea3fda4fecc02`. The separate LINE, planar and clone
++PRs are not folded into this task; the JavaScript port is unchanged.
++
++## Corrected behavior
++
++The previous RAY/XLINE implementation wrote the transformed origin before
++validating its direction and normal. A later failure could leave partially
++changed geometry. A collapsed direction silently fell back to its old value,
++projective Matrix4 input lost its bottom row, and changed geometry retained stale
++proxy graphics. Intermediate floating-point overflow and premature rounding also
++lost representable finite results.
++
++`TransformBy(Matrix3, Vector3)` now prepares all three stored vectors before
++publishing anything. `TransformBy(Matrix4)` first checks all sixteen components
++and requires the exact affine bottom row `(0, 0, 0, 1)`.
++
++- The origin is transformed as a WCS point. The direction is transformed as a
++  WCS vector and normalized; translation never affects the direction.
++- Reflections preserve the transformed traversal direction. Singular matrices
++  are allowed when the infinite entity's direction remains nonzero. A zero
++  direction image rejects instead of fabricating the old infinite line.
++- All source components, matrix entries, translation and resulting geometry
++  must be finite. Stored direction and auxiliary normal squared lengths must be
++  within `2e-15` of one, independently of the cached normalized flag.
++- Rejection preserves exact source components, common metadata and proxy bytes.
++  Publication does not invoke user-overridden `Normal` property callbacks.
++- Successful changed geometry clears common proxy graphics. Identity and
++  numerically unchanged results preserve original vectors and proxies. Equality
++  for this no-change decision treats positive and negative zero as equal.
++
++The inherited `Normal` is auxiliary model state, not an inferred RAY/XLINE plane
++normal. Its existing direction-transform convention is retained, with stable
++normalization and retention of the old auxiliary normal when its image is
++exactly zero. The wire schema does not gain an invented plane-normal field.
++Source validation still occurs before an identity transform can return.
++
++## Exact arithmetic and admission limits
++
++Each affine origin coordinate is evaluated as an exact sum of binary64 products
++and translation, then rounded once to nearest binary64 with ties to even.
++Intermediate products may overflow ordinary floating-point arithmetic while the
++final sum remains representable. The bounded internal dyadic implementation
++retains those cancellations. Its arithmetic follows the earlier LINE task but
++is private here to avoid a dependency on that unmerged task's helper.
++
++Direction dot products also remain exact until their common binary scale is
++chosen. Normalization therefore works when the raw image magnitude is much
++larger or smaller than binary64 can store. The final square root and unit-vector
++components are floating-point approximations, not universally correctly rounded
++normalization. The independent oracle checks four ULP per direction component
++and a `2e-15` squared-unit bound.
++
++A nonzero origin coordinate or normalized direction component that rounds to
++zero rejects. Exact zero cancellation is allowed. Overflow of the final origin
++also rejects. These are deliberate conservative library admission rules, not
++claims that AutoCAD mandates the same exception or rounding policy. A
++homogeneous Matrix4 with `M44 != 1` is rejected rather than implicitly divided
++by its homogeneous scale.
++
++Binary64 inputs bound each dyadic dot to roughly 4,200 integer bits. There is no
++unbounded enumeration, recursion or rational GCD. BigInteger arithmetic and the
++prepared-result object have a performance/allocation cost; this task does not
++claim a speed improvement or large-model performance qualification. Public
++origin setters and general Matrix/Vector APIs retain their existing contracts.
++
++```csharp
++var ray = new netDxf.Entities.Ray(new netDxf.Vector3(1, 2, 3),
++    new netDxf.Vector3(2, -3, 6));
++ray.TransformBy(new netDxf.Matrix3(-1, 0, 0, 0, 2, 0, 0, 0, 3),
++    new netDxf.Vector3(4, 5, 6));
++// Reflection and nonuniform scaling preserve the transformed infinite ray.
++```
++
++## Verification
++
++The final focused module contains **1,349 cases**. The same tests pass
++**105/1,349 with the preceding RAY/XLINE methods and 1,349/1,349 after the fix**.
++The before run still includes the new unused helper, but invokes only the old
++entity transform methods. No existing test or independent gate is disabled.
++The test files have SHA-256:
++
++- `InfiniteLineTransformTests.cs`:
++  `b88e971afafb195779e102445faccfb0b03c74d0aca185813a71571366dfc453`.
++- `InfiniteLineNumericalTests.cs`:
++  `209677ef9e22bdd1d48dc5005befebf0bfe6708bf5f68122260c7679722d1f89`.
++
++The wire corpus repeats **21 independently specified mathematical scenarios**
++across two entity kinds, two transform APIs, six typed profiles and text/binary
++transport, producing **1,008 drawings**. It checks metadata/identity retention,
++proxy handling, round trips, auxiliary normal orientation and finite unit
++results. Rejection tests cover every matrix/translation element with nonfinite
++values, malformed source vectors, finite non-unit/zero source state, projective
++bottom rows, collapse, final overflow/underflow and throwing virtual accessors.
++
++`tools/verify_infinite_line_transforms.py` independently reconstructs the cases.
++It compares origin coordinates with Python Fraction exact arithmetic and unit
++directions with 1,500-digit Decimal square roots. Every selected ordered entity
++packet is checked except the values of the entity/owner handles; their framing
++is checked, and every drawing receives a separate ezdxf graph audit. All
++**39,696** parsed-record corruption controls and two missing/extra inventory
++controls reject through the same positive validator. All drawings have zero
++audit errors and zero repairs.
++
++One additional harness case executes **512 seeded numerical scenarios** across
++both entity kinds and transform APIs, spanning matrix binary exponents -900 to
++900. The independent checker regenerates every input bit pattern, checks exact
++origin components and approximate direction/auxiliary-normal components, and
++rejects **4,608** numerical corruptions. The 512 iterations are not counted as
++512 additional harness cases. The older methods' numerical output is separately
++rejected by the new independent numerical oracle.
++
++Complete-suite and final remote Linux/Windows/netstandard2.0 results are
++recorded separately in the PR, against the exact executed head. A focused pass
++is not substituted for final complete-suite execution.
++
++```sh
++DXF_TEST_FILTER=infinite-affine/ dotnet run --project tests/netDxf.Conformance -c Debug
++python tools/verify_infinite_line_transforms.py artifacts/conformance
++# Full regression and all independently maintained verifiers:
++dotnet run --project tests/netDxf.Conformance -c Release
++python tools/run_independent_verifiers.py artifacts/conformance --jobs 4
++```
++
++The harness also honors `DXF_TEST_ARTIFACTS` for isolated output directories.
++
++## DXF sources and remaining scope
++
++Autodesk documents a WCS origin and a WCS unit direction for both records:
++[RAY](https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-638B9F01-5D86-408E-A2DE-FA5D6ADBD415.htm)
++and [XLINE](https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-55080553-34B6-40AA-9EE2-3F3A3A2A5C0A.htm).
++These references establish the stored geometry model, not this implementation's
++numerical tolerances, admission policy or exception behavior.
++
++Wire tests cover R2000/R2004/R2007/R2010/R2013/R2018. The source corpus is
++synthetic mathematical evidence, not new native producer samples. Native
++AutoCAD open/AUDIT/save/reopen, installed-font/visual qualification, historical
++typed dialects, private FIELD/TABLE/cache regeneration, dependency-complete
++import, general version conversion and other entity methods remain separate
++work. Passing this task does not establish universal DXF or AutoCAD parity.

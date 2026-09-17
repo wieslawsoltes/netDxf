@@ -1,0 +1,80 @@
+name: Materialize verified RAY and XLINE review
+on:
+  push:
+    branches: [codex/infinite-review-transfer-20260917]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 090d345db23094201a1bca07b0af88453b0320e1
+      - name: Verify tested source and publish clean task commits
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          source = pathlib.Path('transport/.infinite-transfer')
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '090d345db23094201a1bca07b0af88453b0320e1'
+          branch = 'codex/infinite-review-materialized-20260917'
+          expected = 'cb4650521c2042eba69b9d085fb0e4b5a0597cde'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == 'f3f7f691479d7d20b83eeae7e45ea3fda4fecc02'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Destination already exists'
+          packets = [
+              ('production', '6727e39dc556f966bb4c896a1a3524ddb670b6d9be1591f98cbda6cc71bca5ef', '42857152ebecb2a92e15a9481e55ea82cdfc94c5f187edcc4b4ef6a2fd243681'),
+              ('tests', '35eb2aa8c22101a59724e750f53e21c4fabf8f6d2f4da530c804143c416b6979', '57d3e893ca40566d8dd64a4d24a32dbff4aa64e84498ed8317148ad6955078f7'),
+              ('verifier', '99d1b81e5fde0fc06be64f94c72328cf2296066849b112222f04c41c0bb25b05', '509a0c080f0cd14a06e90d02977267b4ab0f0819444bfbd643dc38798aff3feb'),
+          ]
+          for name, compressed_hash, patch_hash in packets:
+              packed = (source / (name + '.patch.gz')).read_bytes()
+              assert hashlib.sha256(packed).hexdigest() == compressed_hash, name
+              patch = gzip.decompress(packed)
+              assert hashlib.sha256(patch).hexdigest() == patch_hash, name
+              git('apply', '--check', '-', data=patch)
+              git('apply', '--whitespace=nowarn', '-', data=patch)
+          docs = (source / 'docs.patch').read_bytes()
+          assert hashlib.sha256(docs).hexdigest() == '87a4883498390789654769319f541630d6d4ec4ef3743424c010dc566732a3a8'
+          git('apply', '--check', '-', data=docs)
+          git('apply', '--whitespace=nowarn', '-', data=docs)
+          git('add', '-A')
+          assert git('write-tree') == expected, 'Complete tested tree differs'
+          git('-c', 'core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol', 'diff', '--cached', '--check')
+          git('read-tree', base)
+          commits = []
+          stages = [
+              (['netDxf'], '92dc8973da90d4ab2ff5476014539a63de5b2f56', 'fix: make RAY and XLINE affine transforms atomic and scale-safe'),
+              (['tests/netDxf.Conformance', 'tools/verify_infinite_line_transforms.py'], '53d0d4876a70d713fed87046416a3fc11f5d9395', 'test: qualify infinite-line model, wire and exact numerical transforms'),
+              (['README.md', 'doc/dxf-conformance/infinite-line-transforms.md'], expected, 'docs: record infinite-line transform contracts and qualification'),
+          ]
+          for paths, stage_tree, message in stages:
+              git('add', '--', *paths)
+              tree = git('write-tree')
+              assert tree == stage_tree, tree
+              parent = commits[-1] if commits else base
+              commits.append(git('commit-tree', tree, '-p', parent, '-m', message))
+          git('push', 'origin', commits[-1] + ':refs/heads/' + branch)
+          result = {'base': base, 'branch': branch, 'commits': commits, 'head': commits[-1], 'tree': tree}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'infinite-line-publication.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: infinite-line-publication
+          path: publication-receipt/
+          retention-days: 14
