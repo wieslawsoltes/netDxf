@@ -29,6 +29,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install independent checker dependencies
+        run: python -m pip install -r tools/requirements-independent.txt
       - name: Check coverage ledger and generated comparison
         run: |
           python tools/generate_dxf_coverage.py --check
@@ -40,9 +42,7 @@ jobs:
         run: dotnet build netDxf/netDxf.csproj --configuration ${{ matrix.configuration }} --framework netstandard2.0 --no-restore
       - name: Verify exported fixtures with an independent DXF reader
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
-        run: |
-          python -m pip install -r tools/requirements-independent.txt
-          python tools/run_independent_verifiers.py artifacts/conformance
+        run: python tools/run_independent_verifiers.py artifacts/conformance
       - name: Collect source-level audit evidence
         if: runner.os == 'Linux' && matrix.configuration == 'Debug'
         run: |
