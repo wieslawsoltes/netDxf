@@ -4,7 +4,7 @@ import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
 
-const resolve = name => api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections)\./, '')];
+const resolve = name => api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables)\./, '')];
 function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };
@@ -22,6 +22,15 @@ function wire(value) {
   if (value instanceof api.BoundingRectangle) return {type,min:wire(value.Min),max:wire(value.Max),center:wire(value.Center),radius:wire(value.Radius),width:wire(value.Width),height:wire(value.Height)};
   if (value instanceof api.ClippingBoundary) return {type,kind:value.Type,vertices:value.Vertexes.map(wire)};
   if (value instanceof api.AciColor) return {type:'AciColor',r:value.R,g:value.G,b:value.B,index:value.Index,trueColor:value.UseTrueColor,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  if (value instanceof api.HatchPatternLineDefinition) return {type,angle:wire(value.Angle),origin:wire(value.Origin),delta:wire(value.Delta),dashes:Array.from(value.DashPattern,wire)};
+  if (value instanceof api.HatchPattern) {
+    const pattern={type,name:value.Name,description:value.Description,style:value.Style,fill:value.Fill,kind:value.Type,isDouble:value.IsDouble,
+      origin:wire(value.Origin),angle:wire(value.Angle),scale:wire(value.Scale),lines:Array.from(value.LineDefinitions,wire)};
+    if (!(value instanceof api.HatchGradientPattern)) return {pattern};
+    return {pattern,gradientType:value.GradientType,color1:wire(value.Color1),color2:wire(value.Color2),single:value.SingleColor,
+      tint:wire(value.Tint),shift:wire(value.Shift),centered:value.Centered,aci1:wire(value.Color1AciIndex),aci2:wire(value.Color2AciIndex),
+      auto1:value.IsColor1AciIndexAutomatic,auto2:value.IsColor2AciIndexAutomatic};
+  }
   if (value instanceof api.XDataRecord) return {type:'XDataRecord',code:value.Code,value:wire(value.Value)};
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named:value.IsNamedColor,empty:value.IsEmpty};
@@ -78,6 +87,9 @@ export function jsGeometry(input) {
       const args = (step.args ?? []).map(read);
       let result;
       switch (step.kind) {
+        case 'pat-names': result = api.HatchPattern.NamesFromText(step.text); break;
+        case 'pat-load': result = api.HatchPattern.LoadText(step.text, step.patternName); break;
+        case 'pat-save': result = target.ToPatString(step.newLine ?? '\n'); break;
         case 'new': result = construct(type,args,step.signature); break;
         case 'get': result = (target ?? type)[step.member]; break;
         case 'set': (target ?? type)[step.member] = read(step.value); break;

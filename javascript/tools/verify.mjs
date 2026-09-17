@@ -37,6 +37,7 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':363,'stats.operations':2533},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
   raw:[`differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.emittedByteComparisons':8263}}],
   handles:[`handles-differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.indexComparisons':2355}}],

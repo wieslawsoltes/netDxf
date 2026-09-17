@@ -27,3 +27,5 @@ export { TableObject } from './netDxf/Tables/TableObject.js';
 export { TableObjectChangedEventArgs } from './netDxf/Tables/TableObjectChangedEventArgs.js';
 export { ApplicationRegistry } from './netDxf/Tables/ApplicationRegistry.js';
 export { XDataDictionary } from './netDxf/Collections/XDataDictionary.js';
+export { HatchPattern } from './netDxf/Entities/HatchPattern.js';
+export { HatchGradientPattern } from './netDxf/Entities/HatchGradientPattern.js';

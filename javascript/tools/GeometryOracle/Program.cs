@@ -101,6 +101,16 @@ internal static class Program
         if(value is BoundingRectangle box) return new { type="BoundingRectangle", min=Wire(box.Min),max=Wire(box.Max),center=Wire(box.Center),radius=Wire(box.Radius),width=Wire(box.Width),height=Wire(box.Height) };
         if(value is ClippingBoundary clip) return new { type="ClippingBoundary", kind=(int)clip.Type, vertices=clip.Vertexes.Select(v=>Wire(v)).ToArray() };
         if(value is AciColor color) return new {type="AciColor",r=color.R,g=color.G,b=color.B,index=color.Index,trueColor=color.UseTrueColor,byLayer=color.IsByLayer,byBlock=color.IsByBlock};
+        if(value is netDxf.Entities.HatchPatternLineDefinition line) return new {type=value.GetType().Name,angle=Wire(line.Angle),origin=Wire(line.Origin),delta=Wire(line.Delta),dashes=line.DashPattern.Select(WireDouble).ToArray()};
+        if(value is netDxf.Entities.HatchPattern hatchPattern) {
+            var pattern=new {type=value.GetType().Name,name=hatchPattern.Name,description=hatchPattern.Description,style=(int)hatchPattern.Style,fill=(int)hatchPattern.Fill,
+                kind=(int)hatchPattern.Type,isDouble=hatchPattern.IsDouble,origin=Wire(hatchPattern.Origin),angle=Wire(hatchPattern.Angle),scale=Wire(hatchPattern.Scale),
+                lines=hatchPattern.LineDefinitions.Select(v=>Wire(v)).ToArray()};
+            if(value is netDxf.Entities.HatchGradientPattern gradient) return new {pattern,gradientType=(int)gradient.GradientType,color1=Wire(gradient.Color1),color2=Wire(gradient.Color2),
+                single=gradient.SingleColor,tint=Wire(gradient.Tint),shift=Wire(gradient.Shift),centered=gradient.Centered,aci1=Wire(gradient.Color1AciIndex),aci2=Wire(gradient.Color2AciIndex),
+                auto1=gradient.IsColor1AciIndexAutomatic,auto2=gradient.IsColor2AciIndexAutomatic};
+            return new {pattern};
+        }
         if(value is XDataRecord record) return new {type="XDataRecord",code=(int)record.Code,value=Wire(record.Value)};
         if(value is DxfClass definition) return new {type="DxfClass",name=definition.Name,cpp=definition.CppClassName,application=definition.ApplicationName,flags=definition.ProxyFlags,count=definition.InstanceCount,wasProxy=definition.WasProxy,entity=definition.IsEntity};
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
@@ -108,6 +118,22 @@ internal static class Program
         if (value is ITuple tuple) return Enumerable.Range(0,tuple.Length).Select(i=>Wire(tuple[i])).ToArray();
         if (value is IEnumerable list) return list.Cast<object?>().Select(Wire).ToArray();
         throw new ArgumentException("Unmapped result type " + value.GetType().FullName);
+    }
+    private static object? WireDouble(double value) => Wire(value);
+    private static object? PatternTextStep(JsonElement step, object? target)
+    {
+        string file=Path.Combine(Path.GetTempPath(), "netdxf-pat-oracle-"+Guid.NewGuid().ToString("N")+".pat");
+        try {
+            string kind=step.GetProperty("kind").GetString()!;
+            if(kind=="pat-save") {
+                ((netDxf.Entities.HatchPattern)target!).Save(file);
+                return File.ReadAllText(file);
+            }
+            File.WriteAllText(file,step.GetProperty("text").GetString()!);
+            if(kind=="pat-names") return netDxf.Entities.HatchPattern.NamesFromFile(file);
+            return netDxf.Entities.HatchPattern.Load(file,step.GetProperty("patternName").GetString()!);
+        }
+        finally { if(File.Exists(file))File.Delete(file); }
     }
     private static object? Step(JsonElement step)
     {
@@ -117,6 +143,7 @@ internal static class Program
         string member=step.TryGetProperty("member",out var m)?m.GetString()!:"";
         var args=Arguments(step); object? result;
         switch(kind) {
+            case "pat-names": case "pat-load": case "pat-save": result=PatternTextStep(step,target);break;
             case "new": result=Create(type!,args,Signature(step));break;
             case "get": {
                 var property=type!.GetProperty(member);var field=type!.GetField(member);

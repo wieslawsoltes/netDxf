@@ -1,3 +1,7 @@
+import * as HatchGradientAciApiTests from './HatchGradientAciApiTests.js';
+import * as HatchGradientShiftApiTests from './HatchGradientShiftApiTests.js';
+import * as HatchGradientColorStateTests from './HatchGradientColorStateTests.js';
+import * as HatchDoublePatternTests from './HatchDoublePatternTests.js';
 import * as XDataCloneTests from './XDataCloneTests.js';
 import * as AppIdXDataLifecycleTests from './AppIdXDataLifecycleTests.js';
 import * as InternalMetadataCopyTests from './InternalMetadataCopyTests.js';
@@ -23,7 +27,7 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
   const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
