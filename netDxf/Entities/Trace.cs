@@ -218,6 +218,7 @@ namespace netDxf.Entities
                 SecondVertex = this.secondVertex,
                 ThirdVertex = this.thirdVertex,
                 FourthVertex = this.fourthVertex,
+                Elevation = this.elevation,
                 Thickness = this.thickness
             };
 
