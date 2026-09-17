@@ -39,7 +39,11 @@ source-bound overrides and their admission rules remain unchanged.
 The new internal `Vector3.NormalizeFiniteDirection` helper leaves the public
 `Vector3.Normalize` methods unchanged. Finite/nonzero validation occurs even
 when a value carries a cached normalized flag, so a cached zero or NaN produced
-by the old public utility cannot bypass the new property checks.
+by the old public utility cannot bypass the new property checks. A cached finite
+value must also have a component-based squared length within `2e-15` of one.
+Otherwise it is normalized again. The public utility can produce an inaccurate
+finite cache after subnormal sum-of-squares rounding; its flag is not proof of
+unit length. Valid cached values still preserve their exact component bits.
 
 Ordinary inputs with maximum component magnitude between `1e-150` and `1e150`
 use the previous sum-of-squares/inverse-length arithmetic. Outside that range,

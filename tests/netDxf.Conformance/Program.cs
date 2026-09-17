@@ -38,6 +38,7 @@ internal static partial class Program
         RunTableXDataTests();
         RunThumbnailImageTests();
         RegisterDirectionAssignmentTests();
+        RegisterDirectionCachedNormalizationTests();
         RunNamedObjectDatabaseTests();
         RunTypedContainerTests();
         RunGeoDataTests();

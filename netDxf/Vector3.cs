@@ -476,9 +476,12 @@ namespace netDxf
             {
                 throw new ArgumentException("A direction cannot be the zero vector.", parameterName);
             }
-            // Preserve exact already-normalized values (including signed zeros)
-            // through repeated assignments and clone initialization.
-            if (value.isNormalized)
+            // The public utility may cache an inaccurate finite length after
+            // subnormal sum-of-squares rounding. Trust its flag only after a
+            // component-based unit check, never through Modulus (which uses it).
+            // Keep valid cached values bit-exact, including signed zeros.
+            if (value.isNormalized &&
+                Math.Abs(value.x * value.x + value.y * value.y + value.z * value.z - 1.0) <= 2e-15)
             {
                 return value;
             }
