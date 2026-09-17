@@ -1,3 +1,6 @@
 artifacts/
 node_modules/
 *.tgz
+
+native/windows/build/
+native/bin/

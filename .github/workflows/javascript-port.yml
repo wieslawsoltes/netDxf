@@ -164,6 +164,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
+      - name: Build the optional Windows replacement host
+        if: runner.os == 'Windows'
+        working-directory: javascript
+        run: npm run build:windows-host
       - name: Compile the actual filesystem oracle
         run: |
           node javascript/tools/dotnet.mjs inventory
@@ -187,6 +191,7 @@ jobs:
             javascript/artifacts/conformance/*.json
             javascript/artifacts/package/results.json
             javascript/artifacts/oracle/Release/*.log
+            javascript/native/bin/**/build.json
           if-no-files-found: error
           retention-days: 7
   full-port-completion:

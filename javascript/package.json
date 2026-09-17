@@ -24,7 +24,11 @@
     "baseline.json",
     "geometry.js",
     "native-port-manifest.json",
-    "node.js"
+    "node.js",
+    "native/bin",
+    "native/windows/atomic_replace.cc",
+    "native/windows/binding.gyp",
+    "native/build.mjs"
   ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
@@ -43,7 +47,8 @@
     "test:foundations": "node tools/foundations-differential.mjs",
     "test:unit-factors": "node tools/unit-factors.mjs --check",
     "test:filesystem": "node tools/filesystem-differential.mjs",
-    "test:lifecycle": "node tools/lifecycle-differential.mjs"
+    "test:lifecycle": "node tools/lifecycle-differential.mjs",
+    "build:windows-host": "node native/build.mjs"
   },
   "repository": {
     "type": "git",

@@ -35,7 +35,7 @@ try {
     import {DxfRawDocument,DxfTag,FileStream,UnitHelper,XDataRecord,XDataCode} from '@netdxf/javascript/node';
     const tags=[[0,'SECTION'],[2,'HEADER'],[9,'$ACADVER'],[1,'AC1032'],[0,'ENDSEC'],[0,'EOF']].map(([c,v])=>new DxfTag(c,v));
     const raw=DxfRawDocument.Create(tags);raw.SaveAtomic('packed.dxf');
-    const stream=new FileStream('packed.dxf');try{if(DxfRawDocument.Load(stream).Version!==18)throw new Error('Atomic packed read failed');}finally{stream.Dispose();fs.unlinkSync('packed.dxf');}
+    const stream=new FileStream('packed.dxf');try{raw.SaveAtomic('packed.dxf');if(DxfRawDocument.Load(stream).Version!==18)throw new Error('Atomic packed read failed');}finally{stream.Dispose();fs.unlinkSync('packed.dxf');}
     if(typeof UnitHelper.ConversionFactor!=='function'||new XDataRecord(XDataCode.Int16,12).Value!==12)throw new Error('Recovered exports missing');`],install);
   const dir=path.join(javascriptRoot,'artifacts/package');fs.mkdirSync(dir,{recursive:true});
   fs.writeFileSync(path.join(dir,'results.json'),JSON.stringify({...proof,completed:true,private:true,files:info.files.length,packedBytes:info.size,unpackedBytes:info.unpackedSize},null,2)+'\n');

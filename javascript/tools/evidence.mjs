@@ -9,6 +9,7 @@ export const sourceFingerprint = computeSourceFingerprint;
 /** Bind executable evidence to runtime bytes; documentation edits do not invalidate results. */
 export function runtimeFingerprint(root = javascriptRoot) {
   const files = ['netDxf', 'runtime'].flatMap(dir => walk(path.join(root, dir)));
+  files.push(...['native/windows/atomic_replace.cc', 'native/windows/binding.gyp', 'native/build.mjs'].map(file => path.join(root, file)));
   files.push(...['index.js','Enums.generated.js','geometry.js','node.js'].map(file=>path.join(root,file)));
   return sha256(files.sort().map(file => relative(root, file) + '\0' + sha256(fs.readFileSync(file)) + '\n').join(''));
 }

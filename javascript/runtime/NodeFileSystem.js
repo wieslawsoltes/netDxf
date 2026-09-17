@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { ReplaceWindowsFile } from './WindowsFileReplacement.js';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { FileStream, FullPath, FileError } from './NodeFileStream.js';
@@ -21,7 +22,10 @@ export const NodeFileSystem = Object.freeze({
   },
   Publish(temporary, destination, existed) {
     try {
-      if (existed) fs.renameSync(temporary, destination);
+      if (existed) {
+        if (process.platform === 'win32') ReplaceWindowsFile(temporary, destination);
+        else fs.renameSync(temporary, destination);
+      }
       else {
         // Node has no portable rename-noreplace primitive. An exclusive hard-link publication
         // rejects a concurrently created destination, then removes the private staging name.

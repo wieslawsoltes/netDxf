@@ -9,7 +9,14 @@ import { AtomicRawSource, AtomicRawVersions } from '../tests/netDxf.Conformance/
 const proof={runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint()},oracle=new OracleClient();
 const inventory=JSON.parse(fs.readFileSync(path.join(javascriptRoot,'artifacts/inventory/source-inventory.json')));
 const stats={sourceFixtures:0,comparisons:0,successfulSaves:0,matchingRejections:0,byteComparisons:0,failures:0};
-const results=[],failures=[];let completed=false,fatal=null;
+const results=[],failures=[];let completed=false,fatal=null,host=null;
+if(process.platform==='win32'){
+  const dir=path.join(javascriptRoot,'native/bin','win32-'+process.arch);
+  host=JSON.parse(fs.readFileSync(path.join(dir,'build.json')));
+  if(host.sha256!==sha256(fs.readFileSync(path.join(dir,'netdxf_windows.node')))||
+     host.sourceSha256!==sha256(fs.readFileSync(path.join(javascriptRoot,'native/windows/atomic_replace.cc'))))
+    throw new Error('Windows host binary/source does not match its build evidence.');
+}
 async function check(name,request){
   const expected=await oracle.request({op:'filesystem',...request});
   if(!expected.ok)throw new Error('Filesystem oracle setup failed: '+expected.error);
@@ -48,7 +55,7 @@ finally{
   try{await oracle.close();}catch(error){fatal??=error.stack;completed=false;}
   if(runtimeFingerprint()!==proof.runtimeFingerprint||verificationFingerprint()!==proof.verificationFingerprint){completed=false;fatal='Source changed during filesystem qualification.';}
   const out=path.join(javascriptRoot,'artifacts/filesystem-differential',configuration);fs.mkdirSync(out,{recursive:true});
-  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({...proof,sourceRef:baseline.ref,configuration,platform:process.platform,completed,fatal,stats,results,failures},null,2)+'\n');
+  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({...proof,sourceRef:baseline.ref,configuration,platform:process.platform,host,completed,fatal,stats,results,failures},null,2)+'\n');
 }
 console.log('Filesystem differential:',JSON.stringify(stats));
 if(!completed||fatal||stats.failures)throw new Error(fatal||'Filesystem differential failed.');
