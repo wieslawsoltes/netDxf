@@ -1,14 +1,16 @@
 # Verification, evidence, and completion gates
 
+**Latest published display checkpoint:** [5b63748 evidence](DISPLAY_CHECKPOINT.md) records the passing Linux Release implemented-scope job, the full 102,394-comparison Chromium corpus, the expanded 2,429-scenario entity stage, and the retained Debug/Windows failures. Earlier checkpoint counts below are historical, not the current completion ledger.
+
 ## Fixed reference
 
 `baseline.json` pins C# commit `3496ab91893a1e4ec9261b4833479f1799149cdc`, SDK 8.0.425, runtime/reference pack 8.0.31, 510 library source files, 193 conformance source files, and 399 original DXF fixtures. Its source fingerprint includes support assets. Changing the oracle requires a reviewed baseline update; the tools do not silently roll forward to another runtime or current branch.
 
 `tools/dotnet.mjs` builds the actual C# source through the SDK Roslyn compiler, without NuGet restore or a replacement DXF implementation. Debug and Release use their respective conditional symbols and optimization setting. This qualifies the .NET 8 oracle, not every original target framework. The original test suite contains 35,309 runtime case identities at this pin.
 
-## Current local numerical reconciliation
+## Numerical reconciliation history
 
-Local code `a14fc00` advances the exact upstream `6bedd1b` tree. It preserves the newer reference-math backend, preferred-source generation, license material and all 61,876 existing math cases. It adds 30,904 exact production .NET comparisons and a distinct MPFR audit of a development-only high-precision evaluator. See [NUMERICS.md](NUMERICS.md) for the source-bound results and remaining failures. Historical checkpoint sections below remain attributed to their original commits; they do not establish a passing current full-port gate.
+Local code `a14fc00` and its documentation `3e46a00` were fully published as `593138a` and `e30eea1` over the exact upstream `6bedd1b` tree. They preserve the reference-math backend, preferred-source generation, license material and all 61,876 existing math cases, and add 30,904 exact production .NET comparisons plus a distinct MPFR audit of a development-only high-precision evaluator. [NUMERICS.md](NUMERICS.md) retains that historical source-bound evidence; [DISPLAY_CHECKPOINT.md](DISPLAY_CHECKPOINT.md) records the newer completed hosted run. Neither establishes full-port completion.
 
 ## Evidence categories
 
@@ -20,6 +22,7 @@ Local code `a14fc00` advances the exact upstream `6bedd1b` tree. It preserves th
 | Raw differential | Same accept/reject outcome, float bits, tag order, indexes, and exact serialized bytes | Typed JavaScript document/entity support |
 | Handle differential | Same contextual occurrences/diagnostics, traversal, remap outcomes, and resulting bytes | Interpretation of opaque/private references |
 | OBJECTS differential | Same schema views, transaction results, aliases/ownership, errors, and emitted bytes | General typed OBJECTS or private-schema parity |
+| Detached entity differential | Constructors, mutable state, event substitutions, cloning and exact transform results for the implemented primitives, text/layout, mesh, underlay and raster models | Registered-document ownership, the absent entity APIs, typed DXF IO or external-content rendering |
 | Detached hatch/PAT differential | Model/clone/edit state, exact double bits, rejection behavior and PAT text against the pinned C# APIs | Typed HATCH boundaries, entity ownership, typed DXF IO or complete filesystem parity |
 | Typed foundation differential | Actual constructor/method/property/operator results, mutation state, exceptions and exact numeric bits for the selected baseline | Complete geometry/libm equivalence or a typed document engine |
 | Observable collection differential | Actual event order, mutation results, invalid operations, enumerators and sorting in integer-list scenarios | Arbitrary generic comparer/collation and inherited overload parity |
@@ -47,15 +50,16 @@ Run the commands in the parent README with `CONFIGURATION=Release` and repeat wi
 - `artifacts/dotnet-release/` or `dotnet-debug/`: original results and pin/configuration metadata.
 - `artifacts/conformance/`: JS original-case results and execution metadata.
 - `artifacts/differential/<configuration>/`, `handles-differential/`, `objects-differential/`, `casing-differential/`, `geometry-differential/`, and `collection-differential/`: completion flag, exact-comparison counts, failure evidence, and fingerprints.
+- `artifacts/entity-differential/<configuration>/results.json`: all 2,429 current detached-entity scenarios and 16,241 operations, including retained platform counterexamples.
 - `artifacts/hatch-differential/<configuration>/results.json`: detached hatch/gradient state and PAT text comparisons, with input hashes and all failure evidence.
 - `artifacts/geometry-exact/<configuration>/results.json`: strict randomized geometry comparisons and every failing exact-bit input/output. This is a separate required qualification, not part of an implied all-geometry baseline pass.
-- `artifacts/unit/`, `browser/`, and `package/`: supplemental execution reports.
+- `artifacts/unit/`, `browser/`, `browser-inline/<configuration>/`, and `package/`: supplemental and separate browser execution reports.
 - `artifacts/benchmark/results.json`: input shape, environment, warmups, all samples, median/p95, and memory observations.
 - `artifacts/verification/<configuration>/report.json`: implemented-scope result, every missing original case/source path, and outstanding completion gates.
 
 No report with a fatal error, incomplete run, missing corpus, stale runtime/verifier fingerprint, failing/duplicate/skipped/TODO case, or filtered original suite satisfies verification. The JSONL client rejects oracle exits, malformed or unsolicited output, and timeouts. Its shutdown promise is registered before execution so early process termination cannot leave cleanup indefinitely pending or hide the original failure. Supplemental tests deliberately inject those failures.
 
-Browser evidence is derived from .NET outputs, not JavaScript expected values. The corpus contains exact result digests for raw fixtures, authored transactions, foundation calls, observable collections, detached lifecycle, hatch/PAT, styles/LIN/SHX and primitive entities: 7,664 retained comparisons. It additionally includes all 61,876 upstream reference-math and 30,904 new production math comparisons, totaling 100,444. Original 256-request geometry batch boundaries are preserved. HTTP and inline browser evidence remain separate requirements and actual result details are retained for every mismatch. The independent randomized geometry corpus still has its own mandatory CI lane; it is not omitted from completion. Code hashes are checked after execution.
+Browser evidence is derived from .NET outputs, not JavaScript expected values. The corpus contains exact result digests for raw fixtures, authored transactions, foundation calls, observable collections, detached lifecycle, hatch/PAT, styles/LIN/SHX and primitive/text/layout/underlay/raster entities: 9,614 comparisons. It additionally includes all 61,876 upstream reference-math and 30,904 additional production math comparisons, totaling 102,394. Original 256-request geometry batch boundaries are preserved. HTTP and inline browser evidence remain separate requirements and actual result details are retained for every mismatch. The independent randomized geometry corpus still has its own mandatory CI lane; it is not omitted from completion. Code hashes are checked after execution.
 
 ## Gates
 
@@ -76,7 +80,7 @@ The source at `72e84d0` already contained a newer generated geometry port. Recov
 
 Raw `AtomicSaveTests.js` registers only the 82 original raw/helper identities. Typed factory/path tests are still absent; analogous host checks live in supplemental tests instead of inflating original coverage. `filesystem-differential` executes the unchanged .NET SaveAtomic implementation and the JS host on real isolated directories, comparing all 399 fixtures across both requested transports and destination existence states. It compares rejection classes/parameters, exact destination bytes, held-reader contents, cleanup and cancellation behavior. The complete corpus contains 1,782 scenarios. CI also runs this corpus on Linux and Windows; each platform's actual result is retained independently.
 
-The browser corpus now preserves each 256-request geometry batch exactly as supplied to the .NET oracle. Static Epsilon mutations remain visible to later requests in the batch; only result objects are hashed separately. A regression test demonstrates that splitting this stateful batch changes the answer. That batching fix preserved the then-current 5,745 assertions; it neither removed cases nor rewrote expected results. The later 523 detached lifecycle scenarios bring the current browser corpus to 6,268.
+The browser corpus now preserves each 256-request geometry batch exactly as supplied to the .NET oracle. Static Epsilon mutations remain visible to later requests in the batch; only result objects are hashed separately. A regression test demonstrates that splitting this stateful batch changes the answer. That batching fix preserved the then-current 5,745 assertions; it neither removed cases nor rewrote expected results. The later 523 detached lifecycle scenarios brought that historical browser corpus to 6,268; subsequent model and numerical extensions are counted separately in the current checkpoint.
 
 `tools/run-qualification.mjs` executes all independent comparisons without short-circuiting after one mismatch and returns nonzero if any fails. `verify.mjs` now writes its report even for negative or missing evidence, including the full missing-source and original-case lists where available. Both exact numerical corpora and the filesystem corpus are required. A passing raw or deterministic geometry subset cannot override a failed exact qualification. CI continues browser/package/report steps after failures while keeping the job unsuccessful.
 
@@ -86,15 +90,15 @@ The browser corpus now preserves each 256-request geometry batch exactly as supp
 
 The 52 additional original identities are complete detached-model cases. Unimplemented typed document, nested entity and wire cases are not registered under shortened bodies. See [hatch model scope, host contracts and accounting](HATCH_PATTERNS.md).
 
-At implementation commit `bd1a42f`, the new hatch stage passed in both Debug and Release. Run `35210680084` also passed all 35,309 original .NET cases and 2,017 mirrored JavaScript cases in each configuration. The existing 166 foundation mismatches, 142 randomized-geometry mismatches, and Debug Bézier NaN-sign failure remain blocking. Downloaded artifact hashes, runtime/verifier fingerprints and the independently passing Windows regression results are retained in the [hatch checkpoint](HATCH_PATTERNS.md#completed-checkpoint-evidence--bd1a42f). A later documentation-only commit does not substitute its own workflow status for that completed executable evidence.
+At implementation commit `bd1a42f`, the new hatch stage passed in both Debug and Release. Run `35210680084` also passed all 35,309 original .NET cases and 2,017 mirrored JavaScript cases in each configuration. At that earlier checkpoint, 166 foundation mismatches, 142 randomized-geometry mismatches, and the Debug Bézier NaN-sign failure remained blocking. The fixed foundation and randomized corpora pass in the latest Linux CI; the Debug Bézier result is still unresolved. Downloaded historical artifact hashes, runtime/verifier fingerprints and the independently passing Windows regression results are retained in the [hatch checkpoint](HATCH_PATTERNS.md#completed-checkpoint-evidence--bd1a42f). A later documentation-only commit does not substitute its own workflow status for that completed executable evidence.
 
 
 ## Current browser, environment and performance gates
 
-The complete browser corpus has 100,444 comparisons: the original 7,664, the retained 61,876 direct reference-math cases, and the new 30,904 direct .NET cases. HTTP-origin and inline-native-ESM results remain separate required lanes; local HTTP navigation rejection is not overridden by inline execution. Actual browser counterexamples are retained without an early failure-count cutoff.
+The complete browser corpus has 102,394 comparisons: 9,614 model/raw regression comparisons, the retained 61,876 direct reference-math cases, and the additional 30,904 direct .NET cases. HTTP-origin and inline-native-ESM results remain separate required lanes; local HTTP navigation rejection is not overridden by inline execution. Actual browser counterexamples are retained without an early failure-count cutoff.
 
 `test:math:independent` explicitly identifies its subject as `HighPrecisionMath development reference`. MPFR is not a production dependency and a passing independent result never changes the .NET comparison's expected values. The default production entry continues to use the upstream reference-math modules.
 
-The old foundation and randomized-geometry counterexamples no longer occur in the reconciled local corpus. This does not remove the Debug Bézier NaN-sign failure, qualify the mismatched default local ICU profile, establish Windows/hosted Chromium behavior, or complete the missing typed APIs/tests. An explicitly selected invariant-mode comparer experiment is kept separate from the default casing result.
+The fixed foundation and randomized-geometry corpora pass in both configurations of the current Linux CI. Hosted Chromium 152 passes all 102,394 Release comparisons; Debug retains its Bézier NaN-sign failure. Windows retains two exact result mismatches in `display/seeded/7`, identical to the starting checkpoint; all newly added underlay/raster cases pass there. The default local ICU profile remains rejected even though pinned CI globalization passes. An explicitly selected invariant-mode comparer experiment remains separate from the default casing result. None of this completes the missing typed APIs/tests or broad platform/performance qualification.
 
-The math benchmark measures host, production reference and development reference costs separately, retaining all samples. Neither a generation workflow success nor improved numerical coverage is a full parity or performance acceptance claim. Current details are in [NUMERICS.md](NUMERICS.md).
+The math benchmark measures host, production reference and development reference costs separately, retaining all samples. Neither a generation workflow success nor improved numerical coverage is a full parity or performance acceptance claim. Methodology and historical measurements are in [NUMERICS.md](NUMERICS.md); current hosted evidence is in [DISPLAY_CHECKPOINT.md](DISPLAY_CHECKPOINT.md).

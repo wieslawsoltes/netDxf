@@ -24,9 +24,11 @@ There are also 77 mirrored enum files, strict code-page tables generated from th
 
 **Styles and primitives:** detached layer/text/shape/linetype models and seven geometric primitives include common metadata, proxy storage, reactors, transforms and clone isolation. The standalone `Polyline2DVertex` retains optional widths and identifiers. See [primitive contracts](doc/PRIMITIVE_ENTITIES.md).
 
-**Reconciled numerical continuation:** local `a14fc00` advances upstream `6bedd1b`, preserves its pinned reference-math backend and 61,876-case audit, and adds 30,904 exact .NET cases, a remainder NaN correction, and an independent development-only high-precision/MPFR comparison. The fixed foundation and randomized-geometry corpora pass locally without removing any cases. The enlarged real-browser corpus contains 100,444 comparisons. See [numerical scope, results, licensing and remaining gates](doc/NUMERICS.md).
+**Text and display models:** `Text`, `Shape`, `Mesh`, `MText` and `MTextColumns` provide detached formatting, layout and transformation APIs. The latest batch fixes optimized-browser text-angle storage and adds PDF/DGN/DWF underlay definitions and placement, raster-image definitions and placement, and wipeout boundaries. These models do not open or render referenced files. See [underlays](doc/UNDERLAYS.md), [raster images](doc/RASTER_IMAGES.md), and the [current checkpoint](doc/DISPLAY_CHECKPOINT.md).
 
-**Current ledger:** 168/510 library mirrors, 24/193 conformance-file mirrors, and 2,543/35,309 original cases. File presence is not exhaustive API qualification. The new continuation is committed locally, not pushed or hosted-CI-qualified. Full typed document/ownership/API coverage, Debug NaN behavior and platform/performance qualification remain incomplete.
+**Published numerical continuation:** the earlier local `a14fc00`/`3e46a00` files were published as `593138a`/`e30eea1`. Their reference-math backend and 61,876-case audit remain intact, alongside 30,904 additional exact .NET comparisons and the separate development-only high-precision/MPFR audit. The fixed foundations and randomized-geometry corpora pass in the current Debug and Release Linux CI. See [numerical methodology and historical evidence](doc/NUMERICS.md).
+
+**Current published checkpoint — `5b63748`:** 182/510 library mirrors, 28/193 conformance-file mirrors, and 2,551/35,309 original cases; 252 supplemental tests pass. The full Linux Release implemented-scope CI passes, including 2,429 entity scenarios / 16,241 operations and 102,394 real Chromium comparisons in both HTTP and inline modes. Overall/full-port CI still fails: Debug retains the Bézier NaN-sign difference, Windows retains two existing Shape-transform result mismatches, and the complete typed document/ownership/API/test ledger is unfinished. File presence is not exhaustive API qualification. [Source-bound evidence and exact remaining failures](doc/DISPLAY_CHECKPOINT.md).
 
 ## Source layout
 
@@ -93,6 +95,7 @@ node tools/browser-corpus.mjs
 python -m pip install -r tools/requirements-browser.txt
 python -m playwright install chromium
 python tools/browser-check.py
+python tools/browser-inline-check.py
 npm run test:package
 npm run test:math:independent # Installed development MPFR library required.
 npm run benchmark
