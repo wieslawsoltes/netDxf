@@ -19,7 +19,7 @@ const swap = (value, pairs) => {
   return value;
 };
 export class Text extends EntityObject {
-  #position; #height; #width = 1; #widthFactor; #obliqueAngle; #rotation = 0; #style;
+  #position; #height; #width = 1; #widthFactor; #obliqueAngle; #rotation = new DataView(new ArrayBuffer(8)); #style;
   Value; Alignment = TextAlignment.BaselineLeft; IsBackward = false; IsUpsideDown = false;
   static DefaultMirrText = false;
   constructor(text = '', position = Vector3.Zero, height = 1, style = TextStyle.Default) {
@@ -33,7 +33,9 @@ export class Text extends EntityObject {
     Object.defineProperty(this, 'TextStyleChanged', { value: new EventHook(), enumerable: true });
   }
   get Position() { return Copy(this.#position); } set Position(value) { this.#position = Copy(value); }
-  get Rotation() { return this.#rotation; } set Rotation(value) { this.#rotation = MathHelper.NormalizeAngle(value); }
+  // Binary storage avoids NaN sign canonicalization when V8 changes a numeric field representation.
+  get Rotation() { return this.#rotation.getFloat64(0); }
+  set Rotation(value) { this.#rotation.setFloat64(0, MathHelper.NormalizeAngle(value)); }
   get Height() { return this.#height; } set Height(value) {
     if (value <= 0) throw new ArgumentOutOfRangeException('value', value); this.#height = value;
   }
@@ -83,7 +85,7 @@ export class Text extends EntityObject {
   }
   Clone() {
     const copy = this.$copyEntityAttributes(new Text());
-    Object.assign(copy, { Position: this.#position, Rotation: this.#rotation, Height: this.#height, Width: this.#width,
+    Object.assign(copy, { Position: this.#position, Rotation: this.Rotation, Height: this.#height, Width: this.#width,
       WidthFactor: this.#widthFactor, ObliqueAngle: this.#obliqueAngle, Alignment: this.Alignment,
       IsBackward: this.IsBackward, IsUpsideDown: this.IsUpsideDown, Style: this.#style.Clone(), Value: this.Value });
     return this.$finishEntityClone(copy);

@@ -13,7 +13,7 @@ import { TransformedNormal } from '../../runtime/EntityGeometry.js';
 import { TransformTextAxes } from '../../runtime/PlanarTextGeometry.js';
 import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException } from '../../runtime/Errors.js';
 export class Shape extends EntityObject {
-  #name; #style; #position; #size; #rotation; #obliqueAngle = 0; #widthFactor = 1; Thickness = 0;
+  #name; #style; #position; #size; #angles = new DataView(new ArrayBuffer(16)); #widthFactor = 1; Thickness = 0;
   constructor(name, style, position = Vector3.Zero, size = 1, rotation = 0) {
     super(EntityType.Shape, DxfObjectCode.Shape);
     if (![2, 5].includes(arguments.length)) throw new ArgumentException('No matching Shape constructor.');
@@ -23,7 +23,7 @@ export class Shape extends EntityObject {
     this.#name = name; this.#style = style; this.#position = Copy(position);
     if (size <= 0) throw new ArgumentOutOfRangeException('size', size); this.#size = size;
     // The constructor does not normalize the angle; the public setter does.
-    this.#rotation = rotation;
+    this.#angles.setFloat64(0, rotation);
     Object.defineProperty(this, 'StyleChanged', { value: new EventHook(), enumerable: true });
   }
   get Name() { return this.#name; } set Name(value) { if (value == null || value === '') throw new ArgumentNullException('value'); this.#name = value; }
@@ -35,8 +35,11 @@ export class Shape extends EntityObject {
   }
   get Position() { return Copy(this.#position); } set Position(value) { this.#position = Copy(value); }
   get Size() { return this.#size; } set Size(value) { if (value <= 0) throw new ArgumentOutOfRangeException('value', value); this.#size = value; }
-  get Rotation() { return this.#rotation; } set Rotation(value) { this.#rotation = MathHelper.NormalizeAngle(value); }
-  get ObliqueAngle() { return this.#obliqueAngle; } set ObliqueAngle(value) { this.#obliqueAngle = MathHelper.NormalizeAngle(value); }
+  // Keep constructor/raw rotation distinct from normalized editing, including signed NaNs.
+  get Rotation() { return this.#angles.getFloat64(0); }
+  set Rotation(value) { this.#angles.setFloat64(0, MathHelper.NormalizeAngle(value)); }
+  get ObliqueAngle() { return this.#angles.getFloat64(8); }
+  set ObliqueAngle(value) { this.#angles.setFloat64(8, MathHelper.NormalizeAngle(value)); }
   get WidthFactor() { return this.#widthFactor; } set WidthFactor(value) {
     if (MathHelper.IsZero(value)) throw new ArgumentOutOfRangeException('value', value); this.#widthFactor = value;
   }
@@ -63,8 +66,8 @@ export class Shape extends EntityObject {
   Clone() {
     const copy = this.$copyEntityAttributes(new Shape(this.#name, this.#style.Clone()));
     // WidthFactor is deliberately omitted by the pinned C# Clone body.
-    Object.assign(copy, { Position: this.#position, Size: this.#size, Rotation: this.#rotation,
-      ObliqueAngle: this.#obliqueAngle, Thickness: this.Thickness });
+    Object.assign(copy, { Position: this.#position, Size: this.#size, Rotation: this.Rotation,
+      ObliqueAngle: this.ObliqueAngle, Thickness: this.Thickness });
     return this.$finishEntityClone(copy);
   }
 }
