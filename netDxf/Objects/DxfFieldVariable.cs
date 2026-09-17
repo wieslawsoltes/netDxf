@@ -16,7 +16,7 @@ namespace netDxf.Objects
                 throw new ArgumentOutOfRangeException(nameof(storedUnitType));
             if (value != null && !(value is int) && !(value is double) && !(value is string))
                 throw new ArgumentException("Unsupported explicit FIELD variable type.", nameof(value));
-            if (value is double real) UnitFormatMath.Finite(real, nameof(value));
+            if (value is double real) UnitFormatMath.CheckFinite(real, nameof(value));
             if (value is string text) DxfDateTimeFormat.CheckText(text, nameof(value));
             if ((value == null || value is string) && storedUnitType != 0)
                 throw new ArgumentException("Only numeric variables can have numeric units.", nameof(storedUnitType));

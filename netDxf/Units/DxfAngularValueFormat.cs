@@ -61,7 +61,7 @@ namespace netDxf.Units
         /// sign and ASCII prime marks. Bearings use the existing deterministic N/S/E/W convention.</remarks>
         public string FormatRadians(double radians)
         {
-            UnitFormatMath.Finite(radians, nameof(radians));
+            UnitFormatMath.CheckFinite(radians, nameof(radians));
             var format = new UnitStyleFormat {
                 AngularDecimalPlaces = (short)this.precision, DecimalSeparator = this.separator,
                 DegreesSymbol = "°", MinutesSymbol = "'", SecondsSymbol = "\"",
@@ -70,17 +70,17 @@ namespace netDxf.Units
             };
             string text;
             if (this.mode == 3)
-                text = UnitFormatMath.Fixed(radians, this.precision, format, true);
+                text = UnitFormatMath.Fixed(radians, this.precision, this.separator, format.SuppressAngularLeadingZeros, format.SuppressAngularTrailingZeros);
             else
             {
                 double value = (this.mode == 4 ? radians % (2 * Math.PI) : radians) * MathHelper.RadToDeg;
-                UnitFormatMath.Finite(value, nameof(radians));
+                UnitFormatMath.CheckFinite(value, nameof(radians));
                 if (this.mode == 1 || this.mode == 4)
                     text = AngleUnitFormat.Format(value, this.mode == 1 ? AngleUnitType.DegreesMinutesSeconds : AngleUnitType.SurveyorUnits, format);
                 else
                 {
                     if (this.mode == 2) value = radians * (200 / Math.PI);
-                    text = UnitFormatMath.Fixed(value, this.precision, format, true);
+                    text = UnitFormatMath.Fixed(value, this.precision, this.separator, format.SuppressAngularLeadingZeros, format.SuppressAngularTrailingZeros);
                 }
             }
             if ((long)this.prefix.Length + text.Length + this.suffix.Length > DxfDateTimeFormat.MaximumLength)
