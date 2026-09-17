@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "date": "2026-09-17",
+  "base_commit": "cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb",
+  "base_tree": "68dd970d70c3d79c8759aef02e4c9f492f2a8f06",
+  "local_toolchain": {
+    "sdk": "8.0.425",
+    "runtime": "8.0.31",
+    "target": "net8.0",
+    "os": "Linux",
+    "ezdxf": "1.4.4"
+  },
+  "new_tests": {
+    "count": 1789,
+    "before": {
+      "passed": 312,
+      "failed": 1477
+    },
+    "after": {
+      "passed": 1789,
+      "failed": 0
+    },
+    "test_source_sha256": "c3baed7b33a112f5cb6fd1ad5a1a464e8a6302e58e19450fac31e392fbdf025a"
+  },
+  "full_suite": {
+    "baseline_cases_retained": 38715,
+    "Debug": {
+      "passed": 40504,
+      "failed": 0,
+      "dxf_files": 9837
+    },
+    "Release": {
+      "passed": 40504,
+      "failed": 0,
+      "dxf_files": 9837
+    },
+    "result_json_sha256": "259fbdeb9a4f676e7586798c6006afc507f14e7c78422aeaf674ebe942040cf2",
+    "debug_release_bytes_identical": true,
+    "legacy_fault_injection_cases_retained": 14
+  },
+  "independent": {
+    "passed": 146,
+    "failed": 0,
+    "report_sha256": "ea8decf874228d6059e3f004f7bf2e5e530aee670fab19ad7c30943df03e66ea",
+    "new_gate": {
+      "drawings": 504,
+      "physical_vectors": 2520,
+      "record_corruptions_rejected": 32760,
+      "seeded_numerical_scenarios": 512,
+      "component_comparisons": 1536,
+      "numerical_corruptions_rejected": 1536,
+      "modeled_inventory_controls": 2,
+      "filesystem_inventory_controls": 2,
+      "graph_errors": 0,
+      "graph_repairs": 0
+    }
+  },
+  "unit_tests": {
+    "coverage_ledger": 18,
+    "standard_fields": 17,
+    "field_hosts": 8,
+    "historical_coverage_rows": 297
+  },
+  "changed_runtime_test_and_checker_sha256": {
+    "netDxf/Entities/Attribute.cs": "1e36982fe15e3d02bce8d2f97b4bddad22ef3fc58d190fad496fe4c92bb43044",
+    "netDxf/Entities/AttributeDefinition.cs": "aa9dcf9aaa6f2633b32fc992f68b49bdde26cfa656aed6cd830bb1b009f1c2b9",
+    "netDxf/Entities/EntityObject.cs": "5dfc80ff290e1b91496998aab6670d525f76a53d6e4197043da0542d5e7a5662",
+    "netDxf/Entities/Ray.cs": "24d87673053a827d57bf33010045e877b485a2241ed51f1f84ca745a693759cb",
+    "netDxf/Entities/XLine.cs": "51fa819f456de68b80cdbc3b42eb9d16c65f602c4b83be60f864525ad2a366ac",
+    "netDxf/Vector3.cs": "79d730879b613c431d310b7a4cc16acadfea79b2f7fcc623ef3d96140befd547",
+    "tests/netDxf.Conformance/DirectionAssignmentTests.cs": "c3baed7b33a112f5cb6fd1ad5a1a464e8a6302e58e19450fac31e392fbdf025a",
+    "tests/netDxf.Conformance/PolyfaceRecordAdvancedTests.cs": "7db0260a2d5cdcbcb8f19ad95f94174ce5978307a78c4a99978bd2c59c6279ca",
+    "tests/netDxf.Conformance/Polyline2DRecordTests.cs": "7fa62da251648ce001aea7805927e31767a479db1632ac8260a3c2d1f09504ca",
+    "tests/netDxf.Conformance/Program.cs": "18d6462f5cec97b0d835e826b8f7cd229eb9b61e659569baf515bf5fa08e190d",
+    "tools/verify_direction_assignment.py": "3a1f78a5089d318911a1e90a1bb437e8d69e2fa65bcae715cba8af8ff6811e4a"
+  },
+  "boundaries": [
+    "Local net8 execution is not Windows or netstandard2.0 qualification.",
+    "General Vector3.Normalize APIs and successful setter proxy invalidation policy are unchanged.",
+    "No native AutoCAD, native font or visual qualification.",
+    "No complete DXF parity, historical typed dialects, private TABLE/FIELD regeneration, dependency-complete import or general version conversion."
+  ]
+}

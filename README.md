@@ -81,6 +81,8 @@ in the same guarded transaction. Literal escaping, stale-proxy invalidation and
 owner-held attribute metadata are qualified separately from native font/reflow or
 private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
+[Finite normal and direction assignment](doc/dxf-conformance/direction-assignment.md) now rejects zero/nonfinite vectors before mutation and accepts very small or large finite directions without normalization overflow. The audit covers inherited entity normals, ATTRIB/ATTDEF normals and RAY/XLINE directions, with independent physical-tag and numerical checks. Public vector utilities, arbitrary transforms and native AutoCAD qualification retain their separate scope.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
