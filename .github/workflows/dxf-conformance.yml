@@ -33,6 +33,7 @@ jobs:
         run: |
           python tools/generate_dxf_coverage.py --check
           python -m unittest discover -s tests/dxf_coverage -p "test_*.py"
+          python -m unittest discover -s tests/standard_fields -p "test_*.py"
       - name: Run version and format regression tests
         run: dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj --configuration ${{ matrix.configuration }}
       - name: Build netstandard API target

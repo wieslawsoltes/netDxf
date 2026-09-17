@@ -1,11 +1,11 @@
-# Explicit standard FIELD evaluation — uncompiled continuation
+# Explicit standard FIELD evaluation
 
-This patch builds on PR #105 head `730944c59196c6a556cedc4943acad9108d7f8ed`,
-source tree `c127fd8d1f4f25ca81aea529e968927d1fd066b3`. It preserves the existing
-binary result, failure-outcome and multi-tree transaction work. It adds an
-opt-in evaluator, not another generic cache-writing API. **The new C# source and
-its 105 registered test cases have not been compiled or executed.** The accompanying
-Python checker has reference/model tests; those are not C# runtime evidence.
+This module follows merged PR #105, source tree
+`c127fd8d1f4f25ca81aea529e968927d1fd066b3`. It preserves binary results,
+failure outcomes and multi-tree transactions. The original uploaded patch was
+recovered exactly before correcting its stale unit-helper calls and independent
+checker invocation. It supplies an opt-in bounded evaluator, not a universal
+native-expression engine. Qualification of the final source is recorded in PR #106.
 
 ## Supported expressions and explicit inputs
 
@@ -165,37 +165,38 @@ provider is opt-in; it does not install document-event hooks or intercept native
 execution. Unexpected runtime errors are not swallowed. Existing callback and
 single-threaded transaction limitations remain as described in [FIELD results](field-results.md).
 
-## Tests and evidence — keep baseline and new code separate
+## Tests and qualification
 
-The exact recovered Linux Debug source artifact contains 38,328 passing baseline
-cases. Its source tree was reconstructed and matched to the upstream tree above.
-All 142 existing independent verifiers were replayed successfully against that
-artifact. **Those are baseline results, not executions of these changes.**
+The recovered baseline contains 38,328 unique passing conformance cases and
+143 independent verifiers. The new C# harness adds 105 cases: five provider/
+utility checks, 72 FIELD round trips and 28 unsupported-code/failure cases.
+The formatting case emits 48 date and 360 angular results. It covers culture
+and variable snapshots, scalar reference refusal, error policies, no-op behavior,
+immutable publication and opposite-transport reloads.
 
-The new C# harness registers 105 cases: five utility/provider checks, 72 FIELD
-round-trip cases and 28 unsupported-code/failure cases. The formatting case emits
-48 date and 360 angular rows. Date/angle masks, culture copying, variable copying,
-scalar-reference refusal, error policies, publication/no-op behavior and opposite-
-transport reloads are covered by the written tests. They remain unrun without an SDK.
+The first actual compile caught stale calls to `UnitFormatMath.Finite` and an
+incorrect fixed-format overload in the uploaded patch. Those calls now use the
+existing checked helper signatures. All 105 cases passed in a local .NET 8 Debug
+execution. The independent checker also had an obsolete helper signature; it was
+corrected to use the existing Fraction-based utility oracle, with a separate
+explicit surveyor quadrant calculation. Expected outputs were not weakened.
 
-`verify_standard_field_evaluator.py` requires 144 actual C#-generated before/after
-files and the 408-row formatting matrix. It derives changes independently from
-the pinned source FIELD packets plus explicitly synthetic evaluator code. Every
-physical record must match the requested changes; the other FIELD tree, code,
-metadata and host objects remain exact. Only the established exact-empty
-ACAD_LAYERSTATES identity normalization applies. HEADER clock/seed and CLASS
-records are outside the shared physical-record comparator. All drawings must
-match the intended profile/transport and pass independent audit without repairs.
+`verify_standard_field_evaluator.py` checks exactly 72 before/after FIELD pairs
+and 408 date/angular results. The executed gate rejects 9,664 altered actual
+outputs and audits all 144 drawings without repairs. It derives changes from
+pinned FIELD packets plus explicitly synthetic evaluator code, preserving every
+other ordered physical record. The established exact-empty ACAD_LAYERSTATES
+identity normalization is the sole unrelated normalization. HEADER time/seed and
+CLASS records remain outside that physical-record comparator.
 
-The checker's 17 Python reference/model tests pass. Their modeled FIELD inputs
-challenge 911 altered record fields, and their matrix challenges 408 altered
-reference results. These test the checker itself, not emitted library output.
-The actual-output gate has not been run because the new C# tests have not generated
-its required files; it rejects missing outputs instead of fabricating evidence.
+The checker's 17 Python reference/model tests pass independently, including 911
+model-record and 408 model-format corruption challenges. These checker tests are
+not substituted for the separate actual library-output gate. Both missing and
+extra fixture inventories reject. The full Linux/Windows Debug/Release matrix
+and source/artifact pins are recorded in PR #106; local net8 execution alone
+is not netstandard or legacy-framework runtime qualification.
 
 ```sh
-# Run after installing the .NET 8 SDK, from the patched repository.
-dotnet restore tests/netDxf.Conformance/netDxf.Conformance.csproj
 dotnet run --project tests/netDxf.Conformance -c Debug
 dotnet run --project tests/netDxf.Conformance -c Release
 dotnet build netDxf/netDxf.csproj -c Release -f netstandard2.0
@@ -203,10 +204,9 @@ python tools/run_independent_verifiers.py artifacts/conformance
 python -m unittest discover -s tests/standard_fields -p 'test_*.py' -v
 ```
 
-Keep DXF_TEST_ARTIFACTS separate for simultaneous builds. Normal CI discovers the
-new verifier automatically. No native AutoCAD, Windows runtime, font or visual
-qualification of this new implementation has been performed. This uncompiled
-patch must pass normal source/build/review gates before merging.
+Use separate DXF_TEST_ARTIFACTS directories for concurrent configurations. Normal
+CI discovers the new verifier and runs the Python checker tests. No native
+AutoCAD evaluator, installed-font or visual qualification is established.
 
 ## Remaining compliance work
 

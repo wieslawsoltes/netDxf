@@ -59,9 +59,16 @@ def expected_angle(raw_bits, mode, precision):
     value=from_bits(raw_bits);check(math.isfinite(value), 'Nonfinite source angle')
     number=value if mode==3 else (math.fmod(value,2*math.pi) if mode==4 else value)*((200 if mode==2 else 180)/math.pi)
     check(math.isfinite(number), 'Unrepresentable converted angle')
-    settings=dict(bits=bits(number),places=precision,decimal='.',leading=False,trailing=False)
-    result=formatted('survey' if mode==4 else 'dms' if mode==1 else 'dec', settings)
-    return result.replace('%%d','°') if mode in (1,4) else result
+    if mode == 4:
+        normalized = number % 360
+        if normalized <= 90: ns, ew, number = 'N', 'E', 90-normalized
+        elif normalized <= 180: ns, ew, number = 'N', 'W', normalized-90
+        elif normalized <= 270: ns, ew, number = 'S', 'W', 270-normalized
+        else: ns, ew, number = 'S', 'E', normalized-270
+        angle = formatted(dict(kind='dms', bits=bits(number), places=precision)).replace('d', '°')
+        return f'{ns} {angle} {ew}'
+    result = formatted(dict(kind='dms' if mode == 1 else 'decimal', bits=bits(number), places=precision))
+    return result.replace('d', '°') if mode == 1 else result
 
 
 def format_inventory():
