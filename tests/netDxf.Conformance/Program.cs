@@ -40,6 +40,7 @@ internal static partial class Program
         RunThumbnailImageTests();
         RegisterDirectionAssignmentTests();
         RegisterDirectionCachedNormalizationTests();
+        RegisterInfiniteLineTransformTests();
         RunNamedObjectDatabaseTests();
         RunTypedContainerTests();
         RunGeoDataTests();
