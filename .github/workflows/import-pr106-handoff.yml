@@ -1,4 +1,4 @@
-name: Import exact committed PR106 handoff
+name: Import exact PR106 source; leave workflow update to authorized connector
 on:
   push:
     branches: [codex/recover-pr106-finished-20260917]
@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Verify transferred bundle and import original commits
+      - name: Verify bundle and publish source without workflow changes
         shell: bash
         run: |
           set -euo pipefail
@@ -20,8 +20,6 @@ jobs:
           import base64, hashlib, pathlib, sys
           first = pathlib.Path('.handoff-pr106/bundle-0.b64').read_text().strip()
           second = pathlib.Path('.handoff-pr106/bundle-1.b64').read_text().strip()
-          # Correct known transport transcription errors only. Source/commit bytes
-          # are admitted exclusively by the original handoff SHA-256 below.
           assert first.count('svfUJhul2Rnm9x') == 1
           first = first.replace('svfUJhul2Rnm9x', 'svfUJlul2Rnm9x')
           assert second.count('f3h2f377h8dDQ') == 1
@@ -49,6 +47,19 @@ jobs:
           test "$(git rev-list --count "$base..$head")" = 2
           test "$(git ls-tree -r --name-only "$head" | wc -l)" -eq 3135
           test -z "$(git ls-tree --name-only "$head" .handoff-pr106 .github/workflows/import-pr106-handoff.yml)"
+          # The Actions token is authorized for content only, not workflow edits.
+          # Publish unchanged source objects and leave the actual CI-file update to
+          # the connected GitHub write action with the appropriate authorization.
+          export GIT_INDEX_FILE="$RUNNER_TEMP/pr106.index"
+          git read-tree "$head"
+          git restore --source="$base" --staged -- .github/workflows/dxf-conformance.yml
+          tree=$(git write-tree)
+          test "$(git diff --name-only "$head" "$tree")" = .github/workflows/dxf-conformance.yml
+          test -z "$(git diff --name-only "$base" "$tree" -- .github/workflows)"
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          staged=$(git commit-tree "$tree" -p "$first" -m 'Import verified PR106 source without workflow wiring')
           test -z "$(git ls-remote --heads origin codex/recovered-pr106-finished-20260917)"
-          git push origin "$head:refs/heads/codex/recovered-pr106-finished-20260917"
-          git log -2 --format='%H %T %s' "$head"
+          git push origin "$staged:refs/heads/codex/recovered-pr106-finished-20260917"
+          git log -2 --format='%H %T %s' "$staged"
+          echo "EXPECTED_FINAL_TREE=68dd970d70c3d79c8759aef02e4c9f492f2a8f06"
