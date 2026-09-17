@@ -50,3 +50,4 @@ export { XLine } from './netDxf/Entities/XLine.js';
 export { Face3D } from './netDxf/Entities/Face3D.js';
 export { Solid } from './netDxf/Entities/Solid.js';
 export { Trace } from './netDxf/Entities/Trace.js';
+export { Polyline2DVertex } from './netDxf/Entities/Polyline2DVertex.js';

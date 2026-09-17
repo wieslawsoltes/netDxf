@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { OracleClient } from './OracleClient.mjs';
 import { oracleRoot } from './dotnet.mjs';
+import { entityCorpus } from './entity-corpus.mjs';
 import { styleCorpus } from './style-corpus.mjs';
 import { hatchCorpus } from './hatch-corpus.mjs';
 import { baseline, sourceRoot, javascriptRoot, configuration } from './dotnet.mjs';
@@ -72,7 +73,7 @@ try {
   const read=name=>fs.readFileSync(path.join(sourceRoot,'TestDxfDocument/Support',name));
   const hatches=hatchCorpus(['acad.pat','acadiso.pat'].map(name=>({name,text:read(name).toString('utf8')})));
   const styles=styleCorpus(['acad.lin','acadiso.lin'].map(name=>({name,text:read(name).toString('utf8')})),read('ltypeshp.shx'));
-  for(const [category,probes] of [['hatch',hatches],['styles',styles]])for(const probe of probes){
+  for(const [category,probes] of [['hatch',hatches],['styles',styles],['entities',entityCorpus()]])for(const probe of probes){
     const expected=await modelOracle.request(probe.request);
     if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete model oracle response.');
     cases.push({name:`${category}/${probe.name}`,input:probe.request,expected:{models:sha256(canonical(expected))}});

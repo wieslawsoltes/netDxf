@@ -69,6 +69,10 @@ jobs:
           python -m playwright install --with-deps chromium
           node tools/browser-corpus.mjs
           python tools/browser-check.py
+      - name: Inline native ESM browser qualification
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: python tools/browser-inline-check.py
       - name: Offline package install and reproducible measurements
         if: ${{ !cancelled() }}
         working-directory: javascript
@@ -190,6 +194,7 @@ jobs:
         run: |
           node javascript/tools/dotnet.mjs geometry
           node javascript/tools/style-differential.mjs
+          node javascript/tools/entity-differential.mjs
       - name: Validate offline Node package installation
         if: ${{ !cancelled() }}
         run: node javascript/tools/package-check.mjs
@@ -200,6 +205,7 @@ jobs:
           path: |
             javascript/artifacts/filesystem-differential/Release/results.json
             javascript/artifacts/style-differential/Release/results.json
+            javascript/artifacts/entity-differential/Release/results.json
             javascript/artifacts/conformance/*.json
             javascript/artifacts/package/results.json
             javascript/artifacts/oracle/Release/*.log

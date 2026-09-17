@@ -1,5 +1,6 @@
 // Shared Node/browser operation interpreter; production implementations provide all behavior.
 import * as api from '../index.js';
+import { entityWire } from './entities-wire.mjs';
 import { styleWire, shapeInput } from './styles-wire.mjs';
 import { InvalidOperationException } from '../runtime/Errors.js';
 import { Copy, Culture } from '../runtime/GeometryRuntime.js';
@@ -37,6 +38,7 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named:value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const entity=entityWire(value,wire); if(entity!==undefined)return entity;
   const style=styleWire(value,wire); if(style!==undefined)return style;
   if (typeof value[Symbol.iterator] === 'function') return Array.from(value, wire);
   throw new Error('Unmapped geometry result: ' + type);

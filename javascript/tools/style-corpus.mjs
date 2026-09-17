@@ -59,7 +59,7 @@ export function styleCorpus(linFixtures=[],shapeFixture=null,newLine='\n') {
     S('p','ExtendedFontData',null),snap('p'),S('p','FontFile','new.ttf'),snap('p'),C('p','Clone',[],'q'),snap('q')]);
   for(const mode of [0,1,2])add(`layer/state/${mode}`,'layer-model',[
     N('Tables.Layer',['L']),S('p','Description','Description'),S('p','IsVisible',false),S('p','IsFrozen',true),S('p','IsLocked',true),S('p','Plot',false),
-    ...(mode?[S('p','Transparency',{new:'Transparency',args:[short(mode===1?0:35)]})]:[]),C('p','Clone',[],'q'),snap('q'),snap('p')]);
+    ...(mode?[S('p','Transparency',{new:'Transparency',args:[{short:mode===1?0:35}]})]:[]),C('p','Clone',[],'q'),snap('q'),snap('p')]);
   for(const member of ['Color','Linetype','Transparency'])add(`layer/null/${member}`,'layer-guards',[N('Tables.Layer',['L']),S('p',member,null),snap('p')]);
   for(const name of ['ByLayer','ByBlock','Red','Blue'])add(`layer/color/${name}`,'layer-guards',[N('Tables.Layer',['L']),S('p','Color',color(name)),snap('p')]);
   for(const value of [-3,-2,-1,0,35,211])add(`layer/lineweight/${value}`,'layer-guards',[N('Tables.Layer',['L']),S('p','Lineweight',E('Lineweight',value)),snap('p')]);
@@ -93,6 +93,7 @@ export function styleCorpus(linFixtures=[],shapeFixture=null,newLine='\n') {
   for(const token of ['', '0x10','1e','.','1 2','oops','1_000','-0','.5','1.','1e309','-1e309','NaN','+NaN','-NaN','Infinity','+Infinity','-Infinity'])linTexts.push(`*L,d\nA,${token}`);
   for(const rotation of ['A=90','R=1.5F','U=100G','R=-30D','X=-0','Y=NaN','S=0','S=-1','S=Infinity','Z=whatever','R=','X','', 'R=30x'])
     linTexts.push(`*L,d\nA,.5,[ZIG,shapes.shx,${rotation}],-.25`);
+  for(const token of ['1\0', '1\0\0', '1 \0', '1\0 ', ' 1\0', '-0\0', '1e309\0', 'NaN\0', 'NaN \0', '+NaN\0', 'Infinity\0', '\0', '1.23\t\0'])linTexts.push(`*L,d\nA,${token}`);
   for(const [i,text] of linTexts.entries())add(`lin/syntax/${i}`,'lin-text',[{kind:'lin-names',text},{kind:'lin-load',text,patternName:'l',id:'p'}]);
   for(const fixture of linFixtures) {
     add(`lin/${fixture.name}/names`,'lin-fixtures',[{kind:'lin-names',text:fixture.text}]);

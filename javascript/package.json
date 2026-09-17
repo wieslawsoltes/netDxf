@@ -51,7 +51,9 @@
     "test:lifecycle": "node tools/lifecycle-differential.mjs",
     "build:windows-host": "node native/build.mjs",
     "test:windows-host": "node tools/run-windows-host-tests.mjs",
-    "test:styles": "node tools/style-differential.mjs"
+    "test:styles": "node tools/style-differential.mjs",
+    "test:entities": "node tools/entity-differential.mjs",
+    "test:browser:inline": "python tools/browser-inline-check.py"
   },
   "repository": {
     "type": "git",

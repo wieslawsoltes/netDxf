@@ -76,6 +76,7 @@ export function hatchCorpus(patternFiles = [], newLine = '\n') {
     '*P,d\n0,0,0,1', ' *P,  desc, commas\r\n-90,-0,1e-5,.1,1e-300,0,-.5\r\n', '*P,d\n0,0,0,0,1\n;stop\n90,0,0,1,1',
     '\u0085*P,desc\u0085\n0,0,0,0,1', '*P,d\n0,0,0,0,1\n\n90,0,0,1,1', '*P,first\n0,0,0,0,1\n*P,second\n90,0,0,1,1'];
   for (const token of ['', '0x10', '1e', '.', '1 2', 'oops', '1_000', '-0', '.5', '1.', '1e309', '-1e309', 'NaN', '+NaN', '-NaN', 'Infinity', '+Infinity', '-Infinity', ' \t1.25\r ', '\u00851\u0085']) texts.push(`*P,d\n0,${token},0,0,1`);
+  for (const token of ['1\0', '1\0\0', '1 \0', '1\0 ', ' 1\0', '-0\0', '1e309\0', 'NaN\0', 'NaN \0', '+NaN\0', 'Infinity\0', '\0', '1.23\t\0']) texts.push(`*P,d\n0,${token},0,0,1`);
   texts.forEach((text, i) => add(`pat/syntax/${i}`, 'pat-text', [{ kind: 'pat-names', text }, { kind: 'pat-load', text, patternName: 'p', id: 'p' }]));
   for (const [name, lookup] of [['MiXeD', 'mixed'], ['σ', 'ς'], ['日本😀', '日本😀'], ['P', null], ['P', 'absent']])
     add(`pat/name/${name}/${lookup}`, 'pat-text', [{ kind: 'pat-load', text: `*${name},description\n0,0,0,0,1`, patternName: lookup }]);

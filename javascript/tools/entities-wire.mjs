@@ -1,0 +1,20 @@
+import * as api from '../index.js';
+export function entityWire(value, wire) {
+  if (value instanceof api.Polyline2DVertex) return {type:'Polyline2DVertex',position:wire(value.Position),bulge:wire(value.Bulge),
+    start:wire(value.StartWidth),end:wire(value.EndWidth),startOverride:wire(value.StartWidthOverride),endOverride:wire(value.EndWidthOverride),identifier:wire(value.VertexIdentifier)};
+  if (!(value instanceof api.EntityObject)) return undefined;
+  const common = {type:value.constructor.name,kind:value.Type,code:value.CodeName,handle:value.Handle,
+    owner:value.Owner?.CodeName??null,color:wire(value.Color),layer:wire(value.Layer),linetype:wire(value.Linetype),lineweight:value.Lineweight,
+    transparency:wire(value.Transparency),linetypeScale:wire(value.LinetypeScale),normal:wire(value.Normal),visible:value.IsVisible,
+    colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
+    reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
+    xdata:Array.from(value.XData.Values,wire)};
+  if (value instanceof api.Point) return {common,position:wire(value.Position),rotation:wire(value.Rotation),thickness:wire(value.Thickness)};
+  if (value instanceof api.Line) return {common,start:wire(value.StartPoint),end:wire(value.EndPoint),direction:wire(value.Direction),thickness:wire(value.Thickness)};
+  if (value instanceof api.Ray || value instanceof api.XLine) return {common,origin:wire(value.Origin),direction:wire(value.Direction)};
+  if (value instanceof api.Face3D || value instanceof api.Solid || value instanceof api.Trace) {
+    const vertices = ['FirstVertex','SecondVertex','ThirdVertex','FourthVertex'].map(k=>wire(value[k]));
+    return value instanceof api.Face3D ? {common,vertices,edgeFlags:value.EdgeFlags} : {common,vertices,elevation:wire(value.Elevation),thickness:wire(value.Thickness)};
+  }
+  throw new Error('Unmapped entity result: '+value.constructor.name);
+}

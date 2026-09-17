@@ -2,55 +2,14 @@
 <html lang="en"><meta charset="utf-8"><title>netDxf native JavaScript verification</title>
 <body><h1>netDxf native API browser verification</h1><pre id="status">Running…</pre>
 <script type="module">
-import { jsRaw } from '../../tools/wire.mjs';
-import { jsHandles } from '../../tools/handle-wire.mjs';
-import { jsObjects } from '../../tools/object-wire.mjs';
-import { createGeometryCaller } from '../../tools/geometry-wire.mjs';
-import { collectionCall } from '../../tools/collection-wire.mjs';
-import { jsGeometry } from '../../tools/foundations-wire.mjs';
-import { lifecycleCall } from '../../tools/lifecycle-wire.mjs';
-const methods = { raw: jsRaw, handles: jsHandles, objects: jsObjects };
-function canonical(value) {
-  if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
-  if (value !== null && typeof value === 'object') return '{' + Object.keys(value).sort().map(k => JSON.stringify(k) + ':' + canonical(value[k])).join(',') + '}';
-  return JSON.stringify(value);
-}
-const digest = async value => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical(value)))), b => b.toString(16).padStart(2,'0')).join('');
-const report = { completed: false, failures: [], comparisons: 0 };
+import { runBrowserCorpus } from '../../tools/browser-runner.mjs';
 try {
-  const response = await fetch('../../artifacts/browser/corpus.json');
-  if (!response.ok) throw new Error('Missing pinned browser corpus.');
-  const corpus = await response.json();
-  const native = await (await fetch('../../native-port-manifest.json')).json();
-  const geometry = createGeometryCaller(native);
-  methods.models = input => jsGeometry({...input,nativeManifest:native});
-  methods.geometry = input => ({ok:true,value:geometry(input)});
-  methods.lifecycle = input => ({ok:true,value:lifecycleCall(input)});
-  methods.collection = input => ({ok:true,value:collectionCall(input)});
-  report.runtimeFingerprint = corpus.runtimeFingerprint;
-  report.verificationFingerprint = corpus.verificationFingerprint;
-  report.sourceRef = corpus.sourceRef; report.sourceFingerprint = corpus.sourceFingerprint;
-  report.configuration = corpus.configuration; report.fixtures = corpus.fixtures;
-  for (const test of corpus.cases) {
-    for (const [op, expected] of Object.entries(test.expected)) {
-      const result = methods[op](test.input);
-      if (Array.isArray(expected)) {
-        if (!result.ok || !Array.isArray(result.value) || result.value.length !== expected.length)
-          throw new Error('Incomplete browser batch: ' + test.name);
-        for (let i=0; i<expected.length; i++) {
-          const actual = await digest(result.value[i]); report.comparisons++;
-          if(actual!==expected[i]) report.failures.push({name:test.names[i],op,expected:expected[i],actual,result:result.value[i]});
-        }
-      } else {
-        const actual = await digest(result); report.comparisons++;
-        if (actual !== expected) report.failures.push({ name: test.name, op, expected, actual, result });
-      }
-    }
-    if (report.failures.length > 10) throw new Error('Too many browser mismatches.');
-    document.querySelector('#status').textContent = `${report.comparisons} comparisons; ${report.failures.length} failures`;
-  }
-  report.completed = report.failures.length === 0;
-} catch (error) { report.fatal = String(error.stack || error); }
-window.testResults = report;
-document.querySelector('#status').textContent = JSON.stringify(report, null, 2);
+  const response=await fetch('../../artifacts/browser/corpus.json');
+  if(!response.ok)throw new Error('Missing pinned browser corpus.');
+  const corpus=await response.json(),native=await (await fetch('../../native-port-manifest.json')).json();
+  window.testResults=await runBrowserCorpus(corpus,native,{onProgress:report=>{
+    document.querySelector('#status').textContent=`${report.comparisons} comparisons; ${report.failures.length} failures`;
+  }});
+} catch(error) { window.testResults={completed:false,failures:[],comparisons:0,fatal:String(error.stack||error)}; }
+document.querySelector('#status').textContent=JSON.stringify(window.testResults,null,2);
 </script></body></html>

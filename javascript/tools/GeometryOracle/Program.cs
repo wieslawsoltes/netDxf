@@ -115,6 +115,7 @@ internal static partial class Program
         if(value is DxfClass definition) return new {type="DxfClass",name=definition.Name,cpp=definition.CppClassName,application=definition.ApplicationName,flags=definition.ProxyFlags,count=definition.InstanceCount,wasProxy=definition.WasProxy,entity=definition.IsEntity};
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
+        if (EntityWire(value, out var entityValue)) return entityValue;
         if (StyleWire(value, out var styleValue)) return styleValue;
         if (value is ITuple tuple) return Enumerable.Range(0,tuple.Length).Select(i=>Wire(tuple[i])).ToArray();
         if (value is IEnumerable list) return list.Cast<object?>().Select(Wire).ToArray();
@@ -164,6 +165,7 @@ internal static partial class Program
             case "call": {
                 var sig=Signature(step);
                 var flags=BindingFlags.Public|(target is null?BindingFlags.Static:BindingFlags.Instance);
+                if(step.TryGetProperty("nonPublic",out var hiddenCall)&&hiddenCall.GetBoolean())flags|=BindingFlags.NonPublic;
                 var method=sig is null?type!.GetMethods(flags).Where(v=>v.Name==member).Single(v=>Matches(v.GetParameters(),args))
                     :type!.GetMethod(member,flags,null,sig,null)!;
                 result=method.Invoke(target,args);

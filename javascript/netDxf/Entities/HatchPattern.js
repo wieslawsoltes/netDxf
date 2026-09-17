@@ -1,7 +1,8 @@
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 // Native mirror of the pinned netDxf/Entities/HatchPattern.cs.
-import { ArgumentException, ArgumentOutOfRangeException, FileLoadException, FormatException, NullReferenceException } from '../../runtime/Errors.js';
-import { Copy, Culture, NumberText, DotNetNaN } from '../../runtime/GeometryRuntime.js';
+import { ArgumentException, ArgumentOutOfRangeException, FileLoadException, NullReferenceException } from '../../runtime/Errors.js';
+import { Copy, Culture, NumberText } from '../../runtime/GeometryRuntime.js';
+import { TrimDotNet as trim, ParseInvariantFloat as parseDouble } from '../../runtime/InvariantFloat.js';
 import { ReferenceList } from '../../runtime/ReferenceList.js';
 import { OrdinalIgnoreCaseKey } from '../../runtime/Collections.js';
 import { StringReader } from '../../runtime/StringReader.js';
@@ -13,21 +14,10 @@ import { HatchFillType } from './HatchFillType.js';
 import { HatchType } from './HatchType.js';
 import { HatchStyle } from './HatchStyle.js';
 
-const trim = value => value.replace(/^[\u0009-\u000D\u0020\u0085\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]+|[\u0009-\u000D\u0020\u0085\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]+$/g, '');
 function header(line) {
   const comma = line.indexOf(',');
   if (comma < 1) throw new ArgumentOutOfRangeException('length');
   return [line.slice(1, comma), trim(line.slice(comma + 1))];
-}
-function parseDouble(token) {
-  // NumberStyles.Float permits neither thousands separators nor hexadecimal numbers.
-  const value = token.replace(/^[\t-\r ]+|[\t-\r ]+$/g, '');
-  if (/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(value)) return Number(value);
-  const special = trim(token).toLowerCase();
-  if (/^[+-]?nan$/.test(special)) return DotNetNaN;
-  if (/^[+]?infinity$/.test(special)) return Infinity;
-  if (special === '-infinity') return -Infinity;
-  throw new FormatException('The input string was not in a correct format.');
 }
 
 export class HatchPattern {
