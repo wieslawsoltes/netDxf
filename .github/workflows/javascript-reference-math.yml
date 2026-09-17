@@ -1,0 +1,70 @@
+name: JavaScript reference math generation
+on:
+  push:
+    branches: ['codex/javascript-port']
+    paths:
+      - 'javascript/tools/ReferenceMath/**'
+      - '.github/workflows/javascript-reference-math.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: javascript-reference-math-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  generate:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/javascript-port'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: bminor/glibc
+          ref: 'f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2'
+          path: _math-source
+          persist-credentials: false
+          sparse-checkout: |
+            sysdeps/ieee754/dbl-64
+      - name: Reproduce native modules and retain preferred source and notices
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C _math-source rev-parse HEAD)" = f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2
+          python3 javascript/tools/ReferenceMath/generate.py _math-source
+          python3 javascript/tools/ReferenceMath/generate.py --check
+          git add -- javascript/runtime/reference-math javascript/third_party/glibc-math
+      - name: Publish only a fast-forward of the exact input commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branch=codex/javascript-port
+          test "$(git ls-remote origin "refs/heads/$branch" | cut -f1)" = "$GITHUB_SHA"
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'build(js): reproduce pinned LGPL reference math and preferred sources'
+            git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$branch"
+          fi
+      - name: Retain generated source checkpoint
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p artifacts/reference-math-generation
+          git archive --format=tar.gz --output=artifacts/reference-math-generation/source-checkpoint.tar.gz HEAD
+          git rev-parse HEAD > artifacts/reference-math-generation/source-commit.txt
+          git rev-parse 'HEAD^{tree}' > artifacts/reference-math-generation/source-tree.txt
+          (cd artifacts/reference-math-generation && sha256sum source-checkpoint.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-reference-math-source
+          path: artifacts/reference-math-generation
+          if-no-files-found: error
+          retention-days: 7
