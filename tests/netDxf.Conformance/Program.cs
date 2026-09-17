@@ -32,6 +32,7 @@ internal static partial class Program
             }
         }
         Run("binary/valid-sentinel-and-string", ValidBinarySentinel);
+        RegisterEntityCloneQualificationTests();
         RunAdditionalTests();
         RegisterObservableCollectionInsertTests();
         RunTextHexTests();
