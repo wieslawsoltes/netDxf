@@ -1,38 +1,65 @@
-name: Recover interrupted C# review patch
+name: Publish checksum-locked C# clone review
 on:
   push:
     branches: [codex/review-toolchain-20260917]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  recovery:
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
+          path: transport
           persist-credentials: false
-      - name: Retain exact corrupted upload and readable prefix
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb
+          persist-credentials: true
+      - name: Verify complete source tree and publish clean child commit
         shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
         run: |
-          import hashlib, json, pathlib, zlib
-          source = pathlib.Path('.recovery/review.patch.gz').read_bytes()
-          blob = hashlib.sha1(b'blob ' + str(len(source)).encode() + b'\0' + source).hexdigest()
-          assert blob == 'f8ad428238fd059a4cee453883621543256a6f47'
-          output = pathlib.Path('recovered-review'); output.mkdir()
-          (output / 'original-corrupt.patch.gz').write_bytes(source)
-          decoder = zlib.decompressobj(31); chunks = []; error = None
-          for offset, value in enumerate(source):
-              try: chunks.append(decoder.decompress(bytes([value])))
-              except zlib.error as ex:
-                  error = str(ex); break
-          data = b''.join(chunks)
-          (output / 'UNVERIFIED-prefix.patch').write_bytes(data)
-          receipt = {'blob': blob, 'compressed_sha256': hashlib.sha256(source).hexdigest(), 'partial_sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data), 'error_offset': offset, 'error': error}
-          (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
-          print(json.dumps(receipt)); print(data.decode('utf-8', 'replace')[:8000])
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = 'cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb'
+          branch = 'codex/dxf-entity-clone-review-20260917'
+          expected = '8ab26e580a0395ebdadd4283e78fd61b7f8c524e'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '68dd970d70c3d79c8759aef02e4c9f492f2a8f06'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Destination branch already exists'
+          sources = [
+              ('production', 'cb4eaa4f2fbda82d955f89ba1cd0d547bc2ca2464cd67781647a0597ff3a4012', '7c9d6bdd9aadd0049f85591d0c7fcc207f0f687ae0fa42a0e5c35654725a5ff7'),
+              ('tests', '4b0b52ebc907feba9963a8fc29891009d64b30221d276e8943758f5167c7fd74', 'f9fda8ec33b265647b72ebdd034871cd89a9e8eb61bb1db978756054a8b445bc'),
+              ('verifier', '6d40585a47c797f20824789699db98726bc3807dbe0efcb8cc67c7c94712cb19', 'e4c1ca5be664f86e56a68bd2f29c40e9be230eb1ff1c60e45bb132c6c0f5dfb0'),
+              ('docs', 'c53445f39b54e235a9024b518055570122b5180446bb252685cf9de6b62a3a98', 'd56bad0d4d7ce668807c05c094caf4217c0c3cf26d3fa3d988aa9cfcdfc3a3db'),
+          ]
+          for name, compressed_hash, patch_hash in sources:
+              compressed = pathlib.Path('transport/.recovery/clone/' + name + '.patch.gz').read_bytes()
+              assert hashlib.sha256(compressed).hexdigest() == compressed_hash
+              patch = gzip.decompress(compressed)
+              assert hashlib.sha256(patch).hexdigest() == patch_hash
+              git('apply', '--check', '-', data=patch)
+              git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == expected, 'Reviewed source tree mismatch'
+          sha = git('commit-tree', tree, '-p', base, '-m', 'fix: preserve authored entity state and isolation through nested clones')
+          git('push', 'origin', sha + ':refs/heads/' + branch)
+          receipt = {'base': base, 'branch': branch, 'commit': sha, 'tree': tree, 'patches': sources}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'clone-review.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt, indent=2))
       - uses: actions/upload-artifact@v4
         with:
-          name: recovered-csharp-review-patch
-          path: recovered-review/
-          retention-days: 7
+          name: clone-review-publication-receipt
+          path: publication-receipt/
+          retention-days: 14
