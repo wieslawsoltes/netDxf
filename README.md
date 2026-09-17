@@ -91,6 +91,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [MTEXT Unicode continuation records](doc/dxf-conformance/mtext-unicode-chunks.md) preserve supplementary characters at chunk boundaries, bound UTF-8 value sizes and avoid quadratic chunk assembly. Legacy escape behavior and the scope of native qualification are documented separately.
 
+[Text-entity save preflight](doc/dxf-conformance/entity-text-framing.md) rejects unpaired Unicode and transport-breaking characters before output preparation, with source/destination rollback tests and independent valid-record checks. In-memory setters and unrelated raw/private strings retain their separate contracts.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

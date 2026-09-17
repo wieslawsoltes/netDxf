@@ -87,6 +87,7 @@ namespace netDxf.IO
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
             }
 
+            this.ValidateEntityTextStrings();
             this.ValidateOpaqueEntities();
             this.ValidateStoredPolylineRecords();
             this.ValidateStoredPolygonMeshRecords();
