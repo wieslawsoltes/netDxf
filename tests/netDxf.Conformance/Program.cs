@@ -38,6 +38,7 @@ internal static partial class Program
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
+        RegisterMeshEdgeDiagnosticTests();
         RegisterVertexAffineReviewTests();
         RegisterMeshDecompositionTests();
         RegisterDirectionAssignmentTests();
