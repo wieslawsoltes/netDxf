@@ -8,7 +8,7 @@ namespace netDxf.Objects
     /// <summary>An immutable explicit scalar result and its two FIELD display strings.</summary>
     /// <remarks>Value must be null, int, finite double or decoded string. Strings are never executed.
     /// Formatting is supplied by the evaluator, not guessed from private FIELD options.</remarks>
-    public sealed class DxfFieldResult
+    public sealed partial class DxfFieldResult
     {
         /// <summary>Creates a result; a missing value-display string uses the explicit formatted text.</summary>
         public DxfFieldResult(object value, string formattedText, string valueDisplayText = null)
@@ -26,7 +26,7 @@ namespace netDxf.Objects
         public object Value { get; }
         /// <summary>Gets the decoded group-301/group-9 text stored on the FIELD.</summary>
         public string FormattedText { get; }
-        /// <summary>Gets the decoded group-302 text for modern AcValue caches; ignored for compact caches.</summary>
+        /// <summary>Gets the decoded group-302 text for modern AcValue caches; ignored for compact encoding.</summary>
         public string ValueDisplayText { get; }
     }
 
@@ -56,7 +56,8 @@ namespace netDxf.Objects
         public IReadOnlyList<DxfFieldResult> Children { get; }
         /// <summary>Expands the qualified _text evaluator's literal text and %&lt;\_FldIdx N&gt;% child slots.</summary>
         /// <remarks>Unknown controls, malformed markers and out-of-range child indices reject. Child text
-        /// is appended literally and is never reparsed, so its marker-like contents are inert.</remarks>
+        /// is appended literally and is never reparsed, so its marker-like contents are inert.
+        /// Referenced failed children reject rather than silently producing a successful parent result.</remarks>
         public DxfFieldResult ComposeText()
         {
             if (this.Field.EvaluatorId != "_text") throw new NotSupportedException("Only the _text child-slot grammar is supported by ComposeText.");
@@ -84,6 +85,8 @@ namespace netDxf.Objects
                 if (digits == 0 || at + 1 >= code.Length || code[at] != '>' || code[at + 1] != '%')
                     throw new FormatException("Malformed FIELD child-index control.");
                 if (child >= this.Children.Count) throw new ArgumentOutOfRangeException(nameof(child));
+                if (this.Children[child].Status != DxfFieldResultStatus.Success)
+                    throw new InvalidOperationException("A failed child requires an explicit parent failure or host-selected fallback.");
                 Append(output, this.Children[child].FormattedText);
                 index = at + 2;
             }

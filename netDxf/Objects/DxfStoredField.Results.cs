@@ -27,19 +27,25 @@ namespace netDxf.Objects
                 throw new ArgumentException("FIELD result edits require the current evaluation snapshot.", nameof(request));
             this.ValidateSource(this.source);
             var original = this.Evaluation; var result = request.Result;
-            // Evaluated, HasCache, HasFormattedString; clear Modified, retain every other bit.
-            int state = (original.StoredState & ~4) | 8 | 16 | 32;
+            if (result.RetainsCachedValue && !ReferenceEquals(result.RetainedSnapshot, original))
+                throw new ArgumentException("Retained FIELD results must use this field's current snapshot.", nameof(request));
+            // Every completed attempt is Evaluated and no longer Modified. Explicit values
+            // establish cache/display presence; retained failures preserve the original presence bits.
+            int state = (original.StoredState & ~4) | 8;
+            if (!result.RetainsCachedValue) state |= 16 | 32;
+            this.CheckResultRecordBudget(this.Payload.Count);
             bool sameValue = SameValue(original.Value, result.Value);
             bool sameDisplay = original.FormattedText == result.FormattedText;
             bool sameValueDisplay = !original.StoredValueFlags.HasValue || original.ValueDisplayText == result.ValueDisplayText;
-            if (sameValue && sameDisplay && sameValueDisplay && original.StoredState == state && original.StoredStatus == 2 &&
-                original.StoredErrorCode == 0 && original.ErrorMessage.Length == 0) return null;
+            if (sameValue && sameDisplay && sameValueDisplay && original.StoredState == state && original.StoredStatus == (int)result.Status &&
+                original.StoredErrorCode == result.ErrorCode && original.ErrorMessage == result.ErrorMessage) return null;
 
             var tags = new List<DxfTag>(this.Payload.Count);
             tags.AddRange(this.Payload.Take(original.CacheStart));
             Replace(tags, original.StateIndex, state);
-            Replace(tags, original.StatusIndex, 2); Replace(tags, original.ErrorIndex, 0);
-            if (original.ErrorMessage.Length != 0) tags[original.MessageIndex] = new DxfTag(300, string.Empty);
+            Replace(tags, original.StatusIndex, (int)result.Status); Replace(tags, original.ErrorIndex, result.ErrorCode);
+            if (original.ErrorMessage != result.ErrorMessage)
+                tags[original.MessageIndex] = new DxfTag(300, this.EncodeResultText(result.ErrorMessage));
             if (sameValue)
                 tags.AddRange(this.Payload.Skip(original.CacheStart).Take(original.ScalarEnd - original.CacheStart));
             else
