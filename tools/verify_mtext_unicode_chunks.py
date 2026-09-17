@@ -74,7 +74,7 @@ def main():
         path = directory / name
         data = path.read_bytes()
         require(data.startswith(b'AutoCAD Binary DXF') == binary, 'Transport differs')
-        tags = binary_tags_loader(data) if binary else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig')))
+        tags = binary_tags_loader(data) if binary else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig'), newline=None))
         selected = []; current = []
         for tag in tags:
             if tag.code == 0:
