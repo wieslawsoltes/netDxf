@@ -95,6 +95,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [MTEXT orientation order](doc/dxf-conformance/mtext-orientation-order.md) now honors later angle/direction declarations without confusing column-height group 50 values with rotation. Existing rotation units are retained; the guide records specification discrepancies and independent input/output checks.
 
+[Filename text preflight](doc/dxf-conformance/text-file-preflight.md) applies the text guard before conventional Save can truncate a destination or change the document path. This is a bounded refusal guarantee; SaveAtomic remains the API for general serialization-failure protection.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

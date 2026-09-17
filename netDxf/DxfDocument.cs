@@ -642,11 +642,11 @@ namespace netDxf
         /// </remarks>
         public bool Save(string file, bool isBinary)
         {
-            // Opaque-specific refusals must precede destination truncation and document path changes.
+            // Text/opaque refusals must precede destination truncation and document path changes.
 #if DEBUG
-            new DxfWriter().PreflightOpaqueEntities(this, isBinary);
+            new DxfWriter().PreflightFileSaveEntities(this, isBinary);
 #else
-            try { new DxfWriter().PreflightOpaqueEntities(this, isBinary); }
+            try { new DxfWriter().PreflightFileSaveEntities(this, isBinary); }
             catch (DxfVersionNotSupportedException) { throw; }
             catch { return false; }
 #endif

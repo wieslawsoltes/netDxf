@@ -7,8 +7,15 @@ namespace netDxf.IO
 {
     internal sealed partial class DxfWriter
     {
-        internal void PreflightOpaqueEntities(DxfDocument document, bool binary)
-        { this.doc = document; this.isBinary = binary; this.ValidateOpaqueEntities(); }
+        // This is a bounded preflight for the conventional filename overload,
+        // not a promise of atomic saving for every later serialization failure.
+        internal void PreflightFileSaveEntities(DxfDocument document, bool binary)
+        {
+            this.doc = document;
+            this.isBinary = binary;
+            this.ValidateEntityTextStrings();
+            this.ValidateOpaqueEntities();
+        }
         private void ValidateOpaqueEntities()
         {
             int total = 0;
