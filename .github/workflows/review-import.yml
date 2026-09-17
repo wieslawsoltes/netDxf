@@ -50,7 +50,7 @@ jobs:
           paths = git('diff', '--cached', '--name-only').splitlines()
           if any(p.startswith(('.github/', 'review-transfer/', 'javascript/')) for p in paths):
               raise RuntimeError('Unexpected workflow, transfer or JavaScript changes')
-          git('diff', '--cached', '--check')
+          git('-c', 'core.whitespace=cr-at-eol', 'diff', '--cached', '--check')
           git('config', 'user.name', 'Wiesław Šoltés')
           git('config', 'user.email', 'wieslawsoltes@users.noreply.github.com')
           commit = git('commit-tree', tree, '-p', base, '-m', manifest['message'])
