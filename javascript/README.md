@@ -10,7 +10,7 @@ The native raw layer includes text/binary codecs, exact unedited same-transport 
 
 There are also 77 mirrored enum files, strict code-page tables generated from the pinned .NET runtime, a G17 numeric formatter, exact 64-bit integer/handle storage, and ordinal dictionary-name comparison. See [architecture](doc/ARCHITECTURE.md), [language adaptations](doc/LANGUAGE_ADAPTATIONS.md), and [verification](doc/VERIFICATION.md).
 
-**New typed foundations:** 29 semantically lowered source files now provide vectors, matrices, Bézier/bounding geometry, colors, CLASS metadata, formatting/settings models, and constants. Three collection files provide observable insertion/removal/event behavior and CLASS indexing. See [typed foundations](doc/TYPED_FOUNDATIONS.md) for overload/value-copy adapters and exact verification. A separate randomized geometry gate currently exposes unresolved trigonometric bit differences; the passing baseline must not be described as full geometry parity.
+**New typed foundations:** 29 semantically lowered source files now provide vectors, matrices, Bézier/bounding geometry, colors, CLASS metadata, formatting/settings models, and constants. Three collection files provide observable insertion/removal/event behavior and CLASS indexing. See [typed foundations](doc/TYPED_FOUNDATIONS.md) for overload/value-copy adapters and exact verification. The separate exact randomized gate passes the current local corpus after the reference-math reconciliation; that remains distinct from exhaustive geometry/API/platform parity.
 
 **Still incomplete:** the JavaScript typed `DxfDocument`, full entities/tables/styles, typed reader/writer, all original tests/examples, typed filesystem integration and full atomic-save platform semantics, full arbitrary-stream adapters, exact native-math equivalence, and exhaustive platform/performance qualification. A raw byte-preservation or raw OBJECTS test is not counted as a port of a test that constructs the typed JavaScript API.
 
@@ -22,7 +22,11 @@ There are also 77 mirrored enum files, strict code-page tables generated from th
 
 **Hatch patterns and gradients:** detached `HatchPattern` and `HatchGradientPattern` models now include presets, deep clones, independent RGB/ACI metadata, finite tint/shift editing, portable PAT text parsing and an explicit Node append-file host. Fifty-two additional complete original model cases are ported; typed HATCH/document IO is not. See [hatch patterns and PAT contracts](doc/HATCH_PATTERNS.md).
 
-**Latest measured checkpoint:** implementation `bd1a42f` passes the new hatch/PAT differential in Debug and Release (363 scenarios, 2,533 operations and 174 exact text comparisons per configuration). The ledger is 144/510 library mirrors and 2,017/35,309 original cases. The overall JavaScript workflow still fails on the existing exact numerical gates; [checkpoint evidence](doc/HATCH_PATTERNS.md#completed-checkpoint-evidence--bd1a42f) retains both positive and negative results.
+**Styles and primitives:** detached layer/text/shape/linetype models and seven geometric primitives include common metadata, proxy storage, reactors, transforms and clone isolation. The standalone `Polyline2DVertex` retains optional widths and identifiers. See [primitive contracts](doc/PRIMITIVE_ENTITIES.md).
+
+**Reconciled numerical continuation:** local `a14fc00` advances upstream `6bedd1b`, preserves its pinned reference-math backend and 61,876-case audit, and adds 30,904 exact .NET cases, a remainder NaN correction, and an independent development-only high-precision/MPFR comparison. The fixed foundation and randomized-geometry corpora pass locally without removing any cases. The enlarged real-browser corpus contains 100,444 comparisons. See [numerical scope, results, licensing and remaining gates](doc/NUMERICS.md).
+
+**Current ledger:** 168/510 library mirrors, 24/193 conformance-file mirrors, and 2,543/35,309 original cases. File presence is not exhaustive API qualification. The new continuation is committed locally, not pushed or hosted-CI-qualified. Full typed document/ownership/API coverage, Debug NaN behavior and platform/performance qualification remain incomplete.
 
 ## Source layout
 
@@ -90,11 +94,13 @@ python -m pip install -r tools/requirements-browser.txt
 python -m playwright install chromium
 python tools/browser-check.py
 npm run test:package
+npm run test:math:independent # Installed development MPFR library required.
 npm run benchmark
+npm run benchmark:math
 npm run verify
 ```
 
-`npm run test:differential` executes every independent comparison and retains each log even when an earlier category fails. It includes a required hatch/PAT model and text comparison stage, the recovered stateful foundations corpus, randomized geometry, filesystem operations and conversion-factor reproduction. The exact numeric categories currently **fail** with counterexamples; no tolerance or expected-failure allowlist is applied. Individual scripts `test:hatch`, `test:foundations`, `test:geometry:exact` and `test:filesystem` remain available. Continue the remaining verification commands after a failure to collect all evidence; CI does so automatically.
+`npm run test:differential` executes every independent comparison and retains each log even when an earlier category fails. It includes a required hatch/PAT model and text comparison stage, the recovered stateful foundations corpus, randomized geometry, filesystem operations and conversion-factor reproduction. The reconciled reference-math, added math, fixed-foundations and randomized-geometry corpora pass locally; other gates still retain failures or unavailable evidence. No tolerance or expected-failure allowlist is applied. Individual scripts `test:reference-math`, `test:math`, `test:entities`, `test:styles`, `test:hatch`, `test:foundations`, `test:geometry:exact` and `test:filesystem` remain available. Continue the remaining verification commands after a failure to collect all evidence; CI does so automatically.
 
 `DOTNET_ROOT` or `DOTNET` can select an isolated toolchain. `CHROMIUM` can select an already installed browser executable. Browser checks require a real Chromium process, not a mocked DOM. Repeat with `CONFIGURATION=Debug` to compare with the Debug .NET oracle.
 
@@ -122,4 +128,4 @@ The default entry stays browser-safe and rejects filesystem operations without a
 
 ## License
 
-MIT; original netDxf copyright Daniel Carvajal. The port retains the original license and attribution. Generated .NET-derived development tables are committed native JavaScript data; .NET itself is not distributed in the package.
+Original netDxf code remains MIT, copyright Daniel Carvajal. The pinned production reference-math modules retain their upstream LGPL-2.1-or-later material; package metadata is `MIT AND LGPL-2.1-or-later`. See [third-party notices](THIRD_PARTY_NOTICES.md) and the included preferred sources. The separate high-precision development reference is independently written MIT code and is not imported by the package entry. .NET and MPFR are not distributed as runtime dependencies.
