@@ -71,11 +71,7 @@ namespace netDxf.Entities
             : base(EntityType.XLine, DxfObjectCode.XLine)
         {
             this.origin = origin;
-            this.direction = Vector3.Normalize(direction);
-            if (Vector3.IsZero(this.direction))
-            {
-                throw new ArgumentException("The direction can not be the zero vector.", nameof(direction));
-            }
+            this.direction = AffineEntityGeometry.Unit(direction);
         }
 
         #endregion
@@ -99,11 +95,7 @@ namespace netDxf.Entities
             get { return this.direction; }
             set
             {
-                this.direction = Vector3.Normalize(value);
-                if (Vector3.IsZero(this.direction))
-                {
-                    throw new ArgumentException("The direction can not be the zero vector.", nameof(value));
-                }
+                this.direction = AffineEntityGeometry.Unit(value);
             }
         }
 
@@ -119,21 +111,20 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            this.Origin = transformation * this.Origin + translation;
+            var prepared = new AffineEntityGeometry(transformation, translation);
+            Vector3 origin = prepared.Point(this.origin), direction = prepared.Direction(this.direction);
+            Vector3 normal = prepared.AuxiliaryNormal(this.Normal);
+            if (prepared.IsIdentity) return;
+            base.Normal = normal;
+            this.origin = origin; this.direction = direction;
+            this.ClearProxyGraphics();
+        }
 
-            Vector3 newDirection = transformation * this.Direction;
-            if (Vector3.Equals(Vector3.Zero, newDirection))
-            {
-                newDirection = this.Direction;
-            }
-            this.Direction = newDirection;
-
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-            this.Normal = newNormal;
+        /// <summary>Applies a finite affine four-by-four transform; projective matrices reject before mutation.</summary>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            AffineEntityGeometry.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>

@@ -370,17 +370,20 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            for (int i = 0; i < this.vertexes.Count; i++)
-            {
-                this.vertexes[i] = transformation * this.vertexes[i] + translation;
-            }
+            var prepared = new AffineEntityGeometry(transformation, translation);
+            Vector3[] points = prepared.Points(this.vertexes);
+            Vector3 normal = prepared.AuxiliaryNormal(this.Normal);
+            if (prepared.IsIdentity) return;
+            base.Normal = normal;
+            for (int i = 0; i < points.Length; i++) this.vertexes[i] = points[i];
+            this.ClearProxyGraphics();
+        }
 
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-            this.Normal = newNormal;
+        /// <summary>Applies a finite affine four-by-four transform; projective matrices reject before mutation.</summary>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            AffineEntityGeometry.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>

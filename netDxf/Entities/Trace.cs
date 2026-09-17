@@ -161,39 +161,22 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
+            var transform = new AffineEntityGeometry(transformation, translation);
+            var result = transform.Plane(new[] { this.firstVertex, this.secondVertex, this.thirdVertex, this.fourthVertex },
+                this.elevation, this.Normal, this.thickness);
+            if (transform.IsIdentity) return;
+            base.Normal = result.Normal;
+            this.firstVertex = result.Vertices[0]; this.secondVertex = result.Vertices[1];
+            this.thirdVertex = result.Vertices[2]; this.fourthVertex = result.Vertices[3];
+            this.elevation = result.Elevation; this.thickness = result.Thickness;
+            this.ClearProxyGraphics();
+        }
 
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
-
-            Vector3 v;
-
-            v = transOW * new Vector3(this.FirstVertex.X, this.FirstVertex.Y, this.Elevation);
-            v = transformation * v + translation;
-            v = transWO * v;
-            this.FirstVertex = new Vector2(v.X, v.Y);
-
-            v = transOW * new Vector3(this.SecondVertex.X, this.SecondVertex.Y, this.Elevation);
-            v = transformation * v + translation;
-            v = transWO * v;
-            this.SecondVertex = new Vector2(v.X, v.Y);
-
-            v = transOW * new Vector3(this.ThirdVertex.X, this.ThirdVertex.Y, this.Elevation);
-            v = transformation * v + translation;
-            v = transWO * v;
-            this.ThirdVertex = new Vector2(v.X, v.Y);
-
-            v = transOW * new Vector3(this.FourthVertex.X, this.FourthVertex.Y, this.Elevation);
-            v = transformation * v + translation;
-            v = transWO * v;
-            this.FourthVertex = new Vector2(v.X, v.Y);
-
-            this.Normal = newNormal;
-            this.Elevation = v.Z;
+        /// <summary>Applies a finite affine four-by-four transform; projective matrices reject before mutation.</summary>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            AffineEntityGeometry.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>
@@ -218,7 +201,8 @@ namespace netDxf.Entities
                 SecondVertex = this.secondVertex,
                 ThirdVertex = this.thirdVertex,
                 FourthVertex = this.fourthVertex,
-                Thickness = this.thickness
+                Thickness = this.thickness,
+                Elevation = this.elevation
             };
 
             foreach (XData data in this.XData.Values)
