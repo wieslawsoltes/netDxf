@@ -332,9 +332,16 @@ internal static partial class Program
         var exported = line.ProxyGraphics!; exported[0] ^= 255; Check(line.ProxyGraphics![0] != exported[0], "Proxy getter exposed storage");
         var copy = (Line)line.Clone(); var copyBytes = copy.ProxyGraphics!; copyBytes[0] = 200; copy.ProxyGraphics = copyBytes;
         Check(line.ProxyGraphics![0] != 200, "Proxy clone shares storage");
+        line.TransformBy(Matrix3.Identity, Vector3.Zero);
+        Check(line.ProxyGraphics!.SequenceEqual(CommonDataBytes(129)), "Identity transform altered opaque cache");
         line.TransformBy(Matrix3.Scale(2), new Vector3(3, 4, 5));
         Equal(new Vector3(5, 4, 5), line.EndPoint, "Stored proxy disabled geometry transformation");
-        Check(line.ProxyGraphics!.SequenceEqual(CommonDataBytes(129)), "Transform altered opaque cache");
+        Check(line.ProxyGraphics == null, "Changed LINE retained stale opaque cache");
+        Check(copy.ProxyGraphics!.SequenceEqual(copyBytes), "LINE transform changed independent clone cache");
+        Equal("", line.ColorName!, "LINE transform changed color name");
+        Equal(EntityShadowMode.CastAndReceive, line.ShadowMode!.Value, "LINE transform changed shadow mode");
+        // Explicitly supplied replacement bytes still have the existing guarded setter contract.
+        line.ProxyGraphics = CommonDataBytes(129);
         var polyline = new Polyline2D(new[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY }) { ProxyGraphics = CommonDataBytes(129) };
         polyline.Reverse(); polyline.Reverse(); Check(polyline.ProxyGraphics!.SequenceEqual(CommonDataBytes(129)), "Reverse altered opaque cache");
         try { line.ShadowMode = (EntityShadowMode)4; throw new InvalidOperationException("Invalid shadow accepted"); } catch (ArgumentOutOfRangeException) { }
