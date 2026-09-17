@@ -45,7 +45,7 @@ internal static partial class Program
         var exported = value.ToArray(); exported[0] ^= 255;
         Check(value[0] == expected[0] && value.Length == 256, "binary export aliases internal data");
         Check(value.Equals(value) && !value.Equals(null) && !value.Equals((object)expected), "binary value equality kinds");
-        Check(!value.Equals(new DxfFieldBinaryValue(source)) && !value.Equals(new DxfFieldBinaryValue(Array.Empty<byte>())), "binary inequality");
+        Check(!value!.Equals(new DxfFieldBinaryValue(source)) && !value.Equals(new DxfFieldBinaryValue(Array.Empty<byte>())), "binary inequality");
         Throws<IndexOutOfRangeException>(() => _ = value[-1]);
         Throws<IndexOutOfRangeException>(() => _ = value[value.Length]);
         var empty = new DxfFieldBinaryValue(Array.Empty<byte>());
