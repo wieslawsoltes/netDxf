@@ -6,6 +6,7 @@ internal static partial class Program
     {
         RegisterFieldResultTests();
         RegisterFieldResultBoundaryTests();
+        RegisterFieldFailureTests();
         RegisterEllipseAffineReviewTests();
         RegisterTrueColorWireReviewTests();
         RegisterLegacyUtilityReviewTests();
