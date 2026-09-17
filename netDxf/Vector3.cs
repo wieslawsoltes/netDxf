@@ -459,6 +459,43 @@ namespace netDxf
             return new Vector3(u.x * modInv, u.y * modInv, u.z * modInv) { isNormalized = true };
         }
 
+        // Entity directions have a stricter contract than the general-purpose
+        // public Normalize APIs: finite and exactly nonzero, independent of the
+        // caller-configurable geometric comparison tolerance. Prepare a complete
+        // value so property setters cannot publish a failed normalization.
+        internal static Vector3 NormalizeFiniteDirection(Vector3 value, string parameterName)
+        {
+            if (double.IsNaN(value.x) || double.IsInfinity(value.x) ||
+                double.IsNaN(value.y) || double.IsInfinity(value.y) ||
+                double.IsNaN(value.z) || double.IsInfinity(value.z))
+            {
+                throw new ArgumentOutOfRangeException(parameterName, "A direction must have finite components.");
+            }
+            double scale = Math.Max(Math.Abs(value.x), Math.Max(Math.Abs(value.y), Math.Abs(value.z)));
+            if (scale == 0.0)
+            {
+                throw new ArgumentException("A direction cannot be the zero vector.", parameterName);
+            }
+            // Preserve exact already-normalized values (including signed zeros)
+            // through repeated assignments and clone initialization.
+            if (value.isNormalized)
+            {
+                return value;
+            }
+            double x = value.x, y = value.y, z = value.z;
+            // Keep ordinary legacy arithmetic unchanged. Outside this safe range
+            // scale by division, not by a reciprocal that can overflow for a
+            // subnormal direction. The largest scaled component has magnitude 1.
+            if (scale < 1e-150 || scale > 1e150)
+            {
+                x /= scale;
+                y /= scale;
+                z /= scale;
+            }
+            double inverseLength = 1.0 / Math.Sqrt(x * x + y * y + z * z);
+            return new Vector3(x * inverseLength, y * inverseLength, z * inverseLength) { isNormalized = true };
+        }
+
         #endregion
 
         #region overloaded operators
