@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { OracleClient } from './OracleClient.mjs';
 import { oracleRoot } from './dotnet.mjs';
+import { referenceMathCorpus } from './reference-math-corpus.mjs';
 import { entityCorpus } from './entity-corpus.mjs';
 import { styleCorpus } from './style-corpus.mjs';
 import { hatchCorpus } from './hatch-corpus.mjs';
@@ -77,6 +78,13 @@ try {
     const expected=await modelOracle.request(probe.request);
     if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete model oracle response.');
     cases.push({name:`${category}/${probe.name}`,input:probe.request,expected:{models:sha256(canonical(expected))}});
+  }
+  const math=referenceMathCorpus();
+  for(let offset=0;offset<math.length;offset+=256){
+    const calls=math.slice(offset,offset+256),expected=await modelOracle.request({op:'reference-math',calls});
+    if(!Array.isArray(expected)||expected.length!==calls.length)throw new Error('Incomplete direct math oracle response.');
+    cases.push({name:`reference-math/batch/${offset}`,names:calls.map(call=>call.id),input:{calls},
+      expected:{referenceMath:expected.map(value=>sha256(canonical(value)))}});
   }
 }finally {await modelOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');

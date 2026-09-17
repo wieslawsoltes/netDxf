@@ -1,4 +1,5 @@
 // Browser-native execution. Golden result digests are supplied only by the pinned C# oracle.
+import { referenceMathCall } from './reference-math-wire.mjs';
 import { jsRaw } from './wire.mjs';
 import { jsHandles } from './handle-wire.mjs';
 import { jsObjects } from './object-wire.mjs';
@@ -21,7 +22,7 @@ export async function runBrowserCorpus(corpus, native, { hashCanonical = webHash
     if (!Array.isArray(corpus.cases) || !corpus.cases.length) throw new Error('Missing browser corpus.');
     for (const key of ['runtimeFingerprint','verificationFingerprint','sourceRef','sourceFingerprint','configuration','fixtures']) report[key] = corpus[key];
     const geometry = createGeometryCaller(native);
-    const methods = {raw:jsRaw,handles:jsHandles,objects:jsObjects,models:input=>jsGeometry({...input,nativeManifest:native}),
+    const methods = {referenceMath:input=>({ok:true,value:referenceMathCall(input.calls)}),raw:jsRaw,handles:jsHandles,objects:jsObjects,models:input=>jsGeometry({...input,nativeManifest:native}),
       geometry:input=>({ok:true,value:geometry(input)}),lifecycle:input=>({ok:true,value:lifecycleCall(input)}),collection:input=>({ok:true,value:collectionCall(input)})};
     const compare = async (name,op,expected,result) => {
       if (typeof expected !== 'string' || !/^[a-f0-9]{64}$/.test(expected)) throw new Error('Invalid expected digest: '+name);

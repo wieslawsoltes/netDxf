@@ -12,10 +12,22 @@ try {
   const [info]=JSON.parse(run(npm,['pack','--ignore-scripts','--json','--pack-destination',temp],javascriptRoot));
   if(!info.files.some(f=>f.path==='node-entry.js')) throw new Error('Packed Node entry is missing.');
   if(!info.files.some(f=>f.path==='Enums.generated.js')) throw new Error('Packed enum barrel is missing.');
-  if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
+  if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path) && !['tools/ReferenceMath/generate.py','tools/ReferenceMath/source-manifest.json'].includes(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
+  for(const file of ['THIRD_PARTY_NOTICES.md','runtime/reference-math/LICENSE.LGPL-2.1','runtime/reference-math/LICENSE.GPL-2','third_party/glibc-math/COPYING.LIB','third_party/glibc-math/sysdeps/ieee754/dbl-64/dla.h','tools/ReferenceMath/generate.py'])
+    if(!info.files.some(f=>f.path===file)) throw new Error('Required mathematical source/notice is missing: '+file);
   const install=path.join(temp,'install');fs.mkdirSync(install);
   run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
-  const script=`import {DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+  const script=`import fs from 'node:fs';
+    import {createHash} from 'node:crypto';
+    import {DotNetMath} from '@netdxf/javascript/runtime/GeometryRuntime.js';
+    const packageRoot=new URL('./node_modules/@netdxf/javascript/',import.meta.url);
+    const pkg=JSON.parse(fs.readFileSync(new URL('package.json',packageRoot)));
+    if(pkg.license!=='MIT AND LGPL-2.1-or-later')throw new Error('Aggregate license metadata is wrong');
+    const provenance=JSON.parse(fs.readFileSync(new URL('tools/ReferenceMath/source-manifest.json',packageRoot)));
+    for(const [file,expected] of Object.entries(provenance.files))
+      if(createHash('sha256').update(fs.readFileSync(new URL('third_party/glibc-math/'+file,packageRoot))).digest('hex')!==expected)throw new Error('Packaged preferred source drift: '+file);
+    if(DotNetMath.Sin(-0.20148213487118483)!==-0.2001217029035577)throw new Error('Packed reference math failed');
+    import {DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
     const registry=new ApplicationRegistry('REGISTRY'),data=new XData(registry);
     data.XDataRecord.Add(new XDataRecord(XDataCode.BinaryData,Uint8Array.of(1,2)));registry.XData.Add(data);
     const clone=registry.Clone('COPY');if(clone.XData.get_Item('COPY').ApplicationRegistry!==clone)throw new Error('Packed cyclic registry clone failed');

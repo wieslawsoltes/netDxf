@@ -1,3 +1,8 @@
+import { Sin, Cos } from './reference-math/sincos.js';
+import { Asin, Acos } from './reference-math/asincos.js';
+import { Atan } from './reference-math/atan.js';
+import { Atan2 } from './reference-math/atan2.js';
+import { Tan } from './reference-math/tan.js';
 /** Native adapters for the audited geometry cluster; no CLR, code evaluator or server. */
 import {
   ArgumentException, ArgumentNullException, ArgumentOutOfRangeException,
@@ -78,10 +83,10 @@ const powers = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000,
   1000000000, 10000000000, 100000000000, 1000000000000, 10000000000000,
   100000000000000, 1000000000000000];
 export const DotNetMath = Object.freeze({
-  Abs: Math.abs, Sqrt: Math.sqrt, Sin: Math.sin, Cos: Math.cos, Tan: Math.tan,
-  Asin: value => Number.isNaN(value) ? value : Math.abs(value) > 1 ? DotNetNaN : Math.asin(value),
-  Acos: value => Number.isNaN(value) ? value : Math.abs(value) > 1 ? DotNetNaN : Math.acos(value),
-  Atan: Math.atan, Atan2: Math.atan2,
+  Abs: Math.abs, Sqrt: Math.sqrt, Sin, Cos, Tan,
+  Asin,
+  Acos,
+  Atan, Atan2,
   Pow: Math.pow, Exp: Math.exp, Log: Math.log, Log10: Math.log10,
   Min: Math.min, Max: Math.max, Floor: Math.floor, Ceiling: Math.ceil, Truncate: Math.trunc,
   Sign(value) {

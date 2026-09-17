@@ -4,7 +4,7 @@
   "private": true,
   "description": "Native JavaScript port of netDxf with pinned .NET differential verification (in progress)",
   "type": "module",
-  "license": "MIT",
+  "license": "MIT AND LGPL-2.1-or-later",
   "engines": {
     "node": ">=22"
   },
@@ -28,7 +28,10 @@
     "native/bin",
     "native/windows/atomic_replace.cc",
     "native/windows/binding.gyp",
-    "native/build.mjs"
+    "native/build.mjs",
+    "third_party/glibc-math",
+    "tools/ReferenceMath",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
@@ -53,7 +56,9 @@
     "test:windows-host": "node tools/run-windows-host-tests.mjs",
     "test:styles": "node tools/style-differential.mjs",
     "test:entities": "node tools/entity-differential.mjs",
-    "test:browser:inline": "python tools/browser-inline-check.py"
+    "test:browser:inline": "python tools/browser-inline-check.py",
+    "test:reference-math": "node tools/reference-math-differential.mjs",
+    "verify:reference-math": "python tools/ReferenceMath/generate.py --check"
   },
   "repository": {
     "type": "git",

@@ -46,6 +46,7 @@ jobs:
           node javascript/tools/dotnet.mjs oracle
           node javascript/tools/dotnet.mjs geometry
           node javascript/tools/dotnet.mjs native-port --check
+          python javascript/tools/ReferenceMath/generate.py --check
           node javascript/tools/ordinal-casing.mjs --check
       - name: Execute the complete original C# suite
         run: node javascript/tools/dotnet.mjs conformance

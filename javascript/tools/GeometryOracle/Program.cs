@@ -187,6 +187,7 @@ internal static partial class Program
     private static object Run(JsonElement input)
     {
         Values.Clear();ResetObservations();MathHelper.Epsilon=1e-12;
+        if(input.TryGetProperty("op",out var mathOp)&&mathOp.GetString()=="reference-math")return ReferenceMath(input);
         CultureInfo.CurrentCulture=CultureInfo.InvariantCulture;
         if(input.TryGetProperty("op",out var op)&&op.GetString()=="unit-factors")return Enumerable.Range(0,25).Select(a=>Enumerable.Range(0,25).Select(b=>Bits(UnitHelper.ConversionFactor((DrawingUnits)a,(DrawingUnits)b))).ToArray()).ToArray();
         if(input.TryGetProperty("op",out var environmentOp)&&environmentOp.GetString()=="environment")return new {
