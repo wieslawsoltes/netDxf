@@ -50,7 +50,8 @@
     "test:hatch": "node tools/hatch-differential.mjs",
     "test:lifecycle": "node tools/lifecycle-differential.mjs",
     "build:windows-host": "node native/build.mjs",
-    "test:windows-host": "node tools/run-windows-host-tests.mjs"
+    "test:windows-host": "node tools/run-windows-host-tests.mjs",
+    "test:styles": "node tools/style-differential.mjs"
   },
   "repository": {
     "type": "git",

@@ -185,6 +185,11 @@ jobs:
       - name: Compare real filesystem output and rejection behavior
         if: ${{ !cancelled() }}
         run: node javascript/tools/filesystem-differential.mjs
+      - name: Compare styles and support files on the actual host
+        if: ${{ !cancelled() }}
+        run: |
+          node javascript/tools/dotnet.mjs geometry
+          node javascript/tools/style-differential.mjs
       - name: Validate offline Node package installation
         if: ${{ !cancelled() }}
         run: node javascript/tools/package-check.mjs
@@ -194,6 +199,7 @@ jobs:
           name: javascript-filesystem-${{ matrix.os }}
           path: |
             javascript/artifacts/filesystem-differential/Release/results.json
+            javascript/artifacts/style-differential/Release/results.json
             javascript/artifacts/conformance/*.json
             javascript/artifacts/package/results.json
             javascript/artifacts/oracle/Release/*.log

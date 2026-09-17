@@ -37,6 +37,7 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':528,'stats.operations':3559,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':363,'stats.operations':2533},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
   raw:[`differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.emittedByteComparisons':8263}}],
@@ -49,7 +50,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.comparisons':1782}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:6268}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:7159}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));

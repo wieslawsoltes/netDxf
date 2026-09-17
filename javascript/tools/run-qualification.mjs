@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['styles',['tools/style-differential.mjs']],
   ['hatch',['tools/hatch-differential.mjs']],
   ['lifecycle',['tools/lifecycle-differential.mjs']],
   ['raw',['tools/differential.mjs']], ['handles',['tools/handle-differential.mjs']],

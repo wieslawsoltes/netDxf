@@ -29,3 +29,14 @@ export { ApplicationRegistry } from './netDxf/Tables/ApplicationRegistry.js';
 export { XDataDictionary } from './netDxf/Collections/XDataDictionary.js';
 export { HatchPattern } from './netDxf/Entities/HatchPattern.js';
 export { HatchGradientPattern } from './netDxf/Entities/HatchGradientPattern.js';
+
+export { Layer } from './netDxf/Tables/Layer.js';
+export { Linetype } from './netDxf/Tables/Linetype.js';
+export { LinetypeSegment } from './netDxf/Tables/LinetypeSegment.js';
+export { LinetypeSimpleSegment } from './netDxf/Tables/LinetypeSimpleSegment.js';
+export { LinetypeTextSegment } from './netDxf/Tables/LinetypeTextSegment.js';
+export { LinetypeShapeSegment } from './netDxf/Tables/LinetypeShapeSegment.js';
+export { LinetypeSegmentChangeEventArgs } from './netDxf/Tables/LinetypeSegmentChangeEventArgs.js';
+export { TextStyle } from './netDxf/Tables/TextStyle.js';
+export { TextStyleFontData } from './netDxf/Tables/TextStyleFontData.js';
+export { ShapeStyle } from './netDxf/Tables/ShapeStyle.js';

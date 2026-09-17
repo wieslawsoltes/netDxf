@@ -7,6 +7,7 @@ import { jsHandles } from '../../tools/handle-wire.mjs';
 import { jsObjects } from '../../tools/object-wire.mjs';
 import { createGeometryCaller } from '../../tools/geometry-wire.mjs';
 import { collectionCall } from '../../tools/collection-wire.mjs';
+import { jsGeometry } from '../../tools/foundations-wire.mjs';
 import { lifecycleCall } from '../../tools/lifecycle-wire.mjs';
 const methods = { raw: jsRaw, handles: jsHandles, objects: jsObjects };
 function canonical(value) {
@@ -22,6 +23,7 @@ try {
   const corpus = await response.json();
   const native = await (await fetch('../../native-port-manifest.json')).json();
   const geometry = createGeometryCaller(native);
+  methods.models = input => jsGeometry({...input,nativeManifest:native});
   methods.geometry = input => ({ok:true,value:geometry(input)});
   methods.lifecycle = input => ({ok:true,value:lifecycleCall(input)});
   methods.collection = input => ({ok:true,value:collectionCall(input)});

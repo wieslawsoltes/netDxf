@@ -79,7 +79,7 @@ export function build(mode = 'oracle') {
     const names = ['Microsoft.CodeAnalysis', 'Microsoft.CodeAnalysis.CSharp'];
     compile(tool, 'NativePort', [path.join(javascriptRoot, 'tools/NativePort/Program.cs')], true,
       ['-nullable:enable', ...names.map(n => '-r:' + path.join(roslyn, n + '.dll'))]);
-    for (const name of names) fs.copyFileSync(path.join(roslyn, name + '.dll'), path.join(oracleRoot, name + '.dll'));
+    for (const name of names) fs.copyFileSync(path.join(roslyn,name+'.dll'), path.join(oracleRoot, name + '.dll'));
     console.log(run(command, [path.join(oracleRoot, 'NativePort.dll'), sourceRoot, javascriptRoot, tool.refs,
       ...(process.argv.includes('--check') ? ['--check'] : [])]).trim());
   } else if (mode === 'conformance') {
@@ -93,7 +93,7 @@ export function build(mode = 'oracle') {
     console.log(fs.readFileSync(log,'utf8').trim().split(/\r?\n/).at(-1));
     fs.writeFileSync(path.join(artifactPath,'metadata.json'),JSON.stringify({sourceRef:baseline.ref,sourceFingerprint,configuration,toolchain:baseline.toolchain,filter:process.env.DXF_TEST_FILTER||null,fullSuite:!process.env.DXF_TEST_FILTER},null,2)+'\n');
   } else if (mode === 'geometry') {
-    compile(tool,'GeometryOracle',[path.join(javascriptRoot,'tools/GeometryOracle/Program.cs')],true,[library,'-nullable:enable']);
+    compile(tool,'GeometryOracle',walk(path.join(javascriptRoot,'tools/GeometryOracle')).filter(f=>f.endsWith('.cs')),true,[library,'-nullable:enable']);
   } else if (mode === 'oracle') {
     compile(tool,'Oracle',walk(path.join(javascriptRoot,'tools','Oracle')).filter(f=>f.endsWith('.cs')),true,[library,'-nullable:enable']);
   } else throw new Error('Usage: node tools/dotnet.mjs oracle|inventory [--generate]|conformance|native-port [--check]');

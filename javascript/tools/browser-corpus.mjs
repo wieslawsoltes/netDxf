@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { OracleClient } from './OracleClient.mjs';
+import { oracleRoot } from './dotnet.mjs';
+import { styleCorpus } from './style-corpus.mjs';
+import { hatchCorpus } from './hatch-corpus.mjs';
 import { baseline, sourceRoot, javascriptRoot, configuration } from './dotnet.mjs';
 import { runtimeFingerprint, verificationFingerprint, sha256 } from './evidence.mjs';
 import { geometryCorpus } from './geometry-differential.mjs';
@@ -63,6 +66,18 @@ try {
     cases.push({name:'collection/'+cases.length,input,expected:{collection:sha256(canonical(expected))}});
   }
 } finally { await oracle.close(); }
+// Detached model/text corpora use the same reflection oracle as their exact Node comparison.
+const modelOracle=new OracleClient({args:[path.join(oracleRoot,'GeometryOracle.dll')]});
+try {
+  const read=name=>fs.readFileSync(path.join(sourceRoot,'TestDxfDocument/Support',name));
+  const hatches=hatchCorpus(['acad.pat','acadiso.pat'].map(name=>({name,text:read(name).toString('utf8')})));
+  const styles=styleCorpus(['acad.lin','acadiso.lin'].map(name=>({name,text:read(name).toString('utf8')})),read('ltypeshp.shx'));
+  for(const [category,probes] of [['hatch',hatches],['styles',styles]])for(const probe of probes){
+    const expected=await modelOracle.request(probe.request);
+    if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete model oracle response.');
+    cases.push({name:`${category}/${probe.name}`,input:probe.request,expected:{models:sha256(canonical(expected))}});
+  }
+}finally {await modelOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

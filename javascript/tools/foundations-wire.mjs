@@ -1,5 +1,7 @@
 // Shared Node/browser operation interpreter; production implementations provide all behavior.
 import * as api from '../index.js';
+import { styleWire, shapeInput } from './styles-wire.mjs';
+import { InvalidOperationException } from '../runtime/Errors.js';
 import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
@@ -35,6 +37,7 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named:value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const style=styleWire(value,wire); if(style!==undefined)return style;
   if (typeof value[Symbol.iterator] === 'function') return Array.from(value, wire);
   throw new Error('Unmapped geometry result: ' + type);
 }
@@ -42,6 +45,7 @@ function wire(value) {
 export function jsGeometry(input) {
   const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = '';
   const native = input.nativeManifest;
+  const observers=new Map(), observations=[];
   function read(value) {
     if (value == null || typeof value !== 'object') return value;
     if ('ref' in value) { if(!values.has(value.ref)) throw new Error('Missing scenario reference: '+value.ref); return values.get(value.ref); }
@@ -87,6 +91,23 @@ export function jsGeometry(input) {
       const args = (step.args ?? []).map(read);
       let result;
       switch (step.kind) {
+        case 'lin-names': result = api.Linetype.NamesFromText(step.text); break;
+        case 'lin-load': result = api.Linetype.LoadText(step.text,step.patternName); break;
+        case 'lin-save': result = target.ToLinString(step.newLine ?? '\n'); break;
+        case 'shape-names': case 'shape-query': result=shapeInput(step);break;
+        case 'reference-equals': result=args[0]===args[1];break;
+        case 'observe': {
+          const handler=(sender,e)=>{
+            const properties={};for(const key of ['OldValue','NewValue','Item','Cancel'])if(key in e)properties[key]=wire(e[key]);
+            observations.push({observer:step.observer,member:step.member,values:properties});
+            if('replace' in step)e.NewValue=read(step.replace);
+            if('cancel' in step)e.Cancel=step.cancel;
+            if(step.throw)throw new InvalidOperationException('Observer failure');
+          };
+          target[step.member].Add(handler);observers.set(step.observer,{target,event:step.member,handler});break;
+        }
+        case 'unobserve': {const item=observers.get(step.observer);item.target[item.event].Remove(item.handler);observers.delete(step.observer);break;}
+        case 'events': return {ok:true,value:structuredClone(observations)};
         case 'pat-names': result = api.HatchPattern.NamesFromText(step.text); break;
         case 'pat-load': result = api.HatchPattern.LoadText(step.text, step.patternName); break;
         case 'pat-save': result = target.ToPatString(step.newLine ?? '\n'); break;

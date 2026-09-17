@@ -14,7 +14,7 @@ using netDxf;
 using netDxf.IO;
 using netDxf.Units;
 
-internal static class Program
+internal static partial class Program
 {
     private static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     private static readonly Dictionary<string, object?> Values = new();
@@ -115,6 +115,7 @@ internal static class Program
         if(value is DxfClass definition) return new {type="DxfClass",name=definition.Name,cpp=definition.CppClassName,application=definition.ApplicationName,flags=definition.ProxyFlags,count=definition.InstanceCount,wasProxy=definition.WasProxy,entity=definition.IsEntity};
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
+        if (StyleWire(value, out var styleValue)) return styleValue;
         if (value is ITuple tuple) return Enumerable.Range(0,tuple.Length).Select(i=>Wire(tuple[i])).ToArray();
         if (value is IEnumerable list) return list.Cast<object?>().Select(Wire).ToArray();
         throw new ArgumentException("Unmapped result type " + value.GetType().FullName);
@@ -143,10 +144,16 @@ internal static class Program
         string member=step.TryGetProperty("member",out var m)?m.GetString()!:"";
         var args=Arguments(step); object? result;
         switch(kind) {
+            case "lin-names": case "lin-load": case "lin-save": case "shape-names": case "shape-query": result=StyleFileStep(step,target);break;
+            case "events": return Observations.ToArray();
+            case "observe": case "unobserve": result=ObservationStep(step,target);break;
+            case "reference-equals": result=ReferenceEquals(args[0],args[1]);break;
             case "pat-names": case "pat-load": case "pat-save": result=PatternTextStep(step,target);break;
             case "new": result=Create(type!,args,Signature(step));break;
             case "get": {
-                var property=type!.GetProperty(member);var field=type!.GetField(member);
+                var flags=BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static;
+                if(step.TryGetProperty("nonPublic",out var hidden)&&hidden.GetBoolean())flags|=BindingFlags.NonPublic;
+                var property=type!.GetProperty(member,flags);var field=type!.GetField(member,flags);
                 if(property is null && field is null)throw new MissingMemberException(type.Name,member);
                 result=property is not null?property.GetValue(target):field!.GetValue(target);break;
             }
@@ -177,7 +184,7 @@ internal static class Program
     }
     private static object Run(JsonElement input)
     {
-        Values.Clear();MathHelper.Epsilon=1e-12;
+        Values.Clear();ResetObservations();MathHelper.Epsilon=1e-12;
         CultureInfo.CurrentCulture=CultureInfo.InvariantCulture;
         if(input.TryGetProperty("op",out var op)&&op.GetString()=="unit-factors")return Enumerable.Range(0,25).Select(a=>Enumerable.Range(0,25).Select(b=>Bits(UnitHelper.ConversionFactor((DrawingUnits)a,(DrawingUnits)b))).ToArray()).ToArray();
         if(input.TryGetProperty("op",out var environmentOp)&&environmentOp.GetString()=="environment")return new {

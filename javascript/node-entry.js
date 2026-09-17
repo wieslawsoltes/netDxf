@@ -1,3 +1,6 @@
+import { SetSupportFileSystem } from './runtime/SupportFileSystem.js';
+import { NodeSupportFileSystem } from './runtime/NodeSupportFileSystem.js';
+SetSupportFileSystem(NodeSupportFileSystem);
 import { SetPatternFileSystem } from './runtime/PatternFileSystem.js';
 import { NodePatternFileSystem } from './runtime/NodePatternFileSystem.js';
 SetPatternFileSystem(NodePatternFileSystem);
