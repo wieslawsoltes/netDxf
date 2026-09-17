@@ -1,0 +1,79 @@
+name: Recover exact standard FIELD evaluator handoff
+on:
+  push:
+    branches: [codex/recover-standard-field-evaluator-20260917]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify uploaded patch and preserve granular clean commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RUNNER_TEMP/standard-evaluator.patch" <<'PY'
+          import base64, gzip, hashlib, pathlib, sys
+          encoded = ''.join(pathlib.Path(f'.handoff-evaluator/patch-{i}.b64').read_text().strip() for i in range(4))
+          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
+          assert len(patch) == 83028
+          assert hashlib.sha256(patch).hexdigest() == '0a4808c4f939cb3aedc7e59d97e75b4979707e250f913a9ec523908f8389af92'
+          pathlib.Path(sys.argv[1]).write_bytes(patch)
+          PY
+          git config core.autocrlf false
+          git switch --detach 889d1d772ce98222cd6ef985d2b643fc961959b0
+          test "$(git rev-parse HEAD^{tree})" = c127fd8d1f4f25ca81aea529e968927d1fd066b3
+          git apply --check "$RUNNER_TEMP/standard-evaluator.patch"
+          git apply "$RUNNER_TEMP/standard-evaluator.patch"
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git add netDxf/Objects/DxfFieldVariable.cs netDxf/Objects/DxfStandardFieldEvaluator.cs netDxf/Units/DxfAngularValueFormat.cs netDxf/Units/DxfDateTimeFormat.cs netDxf/Tables/DxfTableFormula.cs
+          test "$(git write-tree)" = 0b24e8e510e65a474906a35e5ef4ec840ea1ebb5
+          git commit -m 'Recover bounded standard FIELD evaluator and explicit date/angular formatting'
+          git add tests/netDxf.Conformance/StandardFieldEvaluatorTests.cs tests/netDxf.Conformance/RegressionTests.cs
+          test "$(git write-tree)" = 483f33b16f8265b09843b1c0ea73341d0a5bfc8f
+          git commit -m 'Recover standard FIELD conformance cases'
+          git add README.md doc/dxf-conformance/standard-field-evaluation.md tools/verify_standard_field_evaluator.py tests/standard_fields/test_reference.py
+          test "$(git write-tree)" = d5ce026ef1460ee565edc0bffa06b60d43e6fea8
+          git commit -m 'Recover independent FIELD evaluator verifier and documented scope'
+          test -z "$(git status --porcelain)"
+          test -z "$(git ls-tree --name-only HEAD .handoff-evaluator .github/workflows/materialize-standard-evaluator.yml)"
+          test -z "$(git ls-remote --heads origin codex/dxf-standard-fields-20260917)"
+          git push origin HEAD:refs/heads/codex/dxf-standard-fields-20260917
+          git log -3 --format='%H %T %s'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Package a minimal local .NET 8 build toolchain
+        shell: bash
+        run: |
+          python - "$RUNNER_TEMP/local-dotnet8.tar.gz" <<'PY'
+          import pathlib, shutil, subprocess, sys, tarfile
+          root = pathlib.Path(shutil.which('dotnet')).resolve().parent
+          sdk = subprocess.check_output(['dotnet', '--version'], text=True).strip()
+          assert sdk.startswith('8.')
+          paths = ['dotnet', 'sdk/' + sdk]
+          for parent in ('host/fxr', 'shared/Microsoft.NETCore.App', 'packs/Microsoft.NETCore.App.Ref', 'packs/Microsoft.NETCore.App.Host.linux-x64', 'packs/Microsoft.AspNetCore.App.Ref'):
+              versions = [p for p in (root / parent).glob('8.*') if p.is_dir()]
+              if versions:
+                  chosen = max(versions, key=lambda p: tuple(int(x) for x in p.name.split('.')))
+                  paths.append(str(chosen.relative_to(root)))
+          for parent in ('packs/NETStandard.Library.Ref',):
+              versions = [p for p in (root / parent).glob('*') if p.is_dir()]
+              if versions: paths.append(str(sorted(versions)[-1].relative_to(root)))
+          for filename in ('LICENSE.txt', 'ThirdPartyNotices.txt'):
+              if (root / filename).exists(): paths.append(filename)
+          with tarfile.open(sys.argv[1], 'w:gz', compresslevel=1) as archive:
+              for relative in paths: archive.add(root / relative, arcname=relative)
+          print('SDK', sdk, 'archive bytes', pathlib.Path(sys.argv[1]).stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netdxf-local-dotnet8
+          path: ${{ runner.temp }}/local-dotnet8.tar.gz
+          compression-level: 0
+          retention-days: 1
