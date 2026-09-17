@@ -1,0 +1,69 @@
+name: Materialize verified CSharp review task
+on:
+  push:
+    branches: [codex/review-transfer-20260917]
+permissions:
+  contents: write
+concurrency:
+  group: verified-csharp-review-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Verify patch and create clean task commit
+        shell: python
+        run: |
+          import base64, gzip, hashlib, json, os, pathlib, re, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          manifest = json.loads(pathlib.Path('review-transfer/task.json').read_text())
+          base, branch = manifest['base'], manifest['branch']
+          if not re.fullmatch('[0-9a-f]{40}', base):
+              raise RuntimeError('Invalid base commit')
+          if branch not in ('codex/dxf-clone-review-20260917', 'codex/dxf-planar-review-20260917'):
+              raise RuntimeError('Task branch outside explicit allowlist')
+          encoded = base64.b64encode(pathlib.Path('review-transfer/task.patch.bin').read_bytes()).decode('ascii')
+          for old, new in manifest.get('base64_repairs', []):
+              if encoded.count(old) != 1:
+                  raise RuntimeError('Ambiguous transport correction')
+              encoded = encoded.replace(old, new)
+          encoded = encoded.rstrip('=')
+          packed = base64.b64decode(encoded + '=' * (-len(encoded) % 4), validate=True)
+          patch = gzip.decompress(packed)
+          if hashlib.sha256(patch).hexdigest() != manifest['patch_sha256']:
+              raise RuntimeError('Patch checksum does not match locally tested bytes')
+          patch_file = pathlib.Path(os.environ['RUNNER_TEMP']) / 'verified-csharp-task.patch'
+          patch_file.write_bytes(patch)
+          git('fetch', '--no-tags', '--depth=1', 'origin', base)
+          git('checkout', '--detach', base)
+          git('apply', '--check', str(patch_file))
+          git('apply', '--binary', str(patch_file))
+          git('add', '--all')
+          tree = git('write-tree')
+          if tree != manifest['tree']:
+              raise RuntimeError('Resulting source tree differs from the tested tree')
+          paths = git('diff', '--cached', '--name-only').splitlines()
+          if any(p.startswith(('.github/', 'review-transfer/', 'javascript/')) for p in paths):
+              raise RuntimeError('Unexpected workflow, transfer or JavaScript changes')
+          git('diff', '--cached', '--check')
+          git('config', 'user.name', 'Wiesław Šoltés')
+          git('config', 'user.email', 'wieslawsoltes@users.noreply.github.com')
+          commit = git('commit-tree', tree, '-p', base, '-m', manifest['message'])
+          ref = 'refs/heads/' + branch
+          if git('ls-remote', '--heads', 'origin', ref):
+              raise RuntimeError('Task branch already exists; refusing to overwrite it')
+          git('push', 'origin', commit + ':' + ref)
+          output = pathlib.Path('review-receipt'); output.mkdir()
+          (output / 'receipt.json').write_text(json.dumps({'base':base,'branch':branch,'commit':commit,'tree':tree,'patch_sha256':manifest['patch_sha256'],'paths':paths}, indent=2) + '\n')
+          git('archive', '--format=tar.gz', '-o', str(output / 'source.tar.gz'), commit)
+          print('Verified task commit: ' + commit)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-csharp-review-source
+          path: review-receipt/
+          retention-days: 14
