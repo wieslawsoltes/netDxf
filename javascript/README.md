@@ -20,6 +20,10 @@ There are also 77 mirrored enum files, strict code-page tables generated from th
 
 **Typed lifecycle:** detached `DxfObject`, `XData`, application registries, name-binding events and cyclic cloning now have native original-path implementations. See [typed lifecycle](doc/TYPED_LIFECYCLE.md) for the exact differential corpus, API adaptations, and remaining registered-document boundaries.
 
+**Hatch patterns and gradients:** detached `HatchPattern` and `HatchGradientPattern` models now include presets, deep clones, independent RGB/ACI metadata, finite tint/shift editing, portable PAT text parsing and an explicit Node append-file host. Fifty-two additional complete original model cases are ported; typed HATCH/document IO is not. See [hatch patterns and PAT contracts](doc/HATCH_PATTERNS.md).
+
+**Latest measured checkpoint:** implementation `bd1a42f` passes the new hatch/PAT differential in Debug and Release (363 scenarios, 2,533 operations and 174 exact text comparisons per configuration). The ledger is 144/510 library mirrors and 2,017/35,309 original cases. The overall JavaScript workflow still fails on the existing exact numerical gates; [checkpoint evidence](doc/HATCH_PATTERNS.md#completed-checkpoint-evidence--bd1a42f) retains both positive and negative results.
+
 ## Source layout
 
 | Original | Native JavaScript |
@@ -90,7 +94,7 @@ npm run benchmark
 npm run verify
 ```
 
-`npm run test:differential` executes every independent comparison and retains each log even when an earlier category fails. It includes the recovered stateful foundations corpus, randomized geometry, filesystem operations and conversion-factor reproduction. The exact numeric categories currently **fail** with counterexamples; no tolerance or expected-failure allowlist is applied. Individual scripts `test:foundations`, `test:geometry:exact` and `test:filesystem` remain available. Continue the remaining verification commands after a failure to collect all evidence; CI does so automatically.
+`npm run test:differential` executes every independent comparison and retains each log even when an earlier category fails. It includes a required hatch/PAT model and text comparison stage, the recovered stateful foundations corpus, randomized geometry, filesystem operations and conversion-factor reproduction. The exact numeric categories currently **fail** with counterexamples; no tolerance or expected-failure allowlist is applied. Individual scripts `test:hatch`, `test:foundations`, `test:geometry:exact` and `test:filesystem` remain available. Continue the remaining verification commands after a failure to collect all evidence; CI does so automatically.
 
 `DOTNET_ROOT` or `DOTNET` can select an isolated toolchain. `CHROMIUM` can select an already installed browser executable. Browser checks require a real Chromium process, not a mocked DOM. Repeat with `CONFIGURATION=Debug` to compare with the Debug .NET oracle.
 
