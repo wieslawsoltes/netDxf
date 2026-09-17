@@ -83,6 +83,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Finite normal and direction assignment](doc/dxf-conformance/direction-assignment.md) now rejects zero/nonfinite vectors before mutation and accepts very small or large finite directions without normalization overflow. The audit covers inherited entity normals, ATTRIB/ATTDEF normals and RAY/XLINE directions, with independent physical-tag and numerical checks. Public vector utilities, arbitrary transforms and native AutoCAD qualification retain their separate scope.
 
+[RAY/XLINE affine transforms](doc/dxf-conformance/infinite-line-transforms.md) now stage finite geometry atomically, retain representable extreme-scale directions and exact affine-origin cancellations, reject collapsed/projective results, and invalidate stale proxies after changed geometry. Independent Fraction/Decimal and physical-record checks document the numerical and version scope.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
