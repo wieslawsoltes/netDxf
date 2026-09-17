@@ -63,7 +63,7 @@ internal static partial class Program
             foreach (int index in Enumerable.Range(0, 3))
             { int i = index; Run($"line-affine/reject/translation/{i}/{label}", () => { var t=Vector3.Zero; t[i]=bad; LineReviewReject(LineReviewSubject(0,2), () => Matrix3.Identity, t); }); }
             foreach (int index in Enumerable.Range(0, 10))
-            { int i = index; Run($"line-affine/reject/source/{i}/{label}", () => { var line=LineReviewSubject(0,2); if(i<3) {var p=line.StartPoint;p[i]=bad;line.StartPoint=p;} else if(i<6) {var p=line.EndPoint;p[i-3]=bad;line.EndPoint=p;} else if(i==6) line.Thickness=bad; else {var p=Vector3.UnitZ;p[i-7]=bad;line.Normal=p;} LineReviewReject(line, () => Matrix3.Identity, Vector3.Zero); }); }
+            { int i = index; Run($"line-affine/reject/source/{i}/{label}", () => { var line=LineReviewSubject(0,2); if(i<3) {var p=line.StartPoint;p[i]=bad;line.StartPoint=p;} else if(i<6) {var p=line.EndPoint;p[i-3]=bad;line.EndPoint=p;} else if(i==6) line.Thickness=bad; else {var p=Vector3.UnitZ;p[i-7]=bad;LineReviewInjectInvalidNormal(line,p);} LineReviewReject(line, () => Matrix3.Identity, Vector3.Zero); }); }
         }
         foreach (int index in Enumerable.Range(0,4))
         foreach (double value in new[] { double.Epsilon, 2.0, -1.0 })
