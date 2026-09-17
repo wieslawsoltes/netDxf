@@ -48,7 +48,8 @@
     "test:unit-factors": "node tools/unit-factors.mjs --check",
     "test:filesystem": "node tools/filesystem-differential.mjs",
     "test:lifecycle": "node tools/lifecycle-differential.mjs",
-    "build:windows-host": "node native/build.mjs"
+    "build:windows-host": "node native/build.mjs",
+    "test:windows-host": "node tools/run-windows-host-tests.mjs"
   },
   "repository": {
     "type": "git",

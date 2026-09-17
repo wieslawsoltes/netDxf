@@ -172,6 +172,12 @@ jobs:
         run: |
           node javascript/tools/dotnet.mjs inventory
           node javascript/tools/dotnet.mjs oracle
+      - name: Execute native Windows integration and supplemental tests
+        if: runner.os == 'Windows' && !cancelled()
+        working-directory: javascript
+        run: |
+          npm run test:windows-host
+          npm run test:unit
       - name: Run the mirrored raw atomic-save cases
         env:
           DXF_TEST_FILTER: atomic/
@@ -192,6 +198,10 @@ jobs:
             javascript/artifacts/package/results.json
             javascript/artifacts/oracle/Release/*.log
             javascript/native/bin/**/build.json
+            javascript/artifacts/windows-host/*.json
+            javascript/artifacts/windows-host/*.log
+            javascript/artifacts/unit/*.json
+            javascript/artifacts/unit/*.log
           if-no-files-found: error
           retention-days: 7
   full-port-completion:

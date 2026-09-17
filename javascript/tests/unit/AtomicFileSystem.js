@@ -32,8 +32,10 @@ test('filesystem/fsync failure cannot publish staged bytes',()=>WithAtomicDirect
 }));
 test('filesystem/publication failure has no delete/copy fallback',()=>WithAtomicDirectory(file=>{
   AtomicPrepare(file,true);
-  injected('renameSync',()=>()=>{throw Object.assign(new Error('cross-device'),{code:'EXDEV'});},
-    ()=>assert.throws(()=>DxfAtomicFile.Write(file,s=>s.Write(Uint8Array.of(2))),E.IOException));
+  // Exercise the host contract on Windows too; patching fs.renameSync misses ReplaceFileW.
+  SetFileSystemAdapter({...NodeFileSystem,Publish(){throw new E.IOException('Injected publication failure.');}});
+  try{assert.throws(()=>DxfAtomicFile.Write(file,s=>s.Write(Uint8Array.of(2))),E.IOException);}
+  finally{SetFileSystemAdapter(NodeFileSystem);}
   AtomicUnchanged(file,true);
 }));
 test('filesystem/new destination appearing at publication is not overwritten',()=>WithAtomicDirectory(file=>{
