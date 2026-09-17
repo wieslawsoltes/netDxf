@@ -145,3 +145,5 @@ All DXF objects may contain extended data information.
 Qualified AutoCAD TABLE entities are retained as source-bound `StoredTable` packets with explicit backing-content and geometry edits. Complete TABLE authoring, formula/layout evaluation and automatic regeneration remain outside that storage contract.
 Both simple and complex line types are supported.
 Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families remain unimplemented. SAT and raw payload retention do not interpret or validate proprietary geometry.
+
+[LINE affine geometry review](doc/dxf-conformance/line-affine-review.md) corrects signed thickness, finite affine validation, atomic rejection and stale proxy handling, with exact once-rounded endpoint arithmetic and independent six-profile qualification.

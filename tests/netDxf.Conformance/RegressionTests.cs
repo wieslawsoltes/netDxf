@@ -15,6 +15,7 @@ internal static partial class Program
         RegisterTrueColorWireReviewTests();
         RegisterLegacyUtilityReviewTests();
         RegisterCircularGeometryReviewTests();
+        RegisterLineAffineReviewTests();
         RegisterTableDisplayBindingTests();
         RegisterTableStyleBorderTests();
         RegisterTableRowSettingsTests();
