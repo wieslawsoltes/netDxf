@@ -62,3 +62,8 @@ export { UnderlayDgnDefinition } from './netDxf/Objects/UnderlayDgnDefinition.js
 export { UnderlayDwfDefinition } from './netDxf/Objects/UnderlayDwfDefinition.js';
 export { UnderlayPdfDefinition } from './netDxf/Objects/UnderlayPdfDefinition.js';
 export { Underlay } from './netDxf/Entities/Underlay.js';
+
+export { ImageDefinition } from './netDxf/Objects/ImageDefinition.js';
+export { ImageDefinitionReactor } from './netDxf/Objects/ImageDefinitionReactor.js';
+export { Image } from './netDxf/Entities/Image.js';
+export { Wipeout } from './netDxf/Entities/Wipeout.js';

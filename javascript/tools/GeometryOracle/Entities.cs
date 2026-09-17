@@ -15,6 +15,16 @@ internal static partial class Program
                 startOverride=Wire(vertex.StartWidthOverride),endOverride=Wire(vertex.EndWidthOverride),identifier=Wire(vertex.VertexIdentifier)};
             return true;
         }
+        if(value is netDxf.Objects.ImageDefinition imageDefinition) {
+            result=new {type="ImageDefinition",name=imageDefinition.Name,code=imageDefinition.CodeName,file=imageDefinition.File,width=imageDefinition.Width,height=imageDefinition.Height,
+                horizontal=Wire(imageDefinition.HorizontalResolution),vertical=Wire(imageDefinition.VerticalResolution),units=(int)imageDefinition.ResolutionUnits,xdata=imageDefinition.XData.Values.Select(Wire).ToArray()};
+            return true;
+        }
+        // The original internal reactor has a public constructor; reflection observes its immutable data.
+        if(value.GetType().FullName=="netDxf.Objects.ImageDefinitionReactor") {
+            result=new {type="ImageDefinitionReactor",code=((DxfObject)value).CodeName,imageHandle=(string?)value.GetType().GetProperty("ImageHandle")!.GetValue(value)};
+            return true;
+        }
         if (value is netDxf.Objects.UnderlayDefinition underlayDefinition) {
             var definition=new {type=value.GetType().Name,name=underlayDefinition.Name,code=underlayDefinition.CodeName,kind=(int)underlayDefinition.Type,file=underlayDefinition.File,xdata=underlayDefinition.XData.Values.Select(Wire).ToArray()};
             if(value is netDxf.Objects.UnderlayPdfDefinition pdf) result=new {definition,page=Wire(pdf.Page)};
@@ -27,7 +37,10 @@ internal static partial class Program
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
-        if (entity is Underlay underlay) result=new {common,definition=Wire(underlay.Definition),position=Wire(underlay.Position),scale=Wire(underlay.Scale),rotation=Wire(underlay.Rotation),
+        if(entity is Image image) result=new {common,definition=Wire(image.Definition),position=Wire(image.Position),u=Wire(image.Uvector),v=Wire(image.Vvector),
+            width=Wire(image.Width),height=Wire(image.Height),rotation=Wire(image.Rotation),clipping=image.Clipping,brightness=image.Brightness,contrast=image.Contrast,fade=image.Fade,display=(int)image.DisplayOptions,boundary=Wire(image.ClippingBoundary)};
+        else if(entity is Wipeout wipeout) result=new {common,elevation=Wire(wipeout.Elevation),boundary=Wire(wipeout.ClippingBoundary)};
+        else if (entity is Underlay underlay) result=new {common,definition=Wire(underlay.Definition),position=Wire(underlay.Position),scale=Wire(underlay.Scale),rotation=Wire(underlay.Rotation),
             contrast=underlay.Contrast,fade=underlay.Fade,display=(int)underlay.DisplayOptions,boundary=Wire(underlay.ClippingBoundary)};
         else if (entity is MText mtext) result=new {common,position=Wire(mtext.Position),rotation=Wire(mtext.Rotation),height=Wire(mtext.Height),width=Wire(mtext.RectangleWidth),
             attachment=(int)mtext.AttachmentPoint,spacing=Wire(mtext.LineSpacingFactor),spacingStyle=(int)mtext.LineSpacingStyle,direction=(int)mtext.DrawingDirection,style=Wire(mtext.Style),
