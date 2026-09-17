@@ -2,7 +2,7 @@ name: JavaScript mathematical source reference
 on:
   pull_request:
     branches: [netstandard]
-    paths: ['.github/workflows/javascript-math-reference.yml']
+    paths: ['.github/workflows/javascript-math-reference.yml', 'javascript/native/build.mjs']
   workflow_dispatch:
 permissions:
   contents: read
