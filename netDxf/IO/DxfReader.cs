@@ -9021,7 +9021,7 @@ namespace netDxf.IO
             MTextLineSpacingStyle spacingStyle = MTextLineSpacingStyle.AtLeast;
             MTextDrawingDirection drawingDirection = MTextDrawingDirection.ByStyle;
             TextStyle style = TextStyle.Default;
-            string textString = string.Empty;
+            var textChunks = new StringBuilder();
             List<XData> xData = new List<XData>();
             MTextBackgroundFill background = null;
             MTextColumns columns = null;
@@ -9039,11 +9039,11 @@ namespace netDxf.IO
                 switch (this.chunk.Code)
                 {
                     case 1:
-                        textString = string.Concat(textString, this.chunk.ReadString());
+                        textChunks.Append(this.chunk.ReadString());
                         this.chunk.Next();
                         break;
                     case 3:
-                        textString = string.Concat(textString, this.chunk.ReadString());
+                        textChunks.Append(this.chunk.ReadString());
                         this.chunk.Next();
                         break;
                     case 10:
@@ -9151,7 +9151,7 @@ namespace netDxf.IO
                 }
             }
 
-            textString = this.DecodeEncodedNonAsciiCharacters(textString);
+            string textString = this.DecodeEncodedNonAsciiCharacters(textChunks.ToString());
             if (!this.isBinary)
             {
                 // text DXF files stores the tabs as ^I in the MText texts, they will be replaced by the standard tab character

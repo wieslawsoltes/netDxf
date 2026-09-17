@@ -3069,18 +3069,29 @@ namespace netDxf.IO
 
         private void WriteMTextChunks(string text)
         {
-            //Text string. If the text string is less than 250 characters, all characters
-            //appear in group 1. If the text string is greater than 250 characters, the
-            //string is divided into 250 character chunks, which appear in one or
-            //more group 3 codes. If group 3 codes are used, the last group is a
-            //group 1 and has fewer than 250 characters
-            while (text.Length > 250)
+            // Keep each UTF-8 value within the existing 250-unit envelope,
+            // without cutting a surrogate pair. Pre-2007 text has already been
+            // escaped to ASCII. Walk the source once rather than copying the
+            // ever-shrinking remainder after every continuation record.
+            text = text ?? string.Empty;
+            int start = 0, bytes = 0;
+            for (int index = 0; index < text.Length;)
             {
-                string part = text.Substring(0, 250);
-                this.chunk.Write(3, part);
-                text = text.Remove(0, 250);
+                char value = text[index];
+                int units = char.IsHighSurrogate(value) && index + 1 < text.Length &&
+                    char.IsLowSurrogate(text[index + 1]) ? 2 : 1;
+                int encodedBytes = units == 2 ? 4 : value <= 0x7f ? 1 : value <= 0x7ff ? 2 : 3;
+                if (bytes + encodedBytes > 250)
+                {
+                    this.chunk.Write(3, text.Substring(start, index - start));
+                    start = index;
+                    bytes = 0;
+                }
+                bytes += encodedBytes;
+                index += units;
             }
-            this.chunk.Write(1, text);
+            // Even empty MTEXT has exactly one terminal group 1.
+            this.chunk.Write(1, text.Substring(start));
         }
 
         private void WriteHatch(Hatch hatch)

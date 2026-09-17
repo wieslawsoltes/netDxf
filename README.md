@@ -89,6 +89,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [RAY/XLINE affine transforms](doc/dxf-conformance/infinite-line-transforms.md) now stage finite geometry atomically, retain representable extreme-scale directions and exact affine-origin cancellations, reject collapsed/projective results, and invalidate stale proxies after changed geometry. Independent Fraction/Decimal and physical-record checks document the numerical and version scope.
 
+[MTEXT Unicode continuation records](doc/dxf-conformance/mtext-unicode-chunks.md) preserve supplementary characters at chunk boundaries, bound UTF-8 value sizes and avoid quadratic chunk assembly. Legacy escape behavior and the scope of native qualification are documented separately.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
