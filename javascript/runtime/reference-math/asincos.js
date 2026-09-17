@@ -2637,7 +2637,13 @@ const powtwo = Object.freeze([1.0,  2.0,  4.0,
       8192.0,       16384.0,       32768.0,       65536.0,      131072.0,
     262144.0,      524288.0,     1048576.0,     2097152.0,     4194304.0,
    8388608.0,    16777216.0,    33554432.0,    67108864.0,   134217728.0]);
+// Public glibc POSIX wrappers select positive quiet NaN for |x| > 1.
+// Incoming NaNs still reach the IEEE kernels and preserve their payloads.
+const domainResult = new DataView(new ArrayBuffer(8));
+domainResult.setUint32(0, 0x7ff80000);
+domainResult.setUint32(4, 0);
 export function Asin(x) {
+if (Math.abs(x) > 1) return domainResult.getFloat64(0);
 
   let x2,xx,res1,p,t,res,r,cor,cc,y,c,z;
   let u = new Words(), v = new Words();
@@ -2668,9 +2674,8 @@ export function Asin(x) {
     if (m>0) xx = x - asncs[n];
     else xx = -x - asncs[n];
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+xx*(asncs[n+5]
-     +xx*asncs[n+6]))))+asncs[n+7];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 6],asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 7]);
+    t = fma(asncs[n+1],xx,p);
     res =asncs[n+8] +t;
     
     return (m>0)?res:-res;
@@ -2682,9 +2687,8 @@ export function Asin(x) {
     if (m>0) xx = x - asncs[n];
     else xx = -x - asncs[n];
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+xx*(asncs[n+5]
-	   +xx*(asncs[n+6]+xx*asncs[n+7])))))+asncs[n+8];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 7],asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 8]);
+    t = fma(asncs[n+1],xx,p);
     res =asncs[n+9] +t;
     
     return (m>0)?res:-res;
@@ -2696,9 +2700,8 @@ export function Asin(x) {
     if (m>0) xx = x - asncs[n];
     else xx = -x - asncs[n];
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+xx*(asncs[n+5]
-     +xx*(asncs[n+6]+xx*(asncs[n+7]+xx*asncs[n+8]))))))+asncs[n+9];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 8],asncs[n + 7]),asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 9]);
+    t = fma(asncs[n+1],xx,p);
     res =asncs[n+10] +t;
     
     return (m>0)?res:-res;
@@ -2710,11 +2713,8 @@ export function Asin(x) {
     if (m>0) xx = x - asncs[n];
     else xx = -x - asncs[n];
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-		      xx*(asncs[n+5]+xx*(asncs[n+6]
-		      +xx*(asncs[n+7]+xx*(asncs[n+8]+
-		      xx*asncs[n+9])))))))+asncs[n+10];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 9],asncs[n + 8]),asncs[n + 7]),asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 10]);
+    t = fma(asncs[n+1],xx,p);
     res =asncs[n+11] +t;
     
     return (m>0)?res:-res;
@@ -2727,11 +2727,8 @@ export function Asin(x) {
     if (m>0) xx = x - asncs[n];
     else xx = -x - asncs[n];
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-			 xx*(asncs[n+5]+xx*(asncs[n+6]
-			 +xx*(asncs[n+7]+xx*(asncs[n+8]+
-		    xx*(asncs[n+9]+xx*asncs[n+10]))))))))+asncs[n+11];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 10],asncs[n + 9]),asncs[n + 8]),asncs[n + 7]),asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 11]);
+    t = fma(asncs[n+1],xx,p);
     res =asncs[n+12] +t;
     
     return (m>0)?res:-res;
@@ -2749,7 +2746,7 @@ export function Asin(x) {
     t=c*(1.5-0.5*t*c);
     y=(c+t24)-t24;
     cc = (z-y*y)/(t+y);
-    p=(((((f6*z+f5)*z+f4)*z+f3)*z+f2)*z+f1)*z;
+    p = (fma(fma(fma(fma(fma(f6,z,f5),z,f4),z,f3),z,f2),z,f1)*z);
     cor = (hp1 - 2.0*cc)-2.0*(y+cc)*p;
     res1 = hp0 - 2.0*y;
     res =res1 + cor;
@@ -2770,6 +2767,7 @@ export function Asin(x) {
 
 }
 export function Acos(x) {
+if (Math.abs(x) > 1) return domainResult.getFloat64(0);
 
   let x2,xx,res1,p,t,res,r,cor,cc,y,c,z;
   let u = new Words(), v = new Words();
@@ -2799,9 +2797,8 @@ export function Acos(x) {
     if (m>0) xx = x - asncs[n];
     else xx = -x - asncs[n];
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-		   xx*(asncs[n+5]+xx*asncs[n+6]))))+asncs[n+7];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 6],asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 7]);
+    t = fma(asncs[n+1],xx,p);
     y = (m>0)?(hp0-asncs[n+8]):(hp0+asncs[n+8]);
     t = (m>0)?(hp1-t):(hp1+t);
     res = y+t;
@@ -2816,10 +2813,8 @@ export function Acos(x) {
     if (m>0) {xx = x - asncs[n]; }
     else {xx = -x - asncs[n]; }
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-		   xx*(asncs[n+5]+xx*(asncs[n+6]+
-		   xx*asncs[n+7])))))+asncs[n+8];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 7],asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 8]);
+    t = fma(asncs[n+1],xx,p);
    y = (m>0)?(hp0-asncs[n+9]):(hp0+asncs[n+9]);
    t = (m>0)?(hp1-t):(hp1+t);
    res = y+t;
@@ -2834,10 +2829,8 @@ export function Acos(x) {
     if (m>0) {xx = x - asncs[n]; }
     else {xx = -x - asncs[n]; }
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-		      xx*(asncs[n+5]+xx*(asncs[n+6]+xx*(asncs[n+7]+
-		      xx*asncs[n+8]))))))+asncs[n+9];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 8],asncs[n + 7]),asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 9]);
+    t = fma(asncs[n+1],xx,p);
     y = (m>0)?(hp0-asncs[n+10]):(hp0+asncs[n+10]);
     t = (m>0)?(hp1-t):(hp1+t);
     res = y+t;
@@ -2852,11 +2845,8 @@ export function Acos(x) {
     if (m>0) {xx = x - asncs[n]; }
     else {xx = -x - asncs[n]; }
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-		   xx*(asncs[n+5]+xx*(asncs[n+6]
-		   +xx*(asncs[n+7]+xx*(asncs[n+8]+
-		   xx*asncs[n+9])))))))+asncs[n+10];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 9],asncs[n + 8]),asncs[n + 7]),asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 10]);
+    t = fma(asncs[n+1],xx,p);
     y = (m>0)?(hp0-asncs[n+11]):(hp0+asncs[n+11]);
     t = (m>0)?(hp1-t):(hp1+t);
     res = y+t;
@@ -2871,11 +2861,8 @@ export function Acos(x) {
     if (m>0) {xx = x - asncs[n]; }
     else {xx = -x - asncs[n]; }
     t = asncs[n+1]*xx;
-    p=xx*xx*(asncs[n+2]+xx*(asncs[n+3]+xx*(asncs[n+4]+
-	    xx*(asncs[n+5]+xx*(asncs[n+6]
-	    +xx*(asncs[n+7]+xx*(asncs[n+8]+xx*(asncs[n+9]+
-	    xx*asncs[n+10]))))))))+asncs[n+11];
-    t+=p;
+    p = fma((xx*xx),fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,fma(xx,asncs[n + 10],asncs[n + 9]),asncs[n + 8]),asncs[n + 7]),asncs[n + 6]),asncs[n + 5]),asncs[n + 4]),asncs[n + 3]),asncs[n + 2]),asncs[n + 11]);
+    t = fma(asncs[n+1],xx,p);
     y = (m>0)?(hp0-asncs[n+12]):(hp0+asncs[n+12]);
    t = (m>0)?(hp1-t):(hp1+t);
    res = y+t;
@@ -2896,7 +2883,7 @@ export function Acos(x) {
     t=c*(1.5-0.5*t*c);
     y = (t27*c+c)-t27*c;
     cc = (z-y*y)/(t+y);
-    p=(((((f6*z+f5)*z+f4)*z+f3)*z+f2)*z+f1)*z;
+    p = (fma(fma(fma(fma(fma(f6,z,f5),z,f4),z,f3),z,f2),z,f1)*z);
     if (m<0) {
       cor = (hp1 - cc)-(y+cc)*p;
       res1 = hp0 - y;
