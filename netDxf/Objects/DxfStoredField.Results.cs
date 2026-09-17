@@ -13,6 +13,8 @@ namespace netDxf.Objects
     {
         /// <summary>Maximum FIELD payload size admitted by explicit result editing.</summary>
         public const int MaximumResultPayloadTags = 1048576;
+        /// <summary>Maximum combined bytes in named data and cached binary values for one complete projection.</summary>
+        public const int MaximumProjectedBinaryBytes = 4194304;
         /// <summary>Gets the immutable evaluation/cache projection, or null for unqualified value/framing variants.</summary>
         public DxfFieldEvaluationSnapshot Evaluation { get; private set; }
 
@@ -51,9 +53,10 @@ namespace netDxf.Objects
             else
             {
                 if (original.StoredValueFlags.HasValue) tags.Add(this.Payload[original.CacheStart]);
-                int kind = result.Value == null ? 0 : result.Value is int ? 1 : result.Value is double ? 2 : 4;
+                int kind = result.Value == null ? 0 : result.Value is int ? 1 : result.Value is double ? 2 : result.Value is DxfFieldBinaryValue ? 128 : 4;
                 tags.Add(new DxfTag(90, kind));
                 if (kind == 0) tags.Add(new DxfTag(91, 0));
+                else if (kind == 128) ((DxfFieldBinaryValue)result.Value).WriteScalarTags(tags);
                 else tags.Add(new DxfTag(kind == 1 ? (short)91 : kind == 2 ? (short)140 : (short)1,
                     kind == 4 ? (object)this.EncodeResultText((string)result.Value) : result.Value));
             }

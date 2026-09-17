@@ -6,15 +6,16 @@ using System.Text;
 namespace netDxf.Objects
 {
     /// <summary>An immutable explicit scalar result and its two FIELD display strings.</summary>
-    /// <remarks>Value must be null, int, finite double or decoded string. Strings are never executed.
+    /// <remarks>Value must be null, int, finite double, decoded string or immutable binary data. Strings are never executed.
     /// Formatting is supplied by the evaluator, not guessed from private FIELD options.</remarks>
     public sealed partial class DxfFieldResult
     {
-        /// <summary>Creates a result; a missing value-display string uses the explicit formatted text.</summary>
+        /// <summary>Creates a result; byte arrays are copied into immutable binary values. A missing value-display string uses the explicit formatted text.</summary>
         public DxfFieldResult(object value, string formattedText, string valueDisplayText = null)
         {
-            if (value != null && !(value is int) && !(value is double) && !(value is string))
-                throw new ArgumentException("FIELD results require null, int, finite double or string.", nameof(value));
+            if (value is byte[] bytes) value = new DxfFieldBinaryValue(bytes);
+            if (value != null && !(value is DxfFieldBinaryValue) && !(value is int) && !(value is double) && !(value is string))
+                throw new ArgumentException("FIELD results require null, int, finite double, string or binary data.", nameof(value));
             if (value is double number && (double.IsNaN(number) || double.IsInfinity(number)))
                 throw new ArgumentOutOfRangeException(nameof(value));
             if (value is string text) DxfStoredTableContent.CheckEditableText(text, nameof(value));
@@ -22,7 +23,7 @@ namespace netDxf.Objects
             if (valueDisplayText != null) DxfStoredTableContent.CheckEditableText(valueDisplayText, nameof(valueDisplayText));
             this.Value = value; this.FormattedText = formattedText; this.ValueDisplayText = valueDisplayText ?? formattedText;
         }
-        /// <summary>Gets the immutable scalar; null is an explicitly empty cached value.</summary>
+        /// <summary>Gets the immutable scalar or DxfFieldBinaryValue; null is distinct from a zero-length binary value.</summary>
         public object Value { get; }
         /// <summary>Gets the decoded group-301/group-9 text stored on the FIELD.</summary>
         public string FormattedText { get; }

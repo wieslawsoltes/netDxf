@@ -15,7 +15,7 @@ namespace netDxf.Objects
         { this.Name = name; this.Value = value; this.Tags = tags; }
         /// <summary>Gets the decoded key without assigning private evaluator semantics.</summary>
         public string Name { get; }
-        /// <summary>Gets null, int, finite double or decoded string.</summary>
+        /// <summary>Gets null, int, finite double, decoded string or immutable DxfFieldBinaryValue.</summary>
         public object Value { get; }
         /// <summary>Gets the exact immutable stored value packet.</summary>
         public IReadOnlyList<DxfTag> Tags { get; }
@@ -45,7 +45,7 @@ namespace netDxf.Objects
         public string ErrorMessage { get; private set; }
         /// <summary>Gets ordered scalar evaluator data; no key-specific meaning is inferred.</summary>
         public IReadOnlyList<DxfFieldDataValue> Data { get; private set; }
-        /// <summary>Gets the cached null, int, finite double or decoded string value.</summary>
+        /// <summary>Gets the cached null, int, finite double, decoded string or immutable DxfFieldBinaryValue.</summary>
         public object Value { get; private set; }
         /// <summary>Gets the modern AcValue flags, or null for compact encoding.</summary>
         public int? StoredValueFlags { get; private set; }
@@ -140,6 +140,7 @@ namespace netDxf.Objects
                     if (double.IsNaN(real) || double.IsInfinity(real)) throw new FormatException();
                     value.Value = real; break;
                 case 4: value.Value = read.Text(1); break;
+                case 128: value.Value = read.Binary(); break;
                 default: throw new FormatException("Unsupported FIELD value packet.");
             }
             value.ScalarEnd = read.Index;
@@ -154,7 +155,28 @@ namespace netDxf.Objects
         private sealed class Reader
         {
             private readonly IReadOnlyList<DxfTag> tags;
+            private int binaryBytes;
             internal Reader(IReadOnlyList<DxfTag> tags) { this.tags = tags; }
+            internal DxfFieldBinaryValue Binary()
+            {
+                int declared = this.Integer(92);
+                if (declared < 0 || declared > DxfFieldBinaryValue.MaximumLength ||
+                    declared > DxfStoredField.MaximumProjectedBinaryBytes - this.binaryBytes)
+                    throw new FormatException("FIELD binary value exceeds its projection limit.");
+                var chunks = new List<byte[]>();
+                int total = 0;
+                while (this.Has(310))
+                {
+                    var chunk = (byte[])this.Next(310).RawValue;
+                    if (chunk.Length > 127 || chunk.Length > declared - total ||
+                        chunk.Length == 0 && (declared != 0 || chunks.Count != 0))
+                        throw new FormatException("FIELD binary chunks do not match their declared length.");
+                    chunks.Add(chunk); total += chunk.Length;
+                }
+                if (total != declared) throw new FormatException("FIELD binary byte count differs from its stored length.");
+                this.binaryBytes += total;
+                return new DxfFieldBinaryValue(chunks, total);
+            }
             internal int Index { get; private set; }
             internal bool AtEnd { get { return this.Index == this.tags.Count; } }
             internal bool Has(short code) { return this.Index < this.tags.Count && this.tags[this.Index].Code == code; }

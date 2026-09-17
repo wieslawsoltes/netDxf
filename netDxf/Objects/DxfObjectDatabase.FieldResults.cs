@@ -13,6 +13,8 @@ namespace netDxf.Objects
         public const int MaximumFieldEvaluationDepth = 256;
         /// <summary>Maximum combined scalar, display and error-message UTF-16 units submitted to one transaction.</summary>
         public const int MaximumFieldResultCharacters = 4194304;
+        /// <summary>Maximum combined binary-value bytes in one result transaction or evaluated forest.</summary>
+        public const int MaximumFieldResultBytes = 16777216;
         private bool editingFieldResults, fieldResultsReentered;
 
         /// <summary>Atomically applies explicit cached scalar results or evaluator failures to distinct current FIELD snapshots.</summary>
@@ -29,12 +31,12 @@ namespace netDxf.Objects
             {
                 if (results == null) throw new ArgumentNullException(nameof(results));
                 var edits = new List<DxfFieldResultEdit>();
-                long characters = 0;
+                long characters = 0, binaryBytes = 0;
                 foreach (var edit in results)
                 {
                     if (edit == null || edits.Count == MaximumFieldResultCount)
                         throw new ArgumentException("Null or excessive FIELD result requests.", nameof(results));
-                    CountFieldResultCharacters(edit.Result, ref characters);
+                    CountFieldResultSize(edit.Result, ref characters, ref binaryBytes);
                     edits.Add(edit);
                 }
                 return this.CommitFieldResults(edits);
@@ -110,22 +112,25 @@ namespace netDxf.Objects
                 }
                 var evaluated = new Dictionary<DxfStoredField, DxfFieldResult>();
                 var edits = new List<DxfFieldResultEdit>();
-                long characters = 0;
+                long characters = 0, binaryBytes = 0;
                 foreach (var field in order)
                 {
                     var input = new DxfFieldEvaluationInput(field, snapshots[field], field.Children.Select(child => evaluated[child]).ToList());
                     DxfFieldResult result = evaluator(input);
                     if (this.fieldResultsReentered) throw new InvalidOperationException("Reentry invalidated FIELD evaluation.");
                     if (result == null) throw new InvalidOperationException("A FIELD evaluator must return an explicit result or throw.");
-                    CountFieldResultCharacters(result, ref characters);
+                    CountFieldResultSize(result, ref characters, ref binaryBytes);
                     evaluated.Add(field, result); edits.Add(snapshots[field].WithResult(result));
                 }
                 return this.CommitFieldResults(edits);
             }
             finally { this.EndFieldResults(); }
         }
-        private static void CountFieldResultCharacters(DxfFieldResult result, ref long characters)
+        private static void CountFieldResultSize(DxfFieldResult result, ref long characters, ref long binaryBytes)
         {
+            if (result.Value is DxfFieldBinaryValue binary) binaryBytes += binary.Length;
+            if (binaryBytes > MaximumFieldResultBytes)
+                throw new ArgumentException("Combined FIELD result binary data exceeds its transaction limit.");
             characters += (result.Value as string)?.Length ?? 0;
             characters += (long)result.FormattedText.Length + result.ValueDisplayText.Length + result.ErrorMessage.Length;
             if (characters > MaximumFieldResultCharacters)
