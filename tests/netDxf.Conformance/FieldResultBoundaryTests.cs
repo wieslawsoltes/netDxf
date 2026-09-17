@@ -51,7 +51,7 @@ internal static partial class Program
         {
             Evaluate(); Equal(2, calls, "one callback per identity despite repeated child slots");
             string expected = scenario switch { "escaped-code" => "prefix Ω result", "split-surrogate-escape" => "😀 result", "repeated-children" => "result + result", "literal" => code, "field-delimiters" => childText, _ => "" };
-            Equal(expected, root.Evaluation.Value, "literal/child composition result");
+            Equal(expected, root.Evaluation!.Value, "literal/child composition result");
             using var output = new MemoryStream(); Check(doc.Save(output, binary), "composed FIELD output"); output.Position = 0;
             Equal(expected, ResultRoot(DxfDocument.Load(output)!).Evaluation.Value, "composed result roundtrip");
         }
