@@ -39,6 +39,7 @@ internal static partial class Program
         if (v.ValueKind == JsonValueKind.Number) return v.GetDouble();
         if (v.ValueKind == JsonValueKind.String) return v.GetString();
         if (v.ValueKind == JsonValueKind.True || v.ValueKind == JsonValueKind.False) return v.GetBoolean();
+        if (v.TryGetProperty("utf16", out var chars)) return new string(chars.EnumerateArray().Select(x=>(char)x.GetUInt16()).ToArray());
         if (v.TryGetProperty("ref", out var id)) return Values[id.GetString()!];
         if (v.TryGetProperty("double", out var bits)) return FromBits(bits.GetString()!);
         if (v.TryGetProperty("int", out var i)) return i.GetInt32();
@@ -84,7 +85,8 @@ internal static partial class Program
         if (value is null) return null;
         if (value is double d) return new { @double = Bits(d) };
         if (value is long l) return new { @long = l.ToString(CultureInfo.InvariantCulture) };
-        if (value is string || value is bool) return value;
+        if (value is string textValue) return Utf16Wire(textValue);
+        if (value is bool) return value;
         if (value is int || value is short || value is byte || value is Enum) return new { @double = Bits(Convert.ToDouble(value, CultureInfo.InvariantCulture)) };
         if (value is DateTime date) return new { date = new[] {date.Year,date.Month,date.Day,date.Hour,date.Minute,date.Second,date.Millisecond}, ticks=date.Ticks.ToString(), kind=(int)date.Kind };
         if (value is TimeSpan span) return new { ticks = span.Ticks.ToString() };
@@ -186,7 +188,7 @@ internal static partial class Program
     }
     private static object Run(JsonElement input)
     {
-        Values.Clear();ResetObservations();MathHelper.Epsilon=1e-12;netDxf.Entities.Text.DefaultMirrText=false;
+        Values.Clear();ResetObservations();MathHelper.Epsilon=1e-12;netDxf.Entities.Text.DefaultMirrText=false;netDxf.Entities.MText.DefaultMirrText=false;
         if(input.TryGetProperty("op",out var mathOp)&&mathOp.GetString()=="reference-math")return ReferenceMath(input);
         CultureInfo.CurrentCulture=CultureInfo.InvariantCulture;
         if(input.TryGetProperty("op",out var op)&&op.GetString()=="unit-factors")return Enumerable.Range(0,25).Select(a=>Enumerable.Range(0,25).Select(b=>Bits(UnitHelper.ConversionFactor((DrawingUnits)a,(DrawingUnits)b))).ToArray()).ToArray();

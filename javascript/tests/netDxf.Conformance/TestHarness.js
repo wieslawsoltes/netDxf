@@ -17,3 +17,8 @@ export function Run(name, action) {
   if (cases.some(test => test.name === name)) throw new Error('Duplicate test identity: ' + name);
   cases.push({ name, action, source });
 }
+
+// The original C# Program.Near contract; exact differential comparators do not use this.
+export function Near(expected, actual, message) {
+  assert.ok(Number.isFinite(actual) && Math.abs(expected-actual) <= 1e-10*Math.max(1,Math.abs(expected)), message);
+}

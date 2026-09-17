@@ -1,4 +1,5 @@
 // Independent-oracle inputs only: neither production algorithms nor expected values.
+import { mtextCorpus } from './mtext-corpus.mjs';
 import { displayEntityCorpus } from './display-entity-corpus.mjs';
 import { D, R, E, A, V, I } from './geometry-corpus.mjs';
 const names=['Point','Line','Ray','XLine','Face3D','Solid','Trace'];
@@ -72,5 +73,5 @@ export function entityCorpus() {
    const name=names[i%names.length],numbers=Array.from({length:9},()=>((next()%17)-8)/4),position=Array.from({length:3},()=>((next()%33)-16)/8);
    add(`seeded/${name}/${i}`,'seeded-transforms',[N(name,constructors(name).at(-1)),C('p','TransformBy',[mat(...numbers),vector(position)],null,['Matrix3','Vector3']),snap('p')]);
  }
- return probes.concat(displayEntityCorpus());
+ return probes.concat(displayEntityCorpus(),mtextCorpus());
 }

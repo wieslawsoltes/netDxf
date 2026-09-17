@@ -8,6 +8,7 @@ internal static partial class Program
     private static bool EntityWire(object value, out object? result)
     {
         result = null;
+        if (MTextValueWire(value,out result)) return true;
         if (value is MeshEdge edge) { result=new {type="MeshEdge",start=edge.StartVertexIndex,end=edge.EndVertexIndex,crease=Wire(edge.Crease)};return true; }
         if (value is Polyline2DVertex vertex) {
             result = new {type="Polyline2DVertex",position=Wire(vertex.Position),bulge=Wire(vertex.Bulge),start=Wire(vertex.StartWidth),end=Wire(vertex.EndWidth),
@@ -19,7 +20,10 @@ internal static partial class Program
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
-        if (entity is Text text) result=new {common,position=Wire(text.Position),rotation=Wire(text.Rotation),height=Wire(text.Height),width=Wire(text.Width),
+        if (entity is MText mtext) result=new {common,position=Wire(mtext.Position),rotation=Wire(mtext.Rotation),height=Wire(mtext.Height),width=Wire(mtext.RectangleWidth),
+            attachment=(int)mtext.AttachmentPoint,spacing=Wire(mtext.LineSpacingFactor),spacingStyle=(int)mtext.LineSpacingStyle,direction=(int)mtext.DrawingDirection,style=Wire(mtext.Style),
+            text=Wire(mtext.Value),background=Wire(mtext.BackgroundFill),columns=Wire(mtext.Columns),definedHeight=Wire(mtext.DefinedHeight)};
+        else if (entity is Text text) result=new {common,position=Wire(text.Position),rotation=Wire(text.Rotation),height=Wire(text.Height),width=Wire(text.Width),
             widthFactor=Wire(text.WidthFactor),oblique=Wire(text.ObliqueAngle),alignment=(int)text.Alignment,backward=text.IsBackward,upsideDown=text.IsUpsideDown,style=Wire(text.Style),text=text.Value};
         else if (entity is Shape shape) result=new {common,name=shape.Name,position=Wire(shape.Position),rotation=Wire(shape.Rotation),size=Wire(shape.Size),
             widthFactor=Wire(shape.WidthFactor),oblique=Wire(shape.ObliqueAngle),thickness=Wire(shape.Thickness),style=Wire(shape.Style)};

@@ -55,3 +55,5 @@ export { Polyline2DVertex } from './netDxf/Entities/Polyline2DVertex.js';
 export { Text } from './netDxf/Entities/Text.js';
 export { Shape } from './netDxf/Entities/Shape.js';
 export { Mesh } from './netDxf/Entities/Mesh.js';
+export { MText } from './netDxf/Entities/MText.js';
+export { MTextColumns, MTextColumnType, MTextColumnStorage } from './netDxf/Entities/MTextColumns.js';

@@ -1,5 +1,7 @@
 import * as api from '../index.js';
+import { mtextValueWire } from './mtext-wire.mjs';
 export function entityWire(value, wire) {
+  const mtextValue = mtextValueWire(value,wire); if (mtextValue !== undefined) return mtextValue;
   if (value instanceof api.MeshEdge) return {type:'MeshEdge',start:value.StartVertexIndex,end:value.EndVertexIndex,crease:wire(value.Crease)};
   if (value instanceof api.Polyline2DVertex) return {type:'Polyline2DVertex',position:wire(value.Position),bulge:wire(value.Bulge),
     start:wire(value.StartWidth),end:wire(value.EndWidth),startOverride:wire(value.StartWidthOverride),endOverride:wire(value.EndWidthOverride),identifier:wire(value.VertexIdentifier)};
@@ -10,6 +12,9 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  if (value instanceof api.MText) return {common,position:wire(value.Position),rotation:wire(value.Rotation),height:wire(value.Height),width:wire(value.RectangleWidth),
+    attachment:value.AttachmentPoint,spacing:wire(value.LineSpacingFactor),spacingStyle:value.LineSpacingStyle,direction:value.DrawingDirection,style:wire(value.Style),
+    text:wire(value.Value),background:wire(value.BackgroundFill),columns:wire(value.Columns),definedHeight:wire(value.DefinedHeight)};
   if (value instanceof api.Text) return {common,position:wire(value.Position),rotation:wire(value.Rotation),height:wire(value.Height),width:wire(value.Width),
     widthFactor:wire(value.WidthFactor),oblique:wire(value.ObliqueAngle),alignment:value.Alignment,backward:value.IsBackward,upsideDown:value.IsUpsideDown,style:wire(value.Style),text:value.Value};
   if (value instanceof api.Shape) return {common,name:value.Name,position:wire(value.Position),rotation:wire(value.Rotation),size:wire(value.Size),

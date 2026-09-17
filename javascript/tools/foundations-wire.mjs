@@ -1,5 +1,6 @@
 // Shared Node/browser operation interpreter; production implementations provide all behavior.
 import * as api from '../index.js';
+import { utf16Wire } from './mtext-wire.mjs';
 import { entityWire } from './entities-wire.mjs';
 import { styleWire, shapeInput } from './styles-wire.mjs';
 import { InvalidOperationException } from '../runtime/Errors.js';
@@ -12,7 +13,8 @@ function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };
   if (typeof value === 'bigint') return { long: value.toString() };
-  if (typeof value === 'boolean' || typeof value === 'string') return value;
+  if (typeof value === 'string') return utf16Wire(value);
+  if (typeof value === 'boolean') return value;
   const type = value.constructor.name;
   if (/^Vector[234]$/.test(type)) return { type, values: [...'XYZW'.slice(0, Number(type.at(-1)))].map(key => doubleBits(value[key])), normalized: value.IsNormalized };
   if (/^Matrix[234]$/.test(type)) {
@@ -45,11 +47,12 @@ function wire(value) {
 }
 
 export function jsGeometry(input) {
-  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = ''; api.Text.DefaultMirrText = false;
+  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = ''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
   const native = input.nativeManifest;
   const observers=new Map(), observations=[];
   function read(value) {
     if (value == null || typeof value !== 'object') return value;
+    if ('utf16' in value) return value.utf16.map(n=>String.fromCharCode(n)).join('');
     if ('ref' in value) { if(!values.has(value.ref)) throw new Error('Missing scenario reference: '+value.ref); return values.get(value.ref); }
     if ('double' in value) return fromBits(value.double);
     if ('int' in value) return value.int;
