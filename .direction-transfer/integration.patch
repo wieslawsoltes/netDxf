@@ -1,0 +1,70 @@
+diff --git a/README.md b/README.md
+index 76f989c..8496828 100644
+--- a/README.md
++++ b/README.md
+@@ -81,6 +81,8 @@ in the same guarded transaction. Literal escaping, stale-proxy invalidation and
+ owner-held attribute metadata are qualified separately from native font/reflow or
+ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
+ 
++[Finite normal and direction assignment](doc/dxf-conformance/direction-assignment.md) now rejects zero/nonfinite vectors before mutation and accepts very small or large finite directions without normalization overflow. The audit covers inherited entity normals, ATTRIB/ATTDEF normals and RAY/XLINE directions, with independent physical-tag and numerical checks. Public vector utilities, arbitrary transforms and native AutoCAD qualification retain their separate scope.
++
+ ## Samples and Demos 
+ Are contained in the source code.
+ Well, at the moment they are just tests for the work in progress.
+diff --git a/tests/netDxf.Conformance/PolyfaceRecordAdvancedTests.cs b/tests/netDxf.Conformance/PolyfaceRecordAdvancedTests.cs
+index a47fa75..124191c 100644
+--- a/tests/netDxf.Conformance/PolyfaceRecordAdvancedTests.cs
++++ b/tests/netDxf.Conformance/PolyfaceRecordAdvancedTests.cs
+@@ -440,7 +440,16 @@ internal static partial class Program
+         var mesh = authored ? new PolyfaceMesh(new[] { Vector3.Zero, Vector3.UnitX, Vector3.UnitY }, new[] { new short[] { 1, 2, 3 } }) : doc.Entities.PolyfaceMeshes.Single(m => m.VertexRecords[0].PersistentReactors.Count == 0);
+         if (authored) doc.Entities.Add(mesh);
+         var clone = (PolyfaceMesh)mesh.Clone(); Vector3 invalid = variant == 0 ? new Vector3(double.NaN, 0, 1) : variant == 1 ? new Vector3(0, double.PositiveInfinity, 1) : Vector3.Zero;
+-        foreach (var target in new[] { mesh, clone }) { try { target.Normal = invalid; } catch (ArgumentException) { } }
++        foreach (var target in new[] { mesh, clone })
++        {
++            var before = DirectionBits(target.Normal);
++            Throws<ArgumentException>(() => target.Normal = invalid);
++            Check(before.SequenceEqual(DirectionBits(target.Normal)), "invalid normal assignment changed retained geometry");
++            // The public setter is now atomic. Deliberately corrupt private state
++            // to retain the existing independent adoption/clone/save guards.
++            typeof(EntityObject).GetField("normal", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
++                .SetValue(target, invalid);
++        }
+         Throws<InvalidOperationException>(() => mesh.Clone());
+         var destination = new DxfDocument(DxfVersion.AutoCad2018); var objects = destination.Objects.Items.ToArray(); long targetSeed = OwnershipSeed(destination);
+         Throws<InvalidOperationException>(() => destination.Entities.Add(clone));
+diff --git a/tests/netDxf.Conformance/Polyline2DRecordTests.cs b/tests/netDxf.Conformance/Polyline2DRecordTests.cs
+index ee04f6f..9eae93d 100644
+--- a/tests/netDxf.Conformance/Polyline2DRecordTests.cs
++++ b/tests/netDxf.Conformance/Polyline2DRecordTests.cs
+@@ -185,7 +185,17 @@ internal static partial class Program
+         if (fault == 0) line.Vertexes[0].Position = new Vector2(double.NaN, 0);
+         else if (fault == 1) line.Vertexes[0].Bulge = double.PositiveInfinity;
+         else if (fault == 2) line.Elevation = double.NaN;
+-        else if (fault == 3) line.Normal = new Vector3(double.NaN, 0, 0);
++        else if (fault == 3)
++        {
++            var before = DirectionBits(line.Normal);
++            var invalid = new Vector3(double.NaN, 0, 0);
++            Throws<ArgumentException>(() => line.Normal = invalid);
++            Check(before.SequenceEqual(DirectionBits(line.Normal)), "invalid normal assignment changed legacy geometry");
++            // Preserve malformed in-memory save/clone coverage without relying
++            // on the former setter bug to manufacture the invalid state.
++            typeof(EntityObject).GetField("normal", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
++                .SetValue(line, invalid);
++        }
+         else if (fault == 4) line.Thickness = double.PositiveInfinity;
+         else if (fault == 5) line.Vertexes.Add(new Polyline2DVertex(1, 1));
+         else if (fault == 6) line.Vertexes[0] = (Polyline2DVertex)line.Vertexes[0].Clone();
+diff --git a/tests/netDxf.Conformance/Program.cs b/tests/netDxf.Conformance/Program.cs
+index 42cfac8..881da02 100644
+--- a/tests/netDxf.Conformance/Program.cs
++++ b/tests/netDxf.Conformance/Program.cs
+@@ -37,6 +37,7 @@ internal static partial class Program
+         RunTextHexTests();
+         RunTableXDataTests();
+         RunThumbnailImageTests();
++        RegisterDirectionAssignmentTests();
+         RunNamedObjectDatabaseTests();
+         RunTypedContainerTests();
+         RunGeoDataTests();

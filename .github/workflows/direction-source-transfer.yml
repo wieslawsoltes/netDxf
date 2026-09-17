@@ -1,0 +1,89 @@
+name: Publish verified direction assignment source
+on:
+  push:
+    branches: [codex/direction-source-transfer-20260917]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb
+      - name: Verify exact reviewed tree and publish clean task commits
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          source = pathlib.Path('transport/.direction-transfer')
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = 'cd2b4b2d0949eaa85ff517b438a1838f8fb25ffb'
+          branch = 'codex/dxf-direction-assignment-20260917'
+          expected = 'c0b24c556dd818c8e4dfe05e3eeea23afd3dab67'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '68dd970d70c3d79c8759aef02e4c9f492f2a8f06'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Destination branch already exists'
+          packed = (source / 'production.patch.gz').read_bytes()
+          assert hashlib.sha256(packed).hexdigest() == 'd45997afe832c60457f6b7cff618508fe433acbd80d1f1d59b3de936b12d7067'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == 'd65b155e0eec347b4ec17d7b2037729b94e7b9d9796db5e27365dcb23f84edf3'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          patch = (source / 'integration.patch').read_bytes()
+          assert hashlib.sha256(patch).hexdigest() == 'ee9ec798d32207ea90d2d39dcb389d536d537024549cf4c5686016491adcca15'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          files = {
+              'tests/netDxf.Conformance/DirectionAssignmentTests.cs': '2c7e988d0bd88852e168bd29449614f9fae76320',
+              'tools/verify_direction_assignment.py': '6d279d66cab9f454e90c0983dbae327c471b5fdb',
+              'doc/dxf-conformance/direction-assignment.md': '915e6e71cfac6a8fdcda8014732c9ad872f8b52d',
+              'doc/dxf-conformance/direction-assignment-qualification.json': '7576881ff62f8c2c5a9bb9497d3bf5b304ef3dfc',
+          }
+          for name, expected_blob in files.items():
+              data = (source / name).read_bytes()
+              assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == expected_blob
+              target = work / name
+              assert not target.exists()
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_bytes(data)
+          receipt = json.loads((work / 'doc/dxf-conformance/direction-assignment-qualification.json').read_text())
+          for name, digest in receipt['changed_runtime_test_and_checker_sha256'].items():
+              assert hashlib.sha256((work / name).read_bytes()).hexdigest() == digest
+          git('add', '-A')
+          assert git('write-tree') == expected, 'Complete source tree differs from tested source'
+          git('-c', 'core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol', 'diff', '--cached', '--check')
+          git('read-tree', base)
+          commits = []
+          for paths, message in [
+              (['netDxf'], 'fix: make entity normal and direction assignment finite, scale-safe and atomic'),
+              (['tests/netDxf.Conformance', 'tools/verify_direction_assignment.py'], 'test: qualify direction assignment across model, wire and numerical boundaries'),
+              (['README.md', 'doc/dxf-conformance/direction-assignment.md', 'doc/dxf-conformance/direction-assignment-qualification.json'], 'docs: record direction contracts and exact local qualification'),
+          ]:
+              git('add', '--', *paths)
+              tree = git('write-tree')
+              sha = git('commit-tree', tree, '-p', commits[-1] if commits else base, '-m', message)
+              commits.append(sha)
+          assert tree == expected
+          git('push', 'origin', commits[-1] + ':refs/heads/' + branch)
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          result = {'base': base, 'branch': branch, 'commits': commits, 'head': commits[-1], 'tree': tree}
+          (output / 'direction-publication.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: direction-assignment-publication
+          path: publication-receipt/
+          retention-days: 14
