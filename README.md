@@ -75,6 +75,12 @@ and angular format controls. **This continuation is uncompiled:** its new C#
 cases and emitted-output gate remain unrun. Its independent checker's model tests
 are not a substitute for C# or native AutoCAD qualification.
 
+[Atomic FIELD text-host updates](doc/dxf-conformance/field-text-hosts.md) optionally publish
+successful root outcomes to qualified TEXT, standalone MTEXT, ATTRIB and ATTDEF hosts
+in the same guarded transaction. Literal escaping, stale-proxy invalidation and
+owner-held attribute metadata are qualified separately from native font/reflow or
+private-cache regeneration. Existing FIELD-result APIs remain cache-only.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

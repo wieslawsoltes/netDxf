@@ -218,3 +218,11 @@ precedence, duplicated formatting, full inline/backing/private regeneration,
 complete private/color schemas, recursive import, general document-version
 conversion and native AutoCAD open/AUDIT/save/reopen remain unfinished. The prior
 historical coverage matrix is not promoted to complete by these additions.
+
+## Explicit host strings
+
+The evaluator can be supplied to [EvaluateFieldTreesAndUpdateTextHosts](field-text-hosts.md)
+when its successful output is representable as literal text on a qualified host.
+That opt-in API publishes FIELD caches and host values together, rejects unsupported
+literal controls/column MTEXT, and retains failed hosts. It is not native layout,
+private-cache or document-event regeneration.
