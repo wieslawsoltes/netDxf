@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { OracleClient } from './OracleClient.mjs';
 import { oracleRoot } from './dotnet.mjs';
+import { mathCorpus } from './math-corpus.mjs';
 import { referenceMathCorpus } from './reference-math-corpus.mjs';
 import { entityCorpus } from './entity-corpus.mjs';
 import { styleCorpus } from './style-corpus.mjs';
@@ -27,6 +28,13 @@ const expectedFor = async input => {
   return expected;
 };
 try {
+  const mathRequests = mathCorpus();
+  for (let offset = 0; offset < mathRequests.length; offset += 256) {
+    const requests = mathRequests.slice(offset, offset + 256), expected = await oracle.request({op:'math', requests});
+    if (!expected.ok || !Array.isArray(expected.value) || expected.value.length !== requests.length) throw new Error('Incomplete expanded math oracle response.');
+    cases.push({name:`math/batch/${offset}`, names:requests.map(request=>request.id), input:{requests},
+      expected:{math:expected.value.map(value=>sha256(canonical(value)))}});
+  }
   for (const fixture of inventory.fixtures) {
     const bytes = fs.readFileSync(path.join(sourceRoot, fixture.path));
     if (sha256(bytes) !== fixture.sha256) throw new Error('Modified browser fixture: ' + fixture.path);

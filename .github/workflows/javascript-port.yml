@@ -62,6 +62,10 @@ jobs:
         run: |
           npm run test:differential
           node tools/ordinal-casing.mjs --check
+      - name: Independent high-precision development-reference audit
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: python tools/math-independent.py
       - name: Browser differential on all shared fixtures
         if: ${{ !cancelled() }}
         working-directory: javascript
@@ -80,6 +84,7 @@ jobs:
         run: |
           npm run test:package
           npm run benchmark
+          npm run benchmark:math
       - name: Verify implemented scope and enumerate missing parity
         if: ${{ !cancelled() }}
         run: node javascript/tools/verify.mjs

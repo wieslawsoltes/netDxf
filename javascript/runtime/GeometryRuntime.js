@@ -13,10 +13,16 @@ import {
 const nanView = new DataView(new ArrayBuffer(8));
 nanView.setBigUint64(0, 0xfff8000000000000n, true);
 export const DotNetNaN = nanView.getFloat64(0, true);
+export function ReadDotNetNaN() { return nanView.getFloat64(0, true); }
+const quietNaNView = new DataView(new ArrayBuffer(8));
+function quietNaN(value) { quietNaNView.setFloat64(0, value); quietNaNView.setBigUint64(0, quietNaNView.getBigUint64(0) | 0x8000000000000n); return quietNaNView.getFloat64(0); }
 // Match the pinned .NET/SSE operand choice when both multiplication operands are NaNs.
 // Finite arithmetic remains one binary64 multiplication with no rounding/epsilon adjustment.
 export function MultiplyDouble(a, b) { return Number.isNaN(a) ? a : a * b; }
-export function RemainderDouble(a, b) { return Number.isNaN(a) || Number.isNaN(b) ? DotNetNaN : a % b; }
+export function RemainderDouble(a, b) {
+  if (!Number.isFinite(a) || b === 0) return ReadDotNetNaN();
+  return Number.isNaN(b) ? quietNaN(b) : a % b;
+}
 export const ConstructorTag = Symbol('exact C# constructor');
 export const CopyValue = Symbol('copy C# value');
 export function Copy(value) { return value?.[CopyValue]?.() ?? value; }

@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['math',['tools/math-differential.mjs']],
   ['reference-math',['tools/reference-math-differential.mjs']],
   ['entities',['tools/entity-differential.mjs']],
   ['styles',['tools/style-differential.mjs']],

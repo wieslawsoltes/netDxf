@@ -58,7 +58,10 @@
     "test:entities": "node tools/entity-differential.mjs",
     "test:browser:inline": "python tools/browser-inline-check.py",
     "test:reference-math": "node tools/reference-math-differential.mjs",
-    "verify:reference-math": "python tools/ReferenceMath/generate.py --check"
+    "verify:reference-math": "python tools/ReferenceMath/generate.py --check",
+    "test:math": "node tools/math-differential.mjs",
+    "test:math:independent": "python tools/math-independent.py",
+    "benchmark:math": "node tools/math-benchmark.mjs"
   },
   "repository": {
     "type": "git",
