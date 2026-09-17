@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: LGPL-2.1-or-later
 # Audited, pin-checked translation of a fixed glibc source set, not a general C translator.
-import re, struct, json, pathlib, hashlib, shutil
+import re, struct, json, pathlib, hashlib, shutil, ast
 import sys
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 SOURCE=pathlib.Path(sys.argv[1]).resolve() if len(sys.argv)>1 and sys.argv[1]!='--check' else ROOT/'third_party/glibc-math'
@@ -109,6 +109,23 @@ def transform(s,d):
 def macro(m):
  args=[v.strip() for v in m[2].split(',')];assert len(args)==4
  return f'[{args[2]},{args[3]}] = '+{'EADD':'add2','ESUB':'sub2','EMULV':'mul2'}[m[1]]+'('+','.join(args[:2])+');'
+def fused_polynomial(expression):
+ # Contract only the polynomial's explicit multiply/add nodes. No reassociation,
+ # no changes to compensated additions or range-reduction expressions.
+ def emit(node):
+  if isinstance(node,ast.BinOp):
+   left,right=node.left,node.right
+   if isinstance(node.op,ast.Add):
+    if isinstance(left,ast.BinOp) and isinstance(left.op,ast.Mult):return 'fma('+emit(left.left)+','+emit(left.right)+','+emit(right)+')'
+    if isinstance(right,ast.BinOp) and isinstance(right.op,ast.Mult):return 'fma('+emit(right.left)+','+emit(right.right)+','+emit(left)+')'
+   op={ast.Add:'+',ast.Sub:'-',ast.Mult:'*',ast.Div:'/'}[type(node.op)]
+   return '('+emit(left)+op+emit(right)+')'
+  if isinstance(node,ast.Subscript):return emit(node.value)+'['+ast.unparse(node.slice)+']'
+  if isinstance(node,ast.Name):return node.id
+  if isinstance(node,ast.Constant):return repr(node.value)
+  raise ValueError('Unsupported audited polynomial node: '+ast.dump(node))
+ return emit(ast.parse(expression,mode='eval').body)
+
 common="import { Words, copySign, signArctan, add2, sub2, mul2, div2, fma } from './arithmetic.js';\n"
 def write(name,text):
  text=license+text
@@ -126,9 +143,26 @@ for fname,srcfile,head,fnnames,tables in [
  if head=='atnat.h':
   for upper,lower in [('A','a'),('B','b'),('C','c'),('D','d'),('E','e'),('HPI','hpi'),('HPI1','hpi1'),('MHPI','mhpi')]:d[upper]=d[lower]
  text=common+('import { branred } from "./branred.js";\n' if fname=='tan.js' else '')+constdecl(d)+extra+tables
+ if fname=='asincos.js':text+='''// Public glibc POSIX wrappers select positive quiet NaN for |x| > 1.
+// Incoming NaNs still reach the IEEE kernels and preserve their payloads.
+const domainResult = new DataView(new ArrayBuffer(8));
+domainResult.setUint32(0, 0x7ff80000);
+domainResult.setUint32(4, 0);
+'''
+
  for fn,new in fnnames:
   body=transform(getfn(srcfile,fn),d)
   if new=='Atan2':body=body.replace('return x + y;', 'return x + x;')
+  if fname=='asincos.js':
+   # The x86_64 FMA implementation contracts the table polynomial and its
+   # separately written first-order multiply/add across the next statement.
+   # Keep all table branches, including those not hit by a prior counterexample.
+   body,count=re.subn(r'\bp\s*=([^;]+);',lambda m:'p = '+fused_polynomial(' '.join(m[1].split()))+';',body)
+   assert count==6,(new,count)
+   body,count=re.subn(r't\s*\+=\s*p;',r't = fma(asncs[n+1],xx,p);',body)
+   assert count==5,(new,count)
+   body='if (Math.abs(x) > 1) return domainResult.getFloat64(0);\n'+body
+
   text+=f'export function {new}('+('y,x' if new=='Atan2' else 'x')+') {\n'+body+'\n}\n'
  write(fname,text)
 d=consts('branred.h');body=getfn('branred.c','__branred').replace('*a=s;','a=s;').replace('*aa=t;','aa=t;');body=transform(body,d)

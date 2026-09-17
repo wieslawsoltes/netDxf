@@ -31,6 +31,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             sysdeps/ieee754/dbl-64
+            math
       - name: Reproduce native modules and retain preferred source and notices
         shell: bash
         run: |
