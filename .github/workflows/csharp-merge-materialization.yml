@@ -1,4 +1,4 @@
-name: Prepare verified C# audit merges
+name: Prepare corrected C# integration fixtures
 on:
   push:
     branches: [codex/csharp-merge-materialization-20260917]
@@ -11,9 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: aff3b24ae1936308063d9d7fb6e3fd4dcb16516e
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: cdd3f467ea763502641e24ba4121b3a9e31efcf3
           fetch-depth: 0
-      - name: Reproduce pinned local integration trees without rewriting PR history
+      - name: Retain setter rejection and original malformed-transform assertions
         shell: python
         env:
           GIT_AUTHOR_NAME: Wiesław Šoltés
@@ -21,52 +26,44 @@ jobs:
           GIT_COMMITTER_NAME: Wiesław Šoltés
           GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
         run: |
-          import json, pathlib, re, subprocess
+          import json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
           def git(*args):
-              return subprocess.check_output(['git', *args]).decode().strip()
-          base = 'aff3b24ae1936308063d9d7fb6e3fd4dcb16516e'
-          assert git('rev-parse', 'HEAD') == base
-          assert git('rev-parse', 'HEAD^{tree}') == '6838a388ff3f924de3a677738d162db912a03221'
-          stages = [
-              (110, '43f2458f2452a997ab97da0c6ee9a0967b7a8e7f', 'cf1fde10ff77f40d0cb9aa3866a52fd09157ceb5'),
-              (111, '090d345db23094201a1bca07b0af88453b0320e1', '5715b155e43bbde23b7ff80c0c39a7a08419e6dc'),
-              (112, '077919cfc075e70ebb6b58b078fc9ac8f85ce8a5', '259bb7d5a06ddabefd7bf74265c52c683832afcf'),
-          ]
-          previous = base
+              return subprocess.check_output(['git', *args], cwd=work).decode().strip()
+          original111 = 'cdd3f467ea763502641e24ba4121b3a9e31efcf3'
+          original112 = '9d96d024e6f592753873c7a0c207435791b17379'
+          assert git('rev-parse', 'HEAD') == original111
+          assert git('rev-parse', 'HEAD^{tree}') == '5715b155e43bbde23b7ff80c0c39a7a08419e6dc'
+          path = work / 'tests/netDxf.Conformance/LineAffineReviewTests.cs'
+          assert git('hash-object', str(path)) == '58d5d8aadde87f61fb191295387df9ca3130f712'
+          old = b'else {var p=Vector3.UnitZ;p[i-7]=bad;line.Normal=p;}'
+          new = b'else {var p=Vector3.UnitZ;p[i-7]=bad;LineReviewInjectInvalidNormal(line,p);}'
+          data = path.read_bytes(); assert data.count(old) == 1
+          path.write_bytes(data.replace(old, new, 1))
+          helper = work / 'tests/netDxf.Conformance/LineNormalIntegrationTests.cs'
+          assert not helper.exists()
+          helper.write_bytes(pathlib.Path('transport/.merge-helper/LineNormalIntegrationTests.cs').read_bytes())
+          git('add', '--', 'tests/netDxf.Conformance/LineAffineReviewTests.cs', 'tests/netDxf.Conformance/LineNormalIntegrationTests.cs')
+          tree111 = git('write-tree'); assert tree111 == '3a91f580cf94dc19a51d206cba019328f0b59978'
+          fixed111 = git('commit-tree', tree111, '-p', original111, '-m', 'test: preserve LINE malformed-normal transform guards after atomic setter integration')
+          git('reset', '--hard', original112)
+          git('merge', '--no-commit', '--no-ff', fixed111)
+          tree112 = git('write-tree'); assert tree112 == '6c17b36eae19af8ab6d1dffd0fdea1a38c45af0c'
+          git('merge', '--quit')
+          fixed112 = git('commit-tree', tree112, '-p', original112, '-p', fixed111, '-m', 'merge: retain corrected LINE integration fixtures in full C# audit stack')
+          refs = []
           results = []
-          for number, original, expected in stages:
-              branch = 'codex/csharp-merge-prepared-' + str(number) + '-20260917'
-              assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Prepared branch already exists'
-              git('checkout', '--detach', previous)
-              result = subprocess.run(['git', 'merge', '--no-commit', '--no-ff', original])
-              conflicts = git('diff', '--name-only', '--diff-filter=U').splitlines()
-              if result.returncode:
-                  assert result.returncode == 1 and conflicts == ['README.md'], conflicts
-                  path = pathlib.Path('README.md')
-                  data, count = re.subn(rb'^<<<<<<< [^\n]*\n(.*?)^=======\n(.*?)^>>>>>>> [^\n]*\n',
-                      lambda match: match.group(1) + b'\n' + match.group(2), path.read_bytes(), flags=re.M | re.S)
-                  assert count == 1
-                  assert not re.search(rb'^(<<<<<<<|=======|>>>>>>>)', data, re.M)
-                  path.write_bytes(data)
-                  git('add', 'README.md')
-              else:
-                  assert not conflicts
-              tree = git('write-tree')
-              assert tree == expected, (number, tree, expected)
-              git('-c', 'core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol', 'diff', '--cached', '--check')
-              git('merge', '--quit')
-              commit = git('commit-tree', tree, '-p', original, '-p', previous, '-m',
-                  'merge: integrate preceding C# audits into PR #' + str(number) + ' without dropping source or tests')
-              results.append({'pr': number, 'original_head': original, 'integrated_base': previous, 'head': commit, 'tree': tree, 'branch': branch})
-              previous = commit
-          refs = [row['head'] + ':refs/heads/' + row['branch'] for row in results]
+          for number, head, tree in [(111, fixed111, tree111), (112, fixed112, tree112)]:
+              branch = 'codex/csharp-merge-fixed-' + str(number) + '-20260917'
+              assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+              refs.append(head + ':refs/heads/' + branch)
+              results.append({'pr': number, 'head': head, 'tree': tree, 'branch': branch})
           git('push', '--atomic', 'origin', *refs)
           output = pathlib.Path('merge-receipt'); output.mkdir()
-          (output / 'prepared-merges.json').write_text(json.dumps({'base': base, 'merges': results}, indent=2) + '\n')
-          git('archive', '--format=tar.gz', '--output=merge-receipt/source.tar.gz', previous)
+          (output / 'fixed-merges.json').write_text(json.dumps(results, indent=2) + '\n')
           print(json.dumps(results, indent=2))
       - uses: actions/upload-artifact@v4
         with:
-          name: prepared-csharp-audit-merges
+          name: corrected-csharp-integration-fixtures
           path: merge-receipt/
           retention-days: 14
