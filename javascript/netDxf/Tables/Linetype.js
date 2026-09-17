@@ -118,13 +118,14 @@ export class Linetype extends TableObject {
     if (!data.at(-1).length) throw new ArgumentOutOfRangeException('startIndex');
     data[data.length-1] = data.at(-1).slice(0, -1);
     if (data.length < 2) return null;
-    const name = data[0].replace(/^"+|"+$/g, ''), style = data[1], offset = Vector2.Zero;
+    const name = data[0].replace(/^"+|"+$/g, ''), style = data[1];
+    let offsetX = 0, offsetY = 0;
     let rotationType = LinetypeSegmentRotationType.Relative, rotation = 0, scale = 0.1;
     for (let i = 2; i < data.length; i++) {
       if (data[i].length < 2) throw new ArgumentOutOfRangeException('count');
       const value = data[i].slice(2), key = data[i].slice(0,2).toUpperCase();
-      if (key === 'X=') offset.X = ParseInvariantFloat(value);
-      else if (key === 'Y=') offset.Y = ParseInvariantFloat(value);
+      if (key === 'X=') offsetX = ParseInvariantFloat(value);
+      else if (key === 'Y=') offsetY = ParseInvariantFloat(value);
       else if (key === 'S=') { scale = ParseInvariantFloat(value); if (scale <= 0) scale = 0.1; }
       else if (key === 'A=' || key === 'R=' || key === 'U=') {
         rotationType = { 'A=': LinetypeSegmentRotationType.Absolute, 'R=': LinetypeSegmentRotationType.Relative, 'U=': LinetypeSegmentRotationType.Upright }[key];
@@ -132,6 +133,7 @@ export class Linetype extends TableObject {
         rotation = ParseInvariantFloat(['D','F','G'].includes(suffix) ? value.slice(0,-1) : value) * factor;
       }
     }
+    const offset = new Vector2(offsetX, offsetY);
     return isText ? new LinetypeTextSegment(name, new TextStyle(style, TextStyle.DefaultFont), length, offset, rotationType, rotation, scale)
       : new LinetypeShapeSegment(name, new ShapeStyle(PathFileNameWithoutExtension(style), style), length, offset, rotationType, rotation, scale);
   }
