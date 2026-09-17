@@ -991,9 +991,10 @@ namespace netDxf.Entities
                 Style = (DimensionStyle) this.style.Clone(),
                 ShowArrowhead = this.showArrowhead,
                 PathType = this.pathType,
-                LineColor = this.lineColor,
+                LineColor = (AciColor) this.lineColor.Clone(),
                 Annotation = (EntityObject) this.annotation?.Clone(),
                 Offset = this.offset,
+                direction = this.direction,
                 hasHookline = this.hasHookline
             };
 

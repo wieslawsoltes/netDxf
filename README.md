@@ -71,15 +71,17 @@ The [legacy feature review](doc/dxf-conformance/legacy-feature-review.md) improv
 
 [The standard FIELD evaluator continuation](doc/dxf-conformance/standard-field-evaluation.md)
 adds opt-in explicit AcVar bindings, bounded numeric AcExpr children, date masks,
-and angular format controls. **This continuation is uncompiled:** its new C#
-cases and emitted-output gate remain unrun. Its independent checker's model tests
-are not a substitute for C# or native AutoCAD qualification.
+and angular format controls. The compiled C# suite and independent output gates
+were qualified in merged PR #106; see the linked guide and PR for exact source
+and CI evidence. These checks are not native AutoCAD qualification.
 
 [Atomic FIELD text-host updates](doc/dxf-conformance/field-text-hosts.md) optionally publish
 successful root outcomes to qualified TEXT, standalone MTEXT, ATTRIB and ATTDEF hosts
 in the same guarded transaction. Literal escaping, stale-proxy invalidation and
 owner-held attribute metadata are qualified separately from native font/reflow or
 private-cache regeneration. Existing FIELD-result APIs remain cache-only.
+
+[The entity clone audit](doc/dxf-conformance/entity-clone-review.md) corrects lost SOLID/TRACE elevation, SHAPE width, Polyline3D smoothing, LEADER direction and shared LEADER line-color state. Direct and nested clones retain their existing source-record guards; this does not add universal graph import.
 
 ## Samples and Demos 
 Are contained in the source code.

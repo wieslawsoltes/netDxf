@@ -342,6 +342,7 @@ namespace netDxf.Entities
                 //Shape properties
                 Position = this.position,
                 Size = this.size,
+                WidthFactor = this.widthFactor,
                 Rotation = this.rotation,
                 ObliqueAngle = this.obliqueAngle,
                 Thickness = this.thickness
