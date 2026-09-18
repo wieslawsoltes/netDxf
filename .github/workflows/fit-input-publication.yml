@@ -1,0 +1,50 @@
+name: Materialize verified spline fit-input task
+on:
+  push:
+    branches: [codex/fit-input-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 16e5e129e2bb863a0a6a75122f29ad6ae0b1b46f
+      - name: Verify source and publish clean implementation commit
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import base64, gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '16e5e129e2bb863a0a6a75122f29ad6ae0b1b46f'
+          branch = 'codex/fit-input-prepared-20260918'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '67aea285dac22f52d8c8656b204efa56eb7a1005'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          source = pathlib.Path('transport/.fit-input-transfer')
+          packed = base64.b64decode(b''.join((source / ('part' + str(i))).read_bytes() for i in range(4)), validate=True)
+          assert hashlib.sha256(packed).hexdigest() == '6cf92cab822f51984bbf483783c181a23cfc3fc62204f6a30447fc0ea02dea0a'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == 'eadac6373acbc8b7aafb5cef44a768f1df4a0207fbbe9e566146ceab1e1be60d'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == 'd476d7e6090cc1e1f1309a8e1567b612466bdf1d', tree
+          git('-c', 'core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol', 'diff', '--cached', '--check')
+          commit = git('commit-tree', tree, '-p', base, '-m', 'fix: fit and retain spline points from one input traversal')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          print(json.dumps({'base': base, 'branch': branch, 'commit': commit, 'tree': tree}, indent=2))
