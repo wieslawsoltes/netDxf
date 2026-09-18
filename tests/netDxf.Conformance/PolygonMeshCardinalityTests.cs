@@ -65,7 +65,7 @@ internal static partial class Program
         Run("polygonmesh/model/invalid-smooth-type", () =>
         {
             var mesh = new PolygonMesh(2, 2, new Vector3[4]);
-            Throws<ArgumentOutOfRangeException>(() => mesh.SmoothType = (PolylineSmoothType)8);
+            Throws<ArgumentOutOfRangeException>(() => mesh.SmoothType = (PolylineSmoothType)7);
             Equal(PolylineSmoothType.NoSmooth, mesh.SmoothType, "Rejected enum mutated surface");
             Throws<ArgumentException>(() => new PolygonMesh(2, 2, new Vector3[3]));
             Throws<ArgumentException>(() => new PolygonMesh(2, 2, new Vector3[5]));
@@ -127,7 +127,7 @@ internal static partial class Program
         var tags = PolygonGridTags(version, invalid < 2 ? (short)0 : (short)5);
         if (invalid == 0) tags[tags.FindIndex(t => t.Code == 75)] = new(75, (short)5);
         else if (invalid == 1) tags[tags.FindIndex(t => t.Code == 70)] = new(70, (short)20);
-        else if (invalid < 4) tags[tags.FindIndex(t => t.Code == 75)] = new(75, (short)(invalid == 2 ? 8 : 42));
+        else if (invalid < 4) tags[tags.FindIndex(t => t.Code == 75)] = new(75, (short)(invalid == 2 ? 7 : 42));
         else
         {
             int firstVertex = tags.FindIndex(t => t.Code == 0 && Equals(t.Value, "VERTEX"));

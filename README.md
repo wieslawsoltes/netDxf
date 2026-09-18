@@ -105,6 +105,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Remaining identity consumers](doc/dxf-conformance/identity-consumers.md) apply exact fast-path admission to Matrix2 and unclipped viewport transformations.
 
+[Open Bézier polygon meshes](doc/dxf-conformance/polygon-mesh-bezier.md) support surface type 8, bounded tensor-product sampling, typed control-net round trips and explicit conversion. Closed surfaces, fitted child-record preservation and native fitting equivalence remain separately scoped.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

@@ -158,6 +158,8 @@ namespace netDxf.Entities
             get { return this.smoothType; }
             set
             {
+                if (value == PolylineSmoothType.BezierSurface)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "BezierSurface is a polygon mesh surface, not a polyline curve.");
                 if (value == PolylineSmoothType.NoSmooth)
                 {
                     this.flags &= ~PolylineTypeFlags.SplineFit;
