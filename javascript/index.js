@@ -104,3 +104,4 @@ export { Circle } from './netDxf/Entities/Circle.js';
 export { Arc } from './netDxf/Entities/Arc.js';
 export { Polyline2D } from './netDxf/Entities/Polyline2D.js';
 export { Polyline2DRecord } from './netDxf/Entities/Polyline2DRecord.js';
+export { Ellipse } from './netDxf/Entities/Ellipse.js';

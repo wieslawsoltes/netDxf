@@ -1,4 +1,4 @@
-import { Circle, Arc, Polyline2D, Polyline2DRecord } from '../index.js';
+import { Ellipse, Circle, Arc, Polyline2D, Polyline2DRecord } from '../index.js';
 export function curveRecordWire(value,wire) {
   if(!(value instanceof Polyline2DRecord))return undefined;
   return {type:'Polyline2DRecord',code:value.CodeName,handle:value.Handle,vertex:wire(value.Vertex),isEnd:value.IsSequenceEnd,
@@ -6,6 +6,7 @@ export function curveRecordWire(value,wire) {
     tags:Array.from(value.Tags,t=>({code:t.Code,value:wire(t.Value)})),xdata:Array.from(value.XData.Values,wire)};
 }
 export function curveWire(value,common,wire) {
+  if(value instanceof Ellipse)return {common,center:wire(value.Center),major:wire(value.MajorAxis),minor:wire(value.MinorAxis),rotation:wire(value.Rotation),start:wire(value.StartAngle),end:wire(value.EndAngle),thickness:wire(value.Thickness),full:value.IsFullEllipse};
   if(value instanceof Circle)return {common,center:wire(value.Center),radius:wire(value.Radius),thickness:wire(value.Thickness)};
   if(value instanceof Arc)return {common,center:wire(value.Center),radius:wire(value.Radius),start:wire(value.StartAngle),end:wire(value.EndAngle),thickness:wire(value.Thickness)};
   if(value instanceof Polyline2D)return {common,vertices:Array.from(value.Vertexes,wire),closed:value.IsClosed,generation:value.LinetypeGeneration,

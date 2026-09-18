@@ -14,7 +14,8 @@ internal static partial class Program {
   }
   private static bool CurveWire(EntityObject value,object common,out object? result) {
     result=null;
-    if(value is Circle c)result=new {common,center=Wire(c.Center),radius=Wire(c.Radius),thickness=Wire(c.Thickness)};
+    if(value is Ellipse e)result=new {common,center=Wire(e.Center),major=Wire(e.MajorAxis),minor=Wire(e.MinorAxis),rotation=Wire(e.Rotation),start=Wire(e.StartAngle),end=Wire(e.EndAngle),thickness=Wire(e.Thickness),full=e.IsFullEllipse};
+    else if(value is Circle c)result=new {common,center=Wire(c.Center),radius=Wire(c.Radius),thickness=Wire(c.Thickness)};
     else if(value is Arc a)result=new {common,center=Wire(a.Center),radius=Wire(a.Radius),start=Wire(a.StartAngle),end=Wire(a.EndAngle),thickness=Wire(a.Thickness)};
     else if(value is Polyline2D p)result=new {common,vertices=p.Vertexes.Select(Wire).ToArray(),closed=p.IsClosed,generation=p.LinetypeGeneration,thickness=Wire(p.Thickness),elevation=Wire(p.Elevation),smooth=(int)p.SmoothType,
       constant=Wire(p.ConstantWidth),legacyStart=Wire(p.LegacyDefaultStartWidth),legacyEnd=Wire(p.LegacyDefaultEndWidth),records=p.VertexRecords.Select(Wire).ToArray(),endRecord=Wire(p.EndSequenceRecord)};
