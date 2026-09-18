@@ -82,3 +82,8 @@ export { UcsFlags } from './netDxf/Tables/UcsRelationships.js';
 export { View } from './netDxf/Tables/View.js';
 export { ViewUcs } from './netDxf/Tables/ViewUcs.js';
 export { VPort } from './netDxf/Tables/VPort.js';
+export { DxfIdBuffer } from './netDxf/Objects/DxfIdBuffer.js';
+export { DxfSpatialIndex } from './netDxf/Objects/DxfSpatialIndex.js';
+export { DxfLayerFilter } from './netDxf/Objects/DxfLayerFilter.js';
+export { DxfLayerIndex, DxfLayerIndexEntry } from './netDxf/Objects/DxfLayerIndex.js';
+export { DxfSpatialFilter } from './netDxf/Objects/DxfSpatialFilter.js';
