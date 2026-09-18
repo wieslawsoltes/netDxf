@@ -99,7 +99,7 @@ def expected_packets(u, v, nested):
 
 
 def records(data):
-    loader = binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig')))
+    loader = binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig'), newline=None))
     result, current = [], []
     for tag in loader:
         if tag.code == 0:
