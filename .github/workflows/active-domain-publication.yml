@@ -1,0 +1,50 @@
+name: Materialize verified nonperiodic spline task
+on:
+  push:
+    branches: [codex/active-domain-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 01e4064d6426fb7d7a6c71501a67a2e27f55f31a
+      - name: Verify source and publish clean implementation commit
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import base64, gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '01e4064d6426fb7d7a6c71501a67a2e27f55f31a'
+          branch = 'codex/active-domain-prepared-20260918'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == 'd476d7e6090cc1e1f1309a8e1567b612466bdf1d'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          source = pathlib.Path('transport/.active-domain-transfer')
+          packed = base64.b64decode(b''.join((source / ('part' + str(i))).read_bytes() for i in range(7)), validate=True)
+          assert hashlib.sha256(packed).hexdigest() == '6bfbb2a952cbf036238d9cdf64ff2a3162ddbb3294e98637cdefbbeb1c20884a'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == '0eefa1b3623d1e4b81648c14aec2cf2449c27655faf333b78ca872ddc6997b58'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == '33099a1d75cd8a6f843643b55c14964ef1e385c2', tree
+          git('-c', 'core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol', 'diff', '--cached', '--check')
+          commit = git('commit-tree', tree, '-p', base, '-m', 'fix: evaluate nonperiodic splines on their active knot domain')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          print(json.dumps({'base': base, 'branch': branch, 'commit': commit, 'tree': tree}, indent=2))
