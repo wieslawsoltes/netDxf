@@ -326,18 +326,7 @@ namespace netDxf.Entities
         /// </remarks>
         public List<Vector3> MeshVertexes()
         {
-            int precisionU = this.densityU == 0 ? this.Owner == null ? DefaultSurfU + 1 : this.Owner.Record.Owner.Owner.DrawingVariables.SurfU + 1 : this.densityU;
-            int precisionV = this.densityV == 0 ? this.Owner == null ? DefaultSurfV + 1 : this.Owner.Record.Owner.Owner.DrawingVariables.SurfV + 1 : this.densityV;
-
-            // the minimum vertexes generated is 3.
-            if (precisionU < 3)
-            {
-                precisionU = 3;
-            }
-            if (precisionV < 3)
-            {
-                precisionV = 3;
-            }
+            this.ResolveSurfaceDensity(out int precisionU, out int precisionV);
             return this.MeshVertexes(precisionU, precisionV);
         }
 
@@ -359,6 +348,8 @@ namespace netDxf.Entities
             }
 
             this.ValidateSurface();
+            if (this.smoothType != PolylineSmoothType.NoSmooth && (long)precisionU * precisionV > MaximumSurfaceSamples)
+                throw new ArgumentOutOfRangeException(nameof(precisionU), "The surface sampling grid exceeds MaximumSurfaceSamples.");
             int degree;
             if (this.smoothType == PolylineSmoothType.Quadratic)
             {
@@ -474,12 +465,10 @@ namespace netDxf.Entities
         /// <summary>
         /// Converts the actual polygon mesh into a mesh entity approximating the surface faces as necessary.
         /// </summary>
-        /// <returns>A <see cref="Mesh">Mesh entity</see>.</returns>
+        /// <returns>A detached <see cref="Mesh">Mesh entity</see> with independently cloned ordinary appearance.</returns>
         public Mesh ToMesh()
         {
-            int precisionU = this.densityU == 0 ? this.Owner == null ? DefaultSurfU + 1 : this.Owner.Record.Owner.Owner.DrawingVariables.SurfU + 1 : this.densityU;
-            int precisionV = this.densityV == 0 ? this.Owner == null ? DefaultSurfV + 1 : this.Owner.Record.Owner.Owner.DrawingVariables.SurfV + 1 : this.densityV;
-
+            this.ResolveSurfaceDensity(out int precisionU, out int precisionV);
             return this.ToMesh(precisionU, precisionV);
         }
 
@@ -488,135 +477,42 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="precisionU">Number of vertexes created along the U direction.</param>
         /// <param name="precisionV">Number of vertexes created along the V direction.</param>
-        /// <returns>A <see cref="Mesh">Mesh entity</see>.</returns>
+        /// <returns>A detached <see cref="Mesh">Mesh entity</see> with independently cloned ordinary appearance.</returns>
         /// <remarks>
         /// The minimum vertexes generated for smoothed polygon meshes is 3 in each direction.
         /// </remarks>
         public Mesh ToMesh(int precisionU, int precisionV)
         {
-            List<Vector3> meshVertexes = this.MeshVertexes(precisionU, precisionV);
-
-            int precU;
-            int precV;
-            if (this.smoothType == PolylineSmoothType.NoSmooth)
-            {
-                precU = this.u;
-                precV = this.v;
-            }
-            else
-            {
-                precU = precisionU;
-                precV = precisionV;
-            }
-
-            List<int[]> faces = new List<int[]>();
-
-            for (int i = 0; i < precV; i++)
-            {
-                for (int j = 0; j < precU; j++)
-                {
-                    int v1, v2, v3, v4;
-                    
-                    if (j == precU - 1)
-                    {
-                        if (this.IsClosedInU && i < precV - 1)
-                        {
-                            v1 = i * precU + j;
-                            v2 = i * precU;
-                            v3 = (i + 1) * precU;
-                            v4 = (i + 1) * precU + j;
-                            faces.Add(new []{v1, v2, v3, v4});
-                        }
-                        continue;
-                    }
-
-                    if (i == precV - 1)
-                    {
-                        if (this.IsClosedInV && j < precU - 1)
-                        {
-                            v1 = i * precU + j;
-                            v2 = v1 + 1;
-                            v4 = j;
-                            v3 = v4 + 1;
-                            faces.Add(new []{v1, v2, v3, v4});
-                        }
-                        continue;
-                    }
-
-                    v1 = i * precU + j;
-                    v2 = v1 + 1;
-                    v4 = (i + 1) * precU + j;
-                    v3 = v4 + 1;
-                    faces.Add(new []{v1, v2, v3, v4});
-                }
-            }
-
-            return new Mesh(meshVertexes, faces);
+            this.ValidateConversion();
+            List<Vector3> points = this.MeshVertexes(precisionU, precisionV);
+            int countU = this.smoothType == PolylineSmoothType.NoSmooth ? this.u : precisionU;
+            int countV = this.smoothType == PolylineSmoothType.NoSmooth ? this.v : precisionV;
+            var result = new Mesh(points, this.ConversionFaces(countU, countV));
+            this.CopyConversionAppearance(result);
+            return result;
         }
 
         /// <summary>
         /// Decompose the actual polygon mesh into <see cref="Face3D">faces 3D</see>.
         /// </summary>
-        /// <returns>A list of <see cref="Face3D">faces 3D</see> that made up the polygon mesh.</returns>
+        /// <returns>Detached faces, including closure seams, with independently cloned ordinary appearance.</returns>
+        /// <remarks>Associated object graphs and decorated retained child records require explicit dependency conversion.
+        /// Identity and proxy graphics are not copied. The source is never replaced or modified.</remarks>
         public List<Face3D> Explode()
         {
-            List<Vector3> meshVertexes = this.MeshVertexes();
-
-            int precU;
-            int precV;
-            if (this.smoothType == PolylineSmoothType.NoSmooth)
+            this.ValidateConversion();
+            this.ResolveSurfaceDensity(out int precisionU, out int precisionV);
+            List<Vector3> points = this.MeshVertexes(precisionU, precisionV);
+            int countU = this.smoothType == PolylineSmoothType.NoSmooth ? this.u : precisionU;
+            int countV = this.smoothType == PolylineSmoothType.NoSmooth ? this.v : precisionV;
+            var result = new List<Face3D>();
+            foreach (int[] face in this.ConversionFaces(countU, countV))
             {
-                precU = this.u;
-                precV = this.v;
+                var entity = new Face3D(points[face[0]], points[face[1]], points[face[2]], points[face[3]]);
+                this.CopyConversionAppearance(entity);
+                result.Add(entity);
             }
-            else
-            {
-                precU = this.densityU;
-                precV = this.densityV;
-            }
-
-            List<Face3D> faces = new List<Face3D>();
-
-            for (int i = 0; i < precV; i++)
-            {
-                for (int j = 0; j < precU; j++)
-                {
-                    int v1, v2, v3, v4;
-                    if (j == precU - 1)
-                    {
-                        if (this.IsClosedInU && i < precV - 1)
-                        {
-                            v1 = i * precU + j;
-                            v2 = i * precU;
-                            v3 = (i + 1) * precU;
-                            v4 = (i + 1) * precU + j;
-                            faces.Add(new Face3D(meshVertexes[v1], meshVertexes[v2], meshVertexes[v3], meshVertexes[v4]));
-                        }
-                        continue;
-                    }
-
-                    if (i == precV - 1)
-                    {
-                        if (this.IsClosedInV && j < precU - 1)
-                        {
-                            v1 = i * precU + j;
-                            v2 = v1 + 1;
-                            v4 = j;
-                            v3 = v4 + 1;
-                            faces.Add(new Face3D(meshVertexes[v1], meshVertexes[v2], meshVertexes[v3], meshVertexes[v4]));
-                        }
-                        continue;
-                    }
-
-                    v1 = i * precU + j;
-                    v2 = v1 + 1;
-                    v4 = (i + 1) * precU + j;
-                    v3 = v4 + 1;
-                    faces.Add(new Face3D(meshVertexes[v1], meshVertexes[v2], meshVertexes[v3], meshVertexes[v4]));
-                }
-            }
-
-            return faces;
+            return result;
         }
 
         #endregion

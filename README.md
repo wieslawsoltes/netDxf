@@ -175,3 +175,5 @@ Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families rema
 [LINE affine geometry review](doc/dxf-conformance/line-affine-review.md) corrects signed thickness, finite affine validation, atomic rejection and stale proxy handling, with exact once-rounded endpoint arithmetic and independent six-profile qualification.
 
 [MESH and 3DFACE affine review](doc/dxf-conformance/vertex-affine-review.md) adds atomic finite transforms, exact WCS coordinate evaluation, source-preserving rejection and changed-geometry proxy invalidation. The task preserves mesh topology and distinguishes the auxiliary normal from geometric face normals.
+
+[Polygon mesh conversion](doc/dxf-conformance/polygon-mesh-conversion.md) now uses consistent surface densities, includes both closure seams, and independently preserves ordinary appearance in detached MESH/3DFACE results.
