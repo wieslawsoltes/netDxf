@@ -43,6 +43,7 @@ internal static partial class Program
         RegisterArbitraryAxisReviewTests();
         RegisterVector4ComponentReviewTests();
         RegisterIdentityConsumerReviewTests();
+        RegisterPolygonMeshConversionTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
