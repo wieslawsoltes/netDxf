@@ -57,6 +57,7 @@ internal static partial class Program
         RegisterHatchBulgeExplosionTests();
         RegisterSplineAffineAtomicTests();
         RegisterEllipseSamplingTests();
+        RegisterConicSplineTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
