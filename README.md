@@ -113,6 +113,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Atomic legacy WCS transforms](doc/dxf-conformance/legacy-vertex-affine.md) extend prepared, exact affine-point handling to 3D polylines and polyface meshes, preserving stored identities on rejection and clearing changed parent proxies.
 
+[3D polyline explosion](doc/dxf-conformance/polyline3d-explosion.md) preserves ordinary appearance and XData, handles detached blocks, and guards unsupported dependencies and generated segment allocations.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

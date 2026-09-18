@@ -1078,7 +1078,7 @@ namespace netDxf.Entities
                             containsPolyline = true;
                         }
                         else
-                            this.SetInternalInfo(poly.Explode(), false); // open polylines will always be exploded, only one polyline can be present in a path
+                            this.SetInternalInfo(poly.GetBoundaryLineGeometry(), false); // open polylines will always be exploded, only one polyline can be present in a path
                         break;
                     case EntityType.Spline:
                         this.edges.Add(Spline.ConvertFrom(entity));
