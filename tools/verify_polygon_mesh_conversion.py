@@ -45,7 +45,7 @@ def expected(closure, mesh):
 
 
 def records(data):
-    loader=binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig')))
+    loader=binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('utf-8-sig'), newline=None))
     records=[]; current=[]
     for tag in loader:
         if tag.code==0:
