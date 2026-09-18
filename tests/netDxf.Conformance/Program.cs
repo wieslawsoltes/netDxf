@@ -35,6 +35,10 @@ internal static partial class Program
         RegisterEntityCloneQualificationTests();
         RunAdditionalTests();
         RegisterObservableCollectionInsertTests();
+        RegisterMTextUnicodeChunkTests();
+        RegisterEntityTextFramingTests();
+        RegisterMTextOrientationOrderTests();
+        RegisterEntityTextFilePreflightTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
