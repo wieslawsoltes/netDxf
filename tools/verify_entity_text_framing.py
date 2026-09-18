@@ -34,7 +34,7 @@ def decode_legacy(value):
 
 def records(data):
     tags = (binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else
-            ascii_tags_loader(io.StringIO(data.decode('utf-8-sig', 'strict'))))
+            ascii_tags_loader(io.StringIO(data.decode('utf-8-sig', 'strict'), newline=None)))
     result, current = [], []
     for tag in tags:
         if tag.code == 0:

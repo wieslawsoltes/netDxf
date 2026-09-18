@@ -37,6 +37,7 @@ internal static partial class Program
         RegisterObservableCollectionInsertTests();
         RegisterMTextUnicodeChunkTests();
         RegisterEntityTextFramingTests();
+        RegisterMTextOrientationOrderTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();

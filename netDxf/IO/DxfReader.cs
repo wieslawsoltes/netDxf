@@ -9060,15 +9060,22 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 11:
+                        // Orientation convenience fields are ordered: a later
+                        // direction replaces group 50, and a later group 50
+                        // replaces the direction. Column height packets are
+                        // consumed above and never participate in this choice.
+                        isRotationDefined = false;
                         hasDirection = true;
                         direction.X = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 21:
+                        isRotationDefined = false;
                         direction.Y = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 31:
+                        isRotationDefined = false;
                         direction.Z = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;

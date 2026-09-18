@@ -93,6 +93,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Text-entity save preflight](doc/dxf-conformance/entity-text-framing.md) rejects unpaired Unicode and transport-breaking characters before output preparation, with source/destination rollback tests and independent valid-record checks. In-memory setters and unrelated raw/private strings retain their separate contracts.
 
+[MTEXT orientation order](doc/dxf-conformance/mtext-orientation-order.md) now honors later angle/direction declarations without confusing column-height group 50 values with rotation. Existing rotation units are retained; the guide records specification discrepancies and independent input/output checks.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
