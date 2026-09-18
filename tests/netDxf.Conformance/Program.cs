@@ -46,6 +46,7 @@ internal static partial class Program
         RegisterPolygonMeshConversionTests();
         RegisterPolygonMeshBezierTests();
         RegisterPolygonMeshAffineTests();
+        RegisterPolyfaceConstructionTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();

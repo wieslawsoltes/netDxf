@@ -109,6 +109,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Atomic polygon-mesh affine transforms](doc/dxf-conformance/polygon-mesh-affine.md) prepare all control points before mutation, retain representable exact affine cancellations and loaded child identities, reject invalid/projective results, and clear stale parent proxy graphics after changed geometry.
 
+[Single-pass polyface construction](doc/dxf-conformance/polyface-construction.md) accepts one-shot face-index sequences, snapshots reused iterator buffers, and reports empty-face arguments correctly.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
