@@ -1,0 +1,43 @@
+name: Recover interrupted spline upload
+on:
+  push:
+    branches: [codex/recover-spline-upload-20260918]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Preserve upload and validate compression without applying it
+        shell: python
+        run: |
+          import gzip, hashlib, json, pathlib, zlib
+          data = pathlib.Path('.recovery/interrupted-spline.patch.gz').read_bytes()
+          oid = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+          assert oid == 'e2a84fe4fc96f58ed830cfa87294431ab6ac6c0f'
+          out = pathlib.Path('recovery'); out.mkdir()
+          (out / 'original.patch.gz').write_bytes(data)
+          report = {'blob': oid, 'compressed_sha256': hashlib.sha256(data).hexdigest()}
+          try:
+              patch = gzip.decompress(data)
+              report.update(valid_gzip=True, patch_sha256=hashlib.sha256(patch).hexdigest())
+              (out / 'recovered.patch').write_bytes(patch)
+          except (OSError, EOFError, zlib.error) as error:
+              report.update(valid_gzip=False, error=str(error))
+              decoder = zlib.decompressobj(31); prefix = bytearray()
+              for value in data:
+                  try: prefix.extend(decoder.decompress(bytes([value])))
+                  except zlib.error: break
+              (out / 'UNVERIFIED-prefix.patch').write_bytes(prefix)
+              report['unverified_prefix_bytes'] = len(prefix)
+          (out / 'receipt.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: interrupted-spline-recovery
+          path: recovery/
+          retention-days: 7
