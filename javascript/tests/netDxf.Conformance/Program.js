@@ -1,3 +1,4 @@
+import * as SectionTests from './SectionTests.js';
 import * as OleMetadataApiTests from './OleMetadataApiTests.js';
 import * as AcisSatTests from './AcisSatTests.js';
 import * as LightNameTests from './LightNameTests.js';
@@ -43,7 +44,7 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { OleMetadataApiTests, AcisSatTests, LightNameTests, LayerIndexTests, NamedViewTests, VPortApiTests, UcsElevationTests, UcsOrthographicTests, NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { SectionTests, OleMetadataApiTests, AcisSatTests, LightNameTests, LayerIndexTests, NamedViewTests, VPortApiTests, UcsElevationTests, UcsOrthographicTests, NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
   const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };

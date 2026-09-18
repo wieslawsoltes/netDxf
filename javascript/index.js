@@ -97,3 +97,4 @@ export { Region } from './netDxf/Entities/Region.js';
 export { Solid3D } from './netDxf/Entities/Solid3D.js';
 export { OleFrame } from './netDxf/Entities/OleFrame.js';
 export { Ole2Frame, OleObjectType, Ole2FrameMetadataFields } from './netDxf/Entities/Ole2Frame.js';
+export { Section } from './netDxf/Entities/Section.js';
