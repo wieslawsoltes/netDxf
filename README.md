@@ -111,6 +111,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Single-pass polyface construction](doc/dxf-conformance/polyface-construction.md) accepts one-shot face-index sequences, snapshots reused iterator buffers, and reports empty-face arguments correctly.
 
+[Atomic legacy WCS transforms](doc/dxf-conformance/legacy-vertex-affine.md) extend prepared, exact affine-point handling to 3D polylines and polyface meshes, preserving stored identities on rejection and clearing changed parent proxies.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
