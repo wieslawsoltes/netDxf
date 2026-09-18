@@ -117,6 +117,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Polyline3D projection](doc/dxf-conformance/polyline-projection.md) preserves ordinary appearance, XData and closure in detached output, with explicit parallel-plane elevation and bounded sampling. The original overload retains zero-elevation projection.
 
+[Spline-to-polyline fidelity](doc/dxf-conformance/spline-polyline-conversion.md) preserves ordinary appearance and XData in detached 2D/3D conversions, supports explicit projection-plane elevation, and bounds generated vertices. The existing sampler and its separate qualification limits remain unchanged.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

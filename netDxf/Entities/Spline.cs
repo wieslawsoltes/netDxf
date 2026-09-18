@@ -33,7 +33,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a spline curve <see cref="EntityObject">entity</see> (NURBS Non-Uniform Rational B-Splines).
     /// </summary>
-    public class Spline :
+    public partial class Spline :
         EntityObject
     {
         #region private fields
@@ -637,21 +637,7 @@ namespace netDxf.Entities
         /// <returns>A new instance of <see cref="Polyline3D">Polyline3D</see> that represents the spline.</returns>
         public Polyline3D ToPolyline3D(int precision)
         {
-            IEnumerable<Vector3> vertexes = this.PolygonalVertexes(precision);
-            bool closed = this.IsClosed || this.IsClosedPeriodic;
-            Polyline3D poly = new Polyline3D (vertexes)
-            {
-                Layer = (Layer) this.Layer.Clone(),
-                Linetype = (Linetype) this.Linetype.Clone(),
-                Color = (AciColor) this.Color.Clone(),
-                Lineweight = this.Lineweight,
-                Transparency = (Transparency) this.Transparency.Clone(),
-                LinetypeScale = this.LinetypeScale,
-                Normal = this.Normal,
-                IsClosed = closed
-            };
-
-            return poly;
+            return this.ConvertToPolyline3D(precision);
         }
 
         /// <summary>
@@ -660,26 +646,13 @@ namespace netDxf.Entities
         /// <param name="precision">Number of vertexes generated.</param>
         /// <returns>A new instance of <see cref="Polyline2D">Polyline2D</see> that represents the spline.</returns>
         /// <remarks>
-        /// The resulting polyline will be a projection of the actual spline into the plane defined by its normal vector.
+        /// The result is projected onto the zero-elevation object XY plane defined by the normal.
+        /// Use ToPolyline2D(int, double) to select an explicit parallel plane.
+        /// Converted output has independently copied ordinary appearance and XData; unsupported dependencies reject.
         /// </remarks>
         public Polyline2D ToPolyline2D(int precision)
         {
-            List<Vector3> vertexes3D = this.PolygonalVertexes(precision);
-            List<Vector2> vertexes2D = MathHelper.Transform(vertexes3D, this.Normal, out double _);
-            bool closed = this.IsClosed || this.IsClosedPeriodic;
-            Polyline2D polyline2D = new Polyline2D(vertexes2D)
-            {
-                Layer = (Layer) this.Layer.Clone(),
-                Linetype = (Linetype) this.Linetype.Clone(),
-                Color = (AciColor) this.Color.Clone(),
-                Lineweight = this.Lineweight,
-                Transparency = (Transparency) this.Transparency.Clone(),
-                LinetypeScale = this.LinetypeScale,
-                Normal = this.Normal,
-                IsClosed = closed
-            };
-
-            return polyline2D;
+            return this.ToPolyline2D(precision, 0.0);
         }
 
         /// <summary>
