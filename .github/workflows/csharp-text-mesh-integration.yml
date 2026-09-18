@@ -1,0 +1,52 @@
+name: Prepare exact C# text and mesh integration
+on:
+  push:
+    branches: [codex/csharp-source-review-20260918]
+    paths: [.github/workflows/csharp-text-mesh-integration.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 8eb5b2ab331f006245ae556dd7cbc85d2bfa0814
+          fetch-depth: 4
+      - name: Reproduce clean merges and verify every source tree
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import json, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args]).decode().strip()
+          git('config', 'core.autocrlf', 'false')
+          text = '6ccce8a51f1cfebc241ea40d5bba56273f8e2f1f'
+          git('fetch', '--depth=5', 'origin', text)
+          stages = [(113,'c0297d9e390a2760544a976251008bf97ae253ac','20dd89c25d2a05e7d5db87e01af95e7a13cc66c3'),(114,'a8780fe6b5e0ba34e5c2ba6335597f11606a84a9','e21f205df6f4453ca2300e8863707d7c52405186'),(115,'8eb5b2ab331f006245ae556dd7cbc85d2bfa0814','2a0c982a08f24eb77289c147f3e2979d33c1a529')]
+          result = []; refs = []; previous = text
+          for pr, original, expected in stages:
+              git('checkout', '--detach', original)
+              git('merge', '--no-commit', '--no-ff', previous)
+              tree = git('write-tree'); assert tree == expected, (pr, tree)
+              git('-c','core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol','diff','--cached','--check')
+              sha = git('commit-tree',tree,'-p',original,'-p',previous,'-m','merge: integrate recovered text tasks into C# PR #' + str(pr))
+              git('reset', '--hard', sha)
+              ref = 'refs/heads/codex/text-mesh-integrated-' + str(pr) + '-20260918'
+              assert not git('ls-remote','--heads','origin',ref)
+              refs.append(sha + ':' + ref)
+              result.append({'pr':pr,'original':original,'head':sha,'tree':tree,'base':previous})
+              previous = sha
+          git('push', '--atomic', 'origin', *refs)
+          pathlib.Path('integration.json').write_text(json.dumps(result,indent=2) + '\n')
+          print(pathlib.Path('integration.json').read_text())
+      - uses: actions/upload-artifact@v4
+        with:
+          name: csharp-text-mesh-integration
+          path: integration.json
+          retention-days: 14
