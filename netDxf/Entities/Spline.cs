@@ -667,9 +667,15 @@ namespace netDxf.Entities
         /// <remarks>
         /// NURBS evaluator provided by mikau16 based on Michael V. implementation, roughly follows the notation of http://cs.mtu.edu/~shene/PUBLICATIONS/2004/NURBS.pdf
         /// Added a few modifications to make it work for open, closed, and periodic closed splines.
+        /// Nonperiodic curves use the active domain knots[degree] through knots[controls.Length].
+        /// Open samples include the evaluated right endpoint; closed samples exclude a duplicated endpoint.
+        /// Nonperiodic evaluation requires finite source data, valid knot multiplicities, and 2 to 1000000 samples.
+        /// Sampled rational poles or unrepresentable sampling parameters throw before a result is returned.
         /// </remarks>
         public static List<Vector3> NurbsEvaluator(Vector3[] controls, double[] weights, double[] knots, int degree, bool isClosed, bool isClosedPeriodic, int precision)
         {
+            if (!isClosedPeriodic) return EvaluateNonPeriodicSpline(controls, weights, knots, degree, isClosed, precision);
+
             if (precision < 2)
             {
                 throw new ArgumentOutOfRangeException(nameof(precision), precision, "The precision must be equal or greater than two.");

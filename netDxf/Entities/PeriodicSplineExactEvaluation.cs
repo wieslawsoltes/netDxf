@@ -3,7 +3,7 @@ using BigInteger = System.Numerics.BigInteger;
 
 namespace netDxf.Entities
 {
-    /// <summary>Bounded exact evaluation for ill-conditioned periodic samples.</summary>
+    /// <summary>Bounded exact evaluation for ill-conditioned spline samples.</summary>
     internal static class PeriodicSplineExactEvaluation
     {
         // A sample uses at most eleven controls and 55 local basis steps. The
@@ -11,7 +11,7 @@ namespace netDxf.Entities
         private const int MaximumIntegerBytes = 65536;
 
         internal static Vector3 Evaluate(Vector3[] expandedControls, double[] expandedWeights,
-            double[] knots, int degree, double parameter, int firstControl)
+            double[] knots, int degree, double parameter, int firstControl, bool allowSignedWeights = false)
         {
             if (degree < 1 || degree > Spline.MaxDegree)
                 throw new ArgumentException("Exact periodic SPLINE evaluation requires a supported degree.");
@@ -49,7 +49,7 @@ namespace netDxf.Entities
             for (int i = 0; i <= degree; i++)
             {
                 Rational weighted = basis[i] * Rational.FromDouble(expandedWeights[firstControl + i]);
-                if (weighted.Sign < 0)
+                if (!allowSignedWeights && weighted.Sign < 0)
                     throw new ArgumentException("Exact periodic SPLINE evaluation requires positive rational weights.");
                 if (weighted.Sign == 0) continue;
                 Vector3 point = expandedControls[firstControl + i];
@@ -58,7 +58,7 @@ namespace netDxf.Entities
                 y += weighted * Rational.FromDouble(point.Y);
                 z += weighted * Rational.FromDouble(point.Z);
             }
-            if (denominator.Sign <= 0)
+            if (denominator.Sign == 0 || (!allowSignedWeights && denominator.Sign < 0))
                 throw new ArgumentException("The exact periodic SPLINE denominator is zero.");
             return new Vector3((x / denominator).ToDouble(), (y / denominator).ToDouble(), (z / denominator).ToDouble());
         }
