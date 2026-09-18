@@ -67,10 +67,8 @@ namespace netDxf.Entities
         /// The resulting spline curve will be created from a list of cubic bezier curves that passes through the specified fit points.
         /// </remarks>
         public Spline(IEnumerable<Vector3> fitPoints)
-            : this(BezierCurveCubic.CreateFromFitPoints(fitPoints))
+            : this(new FitPointSnapshot(fitPoints))
         {
-            this.creationMethod = SplineCreationMethod.FitPoints;
-            this.fitPoints = fitPoints.ToArray();
         }
 
         /// <summary>

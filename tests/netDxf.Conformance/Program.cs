@@ -51,6 +51,7 @@ internal static partial class Program
         RegisterPolylineExplosionTests();
         RegisterPolylineProjectionTests();
         RegisterSplinePolylineConversionTests();
+        RegisterSplineFitInputTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
