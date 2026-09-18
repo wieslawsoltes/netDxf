@@ -107,6 +107,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Open Bézier polygon meshes](doc/dxf-conformance/polygon-mesh-bezier.md) support surface type 8, bounded tensor-product sampling, typed control-net round trips and explicit conversion. Closed surfaces, fitted child-record preservation and native fitting equivalence remain separately scoped.
 
+[Atomic polygon-mesh affine transforms](doc/dxf-conformance/polygon-mesh-affine.md) prepare all control points before mutation, retain representable exact affine cancellations and loaded child identities, reject invalid/projective results, and clear stale parent proxy graphics after changed geometry.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
