@@ -1,0 +1,55 @@
+name: Publish verified remaining identity consumers
+on:
+  push:
+    branches: [codex/identity-consumer-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 0f96b44395f107af03e36f23c621c83ac0450637
+      - name: Verify reviewed patch and full tree before clean publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '0f96b44395f107af03e36f23c621c83ac0450637'
+          expected = 'eb3b1089176ec5ec656a326292351b17ec4083a1'
+          assert git('rev-parse','HEAD') == base
+          assert git('rev-parse','HEAD^{tree}') == '57a5c68b76d6fdfc485aba92aa03b15e3ccfa9f3'
+          git('config','core.autocrlf','false')
+          packed = b''.join(pathlib.Path('transport/.identity-transfer/' + str(i) + '.bin').read_bytes() for i in range(3))
+          assert hashlib.sha256(packed).hexdigest() == 'e97b6aaffa1c7d3947a2e35089209d2f6e3fbeb1c2709f93505d57ac00f29007'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == '84959616cd6d8f38b8fd206a56e353711c18ab802a501b116dc39d68c87a22e9'
+          git('apply','--index','--check','-',data=patch)
+          git('apply','--index','--whitespace=nowarn','-',data=patch)
+          tree = git('write-tree'); assert tree == expected, tree
+          git('-c','core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol','diff','--cached','--check')
+          sha = git('commit-tree',tree,'-p',base,'-m','fix: require exact identity for Matrix2 and viewport fast paths')
+          ref = 'refs/heads/codex/identity-consumer-prepared-20260918'
+          assert not git('ls-remote','--heads','origin',ref)
+          git('push','origin',sha + ':' + ref)
+          pathlib.Path('publication.json').write_text(json.dumps({'base':base,'head':sha,'tree':tree,'ref':ref},indent=2) + '\n')
+          print(pathlib.Path('publication.json').read_text())
+      - uses: actions/upload-artifact@v4
+        with:
+          name: identity-consumer-publication
+          path: publication.json
+          retention-days: 14
