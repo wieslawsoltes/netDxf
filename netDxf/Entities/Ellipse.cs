@@ -243,56 +243,7 @@ namespace netDxf.Entities
         /// <returns>A list vertexes that represents the ellipse expressed in object coordinate system.</returns>
         public List<Vector2> PolygonalVertexes(int precision)
         {
-            if (precision < 2)
-            {
-                throw new ArgumentOutOfRangeException(nameof(precision), precision, "The arc precision must be equal or greater than two.");
-            }
-
-            List<Vector2> points = new List<Vector2>();
-            double beta = this.rotation * MathHelper.DegToRad;
-            double sinBeta = Math.Sin(beta);
-            double cosBeta = Math.Cos(beta);
-            double start;
-            double end;
-            double steps;
-
-            if (this.IsFullEllipse)
-            {
-                start = 0;
-                end = MathHelper.TwoPI;
-                steps = precision;
-            }
-            else
-            {
-                Vector2 startPoint = this.PolarCoordinateRelativeToCenter(this.startAngle);
-                Vector2 endPoint = this.PolarCoordinateRelativeToCenter(this.endAngle);
-                double a = 1 / (0.5 * this.majorAxis);
-                double b = 1 / (0.5 * this.minorAxis);
-                start = Math.Atan2(startPoint.Y * b, startPoint.X * a);
-                end = Math.Atan2(endPoint.Y * b, endPoint.X * a);
-
-                if (end < start)
-                {
-                    end += MathHelper.TwoPI;
-                }
-                steps = precision - 1;
-            }
-           
-            double delta = (end - start) / steps;
-
-            for (int i = 0; i < precision; i++)
-            {
-                double angle = start + delta * i;
-                double sinAlpha = Math.Sin(angle);
-                double cosAlpha = Math.Cos(angle);
-
-                double pointX = 0.5 * (this.majorAxis * cosAlpha * cosBeta - this.minorAxis * sinAlpha * sinBeta);
-                double pointY = 0.5 * (this.majorAxis * cosAlpha * sinBeta + this.minorAxis * sinAlpha * cosBeta);
-
-                points.Add(new Vector2(pointX, pointY));
-            }
-
-            return points;
+            return this.SampleEllipse(precision);
         }
 
         /// <summary>
