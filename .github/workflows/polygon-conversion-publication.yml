@@ -1,0 +1,56 @@
+name: Publish verified polygon mesh conversion task
+on:
+  push:
+    branches: [codex/polygon-conversion-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 4388e97de1ea9ec511c2901723d30af5e491044c
+      - name: Verify reviewed patch and complete source tree before clean publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '4388e97de1ea9ec511c2901723d30af5e491044c'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == 'eb3b1089176ec5ec656a326292351b17ec4083a1'
+          packed = b''.join(pathlib.Path('transport/.grid-transfer/part' + str(i)).read_bytes() for i in range(7))
+          assert hashlib.sha256(packed).hexdigest() == 'e42d3977d373ddd3f4b5eb85fae109c1b40d6e142e13bae739ce14103a4abebd'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == 'f0495091fd262884d0095399bf2b8989968f1e60b98738e073d452c38b148b7f'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == '63189769945b82ce7ed53ced5f865eae805d0760', tree
+          branch = 'codex/polygon-conversion-prepared-20260918'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          commit = git('commit-tree', tree, '-p', base, '-m', 'fix: preserve polygon mesh conversion density, closure and appearance')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          result = {'base': base, 'commit': commit, 'tree': tree, 'branch': branch}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'polygon-conversion.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polygon-conversion-publication
+          path: publication-receipt/
+          retention-days: 14
