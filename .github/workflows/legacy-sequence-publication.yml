@@ -1,0 +1,91 @@
+name: Publish verified C# legacy sequence audit
+on:
+  push:
+    branches: [codex/legacy-sequence-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 54a4f22b603e23c67a1b8df65314be33fed09d0f
+      - name: Verify reviewed patches and complete trees before publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import base64, gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          source = pathlib.Path('transport/.legacy-transfer')
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '54a4f22b603e23c67a1b8df65314be33fed09d0f'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '6887023c0f17e973ba96f78ddd9ccd1feb8b0299'
+          def blob(data):
+              return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+          # Correct two identified transport transcription substitutions. The
+          # exact uploaded bytes and corrected compressed/decoded hashes are
+          # independently pinned; no unverified prefix or source is applied.
+          uploaded = (source / 'affine-upload.gz').read_bytes()
+          assert blob(uploaded) == '20cda377bd89b6d899250ddc6820ca018dd3e177'
+          encoded = base64.b64encode(uploaded).decode('ascii')
+          for old, new in [('WpuKWYVyYWSr5', 'WpuKWIVyYWSr5'), ('oilgr5+eKWWq', 'oilgr5+zKWWq')]:
+              assert encoded.count(old) == 1
+              encoded = encoded.replace(old, new)
+          affine = base64.b64decode(encoded, validate=True)
+          part_hashes = ['c0eb9a14c2512ebc302c66289577b97ccc1618f5', '6be9fc1f7d41b34fdab141db40091f61fd431b49', '27df47e1ae85ac6d553cf0890df76f03b4b696cc', '81bc42b4a49edc9fafb2c761b4b265f885dde11e']
+          parts = []
+          for index, expected in enumerate(part_hashes):
+              data = (source / ('explosion-' + str(index) + '.txt')).read_bytes()
+              assert blob(data) == expected
+              parts.append(data)
+          packets = {
+              'constructor': (source / 'constructor.patch.gz').read_bytes(),
+              'affine': affine,
+              'explosion': base64.b64decode(b''.join(parts), validate=True),
+          }
+          stages = [
+              ('constructor', '9f920b855b9dec3ae27241910e4794329273587a4e7e506940824e95adda47ce', '84c21887c62d11283a91949621e36206a341ac06139f04d66296463d9cc9be0a', '96d44d93cbd464cc2ad50a510bfb18028deb853e', 'fix: enumerate polyface constructor inputs once and report correct arguments'),
+              ('affine', '78bf551401e0036ff459dc6af6701ff7c8fa6690998b91d177841889814a3467', '713212d535b8856f2743e0d3efac09fa9fbd4fda5063b01673c65ce7e718a80b', 'b08bc2359af05f4176dd2d619ebc0a4faf098308', 'fix: make legacy 3D polyline and polyface affine transforms atomic'),
+              ('explosion', 'c522c6b95e160fab5dad2c73cbd238cc9a0989679d6263dfc0a918b99d10dac6', '200bedead3a569776aefa4f8a22fdaad7241b3d8928e61f71bb8203def5ecfd6', 'c7493fdaf1b0a20317e632f32a5bc396e8ca0a01', 'fix: preserve 3D polyline explosion appearance without breaking HATCH geometry extraction'),
+          ]
+          published = []
+          parent = base
+          for key, packed_hash, patch_hash, expected_tree, message in stages:
+              branch = 'codex/legacy-sequence-prepared-' + key + '-20260918'
+              assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Branch already exists'
+              packed = packets[key]
+              assert hashlib.sha256(packed).hexdigest() == packed_hash, key + ' compressed mismatch'
+              patch = gzip.decompress(packed)
+              assert hashlib.sha256(patch).hexdigest() == patch_hash, key + ' patch mismatch'
+              git('apply', '--check', '-', data=patch)
+              git('apply', '--whitespace=nowarn', '-', data=patch)
+              git('add', '-A')
+              tree = git('write-tree')
+              assert tree == expected_tree, key + ' complete tree mismatch: ' + tree
+              commit = git('commit-tree', tree, '-p', parent, '-m', message)
+              published.append({'task': key, 'branch': branch, 'commit': commit, 'tree': tree, 'patch_sha256': patch_hash})
+              parent = commit
+          for stage in published:
+              git('push', 'origin', stage['commit'] + ':refs/heads/' + stage['branch'])
+          result = {'base': base, 'stages': published}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'legacy-sequence.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: legacy-sequence-publication
+          path: publication-receipt/
+          retention-days: 14
