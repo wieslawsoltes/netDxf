@@ -220,8 +220,12 @@ namespace netDxf.Entities
                             {
                                 Center = center,
                                 Radius = radius,
-                                StartAngle = startAngle,
-                                EndAngle = endAngle,
+                                // ArcFromBulge returns CCW geometric endpoint angles.
+                                // Clockwise HATCH edges store complementary angles in
+                                // traversal order; the orientation flag is mandatory.
+                                StartAngle = bulge > 0 ? startAngle : MathHelper.NormalizeAngle(360.0 - endAngle),
+                                EndAngle = bulge > 0 ? endAngle : MathHelper.NormalizeAngle(360.0 - startAngle),
+                                IsCounterclockwise = bulge > 0,
                             };
                             edges.Add(arc);
                         }
