@@ -1,0 +1,56 @@
+name: Publish verified polygon mesh affine task
+on:
+  push:
+    branches: [codex/polygon-affine-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 3ede87033b3b68603294b5bf0902670867ff6820
+      - name: Verify the reviewed patch and full source tree before clean publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '3ede87033b3b68603294b5bf0902670867ff6820'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '174fe48a7d485f71e43db3416665a7aeb1a61ff5'
+          packed = b''.join(pathlib.Path('transport/.polygon-affine-transfer/part' + str(i)).read_bytes() for i in range(7))
+          assert hashlib.sha256(packed).hexdigest() == 'a2193e0814f475d755cb3e0d302c531bdf15c82c83191a1c9fe212e7ea2dde0a'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == '4d47e0799d33b8df59facec64d2957c8174c19f7fa7e758225c0f1b331c564b1'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == '6887023c0f17e973ba96f78ddd9ccd1feb8b0299', tree
+          branch = 'codex/polygon-affine-prepared-20260918'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          commit = git('commit-tree', tree, '-p', base, '-m', 'fix: make polygon mesh affine transforms atomic and preserve exact control geometry')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          result = {'base': base, 'commit': commit, 'tree': tree, 'branch': branch}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'polygon-affine.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polygon-affine-publication
+          path: publication-receipt/
+          retention-days: 14
