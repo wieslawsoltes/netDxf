@@ -1084,33 +1084,7 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            for (int i = 0; i < this.controlPoints.Length; i++)
-            {
-                this.controlPoints[i] = transformation * this.controlPoints[i] + translation;
-            }
-
-            for (int i = 0; i < this.fitPoints.Length; i++)
-            {
-                this.fitPoints[i] = transformation * this.fitPoints[i] + translation;
-            }
-
-            // Tangents are WCS direction vectors: transform their magnitude and
-            // direction with the linear part only, never with the translation.
-            if (this.startTangent.HasValue)
-            {
-                this.startTangent = transformation * this.startTangent.Value;
-            }
-            if (this.endTangent.HasValue)
-            {
-                this.endTangent = transformation * this.endTangent.Value;
-            }
-
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-            this.Normal = newNormal;
+            this.TransformSplineAffine(transformation, translation);
         }
 
         /// <summary>

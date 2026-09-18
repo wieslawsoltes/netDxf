@@ -119,6 +119,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Spline-to-polyline fidelity](doc/dxf-conformance/spline-polyline-conversion.md) preserves ordinary appearance and XData in detached 2D/3D conversions, supports explicit projection-plane elevation, and bounds generated vertices. The existing sampler and its separate qualification limits remain unchanged.
 
+[Atomic SPLINE affine transforms](doc/dxf-conformance/spline-affine-atomic.md) preserve stored control/fit/tangent geometry without partial publication, reject projective input, and invalidate changed parent proxies. Exact cancellation and source identities are independently checked; native fitting and private-association regeneration remain separate.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
