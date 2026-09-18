@@ -97,6 +97,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Filename text preflight](doc/dxf-conformance/text-file-preflight.md) applies the text guard before conventional Save can truncate a destination or change the document path. This is a bounded refusal guarantee; SaveAtomic remains the API for general serialization-failure protection.
 
+[Exact matrix identity arithmetic](doc/dxf-conformance/matrix-identity-review.md) preserves small but real transform terms while retaining the public approximate identity query.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
