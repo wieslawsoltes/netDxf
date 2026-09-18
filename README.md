@@ -101,6 +101,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Scale-safe OCS frames](doc/dxf-conformance/arbitrary-axis-review.md) preserve real small tilts and normalize finite nonzero normals independently of the global epsilon.
 
+[Vector4 component fidelity](doc/dxf-conformance/vector4-components.md) restores four-component array export and correct W-axis distance arithmetic.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

@@ -302,7 +302,7 @@ namespace netDxf
         /// <returns>Square distance.</returns>
         public static double SquareDistance(Vector4 u, Vector4 v)
         {
-            return (u.X - v.X) * (u.X - v.X) + (u.Y - v.Y) * (u.Y - v.Y) + (u.Z - v.Z) * (u.Z - v.Z) + (u.W - v.Z) * (u.W - v.W);
+            return (u.X - v.X) * (u.X - v.X) + (u.Y - v.Y) * (u.Y - v.Y) + (u.Z - v.Z) * (u.Z - v.Z) + (u.W - v.W) * (u.W - v.W);
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace netDxf
         /// <returns>Array.</returns>
         public double[] ToArray()
         {
-            return new[] {this.x, this.y, this.z};
+            return new[] {this.x, this.y, this.z, this.w};
         }
 
         #endregion
