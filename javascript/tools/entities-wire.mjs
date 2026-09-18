@@ -3,6 +3,7 @@ import { mtextValueWire } from './mtext-wire.mjs';
 export function entityWire(value, wire) {
   if (value instanceof api.PolyfaceMeshFace) return {type:'PolyfaceMeshFace',indices:Array.from(value.VertexIndexes,wire),color:wire(value.Color),layer:wire(value.Layer)};
   if (value instanceof api.PolyfaceMeshRecord) return {type:'PolyfaceMeshRecord',code:value.CodeName,handle:value.Handle,face:wire(value.Face),isFace:value.IsFaceRecord,isEnd:value.IsSequenceEnd,version:value.SourceVersion,blockOwner:value.UsesBlockRecordOwner,layer:wire(value.Layer),linetype:wire(value.Linetype),canClone:value.CanClone(),tagCount:value.TopologyTagCount(),tags:Array.from(value.Tags,t=>({code:t.Code,value:wire(t.Value)})),xdata:Array.from(value.XData.Values,wire)};
+  if (value instanceof api.AcisSatChunk) return {type:'AcisSatChunk',code:value.GroupCode,text:value.Text};
   const mtextValue = mtextValueWire(value,wire); if (mtextValue !== undefined) return mtextValue;
   if (value instanceof api.MeshEdge) return {type:'MeshEdge',start:value.StartVertexIndex,end:value.EndVertexIndex,crease:wire(value.Crease)};
   if (value instanceof api.Polyline2DVertex) return {type:'Polyline2DVertex',position:wire(value.Position),bulge:wire(value.Bulge),
@@ -23,6 +24,7 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  if (value instanceof api.AcisEntity) return {common,version:value.ModelerFormatVersion,chunks:Array.from(value.EncodedSatChunks,wire),lines:Array.from(value.SatLines,wire),history:value instanceof api.Solid3D?value.HistoryHandle:null};
   if (value instanceof api.Light) return {common,name:wire(value.Name),version:value.VersionNumber,kind:value.LightType,on:value.IsOn,plot:value.PlotGlyph,intensity:wire(value.Intensity),position:wire(value.Position),target:wire(value.Target),attenuation:value.AttenuationType,limits:value.UseAttenuationLimits,start:wire(value.AttenuationStartLimit),end:wire(value.AttenuationEndLimit),hotspot:wire(value.HotspotAngle),falloff:wire(value.FalloffAngle),cast:value.CastShadows,shadow:value.ShadowType,map:value.ShadowMapSize,softness:value.ShadowMapSoftness};
   if (value instanceof api.PolyfaceMesh) return {common,vertices:Array.from(value.Vertexes,wire),faces:Array.from(value.Faces,wire),vertexRecords:Array.from(value.VertexRecords,wire),faceRecords:Array.from(value.FaceRecords,wire),sequence:Array.from(value.RecordSequence,wire),endRecord:wire(value.EndSequenceRecord),declaredVertices:wire(value.DeclaredVertexCount),declaredFaces:wire(value.DeclaredFaceCount)};
   if (value instanceof api.Image) return {common,definition:wire(value.Definition),position:wire(value.Position),u:wire(value.Uvector),v:wire(value.Vvector),

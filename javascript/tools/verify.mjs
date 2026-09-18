@@ -41,8 +41,8 @@ const specs={
   math:[`math-differential/${configuration}`,{equal:{'stats.comparisons':30904}}],
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
-  entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':3012,'stats.operations':19632}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:103826}}],
+  entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':3959,'stats.operations':23477}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:104773}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -56,7 +56,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.comparisons':1782}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:103826}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:104773}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));

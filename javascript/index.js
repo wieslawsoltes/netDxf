@@ -90,3 +90,8 @@ export { DxfSpatialFilter } from './netDxf/Objects/DxfSpatialFilter.js';
 
 export { Light, LightType, LightAttenuationType, LightShadowType } from './netDxf/Entities/Light.js';
 export { DxfLightList, DxfLightListEntry } from './netDxf/Objects/DxfLightList.js';
+export { AcisEntity } from './netDxf/Entities/AcisEntity.js';
+export { AcisSatChunk } from './netDxf/Entities/AcisSatChunk.js';
+export { Body } from './netDxf/Entities/Body.js';
+export { Region } from './netDxf/Entities/Region.js';
+export { Solid3D } from './netDxf/Entities/Solid3D.js';
