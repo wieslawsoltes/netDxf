@@ -79,3 +79,6 @@ export { DxfSun, DxfSunShadowType } from './netDxf/Objects/DxfSun.js';
 
 export { UCS } from './netDxf/Tables/UCS.js';
 export { UcsFlags } from './netDxf/Tables/UcsRelationships.js';
+export { View } from './netDxf/Tables/View.js';
+export { ViewUcs } from './netDxf/Tables/ViewUcs.js';
+export { VPort } from './netDxf/Tables/VPort.js';
