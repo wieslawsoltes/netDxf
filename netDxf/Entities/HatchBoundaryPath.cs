@@ -918,12 +918,17 @@ namespace netDxf.Entities
             {
                 throw new ArgumentNullException(nameof(edges));
             }
+            // Materialize once before classifying a lone polyline. Counting the
+            // caller sequence inside foreach breaks single-use iterators.
+            List<Edge> sourceEdges = new List<Edge>(edges);
+            foreach (Edge edge in sourceEdges)
+                if (edge == null) throw new ArgumentException("Boundary edge sequences cannot contain null elements.", nameof(edges));
             this.pathType = HatchBoundaryPathTypeFlags.Derived | HatchBoundaryPathTypeFlags.External;
             this.entities = new List<EntityObject>();
             this.edges = new List<Edge>();
-            foreach (Edge edge in edges)
+            foreach (Edge edge in sourceEdges)
             {
-                if (edges.Count() == 1 && edge.Type == EdgeType.Polyline)
+                if (sourceEdges.Count == 1 && edge.Type == EdgeType.Polyline)
                 {
                     this.pathType |= HatchBoundaryPathTypeFlags.Polyline;
                     this.edges.Add(edge);
