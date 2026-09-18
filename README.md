@@ -115,6 +115,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [3D polyline explosion](doc/dxf-conformance/polyline3d-explosion.md) preserves ordinary appearance and XData, handles detached blocks, and guards unsupported dependencies and generated segment allocations.
 
+[Polyline3D projection](doc/dxf-conformance/polyline-projection.md) preserves ordinary appearance, XData and closure in detached output, with explicit parallel-plane elevation and bounded sampling. The original overload retains zero-elevation projection.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
