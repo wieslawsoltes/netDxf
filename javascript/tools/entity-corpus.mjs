@@ -1,3 +1,4 @@
+import { polyfaceCorpus } from './polyface-corpus.mjs';
 import { rasterCorpus } from './raster-corpus.mjs';
 // Independent-oracle inputs only: neither production algorithms nor expected values.
 import { underlayCorpus } from './underlay-corpus.mjs';
@@ -75,5 +76,5 @@ export function entityCorpus() {
    const name=names[i%names.length],numbers=Array.from({length:9},()=>((next()%17)-8)/4),position=Array.from({length:3},()=>((next()%33)-16)/8);
    add(`seeded/${name}/${i}`,'seeded-transforms',[N(name,constructors(name).at(-1)),C('p','TransformBy',[mat(...numbers),vector(position)],null,['Matrix3','Vector3']),snap('p')]);
  }
- return probes.concat(displayEntityCorpus(),mtextCorpus(),underlayCorpus(),rasterCorpus());
+ return probes.concat(displayEntityCorpus(),mtextCorpus(),underlayCorpus(),rasterCorpus(),polyfaceCorpus());
 }

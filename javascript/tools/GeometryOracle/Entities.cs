@@ -8,6 +8,13 @@ internal static partial class Program
     private static bool EntityWire(object value, out object? result)
     {
         result = null;
+        if (value is PolyfaceMeshFace pf) { result=new {type="PolyfaceMeshFace",indices=pf.VertexIndexes.Select(v=>Wire(v)).ToArray(),color=Wire(pf.Color),layer=Wire(pf.Layer)};return true; }
+        if(value is PolyfaceMeshRecord pr) {
+            result=new {type="PolyfaceMeshRecord",code=pr.CodeName,handle=pr.Handle,face=Wire(pr.Face),isFace=pr.IsFaceRecord,isEnd=pr.IsSequenceEnd,version=(int)pr.SourceVersion,blockOwner=pr.UsesBlockRecordOwner,layer=Wire(pr.Layer),linetype=Wire(pr.Linetype),
+                canClone=pr.GetType().GetMethod("CanClone",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.Invoke(pr,null),
+                tagCount=pr.GetType().GetMethod("TopologyTagCount",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.Invoke(pr,null),
+                tags=((System.Collections.Generic.List<netDxf.IO.DxfTag>)pr.GetType().GetField("Tags",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.GetValue(pr)!).Select(t=>new {code=t.Code,value=Wire(t.Value)}).ToArray(),xdata=pr.XData.Values.Select(Wire).ToArray()};return true;
+        }
         if (MTextValueWire(value,out result)) return true;
         if (value is MeshEdge edge) { result=new {type="MeshEdge",start=edge.StartVertexIndex,end=edge.EndVertexIndex,crease=Wire(edge.Crease)};return true; }
         if (value is Polyline2DVertex vertex) {
@@ -37,7 +44,8 @@ internal static partial class Program
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
-        if(entity is Image image) result=new {common,definition=Wire(image.Definition),position=Wire(image.Position),u=Wire(image.Uvector),v=Wire(image.Vvector),
+        if(entity is PolyfaceMesh meshFace) result=new {common,vertices=meshFace.Vertexes.Select(v=>Wire(v)).ToArray(),faces=meshFace.Faces.Select(Wire).ToArray(),vertexRecords=meshFace.VertexRecords.Select(Wire).ToArray(),faceRecords=meshFace.FaceRecords.Select(Wire).ToArray(),sequence=meshFace.RecordSequence.Select(Wire).ToArray(),endRecord=Wire(meshFace.EndSequenceRecord),declaredVertices=Wire(meshFace.DeclaredVertexCount),declaredFaces=Wire(meshFace.DeclaredFaceCount)};
+        else if(entity is Image image) result=new {common,definition=Wire(image.Definition),position=Wire(image.Position),u=Wire(image.Uvector),v=Wire(image.Vvector),
             width=Wire(image.Width),height=Wire(image.Height),rotation=Wire(image.Rotation),clipping=image.Clipping,brightness=image.Brightness,contrast=image.Contrast,fade=image.Fade,display=(int)image.DisplayOptions,boundary=Wire(image.ClippingBoundary)};
         else if(entity is Wipeout wipeout) result=new {common,elevation=Wire(wipeout.Elevation),boundary=Wire(wipeout.ClippingBoundary)};
         else if (entity is Underlay underlay) result=new {common,definition=Wire(underlay.Definition),position=Wire(underlay.Position),scale=Wire(underlay.Scale),rotation=Wire(underlay.Rotation),

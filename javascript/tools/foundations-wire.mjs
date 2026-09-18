@@ -1,14 +1,17 @@
+import { databaseModelWire } from './database-model-wire.mjs';
+import { BoxedScalar } from '../runtime/BoxedScalar.js';
+import { ReferenceList } from '../runtime/ReferenceList.js';
 // Shared Node/browser operation interpreter; production implementations provide all behavior.
 import * as api from '../index.js';
 import { utf16Wire } from './mtext-wire.mjs';
 import { entityWire } from './entities-wire.mjs';
 import { styleWire, shapeInput } from './styles-wire.mjs';
-import { InvalidOperationException } from '../runtime/Errors.js';
+import { InvalidOperationException, KeyNotFoundException } from '../runtime/Errors.js';
 import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
 
-const resolve = name => api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects)\./, '')];
+const resolve = name => name.startsWith('List<') ? ReferenceList : api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|IO)\./, '')];
 function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };
@@ -40,8 +43,11 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const model=databaseModelWire(value,wire); if(model!==undefined)return model;
   const entity=entityWire(value,wire); if(entity!==undefined)return entity;
   const style=styleWire(value,wire); if(style!==undefined)return style;
+  if(value instanceof Map)return Array.from(value,([key,item])=>[wire(key),wire(item)]);
+  if(value instanceof api.DxfTag)return {code:value.Code,value:wire(value.Value)};
   if (typeof value[Symbol.iterator] === 'function') return Array.from(value, wire);
   throw new Error('Unmapped geometry result: ' + type);
 }
@@ -52,9 +58,12 @@ export function jsGeometry(input) {
   const observers=new Map(), observations=[];
   function read(value) {
     if (value == null || typeof value !== 'object') return value;
+    if ('resolver' in value) { const map=new Map(value.resolver.map(([a,b])=>[read(a),read(b)])); return item=>{if(!map.has(item))throw new KeyNotFoundException();return map.get(item);}; }
+    if ('copy' in value) return Copy(read(value.copy));
     if ('utf16' in value) return value.utf16.map(n=>String.fromCharCode(n)).join('');
     if ('ref' in value) { if(!values.has(value.ref)) throw new Error('Missing scenario reference: '+value.ref); return values.get(value.ref); }
     if ('double' in value) return fromBits(value.double);
+    if ('long' in value) return BigInt(value.long);
     if ('int' in value) return value.int;
     if ('short' in value) return value.short;
     if ('byte' in value) return value.byte;
@@ -64,7 +73,10 @@ export function jsGeometry(input) {
       if (value.culture !== '') throw new Error('This geometry verifier currently uses only the explicit invariant provider.');
       return null;
     }
-    if ('array' in value) return value.array === 'Byte' ? Uint8Array.from(value.values.map(read)) : value.values.map(read);
+    if ('array' in value) return value.array === 'Byte' ? Uint8Array.from(value.values.map(read)) : value.array === 'Object' ? value.values.map(item => {
+      const boxed = item && typeof item === 'object' && ['int','short','byte','double'].find(key=>key in item);
+      return boxed ? new BoxedScalar({int:'Int32',short:'Int16',byte:'Byte',double:'Double'}[boxed],read(item)) : read(item);
+    }) : value.values.map(read);
     if ('new' in value) return construct(resolve(value.new),(value.args ?? []).map(read),value.signature);
     if ('static' in value) return resolve(value.static)[value.property];
     throw new Error('Unknown value descriptor.');
@@ -116,6 +128,7 @@ export function jsGeometry(input) {
         case 'pat-names': result = api.HatchPattern.NamesFromText(step.text); break;
         case 'pat-load': result = api.HatchPattern.LoadText(step.text, step.patternName); break;
         case 'pat-save': result = target.ToPatString(step.newLine ?? '\n'); break;
+        case 'map-add': target.set(args[0],args[1]);break;
         case 'new': result = construct(type,args,step.signature); break;
         case 'get': result = (target ?? type)[step.member]; break;
         case 'set': (target ?? type)[step.member] = read(step.value); break;

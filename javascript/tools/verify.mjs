@@ -37,11 +37,12 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  databaseModels:[`database-model-differential/${configuration}`,{equal:{'stats.scenarios':530,'stats.operations':2477}}],
   math:[`math-differential/${configuration}`,{equal:{'stats.comparisons':30904}}],
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
-  entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':2429,'stats.operations':16241}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:102394}}],
+  entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':2704,'stats.operations':17240}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:103199}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -55,7 +56,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{equal:{'stats.sourceFixtures':399},minimum:{'stats.comparisons':1782}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:102394}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:103199}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));
@@ -81,7 +82,7 @@ const report={schemaVersion:2,sourceRef:baseline.ref,sourceFingerprint:baseline.
   missingTestFiles:inventory?missingTests:null,
   remainingGates:['Complete typed DxfDocument, entity/table ownership, typed IO and remaining public APIs',
     'Every original test identity, method and example ported and independently qualified',
-    'Exact numerical qualification: stateful foundations and randomized geometry remain blocking',
+    'Exact numerical qualification across all admitted runtime configurations and platforms',
     'All filesystem platforms, metadata/locking guarantees, browser hosts and performance acceptance',
     'Exhaustive public member/signature and behavioral audit; file presence is not this audit'],
 };

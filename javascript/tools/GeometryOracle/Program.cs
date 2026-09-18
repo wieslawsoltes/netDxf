@@ -24,6 +24,7 @@ internal static partial class Program
     {
         if (name.EndsWith("&")) return Resolve(name[..^1]).MakeByRefType();
         if (name.EndsWith("[]")) return Resolve(name[..^2]).MakeArrayType();
+        if (name.StartsWith("List<")) return typeof(List<>).MakeGenericType(Resolve(name[5..^1]));
         if (name.StartsWith("IEnumerable<")) return typeof(IEnumerable<>).MakeGenericType(Resolve(name[12..^1]));
         return name switch {
             "Double" => typeof(double), "Int32" => typeof(int), "Int16" => typeof(short), "Byte" => typeof(byte),
@@ -40,8 +41,15 @@ internal static partial class Program
         if (v.ValueKind == JsonValueKind.String) return v.GetString();
         if (v.ValueKind == JsonValueKind.True || v.ValueKind == JsonValueKind.False) return v.GetBoolean();
         if (v.TryGetProperty("utf16", out var chars)) return new string(chars.EnumerateArray().Select(x=>(char)x.GetUInt16()).ToArray());
+        if (v.TryGetProperty("resolver", out var mappings)) {
+            var map=new Dictionary<DxfObject,DxfObject>();
+            foreach(var pair in mappings.EnumerateArray())map.Add((DxfObject)Read(pair[0])!,(DxfObject)Read(pair[1])!);
+            return new Func<DxfObject,DxfObject>(item=>map[item]);
+        }
+        if (v.TryGetProperty("copy", out var copied)) return RuntimeHelpers.GetObjectValue(Read(copied)!);
         if (v.TryGetProperty("ref", out var id)) return Values[id.GetString()!];
         if (v.TryGetProperty("double", out var bits)) return FromBits(bits.GetString()!);
+        if (v.TryGetProperty("long", out var lng)) return long.Parse(lng.GetString()!,CultureInfo.InvariantCulture);
         if (v.TryGetProperty("int", out var i)) return i.GetInt32();
         if (v.TryGetProperty("short", out var s)) return s.GetInt16();
         if (v.TryGetProperty("byte", out var b)) return b.GetByte();
@@ -74,10 +82,11 @@ internal static partial class Program
         }
         return true;
     }
-    private static object? Create(Type type, object?[] args, Type[]? signature)
+    private static object? Create(Type type, object?[] args, Type[]? signature, bool nonPublic = false)
     {
         if (args.Length==0 && type.IsValueType) return Activator.CreateInstance(type);
-        var constructor = signature is null ? type.GetConstructors().Single(c=>Matches(c.GetParameters(),args)) : type.GetConstructor(signature);
+        var flags = BindingFlags.Public|BindingFlags.Instance|(nonPublic ? BindingFlags.NonPublic : 0);
+        var constructor = signature is null ? type.GetConstructors(flags).Single(c=>Matches(c.GetParameters(),args)) : type.GetConstructor(flags,null,signature,null);
         return (constructor ?? throw new MissingMethodException(type.Name)).Invoke(args);
     }
     private static object? Wire(object? value)
@@ -117,9 +126,12 @@ internal static partial class Program
         if(value is DxfClass definition) return new {type="DxfClass",name=definition.Name,cpp=definition.CppClassName,application=definition.ApplicationName,flags=definition.ProxyFlags,count=definition.InstanceCount,wasProxy=definition.WasProxy,entity=definition.IsEntity};
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
+        if (DatabaseModelWire(value, out var modelValue)) return modelValue;
         if (EntityWire(value, out var entityValue)) return entityValue;
         if (StyleWire(value, out var styleValue)) return styleValue;
         if (value is ITuple tuple) return Enumerable.Range(0,tuple.Length).Select(i=>Wire(tuple[i])).ToArray();
+        if (value is IDictionary dict) return dict.Keys.Cast<object>().Select(k=>new[]{Wire(k),Wire(dict[k])}).ToArray();
+        if (value is netDxf.IO.DxfTag tag) return new {code=tag.Code,value=Wire(tag.Value)};
         if (value is IEnumerable list) return list.Cast<object?>().Select(Wire).ToArray();
         throw new ArgumentException("Unmapped result type " + value.GetType().FullName);
     }
@@ -152,7 +164,7 @@ internal static partial class Program
             case "observe": case "unobserve": result=ObservationStep(step,target);break;
             case "reference-equals": result=ReferenceEquals(args[0],args[1]);break;
             case "pat-names": case "pat-load": case "pat-save": result=PatternTextStep(step,target);break;
-            case "new": result=Create(type!,args,Signature(step));break;
+            case "new": result=Create(type!,args,Signature(step),step.TryGetProperty("nonPublic",out var ctorHidden)&&ctorHidden.GetBoolean());break;
             case "get": {
                 var flags=BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static;
                 if(step.TryGetProperty("nonPublic",out var hidden)&&hidden.GetBoolean())flags|=BindingFlags.NonPublic;
@@ -160,9 +172,18 @@ internal static partial class Program
                 if(property is null && field is null)throw new MissingMemberException(type.Name,member);
                 result=property is not null?property.GetValue(target):field!.GetValue(target);break;
             }
-            case "set": type!.GetProperty(member)!.SetValue(target,Read(step.GetProperty("value"))); result=null;break;
-            case "index": result=type!.GetProperty("Item",Signature(step) ?? args.Select(a=>a!.GetType()).ToArray())!.GetValue(target,args);break;
-            case "set-index": type!.GetProperty("Item",Signature(step) ?? args.Select(a=>a!.GetType()).ToArray())!.SetValue(target,Read(step.GetProperty("value")),args);result=null;break;
+            case "map-add": ((IDictionary)target!).Add(args[0]!,args[1]);result=null;break;
+            case "set": {
+                var flags=BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static;
+                if(step.TryGetProperty("nonPublic",out var setterHidden)&&setterHidden.GetBoolean())flags|=BindingFlags.NonPublic;
+                var property=type!.GetProperty(member,flags);var field=type.GetField(member,flags);
+                if(property is not null)property.SetValue(target,Read(step.GetProperty("value")));
+                else if(field is not null)field.SetValue(target,Read(step.GetProperty("value")));
+                else throw new MissingMemberException(type.Name,member);
+                result=null;break;
+            }
+            case "index": if(target is Array array){result=array.GetValue((int)args[0]!);break;} result=type!.GetProperty("Item",Signature(step) ?? args.Select(a=>a!.GetType()).ToArray())!.GetValue(target,args);break;
+            case "set-index": if(target is Array indexedArray){indexedArray.SetValue(Read(step.GetProperty("value")),(int)args[0]!);result=null;break;} type!.GetProperty("Item",Signature(step) ?? args.Select(a=>a!.GetType()).ToArray())!.SetValue(target,Read(step.GetProperty("value")),args);result=null;break;
             case "snapshot": result=target;break;
             case "call": {
                 var sig=Signature(step);

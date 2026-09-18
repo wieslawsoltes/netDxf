@@ -67,3 +67,12 @@ export { ImageDefinition } from './netDxf/Objects/ImageDefinition.js';
 export { ImageDefinitionReactor } from './netDxf/Objects/ImageDefinitionReactor.js';
 export { Image } from './netDxf/Entities/Image.js';
 export { Wipeout } from './netDxf/Entities/Wipeout.js';
+
+export { PolyfaceMeshFace } from './netDxf/Entities/PolyfaceMeshFace.js';
+export { PolyfaceMesh } from './netDxf/Entities/PolyfaceMesh.js';
+export { PolyfaceMeshRecord } from './netDxf/Entities/PolyfaceMeshRecord.js';
+export { DxfDatabaseObject, DxfDictionaryEntry, DxfDictionary, DxfDictionaryWithDefault, DxfXRecord, DxfDictionaryVariable, DxfPlaceholder } from './netDxf/Objects/DxfDatabaseObject.js';
+export { DxfOpaqueObject } from './netDxf/Objects/DxfOpaqueObject.js';
+export { DxfObjectPointer } from './netDxf/Objects/DxfObjectPointer.js';
+export { DxfDataCellType, DxfDataColumn, DxfDataTable } from './netDxf/Objects/DxfDataTable.js';
+export { DxfSun, DxfSunShadowType } from './netDxf/Objects/DxfSun.js';
