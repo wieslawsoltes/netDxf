@@ -1,0 +1,83 @@
+name: Publish reviewed spline conversion source
+on:
+  push:
+    branches: [codex/spline-conversion-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: ad5075e1733463aa1e13b0b8f8dda1d81aad6075
+      - name: Verify reviewed source and publish clean child
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args):
+              return subprocess.check_output(['git', *args], cwd=work).decode().strip()
+          base = 'ad5075e1733463aa1e13b0b8f8dda1d81aad6075'
+          branch = 'codex/spline-conversion-prepared-20260918'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == 'fbca3c5e1978ed03082ac9640ee37df787366aa6'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          files = {
+              'netDxf/Entities/Spline.PolylineConversion.cs': '7e295b5ebfb777c12f3dc7d8955bddb972f7736c',
+              'tests/netDxf.Conformance/SplinePolylineConversionTests.cs': 'e460af18459dd934a5840ea811f42796c2804924',
+              'tools/verify_spline_polyline_conversion.py': '3a0e14a022c9f552612966a91719045ccee7ac04',
+              'doc/dxf-conformance/spline-polyline-conversion.md': '34830d402aca028fc11cf413c4be52ccdf586bbb',
+          }
+          for name, expected in files.items():
+              data = pathlib.Path('transport/.spline-transfer', name).read_bytes()
+              assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == expected
+              target = work / name
+              assert not target.exists()
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_bytes(data)
+          p = work / 'netDxf/Entities/Spline.cs'; b = p.read_bytes()
+          assert b.count(b'    public class Spline :') == 1
+          b = b.replace(b'    public class Spline :', b'    public partial class Spline :', 1)
+          for old, replacement in [
+              (b'        public Polyline3D ToPolyline3D(int precision)', b'        public Polyline3D ToPolyline3D(int precision)\r\n        {\r\n            return this.ConvertToPolyline3D(precision);\r\n        }\r\n\r\n'),
+              (b'        public Polyline2D ToPolyline2D(int precision)', b'        public Polyline2D ToPolyline2D(int precision)\r\n        {\r\n            return this.ToPolyline2D(precision, 0.0);\r\n        }\r\n\r\n'),
+          ]:
+              assert b.count(old) == 1
+              a = b.index(old); z = b.index(b'        /// <summary>', a)
+              b = b[:a] + replacement + b[z:]
+          old = b'The resulting polyline will be a projection of the actual spline into the plane defined by its normal vector.'
+          assert b.count(old) == 1
+          b = b.replace(old, b'The result is projected onto the zero-elevation object XY plane defined by the normal.\r\n        /// Use ToPolyline2D(int, double) to select an explicit parallel plane.\r\n        /// Converted output has independently copied ordinary appearance and XData; unsupported dependencies reject.')
+          p.write_bytes(b)
+          p = work / 'tests/netDxf.Conformance/Program.cs'; b = p.read_bytes()
+          old = b'        RegisterPolylineProjectionTests();'; assert b.count(old) == 1
+          p.write_bytes(b.replace(old, old + b'\n        RegisterSplinePolylineConversionTests();'))
+          p = work / 'README.md'; s = p.read_text(); old = '## Samples and Demos'; assert s.count(old) == 1
+          s = s.replace(old, '[Spline-to-polyline fidelity](doc/dxf-conformance/spline-polyline-conversion.md) preserves ordinary appearance and XData in detached 2D/3D conversions, supports explicit projection-plane elevation, and bounds generated vertices. The existing sampler and its separate qualification limits remain unchanged.\n\n' + old)
+          p.write_text(s)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == '67aea285dac22f52d8c8656b204efa56eb7a1005', tree
+          commit = git('commit-tree', tree, '-p', base, '-m', 'fix: preserve spline conversion metadata and explicit projection planes')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          result = {'base': base, 'commit': commit, 'tree': tree, 'branch': branch}
+          (output / 'spline-conversion.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spline-conversion-publication-receipt
+          path: publication-receipt/
+          retention-days: 14
