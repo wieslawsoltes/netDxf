@@ -1,0 +1,65 @@
+name: Materialize verified HATCH input and traversal tasks
+on:
+  push:
+    branches: [codex/hatch-review-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 7165ad39cdf238d9848b8adcbe62d0cfa5a02a4e
+      - name: Verify both task trees before atomic clean-branch publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import base64, gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          source = pathlib.Path('transport/.hatch-review-transfer')
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '7165ad39cdf238d9848b8adcbe62d0cfa5a02a4e'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '33099a1d75cd8a6f843643b55c14964ef1e385c2'
+          stages = [
+              ('input', 3, '390e1387048a087171c314c145d50400af3cc232dafae5cb6367f670c1b2c07d', '0100319b3b671291ee4f1efb8d8ae5661c1d6ae59c3ddc09397165dc765e225b', '0e845f03192f9f93a1237e0f3ef858345ca36a38', 'fix: consume HATCH boundary edge sequences exactly once'),
+              ('bulge', 4, '2152b49b49cf07e16f59b6f89145358441b3d2bc6630e913c7322985521aa4d3', 'a69d703389d55851a7745d3a9801d6fb729fe74dd4efcec699ce0f5ad446a7e5', '94c5d0bc303f0a6e9313a39d7281e70eed9bc80c', 'fix: preserve bulge traversal in exploded HATCH arc boundaries'),
+          ]
+          parent = base; receipts = []; refs = []
+          for name, parts, compressed_hash, patch_hash, expected_tree, message in stages:
+              branch = 'codex/hatch-review-prepared-' + name + '-20260918'
+              assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch), 'Destination exists'
+              packed = base64.b64decode(b''.join((source / name / ('part' + str(i))).read_bytes() for i in range(parts)), validate=True)
+              assert hashlib.sha256(packed).hexdigest() == compressed_hash, name
+              patch = gzip.decompress(packed)
+              assert hashlib.sha256(patch).hexdigest() == patch_hash, name
+              git('apply', '--check', '-', data=patch)
+              git('apply', '--whitespace=nowarn', '-', data=patch)
+              git('add', '-A')
+              tree = git('write-tree')
+              assert tree == expected_tree, (name, tree)
+              git('-c', 'core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol', 'diff', '--cached', '--check')
+              commit = git('commit-tree', tree, '-p', parent, '-m', message)
+              receipts.append({'task': name, 'parent': parent, 'branch': branch, 'commit': commit, 'tree': tree, 'patch_sha256': patch_hash})
+              refs.append(commit + ':refs/heads/' + branch); parent = commit
+          git('push', '--atomic', 'origin', *refs)
+          out = pathlib.Path('publication-receipt'); out.mkdir()
+          (out / 'hatch-tasks.json').write_text(json.dumps(receipts, indent=2) + '\n')
+          print(json.dumps(receipts, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hatch-task-publication
+          path: publication-receipt/
+          retention-days: 14
