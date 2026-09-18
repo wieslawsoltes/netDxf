@@ -1,0 +1,62 @@
+name: Recover exact saved C# text commits
+on:
+  push:
+    branches: [codex/text-handoff-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 9f302ed680cb3dba682b6d12d52d321d0109a139
+      - name: Verify every saved tree and original commit before publication
+        shell: python
+        run: |
+          import hashlib, io, json, lzma, pathlib, subprocess, tarfile
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '9f302ed680cb3dba682b6d12d52d321d0109a139'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '6c17b36eae19af8ab6d1dffd0fdea1a38c45af0c'
+          git('config', 'core.autocrlf', 'false')
+          packed = b''.join(pathlib.Path('transport/.text-handoff/' + str(i) + '.bin').read_bytes() for i in range(3))
+          assert hashlib.sha256(packed).hexdigest() == '92474a117dbc39325b82257997470268ee3f44e6c9a6e074ab8f00e8a51bde77'
+          archive = tarfile.open(fileobj=io.BytesIO(lzma.decompress(packed)))
+          assert set(archive.getnames()) == {str(i) + ext for i in range(1, 5) for ext in ['.patch', '.commit']}
+          stages = [
+              ('4de3039738f9b3aacbaab0db0305e4ba6b23f623', '0280a1e30be589bca8c40ef0385d6e12f2751a01'),
+              ('d51f3d15740f1eb2a5b33b7406a7a190d9a8168d', 'ce5a48eff7ccff161a02ae4b4bde78419bf19ec6'),
+              ('76cfe529216948422b5797f26e36bae59cf2b0ad', 'f06805c2d7c27674ad4d64fda16446d513e4b2dd'),
+              ('6ccce8a51f1cfebc241ea40d5bba56273f8e2f1f', '550479833498910737c22d13605aadcd1a56c042'),
+          ]
+          refs = []
+          parent = base
+          for i, (sha, expected_tree) in enumerate(stages, 1):
+              patch = archive.extractfile(str(i) + '.patch').read()
+              git('apply', '--index', '--check', '-', data=patch)
+              git('apply', '--index', '--whitespace=nowarn', '-', data=patch)
+              assert git('write-tree') == expected_tree
+              raw = archive.extractfile(str(i) + '.commit').read()
+              assert raw.startswith(('tree ' + expected_tree + '\nparent ' + parent + '\n').encode())
+              assert git('hash-object', '-t', 'commit', '-w', '--stdin', data=raw) == sha
+              branch = 'refs/heads/codex/text-handoff-recovered-' + str(i) + '-20260918'
+              assert not git('ls-remote', '--heads', 'origin', branch), branch
+              refs.append(sha + ':' + branch)
+              parent = sha
+          git('push', '--atomic', 'origin', *refs)
+          pathlib.Path('receipt.json').write_text(json.dumps({'base': base, 'stages': stages, 'refs': refs}, indent=2) + '\n')
+          print(pathlib.Path('receipt.json').read_text())
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exact-saved-text-commits
+          path: receipt.json
+          retention-days: 14
