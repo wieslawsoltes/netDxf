@@ -1,0 +1,66 @@
+name: Publish verified C# numerical and OCS task source
+on:
+  push:
+    branches: [codex/numerical-source-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: b400230fb81ffefc860201f7d9af38667eecd68b
+      - name: Verify each task patch and complete tree before clean publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import hashlib, io, json, lzma, pathlib, subprocess, tarfile
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = 'b400230fb81ffefc860201f7d9af38667eecd68b'
+          assert git('rev-parse','HEAD') == base
+          assert git('rev-parse','HEAD^{tree}') == '2a0c982a08f24eb77289c147f3e2979d33c1a529'
+          git('config','core.autocrlf','false')
+          packed = b''.join(pathlib.Path('transport/.numerical-transfer/' + str(i) + '.bin').read_bytes() for i in range(4))
+          assert hashlib.sha256(packed).hexdigest() == '7b242a46fc0254870361fb445290b811180ce27fe29aed4cda68bd0396a7c92c'
+          archive = tarfile.open(fileobj=io.BytesIO(lzma.decompress(packed)))
+          assert set(archive.getnames()) == {'1.patch','2.patch','3.patch'}
+          stages = [
+              ('matrix','3095bf342efed6065856eca82b81e7d1c8813731','2df6d9f2bb82802c46d60d1adac51ceee04417b35336112fe6062a62935e6040','fix: preserve real matrix terms with exact identity arithmetic'),
+              ('ocs','29e35ffcc2e20b4fb908fd216a6765e3835f8f96','8e35394d06cd13354431746996cf231e4cc98da02e495a74030268740612b7d3','fix: preserve finite OCS normals and real small axis tilts'),
+              ('vector4','57a5c68b76d6fdfc485aba92aa03b15e3ccfa9f3','9eb031f062ac4504acdcd4a399191a5af992f6253c2375e52d1031f7b1b9c38a','fix: retain Vector4 W components in export and distance calculations')
+          ]
+          parent = base; refs = []; result = []
+          for i,(name,expected,digest,message) in enumerate(stages,1):
+              patch = archive.extractfile(str(i) + '.patch').read()
+              assert hashlib.sha256(patch).hexdigest() == digest
+              git('apply','--index','--check','-',data=patch)
+              git('apply','--index','--whitespace=nowarn','-',data=patch)
+              tree = git('write-tree'); assert tree == expected,(name,tree)
+              git('-c','core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol','diff','--cached','--check')
+              sha = git('commit-tree',tree,'-p',parent,'-m',message)
+              ref = 'refs/heads/codex/numerical-prepared-' + name + '-20260918'
+              assert not git('ls-remote','--heads','origin',ref)
+              refs.append(sha + ':' + ref)
+              result.append({'task':name,'parent':parent,'head':sha,'tree':tree,'patch_sha256':digest})
+              parent = sha
+          git('push','--atomic','origin',*refs)
+          pathlib.Path('publication.json').write_text(json.dumps(result,indent=2) + '\n')
+          print(pathlib.Path('publication.json').read_text())
+      - uses: actions/upload-artifact@v4
+        with:
+          name: numerical-task-publication
+          path: publication.json
+          retention-days: 14
