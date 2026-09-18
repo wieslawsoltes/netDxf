@@ -1,0 +1,42 @@
+name: Retain C# mesh task review history
+on:
+  push:
+    branches: [codex/csharp-source-review-20260918]
+permissions:
+  contents: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 8eb5b2ab331f006245ae556dd7cbc85d2bfa0814
+          fetch-depth: 4
+          persist-credentials: false
+      - name: Verify original heads and retain incremental bundle
+        shell: python
+        run: |
+          import hashlib, json, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args]).decode().strip()
+          base = '9f302ed680cb3dba682b6d12d52d321d0109a139'
+          stages = [('c0297d9e390a2760544a976251008bf97ae253ac','55ea5f8ea96de05651b6f83a547b86a19278fe97'),('a8780fe6b5e0ba34e5c2ba6335597f11606a84a9','ad44e71a3a86ae14d51baee4d27b83b027653d24'),('8eb5b2ab331f006245ae556dd7cbc85d2bfa0814','bc8f1830516b3d8448f2e03cb10a547cd6625302')]
+          refs = []
+          parent = base
+          for i, (sha, tree) in enumerate(stages, 113):
+              assert git('rev-parse', sha + '^{tree}') == tree
+              assert git('rev-parse', sha + '^') == parent
+              ref = 'refs/heads/review-pr-' + str(i)
+              git('update-ref', ref, sha); refs.append(ref); parent = sha
+          pathlib.Path('review').mkdir()
+          git('bundle', 'create', 'review/mesh-tasks.bundle', *refs, '^' + base)
+          target = pathlib.Path('review/mesh-tasks.bundle')
+          receipt = {'base': base, 'stages': stages, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest()}
+          pathlib.Path('review/receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mesh-task-source-history
+          path: review/
+          retention-days: 7
