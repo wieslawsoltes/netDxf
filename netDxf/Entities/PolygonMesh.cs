@@ -232,8 +232,8 @@ namespace netDxf.Entities
             get { return this.smoothType; }
             set
             {
-                if (value != PolylineSmoothType.NoSmooth && value != PolylineSmoothType.Quadratic && value != PolylineSmoothType.Cubic)
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "The polygon mesh surface type must be NoSmooth, Quadratic, or Cubic.");
+                if (value != PolylineSmoothType.NoSmooth && value != PolylineSmoothType.Quadratic && value != PolylineSmoothType.Cubic && value != PolylineSmoothType.BezierSurface)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "The polygon mesh surface type must be NoSmooth, Quadratic, Cubic, or BezierSurface.");
                 if (value == PolylineSmoothType.NoSmooth)
                 {
                     this.flags &= ~PolylineTypeFlags.SplineFit;
@@ -303,10 +303,12 @@ namespace netDxf.Entities
         internal void ValidateSurface()
         {
             int degree = this.smoothType == PolylineSmoothType.Quadratic ? 2 : this.smoothType == PolylineSmoothType.Cubic ? 3 : 0;
-            if (degree == 0 && this.smoothType != PolylineSmoothType.NoSmooth)
+            if (degree == 0 && this.smoothType != PolylineSmoothType.NoSmooth && this.smoothType != PolylineSmoothType.BezierSurface)
                 throw new InvalidOperationException("POLYGONMESH group 75 has an unsupported surface type.");
             if (degree != 0 && (this.u < degree + (this.IsClosedInU ? 0 : 1) || this.v < degree + (this.IsClosedInV ? 0 : 1)))
                 throw new InvalidOperationException("POLYGONMESH groups 71/72 have too few control vertices for the surface degree and closure.");
+            if (this.smoothType == PolylineSmoothType.BezierSurface && (this.IsClosedInU || this.IsClosedInV))
+                throw new NotSupportedException("Closed Bezier polygon mesh evaluation requires explicit closure semantics.");
             foreach (Vector3 vertex in this.vertexes)
                 if (double.IsNaN(vertex.X) || double.IsInfinity(vertex.X) || double.IsNaN(vertex.Y) || double.IsInfinity(vertex.Y) ||
                     double.IsNaN(vertex.Z) || double.IsInfinity(vertex.Z))
@@ -350,6 +352,8 @@ namespace netDxf.Entities
             this.ValidateSurface();
             if (this.smoothType != PolylineSmoothType.NoSmooth && (long)precisionU * precisionV > MaximumSurfaceSamples)
                 throw new ArgumentOutOfRangeException(nameof(precisionU), "The surface sampling grid exceeds MaximumSurfaceSamples.");
+            if (this.smoothType == PolylineSmoothType.BezierSurface)
+                return this.BezierMeshVertexes(precisionU, precisionV);
             int degree;
             if (this.smoothType == PolylineSmoothType.Quadratic)
             {

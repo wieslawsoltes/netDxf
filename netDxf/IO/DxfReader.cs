@@ -8463,7 +8463,8 @@ namespace netDxf.IO
             bool fitted = polyline.Flags.HasFlag(PolylineTypeFlags.SplineFit);
             if (polyline.SmoothType != PolylineSmoothType.NoSmooth &&
                 polyline.SmoothType != PolylineSmoothType.Quadratic &&
-                polyline.SmoothType != PolylineSmoothType.Cubic)
+                polyline.SmoothType != PolylineSmoothType.Cubic &&
+                polyline.SmoothType != PolylineSmoothType.BezierSurface)
                 throw new InvalidDataException("POLYGONMESH group 75 has an unsupported surface type.");
             if (fitted != (polyline.SmoothType != PolylineSmoothType.NoSmooth))
                 throw new InvalidDataException("POLYGONMESH groups 70/75 disagree about spline fitting.");
@@ -8506,6 +8507,7 @@ namespace netDxf.IO
             // values follow the existing minimum of three generated samples.
             if (fitted && polyline.DensityM != 0) pMesh.DensityU = Math.Max((short) 3, polyline.DensityM);
             if (fitted && polyline.DensityN != 0) pMesh.DensityV = Math.Max((short) 3, polyline.DensityN);
+            if (pMesh.SmoothType == PolylineSmoothType.BezierSurface) pMesh.ValidateSurface();
             pMesh.XData.AddRange(polyline.XData.Values);
             return pMesh;
         }
@@ -8581,8 +8583,7 @@ namespace netDxf.IO
                     case 75:
                         short smooth = this.chunk.ReadShort();
                         surfaceType = smooth;
-                        // SmoothType BezierSurface not implemented, reset to default
-                        smoothType = smooth == 8 ? PolylineSmoothType.NoSmooth : (PolylineSmoothType) smooth;
+                        smoothType = (PolylineSmoothType) smooth;
                         this.chunk.Next();
                         break;
                     case 210:

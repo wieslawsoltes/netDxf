@@ -45,12 +45,9 @@ namespace netDxf.Entities
         /// </summary>
         Cubic = 6,
 
-        ///// <summary>
-        ///// Bezier surface.
-        ///// </summary>
-        ///// <remarks>
-        ///// Not implemented.
-        ///// </remarks>
-        ////BezierSurface = 8
+        /// <summary>Tensor-product Bezier surface for an open PolygonMesh.</summary>
+        /// <remarks>This surface type is not valid for 2D or 3D polyline curves.
+        /// Closed Bezier mesh evaluation requires separately qualified closure semantics.</remarks>
+        BezierSurface = 8
     }
 }
