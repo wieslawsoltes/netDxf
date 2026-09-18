@@ -42,6 +42,7 @@ internal static partial class Program
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
+        RegisterVertexAffineReviewTests();
         RegisterDirectionAssignmentTests();
         RegisterDirectionCachedNormalizationTests();
         RegisterInfiniteLineTransformTests();

@@ -24,8 +24,7 @@ namespace netDxf.Entities
             if (linearIdentity && translation.X == 0 && translation.Y == 0 && translation.Z == 0)
                 return new InfiniteLineTransform { Origin = origin, Direction = direction, Normal = normal };
 
-            Vector3 point = new Vector3(Coordinate(Dot(matrix, 0, origin, translation.X)),
-                Coordinate(Dot(matrix, 1, origin, translation.Y)), Coordinate(Dot(matrix, 2, origin, translation.Z)));
+            Vector3 point = TransformPoint(matrix, origin, translation);
             Vector3 nextDirection = direction, nextNormal = normal;
             if (!linearIdentity)
             {
@@ -40,11 +39,24 @@ namespace netDxf.Entities
                 Changed = !Same(point, origin) || !Same(nextDirection, direction) || !Same(nextNormal, normal) };
         }
 
+        // Callers validate all input components before using these shared,
+        // exact affine-point and scale-safe auxiliary-direction operations.
+        internal static Vector3 TransformPoint(Matrix3 matrix, Vector3 point, Vector3 translation)
+        {
+            return new Vector3(Coordinate(Dot(matrix, 0, point, translation.X)),
+                Coordinate(Dot(matrix, 1, point, translation.Y)), Coordinate(Dot(matrix, 2, point, translation.Z)));
+        }
+        internal static Vector3 AuxiliaryNormal(Matrix3 matrix, Vector3 normal)
+        {
+            UnitSource(normal);
+            return TryDirection(matrix, normal, out Vector3 result) ? result : normal;
+        }
+
         internal static void CheckAffine(Matrix4 matrix)
         {
             for (int r = 0; r < 4; r++) for (int c = 0; c < 4; c++) Finite(matrix[r, c]);
             if (matrix.M41 != 0 || matrix.M42 != 0 || matrix.M43 != 0 || matrix.M44 != 1)
-                throw new NotSupportedException("Projective matrices are not RAY/XLINE affine transforms.");
+                throw new NotSupportedException("Projective matrices are not affine entity transforms.");
         }
         private static bool Same(Vector3 a, Vector3 b) { return a.X == b.X && a.Y == b.Y && a.Z == b.Z; }
         private static void Finite(double value)
