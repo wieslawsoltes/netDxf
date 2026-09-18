@@ -95,3 +95,5 @@ export { AcisSatChunk } from './netDxf/Entities/AcisSatChunk.js';
 export { Body } from './netDxf/Entities/Body.js';
 export { Region } from './netDxf/Entities/Region.js';
 export { Solid3D } from './netDxf/Entities/Solid3D.js';
+export { OleFrame } from './netDxf/Entities/OleFrame.js';
+export { Ole2Frame, OleObjectType, Ole2FrameMetadataFields } from './netDxf/Entities/Ole2Frame.js';
