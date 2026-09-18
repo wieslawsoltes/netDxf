@@ -432,13 +432,19 @@ namespace netDxf
         /// <summary>
         /// Gets the rotation matrix from the normal vector (extrusion direction) of an entity.
         /// </summary>
-        /// <param name="zAxis">Normal vector.</param>
-        /// <returns>Rotation matrix.</returns>
+        /// <param name="zAxis">Finite, nonzero normal vector; normalization is independent of <see cref="Epsilon"/>.</param>
+        /// <returns>Right-handed object-to-world rotation matrix.</returns>
+        /// <exception cref="ArgumentException">The normal is zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The normal contains a nonfinite component.</exception>
         public static Matrix3 ArbitraryAxis(Vector3 zAxis)
         {
-            zAxis.Normalize();
+            // Normalize finite directions without overflow/underflow or dependence
+            // on the caller's configurable geometric-comparison epsilon.
+            zAxis = Vector3.NormalizeFiniteDirection(zAxis, nameof(zAxis));
 
-            if (zAxis.Equals(Vector3.UnitZ))
+            // Approximate equality here erases real tilts and makes the stored
+            // normal disagree with the OCS frame used to serialize coordinates.
+            if (zAxis.X == 0.0 && zAxis.Y == 0.0 && zAxis.Z == 1.0)
             {
                 return Matrix3.Identity;
             }
@@ -456,10 +462,10 @@ namespace netDxf
                 aX = Vector3.CrossProduct(wZ, zAxis);
             }
 
-            aX.Normalize();
+            aX = Vector3.NormalizeFiniteDirection(aX, nameof(zAxis));
 
             Vector3 aY = Vector3.CrossProduct(zAxis, aX);
-            aY.Normalize();
+            aY = Vector3.NormalizeFiniteDirection(aY, nameof(zAxis));
 
             return new Matrix3(aX.X, aY.X, zAxis.X, aX.Y, aY.Y, zAxis.Y, aX.Z, aY.Z, zAxis.Z);
         }

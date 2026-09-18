@@ -40,6 +40,7 @@ internal static partial class Program
         RegisterMTextOrientationOrderTests();
         RegisterEntityTextFilePreflightTests();
         RegisterMatrixIdentityReviewTests();
+        RegisterArbitraryAxisReviewTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
