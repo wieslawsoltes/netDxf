@@ -89,6 +89,14 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [RAY/XLINE affine transforms](doc/dxf-conformance/infinite-line-transforms.md) now stage finite geometry atomically, retain representable extreme-scale directions and exact affine-origin cancellations, reject collapsed/projective results, and invalidate stale proxies after changed geometry. Independent Fraction/Decimal and physical-record checks document the numerical and version scope.
 
+[MTEXT Unicode continuation records](doc/dxf-conformance/mtext-unicode-chunks.md) preserve supplementary characters at chunk boundaries, bound UTF-8 value sizes and avoid quadratic chunk assembly. Legacy escape behavior and the scope of native qualification are documented separately.
+
+[Text-entity save preflight](doc/dxf-conformance/entity-text-framing.md) rejects unpaired Unicode and transport-breaking characters before output preparation, with source/destination rollback tests and independent valid-record checks. In-memory setters and unrelated raw/private strings retain their separate contracts.
+
+[MTEXT orientation order](doc/dxf-conformance/mtext-orientation-order.md) now honors later angle/direction declarations without confusing column-height group 50 values with rotation. Existing rotation units are retained; the guide records specification discrepancies and independent input/output checks.
+
+[Filename text preflight](doc/dxf-conformance/text-file-preflight.md) applies the text guard before conventional Save can truncate a destination or change the document path. This is a bounded refusal guarantee; SaveAtomic remains the API for general serialization-failure protection.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
