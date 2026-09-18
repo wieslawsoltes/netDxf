@@ -1,0 +1,26 @@
+name: Check projection source transport
+on:
+  push:
+    branches: [codex/projection-source-publication-20260918]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fingerprint exact transport
+        shell: python
+        run: |
+          import hashlib, pathlib
+          data = pathlib.Path('.projection-transfer/task.patch.gz').read_bytes()
+          print('SHA256=' + hashlib.sha256(data).hexdigest())
+      - uses: actions/upload-artifact@v4
+        with:
+          name: projection-source-transport
+          path: .projection-transfer/task.patch.gz
+          include-hidden-files: true
+          retention-days: 2
