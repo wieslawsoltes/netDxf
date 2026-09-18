@@ -50,6 +50,7 @@ internal static partial class Program
         RegisterLegacyVertexAffineTests();
         RegisterPolylineExplosionTests();
         RegisterPolylineProjectionTests();
+        RegisterSplinePolylineConversionTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
