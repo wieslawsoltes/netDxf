@@ -44,6 +44,7 @@ namespace netDxf
 
         private bool dirty;
         private bool isIdentity;
+        private double identityEpsilon;
 
         #endregion
 
@@ -67,6 +68,7 @@ namespace netDxf
 
             this.dirty = true;
             this.isIdentity = false;
+            this.identityEpsilon = 0.0;
         }
 
         #endregion
@@ -227,6 +229,18 @@ namespace netDxf
             }
         }
 
+        /// <summary>Gets whether all entries represent the exact identity matrix.</summary>
+        /// <remarks>This query is independent of <see cref="MathHelper.Epsilon"/>. Signed zeros compare as zero.
+        /// Matrix arithmetic uses this query, not the tolerance-based <see cref="IsIdentity"/> fast path.</remarks>
+        public bool IsIdentityExact
+        {
+            get
+            {
+                return this.m11 == 1.0 && this.m12 == 0.0 &&
+                       this.m21 == 0.0 && this.m22 == 1.0;
+            }
+        }
+
         /// <summary>
         /// Gets if the actual matrix is the identity.
         /// </summary>
@@ -237,27 +251,29 @@ namespace netDxf
         {
             get
             {
-                if (this.dirty)
+                double epsilon = MathHelper.Epsilon;
+                if (this.dirty || this.identityEpsilon != epsilon)
                 {
                     this.dirty = false;
+                    this.identityEpsilon = epsilon;
 
-                    if (!MathHelper.IsOne(this.M11))
+                    if (!MathHelper.IsOne(this.M11, epsilon))
                     {
                         this.isIdentity = false;
                         return this.isIdentity;
                     }
-                    if (!MathHelper.IsZero(this.M12))
+                    if (!MathHelper.IsZero(this.M12, epsilon))
                     {
                         this.isIdentity = false;
                         return this.isIdentity;
                     }
 
-                    if (!MathHelper.IsZero(this.M21))
+                    if (!MathHelper.IsZero(this.M21, epsilon))
                     {
                         this.isIdentity = false;
                         return this.isIdentity;
                     }
-                    if (!MathHelper.IsOne(this.M22))
+                    if (!MathHelper.IsOne(this.M22, epsilon))
                     {
                         this.isIdentity = false;
                         return this.isIdentity;
@@ -330,12 +346,12 @@ namespace netDxf
         /// <returns>Matrix2.</returns>
         public static Matrix2 operator *(Matrix2 a, Matrix2 b)
         {
-            if (a.IsIdentity)
+            if (a.IsIdentityExact)
             {
                 return b;
             }
 
-            if (b.IsIdentity)
+            if (b.IsIdentityExact)
             {
                 return a;
             }
@@ -352,12 +368,12 @@ namespace netDxf
         /// <returns>Matrix2.</returns>
         public static Matrix2 Multiply(Matrix2 a, Matrix2 b)
         {
-            if (a.IsIdentity)
+            if (a.IsIdentityExact)
             {
                 return b;
             }
 
-            if (b.IsIdentity)
+            if (b.IsIdentityExact)
             {
                 return a;
             }
@@ -375,7 +391,7 @@ namespace netDxf
         /// <remarks>Matrix2 adopts the convention of using column vectors.</remarks>
         public static Vector2 operator *(Matrix2 a, Vector2 u)
         {
-            return a.IsIdentity ? u : new Vector2(a.M11 * u.X + a.M12 * u.Y,
+            return a.IsIdentityExact ? u : new Vector2(a.M11 * u.X + a.M12 * u.Y,
                                                   a.M21 * u.X + a.M22 * u.Y);
         }
 
@@ -388,7 +404,7 @@ namespace netDxf
         /// <remarks>Matrix2 adopts the convention of using column vectors.</remarks>
         public static Vector2 Multiply(Matrix2 a, Vector2 u)
         {
-            return a.IsIdentity ? u : new Vector2(a.M11 * u.X + a.M12 * u.Y,
+            return a.IsIdentityExact ? u : new Vector2(a.M11 * u.X + a.M12 * u.Y,
                                                   a.M21 * u.X + a.M22 * u.Y);
         }
 
@@ -448,7 +464,7 @@ namespace netDxf
         /// <returns>Determinant.</returns>
         public double Determinant()
         {
-            return this.IsIdentity ? 1.0 : this.m11 * this.m22 - this.m12 * this.m21;
+            return this.IsIdentityExact ? 1.0 : this.m11 * this.m22 - this.m12 * this.m21;
         }
 
         /// <summary>
@@ -457,7 +473,7 @@ namespace netDxf
         /// <returns>Inverse Matrix2.</returns>
         public Matrix2 Inverse()
         {
-            if (this.IsIdentity)
+            if (this.IsIdentityExact)
             {
                 return Identity;
             }
@@ -480,7 +496,7 @@ namespace netDxf
         /// <returns>Transpose matrix.</returns>
         public Matrix2 Transpose()
         {
-            return this.IsIdentity ? Identity : new Matrix2(this.m11, this.m21,
+            return this.IsIdentityExact ? Identity : new Matrix2(this.m11, this.m21,
                                                             this.m12, this.m22);
         }
 

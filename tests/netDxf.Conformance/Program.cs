@@ -42,6 +42,7 @@ internal static partial class Program
         RegisterMatrixIdentityReviewTests();
         RegisterArbitraryAxisReviewTests();
         RegisterVector4ComponentReviewTests();
+        RegisterIdentityConsumerReviewTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();

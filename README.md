@@ -103,6 +103,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Vector4 component fidelity](doc/dxf-conformance/vector4-components.md) restores four-component array export and correct W-axis distance arithmetic.
 
+[Remaining identity consumers](doc/dxf-conformance/identity-consumers.md) apply exact fast-path admission to Matrix2 and unclipped viewport transformations.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

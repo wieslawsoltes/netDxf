@@ -506,7 +506,7 @@ namespace netDxf.Entities
             EntityObject clippingEntity = this.ClippingBoundary;
             if (clippingEntity == null)
             {
-                if (transformation.IsIdentity)
+                if (transformation.IsIdentityExact)
                 {
                     this.center += translation;
                     return;
