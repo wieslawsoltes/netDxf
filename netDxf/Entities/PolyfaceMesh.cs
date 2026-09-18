@@ -88,15 +88,12 @@ namespace netDxf.Entities
                 throw new ArgumentNullException(nameof(faces));
             }
 
-            int numFaces = faces.Count();
-            this.faces = new PolyfaceMeshFace[numFaces];
-            for (int i = 0; i < numFaces; i++)
-            {
-                this.faces[i] = new PolyfaceMeshFace(faces.ElementAt(i));
-            }
+            // Materialize each face while its iterator item is current. This
+            // accepts single-pass sources and snapshots reused index buffers.
+            this.faces = faces.Select(indices => new PolyfaceMeshFace(indices)).ToArray();
             if (this.faces.Length < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(vertexes), this.faces.Length, "The polyface mesh faces list requires at least one face.");
+                throw new ArgumentOutOfRangeException(nameof(faces), this.faces.Length, "The polyface mesh faces list requires at least one face.");
             }
             this.ValidateFaceIndexes();
             foreach (PolyfaceMeshFace face in this.faces)
@@ -132,7 +129,7 @@ namespace netDxf.Entities
             this.faces = faces.ToArray();
             if (this.faces.Length < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(vertexes), this.faces.Length, "The polyface mesh faces list requires at least one face.");
+                throw new ArgumentOutOfRangeException(nameof(faces), this.faces.Length, "The polyface mesh faces list requires at least one face.");
             }
 
             this.ValidateFaceIndexes();
