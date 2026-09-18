@@ -29,6 +29,14 @@ export class ReferenceList {
     if (array.length - arrayIndex < this.Count) throw new ArgumentException('Destination array is not long enough.');
     for (let i = 0; i < this.Count; i++) array[arrayIndex + i] = this.#items[i];
   }
+  Reverse(index = 0, count = this.Count) {
+    if (!Number.isInteger(index) || index < 0) throw new ArgumentOutOfRangeException('index', index);
+    if (!Number.isInteger(count) || count < 0) throw new ArgumentOutOfRangeException('count', count);
+    if (this.Count - index < count) throw new ArgumentException('Invalid offset and length.');
+    for (let left = index, right = index + count - 1; left < right; left++, right--)
+      [this.#items[left], this.#items[right]] = [this.#items[right], this.#items[left]];
+    this.#version++;
+  }
   ToArray() { return this.#items.slice(); }
   GetEnumerator() {
     const owner = this, version = this.#version; let at = 0, current = null;

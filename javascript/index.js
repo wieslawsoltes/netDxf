@@ -99,3 +99,8 @@ export { OleFrame } from './netDxf/Entities/OleFrame.js';
 export { Ole2Frame, OleObjectType, Ole2FrameMetadataFields } from './netDxf/Entities/Ole2Frame.js';
 export { Section } from './netDxf/Entities/Section.js';
 export { DxfSectionGeometrySettings, DxfSectionTypeSettings, DxfSectionSettings } from './netDxf/Objects/DxfSectionSettings.js';
+
+export { Circle } from './netDxf/Entities/Circle.js';
+export { Arc } from './netDxf/Entities/Arc.js';
+export { Polyline2D } from './netDxf/Entities/Polyline2D.js';
+export { Polyline2DRecord } from './netDxf/Entities/Polyline2DRecord.js';

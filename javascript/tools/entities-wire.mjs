@@ -1,7 +1,9 @@
+import { curveWire, curveRecordWire } from './curve-wire.mjs';
 import { inertEntityWire } from './inert-entity-wire.mjs';
 import * as api from '../index.js';
 import { mtextValueWire } from './mtext-wire.mjs';
 export function entityWire(value, wire) {
+  const curveRecord=curveRecordWire(value,wire);if(curveRecord!==undefined)return curveRecord;
   if (value instanceof api.PolyfaceMeshFace) return {type:'PolyfaceMeshFace',indices:Array.from(value.VertexIndexes,wire),color:wire(value.Color),layer:wire(value.Layer)};
   if (value instanceof api.PolyfaceMeshRecord) return {type:'PolyfaceMeshRecord',code:value.CodeName,handle:value.Handle,face:wire(value.Face),isFace:value.IsFaceRecord,isEnd:value.IsSequenceEnd,version:value.SourceVersion,blockOwner:value.UsesBlockRecordOwner,layer:wire(value.Layer),linetype:wire(value.Linetype),canClone:value.CanClone(),tagCount:value.TopologyTagCount(),tags:Array.from(value.Tags,t=>({code:t.Code,value:wire(t.Value)})),xdata:Array.from(value.XData.Values,wire)};
   if (value instanceof api.AcisSatChunk) return {type:'AcisSatChunk',code:value.GroupCode,text:value.Text};
@@ -25,6 +27,7 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  const curve=curveWire(value,common,wire);if(curve!==undefined)return curve;
   const inert=inertEntityWire(value,common,wire); if(inert!==undefined)return inert;
   if (value instanceof api.Light) return {common,name:wire(value.Name),version:value.VersionNumber,kind:value.LightType,on:value.IsOn,plot:value.PlotGlyph,intensity:wire(value.Intensity),position:wire(value.Position),target:wire(value.Target),attenuation:value.AttenuationType,limits:value.UseAttenuationLimits,start:wire(value.AttenuationStartLimit),end:wire(value.AttenuationEndLimit),hotspot:wire(value.HotspotAngle),falloff:wire(value.FalloffAngle),cast:value.CastShadows,shadow:value.ShadowType,map:value.ShadowMapSize,softness:value.ShadowMapSoftness};
   if (value instanceof api.PolyfaceMesh) return {common,vertices:Array.from(value.Vertexes,wire),faces:Array.from(value.Faces,wire),vertexRecords:Array.from(value.VertexRecords,wire),faceRecords:Array.from(value.FaceRecords,wire),sequence:Array.from(value.RecordSequence,wire),endRecord:wire(value.EndSequenceRecord),declaredVertices:wire(value.DeclaredVertexCount),declaredFaces:wire(value.DeclaredFaceCount)};

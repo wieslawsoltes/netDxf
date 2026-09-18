@@ -8,6 +8,7 @@ internal static partial class Program
     private static bool EntityWire(object value, out object? result)
     {
         result = null;
+        if(CurveRecordWire(value,out result))return true;
         if (value is PolyfaceMeshFace pf) { result=new {type="PolyfaceMeshFace",indices=pf.VertexIndexes.Select(v=>Wire(v)).ToArray(),color=Wire(pf.Color),layer=Wire(pf.Layer)};return true; }
         if(value is PolyfaceMeshRecord pr) {
             result=new {type="PolyfaceMeshRecord",code=pr.CodeName,handle=pr.Handle,face=Wire(pr.Face),isFace=pr.IsFaceRecord,isEnd=pr.IsSequenceEnd,version=(int)pr.SourceVersion,blockOwner=pr.UsesBlockRecordOwner,layer=Wire(pr.Layer),linetype=Wire(pr.Linetype),
@@ -45,6 +46,7 @@ internal static partial class Program
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
+        if(CurveWire(entity,common,out result))return true;
         if (InertEntityWire(entity,common,out result)) return true;
         if(entity is Light light) result=new {common,name=Wire(light.Name),version=light.VersionNumber,kind=(int)light.LightType,on=light.IsOn,plot=light.PlotGlyph,intensity=Wire(light.Intensity),position=Wire(light.Position),target=Wire(light.Target),attenuation=(int)light.AttenuationType,limits=light.UseAttenuationLimits,start=Wire(light.AttenuationStartLimit),end=Wire(light.AttenuationEndLimit),hotspot=Wire(light.HotspotAngle),falloff=Wire(light.FalloffAngle),cast=light.CastShadows,shadow=(int)light.ShadowType,map=light.ShadowMapSize,softness=light.ShadowMapSoftness};
         else if(entity is PolyfaceMesh meshFace) result=new {common,vertices=meshFace.Vertexes.Select(v=>Wire(v)).ToArray(),faces=meshFace.Faces.Select(Wire).ToArray(),vertexRecords=meshFace.VertexRecords.Select(Wire).ToArray(),faceRecords=meshFace.FaceRecords.Select(Wire).ToArray(),sequence=meshFace.RecordSequence.Select(Wire).ToArray(),endRecord=Wire(meshFace.EndSequenceRecord),declaredVertices=Wire(meshFace.DeclaredVertexCount),declaredFaces=Wire(meshFace.DeclaredFaceCount)};

@@ -1,3 +1,4 @@
+import { nurbsCorpus } from './nurbs-corpus.mjs';
 import { coordinateCorpus } from './coordinate-corpus.mjs';
 import { databaseModelCorpus } from './database-model-corpus.mjs';
 import fs from 'node:fs';
@@ -70,7 +71,7 @@ try {
     const batch=requests.slice(at,at+256), expected=await oracle.request({op:'geometry',requests:batch});
     if(!expected.ok)throw new Error('Geometry oracle failed.');
     cases.push({name:`geometry/batch/${at}`, names:batch.map(request=>request.id), input:{requests:batch},
-      expected:{geometry:expected.value.map(value=>sha256(canonical(value)))}});
+      expected:{geometry:expected.value.map(value=>sha256(canonical(value)))} });
   }
   for(const scenario of collectionCorpus()){
     const input={scenarios:[scenario]},expected=await oracle.request({op:'collection',...input});
@@ -88,6 +89,11 @@ try {
     const expected=await modelOracle.request(probe.request);
     if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete model oracle response.');
     cases.push({name:`${category}/${probe.name}`,input:probe.request,expected:{models:sha256(canonical(expected))}});
+  }
+  for(const probe of nurbsCorpus()){
+    const expected=await modelOracle.request(probe.request);
+    if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete NURBS oracle response.');
+    cases.push({name:probe.name,input:probe.request,expected:{nurbs:sha256(canonical(expected))}});
   }
   const math=referenceMathCorpus();
   for(let offset=0;offset<math.length;offset+=256){
