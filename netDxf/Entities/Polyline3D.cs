@@ -256,25 +256,12 @@ namespace netDxf.Entities
         /// <param name="precision">Number of vertexes generated, only applicable for smoothed polylines.</param>
         /// <returns>A Polyline2D that represents the polyline.</returns>
         /// <remarks>
-        /// The resulting Polyline2D will be a projection of the actual polyline into the plane defined by its normal vector.
+        /// The resulting Polyline2D is projected onto the zero-elevation plane defined by its normal vector.
+        /// Use the elevation overload to choose a parallel output plane.
         /// </remarks>
         public Polyline2D ToPolyline2D(int precision)
         {
-            List<Vector3> vertexes3D = this.PolygonalVertexes(precision);
-            List<Vector2> vertexes2D = MathHelper.Transform(vertexes3D, this.Normal, out double _);
-            Polyline2D polyline2D = new Polyline2D(vertexes2D)
-            {
-                Layer = (Layer) this.Layer.Clone(),
-                Linetype = (Linetype) this.Linetype.Clone(),
-                Color = (AciColor) this.Color.Clone(),
-                Lineweight = this.Lineweight,
-                Transparency = (Transparency) this.Transparency.Clone(),
-                LinetypeScale = this.LinetypeScale,
-                Normal = this.Normal,
-                IsClosed = this.IsClosed
-            };
-
-            return polyline2D;
+            return this.ToPolyline2D(precision, 0.0);
         }
 
         #endregion
