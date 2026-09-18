@@ -1,0 +1,65 @@
+name: Publish verified universal-newline checker correction
+on:
+  push:
+    branches: [codex/polygon-verifier-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: f9704f9c4684342171012cad96b01e534b83a619
+          fetch-depth: 2
+      - name: Verify both reviewed trees and publish clean task children
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import hashlib, json, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args]).decode().strip()
+          conversion = 'b355017c9e774dae9d7bc7966bd5cbcf5e226bd8'
+          bezier = 'f9704f9c4684342171012cad96b01e534b83a619'
+          branches = ['codex/polygon-verifier-prepared-124-20260918', 'codex/polygon-verifier-prepared-125-20260918']
+          assert git('rev-parse', 'HEAD') == bezier
+          assert git('rev-parse', 'HEAD^{tree}') == 'c0129302772809b293e3cc96d5ee3bd09857eddc'
+          assert git('rev-parse', 'HEAD^') == conversion
+          for branch in branches:
+              assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          old = b"io.StringIO(data.decode('utf-8-sig'))"
+          new = b"io.StringIO(data.decode('utf-8-sig'), newline=None)"
+          def fix(name, digest):
+              path = pathlib.Path('tools') / name
+              data = path.read_bytes()
+              assert data.count(old) == 1
+              data = data.replace(old, new)
+              assert hashlib.sha256(data).hexdigest() == digest
+              path.write_bytes(data)
+              git('add', '--', str(path))
+          git('checkout', '--detach', conversion)
+          fix('verify_polygon_mesh_conversion.py', '11e9f13172d052416986f5a1e3092428b71cee06a19575bc471ba96e1d88809a')
+          tree124 = git('write-tree')
+          assert tree124 == '8c0bde5f6d80af19af85d156201ece78e7153c35'
+          commit124 = git('commit-tree', tree124, '-p', conversion, '-m', 'test: accept universal line endings in polygon conversion verification')
+          git('reset', '--hard', bezier)
+          fix('verify_polygon_mesh_conversion.py', '11e9f13172d052416986f5a1e3092428b71cee06a19575bc471ba96e1d88809a')
+          fix('verify_polygon_mesh_bezier.py', '9394762964b2b29f5917909d76e6b40a498ef8c38e3ecc70a0072a4d5489576a')
+          tree125 = git('write-tree')
+          assert tree125 == '174fe48a7d485f71e43db3416665a7aeb1a61ff5'
+          commit125 = git('commit-tree', tree125, '-p', bezier, '-p', commit124, '-m', 'test: integrate universal-newline polygon verifier correction')
+          git('push', '--atomic', 'origin', commit124 + ':refs/heads/' + branches[0], commit125 + ':refs/heads/' + branches[1])
+          result = {'124': {'head': commit124, 'tree': tree124}, '125': {'head': commit125, 'tree': tree125}}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'polygon-verifiers.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polygon-verifier-publication
+          path: publication-receipt/
+          retention-days: 14
