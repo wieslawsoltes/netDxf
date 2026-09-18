@@ -1,0 +1,62 @@
+name: Publish verified spline affine task
+on:
+  push:
+    branches: [codex/spline-affine-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 8874b7fccf77f7eb01b879be9939ca677f94cd38
+      - name: Verify patch and complete reviewed tree before publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '8874b7fccf77f7eb01b879be9939ca677f94cd38'
+          branch = 'codex/spline-affine-prepared-20260918'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '94c5d0bc303f0a6e9313a39d7281e70eed9bc80c'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          hashes = ['30199bed47df8c3188a87ec6c2a8388603ac5144', '7a11e611826c0d8dd30e801cb96e7b56474868a4', '683a7b0352935985d1446c088ae1554b81576fd3', 'f79f4c232e2fd59a1a3d6b7decd46f7fd80a87ae']
+          chunks = []
+          for i, oid in enumerate(hashes):
+              data = pathlib.Path('transport/.spline-affine-transfer/part-' + str(i)).read_bytes()
+              assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == oid
+              chunks.append(data)
+          packed = b''.join(chunks)
+          assert hashlib.sha256(packed).hexdigest() == '631b9a52160c5188c7d045df44ba0614c8b3c8bbd29185fe1ca517dcef421873'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == '2566d41b6514be60952903b01fede5a393c1a7dc1f70ad0bc9b993e159dee04d'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == 'b18725f5019612a0f0b3a2af397043a55e4742ee', tree
+          sha = git('commit-tree', tree, '-p', base, '-m', 'fix: make spline affine transforms atomic and preserve tangent magnitudes')
+          git('push', 'origin', sha + ':refs/heads/' + branch)
+          out = pathlib.Path('publication-receipt'); out.mkdir()
+          result = {'base': base, 'head': sha, 'tree': tree, 'branch': branch}
+          (out / 'spline-affine.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spline-affine-publication-receipt
+          path: publication-receipt/
+          retention-days: 14
