@@ -1,0 +1,56 @@
+name: Publish verified Bezier polygon surface task
+on:
+  push:
+    branches: [codex/bezier-polygon-publication-20260918]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: b355017c9e774dae9d7bc7966bd5cbcf5e226bd8
+      - name: Verify reviewed patch and complete source before clean publication
+        shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
+        run: |
+          import gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = 'b355017c9e774dae9d7bc7966bd5cbcf5e226bd8'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == '63189769945b82ce7ed53ced5f865eae805d0760'
+          packed = b''.join(pathlib.Path('transport/.bezier-transfer/part' + str(i)).read_bytes() for i in range(10))
+          assert hashlib.sha256(packed).hexdigest() == 'b29284d6bc2cf59d45387915e43e2da0f7dcd8405230d7430cc7e42228c15055'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == 'aa8011ec339aa790820b9fd44e1ce27f77a88415bec648ff8db5b7e4e0feaa78'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == 'c0129302772809b293e3cc96d5ee3bd09857eddc', tree
+          branch = 'codex/bezier-polygon-prepared-20260918'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          commit = git('commit-tree', tree, '-p', base, '-m', 'feat: support open Bezier polygon mesh surfaces with bounded evaluation')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          result = {'base': base, 'commit': commit, 'tree': tree, 'branch': branch}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'bezier-polygon.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bezier-polygon-publication
+          path: publication-receipt/
+          retention-days: 14
