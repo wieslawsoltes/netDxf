@@ -99,6 +99,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Exact matrix identity arithmetic](doc/dxf-conformance/matrix-identity-review.md) preserves small but real transform terms while retaining the public approximate identity query.
 
+[Scale-safe OCS frames](doc/dxf-conformance/arbitrary-axis-review.md) preserve real small tilts and normalize finite nonzero normals independently of the global epsilon.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.
