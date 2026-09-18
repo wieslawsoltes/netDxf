@@ -62,7 +62,8 @@
     "test:math": "node tools/math-differential.mjs",
     "test:math:independent": "python tools/math-independent.py",
     "benchmark:math": "node tools/math-benchmark.mjs",
-    "test:database-models": "node tools/database-model-differential.mjs"
+    "test:database-models": "node tools/database-model-differential.mjs",
+    "test:coordinates": "node tools/coordinate-differential.mjs"
   },
   "repository": {
     "type": "git",

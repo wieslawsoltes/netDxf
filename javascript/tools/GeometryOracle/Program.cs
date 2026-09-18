@@ -127,6 +127,7 @@ internal static partial class Program
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
         if (DatabaseModelWire(value, out var modelValue)) return modelValue;
+        if (CoordinateWire(value, out var coordinateValue)) return coordinateValue;
         if (EntityWire(value, out var entityValue)) return entityValue;
         if (StyleWire(value, out var styleValue)) return styleValue;
         if (value is ITuple tuple) return Enumerable.Range(0,tuple.Length).Select(i=>Wire(tuple[i])).ToArray();

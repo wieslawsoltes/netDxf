@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['coordinates',['tools/coordinate-differential.mjs']],
   ['database-models',['tools/database-model-differential.mjs']],
   ['math',['tools/math-differential.mjs']],
   ['reference-math',['tools/reference-math-differential.mjs']],

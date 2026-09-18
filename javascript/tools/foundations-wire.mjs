@@ -1,3 +1,4 @@
+import { coordinateWire } from './coordinate-wire.mjs';
 import { databaseModelWire } from './database-model-wire.mjs';
 import { BoxedScalar } from '../runtime/BoxedScalar.js';
 import { ReferenceList } from '../runtime/ReferenceList.js';
@@ -44,6 +45,7 @@ function wire(value) {
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
   const model=databaseModelWire(value,wire); if(model!==undefined)return model;
+  const coordinate=coordinateWire(value,wire); if(coordinate!==undefined)return coordinate;
   const entity=entityWire(value,wire); if(entity!==undefined)return entity;
   const style=styleWire(value,wire); if(style!==undefined)return style;
   if(value instanceof Map)return Array.from(value,([key,item])=>[wire(key),wire(item)]);
