@@ -87,3 +87,6 @@ export { DxfSpatialIndex } from './netDxf/Objects/DxfSpatialIndex.js';
 export { DxfLayerFilter } from './netDxf/Objects/DxfLayerFilter.js';
 export { DxfLayerIndex, DxfLayerIndexEntry } from './netDxf/Objects/DxfLayerIndex.js';
 export { DxfSpatialFilter } from './netDxf/Objects/DxfSpatialFilter.js';
+
+export { Light, LightType, LightAttenuationType, LightShadowType } from './netDxf/Entities/Light.js';
+export { DxfLightList, DxfLightListEntry } from './netDxf/Objects/DxfLightList.js';
