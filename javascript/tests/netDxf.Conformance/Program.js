@@ -1,3 +1,5 @@
+import * as UcsElevationTests from './UcsElevationTests.js';
+import * as UcsOrthographicTests from './UcsOrthographicTests.js';
 import * as NamedObjectDatabaseTests from './NamedObjectDatabaseTests.js';
 import * as PolyfaceGrammarTests from './PolyfaceGrammarTests.js';
 import * as MTextBackgroundTests from './MTextBackgroundTests.js';
@@ -35,7 +37,7 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { UcsElevationTests, UcsOrthographicTests, NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
   const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };

@@ -76,3 +76,6 @@ export { DxfOpaqueObject } from './netDxf/Objects/DxfOpaqueObject.js';
 export { DxfObjectPointer } from './netDxf/Objects/DxfObjectPointer.js';
 export { DxfDataCellType, DxfDataColumn, DxfDataTable } from './netDxf/Objects/DxfDataTable.js';
 export { DxfSun, DxfSunShadowType } from './netDxf/Objects/DxfSun.js';
+
+export { UCS } from './netDxf/Tables/UCS.js';
+export { UcsFlags } from './netDxf/Tables/UcsRelationships.js';
