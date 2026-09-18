@@ -1,26 +1,64 @@
-name: Check projection source transport
+name: Publish checksum-verified projection task
 on:
   push:
     branches: [codex/projection-source-publication-20260918]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  verify:
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
+          path: transport
           persist-credentials: false
-      - name: Fingerprint exact transport
+      - uses: actions/checkout@v4
+        with:
+          path: implementation
+          ref: 7d97821c4cb00b608d6fb28e38c40505e00a2038
+      - name: Verify complete reviewed source and publish clean child
         shell: python
+        env:
+          GIT_AUTHOR_NAME: Wiesław Šoltés
+          GIT_AUTHOR_EMAIL: wieslawsoltes@users.noreply.github.com
+          GIT_COMMITTER_NAME: Wiesław Šoltés
+          GIT_COMMITTER_EMAIL: wieslawsoltes@users.noreply.github.com
         run: |
-          import hashlib, pathlib
-          data = pathlib.Path('.projection-transfer/task.patch.gz').read_bytes()
-          print('SHA256=' + hashlib.sha256(data).hexdigest())
+          import base64, gzip, hashlib, json, pathlib, subprocess
+          work = pathlib.Path('implementation').resolve()
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], cwd=work, input=data).decode().strip()
+          base = '7d97821c4cb00b608d6fb28e38c40505e00a2038'
+          branch = 'codex/projection-prepared-20260918'
+          assert git('rev-parse', 'HEAD') == base
+          assert git('rev-parse', 'HEAD^{tree}') == 'c7493fdaf1b0a20317e632f32a5bc396e8ca0a01'
+          assert not git('ls-remote', '--heads', 'origin', 'refs/heads/' + branch)
+          packed = pathlib.Path('transport/.projection-transfer/task.patch.gz').read_bytes()
+          assert hashlib.sha256(packed).hexdigest() == 'aab325b1582c69817ba06f055fd022023086bd51d68a96aba892a06904098214'
+          # Byte-exact transfer corrections, independently compared with the
+          # downloaded original artifact. Never apply an unchecked prefix.
+          encoded = base64.b64encode(packed).decode()
+          for start, end, old, new in reversed([(5536,5539,'449',''),(11314,11314,'','/'),(12916,12916,'','0'),(14620,14620,'','=')]):
+              assert encoded[start:end] == old
+              encoded = encoded[:start] + new + encoded[end:]
+          packed = base64.b64decode(encoded, validate=True)
+          assert hashlib.sha256(packed).hexdigest() == '4fbff314ef69a17af7e4866b5be2eebe1516d2c8cfee8312dee3cef27af70b4e'
+          patch = gzip.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest() == '3b7e2a1801b243d45641e838b9c13ee71d10746bfa7eb72886579f6de8ec8a63'
+          git('apply', '--check', '-', data=patch)
+          git('apply', '--whitespace=nowarn', '-', data=patch)
+          git('add', '-A')
+          tree = git('write-tree')
+          assert tree == 'fbca3c5e1978ed03082ac9640ee37df787366aa6', tree
+          commit = git('commit-tree', tree, '-p', base, '-m', 'fix: preserve polyline projection metadata and support explicit plane elevation')
+          git('push', 'origin', commit + ':refs/heads/' + branch)
+          result = {'base': base, 'branch': branch, 'commit': commit, 'tree': tree, 'patch_sha256': hashlib.sha256(patch).hexdigest()}
+          output = pathlib.Path('publication-receipt'); output.mkdir()
+          (output / 'projection.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
       - uses: actions/upload-artifact@v4
         with:
-          name: projection-source-transport
-          path: .projection-transfer/task.patch.gz
-          include-hidden-files: true
-          retention-days: 2
+          name: projection-publication-receipt
+          path: publication-receipt/
+          retention-days: 14
