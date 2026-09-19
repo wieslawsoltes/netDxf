@@ -54,7 +54,11 @@ try:
             errors=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.expose_function('netDxfHashCanonical',lambda text:hashlib.sha256(text.encode('utf-8')).hexdigest())
-            result=page.evaluate("""async ({sources,corpus,native})=>{
+            # Transfer JSON strings rather than the whole object graph through Playwright's
+            # structured serializer. The renderer parses the unchanged descriptors/digests;
+            # ensure_ascii also preserves unpaired UTF-16 surrogates in test inputs.
+            result=page.evaluate("""async ({sourcesJson,corpusJson,nativeJson})=>{
+              const sources=JSON.parse(sourcesJson),corpus=JSON.parse(corpusJson),native=JSON.parse(nativeJson);
               const imports={},urls=[];
               try {
                 for(const [name,source] of Object.entries(sources)){
@@ -65,7 +69,7 @@ try:
                 const {runBrowserCorpus}=await import('netdxf:tools/browser-runner.mjs');
                 return await runBrowserCorpus(corpus,native,{hashCanonical:window.netDxfHashCanonical});
               } finally { for(const url of urls)URL.revokeObjectURL(url); }
-            }""",{'sources':sources,'corpus':corpus,'native':native})
+            }""",{'sourcesJson':json.dumps(sources,ensure_ascii=True),'corpusJson':json.dumps(corpus,ensure_ascii=True),'nativeJson':json.dumps(native,ensure_ascii=True)})
             report.update(result)
             report.update({'browser':browser.version,'modules':len(sources),'pageErrors':errors})
             if errors or fingerprints()!=proof:
