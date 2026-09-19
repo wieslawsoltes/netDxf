@@ -27,3 +27,15 @@ The math implementation and its tables are readable, modifiable native source.
 They perform no network access, runtime compilation, dynamic source evaluation,
 WebAssembly execution or native DXF/geometry calls. JavaScript BigInt is used
 internally for correctly rounded software fused multiply-add.
+
+## Exponential and logarithm continuation
+
+The exp/log runtime additionally adapts the hash-pinned glibc 2.35 dbl-64
+`e_exp.c`, `e_log.c`, their data tables, `math_config.h`, and x86-64 FMA
+selectors. The original preferred sources are retained under
+`third_party/glibc-math/`, with the same LGPL-2.1-or-later license and
+copyright notices. `tools/ReferenceMath/exp-log-manifest.json` pins all
+seven added sources; `generate-exp-log.py --check` reproduces the three
+runtime outputs from those sources and the supplied adaptation template.
+The JavaScript adapter targets the existing round-to-nearest x86-64 FMA
+reference profile, not every native libm or rounding mode.

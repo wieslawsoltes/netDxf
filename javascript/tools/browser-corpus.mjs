@@ -1,3 +1,4 @@
+import { expLogCorpus } from './exp-log-corpus.mjs';
 import { nurbsCorpus } from './nurbs-corpus.mjs';
 import { coordinateCorpus } from './coordinate-corpus.mjs';
 import { databaseModelCorpus } from './database-model-corpus.mjs';
@@ -95,7 +96,7 @@ try {
     if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete NURBS oracle response.');
     cases.push({name:probe.name,input:probe.request,expected:{nurbs:sha256(canonical(expected))}});
   }
-  const math=referenceMathCorpus();
+  const math=referenceMathCorpus().concat(expLogCorpus());
   for(let offset=0;offset<math.length;offset+=256){
     const calls=math.slice(offset,offset+256),expected=await modelOracle.request({op:'reference-math',calls});
     if(!Array.isArray(expected)||expected.length!==calls.length)throw new Error('Incomplete direct math oracle response.');

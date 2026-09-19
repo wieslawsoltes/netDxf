@@ -1,3 +1,4 @@
+import { helixCorpus } from './helix-corpus.mjs';
 import { splineModelCorpus, polyline3dCorpus } from './spline-model-corpus.mjs';
 import { ellipseCorpus } from './ellipse-corpus.mjs';
 // Supplemental input descriptions only. Expected results come from the pinned production assembly.
@@ -53,5 +54,5 @@ export function curveCorpus(){
  for(const code of ['VERTEX','SEQEND'])add('retained/empty/'+code,[N('Polyline2DRecord',[code,null],'bad',{nonPublic:true}),N('Polyline2DRecord',[code,{new:'List<IO.DxfTag>',args:[]}],'r',{nonPublic:true}),C('r','GeometryTags',[],null,true),C('r','TopologyTagCount',[],null,true),G('r','Resources','resources',true),{kind:'map-add',target:'resources',args:[I(0),null]},C('r','CanClone',[],null,true),C('r','CopyForClone',[null],null,true)]);
  let seed=0x43555256;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return (seed%33-16)/8;};
  for(let i=0;i<40;i++)add('seeded/'+i,[N(i%2?'Arc':'Circle',[V('Vector3',random(),random(),random()),D(1+Math.abs(random())),...(i%2?[D(random()*100),D(random()*100)]:[])]),C('p','TransformBy',[mat(Array.from({length:9},random)),V('Vector3',random(),random(),random())]),C('p','PolygonalVertexes',[I(7)]),C('p','ToPolyline2D',[I(7)])]);
- return out.concat(ellipseCorpus(),splineModelCorpus(),polyline3dCorpus());
+ return out.concat(ellipseCorpus(),splineModelCorpus(),polyline3dCorpus(),helixCorpus());
 }

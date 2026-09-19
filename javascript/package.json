@@ -64,7 +64,9 @@
     "benchmark:math": "node tools/math-benchmark.mjs",
     "test:database-models": "node tools/database-model-differential.mjs",
     "test:coordinates": "node tools/coordinate-differential.mjs",
-    "test:nurbs": "node tools/nurbs-differential.mjs"
+    "test:nurbs": "node tools/nurbs-differential.mjs",
+    "test:exp-log": "node tools/exp-log-differential.mjs",
+    "verify:exp-log": "python tools/ReferenceMath/generate-exp-log.py --check"
   },
   "repository": {
     "type": "git",

@@ -26,6 +26,8 @@ internal static partial class Program {
     else if(value is Arc a)result=new {common,center=Wire(a.Center),radius=Wire(a.Radius),start=Wire(a.StartAngle),end=Wire(a.EndAngle),thickness=Wire(a.Thickness)};
     else if(value is Polyline2D p)result=new {common,vertices=p.Vertexes.Select(Wire).ToArray(),closed=p.IsClosed,generation=p.LinetypeGeneration,thickness=Wire(p.Thickness),elevation=Wire(p.Elevation),smooth=(int)p.SmoothType,
       constant=Wire(p.ConstantWidth),legacyStart=Wire(p.LegacyDefaultStartWidth),legacyEnd=Wire(p.LegacyDefaultEndWidth),records=p.VertexRecords.Select(Wire).ToArray(),endRecord=Wire(p.EndSequenceRecord)};
-    else return false;return true;
+    else return false;
+    if(value is Helix helix)result=new {spline=result,major=helix.MajorReleaseNumber,maintenance=helix.MaintenanceReleaseNumber,@base=Wire(helix.AxisBasePoint),start=Wire(helix.StartPoint),axis=Wire(helix.AxisVector),radius=Wire(helix.Radius),turns=Wire(helix.Turns),height=Wire(helix.TurnHeight),right=helix.IsRightHanded,constraint=(int)helix.Constraint};
+    return true;
   }
 }
