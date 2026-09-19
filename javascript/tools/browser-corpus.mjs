@@ -1,3 +1,4 @@
+import { surfaceCorpus } from './surface-corpus.mjs';
 import { expLogCorpus } from './exp-log-corpus.mjs';
 import { nurbsCorpus } from './nurbs-corpus.mjs';
 import { coordinateCorpus } from './coordinate-corpus.mjs';
@@ -86,7 +87,7 @@ try {
   const read=name=>fs.readFileSync(path.join(sourceRoot,'TestDxfDocument/Support',name));
   const hatches=hatchCorpus(['acad.pat','acadiso.pat'].map(name=>({name,text:read(name).toString('utf8')})));
   const styles=styleCorpus(['acad.lin','acadiso.lin'].map(name=>({name,text:read(name).toString('utf8')})),read('ltypeshp.shx'));
-  for(const [category,probes] of [['hatch',hatches],['styles',styles],['entities',entityCorpus()],['coordinates',coordinateCorpus()],['database-models',databaseModelCorpus()]])for(const probe of probes){
+  for(const [category,probes] of [['surfaces',surfaceCorpus()],['hatch',hatches],['styles',styles],['entities',entityCorpus()],['coordinates',coordinateCorpus()],['database-models',databaseModelCorpus()]])for(const probe of probes){
     const expected=await modelOracle.request(probe.request);
     if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete model oracle response.');
     cases.push({name:`${category}/${probe.name}`,input:probe.request,expected:{models:sha256(canonical(expected))}});

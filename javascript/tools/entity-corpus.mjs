@@ -1,3 +1,4 @@
+import { polygonmeshCorpus } from './polygonmesh-corpus.mjs';
 import { curveCorpus } from './curve-corpus.mjs';
 import { sectionCorpus } from './section-corpus.mjs';
 import { oleCorpus } from './ole-corpus.mjs';
@@ -81,5 +82,5 @@ export function entityCorpus() {
    const name=names[i%names.length],numbers=Array.from({length:9},()=>((next()%17)-8)/4),position=Array.from({length:3},()=>((next()%33)-16)/8);
    add(`seeded/${name}/${i}`,'seeded-transforms',[N(name,constructors(name).at(-1)),C('p','TransformBy',[mat(...numbers),vector(position)],null,['Matrix3','Vector3']),snap('p')]);
  }
- return probes.concat(sectionCorpus(),oleCorpus(),acisCorpus(),displayEntityCorpus(),mtextCorpus(),underlayCorpus(),rasterCorpus(),polyfaceCorpus(),lightCorpus(),curveCorpus());
+ return probes.concat(sectionCorpus(),oleCorpus(),acisCorpus(),displayEntityCorpus(),mtextCorpus(),underlayCorpus(),rasterCorpus(),polyfaceCorpus(),lightCorpus(),curveCorpus(),polygonmeshCorpus());
 }

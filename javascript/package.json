@@ -4,7 +4,7 @@
   "private": true,
   "description": "Native JavaScript port of netDxf with pinned .NET differential verification (in progress)",
   "type": "module",
-  "license": "MIT AND LGPL-2.1-or-later",
+  "license": "MIT AND LGPL-2.1-or-later AND BSL-1.0",
   "engines": {
     "node": ">=22"
   },
@@ -66,7 +66,8 @@
     "test:coordinates": "node tools/coordinate-differential.mjs",
     "test:nurbs": "node tools/nurbs-differential.mjs",
     "test:exp-log": "node tools/exp-log-differential.mjs",
-    "verify:exp-log": "python tools/ReferenceMath/generate-exp-log.py --check"
+    "verify:exp-log": "python tools/ReferenceMath/generate-exp-log.py --check",
+    "test:surfaces": "node tools/surface-differential.mjs"
   },
   "repository": {
     "type": "git",

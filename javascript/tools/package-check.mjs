@@ -13,7 +13,7 @@ try {
   if(!info.files.some(f=>f.path==='node-entry.js')) throw new Error('Packed Node entry is missing.');
   if(!info.files.some(f=>f.path==='Enums.generated.js')) throw new Error('Packed enum barrel is missing.');
   if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path) && !['tools/ReferenceMath/generate.py','tools/ReferenceMath/source-manifest.json','tools/ReferenceMath/generate-exp-log.py','tools/ReferenceMath/exp-log-manifest.json','tools/ReferenceMath/exp-log.template.js'].includes(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
-  for(const file of ['THIRD_PARTY_NOTICES.md','runtime/reference-math/LICENSE.LGPL-2.1','runtime/reference-math/LICENSE.GPL-2','third_party/glibc-math/COPYING.LIB','third_party/glibc-math/sysdeps/ieee754/dbl-64/dla.h','tools/ReferenceMath/generate.py','tools/ReferenceMath/generate-exp-log.py','tools/ReferenceMath/exp-log-manifest.json','tools/ReferenceMath/exp-log.template.js','runtime/reference-math/exp-log.js','runtime/reference-math/exp-log-data.js','runtime/reference-math/exp-log-source.json'])
+  for(const file of ['netDxf/GTE/LICENSE.BSL-1.0','THIRD_PARTY_NOTICES.md','runtime/reference-math/LICENSE.LGPL-2.1','runtime/reference-math/LICENSE.GPL-2','third_party/glibc-math/COPYING.LIB','third_party/glibc-math/sysdeps/ieee754/dbl-64/dla.h','tools/ReferenceMath/generate.py','tools/ReferenceMath/generate-exp-log.py','tools/ReferenceMath/exp-log-manifest.json','tools/ReferenceMath/exp-log.template.js','runtime/reference-math/exp-log.js','runtime/reference-math/exp-log-data.js','runtime/reference-math/exp-log-source.json'])
     if(!info.files.some(f=>f.path===file)) throw new Error('Required mathematical source/notice is missing: '+file);
   const install=path.join(temp,'install');fs.mkdirSync(install);
   run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
@@ -22,7 +22,7 @@ try {
     import {DotNetMath} from '@netdxf/javascript/runtime/GeometryRuntime.js';
     const packageRoot=new URL('./node_modules/@netdxf/javascript/',import.meta.url);
     const pkg=JSON.parse(fs.readFileSync(new URL('package.json',packageRoot)));
-    if(pkg.license!=='MIT AND LGPL-2.1-or-later')throw new Error('Aggregate license metadata is wrong');
+    if(pkg.license!=='MIT AND LGPL-2.1-or-later AND BSL-1.0')throw new Error('Aggregate license metadata is wrong');
     const provenance=JSON.parse(fs.readFileSync(new URL('tools/ReferenceMath/source-manifest.json',packageRoot)));
     for(const [file,expected] of Object.entries(provenance.files))
       if(createHash('sha256').update(fs.readFileSync(new URL('third_party/glibc-math/'+file,packageRoot))).digest('hex')!==expected)throw new Error('Packaged preferred source drift: '+file);

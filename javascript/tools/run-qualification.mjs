@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['surfaces',['tools/surface-differential.mjs']],
   ['exp-log',['tools/exp-log-differential.mjs']],
   ['nurbs',['tools/nurbs-differential.mjs']],
   ['coordinates',['tools/coordinate-differential.mjs']],

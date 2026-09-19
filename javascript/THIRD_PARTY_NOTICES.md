@@ -22,7 +22,7 @@ The reproducible generator is `tools/ReferenceMath/generate.py`.
 Upstream source: https://github.com/bminor/glibc/tree/f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2
 
 The package-level license expression describes the aggregate as
-`MIT AND LGPL-2.1-or-later`; the mathematical files must not be relabeled MIT.
+`MIT AND LGPL-2.1-or-later AND BSL-1.0`; the mathematical files must not be relabeled MIT.
 The math implementation and its tables are readable, modifiable native source.
 They perform no network access, runtime compilation, dynamic source evaluation,
 WebAssembly execution or native DXF/geometry calls. JavaScript BigInt is used
@@ -39,3 +39,11 @@ seven added sources; `generate-exp-log.py --check` reproduces the three
 runtime outputs from those sources and the supplied adaptation template.
 The JavaScript adapter targets the existing round-to-nearest x86-64 FMA
 reference profile, not every native libm or rounding mode.
+
+## Geometric Tools surface evaluation
+
+`netDxf/GTE/` mirrors the pinned netDxf C# translations of Geometric Tools
+(David Eberly, copyright 1998-2022). Original Geometric Tools portions retain
+the Boost Software License 1.0, included in `netDxf/GTE/LICENSE.BSL-1.0`.
+The netDxf translation and JavaScript adaptation retain their MIT notices.
+The aggregate package expression is now `MIT AND LGPL-2.1-or-later AND BSL-1.0`.

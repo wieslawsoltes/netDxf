@@ -109,3 +109,10 @@ export { Polyline3D } from './netDxf/Entities/Polyline3D.js';
 export { Polyline3DRecord } from './netDxf/Entities/Polyline3DRecord.js';
 export { Spline } from './netDxf/Entities/Spline.js';
 export { Helix, HelixConstraint } from './netDxf/Entities/Helix.js';
+
+export { UniqueKnot, BasisFunctionInput, BasisFunction } from './netDxf/GTE/BasisFunction.js';
+export { ParametricSurface } from './netDxf/GTE/ParametricSurface.js';
+export { BSplineSurface } from './netDxf/GTE/BSplineSurface.js';
+export { NURBSSurface } from './netDxf/GTE/NURBSSurface.js';
+export { PolygonMesh } from './netDxf/Entities/PolygonMesh.js';
+export { PolygonMeshRecord } from './netDxf/Entities/PolygonMeshRecord.js';

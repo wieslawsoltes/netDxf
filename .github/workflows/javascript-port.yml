@@ -201,6 +201,12 @@ jobs:
           node javascript/tools/dotnet.mjs geometry
           node javascript/tools/style-differential.mjs
           node javascript/tools/entity-differential.mjs
+      - name: Compare surface APIs on the actual host
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/surface-differential.mjs
+      - name: Compare exp/log results on the actual host
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/exp-log-differential.mjs
       - name: Validate offline Node package installation
         if: ${{ !cancelled() }}
         run: node javascript/tools/package-check.mjs
@@ -210,6 +216,8 @@ jobs:
           name: javascript-filesystem-${{ matrix.os }}
           path: |
             javascript/artifacts/filesystem-differential/Release/results.json
+            javascript/artifacts/surface-differential/Release/results.json
+            javascript/artifacts/exp-log-differential/Release/results.json
             javascript/artifacts/style-differential/Release/results.json
             javascript/artifacts/entity-differential/Release/results.json
             javascript/artifacts/conformance/*.json

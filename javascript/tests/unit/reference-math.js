@@ -77,5 +77,5 @@ test('bundled preferred math source and licenses match the pinned provenance man
   }
   assert.equal(fs.readFileSync(new URL('runtime/reference-math/LICENSE.LGPL-2.1', root), 'utf8'), fs.readFileSync(new URL('third_party/glibc-math/COPYING.LIB', root), 'utf8'));
   const pkg = JSON.parse(fs.readFileSync(new URL('package.json', root)));
-  assert.equal(pkg.license, 'MIT AND LGPL-2.1-or-later'); assert.equal(pkg.private, true);
+  assert.equal(pkg.license, 'MIT AND LGPL-2.1-or-later AND BSL-1.0'); assert.equal(pkg.private, true);
 });

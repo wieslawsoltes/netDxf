@@ -1,3 +1,4 @@
+import { surfaceWire } from './surface-wire.mjs';
 import { coordinateWire } from './coordinate-wire.mjs';
 import { databaseModelWire } from './database-model-wire.mjs';
 import { BoxedScalar } from '../runtime/BoxedScalar.js';
@@ -12,7 +13,7 @@ import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
 
-const resolve = name => name.startsWith('List<') ? ReferenceList : api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|IO)\./, '')];
+const resolve = name => name.startsWith('List<') ? ReferenceList : api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|IO|GTE)\./, '')];
 function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };
@@ -44,6 +45,7 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const surface=surfaceWire(value,wire); if(surface!==undefined)return surface;
   const model=databaseModelWire(value,wire); if(model!==undefined)return model;
   const coordinate=coordinateWire(value,wire); if(coordinate!==undefined)return coordinate;
   const entity=entityWire(value,wire); if(entity!==undefined)return entity;
