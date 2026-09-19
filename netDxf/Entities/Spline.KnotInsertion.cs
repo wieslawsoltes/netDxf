@@ -37,6 +37,22 @@ namespace netDxf.Entities
         {
             if (!NonPeriodicFinite(parameter))
                 throw new ArgumentOutOfRangeException(nameof(parameter), "The knot parameter must be finite.");
+            this.ValidateRefinementDefinition(additional);
+            multiplicity = 0;
+            foreach (double knot in this.knots) if (knot == parameter) multiplicity++;
+            if (!(this.knots[this.degree] < parameter && parameter < this.knots[this.controlPoints.Length]))
+                throw new ArgumentOutOfRangeException(nameof(parameter), "The knot must be strictly inside the active domain.");
+            int low = this.degree, high = this.controlPoints.Length;
+            while (low + 1 < high)
+            {
+                int middle = low + (high - low) / 2;
+                if (parameter < this.knots[middle]) high = middle; else low = middle;
+            }
+            span = low;
+        }
+
+        private void ValidateRefinementDefinition(int additional)
+        {
             if (this.GetType() != typeof(Spline) || this.isClosedPeriodic)
                 throw new NotSupportedException("Knot refinement requires an ordinary nonperiodic SPLINE.");
             if (this.degree < 1 || this.degree > MaxDegree || this.controlPoints == null
@@ -61,7 +77,6 @@ namespace netDxf.Entities
                 || !NonPeriodicFinite(this.fitTolerance) || this.fitTolerance <= 0)
                 throw new InvalidOperationException("Spline tolerances must be finite and positive.");
             int repeat = 0;
-            multiplicity = 0;
             for (int i = 0; i < this.knots.Length; i++)
             {
                 double knot = this.knots[i];
@@ -70,17 +85,9 @@ namespace netDxf.Entities
                 repeat = i > 0 && knot == this.knots[i - 1] ? repeat + 1 : 1;
                 if (repeat > this.degree + 1)
                     throw new InvalidOperationException("Stored knot multiplicity exceeds degree plus one.");
-                if (knot == parameter) multiplicity++;
             }
-            if (!(this.knots[this.degree] < parameter && parameter < this.knots[this.controlPoints.Length]))
-                throw new ArgumentOutOfRangeException(nameof(parameter), "The knot must be strictly inside the active domain.");
-            int low = this.degree, high = this.controlPoints.Length;
-            while (low + 1 < high)
-            {
-                int middle = low + (high - low) / 2;
-                if (parameter < this.knots[middle]) high = middle; else low = middle;
-            }
-            span = low;
+            if (!(this.knots[this.degree] < this.knots[this.controlPoints.Length]))
+                throw new InvalidOperationException("The spline active domain must have positive length.");
         }
 
         private Spline CreateKnotResult(Vector3[] points, double[] resultWeights, double[] resultKnots,
