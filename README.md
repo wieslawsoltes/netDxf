@@ -123,6 +123,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [SPLINE knot insertion](doc/dxf-conformance/spline-knot-insertion.md) adds detached, shape-preserving interior refinement with bounded exact homogeneous arithmetic, independent metadata, and explicit source/parameter admission.
 
+[SPLINE subdivision](doc/dxf-conformance/spline-split.md) splits clamped positive-weight nonperiodic control-point definitions without sampled refitting, preserves the original parameter intervals, and retains distinct one-sided endpoints at pre-existing discontinuities.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

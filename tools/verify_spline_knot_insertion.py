@@ -87,9 +87,9 @@ def coefficients(actual, expected):
     require(all(math.isfinite(x) for p in actual['points'] for x in p), 'Nonfinite output control')
 
 
-def evaluate(source, u):
+def evaluate(source, u, left_limit=False):
     knots = list(map(F, source['knots'])); u = F(u); p = source['degree']
-    end = u == knots[len(source['points'])]
+    end = left_limit or u == knots[len(source['points'])]
     values = [F(int(a < u <= b if end else a <= u < b)) for a, b in zip(knots, knots[1:])]
     for order in range(1, p + 1):
         new = []
