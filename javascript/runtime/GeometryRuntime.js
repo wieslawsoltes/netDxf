@@ -1,3 +1,4 @@
+import { Exp, Log } from './reference-math/exp-log.js';
 import { Sin, Cos } from './reference-math/sincos.js';
 import { Asin, Acos } from './reference-math/asincos.js';
 import { Atan } from './reference-math/atan.js';
@@ -93,7 +94,7 @@ export const DotNetMath = Object.freeze({
   Asin,
   Acos,
   Atan, Atan2,
-  Pow: Math.pow, Exp: Math.exp, Log: Math.log, Log10: Math.log10,
+  Pow: Math.pow, Exp, Log, Log10: Math.log10,
   Min: Math.min, Max: Math.max, Floor: Math.floor, Ceiling: Math.ceil, Truncate: Math.trunc,
   Sign(value) {
     if (Number.isNaN(value)) throw new ArithmeticException('Function does not accept floating point Not-a-Number values.');

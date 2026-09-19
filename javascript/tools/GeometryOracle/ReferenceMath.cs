@@ -8,7 +8,7 @@ internal static partial class Program
         string name=call.GetProperty("name").GetString()!;
         double[] a=call.GetProperty("args").EnumerateArray().Select(v=>FromBits(v.GetString()!)).ToArray();
         double value=name switch {
-            "Sin"=>Math.Sin(a[0]),"Cos"=>Math.Cos(a[0]),"Tan"=>Math.Tan(a[0]),
+            "Exp"=>Math.Exp(a[0]),"Log"=>Math.Log(a[0]),"Sin"=>Math.Sin(a[0]),"Cos"=>Math.Cos(a[0]),"Tan"=>Math.Tan(a[0]),
             "Asin"=>Math.Asin(a[0]),"Acos"=>Math.Acos(a[0]),"Atan"=>Math.Atan(a[0]),
             "Atan2"=>Math.Atan2(a[0],a[1]),"Fma"=>Math.FusedMultiplyAdd(a[0],a[1],a[2]),
             _=>throw new ArgumentException("Unknown math method")
