@@ -121,6 +121,8 @@ private-cache regeneration. Existing FIELD-result APIs remain cache-only.
 
 [Atomic SPLINE affine transforms](doc/dxf-conformance/spline-affine-atomic.md) preserve stored control/fit/tangent geometry without partial publication, reject projective input, and invalidate changed parent proxies. Exact cancellation and source identities are independently checked; native fitting and private-association regeneration remain separate.
 
+[SPLINE knot insertion](doc/dxf-conformance/spline-knot-insertion.md) adds detached, shape-preserving interior refinement with bounded exact homogeneous arithmetic, independent metadata, and explicit source/parameter admission.
+
 ## Samples and Demos 
 Are contained in the source code.
 Well, at the moment they are just tests for the work in progress.

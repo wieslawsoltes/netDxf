@@ -4,7 +4,7 @@ using BigInteger = System.Numerics.BigInteger;
 namespace netDxf.Entities
 {
     /// <summary>Bounded exact evaluation for ill-conditioned spline samples.</summary>
-    internal static class PeriodicSplineExactEvaluation
+    internal static partial class PeriodicSplineExactEvaluation
     {
         // A sample uses at most eleven controls and 55 local basis steps. The
         // explicit component budget also bounds pathological rational growth.
