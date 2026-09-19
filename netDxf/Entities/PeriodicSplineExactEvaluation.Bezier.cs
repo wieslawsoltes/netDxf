@@ -29,6 +29,13 @@ namespace netDxf.Entities
         private static HomogeneousControl[] BezierBlossom(Vector3[] points, double[] weights,
             double[] knots, int degree, int span)
         {
+            return BezierBlossom(points, weights, knots, degree, span,
+                Rational.FromDouble(knots[span]), Rational.FromDouble(knots[span + 1]));
+        }
+
+        private static HomogeneousControl[] BezierBlossom(Vector3[] points, double[] weights,
+            double[] knots, int degree, int span, Rational start, Rational end)
+        {
             var input = new HomogeneousControl[degree + 1];
             for (int i = 0; i <= degree; i++)
                 input[i] = new HomogeneousControl(points[span - degree + i], weights[span - degree + i]);
@@ -42,7 +49,7 @@ namespace netDxf.Entities
                 Array.Copy(input, work, input.Length);
                 for (int level = 1; level <= degree; level++)
                 {
-                    Rational parameter = localKnots[level <= degree - coefficient ? degree : degree + 1];
+                    Rational parameter = level <= degree - coefficient ? start : end;
                     for (int j = degree; j >= level; j--)
                     {
                         Rational lo = localKnots[j], hi = localKnots[degree + 1 + j - level];
