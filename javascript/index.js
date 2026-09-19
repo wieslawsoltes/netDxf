@@ -108,3 +108,4 @@ export { Ellipse } from './netDxf/Entities/Ellipse.js';
 export { Polyline3D } from './netDxf/Entities/Polyline3D.js';
 export { Polyline3DRecord } from './netDxf/Entities/Polyline3DRecord.js';
 export { Spline } from './netDxf/Entities/Spline.js';
+export { Helix, HelixConstraint } from './netDxf/Entities/Helix.js';
