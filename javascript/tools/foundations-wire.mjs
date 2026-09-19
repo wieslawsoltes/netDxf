@@ -105,6 +105,7 @@ export function jsGeometry(input) {
   }
   return input.steps.map(step => {
     try {
+      if (step.target && !values.has(step.target)) throw new KeyNotFoundException('Missing scenario target: ' + step.target);
       const target = step.target ? values.get(step.target) : null;
       const type = step.type ? resolve(step.type) : target?.constructor;
       const args = (step.args ?? []).map(read);
