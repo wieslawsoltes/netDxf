@@ -105,3 +105,6 @@ export { Arc } from './netDxf/Entities/Arc.js';
 export { Polyline2D } from './netDxf/Entities/Polyline2D.js';
 export { Polyline2DRecord } from './netDxf/Entities/Polyline2DRecord.js';
 export { Ellipse } from './netDxf/Entities/Ellipse.js';
+export { Polyline3D } from './netDxf/Entities/Polyline3D.js';
+export { Polyline3DRecord } from './netDxf/Entities/Polyline3DRecord.js';
+export { Spline } from './netDxf/Entities/Spline.js';
