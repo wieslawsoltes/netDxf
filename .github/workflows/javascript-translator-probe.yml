@@ -1,0 +1,53 @@
+name: JavaScript whole-source translation probe
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['javascript/tools/TranslatorProbe/**', '.github/workflows/javascript-translator-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-feasibility:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Inspect all source through the isolated development compiler
+        run: |
+          mkdir -p javascript/artifacts/translator-probe
+          dotnet --info > javascript/artifacts/translator-probe/toolchain.txt
+          dotnet run --project javascript/tools/TranslatorProbe -c Release -- "$GITHUB_WORKSPACE/_oracle" "$GITHUB_WORKSPACE/javascript/artifacts/translator-probe"
+          node javascript/artifacts/translator-probe/probe.js
+      - name: Retain development-only compiler for offline diagnostic work
+        if: always()
+        run: |
+          out=javascript/artifacts/translator-probe
+          cp javascript/tools/TranslatorProbe/packages.lock.json "$out/" || true
+          cp javascript/tools/TranslatorProbe/obj/project.assets.json "$out/" || true
+          if test -d javascript/tools/TranslatorProbe/bin/Release/net10.0; then
+            tar -czf "$out/compiler-host.tar.gz" -C javascript/tools/TranslatorProbe/bin/Release/net10.0 .
+          fi
+          if test -d "$HOME/.nuget/packages/transpose.bcl/26.9.4872"; then
+            tar -czf "$out/transpose-bcl-development.tar.gz" -C "$HOME/.nuget/packages" transpose.bcl/26.9.4872
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-translator-probe
+          path: javascript/artifacts/translator-probe
+          if-no-files-found: error
+          retention-days: 7

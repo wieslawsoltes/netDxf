@@ -1,0 +1,89 @@
+"""Real Chromium ESM execution without page navigation or network access.
+
+Only relative module specifiers are rewritten to an import map. Native JavaScript
+modules (including their cycles) execute in Chromium, not in a Node/mock DOM.
+SHA-256 alone is supplied by the host because about:blank is not a secure context.
+This does not replace the separately required HTTP-origin browser qualification.
+"""
+from pathlib import Path
+import hashlib
+import json
+import os
+import posixpath
+import re
+import shutil
+import subprocess
+from playwright.sync_api import sync_playwright
+
+ROOT=Path(__file__).resolve().parent.parent
+IMPORT=re.compile(r"""(?P<prefix>\b(?:from\s*|import\s*))(?P<quote>['"])(?P<name>\.[^'"]+)(?P=quote)""")
+sources={}
+def load(name):
+    if name in sources:
+        return
+    file=(ROOT/name).resolve()
+    if ROOT not in file.parents or file.suffix not in ('.js','.mjs'):
+        raise ValueError('Unexpected browser module: '+name)
+    sources[name]=''
+    def replace(match):
+        target=posixpath.normpath(posixpath.join(posixpath.dirname(name),match['name']))
+        load(target)
+        return match['prefix']+match['quote']+'netdxf:'+target+match['quote']
+    sources[name]=IMPORT.sub(replace,file.read_text(encoding='utf-8'))
+
+def fingerprints():
+    return json.loads(subprocess.check_output([
+        os.environ.get('NODE','node'),'--input-type=module','-e',
+        "import {runtimeFingerprint,verificationFingerprint} from './tools/evidence.mjs'; console.log(JSON.stringify({runtimeFingerprint:runtimeFingerprint(),verificationFingerprint:verificationFingerprint()}));"
+    ],cwd=ROOT,text=True))
+
+configuration=os.environ.get('CONFIGURATION','Release')
+report={'completed':False,'executionMode':'inline-native-esm','digestProvider':'host-sha256'}
+try:
+    proof=fingerprints()
+    corpus=json.loads((ROOT/'artifacts/browser/corpus.json').read_text(encoding='utf-8'))
+    if corpus['configuration'] != configuration or any(corpus.get(k)!=v for k,v in proof.items()):
+        raise ValueError('Stale browser corpus or wrong build configuration.')
+    native=json.loads((ROOT/'native-port-manifest.json').read_text(encoding='utf-8'))
+    load('tools/browser-runner.mjs')
+    with sync_playwright() as playwright:
+        executable=os.environ.get('CHROMIUM') or shutil.which('chromium')
+        browser=playwright.chromium.launch(headless=True,**({'executable_path':executable} if executable else {}))
+        try:
+            page=browser.new_page()
+            errors=[]
+            page.on('pageerror',lambda error:errors.append(str(error)))
+            page.expose_function('netDxfHashCanonical',lambda text:hashlib.sha256(text.encode('utf-8')).hexdigest())
+            # Transfer JSON strings rather than the whole object graph through Playwright's
+            # structured serializer. The renderer parses the unchanged descriptors/digests;
+            # ensure_ascii also preserves unpaired UTF-16 surrogates in test inputs.
+            result=page.evaluate("""async ({sourcesJson,corpusJson,nativeJson})=>{
+              const sources=JSON.parse(sourcesJson),corpus=JSON.parse(corpusJson),native=JSON.parse(nativeJson);
+              const imports={},urls=[];
+              try {
+                for(const [name,source] of Object.entries(sources)){
+                  const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
+                  urls.push(url);imports['netdxf:'+name]=url;
+                }
+                const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports});document.head.appendChild(map);
+                const {runBrowserCorpus}=await import('netdxf:tools/browser-runner.mjs');
+                return await runBrowserCorpus(corpus,native,{hashCanonical:window.netDxfHashCanonical});
+              } finally { for(const url of urls)URL.revokeObjectURL(url); }
+            }""",{'sourcesJson':json.dumps(sources,ensure_ascii=True),'corpusJson':json.dumps(corpus,ensure_ascii=True),'nativeJson':json.dumps(native,ensure_ascii=True)})
+            report.update(result)
+            report.update({'browser':browser.version,'modules':len(sources),'pageErrors':errors})
+            if errors or fingerprints()!=proof:
+                report['completed']=False
+                report['fatal']='Browser page error or executable/verifier source changed during execution.'
+        finally:
+            browser.close()
+except Exception as error:
+    report['completed']=False
+    report['fatal']=repr(error)
+finally:
+    output=ROOT/'artifacts/browser-inline'/configuration/'results.json'
+    output.parent.mkdir(parents=True,exist_ok=True)
+    output.write_text(json.dumps(report,indent=2,ensure_ascii=True)+'\n',encoding='utf-8')
+    print(json.dumps(report,indent=2,ensure_ascii=True))
+if not report.get('completed') or report.get('failures') or report.get('fatal'):
+    raise SystemExit('Inline native-browser differential verification failed.')

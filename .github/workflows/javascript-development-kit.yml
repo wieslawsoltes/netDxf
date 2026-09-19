@@ -1,0 +1,65 @@
+name: JavaScript offline development kit
+on:
+  push:
+    branches: ['codex/javascript-port']
+    paths: ['.github/workflows/javascript-development-kit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pinned-toolchain:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - name: Retain the exact offline compiler and runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$(dirname "$(readlink -f "$(command -v dotnet)")")"
+          test -d "$root/sdk/8.0.425"
+          test -d "$root/shared/Microsoft.NETCore.App/8.0.31"
+          test -d "$root/packs/Microsoft.NETCore.App.Ref/8.0.31"
+          mkdir -p "$RUNNER_TEMP/netdxf-development-kit"
+          tar -C "$root" -czf "$RUNNER_TEMP/netdxf-development-kit/dotnet-linux-x64.tar.gz" \
+            dotnet host/fxr/8.0.31 shared/Microsoft.NETCore.App/8.0.31 \
+            packs/Microsoft.NETCore.App.Ref/8.0.31 sdk/8.0.425 LICENSE.txt ThirdPartyNotices.txt
+          dotnet --info > "$RUNNER_TEMP/netdxf-development-kit/dotnet-info.txt"
+          (cd "$RUNNER_TEMP/netdxf-development-kit" && sha256sum dotnet-linux-x64.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: javascript-pinned-dotnet-development-kit
+          path: ${{ runner.temp }}/netdxf-development-kit
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+  translation-diagnostics:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.401'
+      - name: Retain isolated Roslyn and runtime for development-only translation diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$(dirname "$(readlink -f "$(command -v dotnet)")")"
+          test -d "$root/sdk/10.0.401/Roslyn/bincore"
+          test -d "$root/shared/Microsoft.NETCore.App/10.0.12"
+          test -d "$root/packs/Microsoft.NETCore.App.Ref/10.0.12"
+          mkdir -p "$RUNNER_TEMP/netdxf-translation-kit"
+          tar -C "$root" -czf "$RUNNER_TEMP/netdxf-translation-kit/dotnet10-compiler-linux-x64.tar.gz" \
+            dotnet host/fxr/10.0.12 shared/Microsoft.NETCore.App/10.0.12 \
+            packs/Microsoft.NETCore.App.Ref/10.0.12 sdk/10.0.401/Roslyn/bincore LICENSE.txt ThirdPartyNotices.txt
+          dotnet --info > "$RUNNER_TEMP/netdxf-translation-kit/dotnet-info.txt"
+          (cd "$RUNNER_TEMP/netdxf-translation-kit" && sha256sum dotnet10-compiler-linux-x64.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: javascript-translation-diagnostics-kit
+          path: ${{ runner.temp }}/netdxf-translation-kit
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1

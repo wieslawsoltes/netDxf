@@ -1,0 +1,253 @@
+name: JavaScript port
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['javascript/**', '.github/workflows/javascript-port.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: javascript-port-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  implemented-scope:
+    name: Implemented scope / ${{ matrix.configuration }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inventory and compile the pinned production oracle
+        run: |
+          node javascript/tools/dotnet.mjs inventory
+          node javascript/tools/dotnet.mjs oracle
+          node javascript/tools/dotnet.mjs geometry
+          node javascript/tools/dotnet.mjs native-port --check
+          python javascript/tools/ReferenceMath/generate.py --check
+          node javascript/tools/ordinal-casing.mjs --check
+      - name: Execute the complete original C# suite
+        run: node javascript/tools/dotnet.mjs conformance
+      - name: Execute mirrored and supplemental native JavaScript tests
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: |
+          npm test
+          npm run test:unit
+      - name: Exact differential comparisons and generated casing integrity
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: |
+          npm run test:differential
+          node tools/ordinal-casing.mjs --check
+      - name: Independent high-precision development-reference audit
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: python tools/math-independent.py
+      - name: Browser differential on all shared fixtures
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: |
+          python -m pip install -r tools/requirements-browser.txt
+          python -m playwright install --with-deps chromium
+          node tools/browser-corpus.mjs
+          python tools/browser-check.py
+      - name: Inline native ESM browser qualification
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: python tools/browser-inline-check.py
+      - name: Offline package install and reproducible measurements
+        if: ${{ !cancelled() }}
+        working-directory: javascript
+        run: |
+          npm run test:package
+          npm run benchmark
+          npm run benchmark:math
+      - name: Verify implemented scope and enumerate missing parity
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/verify.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-evidence-${{ matrix.configuration }}
+          path: |
+            javascript/artifacts/**/*.json
+            javascript/artifacts/**/*.log
+            !javascript/artifacts/browser/corpus.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain exact source checkpoint
+        if: always() && matrix.configuration == 'Release'
+        run: |
+          mkdir -p artifacts/javascript
+          git archive --format=tar.gz --output=artifacts/javascript/source-checkpoint.tar.gz HEAD
+          git rev-parse HEAD > artifacts/javascript/source-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.configuration == 'Release'
+        with:
+          name: javascript-source-checkpoint
+          path: artifacts/javascript
+          if-no-files-found: error
+          retention-days: 7
+  geometry-exact-qualification:
+    name: Exact randomized geometry / Release
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      CONFIGURATION: Release
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Compile the unchanged pinned oracle
+        run: node javascript/tools/dotnet.mjs oracle
+      - name: Require exact randomized geometry without tolerances or allowlists
+        run: node javascript/tools/geometry-stress.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-geometry-exact-Release
+          path: javascript/artifacts/geometry-exact/Release/results.json
+          if-no-files-found: error
+          retention-days: 7
+  filesystem-platforms:
+    name: Filesystem parity / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+    env:
+      CONFIGURATION: Release
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+    steps:
+      - name: Preserve pinned source and fixture bytes on checkout
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Build the optional Windows replacement host
+        if: runner.os == 'Windows'
+        working-directory: javascript
+        run: npm run build:windows-host
+      - name: Compile the actual filesystem oracle
+        run: |
+          node javascript/tools/dotnet.mjs inventory
+          node javascript/tools/dotnet.mjs oracle
+      - name: Execute native Windows integration and supplemental tests
+        if: runner.os == 'Windows' && !cancelled()
+        working-directory: javascript
+        run: |
+          npm run test:windows-host
+          npm run test:unit
+      - name: Run the mirrored raw atomic-save cases
+        env:
+          DXF_TEST_FILTER: atomic/
+        run: node javascript/tests/netDxf.Conformance/Program.js
+      - name: Compare real filesystem output and rejection behavior
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/filesystem-differential.mjs
+      - name: Compare styles and support files on the actual host
+        if: ${{ !cancelled() }}
+        run: |
+          node javascript/tools/dotnet.mjs geometry
+          node javascript/tools/style-differential.mjs
+          node javascript/tools/entity-differential.mjs
+      - name: Validate offline Node package installation
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/package-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-filesystem-${{ matrix.os }}
+          path: |
+            javascript/artifacts/filesystem-differential/Release/results.json
+            javascript/artifacts/style-differential/Release/results.json
+            javascript/artifacts/entity-differential/Release/results.json
+            javascript/artifacts/conformance/*.json
+            javascript/artifacts/package/results.json
+            javascript/artifacts/oracle/Release/*.log
+            javascript/native/bin/**/build.json
+            javascript/artifacts/windows-host/*.json
+            javascript/artifacts/windows-host/*.log
+            javascript/artifacts/unit/*.json
+            javascript/artifacts/unit/*.log
+          if-no-files-found: error
+          retention-days: 7
+  full-port-completion:
+    name: Full-port completion (blocked while parity is incomplete)
+    needs: [implemented-scope, geometry-exact-qualification, filesystem-platforms]
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: javascript-evidence-Release
+          path: evidence
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Require full completion, not merely a passing subset
+        env:
+          FILESYSTEM_RESULT: ${{ needs.filesystem-platforms.result }}
+          BASELINE_RESULT: ${{ needs.implemented-scope.result }}
+          EXACT_GEOMETRY_RESULT: ${{ needs.geometry-exact-qualification.result }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const report = JSON.parse(fs.readFileSync('evidence/verification/Release/report.json'));
+          if (report.fullParityVerified !== true || process.env.BASELINE_RESULT !== 'success' || process.env.EXACT_GEOMETRY_RESULT !== 'success' || process.env.FILESYSTEM_RESULT !== 'success') {
+            console.error('Implemented baseline:', process.env.BASELINE_RESULT, 'Exact randomized geometry:', process.env.EXACT_GEOMETRY_RESULT);
+            console.error('Full parity is BLOCKED. Missing original cases:', report.tests.missingCount);
+            console.error('Missing source-file mirrors:', report.library.missing?.length ?? "unavailable");
+            process.exit(1);
+          }
+          NODE

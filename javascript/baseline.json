@@ -1,0 +1,31 @@
+{
+  "repository": "wieslawsoltes/netDxf",
+  "ref": "3496ab91893a1e4ec9261b4833479f1799149cdc",
+  "libraryRoot": "netDxf",
+  "testRoot": "tests/netDxf.Conformance",
+  "sampleRoot": "TestDxfDocument",
+  "fixtureRoots": [
+    "tests/fixtures",
+    "TestDxfDocument"
+  ],
+  "status": "in-progress",
+  "fullParityVerified": false,
+  "sourceFingerprint": "97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d",
+  "toolchain": {
+    "sdk": "8.0.425",
+    "runtime": "8.0.31",
+    "referencePack": "8.0.31"
+  },
+  "counts": {
+    "librarySourceFiles": 510,
+    "conformanceSourceFiles": 193,
+    "dxfFixtures": 399,
+    "dotnetConformanceCases": 35309
+  },
+  "globalization": {
+    "profile": "dotnet8-ubuntu22-ordinal-v1",
+    "referencePlatform": "ubuntu-22.04-linux-x64",
+    "scalarMappings": 1448,
+    "scalarMapSha256": "09afae79604b66c70a492180ff3beb17ef36595a8a75db3c2b858f6c4bae609b"
+  }
+}
