@@ -32,7 +32,7 @@ configuration.ViewAspectRatio = 1.6;
 configuration.NamedUcs = frame;
 ```
 
-## Publication and delivery status
+## Publication history and corrected delivery status
 
 The production models and original/supplemental tests are published on PR #98,
 branch `codex/javascript-port`, as two non-forced fast-forward commits:
@@ -48,19 +48,16 @@ passed all **2,569 original JavaScript cases** and **314 supplemental tests**, w
 no failures, skips or TODOs. No original C# source, fixture, generated geometry,
 reference-math implementation or license material was changed.
 
-**The new coordinate differential and browser/gate integration is saved locally,
-not published on the branch.** The GitHub tool rejected the shared C# verifier
-file upload twice. Rather than activate an incomplete verifier or try another
-route around the block, the publication excludes that entire integration. Existing
-remote qualification gates remain unchanged. Local independent results below
-therefore must not be described as hosted coordinate-corpus qualification.
+**Delivery correction:** the complete eleven-file coordinate/view differential,
+browser and mandatory-gate integration was published by
+`62a88b4d2e10cb7f6b1aee97671aa590252cc1aa`. It is no longer local-only and no
+pending coordinate patch is needed. That commit preserved the newer library work
+already on the branch. The 1,020-scenario / 5,365-operation stage remains required.
 
-The complete local continuation consists of eleven files: the coordinate and view
-request corpora, JS/C# coordinate serializers, strict differential runner, shared
-JS/C# verifier integration, browser-corpus integration, qualification and completion
-gates, and the package test command. A patch and source-bound evidence are retained
-with the conversation handoff. A successful current remote model/test workflow
-would still not execute this new corpus until that separate integration is applied.
+The earlier handoff's local-only status and coverage numbers below are historical.
+Current source, case counts, fingerprints and local/hosted distinctions are in the
+[HELIX checkpoint](HELIX.md). A previous passing workflow still does not qualify a
+later executable tree; Release's retained coordinate mismatch remains visible.
 
 ## UCS state and transformations
 
@@ -117,7 +114,7 @@ Null SUN with a retained presence bit survives cloning. Non-null owned SUN data
 rejects the shallow table clone before clone-name validation, because the required
 ownership-subtree operation is not implemented here. Live-section metadata retains
 omitted versus explicitly null state, clear, clone and validation order. The
-non-null `Section` entity and registered live-section graph are still unported;
+non-null `Section` entity was added in a later checkpoint; the registered live-section graph remains unqualified;
 structural host checks are supplemental tests, not native document qualification.
 
 ## Ownership adapters and API boundary
@@ -130,7 +127,7 @@ names, import dependencies, register SUN/live-section data, or read/write DXF.
 Properties and methods corresponding to C# internal hooks remain implementation
 adapters, not a claim that the missing registered workflows are implemented.
 
-## Executable evidence and retained failure
+## Historical executable evidence and retained failure
 
 Ten complete original detached test cases were added: three UCS elevation cases,
 one orthographic-origin case, five named-view cases and one VPORT validation case.
@@ -160,7 +157,7 @@ passing Release checkpoint does not qualify this enlarged corpus. Full C# API,
 registered ownership, platform/performance and native application qualification
 remain unfinished.
 
-## Local checkpoint and completion ledger
+## Historical local checkpoint and completion ledger
 
 The unmodified pinned .NET source passed **35,309 original cases in each Debug and
 Release configuration** in this session. Both native-lowering reproduction and
