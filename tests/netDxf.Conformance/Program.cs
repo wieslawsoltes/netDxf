@@ -58,6 +58,7 @@ internal static partial class Program
         RegisterSplineAffineAtomicTests();
         RegisterEllipseSamplingTests();
         RegisterConicSplineTests();
+        RegisterSplineKnotInsertionTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
