@@ -116,3 +116,6 @@ export { BSplineSurface } from './netDxf/GTE/BSplineSurface.js';
 export { NURBSSurface } from './netDxf/GTE/NURBSSurface.js';
 export { PolygonMesh } from './netDxf/Entities/PolygonMesh.js';
 export { PolygonMeshRecord } from './netDxf/Entities/PolygonMeshRecord.js';
+
+export { Hatch } from './netDxf/Entities/Hatch.js';
+export { HatchBoundaryPath } from './netDxf/Entities/HatchBoundaryPath.js';
