@@ -1,3 +1,4 @@
+import { hatchBoundaryWire } from './hatch-entity-wire.mjs';
 import { surfaceWire } from './surface-wire.mjs';
 import { coordinateWire } from './coordinate-wire.mjs';
 import { databaseModelWire } from './database-model-wire.mjs';
@@ -8,12 +9,12 @@ import * as api from '../index.js';
 import { utf16Wire } from './mtext-wire.mjs';
 import { entityWire } from './entities-wire.mjs';
 import { styleWire, shapeInput } from './styles-wire.mjs';
-import { InvalidOperationException, KeyNotFoundException } from '../runtime/Errors.js';
+import { InvalidOperationException, KeyNotFoundException, IndexOutOfRangeException } from '../runtime/Errors.js';
 import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
 
-const resolve = name => name.startsWith('List<') ? ReferenceList : api[name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|IO|GTE)\./, '')];
+const resolve = name => name.startsWith('List<') ? ReferenceList : name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|IO|GTE)\./, '').split('+').reduce((scope, part) => scope?.[part], api);
 function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };
@@ -45,6 +46,7 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const boundary=hatchBoundaryWire(value,wire); if(boundary!==undefined)return boundary;
   const surface=surfaceWire(value,wire); if(surface!==undefined)return surface;
   const model=databaseModelWire(value,wire); if(model!==undefined)return model;
   const coordinate=coordinateWire(value,wire); if(coordinate!==undefined)return coordinate;
@@ -91,8 +93,8 @@ export function jsGeometry(input) {
     if (name.startsWith('IEnumerable<')) return 'System.Collections.Generic.IEnumerable<' + typeName(name.slice(12,-1)) + '>';
     const simple={Double:'double',Int32:'int',Int16:'short',Byte:'byte',Boolean:'bool',String:'string',Object:'object',IFormatProvider:'System.IFormatProvider',Color:'System.Drawing.Color'};
     if (simple[name]) return simple[name];
-    if(name.startsWith('netDxf.')) return name;
-    return 'netDxf.'+name;
+    if(name.startsWith('netDxf.')) return name.replaceAll('+', '.');
+    return 'netDxf.'+name.replaceAll('+', '.');
   }
   function invoke(type, target, step, args) {
     const signature=step.signature?.map(typeName).join(',');
@@ -137,8 +139,18 @@ export function jsGeometry(input) {
         case 'new': result = construct(type,args,step.signature); break;
         case 'get': result = (target ?? type)[step.member]; break;
         case 'set': (target ?? type)[step.member] = read(step.value); break;
-        case 'index': result = target.get_Item(...args); break;
-        case 'set-index': target.set_Item(...args, read(step.value)); break;
+        case 'index':
+          if (Array.isArray(target) && typeof target.get_Item !== 'function') {
+            if (!Number.isInteger(args[0]) || args[0] < 0 || args[0] >= target.length) throw new IndexOutOfRangeException();
+            result = Copy(target[args[0]]);
+          } else result = target.get_Item(...args);
+          break;
+        case 'set-index':
+          if (Array.isArray(target) && typeof target.set_Item !== 'function') {
+            if (!Number.isInteger(args[0]) || args[0] < 0 || args[0] >= target.length) throw new IndexOutOfRangeException();
+            target[args[0]] = Copy(read(step.value));
+          } else target.set_Item(...args, read(step.value));
+          break;
         case 'snapshot': result = target; break;
         case 'call': {
           if(type===api.DxfClassCollection&&['Contains','Remove'].includes(step.member)&&step.signature?.[0]==='DxfClass')

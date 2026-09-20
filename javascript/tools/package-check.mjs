@@ -33,7 +33,15 @@ try {
       if(createHash('sha256').update(fs.readFileSync(new URL('third_party/glibc-math/'+file,packageRoot))).digest('hex')!==expected)throw new Error('Packaged exp/log preferred source drift: '+file);
     if(DotNetMath.Exp(-745)!==Number.MIN_VALUE||DotNetMath.Log(1)!==0)throw new Error('Packed exp/log runtime failed');
     if(DotNetMath.Sin(-0.20148213487118483)!==-0.2001217029035577)throw new Error('Packed reference math failed');
-    import {DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    import {Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    const hatchSource=new Circle(Vector3.Zero,2), hatchPath=new HatchBoundaryPath([hatchSource]);
+    const hatch=new Hatch(HatchPattern.Solid,[hatchPath],true);hatch.SeedPoints.Add(new Vector2(3,4));hatch.PixelSize=null;
+    hatch.TransformBy(Matrix3.Identity,Vector3.Zero);
+    if(hatch.Associative||hatchSource.Reactors.Count||hatchPath.Entities.Count||hatch.BoundaryPaths.get_Item(0)!==hatchPath)throw new Error('Packed HATCH identity unlink failed');
+    const hatchClone=hatch.Clone();hatchClone.TransformBy(Matrix3.Scale(2,3,1),new Vector3(5,7,0));
+    if(!(hatchClone.BoundaryPaths.get_Item(0).Edges.get_Item(0) instanceof HatchBoundaryPath.Ellipse)||hatchClone.PixelSize!==null)throw new Error('Packed HATCH affine conversion failed');
+    if(hatchClone.SeedPoints.get_Item(1).X!==11||hatchClone.SeedPoints.get_Item(1).Y!==19||hatch.SeedPoints.get_Item(1).X!==3)throw new Error('Packed HATCH seed clone isolation failed');
+    if(hatchClone.CreateBoundary(false).Count!==1)throw new Error('Packed HATCH boundary conversion failed');
     const registry=new ApplicationRegistry('REGISTRY'),data=new XData(registry);
     data.XDataRecord.Add(new XDataRecord(XDataCode.BinaryData,Uint8Array.of(1,2)));registry.XData.Add(data);
     const clone=registry.Clone('COPY');if(clone.XData.get_Item('COPY').ApplicationRegistry!==clone)throw new Error('Packed cyclic registry clone failed');

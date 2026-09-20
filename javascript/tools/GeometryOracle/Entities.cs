@@ -46,6 +46,7 @@ internal static partial class Program
             color=Wire(entity.Color),layer=Wire(entity.Layer),linetype=Wire(entity.Linetype),lineweight=(int)entity.Lineweight,transparency=Wire(entity.Transparency),
             linetypeScale=Wire(entity.LinetypeScale),normal=Wire(entity.Normal),visible=entity.IsVisible,colorName=entity.ColorName,shadow=Wire(entity.ShadowMode),proxy=Wire(entity.ProxyGraphics),
             reactors=entity.Reactors.Select(r=>r is null?null:new {code=r.CodeName,handle=r.Handle}).ToArray(),xdata=entity.XData.Values.Select(Wire).ToArray()};
+        if(HatchEntityWire(entity,common,out result))return true;
         if(CurveWire(entity,common,out result))return true;
         if (InertEntityWire(entity,common,out result)) return true;
         if(entity is Light light) result=new {common,name=Wire(light.Name),version=light.VersionNumber,kind=(int)light.LightType,on=light.IsOn,plot=light.PlotGlyph,intensity=Wire(light.Intensity),position=Wire(light.Position),target=Wire(light.Target),attenuation=(int)light.AttenuationType,limits=light.UseAttenuationLimits,start=Wire(light.AttenuationStartLimit),end=Wire(light.AttenuationEndLimit),hotspot=Wire(light.HotspotAngle),falloff=Wire(light.FalloffAngle),cast=light.CastShadows,shadow=(int)light.ShadowType,map=light.ShadowMapSize,softness=light.ShadowMapSoftness};

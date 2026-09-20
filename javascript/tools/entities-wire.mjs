@@ -1,3 +1,4 @@
+import { hatchEntityWire } from './hatch-entity-wire.mjs';
 import { curveWire, curveRecordWire } from './curve-wire.mjs';
 import { inertEntityWire } from './inert-entity-wire.mjs';
 import * as api from '../index.js';
@@ -27,6 +28,7 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  const hatch=hatchEntityWire(value,common,wire);if(hatch!==undefined)return hatch;
   const curve=curveWire(value,common,wire);if(curve!==undefined)return curve;
   const inert=inertEntityWire(value,common,wire); if(inert!==undefined)return inert;
   if (value instanceof api.Light) return {common,name:wire(value.Name),version:value.VersionNumber,kind:value.LightType,on:value.IsOn,plot:value.PlotGlyph,intensity:wire(value.Intensity),position:wire(value.Position),target:wire(value.Target),attenuation:value.AttenuationType,limits:value.UseAttenuationLimits,start:wire(value.AttenuationStartLimit),end:wire(value.AttenuationEndLimit),hotspot:wire(value.HotspotAngle),falloff:wire(value.FalloffAngle),cast:value.CastShadows,shadow:value.ShadowType,map:value.ShadowMapSize,softness:value.ShadowMapSoftness};
