@@ -25,7 +25,12 @@ detached identity, invalid arguments in both positions, finite extremes,
 no-ops, epsilon independence, clones and six modern typed DXF profiles in both
 transports. The independent checker validates axes, ratio and proxy presence
 in 72 drawings, including swapped no-op arguments, then confirms the loaded
-entity. Corrupted axes, ratio and cache state must fail the positive validator.
+entity geometry. Its ELLIPSE loader deliberately skips proxy graphics, so the
+checker validates exact physical bytes and additionally uses ezdxf's general
+proxy-packet extractor. It does not claim the loaded ELLIPSE object retains
+those bytes. The checker preserves binary chunks before generic scalar casting
+and decodes text chunks as strict hexadecimal, rather than stringifying bytes.
+Corrupted axes, ratio and cache state must fail the positive validator.
 These are synthetic checks, not native renderer qualification.
 
 ```sh

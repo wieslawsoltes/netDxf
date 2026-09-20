@@ -1,13 +1,38 @@
 #!/usr/bin/env python3
 """Check resized ELLIPSE axes and retained/invalidated proxy packets independently."""
 import itertools
+import io
 from pathlib import Path
 import sys
 import ezdxf
-from verify_raw_line_geometry import PROFILES, load_tags, require, reject, audit_signature
+from ezdxf.lldxf.tagger import ascii_tags_loader, binary_tags_loader
+from ezdxf.lldxf.types import cast_tag_value, DXFTag
+from ezdxf.lldxf.tags import Tags
+from ezdxf.proxygraphic import load_proxy_graphic
+from verify_raw_line_geometry import PROFILES, require, reject, audit_signature
 
 VERSIONS={k:v for k,v in PROFILES.items() if k not in ('AutoCad12','AutoCad13','AutoCad14')}
 AXES=((8.,4.),(16.,4.),(4.,16.),(8.,2.),(4.,8.),(8.,8.))
+
+def load_visibility_tags(path):
+    # Binary chunk values must be captured before generic casting: the generic
+    # schema caster stringifies bytes, which destroys the independent packet view.
+    data = path.read_bytes()
+    tags = binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else \
+        ascii_tags_loader(io.StringIO(data.decode('cp1252'), newline=None))
+    result = []
+    for tag in tags:
+        if 310 <= tag.code <= 319:
+            value = tag.value
+            if isinstance(value, str):
+                require(len(value) % 2 == 0 and all(c in '0123456789abcdefABCDEF' for c in value),
+                        'Malformed hexadecimal proxy chunk')
+                value = bytes.fromhex(value)
+            require(isinstance(value, bytes), 'Unexpected proxy chunk representation')
+        else:
+            value = cast_tag_value(tag.code, tag.value)
+        result.append((tag.code, value))
+    return result
 
 def check(tags,mode):
     starts=[i for i,t in enumerate(tags) if t==(0,'ELLIPSE')];require(len(starts)==1,'Ellipse inventory')
@@ -30,7 +55,7 @@ def main(directory):
     reject(lambda:inventory(names-{next(iter(names))}));reject(lambda:inventory(names|{'ellipse-axis-proxy-extra.dxf'}))
     controls=0
     for version,binary,mode in specs:
-        path=directory/f'ellipse-axis-proxy-{version}-{binary}-{mode}.dxf';tags=load_tags(path)
+        path=directory/f'ellipse-axis-proxy-{version}-{binary}-{mode}.dxf';tags=load_visibility_tags(path)
         require(path.read_bytes().startswith(b'AutoCAD Binary DXF')==binary,'Transport changed')
         at=tags.index((9,'$ACADVER'));require(tags[at+1]==(1,VERSIONS[version]),'Profile changed')
         a,b=check(tags,mode)
@@ -45,7 +70,12 @@ def main(directory):
         entity=list(doc.modelspace().query('ELLIPSE'))[0]
         major,minor=sorted(AXES[mode],reverse=True)
         require(tuple(entity.dxf.major_axis)==(major/2,0.,0.) and entity.dxf.ratio==minor/major,'Independent axes differ')
-        require(entity.proxy_graphic==(bytes((1,3,7,11)) if mode in (0,4) else None),'Independent proxy differs')
+        # The ELLIPSE loader intentionally skips proxy_graphic. Exercise the
+        # independent general packet extractor, rather than claiming that the
+        # loaded ELLIPSE object preserves data its loader deliberately omits.
+        packet = Tags(DXFTag(code, value) for code, value in tags[a:b])
+        decoded = load_proxy_graphic(packet, length_code=92 if version == 'AutoCad2000' else 160)
+        require(decoded==(bytes((1,3,7,11)) if mode in (0,4) else None), 'Independent proxy packet differs')
     print(f'PASS: {len(specs)} ellipse drawings; {controls} corruptions and two inventory controls rejected; zero graph errors or repairs.')
 
 if __name__=='__main__':
