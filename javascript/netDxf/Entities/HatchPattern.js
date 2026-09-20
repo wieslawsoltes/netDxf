@@ -53,7 +53,10 @@ export class HatchPattern {
   get Description() { return this.$description; }
   set Description(value) { this.$description = value; }
   get Style() { return this.$style; }
+  // Original internal setters used by HATCH affine pattern reconstruction.
+  set Style(value) { this.$style = value; }
   get Fill() { return this.$fill; }
+  set Fill(value) { this.$fill = value; }
   get Type() { return this.$type; }
   set Type(value) { this.$type = value; }
   get Origin() { return Copy(this.$origin); }
