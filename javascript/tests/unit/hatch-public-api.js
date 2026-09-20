@@ -88,12 +88,17 @@ test('HATCH clones independently own pattern, paths and seeds without source ass
   assert.equal(h.Pattern.Scale, 1);
 });
 
-test('identity HATCH transformation preserves source and path identity', () => {
+test('identity HATCH transformation preserves geometry identity but unlinks source association', () => {
   const path = circlePath(), source = path.Entities.get_Item(0);
-  const h = new Hatch(HatchPattern.Solid, [path], true), pattern = h.Pattern;
+  const h = new Hatch(HatchPattern.Solid, [path], true), pattern = h.Pattern, edge = path.Edges.get_Item(0);
+  const center = source.Center;
   h.TransformBy(Matrix3.Identity, Vector3.Zero);
   assert.equal(h.BoundaryPaths.get_Item(0), path);
-  assert.equal(path.Entities.get_Item(0), source);
+  assert.equal(path.Edges.get_Item(0), edge);
+  assert.equal(path.Entities.Count, 0);
   assert.equal(h.Pattern, pattern);
-  assert.equal(h.Associative, true);
+  assert.equal(h.Associative, false);
+  assert.equal(path.ContainingHatch, h);
+  assert.deepEqual(source.Center, center);
+  assert.ok(!Array.from(source.Reactors).includes(h));
 });
