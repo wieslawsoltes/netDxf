@@ -1,6 +1,6 @@
 # Verification, evidence, and completion gates
 
-**Current checkpoint:** [Polygon meshes and surfaces](POLYGON_MESH_SURFACES.md) records the current code and verifier, the 123,141-comparison browser corpus, 6,316 entity scenarios / 36,735 operations, 1,066 surface scenarios / 17,258 operations, and exact remaining failures. [HELIX and exp/log](HELIX.md) retains its earlier source-bound evidence. [The earlier display report](DISPLAY_CHECKPOINT.md) is historical; its coverage and CI status are not the current completion ledger.
+**Current checkpoint:** [HATCH entities and boundaries](HATCH_ENTITIES.md) records code `b8b1931`, the 124,216-comparison browser corpus, 7,391 entity scenarios / 57,725 operations, 147 additional complete original tests and the exact remaining failures. [Polygon meshes and surfaces](POLYGON_MESH_SURFACES.md), [HELIX and exp/log](HELIX.md), and [the display report](DISPLAY_CHECKPOINT.md) retain historical source-bound evidence; their coverage and CI status are not the current ledger.
 
 ## Fixed reference
 
@@ -10,7 +10,7 @@
 
 ## Numerical reconciliation history
 
-Local code `a14fc00` and its documentation `3e46a00` were fully published as `593138a` and `e30eea1` over the exact upstream `6bedd1b` tree. They preserve the reference-math backend, preferred-source generation, license material and all 61,876 existing math cases, and add 30,904 exact production .NET comparisons plus a distinct MPFR audit of a development-only high-precision evaluator. [NUMERICS.md](NUMERICS.md) retains that historical source-bound evidence; [HELIX.md](HELIX.md) records its historical completed hosted run; current results are recorded in [POLYGON_MESH_SURFACES.md](POLYGON_MESH_SURFACES.md). Neither establishes full-port completion.
+Local code `a14fc00` and its documentation `3e46a00` were fully published as `593138a` and `e30eea1` over the exact upstream `6bedd1b` tree. They preserve the reference-math backend, preferred-source generation, license material and all 61,876 existing math cases, and add 30,904 exact production .NET comparisons plus a distinct MPFR audit of a development-only high-precision evaluator. [NUMERICS.md](NUMERICS.md) retains that historical source-bound evidence; [HELIX.md](HELIX.md) records its historical completed hosted run; current results are recorded in [HATCH_ENTITIES.md](HATCH_ENTITIES.md). Neither establishes full-port completion.
 
 ## Evidence categories
 
@@ -22,7 +22,7 @@ Local code `a14fc00` and its documentation `3e46a00` were fully published as `59
 | Raw differential | Same accept/reject outcome, float bits, tag order, indexes, and exact serialized bytes | Typed JavaScript document/entity support |
 | Handle differential | Same contextual occurrences/diagnostics, traversal, remap outcomes, and resulting bytes | Interpretation of opaque/private references |
 | OBJECTS differential | Same schema views, transaction results, aliases/ownership, errors, and emitted bytes | General typed OBJECTS or private-schema parity |
-| Detached entity differential | Constructors, mutable state, event substitutions, cloning and exact transform results for the implemented primitives, curves, splines, HELIX, text/layout, mesh, underlay and raster models | Registered-document ownership, the absent entity APIs, typed DXF IO or external-content rendering |
+| Detached entity differential | Constructors, mutable state, event substitutions, cloning and exact transform results for the implemented primitives, HATCH boundaries/associations, curves, splines, HELIX, text/layout, mesh, underlay and raster models | Registered-document ownership, the absent entity APIs, typed DXF IO or external-content rendering |
 | Surface differential | Basis derivatives, periodic wrapping, polynomial/rational jets, mutable arrays, indexing, exceptions and exact numeric state from the pinned C# surface APIs | Every malformed GTE structure, Debug.Assert host behavior, surface trimming or typed DXF IO |
 | Detached hatch/PAT differential | Model/clone/edit state, exact double bits, rejection behavior and PAT text against the pinned C# APIs | Typed HATCH boundaries, entity ownership, typed DXF IO or complete filesystem parity |
 | Typed foundation differential | Actual constructor/method/property/operator results, mutation state, exceptions and exact numeric bits for the selected baseline | Complete geometry/libm equivalence or a typed document engine |
@@ -51,7 +51,7 @@ Run the commands in the parent README with `CONFIGURATION=Release` and repeat wi
 - `artifacts/dotnet-release/` or `dotnet-debug/`: original results and pin/configuration metadata.
 - `artifacts/conformance/`: JS original-case results and execution metadata.
 - `artifacts/differential/<configuration>/`, `handles-differential/`, `objects-differential/`, `casing-differential/`, `geometry-differential/`, and `collection-differential/`: completion flag, exact-comparison counts, failure evidence, and fingerprints.
-- `artifacts/entity-differential/<configuration>/results.json`: all 6,316 current detached-entity scenarios and 36,735 operations, including retained platform counterexamples.
+- `artifacts/entity-differential/<configuration>/results.json`: all 7,391 current detached-entity scenarios and 57,725 operations, including retained platform counterexamples.
 - `artifacts/surface-differential/<configuration>/results.json`: all 1,066 surface scenarios and 17,258 operations, including any retained platform counterexamples.
 - `artifacts/hatch-differential/<configuration>/results.json`: detached hatch/gradient state and PAT text comparisons, with input hashes and all failure evidence.
 - `artifacts/geometry-exact/<configuration>/results.json`: strict randomized geometry comparisons and every failing exact-bit input/output. This is a separate required qualification, not part of an implied all-geometry baseline pass.
@@ -61,7 +61,7 @@ Run the commands in the parent README with `CONFIGURATION=Release` and repeat wi
 
 No report with a fatal error, incomplete run, missing corpus, stale runtime/verifier fingerprint, failing/duplicate/skipped/TODO case, or filtered original suite satisfies verification. The JSONL client rejects oracle exits, malformed or unsolicited output, and timeouts. Its shutdown promise is registered before execution so early process termination cannot leave cleanup indefinitely pending or hide the original failure. Supplemental tests deliberately inject those failures.
 
-Browser evidence is derived from .NET outputs, not JavaScript expected values. The corpus contains exact result digests for raw fixtures, authored transactions, foundation calls, observable collections, detached lifecycle, hatch/PAT, styles/LIN/SHX, entity models, coordinate systems, database models, NURBS evaluation and parametric surfaces: 16,849 comparisons. It additionally includes all 61,876 upstream reference-math, 30,904 additional production math and 13,512 exp/log comparisons, totaling 123,141. Original 256-request geometry batch boundaries are preserved. HTTP and inline browser evidence remain separate requirements and actual result details are retained for every mismatch. The independent randomized geometry corpus still has its own mandatory CI lane; it is not omitted from completion. Code hashes are checked after execution.
+Browser evidence is derived from .NET outputs, not JavaScript expected values. The corpus contains exact result digests for raw fixtures, authored transactions, foundation calls, observable collections, detached lifecycle, hatch/PAT, styles/LIN/SHX, entity models, coordinate systems, database models, NURBS evaluation and parametric surfaces, including all 1,075 HATCH entity scenarios: 17,924 comparisons. It additionally includes all 61,876 upstream reference-math, 30,904 additional production math and 13,512 exp/log comparisons, totaling 124,216. Original 256-request geometry batch boundaries are preserved. HTTP and inline browser evidence remain separate requirements and actual result details are retained for every mismatch. The independent randomized geometry corpus still has its own mandatory CI lane; it is not omitted from completion. Code hashes are checked after execution.
 
 ## Gates
 
@@ -103,4 +103,11 @@ At the `5b63748` display checkpoint, the complete browser corpus had 102,394 com
 
 At that historical checkpoint, fixed foundations and randomized geometry passed in both Linux configurations. Hosted Chromium 152 passed all 102,394 Release comparisons; Debug retains its Bézier NaN-sign failure. Windows retains two exact result mismatches in `display/seeded/7`, identical to the starting checkpoint; all newly added underlay/raster cases pass there. The default local ICU profile remains rejected even though pinned CI globalization passes. An explicitly selected invariant-mode comparer experiment remains separate from the default casing result. None of this completes the missing typed APIs/tests or broad platform/performance qualification.
 
-The math benchmark measures host, production reference and development reference costs separately, retaining all samples. Neither a generation workflow success nor improved numerical coverage is a full parity or performance acceptance claim. Methodology and historical measurements are in [NUMERICS.md](NUMERICS.md); historical display evidence is in [DISPLAY_CHECKPOINT.md](DISPLAY_CHECKPOINT.md), and current evidence is in [POLYGON_MESH_SURFACES.md](POLYGON_MESH_SURFACES.md).
+The math benchmark measures host, production reference and development reference costs separately, retaining all samples. Neither a generation workflow success nor improved numerical coverage is a full parity or performance acceptance claim. Methodology and historical measurements are in [NUMERICS.md](NUMERICS.md); historical display evidence is in [DISPLAY_CHECKPOINT.md](DISPLAY_CHECKPOINT.md), and current evidence is in [HATCH_ENTITIES.md](HATCH_ENTITIES.md).
+
+
+## HATCH boundary/entity qualification
+
+The entity differential includes **1,075 additional HATCH scenarios / 20,990 exact operations** from `tools/hatch-entity-corpus.mjs`. Separate C# and JS serializers observe their own production models; the input corpus contains no expected results. The shared test interpreter resolves nested CLR edge names and explicit enumerable signatures, and preserves value-array indexing/copy semantics. Both generated browser corpora include the same scenarios. Required entity counts increase to 7,391 / 57,725 and required browser comparisons to 124,216; no earlier comparison is dropped.
+
+Three original-path test-file mirrors register 145 complete detached periodic-HATCH cases plus the complete pixel-size/model and seeds/api-validation cases. Document/INSERT/transport methods remain unregistered, not replaced by shortened bodies. Twelve supplemental tests are separately accounted. The identity-transform regression now checks the original contract: validation first, then associative unlinking, even for exact identity; failed validation retains source links. Current code, exact categories, local results and remaining platform failures are in [HATCH_ENTITIES.md](HATCH_ENTITIES.md).
