@@ -148,7 +148,7 @@ namespace netDxf.IO
                 if (xdata)
                 {
                     if (code < 1000) throw new FormatException("Ordinary conic data cannot follow XData.");
-                    if (code == 1005 || (code >= 1010 && code <= 1033) || code == 1041 || code == 1042)
+                    if (RawGeometrySensitiveXDataCode(code))
                         packet.CanEdit = false;
                     continue;
                 }

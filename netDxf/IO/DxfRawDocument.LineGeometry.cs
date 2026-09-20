@@ -134,7 +134,7 @@ namespace netDxf.IO
                 if (xdata)
                 {
                     if (code < 1000) throw new FormatException("Ordinary LINE data cannot follow XData.");
-                    if (code == 1005 || (code >= 1010 && code <= 1033)) result.CanEdit = false;
+                    if (RawGeometrySensitiveXDataCode(code)) result.CanEdit = false;
                     continue;
                 }
                 if (code >= 1000) throw new FormatException("LINE XData requires an application marker.");
@@ -187,6 +187,13 @@ namespace netDxf.IO
                 if (item.NumericHandle == target && item.Role != DxfRawHandleRole.HeaderSeed &&
                     !(ReferenceEquals(item.Record, record) && item.Role == DxfRawHandleRole.Identity))
                     throw new NotSupportedException("An exposed handle use depends on this entity; regenerate or edit the dependency explicitly.");
+        }
+
+        // XData distances and scale factors transform with their owning entity,
+        // just as coordinate slots do. Raw edits cannot infer that regeneration.
+        private static bool RawGeometrySensitiveXDataCode(short code)
+        {
+            return code == 1005 || (code >= 1010 && code <= 1033) || code == 1041 || code == 1042;
         }
 
         private static bool RawGeometryCommonCode(short code)

@@ -65,6 +65,7 @@ internal static partial class Program
         RegisterSplineTrimTests();
         RegisterSplineParameterTests();
         RegisterRawLineGeometryTests();
+        RegisterRawGeometryXDataScaleTests();
         RegisterRawConicGeometryTests();
         RegisterRawLineXDataScopeTests();
         RegisterTextGroupCodeNulTests();
