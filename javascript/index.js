@@ -141,3 +141,10 @@ export { MLineStyleElementChangeEventArgs } from './netDxf/Objects/MLineStyleEle
 export { MLineStyle } from './netDxf/Objects/MLineStyle.js';
 export { MLineVertex } from './netDxf/Entities/MLineVertex.js';
 export { MLine } from './netDxf/Entities/MLine.js';
+
+export { Block } from './netDxf/Blocks/Block.js';
+export { BlockRecord } from './netDxf/Blocks/BlockRecord.js';
+export { EndBlock } from './netDxf/Blocks/EndBlock.js';
+export { BlockEntityChangeEventArgs } from './netDxf/Blocks/BlockEntityChangeEventArgs.js';
+export { BlockAttributeDefinitionChangeEventArgs } from './netDxf/Blocks/BlockAttributeDefinitionChangeEventArgs.js';
+export { Insert } from './netDxf/Entities/Insert.js';

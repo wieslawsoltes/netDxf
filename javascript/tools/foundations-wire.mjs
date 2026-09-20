@@ -1,3 +1,4 @@
+import { blockWire } from './block-wire.mjs';
 import { mlineValueWire } from './mline-wire.mjs';
 import { groupWire } from './group-wire.mjs';
 import { outputSettingsWire } from './output-settings-wire.mjs';
@@ -17,7 +18,7 @@ import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
 
-const resolve = name => name.startsWith('List<') ? ReferenceList : name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|IO|GTE)\./, '').split('+').reduce((scope, part) => scope?.[part], api);
+const resolve = name => name.startsWith('List<') ? ReferenceList : name.replace(/^netDxf\./, '').replace(/^(Units|Collections|Entities|Tables|Objects|Blocks|IO|GTE)\./, '').split('+').reduce((scope, part) => scope?.[part], api);
 function wire(value) {
   if (value == null) return null;
   if (typeof value === 'number') return { double: doubleBits(value) };
@@ -51,6 +52,7 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const block=blockWire(value,wire);if(block!==undefined)return block;
   const group=groupWire(value,wire); if(group!==undefined)return group;
   const output=outputSettingsWire(value,wire); if(output!==undefined)return output;
   const mline=mlineValueWire(value,wire);if(mline!==undefined)return mline;
@@ -67,6 +69,7 @@ function wire(value) {
 }
 
 export function jsGeometry(input) {
+  api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;
   const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = ''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
   const native = input.nativeManifest;
   const observers=new Map(), observations=[];
@@ -107,6 +110,7 @@ export function jsGeometry(input) {
   function typeName(name) {
     if (name.endsWith('&')) return 'out ' + typeName(name.slice(0,-1));
     if (name.endsWith('[]')) return typeName(name.slice(0,-2)) + '[]';
+    if (name.startsWith('List<')) return 'System.Collections.Generic.List<' + typeName(name.slice(5,-1)) + '>';
     if (name.startsWith('IEnumerable<')) return 'System.Collections.Generic.IEnumerable<' + typeName(name.slice(12,-1)) + '>';
     const simple={Double:'double',Int32:'int',Int16:'short',Byte:'byte',Boolean:'bool',String:'string',Object:'object',IFormatProvider:'System.IFormatProvider',Color:'System.Drawing.Color'};
     if (simple[name]) return simple[name];

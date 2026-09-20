@@ -33,7 +33,12 @@ try {
       if(createHash('sha256').update(fs.readFileSync(new URL('third_party/glibc-math/'+file,packageRoot))).digest('hex')!==expected)throw new Error('Packaged exp/log preferred source drift: '+file);
     if(DotNetMath.Exp(-745)!==Number.MIN_VALUE||DotNetMath.Log(1)!==0)throw new Error('Packed exp/log runtime failed');
     if(DotNetMath.Sin(-0.20148213487118483)!==-0.2001217029035577)throw new Error('Packed reference math failed');
-    import {MLine,MLineStyle,MLineStyleElement,PlotSettings,PaperMargin,DxfPlotSettingsObject,DxfWipeoutVariables,RasterVariables,Group,Line,Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    import {Block,Insert,AttributeDefinition,MLine,MLineStyle,MLineStyleElement,PlotSettings,PaperMargin,DxfPlotSettingsObject,DxfWipeoutVariables,RasterVariables,Group,Line,Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    const block=new Block('PACKED_BLOCK',[new Line(Vector3.Zero,Vector3.UnitX)],[new AttributeDefinition('TAG')]);
+    const insertion=new Insert(block);insertion.ColumnCount=3;insertion.ColumnSpacing=4;
+    if(insertion.Explode().Count!==6||insertion.GetGridPosition(0,2).X!==8)throw new Error('Packed INSERT array failed');
+    const insertionCopy=insertion.Clone();
+    if(insertionCopy.Block===block||insertionCopy.Attributes.get_Item(0)===insertion.Attributes.get_Item(0)||insertionCopy.Block.Entities.get_Item(0).Owner!==insertionCopy.Block)throw new Error('Packed block/INSERT ownership failed');
     const multilineStyle=new MLineStyle('PACKED_MLINE');
     const multiline=new MLine([Vector2.Zero,new Vector2(10,0)],multilineStyle,2);
     if(multiline.Explode().Count!==2)throw new Error('Packed multiline geometry failed');

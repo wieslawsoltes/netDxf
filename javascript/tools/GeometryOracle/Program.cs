@@ -128,6 +128,7 @@ internal static partial class Program
         if(value is DxfClass definition) return new {type="DxfClass",name=definition.Name,cpp=definition.CppClassName,application=definition.ApplicationName,flags=definition.ProxyFlags,count=definition.InstanceCount,wasProxy=definition.WasProxy,entity=definition.IsEntity};
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
+        if (BlockWire(value, out var blockValue)) return blockValue;
         if (GroupWire(value, out var groupValue)) return groupValue;
         if (OutputSettingsWire(value, out var outputValue)) return outputValue;
         if (MLineValueWire(value, out var mlineValue)) return mlineValue;
@@ -218,6 +219,7 @@ internal static partial class Program
     }
     private static object Run(JsonElement input)
     {
+        netDxf.Blocks.BlockRecord.DefaultUnits=DrawingUnits.Unitless;netDxf.Entities.Insert.DefaultInsUnits=DrawingUnits.Unitless;
         Values.Clear();ResetObservations();MathHelper.Epsilon=1e-12;netDxf.Entities.Text.DefaultMirrText=false;netDxf.Entities.MText.DefaultMirrText=false;
         if(input.TryGetProperty("op",out var mathOp)&&mathOp.GetString()=="reference-math")return ReferenceMath(input);
         CultureInfo.CurrentCulture=CultureInfo.InvariantCulture;

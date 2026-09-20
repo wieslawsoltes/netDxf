@@ -71,7 +71,8 @@
     "test:attributes": "node tools/attribute-differential.mjs",
     "test:output-settings": "node tools/output-settings-differential.mjs",
     "test:groups": "node tools/group-differential.mjs",
-    "test:mlines": "node tools/mline-differential.mjs"
+    "test:mlines": "node tools/mline-differential.mjs",
+    "test:blocks": "node tools/block-differential.mjs"
   },
   "repository": {
     "type": "git",
