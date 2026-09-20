@@ -299,21 +299,11 @@ namespace netDxf.Entities
         /// </remarks>
         public void SetConstantWidth(double width)
         {
-            ValidateWidth(width, nameof(width));
-            this.ValidateStoredRecordGeometry();
-            this.ValidateVertexFidelity();
-            // Preserve this method's established per-vertex editing behavior.
-            // Clear an explicit group 43 so it cannot mask the requested widths.
-            this.ConstantWidth = null;
-            foreach (Polyline2DVertex v in this.vertexes)
-            {
-                v.StartWidth = width;
-                v.EndWidth = width;
-            }
+            this.ApplyConstantWidth(width);
         }
 
         /// <summary>
-        /// Decompose the actual polyline in its internal entities, <see cref="Line">lines</see> and <see cref="Arc">arcs</see>.
+        /// Decompose the actual polyline in its internal entities, <see cref="Line">lines</see> and <see cref="Arc">arcs</see> that made up the polyline.
         /// </summary>
         /// <returns>A list of <see cref="Line">lines</see> and <see cref="Arc">arcs</see> that made up the polyline.</returns>
         /// <remarks>This is a centerline decomposition. Constant and per-vertex stroke widths are not represented by the returned lines/arcs.</remarks>

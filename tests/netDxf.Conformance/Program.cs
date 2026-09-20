@@ -74,6 +74,7 @@ internal static partial class Program
         RegisterRawInfiniteGeometryTests();
         RegisterRawEllipseGeometryTests();
         RegisterRawLwPolylineGeometryTests();
+        RegisterPolylineWidthProxyTests();
         RegisterEllipseAxisProxyTests();
         RegisterFace3DEdgeVisibilityTests();
         RegisterRawConicGeometryTests();

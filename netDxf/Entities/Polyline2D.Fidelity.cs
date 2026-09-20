@@ -10,7 +10,8 @@ namespace netDxf.Entities
         /// <summary>Gets or sets the optional LWPOLYLINE group 43 constant width.</summary>
         /// <remarks>Null means absent; zero is an explicitly stored zero. This property never
         /// rewrites the raw per-vertex widths. For effective segment widths use GetEffectiveStartWidth
-        /// and GetEffectiveEndWidth. Nonzero constant width takes precedence in the supported ezdxf-compatible profile.</remarks>
+        /// and GetEffectiveEndWidth. Nonzero constant width takes precedence in the supported ezdxf-compatible profile.
+        /// Changed stored value or presence clears parent proxy graphics; identical or rejected assignments retain them.</remarks>
         public double? ConstantWidth
         {
             get { return this.constantWidth; }
@@ -19,7 +20,11 @@ namespace netDxf.Entities
                 if (this.HasStoredRecords && value.HasValue)
                     throw new NotSupportedException("ConstantWidth is a LWPOLYLINE field; use vertex width overrides for retained legacy POLYLINE records.");
                 if (value.HasValue) ValidateWidth(value.Value, nameof(value));
+                bool changed = this.constantWidth.HasValue != value.HasValue ||
+                    (value.HasValue && BitConverter.DoubleToInt64Bits(this.constantWidth.GetValueOrDefault()) !=
+                        BitConverter.DoubleToInt64Bits(value.Value));
                 this.constantWidth = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -39,6 +44,26 @@ namespace netDxf.Entities
         {
             Polyline2DVertex vertex = this.vertexes[vertexIndex];
             return this.ConstantWidth.GetValueOrDefault() > 0 ? this.ConstantWidth.Value : vertex.EndWidthOverride ?? this.LegacyDefaultEndWidth.GetValueOrDefault();
+        }
+
+        // Validate the entire source before changing any width or proxy state.
+        private void ApplyConstantWidth(double width)
+        {
+            ValidateWidth(width, nameof(width));
+            this.ValidateStoredRecordGeometry();
+            this.ValidateVertexFidelity();
+            bool changed = this.constantWidth.HasValue;
+            foreach (Polyline2DVertex vertex in this.vertexes)
+                changed |= !vertex.StartWidthOverride.HasValue || !vertex.EndWidthOverride.HasValue ||
+                    BitConverter.DoubleToInt64Bits(vertex.StartWidth) != BitConverter.DoubleToInt64Bits(width) ||
+                    BitConverter.DoubleToInt64Bits(vertex.EndWidth) != BitConverter.DoubleToInt64Bits(width);
+            this.constantWidth = null;
+            foreach (Polyline2DVertex vertex in this.vertexes)
+            {
+                vertex.StartWidth = width;
+                vertex.EndWidth = width;
+            }
+            if (changed) this.ClearProxyGraphics();
         }
 
         internal static void ValidateWidth(double value, string name)
