@@ -1,3 +1,4 @@
+import { mlineValueWire } from './mline-wire.mjs';
 import { groupWire } from './group-wire.mjs';
 import { outputSettingsWire } from './output-settings-wire.mjs';
 import { hatchBoundaryWire } from './hatch-entity-wire.mjs';
@@ -52,6 +53,7 @@ function wire(value) {
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
   const group=groupWire(value,wire); if(group!==undefined)return group;
   const output=outputSettingsWire(value,wire); if(output!==undefined)return output;
+  const mline=mlineValueWire(value,wire);if(mline!==undefined)return mline;
   const boundary=hatchBoundaryWire(value,wire); if(boundary!==undefined)return boundary;
   const surface=surfaceWire(value,wire); if(surface!==undefined)return surface;
   const model=databaseModelWire(value,wire); if(model!==undefined)return model;

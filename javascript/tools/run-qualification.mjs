@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['mlines',['tools/mline-differential.mjs']],
   ['output-settings',['tools/output-settings-differential.mjs']],
   ['groups',['tools/group-differential.mjs']],
   ['surfaces',['tools/surface-differential.mjs']],

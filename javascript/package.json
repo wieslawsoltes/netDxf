@@ -70,7 +70,8 @@
     "test:surfaces": "node tools/surface-differential.mjs",
     "test:attributes": "node tools/attribute-differential.mjs",
     "test:output-settings": "node tools/output-settings-differential.mjs",
-    "test:groups": "node tools/group-differential.mjs"
+    "test:groups": "node tools/group-differential.mjs",
+    "test:mlines": "node tools/mline-differential.mjs"
   },
   "repository": {
     "type": "git",

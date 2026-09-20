@@ -1,3 +1,4 @@
+import { mlineEntityWire } from './mline-wire.mjs';
 import { attributeWire } from './attribute-wire.mjs';
 import { hatchEntityWire } from './hatch-entity-wire.mjs';
 import { curveWire, curveRecordWire } from './curve-wire.mjs';
@@ -30,6 +31,7 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  const mline=mlineEntityWire(value,common,wire);if(mline!==undefined)return mline;
   const hatch=hatchEntityWire(value,common,wire);if(hatch!==undefined)return hatch;
   const curve=curveWire(value,common,wire);if(curve!==undefined)return curve;
   const inert=inertEntityWire(value,common,wire); if(inert!==undefined)return inert;

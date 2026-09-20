@@ -33,7 +33,14 @@ try {
       if(createHash('sha256').update(fs.readFileSync(new URL('third_party/glibc-math/'+file,packageRoot))).digest('hex')!==expected)throw new Error('Packaged exp/log preferred source drift: '+file);
     if(DotNetMath.Exp(-745)!==Number.MIN_VALUE||DotNetMath.Log(1)!==0)throw new Error('Packed exp/log runtime failed');
     if(DotNetMath.Sin(-0.20148213487118483)!==-0.2001217029035577)throw new Error('Packed reference math failed');
-    import {PlotSettings,PaperMargin,DxfPlotSettingsObject,DxfWipeoutVariables,RasterVariables,Group,Line,Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    import {MLine,MLineStyle,MLineStyleElement,PlotSettings,PaperMargin,DxfPlotSettingsObject,DxfWipeoutVariables,RasterVariables,Group,Line,Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    const multilineStyle=new MLineStyle('PACKED_MLINE');
+    const multiline=new MLine([Vector2.Zero,new Vector2(10,0)],multilineStyle,2);
+    if(multiline.Explode().Count!==2)throw new Error('Packed multiline geometry failed');
+    const multilineCopy=multiline.Clone();multilineCopy.Vertexes.get_Item(0).Distances[0].Clear();
+    if(multiline.Vertexes.get_Item(0).Distances[0].Count!==2||multilineCopy.Style===multilineStyle)throw new Error('Packed multiline clone isolation failed');
+    const nanElement=new MLineStyleElement(NaN);multilineStyle.Elements.Add(nanElement);
+    if(multilineStyle.Elements.Contains(nanElement))throw new Error('Packed multiline non-reflexive equality failed');
     const settings=new PlotSettings();settings.StandardScaleType=25;settings.ScaleToFit=false;settings.StandardScaleFactor=-0;
     settings.PaperMargin=new PaperMargin(1,2,3,4);const page=new DxfPlotSettingsObject(settings);settings.PaperMargin.Left=99;
     if(page.Settings.StandardScaleType!==25||!Object.is(page.Settings.StandardScaleFactor,-0)||page.Settings.PaperMargin.Left!==1)throw new Error('Packed plot settings value state failed');

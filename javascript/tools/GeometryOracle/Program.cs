@@ -130,6 +130,7 @@ internal static partial class Program
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
         if (GroupWire(value, out var groupValue)) return groupValue;
         if (OutputSettingsWire(value, out var outputValue)) return outputValue;
+        if (MLineValueWire(value, out var mlineValue)) return mlineValue;
         if (HatchBoundaryWire(value, out var boundaryValue)) return boundaryValue;
         if (SurfaceWire(value, out var surfaceValue)) return surfaceValue;
         if (DatabaseModelWire(value, out var modelValue)) return modelValue;

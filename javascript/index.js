@@ -135,3 +135,9 @@ export { DxfPlotSettingsObject, DxfWipeoutVariables } from './netDxf/Objects/Dxf
 export { RasterVariables } from './netDxf/Objects/RasterVariables.js';
 export { Group } from './netDxf/Objects/Group.js';
 export { GroupEntityChangeEventArgs } from './netDxf/Objects/GroupEntityChangeEventArgs.js';
+
+export { MLineStyleElement } from './netDxf/Objects/MLineStyleElement.js';
+export { MLineStyleElementChangeEventArgs } from './netDxf/Objects/MLineStyleElementChangeEventArgs.js';
+export { MLineStyle } from './netDxf/Objects/MLineStyle.js';
+export { MLineVertex } from './netDxf/Entities/MLineVertex.js';
+export { MLine } from './netDxf/Entities/MLine.js';

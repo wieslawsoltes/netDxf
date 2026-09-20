@@ -210,6 +210,9 @@ jobs:
       - name: Compare plot raster and wipeout settings on the actual host
         if: ${{ !cancelled() }}
         run: node javascript/tools/output-settings-differential.mjs
+      - name: Compare multiline geometry and style lifecycle on the actual host
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/mline-differential.mjs
       - name: Compare group membership and events on the actual host
         if: ${{ !cancelled() }}
         run: node javascript/tools/group-differential.mjs
@@ -224,6 +227,7 @@ jobs:
             javascript/artifacts/filesystem-differential/Release/results.json
             javascript/artifacts/output-settings-differential/Release/results.json
             javascript/artifacts/group-differential/Release/results.json
+            javascript/artifacts/mline-differential/Release/results.json
             javascript/artifacts/surface-differential/Release/results.json
             javascript/artifacts/exp-log-differential/Release/results.json
             javascript/artifacts/style-differential/Release/results.json
