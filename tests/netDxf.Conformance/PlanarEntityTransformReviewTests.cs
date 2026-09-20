@@ -149,6 +149,14 @@ internal static partial class Program
         { matrix = Matrix3.Scale(1, 1, double.Epsilon); if (entity is Solid s) s.Thickness = .125; else ((Trace)entity).Thickness = .125; }
         else if (fault == 41) matrix = new Matrix3(1, 2, 0, 2, 4, 0, 3, 6, 1); // rank-one plane, live normal
         else matrix = new Matrix3(1, 0, 0, 0, 1, .5, 0, 0, 1); // normal acquires in-plane component
+        if (fault >= 37 && fault <= 40)
+        {
+            // Setup now exercises the corrected direct-setter policy. Reattach
+            // a synthetic proxy afterward so the original failed-transform
+            // rollback assertion still verifies preservation of real bytes.
+            Check(entity.ProxyGraphics == null, "Setup geometry edit retained a stale proxy");
+            entity.ProxyGraphics = new byte[] { 1, 7, 9, 255 };
+        }
         long[] before = PlanarReviewState(entity); byte[] proxy = entity.ProxyGraphics!;
         bool rejected = false;
         try { if (useFour) entity.TransformBy(four); else entity.TransformBy(matrix, translation); }
