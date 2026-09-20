@@ -128,6 +128,7 @@ internal static partial class Program
         if(value is DxfClass definition) return new {type="DxfClass",name=definition.Name,cpp=definition.CppClassName,application=definition.ApplicationName,flags=definition.ProxyFlags,count=definition.InstanceCount,wasProxy=definition.WasProxy,entity=definition.IsEntity};
         if(value is System.Drawing.Color rgba) return new {type="Color",argb=rgba.ToArgb(),name=rgba.Name,known=rgba.IsKnownColor,named=rgba.IsNamedColor,empty=rgba.IsEmpty};
         if(value is Transparency alpha) return new { type="Transparency", value=alpha.Value, stored=alpha.StoredAlphaValue, byLayer=alpha.IsByLayer, byBlock=alpha.IsByBlock };
+        if (LayoutViewportValueWire(value, out var layoutViewportValue)) return layoutViewportValue;
         if (BlockWire(value, out var blockValue)) return blockValue;
         if (GroupWire(value, out var groupValue)) return groupValue;
         if (OutputSettingsWire(value, out var outputValue)) return outputValue;

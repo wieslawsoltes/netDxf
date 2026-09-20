@@ -1,3 +1,4 @@
+import { layoutViewportValueWire } from './layout-viewport-wire.mjs';
 import { blockWire } from './block-wire.mjs';
 import { mlineValueWire } from './mline-wire.mjs';
 import { groupWire } from './group-wire.mjs';
@@ -52,6 +53,7 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const layoutViewport=layoutViewportValueWire(value,wire);if(layoutViewport!==undefined)return layoutViewport;
   const block=blockWire(value,wire);if(block!==undefined)return block;
   const group=groupWire(value,wire); if(group!==undefined)return group;
   const output=outputSettingsWire(value,wire); if(output!==undefined)return output;

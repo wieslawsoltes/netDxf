@@ -1,3 +1,5 @@
+import { layoutViewportCorpus } from './layout-viewport-corpus.mjs';
+import { ModelOracleSession } from './ModelOracleSession.mjs';
 import { blockCorpus } from './block-corpus.mjs';
 import { insertCorpus } from './insert-corpus.mjs';
 import { mlineCorpus } from './mline-corpus.mjs';
@@ -86,6 +88,19 @@ try {
     cases.push({name:'collection/'+cases.length,input,expected:{collection:sha256(canonical(expected))}});
   }
 } finally { await oracle.close(); }
+// A native Debug.Assert may terminate a model process. Preserve that outcome as
+// non-comparable evidence, and continue with a fresh process for the next scenario.
+// The original model oracle and all its prior input ordering remain unchanged.
+const layoutOracle=new ModelOracleSession();
+try {
+  for(const probe of layoutViewportCorpus()) {
+    const observed=await layoutOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:`layouts-viewports/${probe.name}`,input:probe.request,
+      expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+}finally {await layoutOracle.close();}
 // Detached model/text corpora use the same reflection oracle as their exact Node comparison.
 const modelOracle=new OracleClient({args:[path.join(oracleRoot,'GeometryOracle.dll')]});
 try {

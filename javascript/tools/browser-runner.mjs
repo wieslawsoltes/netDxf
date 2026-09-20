@@ -19,7 +19,7 @@ async function webHash(text) {
 }
 /** hashCanonical is solely a SHA-256 transport adapter for non-secure offline test pages. */
 export async function runBrowserCorpus(corpus, native, { hashCanonical = webHash, onProgress = () => {} } = {}) {
-  const report = {completed:false,failures:[],comparisons:0,categories:{}};
+  const report = {completed:false,failures:[],sourceOracleFailures:[],comparisons:0,categories:{}};
   try {
     if (!Array.isArray(corpus.cases) || !corpus.cases.length) throw new Error('Missing browser corpus.');
     for (const key of ['runtimeFingerprint','verificationFingerprint','sourceRef','sourceFingerprint','configuration','fixtures']) report[key] = corpus[key];
@@ -34,6 +34,8 @@ export async function runBrowserCorpus(corpus, native, { hashCanonical = webHash
       if (actual !== expected) report.failures.push({name,op,expected,actual,result});
     };
     for (const test of corpus.cases) {
+      // Even a coincidentally equal digest cannot qualify a missing native observation.
+      if (Object.hasOwn(test,'sourceOracleFailure')) report.sourceOracleFailures.push({name:test.name,detail:test.sourceOracleFailure});
       const entries=Object.entries(test.expected);
       if (!entries.length) throw new Error('Browser case has no comparisons: '+test.name);
       for (const [op,expected] of entries) {
@@ -47,7 +49,7 @@ export async function runBrowserCorpus(corpus, native, { hashCanonical = webHash
       }
       onProgress(report);
     }
-    report.completed=report.failures.length===0;
+    report.completed=report.failures.length===0&&report.sourceOracleFailures.length===0;
   } catch(error) { report.fatal=String(error.stack||error); }
   return report;
 }

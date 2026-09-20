@@ -148,3 +148,8 @@ export { EndBlock } from './netDxf/Blocks/EndBlock.js';
 export { BlockEntityChangeEventArgs } from './netDxf/Blocks/BlockEntityChangeEventArgs.js';
 export { BlockAttributeDefinitionChangeEventArgs } from './netDxf/Blocks/BlockAttributeDefinitionChangeEventArgs.js';
 export { Insert } from './netDxf/Entities/Insert.js';
+
+export { EntityChangeEventArgs } from './netDxf/Entities/EntityChangeEventArgs.js';
+export { Viewport } from './netDxf/Entities/Viewport.js';
+export { Layout } from './netDxf/Objects/Layout.js';
+export { SunReferences } from './netDxf/Objects/SunReferences.js';
