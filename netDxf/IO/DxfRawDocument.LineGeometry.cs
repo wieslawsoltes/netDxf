@@ -56,20 +56,20 @@ namespace netDxf.IO
         public DxfRawDocument WithLineEndpoints(DxfRawRecord record, Vector3 startPoint, Vector3 endPoint)
         {
             LinePacket packet = this.ReadLinePacket(record);
-            CheckLinePoint(startPoint, nameof(startPoint));
-            CheckLinePoint(endPoint, nameof(endPoint));
+            CheckRawGeometryPoint(startPoint, nameof(startPoint));
+            CheckRawGeometryPoint(endPoint, nameof(endPoint));
             double[] coordinates = { startPoint.X, startPoint.Y, startPoint.Z, endPoint.X, endPoint.Y, endPoint.Z };
             bool changed = false;
             for (int i = 0; i < coordinates.Length; i++)
-                changed |= !SameLineScalar(packet.Values[i], coordinates[i]);
+                changed |= !SameRawGeometryScalar(packet.Values[i], coordinates[i]);
             if (!changed) return this;
             if (!packet.CanEdit)
                 throw new NotSupportedException("This LINE contains proxy, application, embedded, coordinate XData or unrecognized fields requiring explicit regeneration.");
-            this.CheckLineIncomingReferences(record);
+            this.CheckRawGeometryIncomingReferences(record);
 
             int additions = 0;
             for (int i = 0; i < 6; i++)
-                if (packet.Slots[i] < 0 && !SameLineScalar(coordinates[i], 0.0)) additions++;
+                if (packet.Slots[i] < 0 && !SameRawGeometryScalar(coordinates[i], 0.0)) additions++;
             if ((long)this.Tags.Count + additions > this.options.MaximumTags)
                 throw new InvalidOperationException("The endpoint edit exceeds the raw document tag budget.");
             var tags = new List<DxfTag>(record.Tags.Count + additions);
@@ -77,12 +77,12 @@ namespace netDxf.IO
             {
                 DxfTag tag = record.Tags[at];
                 for (int i = 0; i < 6; i++)
-                    if (packet.Slots[i] == at && !SameLineScalar(packet.Values[i], coordinates[i]))
+                    if (packet.Slots[i] == at && !SameRawGeometryScalar(packet.Values[i], coordinates[i]))
                     { tag = new DxfTag(LineGeometryCodes[i], coordinates[i]); break; }
                 tags.Add(tag);
                 // Missing Z follows its Y slot, before trailing control/XData data.
                 for (int i = 2; i < 6; i += 3)
-                    if (packet.Slots[i] < 0 && packet.Slots[i - 1] == at && !SameLineScalar(coordinates[i], 0.0))
+                    if (packet.Slots[i] < 0 && packet.Slots[i - 1] == at && !SameRawGeometryScalar(coordinates[i], 0.0))
                         tags.Add(new DxfTag(LineGeometryCodes[i], coordinates[i]));
             }
             return this.WithRecord(record, tags);
@@ -100,8 +100,8 @@ namespace netDxf.IO
         private LinePacket ReadLinePacket(DxfRawRecord record)
         {
             this.ValidateRecordSnapshot(record);
-            if (record.MarkerCode != 0 || !LineName(record.Name, "LINE") ||
-                !(LineName(record.SectionName, "ENTITIES") || LineName(record.SectionName, "BLOCKS")))
+            if (record.MarkerCode != 0 || !RawGeometryName(record.Name, "LINE") ||
+                !(RawGeometryName(record.SectionName, "ENTITIES") || RawGeometryName(record.SectionName, "BLOCKS")))
                 throw new ArgumentException("Expected a LINE in ENTITIES or BLOCKS of this snapshot.", nameof(record));
             var result = new LinePacket();
             for (int i = 0; i < result.Slots.Length; i++) result.Slots[i] = -1;
@@ -125,7 +125,7 @@ namespace netDxf.IO
                 if (depth != 0) continue;
                 if (code == 101)
                 {
-                    if (!LineName(tag.RawValue as string, "Embedded Object"))
+                    if (!RawGeometryName(tag.RawValue as string, "Embedded Object"))
                         throw new NotSupportedException("Unrecognized LINE embedded-data marker.");
                     result.CanEdit = false; embedded = true; continue;
                 }
@@ -140,8 +140,8 @@ namespace netDxf.IO
                 if (code == 100)
                 {
                     string name = (string)tag.RawValue;
-                    if (subclass == 0 && !geometrySeen && LineName(name, "AcDbEntity")) subclass = 1;
-                    else if (subclass == 1 && LineName(name, "AcDbLine")) subclass = 2;
+                    if (subclass == 0 && !geometrySeen && RawGeometryName(name, "AcDbEntity")) subclass = 1;
+                    else if (subclass == 1 && RawGeometryName(name, "AcDbLine")) subclass = 2;
                     else throw new NotSupportedException("Unrecognized or ambiguous LINE subclass layout.");
                     continue;
                 }
@@ -152,7 +152,7 @@ namespace netDxf.IO
                     if (result.Slots[slot] >= 0) throw new FormatException("Duplicate LINE geometry component.");
                     result.Slots[slot] = at; result.Values[slot] = (double)tag.RawValue; geometrySeen = true;
                 }
-                else if (!LineCommonCode(code)) result.CanEdit = false;
+                else if (!RawGeometryCommonCode(code)) result.CanEdit = false;
             }
             if (depth != 0 || subclass == 1) throw new FormatException("Incomplete LINE control or subclass framing.");
             foreach (int required in new[] { 0, 1, 3, 4 })
@@ -166,7 +166,7 @@ namespace netDxf.IO
             return result;
         }
 
-        private void CheckLineIncomingReferences(DxfRawRecord record)
+        private void CheckRawGeometryIncomingReferences(DxfRawRecord record)
         {
             DxfRawHandleIndex index = DxfRawHandleIndex.Create(this);
             string identity = null;
@@ -174,21 +174,21 @@ namespace netDxf.IO
                 if (item.Role == DxfRawHandleRole.Identity)
                 {
                     if (identity != null || item.NumericHandle == 0)
-                        throw new NotSupportedException("LINE identity must be unambiguous and nonzero when present.");
+                        throw new NotSupportedException("Entity identity must be unambiguous and nonzero when present.");
                     identity = item.Handle;
                 }
             if (identity == null) return; // Legacy handle-free LINEs are permitted.
             var definitions = index.FindDefinitions(identity);
             if (definitions.Count != 1)
-                throw new NotSupportedException("LINE identity is duplicated in the raw document.");
+                throw new NotSupportedException("Entity identity is duplicated in the raw document.");
             ulong target = definitions[0].NumericHandle;
             foreach (DxfRawHandleOccurrence item in index.Occurrences)
                 if (item.NumericHandle == target && item.Role != DxfRawHandleRole.HeaderSeed &&
                     !(ReferenceEquals(item.Record, record) && item.Role == DxfRawHandleRole.Identity))
-                    throw new NotSupportedException("An exposed handle use depends on this LINE; regenerate or edit the dependency explicitly.");
+                    throw new NotSupportedException("An exposed handle use depends on this entity; regenerate or edit the dependency explicitly.");
         }
 
-        private static bool LineCommonCode(short code)
+        private static bool RawGeometryCommonCode(short code)
         {
             switch (code)
             {
@@ -197,15 +197,15 @@ namespace netDxf.IO
                 default: return false;
             }
         }
-        private static bool LineName(string value, string expected)
+        private static bool RawGeometryName(string value, string expected)
         { return string.Equals(value, expected, StringComparison.OrdinalIgnoreCase); }
-        private static bool SameLineScalar(double a, double b)
+        private static bool SameRawGeometryScalar(double a, double b)
         { return BitConverter.DoubleToInt64Bits(a) == BitConverter.DoubleToInt64Bits(b); }
-        private static void CheckLinePoint(Vector3 point, string parameter)
+        private static void CheckRawGeometryPoint(Vector3 point, string parameter)
         {
             if (double.IsNaN(point.X) || double.IsInfinity(point.X) || double.IsNaN(point.Y) ||
                 double.IsInfinity(point.Y) || double.IsNaN(point.Z) || double.IsInfinity(point.Z))
-                throw new ArgumentOutOfRangeException(parameter, "LINE endpoints must be finite.");
+                throw new ArgumentOutOfRangeException(parameter, "Coordinates must be finite.");
         }
     }
 }
