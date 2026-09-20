@@ -164,9 +164,9 @@ namespace netDxf.Entities
         {
             PlanarEntityTransform candidate = PlanarEntityTransform.Prepare(transformation, translation,
                 new[] { this.firstVertex, this.secondVertex, this.thirdVertex, this.fourthVertex },
-                this.Normal, this.elevation, this.thickness);
+                base.Normal, this.elevation, this.thickness);
             if (!candidate.Changed) return;
-            this.Normal = candidate.Normal;
+            base.Normal = candidate.Normal;
             this.firstVertex = candidate.Vertexes[0];
             this.secondVertex = candidate.Vertexes[1];
             this.thirdVertex = candidate.Vertexes[2];

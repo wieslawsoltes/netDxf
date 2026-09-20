@@ -70,6 +70,7 @@ internal static partial class Program
         RegisterRawFace3DGeometryTests();
         RegisterRawQuadGeometryTests();
         RegisterQuadMutationTests();
+        RegisterQuadNormalCallbackTests();
         RegisterFace3DEdgeVisibilityTests();
         RegisterRawConicGeometryTests();
         RegisterRawLineXDataScopeTests();
