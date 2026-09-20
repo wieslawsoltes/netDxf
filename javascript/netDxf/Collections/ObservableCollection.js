@@ -5,7 +5,10 @@ import { Copy } from '../../runtime/GeometryRuntime.js';
 import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException,
   InvalidOperationException, RequireInteger } from '../../runtime/Errors.js';
 
-const equal = (a, b) => a === b || (a?.Equals ? a.Equals(b) : Number.isNaN(a) && Number.isNaN(b));
+// EqualityComparer<T>.Default calls a reference type's Equals even for the same
+// instance. User equality can be non-reflexive (for example NaN MLINE offsets).
+const equal = (a, b) => a == null || b == null ? a == null && b == null :
+  typeof a.Equals === 'function' ? a.Equals(b) : a === b || (Number.isNaN(a) && Number.isNaN(b));
 const defaultCompare = (a, b) => {
   if (a === b) return 0;
   if (a == null) return -1;
