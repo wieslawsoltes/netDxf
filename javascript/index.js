@@ -128,3 +128,10 @@ export { EntityCollection } from './netDxf/Collections/EntityCollection.js';
 export { EntityCollectionEventArgs } from './netDxf/Collections/EntityCollectionEventArgs.js';
 export { AttributeDefinitionDictionary } from './netDxf/Collections/AttributeDefinitionDictionary.js';
 export { AttributeDefinitionDictionaryEventArgs } from './netDxf/Collections/AttributeDefinitionDictionaryEventArgs.js';
+
+export { PaperMargin } from './netDxf/Objects/PaperMargin.js';
+export { PlotSettings } from './netDxf/Objects/PlotSettings.js';
+export { DxfPlotSettingsObject, DxfWipeoutVariables } from './netDxf/Objects/DxfOutputSettings.js';
+export { RasterVariables } from './netDxf/Objects/RasterVariables.js';
+export { Group } from './netDxf/Objects/Group.js';
+export { GroupEntityChangeEventArgs } from './netDxf/Objects/GroupEntityChangeEventArgs.js';

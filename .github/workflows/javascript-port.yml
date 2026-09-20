@@ -207,6 +207,12 @@ jobs:
       - name: Compare exp/log results on the actual host
         if: ${{ !cancelled() }}
         run: node javascript/tools/exp-log-differential.mjs
+      - name: Compare plot raster and wipeout settings on the actual host
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/output-settings-differential.mjs
+      - name: Compare group membership and events on the actual host
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/group-differential.mjs
       - name: Validate offline Node package installation
         if: ${{ !cancelled() }}
         run: node javascript/tools/package-check.mjs
@@ -216,6 +222,8 @@ jobs:
           name: javascript-filesystem-${{ matrix.os }}
           path: |
             javascript/artifacts/filesystem-differential/Release/results.json
+            javascript/artifacts/output-settings-differential/Release/results.json
+            javascript/artifacts/group-differential/Release/results.json
             javascript/artifacts/surface-differential/Release/results.json
             javascript/artifacts/exp-log-differential/Release/results.json
             javascript/artifacts/style-differential/Release/results.json

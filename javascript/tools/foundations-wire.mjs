@@ -1,3 +1,5 @@
+import { groupWire } from './group-wire.mjs';
+import { outputSettingsWire } from './output-settings-wire.mjs';
 import { hatchBoundaryWire } from './hatch-entity-wire.mjs';
 import { surfaceWire } from './surface-wire.mjs';
 import { coordinateWire } from './coordinate-wire.mjs';
@@ -9,7 +11,7 @@ import * as api from '../index.js';
 import { utf16Wire } from './mtext-wire.mjs';
 import { entityWire } from './entities-wire.mjs';
 import { styleWire, shapeInput } from './styles-wire.mjs';
-import { InvalidOperationException, KeyNotFoundException, IndexOutOfRangeException } from '../runtime/Errors.js';
+import { ArgumentException, ArgumentNullException, NullReferenceException, InvalidOperationException, KeyNotFoundException, IndexOutOfRangeException } from '../runtime/Errors.js';
 import { Copy, Culture } from '../runtime/GeometryRuntime.js';
 
 import { doubleBits, fromBits, bytesToBase64 } from './wire.mjs';
@@ -48,6 +50,8 @@ function wire(value) {
   if (value instanceof api.DxfClass) return {type:'DxfClass',name:value.Name,cpp:value.CppClassName,application:value.ApplicationName,flags:value.ProxyFlags,count:value.InstanceCount,wasProxy:value.WasProxy,entity:value.IsEntity};
   if (value instanceof api.Color) return {type:'Color',argb:value.ToArgb(),name:value.Name,known:value.IsKnownColor,named: value.IsNamedColor,empty:value.IsEmpty};
   if (value instanceof api.Transparency) return {type,value:value.Value,stored:value.StoredAlphaValue,byLayer:value.IsByLayer,byBlock:value.IsByBlock};
+  const group=groupWire(value,wire); if(group!==undefined)return group;
+  const output=outputSettingsWire(value,wire); if(output!==undefined)return output;
   const boundary=hatchBoundaryWire(value,wire); if(boundary!==undefined)return boundary;
   const surface=surfaceWire(value,wire); if(surface!==undefined)return surface;
   const model=databaseModelWire(value,wire); if(model!==undefined)return model;
@@ -66,10 +70,19 @@ export function jsGeometry(input) {
   const observers=new Map(), observations=[];
   function read(value) {
     if (value == null || typeof value !== 'object') return value;
-    if ('resolver' in value) { const map=new Map(value.resolver.map(([a,b])=>[read(a),read(b)])); return item=>{if(!map.has(item))throw new KeyNotFoundException();return map.get(item);}; }
+    if ('resolver' in value) {
+      const map=new Map();
+      for(const [key,item] of value.resolver) {
+        const resolved=read(key);
+        if(resolved===null)throw new ArgumentNullException('key');
+        if(map.has(resolved))throw new ArgumentException('An item with the same key has already been added.');
+        map.set(resolved,read(item));
+      }
+      return item=>{if(item===null)throw new ArgumentNullException('key');if(!map.has(item))throw new KeyNotFoundException();return map.get(item);};
+    }
     if ('copy' in value) return Copy(read(value.copy));
     if ('utf16' in value) return value.utf16.map(n=>String.fromCharCode(n)).join('');
-    if ('ref' in value) { if(!values.has(value.ref)) throw new Error('Missing scenario reference: '+value.ref); return values.get(value.ref); }
+    if ('ref' in value) { if(!values.has(value.ref)) throw new KeyNotFoundException('Missing scenario reference: '+value.ref); return values.get(value.ref); }
     if ('double' in value) return fromBits(value.double);
     if ('long' in value) return BigInt(value.long);
     if ('int' in value) return value.int;
@@ -126,8 +139,8 @@ export function jsGeometry(input) {
           const handler=(sender,e)=>{
             const properties={};for(const key of ['OldValue','NewValue','Item','Cancel'])if(key in e)properties[key]=wire(e[key]);
             observations.push({observer:step.observer,member:step.member,values:properties});
-            if('replace' in step)e.NewValue=read(step.replace);
-            if('cancel' in step)e.Cancel=step.cancel;
+            if('replace' in step){if(!('NewValue' in e))throw new NullReferenceException();e.NewValue=read(step.replace);}
+            if('cancel' in step){if(!('Cancel' in e))throw new NullReferenceException();e.Cancel=step.cancel;}
             if(step.throw)throw new InvalidOperationException('Observer failure');
           };
           target[step.member].Add(handler);observers.set(step.observer,{target,event:step.member,handler});break;

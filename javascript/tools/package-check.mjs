@@ -13,7 +13,7 @@ try {
   if(!info.files.some(f=>f.path==='node-entry.js')) throw new Error('Packed Node entry is missing.');
   if(!info.files.some(f=>f.path==='Enums.generated.js')) throw new Error('Packed enum barrel is missing.');
   if(info.files.some(f=>/^artifacts\/|^tools\/|^tests\//.test(f.path) && !['tools/ReferenceMath/generate.py','tools/ReferenceMath/source-manifest.json','tools/ReferenceMath/generate-exp-log.py','tools/ReferenceMath/exp-log-manifest.json','tools/ReferenceMath/exp-log.template.js'].includes(f.path))) throw new Error('Development artifacts leaked into the runtime package.');
-  for(const file of ['netDxf/GTE/LICENSE.BSL-1.0','THIRD_PARTY_NOTICES.md','runtime/reference-math/LICENSE.LGPL-2.1','runtime/reference-math/LICENSE.GPL-2','third_party/glibc-math/COPYING.LIB','third_party/glibc-math/sysdeps/ieee754/dbl-64/dla.h','tools/ReferenceMath/generate.py','tools/ReferenceMath/generate-exp-log.py','tools/ReferenceMath/exp-log-manifest.json','tools/ReferenceMath/exp-log.template.js','runtime/reference-math/exp-log.js','runtime/reference-math/exp-log-data.js','runtime/reference-math/exp-log-source.json'])
+  for(const file of ['netDxf/GTE/LICENSE.BSL-1.0','THIRD_PARTY_NOTICES.md','runtime/reference-math/LICENSE.LGPL-2.1','runtime/reference-math/LICENSE.GPL-2','third_party/glibc-math/COPYING.LIB','third_party/glibc-math/sysdeps/ieee754/dbl-64/dla.h','tools/ReferenceMath/generate.py','tools/ReferenceMath/source-manifest.json','tools/ReferenceMath/generate-exp-log.py','tools/ReferenceMath/exp-log-manifest.json','tools/ReferenceMath/exp-log.template.js','runtime/reference-math/exp-log.js','runtime/reference-math/exp-log-data.js','runtime/reference-math/exp-log-source.json'])
     if(!info.files.some(f=>f.path===file)) throw new Error('Required mathematical source/notice is missing: '+file);
   const install=path.join(temp,'install');fs.mkdirSync(install);
   run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
@@ -33,7 +33,15 @@ try {
       if(createHash('sha256').update(fs.readFileSync(new URL('third_party/glibc-math/'+file,packageRoot))).digest('hex')!==expected)throw new Error('Packaged exp/log preferred source drift: '+file);
     if(DotNetMath.Exp(-745)!==Number.MIN_VALUE||DotNetMath.Log(1)!==0)throw new Error('Packed exp/log runtime failed');
     if(DotNetMath.Sin(-0.20148213487118483)!==-0.2001217029035577)throw new Error('Packed reference math failed');
-    import {Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    import {PlotSettings,PaperMargin,DxfPlotSettingsObject,DxfWipeoutVariables,RasterVariables,Group,Line,Hatch,HatchBoundaryPath,HatchPattern,Circle,Vector2,DxfRawDocument,DxfRawObjectStore,DxfTag,Vector3,Matrix3,AciColor,ObservableCollection,DxfClass,DxfClassCollection,ApplicationRegistry,XData,XDataRecord,XDataCode} from '@netdxf/javascript';
+    const settings=new PlotSettings();settings.StandardScaleType=25;settings.ScaleToFit=false;settings.StandardScaleFactor=-0;
+    settings.PaperMargin=new PaperMargin(1,2,3,4);const page=new DxfPlotSettingsObject(settings);settings.PaperMargin.Left=99;
+    if(page.Settings.StandardScaleType!==25||!Object.is(page.Settings.StandardScaleFactor,-0)||page.Settings.PaperMargin.Left!==1)throw new Error('Packed plot settings value state failed');
+    const wipeout=new DxfWipeoutVariables();wipeout.DisplayFrame=true;
+    if(!wipeout.CloneShell().DisplayFrame||new RasterVariables(null).DisplayQuality!==1)throw new Error('Packed output variables failed');
+    const grouped=new Line(Vector3.Zero,Vector3.UnitX),group=new Group('GROUP',[grouped]),groupCopy=group.Clone('COPY');
+    if(groupCopy.Entities.get_Item(0)===grouped||grouped.Reactors.get_Item(0)!==group)throw new Error('Packed group clone/reactor behavior failed');
+    group.Entities.Clear();if(grouped.Reactors.Count!==0)throw new Error('Packed group unlink failed');
     const hatchSource=new Circle(Vector3.Zero,2), hatchPath=new HatchBoundaryPath([hatchSource]);
     const hatch=new Hatch(HatchPattern.Solid,[hatchPath],true);hatch.SeedPoints.Add(new Vector2(3,4));hatch.PixelSize=null;
     hatch.TransformBy(Matrix3.Identity,Vector3.Zero);
