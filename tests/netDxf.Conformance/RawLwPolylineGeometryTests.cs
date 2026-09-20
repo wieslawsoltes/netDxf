@@ -19,16 +19,16 @@ internal static partial class Program
         int a=tags.FindIndex(t=>t.Code==0&&Equals(t.Value,"LINE"));
         int b=tags.FindIndex(a+1,t=>t.Code==0);
         var data=new List<DxfTag>{new(0,"LWPOLYLINE"),new(5,"A")};
-        if(variant!=3)data.Add(new(100,"AcDbEntity"));
+        data.Add(new(100,"AcDbEntity"));
         data.AddRange(new DxfTag[]{new(8,"0"),new(62,(short)3)});
-        if(variant!=3)data.Add(new(100,"AcDbPolyline"));
+        data.Add(new(100,"AcDbPolyline"));
         data.AddRange(new DxfTag[]{new(90,3),new(70,(short)(variant==0?0:129)),new(38,5.0),new(39,-2.0)});
         if(variant==2)data.Add(new(43,2.0));
         for(int i=0;i<3;i++)
         {
             data.Add(new(10,1.0+i*3));
-            if(variant==3)data.Add(new(42,i==1?-.5:0.0));
             data.Add(new(20,2.0+i*3));
+            if(variant==3)data.Add(new(42,i==1?-.5:0.0));
             data.Add(new(91,i==1?-7:100+i));
             if(variant!=1)
             {
@@ -140,6 +140,26 @@ internal static partial class Program
         foreach(string value in new[]{"AcDbLine","AcDbPolyline","Unknown"})
             Run("raw-lwpolyline/subclass/"+value,()=>
             {var r=Modified(t=>t.Insert(RawLineAt(t,90),new(100,value)));Throws<NotSupportedException>(()=>RawLwRead(r));});
+        Run("raw-lwpolyline/nonadjacent-xy-raw-only",()=>
+        {
+            // Raw scans admit markerless packets and this ordering; ezdxf requires
+            // AcDbPolyline and adjacent X/Y. This is not an interoperable fixture.
+            var r=Modified(t=>
+            {
+                t.RemoveAll(tag=>tag.Code==100);
+                int at=RawLineAt(t,42);var bulge=t[at];t.RemoveAt(at);
+                t.Insert(RawLineAt(t,20),bulge);
+            },3);
+            var view=RawLwRead(r);var record=RawLwRecord(r);
+            SameDoubleBits(1,view.Vertices[0].Position.X,"Nonadjacent X");
+            SameDoubleBits(2,view.Vertices[0].Position.Y,"Nonadjacent Y");
+            var changed=r.WithLwPolylineVertex(record,0,new(20,30),.25,.5,.75);
+            Equal(.75,RawLwRead(changed).Vertices[0].Bulge,"Nonadjacent bulge");
+            var fields=RawLwRecord(changed).Tags;
+            int x=fields.ToList().FindIndex(t=>t.Code==10);
+            Equal((short)42,fields[x+1].Code,"Raw field order was normalized");
+            Equal((short)20,fields[x+2].Code,"Raw Y order was normalized");
+        });
         Run("raw-lwpolyline/constant-width-conflict",()=>
         {
             var r=Modified(_=>{},2);var p=RawLwRead(r).Vertices[1];byte[] before=SaveRaw(r);
