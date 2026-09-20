@@ -53,3 +53,15 @@ cache invalidation and exception behavior above are library contracts.
 Historical typed loading, pre-R11 formats, complete private FIELD/TABLE/cache
 regeneration, dependency-complete imports, general version conversion and native
 font/visual qualification remain separate work.
+
+## Earlier common-data test expectation
+
+The first hosted run exposed one conflicting baseline expectation: the common-
+data API test required proxy graphics to survive two reversals. It now checks
+that each traversal change invalidates that cache, that double reversal restores
+vertex identities without resurrecting a cache, and that an independent clone
+retains the original proxy bytes. The case remains registered, and its original
+byte-array isolation, LINE transformation and rejected-setter tests are retained.
+All 89 new focused cases passed on that first run; the whole suite correctly
+failed until this expectation was updated. Final qualification requires a fresh
+full run, not removal or filtering of the old test.
