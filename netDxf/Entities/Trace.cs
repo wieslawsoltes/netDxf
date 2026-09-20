@@ -33,6 +33,7 @@ namespace netDxf.Entities
     /// <remarks>
     /// The trace entity has exactly the same graphical representation as the Solid, and its functionality is exactly the same.
     /// It is recommended to use the more common Solid entity instead.
+    /// Changing a stored corner, elevation or thickness clears stale proxy graphics; bit-identical components retain them.
     /// </remarks>
     public class Trace :
         EntityObject
@@ -95,39 +96,39 @@ namespace netDxf.Entities
         #region public properties
 
         /// <summary>
-        /// Gets or sets the first trace <see cref="Vector3">vertex in OCS (object coordinate system).</see>.
+        /// Gets or sets the first trace <see cref="Vector2">vertex in OCS (object coordinate system).</see>.
         /// </summary>
         public Vector2 FirstVertex
         {
             get { return this.firstVertex; }
-            set { this.firstVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.firstVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
-        /// Gets or sets the second trace <see cref="Vector3">vertex in OCS (object coordinate system).</see>.
+        /// Gets or sets the second trace <see cref="Vector2">vertex in OCS (object coordinate system).</see>.
         /// </summary>
         public Vector2 SecondVertex
         {
             get { return this.secondVertex; }
-            set { this.secondVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.secondVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
-        /// Gets or sets the third trace <see cref="Vector3">vertex in OCS (object coordinate system).</see>.
+        /// Gets or sets the third trace <see cref="Vector2">vertex in OCS (object coordinate system).</see>.
         /// </summary>
         public Vector2 ThirdVertex
         {
             get { return this.thirdVertex; }
-            set { this.thirdVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.thirdVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
-        /// Gets or sets the fourth trace <see cref="Vector3">vertex in OCS (object coordinate system).</see>.
+        /// Gets or sets the fourth trace <see cref="Vector2">vertex in OCS (object coordinate system).</see>.
         /// </summary>
         public Vector2 FourthVertex
         {
             get { return this.fourthVertex; }
-            set { this.fourthVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.fourthVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -137,7 +138,7 @@ namespace netDxf.Entities
         public double Elevation
         {
             get { return this.elevation; }
-            set { this.elevation = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.elevation, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -146,7 +147,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.thickness, value)) this.ClearProxyGraphics(); }
         }
 
         #endregion

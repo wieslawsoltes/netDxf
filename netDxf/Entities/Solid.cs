@@ -30,6 +30,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a solid <see cref="EntityObject">entity</see>.
     /// </summary>
+    /// <remarks>Changing a stored corner, elevation or thickness clears stale proxy graphics; bit-identical components retain them.</remarks>
     public class Solid :
         EntityObject
     {
@@ -96,7 +97,7 @@ namespace netDxf.Entities
         public Vector2 FirstVertex
         {
             get { return this.firstVertex; }
-            set { this.firstVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.firstVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace netDxf.Entities
         public Vector2 SecondVertex
         {
             get { return this.secondVertex; }
-            set { this.secondVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.secondVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace netDxf.Entities
         public Vector2 ThirdVertex
         {
             get { return this.thirdVertex; }
-            set { this.thirdVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.thirdVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace netDxf.Entities
         public Vector2 FourthVertex
         {
             get { return this.fourthVertex; }
-            set { this.fourthVertex = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.fourthVertex, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace netDxf.Entities
         public double Elevation
         {
             get { return this.elevation; }
-            set { this.elevation = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.elevation, value)) this.ClearProxyGraphics(); }
         }
 
         /// <summary>
@@ -142,7 +143,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { if (PlanarGeometryAssignment.Assign(ref this.thickness, value)) this.ClearProxyGraphics(); }
         }
 
         #endregion
