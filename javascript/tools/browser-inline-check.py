@@ -14,6 +14,7 @@ import re
 import shutil
 import subprocess
 from playwright.sync_api import sync_playwright
+from browser_json_transport import transfer_json_payloads
 
 ROOT=Path(__file__).resolve().parent.parent
 IMPORT=re.compile(r"""(?P<prefix>\b(?:from\s*|import\s*))(?P<quote>['"])(?P<name>\.[^'"]+)(?P=quote)""")
@@ -38,7 +39,7 @@ def fingerprints():
     ],cwd=ROOT,text=True))
 
 configuration=os.environ.get('CONFIGURATION','Release')
-report={'completed':False,'executionMode':'inline-native-esm','digestProvider':'host-sha256'}
+report={'completed':False,'executionMode':'inline-native-esm','digestProvider':'host-sha256','inputTransport':'chunked-json','inputChunkCharacters':262144}
 try:
     proof=fingerprints()
     corpus=json.loads((ROOT/'artifacts/browser/corpus.json').read_text(encoding='utf-8'))
@@ -54,11 +55,19 @@ try:
             errors=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.expose_function('netDxfHashCanonical',lambda text:hashlib.sha256(text.encode('utf-8')).hexdigest())
-            # Transfer JSON strings rather than the whole object graph through Playwright's
-            # structured serializer. The renderer parses the unchanged descriptors/digests;
-            # ensure_ascii also preserves unpaired UTF-16 surrogates in test inputs.
-            result=page.evaluate("""async ({sourcesJson,corpusJson,nativeJson})=>{
-              const sources=JSON.parse(sourcesJson),corpus=JSON.parse(corpusJson),native=JSON.parse(nativeJson);
+            # Keep DevTools messages bounded; reassemble the unchanged JSON documents
+            # in the renderer before executing any corpus operation.
+            transfer_json_payloads(page, {'sources':sources, 'corpus':corpus, 'native':native})
+            result=page.evaluate("""async ()=>{
+              let payloads;
+              try {
+                payloads=Object.fromEntries(Object.entries(globalThis.netDxfJsonPayloads).map(([name,entry])=>{
+                  const text=entry.chunks.join('');
+                  if(text.length!==entry.length)throw new Error('Incomplete browser JSON payload: '+name);
+                  return [name,JSON.parse(text)];
+                }));
+              } finally { delete globalThis.netDxfJsonPayloads; }
+              const {sources,corpus,native}=payloads;
               const imports={},urls=[];
               try {
                 for(const [name,source] of Object.entries(sources)){
@@ -69,7 +78,7 @@ try:
                 const {runBrowserCorpus}=await import('netdxf:tools/browser-runner.mjs');
                 return await runBrowserCorpus(corpus,native,{hashCanonical:window.netDxfHashCanonical});
               } finally { for(const url of urls)URL.revokeObjectURL(url); }
-            }""",{'sourcesJson':json.dumps(sources,ensure_ascii=True),'corpusJson':json.dumps(corpus,ensure_ascii=True),'nativeJson':json.dumps(native,ensure_ascii=True)})
+            }""")
             report.update(result)
             report.update({'browser':browser.version,'modules':len(sources),'pageErrors':errors})
             if errors or fingerprints()!=proof:
