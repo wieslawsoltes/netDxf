@@ -95,7 +95,10 @@ namespace netDxf.IO
                 }
 
                 this.currentPosition += 1;
-                if (!short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
+                // Numeric parsing permits trailing NULs on some runtimes. They are
+                // not whitespace or valid DXF group-code spelling.
+                if (readCode.IndexOf('\0') >= 0 ||
+                    !short.TryParse(readCode, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.code))
                 {
                     throw new FormatException(string.Format(CultureInfo.InvariantCulture,
                         "Invalid DXF group code at line {0}.", this.currentPosition));
