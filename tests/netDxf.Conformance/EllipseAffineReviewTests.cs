@@ -149,7 +149,14 @@ internal static partial class Program
             "overflow" => Matrix3.Scale(double.MaxValue), "underflow" => Matrix3.Scale(double.Epsilon),
             "oblique-thickness" => new(1,0,.5, 0,1,0, 0,0,1), _ => Matrix3.Identity
         };
-        if (fault == "underflow") e.SetAxis(.5, .25);
+        if (fault == "underflow")
+        {
+            byte[] proxy = e.ProxyGraphics!;
+            e.SetAxis(.5, .25);
+            Check(e.ProxyGraphics == null, "Axis setup retained stale proxy");
+            // Deliberately attach a proxy to retain the original transform-rollback check.
+            e.ProxyGraphics = proxy;
+        }
         if (fault == "oblique-thickness") e.Thickness = 1;
         if (fault == "angle") e.StartAngle = double.NaN;
         Vector3 translation = fault == "translation" ? new Vector3(double.PositiveInfinity,0,0) : Vector3.Zero;

@@ -201,6 +201,7 @@ namespace netDxf.Entities
         /// <param name="axis2">Ellipse axis.</param>
         /// <remarks>
         /// It is not required that axis1 is greater than axis2. The larger value will be assigned as major axis and the lower as minor axis.
+        /// Changed axes clear stale proxy graphics. Invalid inputs and unchanged sorted axes retain them.
         /// </remarks>
         public void SetAxis(double axis1, double axis2)
         {
@@ -214,6 +215,8 @@ namespace netDxf.Entities
                 throw new ArgumentOutOfRangeException(nameof(axis2), axis2, "The axis value must be greater than zero.");
             }
 
+            // Validate both inputs before changing axes or invalidating cached graphics.
+            double oldMajor = this.majorAxis, oldMinor = this.minorAxis;
             if (axis2 > axis1)
             {
                 this.majorAxis = axis2;
@@ -224,6 +227,8 @@ namespace netDxf.Entities
                 this.majorAxis = axis1;
                 this.minorAxis = axis2;
             }
+            if (oldMajor != this.majorAxis || oldMinor != this.minorAxis)
+                this.ClearProxyGraphics();
         }
 
         /// <summary>
