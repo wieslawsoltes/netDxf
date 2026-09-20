@@ -21,6 +21,8 @@ function wire(value) {
   if (typeof value === 'bigint') return { long: value.toString() };
   if (typeof value === 'string') return utf16Wire(value);
   if (typeof value === 'boolean') return value;
+  if(typeof value.MoveNext==='function'&&'Current' in value)return {type:'Enumerator'};
+  if(Object.hasOwn(value,'Key')&&Object.hasOwn(value,'Value'))return [wire(value.Key),wire(value.Value)];
   const type = value.constructor.name;
   if (/^Vector[234]$/.test(type)) return { type, values: [...'XYZW'.slice(0, Number(type.at(-1)))].map(key => doubleBits(value[key])), normalized: value.IsNormalized };
   if (/^Matrix[234]$/.test(type)) {
@@ -136,6 +138,7 @@ export function jsGeometry(input) {
         case 'pat-load': result = api.HatchPattern.LoadText(step.text, step.patternName); break;
         case 'pat-save': result = target.ToPatString(step.newLine ?? '\n'); break;
         case 'map-add': target.set(args[0],args[1]);break;
+        case 'value': result = read(step.value); break;
         case 'new': result = construct(type,args,step.signature); break;
         case 'get': result = (target ?? type)[step.member]; break;
         case 'set': (target ?? type)[step.member] = read(step.value); break;
@@ -153,7 +156,9 @@ export function jsGeometry(input) {
           break;
         case 'snapshot': result = target; break;
         case 'call': {
-          if(type===api.DxfClassCollection&&['Contains','Remove'].includes(step.member)&&step.signature?.[0]==='DxfClass')
+          if(type===api.EntityCollection&&step.member==='Remove'&&step.signature)
+            result=target.Remove(args[0],step.signature[0].startsWith('IEnumerable<'));
+          else if(type===api.DxfClassCollection&&['Contains','Remove'].includes(step.member)&&step.signature?.[0]==='DxfClass')
             result=target[step.member](args[0],'DxfClass');
           else if (type === api.UnitHelper && step.member === 'ConversionFactor' && step.signature)
             result = api.UnitHelper.ConversionFactor(...args, step.signature[0].replace(/^.*\./,''), step.signature[1].replace(/^.*\./,''));

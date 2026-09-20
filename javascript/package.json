@@ -67,7 +67,8 @@
     "test:nurbs": "node tools/nurbs-differential.mjs",
     "test:exp-log": "node tools/exp-log-differential.mjs",
     "verify:exp-log": "python tools/ReferenceMath/generate-exp-log.py --check",
-    "test:surfaces": "node tools/surface-differential.mjs"
+    "test:surfaces": "node tools/surface-differential.mjs",
+    "test:attributes": "node tools/attribute-differential.mjs"
   },
   "repository": {
     "type": "git",

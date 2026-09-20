@@ -8,6 +8,7 @@ internal static partial class Program
     private static bool EntityWire(object value, out object? result)
     {
         result = null;
+        if(AttributeWire(value,out result))return true;
         if(CurveRecordWire(value,out result))return true;
         if (value is PolyfaceMeshFace pf) { result=new {type="PolyfaceMeshFace",indices=pf.VertexIndexes.Select(v=>Wire(v)).ToArray(),color=Wire(pf.Color),layer=Wire(pf.Layer)};return true; }
         if(value is PolyfaceMeshRecord pr) {

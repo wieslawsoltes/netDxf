@@ -96,6 +96,8 @@ internal static partial class Program
         if (value is long l) return new { @long = l.ToString(CultureInfo.InvariantCulture) };
         if (value is string textValue) return Utf16Wire(textValue);
         if (value is bool) return value;
+        if (value is IEnumerator && value is not IEnumerable) return new {type="Enumerator"};
+        if (value is KeyValuePair<string,netDxf.Entities.AttributeDefinition> pair) return new[]{Wire(pair.Key),Wire(pair.Value)};
         if (value is int || value is short || value is byte || value is Enum) return new { @double = Bits(Convert.ToDouble(value, CultureInfo.InvariantCulture)) };
         if (value is DateTime date) return new { date = new[] {date.Year,date.Month,date.Day,date.Hour,date.Minute,date.Second,date.Millisecond}, ticks=date.Ticks.ToString(), kind=(int)date.Kind };
         if (value is TimeSpan span) return new { ticks = span.Ticks.ToString() };
@@ -167,6 +169,7 @@ internal static partial class Program
             case "observe": case "unobserve": result=ObservationStep(step,target);break;
             case "reference-equals": result=ReferenceEquals(args[0],args[1]);break;
             case "pat-names": case "pat-load": case "pat-save": result=PatternTextStep(step,target);break;
+            case "value": result=Read(step.GetProperty("value"));break;
             case "new": result=Create(type!,args,Signature(step),step.TryGetProperty("nonPublic",out var ctorHidden)&&ctorHidden.GetBoolean());break;
             case "get": {
                 var flags=BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static;
