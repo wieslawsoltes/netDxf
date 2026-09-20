@@ -52,13 +52,20 @@ and application constraints are not regenerated.
 
 ## Verification
 
-The matrix covers all seven profiles, both input/output transports, ENTITIES and
-BLOCKS, optional fields, markerless packets, attribute ordering, signed vertex
+The model and wire tests cover seven profiles, both input/output transports,
+ENTITIES and BLOCKS, optional fields, attribute ordering, signed vertex
 IDs, bulges, constant widths and tilted/reversed extrusion. Independent Python
 checks regenerate input packets, compare complete before/after tag sequences,
 and independently load vertex coordinates, widths, bulges and plane properties.
 Corruption tests change, omit and duplicate actual tags. Inventory controls reject
 missing/extra drawings. The corpus is synthetic, not native producer evidence.
+The independent wire matrix keeps the AcDbPolyline subclass and adjacent X/Y
+pairs, including its alternate optional-attribute ordering. The initial
+synthetic variant placed a
+bulge between X and Y and omitted the subclass. The independent loader rejected
+both omissions. A separate raw-only regression retains and edits that markerless,
+nonadjacent ordering, without claiming independent native loading of it. No raw parser rule or
+existing baseline assertion was relaxed to accommodate the fixture correction.
 Six modern typed profiles separately round-trip edited geometry. Exact execution
 results are recorded in the PR; no local .NET run is implied without an SDK.
 
