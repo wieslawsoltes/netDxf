@@ -56,6 +56,7 @@ internal static partial class Program
         RegisterHatchEdgeInputTests();
         RegisterHatchBulgeExplosionTests();
         RegisterSplineAffineAtomicTests();
+        RegisterSplineCountPolicyTests();
         RegisterEllipseSamplingTests();
         RegisterConicSplineTests();
         RegisterSplineKnotInsertionTests();

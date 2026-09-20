@@ -12,6 +12,9 @@ namespace netDxf.IO
         // the block table; following INSERT graphs recursively is unnecessary.
         private void ValidateEntityTextStrings()
         {
+            // This is the first shared file/stream entity preflight entry point.
+            // Keep required count validation ahead of any writer preprocessing.
+            this.ValidateSplineCounts();
             foreach (Block block in this.doc.Blocks)
             {
                 foreach (AttributeDefinition definition in block.AttributeDefinitions.Values)
