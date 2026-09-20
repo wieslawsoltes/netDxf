@@ -125,6 +125,7 @@ namespace netDxf.IO
                 if (depth != 0) continue;
                 if (code == 101)
                 {
+                    if (xdata) throw new FormatException("LINE embedded data cannot follow XData.");
                     if (!RawGeometryName(tag.RawValue as string, "Embedded Object"))
                         throw new NotSupportedException("Unrecognized LINE embedded-data marker.");
                     result.CanEdit = false; embedded = true; continue;
