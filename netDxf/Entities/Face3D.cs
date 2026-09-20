@@ -23,6 +23,7 @@
 // 
 #endregion
 
+using System;
 using netDxf.Tables;
 
 namespace netDxf.Entities
@@ -153,10 +154,19 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the Face3D edge visibility.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The value contains bits other than the four defined invisible edges.</exception>
+        /// <remarks>Changed visibility clears stale proxy graphics; unchanged or rejected assignments preserve them.</remarks>
         public Face3DEdgeFlags EdgeFlags
         {
             get { return this.edgeFlags; }
-            set { this.edgeFlags = value; }
+            set
+            {
+                if (((int)value & ~15) != 0)
+                    throw new ArgumentOutOfRangeException(nameof(value), "Only the four invisible-edge bits are defined.");
+                if (this.edgeFlags == value) return;
+                this.edgeFlags = value;
+                this.ClearProxyGraphics();
+            }
         }
 
         #endregion
