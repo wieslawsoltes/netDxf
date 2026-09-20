@@ -290,7 +290,7 @@ internal static partial class Program
     private static void CommonDataScope(DxfVersion v, bool binary)
     {
         var doc = new DxfDocument(v);
-        var boundary = new Polyline2D(new[] { new Vector2(0, 0), new Vector2(4, 0), new Vector2(4, 3), new Vector2(0, 3) }, true);
+        var boundary = new Polyline2D(new[] { Vector2.Zero, new Vector2(4, 0), new Vector2(4, 3), new Vector2(0, 3) }, true);
         var hatch = new Hatch(HatchPattern.Solid, new[] { new HatchBoundaryPath(new[] { boundary }) }, false) { ProxyGraphics = CommonDataBytes(128) };
         doc.Entities.Add(hatch);
         using var output = new MemoryStream(); Check(doc.Save(output, binary), "Hatch common save");
@@ -343,7 +343,16 @@ internal static partial class Program
         // Explicitly supplied replacement bytes still have the existing guarded setter contract.
         line.ProxyGraphics = CommonDataBytes(129);
         var polyline = new Polyline2D(new[] { Vector2.Zero, Vector2.UnitX, Vector2.UnitY }) { ProxyGraphics = CommonDataBytes(129) };
-        polyline.Reverse(); polyline.Reverse(); Check(polyline.ProxyGraphics!.SequenceEqual(CommonDataBytes(129)), "Reverse altered opaque cache");
+        var polylineCopy = (Polyline2D)polyline.Clone();
+        var originalOrder = polyline.Vertexes.ToArray();
+        polyline.Reverse();
+        Check(polyline.ProxyGraphics == null, "Reversed polyline retained stale opaque cache");
+        // Geometry can return to its original order, but an invalidated cache
+        // must not be resurrected. A separate clone retains its own valid bytes.
+        polyline.Reverse();
+        Check(polyline.Vertexes.SequenceEqual(originalOrder), "Double reversal changed vertex identities");
+        Check(polyline.ProxyGraphics == null, "Double reversal resurrected an invalidated cache");
+        Check(polylineCopy.ProxyGraphics!.SequenceEqual(CommonDataBytes(129)), "Reverse changed independent clone cache");
         try { line.ShadowMode = (EntityShadowMode)4; throw new InvalidOperationException("Invalid shadow accepted"); } catch (ArgumentOutOfRangeException) { }
         try { line.ProxyGraphics = new byte[EntityObject.MaximumProxyGraphicsBytes + 1]; throw new InvalidOperationException("Oversized proxy accepted"); } catch (ArgumentOutOfRangeException) { }
         Check(line.ProxyGraphics!.SequenceEqual(CommonDataBytes(129)), "Failed proxy setter mutated cache");
