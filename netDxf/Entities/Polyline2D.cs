@@ -262,6 +262,7 @@ namespace netDxf.Entities
         public void Reverse()
         {
             this.ValidateStoredRecordGeometry();
+            this.ValidateReversalVertices();
             if (this.vertexes.Count < 2)
             {
                 return;
@@ -286,6 +287,7 @@ namespace netDxf.Entities
             this.vertexes[this.vertexes.Count - 1].Bulge = -firstBulge;
             this.vertexes[this.vertexes.Count - 1].StartWidthOverride = firstEndWidth;
             this.vertexes[this.vertexes.Count - 1].EndWidthOverride = firstStartWidth;
+            this.ClearProxyGraphics();
         }
 
         /// <summary>
