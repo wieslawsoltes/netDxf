@@ -63,6 +63,7 @@ internal static partial class Program
         RegisterSplineBezierTests();
         RegisterSplineDegreeElevationTests();
         RegisterSplineTrimTests();
+        RegisterSplineParameterTests();
         RunTextHexTests();
         RunTableXDataTests();
         RunThumbnailImageTests();
