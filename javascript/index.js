@@ -119,3 +119,12 @@ export { PolygonMeshRecord } from './netDxf/Entities/PolygonMeshRecord.js';
 
 export { Hatch } from './netDxf/Entities/Hatch.js';
 export { HatchBoundaryPath } from './netDxf/Entities/HatchBoundaryPath.js';
+
+export { AttributeDefinition } from './netDxf/Entities/AttributeDefinition.js';
+export { Attribute } from './netDxf/Entities/Attribute.js';
+export { AttributeChangeEventArgs } from './netDxf/Entities/AttributeChangeEventArgs.js';
+export { AttributeCollection } from './netDxf/Collections/AttributeCollection.js';
+export { EntityCollection } from './netDxf/Collections/EntityCollection.js';
+export { EntityCollectionEventArgs } from './netDxf/Collections/EntityCollectionEventArgs.js';
+export { AttributeDefinitionDictionary } from './netDxf/Collections/AttributeDefinitionDictionary.js';
+export { AttributeDefinitionDictionaryEventArgs } from './netDxf/Collections/AttributeDefinitionDictionaryEventArgs.js';
