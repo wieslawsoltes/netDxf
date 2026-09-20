@@ -63,7 +63,7 @@ internal static partial class Program
         Vector3[] source=RawQuadSourcePoints(variant);
         for(int i=0;i<4;i++)RawLinePointBits(source[i],RawQuadCorners(view)[i]);
         SameDoubleBits(variant==1 ? 0 : -2.5,view.Thickness,"Stored quad thickness");
-        var normal=variant==1 ? Vector3.UnitZ : variant==2 ? -Vector3.UnitZ : variant==3 ? new Vector3(0,6,8) : new Vector3(0,.6,.8);
+        var normal=variant==1 ? Vector3.UnitZ : variant==2 ? new Vector3(0,0,-1) : variant==3 ? new Vector3(0,6,8) : new Vector3(0,.6,.8);
         RawLinePointBits(normal,view.ExtrusionDirection);
         Check(ReferenceEquals(raw,RawQuadEdit(raw,record,trace,source,view.Thickness)),"Quad no-op replaced snapshot");
         var changed=RawQuadEdit(raw,record,trace,RawFaceTargets,-4.25);var updated=RawQuadRecord(changed,trace);
