@@ -46,3 +46,6 @@ export { BoxedChar } from './runtime/BoxedChar.js';
 export { DimensionArrowhead } from './netDxf/Entities/DimensionArrowhead.js';
 
 export * from './runtime/MLeaderExports.js';
+
+export { AngleUnitFormat } from './netDxf/Units/AngleUnitFormat.js';
+export { LinearUnitFormat } from './netDxf/Units/LinearUnitFormat.js';
