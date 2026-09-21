@@ -1,3 +1,6 @@
+import { userInfo } from 'node:os';
+import { HeaderDateTime, SetHeaderEnvironment } from './runtime/HeaderTime.js';
+SetHeaderEnvironment({UserName:()=>userInfo().username, Now:()=>HeaderDateTime.FromDate(new Date(),2), UtcNow:()=>HeaderDateTime.FromDate(new Date(),1)});
 import { Culture } from './runtime/GeometryRuntime.js';
 import { SetSupportFileSystem } from './runtime/SupportFileSystem.js';
 import { NodeSupportFileSystem } from './runtime/NodeSupportFileSystem.js';

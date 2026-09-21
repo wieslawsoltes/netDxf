@@ -30,3 +30,7 @@ export { Symbols } from './netDxf/Symbols.js';
 export { HeaderVariableCode } from './netDxf/Header/HeaderVariableCode.js';
 export { MTextBackgroundFillFlags } from './netDxf/Entities/MTextBackgroundFill.js';
 export { Copy as CloneValue, Color, Culture } from './runtime/GeometryRuntime.js';
+
+export { HeaderVariables } from './netDxf/Header/HeaderVariables.js';
+export { HeaderDateTime, HeaderTimeSpan, SetHeaderEnvironment } from './runtime/HeaderTime.js';
+export { HeaderEnum } from './runtime/HeaderBox.js';

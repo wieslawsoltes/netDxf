@@ -1,3 +1,4 @@
+import { NumberText } from './GeometryRuntime.js';
 import { ArgumentException, RequireInteger } from './Errors.js';
 /** Explicit CLR boxing for object-valued APIs where JavaScript Number alone cannot
  * distinguish Int32, Int16, Byte and Double. Plain Numbers are type-directed by
@@ -17,4 +18,5 @@ export class BoxedScalar {
     this.#type=type;this.#value=value;Object.freeze(this);
   }
   get Type(){return this.#type;}get Value(){return this.#value;}
+  ToString(){return this.#type==='Double'?NumberText(this.#value):String(this.#value);}
 }
