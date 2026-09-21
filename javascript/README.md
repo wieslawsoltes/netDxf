@@ -6,7 +6,11 @@ The behavioral baseline is `3496ab91893a1e4ec9261b4833479f1799149cdc`. The origi
 
 ## Current checkpoint
 
-**Drawing headers — `c2d3581`:** `HeaderVariables` now exposes all 40 built-in entries, custom-variable dictionaries, live entry references, exact timestamp/duration value adapters and explicit browser/Node host defaults. [Header contracts and verification](doc/HEADERS.md) records 665 scenarios / 6,596 exact operations, 2,819 original JavaScript tests, 649 supplemental tests and the incomplete 283/510 source-mirror ledger. Later code checkpoints supersede the historical coverage figures below; no full-parity claim or npm publication is made.
+**Observable dictionaries — runtime `6675a4a`, verification `f6ac4dd`:** original-path `ObservableDictionary` and event arguments now include source-ordered cancellation/re-entrancy, reference-sensitive pair removal, copied structs, custom equality, live read-only views and generic enumeration. [Dictionary contracts and source-bound results](doc/OBSERVABLE_DICTIONARIES.md) records 427 exact scenarios in local Debug/Release, 24 added supplemental tests, mandatory Node/browser/package checks and the passing Linux/Windows Debug/Release matrix (run `35647382493`).
+
+The local suite passes **2,820 original JavaScript cases and 750 supplemental tests**; unchanged C# passes **35,309 cases in each configuration**. Inline Chromium executes **137,604 comparisons**, including all dictionary scenarios without mismatches, but retains **75 failures elsewhere**. The ledger is **311/510 library source mirrors and 2,820/35,309 original cases**. File presence is not complete API/behavioral qualification. The full-port gate remains failing and the package remains private.
+
+**Historical drawing-header checkpoint — `c2d3581`:** [header contracts](doc/HEADERS.md) retain the 665-scenario / 6,596-operation checkpoint. Its test/source counts and the historical results below do not qualify later code or supersede the current ledger.
 
 ## Implemented scope
 
