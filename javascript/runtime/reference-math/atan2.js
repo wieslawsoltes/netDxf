@@ -465,13 +465,13 @@ export function Atan2(y,x) {
   if (ay < ax)
     {
       u = ay / ax;
-      [v,vv] = mul2(ax,u);
+      v = ax * u; vv = fma(ax,u,-v);
       du = ((ay - v) - vv) / ax;
     }
   else
     {
       u = ax / ay;
-      [v,vv] = mul2(ay,u);
+      v = ay * u; vv = fma(ay,u,-v);
       du = ((ax - v) - vv) / ay;
     }
 
@@ -484,12 +484,7 @@ export function Atan2(y,x) {
 	    {
 	      v = u * u;
 
-	      zz = du + u * v * (d3
-				 + v * (d5
-					+ v * (d7
-					       + v * (d9
-						      + v * (d11
-							     + v * d13)))));
+	      zz = fma((u*v),fma(v,fma(v,fma(v,fma(v,fma(v,d13,d11),d9),d7),d5),d3),du);
 
 	      z = u + zz;
 	      
@@ -502,11 +497,7 @@ export function Atan2(y,x) {
 	  [v,dv] = add2(t3,du);
 	  t1 = cij[i][1];
 	  t2 = cij[i][2];
-	  zz = v * t2 + (dv * t2
-			 + v * v * (cij[i][3]
-				    + v * (cij[i][4]
-					   + v * (cij[i][5]
-						  + v * cij[i][6]))));
+	  zz = fma(v,t2,fma(dv,t2,((v*v)*fma(v,fma(v,fma(v,cij[i][6],cij[i][5]),cij[i][4]),cij[i][3]))));
 	  z = t1 + zz;
 	  
 	  return signArctan (y, z);
@@ -516,12 +507,7 @@ export function Atan2(y,x) {
       if (u < inv16)
 	{
 	  v = u * u;
-	  zz = u * v * (d3
-			+ v * (d5
-			       + v * (d7
-				      + v * (d9
-					     + v * (d11
-						    + v * d13)))));
+	  zz = ((u*v)*fma(v,fma(v,fma(v,fma(v,fma(v,d13,d11),d9),d7),d5),d3));
 	  [t2,cor] = sub2(hpi,u);
 	  t3 = ((hpi1 + cor) - du) - zz;
 	  z = t2 + t3;
@@ -533,11 +519,7 @@ export function Atan2(y,x) {
       i -= 16;
       v = (u - cij[i][0]) + du;
 
-      zz = hpi1 - v * (cij[i][2]
-			 + v * (cij[i][3]
-				+ v * (cij[i][4]
-				       + v * (cij[i][5]
-					      + v * cij[i][6]))));
+      zz = fma(-(v),fma(v,fma(v,fma(v,fma(v,cij[i][6],cij[i][5]),cij[i][4]),cij[i][3]),cij[i][2]),hpi1);
       t1 = hpi - cij[i][1];
       z = t1 + zz;
       
@@ -550,11 +532,7 @@ export function Atan2(y,x) {
       if (u < inv16)
 	{
 	  v = u * u;
-	  zz = u * v * (d3
-			+ v * (d5
-			       + v * (d7
-				      + v * (d9
-					     + v * (d11 + v * d13)))));
+	  zz = ((u*v)*fma(v,fma(v,fma(v,fma(v,fma(v,d13,d11),d9),d7),d5),d3));
 	  [t2,cor] = add2(hpi,u);
 	  t3 = ((hpi1 + cor) + du) + zz;
 	  z = t2 + t3;
@@ -565,11 +543,7 @@ export function Atan2(y,x) {
       i = (TWO52 + 256 * u) - TWO52;
       i -= 16;
       v = (u - cij[i][0]) + du;
-      zz = hpi1 + v * (cij[i][2]
-			 + v * (cij[i][3]
-				+ v * (cij[i][4]
-				       + v * (cij[i][5]
-					      + v * cij[i][6]))));
+      zz = fma(v,fma(v,fma(v,fma(v,fma(v,cij[i][6],cij[i][5]),cij[i][4]),cij[i][3]),cij[i][2]),hpi1);
       t1 = hpi + cij[i][1];
       z = t1 + zz;
       
@@ -580,10 +554,7 @@ export function Atan2(y,x) {
   if (u < inv16)
     {
       v = u * u;
-      zz = u * v * (d3
-		    + v * (d5
-			   + v * (d7
-				  + v * (d9 + v * (d11 + v * d13)))));
+      zz = ((u*v)*fma(v,fma(v,fma(v,fma(v,fma(v,d13,d11),d9),d7),d5),d3));
       [t2,cor] = sub2(opi,u);
       t3 = ((opi1 + cor) - du) - zz;
       z = t2 + t3;
@@ -594,10 +565,7 @@ export function Atan2(y,x) {
   i = (TWO52 + 256 * u) - TWO52;
   i -= 16;
   v = (u - cij[i][0]) + du;
-  zz = opi1 - v * (cij[i][2]
-		     + v * (cij[i][3]
-			    + v * (cij[i][4]
-				   + v * (cij[i][5] + v * cij[i][6]))));
+  zz = fma(-(v),fma(v,fma(v,fma(v,fma(v,cij[i][6],cij[i][5]),cij[i][4]),cij[i][3]),cij[i][2]),opi1);
   t1 = opi - cij[i][1];
   z = t1 + zz;
   

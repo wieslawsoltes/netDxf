@@ -27,6 +27,7 @@
     "COPYING.LIB": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
     "LICENSES": "b33d0bd9f685b46853548814893a6135e74430d12f6d94ab3eba42fc591f83bc",
     "math/w_asin_compat.c": "952098cfb62cf570d8b2735251dc18e4e1ac12e28ffe63b5e71c1d0fe326bac6",
-    "math/w_acos_compat.c": "a1463ef56d0249b420c0e7fe78cc690d5d48a8a936b2fb2731699f6326b3b245"
+    "math/w_acos_compat.c": "a1463ef56d0249b420c0e7fe78cc690d5d48a8a936b2fb2731699f6326b3b245",
+    "sysdeps/x86_64/fpu/multiarch/e_atan2-fma.c": "2118713dd759a23f6a75be46338049c52dbfce8c9cdcc0fe75108bdf9d5a2762"
   }
 }
