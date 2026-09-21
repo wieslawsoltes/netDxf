@@ -1,3 +1,4 @@
+import {unitFormatWire} from './unit-format-wire.mjs';
 import {dimensionWire} from './dimension-wire.mjs';
 import { headerWire } from './header-wire.mjs';
 import { layoutViewportValueWire } from './layout-viewport-wire.mjs';
@@ -26,6 +27,7 @@ function wire(value) {
   if (typeof value === 'boolean') return value;
   if(typeof value.MoveNext==='function'&&'Current' in value)return {type:'Enumerator'};
   if(Object.hasOwn(value,'Key')&&Object.hasOwn(value,'Value'))return [wire(value.Key),wire(value.Value)];
+  const unitFormat=unitFormatWire(value,wire);if(unitFormat!==undefined)return unitFormat;
   const dimension=dimensionWire(value,wire);if(dimension!==undefined)return dimension;
   const header=headerWire(value,wire);if(header!==undefined)return header;
   const type = value.constructor.name;

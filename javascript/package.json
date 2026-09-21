@@ -77,7 +77,8 @@
     "test:geodata-vba": "node tools/geodata-vba-differential.mjs",
     "test:headers": "node tools/header-differential.mjs",
     "test:dimensions": "node tools/dimension-differential.mjs",
-    "test:mleaders": "node tools/mleader-differential.mjs"
+    "test:mleaders": "node tools/mleader-differential.mjs",
+    "test:unit-formats": "node tools/unit-format-differential.mjs"
   },
   "repository": {
     "type": "git",

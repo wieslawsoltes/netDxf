@@ -25,7 +25,7 @@ internal static partial class Program
         netDxf.Blocks.BlockRecord.DefaultUnits=DrawingUnits.Unitless;netDxf.Entities.Insert.DefaultInsUnits=DrawingUnits.Unitless;
         Values.Clear();ResetObservations();MathHelper.Epsilon=1e-12;netDxf.Entities.Text.DefaultMirrText=false;netDxf.Entities.MText.DefaultMirrText=false;
         if(input.TryGetProperty("op",out var mathOp)&&mathOp.GetString()=="reference-math")return ReferenceMath(input);
-        CultureInfo.CurrentCulture=CultureInfo.InvariantCulture;
+        CultureInfo.CurrentCulture=input.TryGetProperty("culture",out var requestedCulture)?CultureInfo.GetCultureInfo(requestedCulture.GetString()!):CultureInfo.InvariantCulture;
         if(input.TryGetProperty("op",out var op)&&op.GetString()=="unit-factors")return Enumerable.Range(0,25).Select(a=>Enumerable.Range(0,25).Select(b=>Bits(UnitHelper.ConversionFactor((DrawingUnits)a,(DrawingUnits)b))).ToArray()).ToArray();
         if(input.TryGetProperty("op",out var environmentOp)&&environmentOp.GetString()=="environment")return new {
             framework=RuntimeInformation.FrameworkDescription,os=RuntimeInformation.OSDescription,architecture=RuntimeInformation.ProcessArchitecture.ToString(),runtime=Environment.Version.ToString()

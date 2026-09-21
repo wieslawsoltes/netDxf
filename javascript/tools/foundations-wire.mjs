@@ -12,7 +12,7 @@ import { wire } from './model-wire.mjs';
 
 export function jsGeometry(input) {
   api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;
-  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = ''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
+  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = input.culture ?? ''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
   const native = input.nativeManifest;
   const observers=new Map(), observations=[];
   function read(value) {

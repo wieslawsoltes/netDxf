@@ -1,0 +1,58 @@
+name: JavaScript angle and length formatting parity
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['javascript/**', '.github/workflows/javascript-unit-formats.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: javascript-unit-formats-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  formats:
+    name: Unit formats / ${{ matrix.os }} / ${{ matrix.configuration }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Build unchanged C# reference and observation adapter
+        run: node javascript/tools/dotnet.mjs geometry
+      - name: Compare every formatting result and exception
+        run: node javascript/tools/unit-format-differential.mjs
+      - name: Check rounding, text, culture and value contracts
+        if: ${{ !cancelled() }}
+        run: node --test javascript/tests/unit/unit-formats.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-unit-formats-${{ matrix.os }}-${{ matrix.configuration }}
+          path: |
+            javascript/artifacts/unit-format-differential/${{ matrix.configuration }}/results.json
+            javascript/artifacts/oracle/${{ matrix.configuration }}/*.build.log
+            javascript/artifacts/oracle/${{ matrix.configuration }}/toolchain.json
+          if-no-files-found: error
+          retention-days: 7
