@@ -36,7 +36,7 @@ internal static partial class Program
                     var raw=LoadRaw(bytes);var record=ConicRecord(raw,arc);var initial=ConicRead(raw,record,arc);
                     Vector3 center=new(-8,16,32),normal=new(0,2,0);
                     Check(ReferenceEquals(raw,ConicPlaneEdit(raw,record,arc,new(1.25,-2,missing?0:3),7.5,missing?0:-2.5,
-                        missing?Vector3.UnitZ:-Vector3.UnitZ,15,270)),"No-op snapshot identity");
+                        missing?Vector3.UnitZ:new Vector3(0,0,-1),15,270)),"No-op snapshot identity");
                     var edited=ConicPlaneEdit(raw,record,arc,center,3.75,-3,normal);var result=ConicRecord(edited,arc);
                     ConicPlanePacket(result);AssertOutsideRecordUnchanged(raw,record,edited,result.Tags.Count);
                     var before=record.Tags.Where(t=>!ConicPlaneFields.Contains(t.Code)).ToArray();
@@ -69,7 +69,7 @@ internal static partial class Program
                 {
                     var raw=Source(t=>t.Insert(RawLineAt(t,1001)+(code>=1000?1:0),new(code,code==92?(object)0:code==310?new byte[]{1}:code==1005?"B":1.0)));
                     var record=ConicRecord(raw,arc);byte[] source=SaveRaw(raw);
-                    Check(ReferenceEquals(raw,ConicPlaneEdit(raw,record,arc,new(1.25,-2,3),7.5,-2.5,-Vector3.UnitZ,15,270)),"Guarded no-op");
+                    Check(ReferenceEquals(raw,ConicPlaneEdit(raw,record,arc,new(1.25,-2,3),7.5,-2.5,new Vector3(0,0,-1),15,270)),"Guarded no-op");
                     Throws<NotSupportedException>(()=>ConicPlaneEdit(raw,record,arc,Vector3.Zero,3,-3,Vector3.UnitY));
                     Check(source.SequenceEqual(SaveRaw(raw)),"Guard changed source");
                 });
@@ -138,7 +138,7 @@ internal static partial class Program
                         ? new DxfTag[]{new(101,"Embedded Object"),new(210,99.0)}
                         : new DxfTag[]{new(102,"{PRIVATE"),new(210,99.0),new(102,"}")}));
                     var r=ConicRecord(raw,arc);byte[] before=SaveRaw(raw);
-                    RawLinePointBits(-Vector3.UnitZ,RawLinePoint(ConicRead(raw,r,arc),"ExtrusionDirection"));
+                    RawLinePointBits(new Vector3(0,0,-1),RawLinePoint(ConicRead(raw,r,arc),"ExtrusionDirection"));
                     Throws<NotSupportedException>(()=>ConicPlaneEdit(raw,r,arc,Vector3.Zero,1,0,Vector3.UnitY));
                     Check(before.SequenceEqual(SaveRaw(raw)),"Private refusal changed source");
                 });
@@ -157,6 +157,21 @@ internal static partial class Program
                     if(arc){SameDoubleBits(350,loaded.Entities.Arcs.Single().StartAngle,"Typed start");SameDoubleBits(35,loaded.Entities.Arcs.Single().EndAngle,"Typed end");}
                     Equal(0,loaded.Objects.Validate().Count,"Typed edited graph");
                 });
+            Run($"conic-plane/normal-sign-zero/{arc}",()=>
+            {
+                var raw=Source(_=>{});var r=ConicRecord(raw,arc);byte[] source=SaveRaw(raw);
+                // Unary negation also negates the zero X/Y components. This is
+                // intentionally a representation edit, not an exact no-op.
+                var edit=ConicPlaneEdit(raw,r,arc,new(1.25,-2,3),7.5,-2.5,-Vector3.UnitZ,15,270);
+                Check(!ReferenceEquals(raw,edit),"Signed-zero normal edit was coalesced");
+                foreach(bool binary in new[]{false,true})
+                {
+                    var loaded=LoadRaw(SaveRaw(edit,binary));var g=ConicRead(loaded,ConicRecord(loaded,arc),arc);
+                    RawLinePointBits(-Vector3.UnitZ,RawLinePoint(g,"ExtrusionDirection"));
+                }
+                Check(source.SequenceEqual(SaveRaw(raw)),"Signed-zero edit changed source bytes");
+                Check(ReferenceEquals(edit,ConicPlaneEdit(edit,ConicRecord(edit,arc),arc,new(1.25,-2,3),7.5,-2.5,-Vector3.UnitZ,15,270)),"Repeat signed-zero edit lost identity");
+            });
             foreach(double scale in new[]{double.Epsilon,-double.Epsilon,1e-200,-1e200,double.MaxValue})
                 Run($"conic-plane/extreme-normal/{arc}/{ParameterBits(scale)}",()=>
                 {
@@ -169,7 +184,7 @@ internal static partial class Program
                 var raw=Source(_=>{});var other=Source(_=>{});var r=ConicRecord(raw,arc);
                 Throws<ArgumentException>(()=>ConicPlaneEdit(raw,ConicRecord(other,arc),arc,Vector3.Zero,3,0,Vector3.UnitZ));
                 Throws<ArgumentNullException>(()=>ConicPlaneEdit(raw,null!,arc,Vector3.Zero,3,0,Vector3.UnitZ));
-                var old=ConicEdit(raw,r,arc,Vector3.Zero,3);var added=ConicPlaneEdit(raw,r,arc,Vector3.Zero,3,-2.5,-Vector3.UnitZ);
+                var old=ConicEdit(raw,r,arc,Vector3.Zero,3);var added=ConicPlaneEdit(raw,r,arc,Vector3.Zero,3,-2.5,new Vector3(0,0,-1));
                 SameRawTags(old.Tags,added.Tags);
             });
         }
