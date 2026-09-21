@@ -60,6 +60,7 @@ internal static partial class Program
         RegisterEllipseSamplingTests();
         RegisterEllipseAffineSafetyTests();
         RegisterEllipseParameterEvaluationTests();
+        RegisterEllipseIoParameterTests();
         RegisterConicSplineTests();
         RegisterSplineKnotInsertionTests();
         RegisterSplineSplitTests();
