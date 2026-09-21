@@ -154,7 +154,7 @@ internal static partial class Program
                     tags.RemoveAll(t => t.Code == 210 || t.Code == 220 || t.Code == 230);
                     foreach (short code in layouts[kind]) {
                         tags.Insert(at++, new DxfTag(code, code == 230 ? 1.0 : 0.0));
-                        if (kind == 7) tags.Insert(at++, new DxfTag(999,"retained vector separator"));
+                        if (kind == 7 && code == 230) tags.Insert(at++, new DxfTag(60,(short)1));
                     }
                 });
                 var record = RawEllipseRecord(raw); byte[] source = SaveRaw(raw);
