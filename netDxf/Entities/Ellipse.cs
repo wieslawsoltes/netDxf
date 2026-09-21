@@ -122,7 +122,7 @@ namespace netDxf.Entities
         public Vector3 Center
         {
             get { return this.center; }
-            set { this.center = value; }
+            set { this.AssignEllipseCenter(value); }
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace netDxf.Entities
         public double Rotation
         {
             get { return this.rotation; }
-            set { this.rotation = NormalizeEllipseAngle(value); }
+            set { this.AssignEllipseScalar(ref this.rotation, NormalizeEllipseAngle(value)); }
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace netDxf.Entities
         public double StartAngle
         {
             get { return this.startAngle; }
-            set { this.startAngle = NormalizeEllipseAngle(value); }
+            set { this.AssignEllipseScalar(ref this.startAngle, NormalizeEllipseAngle(value)); }
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace netDxf.Entities
         public double EndAngle
         {
             get { return this.endAngle; }
-            set { this.endAngle = NormalizeEllipseAngle(value); }
+            set { this.AssignEllipseScalar(ref this.endAngle, NormalizeEllipseAngle(value)); }
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { this.AssignEllipseScalar(ref this.thickness, value); }
         }
 
         /// <summary>

@@ -84,6 +84,7 @@ internal static partial class Program
         RegisterPolylineAffineSafetyTests();
         RegisterPolylineReverseAtomicTests();
         RegisterEllipseAxisProxyTests();
+        RegisterEllipseMutationProxyTests();
         RegisterFace3DEdgeVisibilityTests();
         RegisterRawConicGeometryTests();
         RegisterRawLineXDataScopeTests();

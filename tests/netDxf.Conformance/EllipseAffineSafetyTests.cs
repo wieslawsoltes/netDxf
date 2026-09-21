@@ -86,6 +86,12 @@ internal static partial class Program
                 if (f == 3) { matrix = new(1, 0, 1, 0, 1, 0, 0, 0, 1); e.Thickness = 2; }
                 if (f == 4) typeof(Ellipse).GetField("majorAxis", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(e, double.NaN);
                 if (f == 5) e.EndAngle = double.NaN;
+                if (f == 3 || f == 5)
+                {
+                    Check(e.ProxyGraphics == null, "Geometry setup retained stale proxy");
+                    // Reattach deliberate test bytes before the original failed-transform rollback assertions.
+                    e.ProxyGraphics = new byte[] { 1, 7, 9, 255 };
+                }
                 long[] before = SafeEllipseState(e, e.StoredNormal); byte[] proxy = e.ProxyGraphics!;
                 e.Probe.Armed = true; Exception? error = null;
                 try { if (four) e.TransformBy(PlanarReviewMatrix4(matrix, translation)); else e.TransformBy(matrix, translation); }
