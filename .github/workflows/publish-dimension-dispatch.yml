@@ -1,0 +1,25 @@
+name: Publish reviewed dimension dispatch fix
+on:
+  push:
+    branches: [codex/dxf-dimlfac-fidelity-20260921]
+    paths: [.github/workflows/publish-dimension-dispatch.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed dispatch fix and remove publishing files
+        shell: bash
+        run: |
+          echo "ad0091de73470ac0c3af5a0900f4d5d46d4236f35eebab86fc312d5d165fd499  tools/_publish_dimension_dispatch.py" | sha256sum --check
+          python3 tools/_publish_dimension_dispatch.py
+          git add netDxf tests/netDxf.Conformance tools .github/workflows
+          test "$(git write-tree)" = "89ece211219591a9cf81e5f3309fb2cc4b2a04bd"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Retain linear dimension type and rotation when reading the aligned base subclass"
+          git push origin HEAD:refs/heads/codex/dxf-dimlfac-fidelity-20260921
