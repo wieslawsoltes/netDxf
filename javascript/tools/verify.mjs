@@ -37,6 +37,8 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  mleaders:[`mleader-differential/${configuration}`,{equal:{'stats.scenarios':1030,'stats.operations':8104}}],
+  dimensions:[`dimension-differential/${configuration}`,{equal:{'stats.scenarios':3182,'stats.operations':14341}}],
   headers:[`header-differential/${configuration}`,{equal:{'stats.scenarios':665,'stats.operations':6596}}],
   geoDataVba:[`geodata-vba-differential/${configuration}`,{equal:{'stats.scenarios':398,'stats.operations':2390}}],
   layoutsViewports:[`layout-viewport-differential/${configuration}`,{equal:{'stats.scenarios':580,'stats.operations':3881}}],
@@ -53,7 +55,7 @@ const specs={
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
   entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':8498,'stats.operations':69997}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:128754}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:132966}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -67,7 +69,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{minimum:{'stats.comparisons':1782},equal:{'stats.sourceFixtures':399}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:128754}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:132966}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));
