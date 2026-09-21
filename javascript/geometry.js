@@ -43,3 +43,4 @@ export { DimensionStyleOverrideChangeEventArgs } from './netDxf/Tables/Dimension
 export { DimensionStyleOverrideDictionary } from './netDxf/Collections/DimensionStyleOverrideDictionary.js';
 export { DimensionStyleOverrideDictionaryEventArgs } from './netDxf/Collections/DimensionStyleOverrideDictionaryEventArgs.js';
 export { BoxedChar } from './runtime/BoxedChar.js';
+export { DimensionArrowhead } from './netDxf/Entities/DimensionArrowhead.js';
