@@ -1,0 +1,59 @@
+name: JavaScript header parity
+on:
+  pull_request:
+    branches: [netstandard]
+    paths: ['javascript/**', '.github/workflows/javascript-header.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: javascript-header-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  header-values:
+    name: Header values / ${{ matrix.os }} / ${{ matrix.configuration }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      NETDXF_SOURCE_ROOT: ${{ github.workspace }}/_oracle
+    steps:
+      - name: Preserve pinned source bytes
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: _oracle
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.425'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Compile the unchanged production model oracle
+        run: node javascript/tools/dotnet.mjs geometry
+      - name: Require complete exact header comparisons
+        run: node javascript/tools/header-differential.mjs
+      - name: Test header value semantics and host boundaries
+        if: ${{ !cancelled() }}
+        run: node --test javascript/tests/unit/headers.js javascript/tests/unit/header-time.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-header-${{ matrix.os }}-${{ matrix.configuration }}
+          path: |
+            javascript/artifacts/header-differential/${{ matrix.configuration }}/results.json
+            javascript/artifacts/oracle/${{ matrix.configuration }}/*.build.log
+            javascript/artifacts/oracle/${{ matrix.configuration }}/toolchain.json
+          if-no-files-found: error
+          retention-days: 7

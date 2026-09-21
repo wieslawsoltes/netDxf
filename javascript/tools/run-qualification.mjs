@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['headers',['tools/header-differential.mjs']],
   ['geodata-vba',['tools/geodata-vba-differential.mjs']],
   ['layout-viewport',['tools/layout-viewport-differential.mjs']],
   ['blocks',['tools/block-differential.mjs']],

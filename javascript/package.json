@@ -74,7 +74,8 @@
     "test:mlines": "node tools/mline-differential.mjs",
     "test:blocks": "node tools/block-differential.mjs",
     "test:layout-viewport": "node tools/layout-viewport-differential.mjs",
-    "test:geodata-vba": "node tools/geodata-vba-differential.mjs"
+    "test:geodata-vba": "node tools/geodata-vba-differential.mjs",
+    "test:headers": "node tools/header-differential.mjs"
   },
   "repository": {
     "type": "git",
