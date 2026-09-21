@@ -1,3 +1,5 @@
+import {BoxedBoolean} from '../../runtime/BoxedBoolean.js';
+import {BoxedString} from '../../runtime/BoxedString.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { AciColor } from '../AciColor.js';
 import { Block } from '../Blocks/Block.js';
@@ -102,8 +104,8 @@ function accepts(kind, value) {
   if (kind === 'double') return typeof value === 'number' || value instanceof BoxedScalar && value.Type === 'Double';
   if (kind === 'short') return value instanceof BoxedScalar && value.Type === 'Int16';
   if (kind === 'char') return value instanceof BoxedChar;
-  if (kind === 'bool') return typeof value === 'boolean';
-  if (kind === 'string') return typeof value === 'string';
+  if (kind === 'bool') return typeof value === 'boolean' || value instanceof BoxedBoolean;
+  if (kind === 'string') return typeof value === 'string' || value instanceof BoxedString;
   if (references[kind]) return value instanceof references[kind];
   return value instanceof HeaderEnum && value.Type === kind;
 }

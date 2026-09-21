@@ -50,3 +50,7 @@ export * from './runtime/MLeaderExports.js';
 export { AngleUnitFormat } from './netDxf/Units/AngleUnitFormat.js';
 export { LinearUnitFormat } from './netDxf/Units/LinearUnitFormat.js';
 export { Tolerance } from './netDxf/Entities/Tolerance.js';
+
+export { Leader } from './netDxf/Entities/Leader.js';
+export { BoxedString } from './runtime/BoxedString.js';
+export { BoxedBoolean } from './runtime/BoxedBoolean.js';
