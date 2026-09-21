@@ -5,10 +5,16 @@ on:
     paths: [.github/workflows/export-dxf-toolchain.yml]
 permissions:
   contents: read
+concurrency:
+  group: dxf-offline-toolchain
+  cancel-in-progress: true
 jobs:
   toolchain:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dxf-dotnet
+      NUGET_PACKAGES: ${{ runner.temp }}/dxf-packages
     steps:
       - uses: actions/checkout@v4
         with:
@@ -16,16 +22,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-          dotnet-install-dir: ${{ runner.temp }}/dxf-dotnet
       - name: Export only SDK binaries and restored public package payloads
         shell: bash
-        env:
-          NUGET_PACKAGES: ${{ runner.temp }}/dxf-packages
         run: |
-          dotnet --info
-          dotnet restore tests/netDxf.Conformance/netDxf.Conformance.csproj
+          "$DOTNET_INSTALL_DIR/dotnet" --info
+          "$DOTNET_INSTALL_DIR/dotnet" restore tests/netDxf.Conformance/netDxf.Conformance.csproj
           mkdir -p export
-          tar -czf export/dotnet-sdk.tar.gz -C "$(dirname "$(readlink -f "$(command -v dotnet)")")" .
+          tar -czf export/dotnet-sdk.tar.gz -C "$DOTNET_INSTALL_DIR" .
           tar -czf export/nuget-packages.tar.gz -C "$NUGET_PACKAGES" .
           sha256sum export/*.tar.gz > export/SHA256SUMS
       - uses: actions/upload-artifact@v4
