@@ -1,0 +1,25 @@
+name: Publish reviewed DSTYLE container fix
+on:
+  push:
+    branches: [codex/dxf-dimlfac-fidelity-20260921]
+    paths: [.github/workflows/publish-dstyle.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply fixed reviewed edits and remove publishing files
+        shell: bash
+        run: |
+          echo "a4995d04fe6feb1500655e6604976d1649c750c1c9df9248c312e0daf792a7ee  tools/_publish_dstyle.py" | sha256sum --check
+          python3 tools/_publish_dstyle.py
+          git add netDxf tests/netDxf.Conformance tools .github/workflows
+          test "$(git write-tree)" = "76c5334621f279f9b05fa5c01dd5574024c91b97"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Resolve dimension and leader DSTYLE overrides in every registered block"
+          git push origin HEAD:refs/heads/codex/dxf-dimlfac-fidelity-20260921
