@@ -634,33 +634,15 @@ namespace netDxf.Entities
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
             if (this.HasStoredRecords) { this.TransformStoredRecords(transformation, translation); return; }
-            double widthScale = this.GetWidthTransformScale(transformation);
-            double newElevation = this.Elevation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
+            this.ApplyOrdinaryAffine(transformation, translation);
+        }
 
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
-
-            foreach (Polyline2DVertex vertex in this.Vertexes)
-            {
-                Vector3 v = transOW * new Vector3(vertex.Position.X, vertex.Position.Y, this.Elevation);
-                v = transformation * v + translation;
-                v = transWO * v;
-                vertex.Position = new Vector2(v.X, v.Y);
-                newElevation = v.Z;
-            }
-            this.Elevation = newElevation;
-            this.Normal = newNormal;
-            if (this.ConstantWidth.HasValue) this.ConstantWidth *= widthScale;
-            foreach (Polyline2DVertex vertex in this.Vertexes)
-            {
-                if (vertex.StartWidthOverride.HasValue) vertex.StartWidthOverride *= widthScale;
-                if (vertex.EndWidthOverride.HasValue) vertex.EndWidthOverride *= widthScale;
-            }
+        /// <summary>Applies a finite affine matrix; projective input rejects before mutation.</summary>
+        /// <param name="transformation">Column-vector affine matrix.</param>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            PlanarEntityTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
         }
 
         /// <summary>

@@ -83,6 +83,11 @@ namespace netDxf.Entities
         }
 
         private double GetWidthTransformScale(Matrix3 transformation)
+        { return this.GetWidthTransformScale(transformation, this.Normal); }
+
+        // The ordinary staged path supplies base.Normal, avoiding user callbacks.
+        // The retained-record caller continues to use its previous admission path.
+        private double GetWidthTransformScale(Matrix3 transformation, Vector3 normal)
         {
             this.ValidateVertexFidelity();
             bool wide = this.ConstantWidth.GetValueOrDefault() > 0 || this.LegacyDefaultStartWidth.GetValueOrDefault() > 0
@@ -90,7 +95,7 @@ namespace netDxf.Entities
             if (this.HasStoredRecords) foreach (Polyline2DVertex vertex in this.vertexes) wide |= vertex.Bulge != 0;
             foreach (Polyline2DVertex vertex in this.vertexes) wide |= vertex.StartWidth > 0 || vertex.EndWidth > 0;
             if (!wide) return 1;
-            Matrix3 ocs = MathHelper.ArbitraryAxis(this.Normal);
+            Matrix3 ocs = MathHelper.ArbitraryAxis(normal);
             Vector3 x = transformation * (ocs * Vector3.UnitX);
             Vector3 y = transformation * (ocs * Vector3.UnitY);
             double scale = x.Modulus(), otherScale = y.Modulus();
@@ -99,7 +104,7 @@ namespace netDxf.Entities
                 Math.Abs(scale - otherScale) > MathHelper.Epsilon * Math.Max(scale, otherScale) ||
                 Math.Abs(Vector3.DotProduct(x / scale, y / otherScale)) > MathHelper.Epsilon)
                 throw new NotSupportedException("Wide polylines require a nonsingular uniform scale in their plane; nonuniform scaling or shear cannot preserve the stored stroke widths.");
-            Vector3 transformedNormal = transformation * this.Normal;
+            Vector3 transformedNormal = transformation * normal;
             double normalScale = transformedNormal.Modulus();
             if (normalScale <= 0 || double.IsNaN(normalScale) || double.IsInfinity(normalScale) ||
                 Math.Abs(Vector3.DotProduct(x / scale, transformedNormal / normalScale)) > MathHelper.Epsilon ||
