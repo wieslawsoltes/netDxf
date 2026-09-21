@@ -1,3 +1,4 @@
+import {dimensionWire} from './dimension-wire.mjs';
 import { headerWire } from './header-wire.mjs';
 import { layoutViewportValueWire } from './layout-viewport-wire.mjs';
 import { blockWire } from './block-wire.mjs';
@@ -25,6 +26,7 @@ function wire(value) {
   if (typeof value === 'boolean') return value;
   if(typeof value.MoveNext==='function'&&'Current' in value)return {type:'Enumerator'};
   if(Object.hasOwn(value,'Key')&&Object.hasOwn(value,'Value'))return [wire(value.Key),wire(value.Value)];
+  const dimension=dimensionWire(value,wire);if(dimension!==undefined)return dimension;
   const header=headerWire(value,wire);if(header!==undefined)return header;
   const type = value.constructor.name;
   if (/^Vector[234]$/.test(type)) return { type, values: [...'XYZW'.slice(0, Number(type.at(-1)))].map(key => doubleBits(value[key])), normalized: value.IsNormalized };

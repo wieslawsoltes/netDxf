@@ -23,6 +23,8 @@ internal static partial class Program
         if (value is long l) return new { @long = l.ToString(CultureInfo.InvariantCulture) };
         if (value is string textValue) return Utf16Wire(textValue);
         if (value is bool) return value;
+        if (value is char character) return new {charCode=(int)character};
+        if (DimensionWire(value,out var dimensionValue)) return dimensionValue;
         if (value is IEnumerator && value is not IEnumerable) return new {type="Enumerator"};
         if (value is KeyValuePair<string,netDxf.Entities.AttributeDefinition> pair) return new[]{Wire(pair.Key),Wire(pair.Value)};
         if (value is int || value is short || value is byte || value is Enum) return new { @double = Bits(Convert.ToDouble(value, CultureInfo.InvariantCulture)) };

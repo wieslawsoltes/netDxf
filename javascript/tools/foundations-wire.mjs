@@ -17,10 +17,12 @@ export function jsGeometry(input) {
   const observers=new Map(), observations=[];
   function read(value) {
     if (value == null || typeof value !== 'object') return value;
+    if ('char' in value) return new api.BoxedChar(String.fromCharCode(value.char));
     if ('datetime' in value) return new api.HeaderDateTime(BigInt(value.datetime.ticks),value.datetime.kind??0);
     if ('timespan' in value) return new api.HeaderTimeSpan(BigInt(value.timespan));
     if ('box' in value) {
       const descriptor=value.box;
+      if ('char' in descriptor) return read(descriptor);
       if ('enum' in descriptor) return new api.HeaderEnum(descriptor.enum.split('.').at(-1),resolve(descriptor.enum),descriptor.value);
       const kind=['int','short','byte','double','long'].find(key=>key in descriptor);
       if(!kind)throw new Error('Unsupported boxed header descriptor.');
@@ -100,8 +102,8 @@ export function jsGeometry(input) {
         case 'map-add': target.set(args[0],args[1]);break;
         case 'value': result = read(step.value); break;
         case 'new': result = construct(type,args,step.signature); break;
-        case 'get': result = (target ?? type)[step.member]; break;
-        case 'set': (target ?? type)[step.member] = read(step.value); break;
+        case 'get': result = (target ?? type)[step.member]; if(target instanceof api.DimensionStyle && step.member==='DecimalSeparator') result=new api.BoxedChar(result); break;
+        case 'set': { const value=read(step.value); (target ?? type)[step.member] = value instanceof api.BoxedChar && !(target instanceof api.HeaderVariable) ? value.Value : value; break; }
         case 'index':
           if ((Array.isArray(target) || target instanceof Uint8Array) && typeof target.get_Item !== 'function') {
             if (!Number.isInteger(args[0]) || args[0] < 0 || args[0] >= target.length) throw new IndexOutOfRangeException();
