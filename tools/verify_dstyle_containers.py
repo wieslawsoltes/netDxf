@@ -70,6 +70,13 @@ def inspect_file(path, year, binary, placement):
     expected = {'dimlfac': -0.75, 'dimtxt': 0.75, 'dimtvp': -0.25, 'dimupt': 1,
                 'dimclrt': 4, 'dimsah': 1, 'dimtxsty': 'DSTYLE_TEXT',
                 'dimltype': 'DSTYLE_LINES', 'dimblk1': 'DSTYLE_ARROW', 'dimldrblk': 'DSTYLE_ARROW'}
+    linear, = [e for e in entities if e.dxf.layer == 'DSTYLE_ENTITY_0']
+    require(linear.dxf.dimtype == (32 | (128 if placement >= 3 else 0)), 'Rotated type and manual-text flag')
+    require(linear.dxf.angle == (placement % 3) * 45., 'Stored linear rotation')
+    require(tuple(linear.dxf.defpoint2) == (0., 0., 0.) and tuple(linear.dxf.defpoint3) == (10., 0., 0.), 'Linear reference points')
+    if placement >= 3: require(tuple(linear.dxf.text_midpoint) == (7., 5., 0.), 'Manual text position')
+    aligned, = [e for e in entities if e.dxf.layer == 'DSTYLE_ENTITY_1']
+    require(aligned.dxf.dimtype == 33, 'Aligned type retained')
     for entity in entities:
         require(entity.dxf.owner == space.block_record_handle, 'Independent owner')
         overrides = entity.get_acad_dstyle(doc.dimstyles.get(entity.dxf.dimstyle))

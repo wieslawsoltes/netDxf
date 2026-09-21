@@ -63,7 +63,7 @@ internal static partial class Program
         var text = new TextStyle("DSTYLE_TEXT", "txt.shx");
         var line = new Linetype("DSTYLE_LINES");
         EntityObject[] entities = {
-            new LinearDimension(Vector2.Zero, new Vector2(10, 0), 3, 0, style),
+            new LinearDimension(Vector2.Zero, new Vector2(10, 0), 3, (placement % 3) * 45.0, style),
             new AlignedDimension(Vector2.Zero, new Vector2(10, 0), 3, style),
             new Angular2LineDimension(Vector2.Zero, Vector2.UnitX, Vector2.Zero, Vector2.UnitY, 3, style),
             new Angular3PointDimension(Vector2.Zero, Vector2.UnitX, Vector2.UnitY, 3, style),
@@ -72,6 +72,7 @@ internal static partial class Program
             new OrdinateDimension(Vector2.Zero, new Vector2(2, 3), new Vector2(7, 3), OrdinateDimensionAxis.X, style),
             new Leader(new[] { Vector2.Zero, new Vector2(5, 3), new Vector2(9, 3) }, style)
         };
+        if (placement >= 3) ((LinearDimension)entities[0]).TextReferencePoint = new Vector2(7, 5);
         for (int i = 0; i < entities.Length; i++)
         {
             var entity = entities[i]; entity.Layer = new Layer("DSTYLE_ENTITY_" + i);
@@ -124,6 +125,18 @@ internal static partial class Program
     {
         var entities = DStyleContainerEntities(doc, placement); Equal(8, entities.Length, "All dimension families and leader");
         Equal(7, entities.OfType<Dimension>().Select(d => d.GetType()).Distinct().Count(), "Distinct dimension families");
+        var linear = entities.OfType<LinearDimension>().Single();
+        SameDoubleBits((placement % 3) * 45.0, linear.Rotation, "Rotated dimension angle");
+        Equal(placement >= 3, linear.TextPositionManuallySet, "Rotated dimension text-position flag");
+        if (placement >= 3)
+        {
+            SameDoubleBits(7, linear.TextReferencePoint.X, "Manual dimension text X");
+            SameDoubleBits(5, linear.TextReferencePoint.Y, "Manual dimension text Y");
+        }
+        SameDoubleBits(0, linear.FirstReferencePoint.X, "Linear first reference X");
+        SameDoubleBits(0, linear.FirstReferencePoint.Y, "Linear first reference Y");
+        SameDoubleBits(10, linear.SecondReferencePoint.X, "Linear second reference X");
+        SameDoubleBits(0, linear.SecondReferencePoint.Y, "Linear second reference Y");
         for (int i = 0; i < entities.Length; i++)
         {
             var entity = entities[i]; var overrides = ContainerOverrides(entity);
@@ -143,6 +156,7 @@ internal static partial class Program
             Check(doc.Blocks.GetReferences("DSTYLE_ARROW").Any(r => ReferenceEquals(r.Reference, entity) && r.Uses == 2), "Arrow reference multiplicity");
             Equal("preserved", (string)entity.XData["DSTYLE_KEEP"].XDataRecord.Single().Value, "Unrelated XData");
             var clone = (EntityObject)entity.Clone(); var copied = ContainerOverrides(clone);
+            Equal(entity.GetType(), clone.GetType(), "Clone dimension family");
             Equal(9, copied.Count, "Detached clone overrides"); SameDoubleBits(-0.75, (double)copied[DimensionStyleOverrideType.DimScaleLinear].Value, "Clone scale");
             foreach (var kind in new[] { DimensionStyleOverrideType.TextStyle, DimensionStyleOverrideType.DimLineLinetype, DimensionStyleOverrideType.DimArrow1, DimensionStyleOverrideType.LeaderArrow })
                 Check(!ReferenceEquals(overrides[kind].Value, copied[kind].Value), "Detached referenced-object clone " + kind);

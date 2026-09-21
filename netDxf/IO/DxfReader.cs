@@ -5445,7 +5445,11 @@ namespace netDxf.IO
             switch (subclassMarker)
             {
                 case SubclassMarker.AlignedDimension:
-                    dim = this.ReadAlignedDimension(defPoint, normal);
+                    // Rotated dimensions share the aligned base subclass. The decoded
+                    // group 70 type selects the parser before its reference points are consumed.
+                    dim = type == DimensionTypeFlags.Linear
+                        ? (Dimension)this.ReadLinearDimension(defPoint, normal)
+                        : this.ReadAlignedDimension(defPoint, normal);
                     break;
                 case SubclassMarker.LinearDimension:
                     dim = this.ReadLinearDimension(defPoint, normal);
