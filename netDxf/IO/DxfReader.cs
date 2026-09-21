@@ -1846,7 +1846,12 @@ namespace netDxf.IO
                         break;
                     case 144:
                         dimlfac = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(dimlfac))
+                        if (double.IsNaN(dimlfac) || double.IsInfinity(dimlfac))
+                        {
+                            throw new FormatException("DIMLFAC must be finite.");
+                        }
+                        // Scalar admission is exact, not a geometric tolerance test.
+                        if (dimlfac == 0.0)
                         {
                             dimlfac = defaultDim.DimScaleLinear;
                         }

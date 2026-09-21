@@ -431,9 +431,9 @@ namespace netDxf.Tables
                         throw new ArgumentException(string.Format("The DimensionStyleOverrideType.{0} dimension style override must be a valid {1}", type, typeof(double)), nameof(value));
                     }
 
-                    if (MathHelper.IsZero((double)value))
+                    if ((double)value == 0.0 || double.IsNaN((double)value) || double.IsInfinity((double)value))
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), value, string.Format("The DimensionStyleOverrideType.{0} dimension style override cannot be zero.", type));
+                        throw new ArgumentOutOfRangeException(nameof(value), value, string.Format("The DimensionStyleOverrideType.{0} dimension style override must be finite and nonzero.", type));
                     }
 
                     break;
