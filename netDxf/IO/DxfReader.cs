@@ -6990,15 +6990,12 @@ namespace netDxf.IO
                 }
             }
 
-            Vector3 ocsAxisPoint = MathHelper.Transform(axisPoint, normal, CoordinateSystem.World, CoordinateSystem.Object);
-
-            double rotation = Vector2.Angle(new Vector2(ocsAxisPoint.X, ocsAxisPoint.Y));
-            double majorAxis = 2 * axisPoint.Modulus();
-            double minorAxis = majorAxis * ratio;
+            DxfEllipseParameterCodec.ReadAxes(axisPoint, normal, ratio,
+                out double majorAxis, out double minorAxis, out double rotation);
 
             Ellipse ellipse = new Ellipse(center, majorAxis, minorAxis)
             {
-                Rotation = rotation * MathHelper.RadToDeg,
+                Rotation = rotation,
                 Normal = normal
             };
 
@@ -7011,30 +7008,7 @@ namespace netDxf.IO
 
         private static void SetEllipseParameters(Ellipse ellipse, double[] param)
         {
-            if (MathHelper.IsZero(param[0]) && MathHelper.IsEqual(param[1], MathHelper.TwoPI))
-            {
-                ellipse.StartAngle = 0.0;
-                ellipse.EndAngle = 0.0;
-            }
-            else
-            {
-                double a = ellipse.MajorAxis * 0.5;
-                double b = ellipse.MinorAxis * 0.5;
-
-                Vector2 startPoint = new Vector2(a * Math.Cos(param[0]), b * Math.Sin(param[0]));
-                Vector2 endPoint = new Vector2(a * Math.Cos(param[1]), b * Math.Sin(param[1]));
-
-                if (Vector2.Equals(startPoint, endPoint))
-                {
-                    ellipse.StartAngle = 0.0;
-                    ellipse.EndAngle = 0.0;
-                }
-                else
-                {
-                    ellipse.StartAngle = Vector2.Angle(startPoint) * MathHelper.RadToDeg;
-                    ellipse.EndAngle = Vector2.Angle(endPoint) * MathHelper.RadToDeg;
-                }
-            }
+            DxfEllipseParameterCodec.Decode(ellipse, param[0], param[1]);
         }
 
         private Point ReadPoint()

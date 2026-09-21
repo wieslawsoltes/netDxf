@@ -2428,15 +2428,13 @@ namespace netDxf.IO
 
         private void WriteEllipse(Ellipse ellipse)
         {
+            Vector3 axisPoint = DxfEllipseParameterCodec.WriteAxis(ellipse);
+            double[] paramaters = GetEllipseParameters(ellipse);
             this.chunk.Write(100, SubclassMarker.Ellipse);
 
             this.chunk.Write(10, ellipse.Center.X);
             this.chunk.Write(20, ellipse.Center.Y);
             this.chunk.Write(30, ellipse.Center.Z);
-
-            Vector2 axis = Vector2.Rotate(new Vector2(0.5*ellipse.MajorAxis, 0.0), ellipse.Rotation * MathHelper.DegToRad);
-
-            Vector3 axisPoint = MathHelper.Transform(new Vector3(axis.X, axis.Y, 0.0), ellipse.Normal, CoordinateSystem.Object, CoordinateSystem.World);
 
             this.chunk.Write(11, axisPoint.X);
             this.chunk.Write(21, axisPoint.Y);
@@ -2448,7 +2446,6 @@ namespace netDxf.IO
 
             this.chunk.Write(40, ellipse.MinorAxis/ellipse.MajorAxis);
 
-            double[] paramaters = GetEllipseParameters(ellipse);
             this.chunk.Write(41, paramaters[0]);
             this.chunk.Write(42, paramaters[1]);
 
@@ -2457,23 +2454,7 @@ namespace netDxf.IO
 
         private static double[] GetEllipseParameters(Ellipse ellipse)
         {
-            double atan1;
-            double atan2;
-            if (ellipse.IsFullEllipse)
-            {
-                atan1 = 0.0;
-                atan2 = MathHelper.TwoPI;
-            }
-            else
-            {
-                Vector2 startPoint = ellipse.PolarCoordinateRelativeToCenter(ellipse.StartAngle);
-                Vector2 endPoint = ellipse.PolarCoordinateRelativeToCenter(ellipse.EndAngle);
-                double a = 1 / (0.5 * ellipse.MajorAxis);
-                double b = 1 / (0.5 * ellipse.MinorAxis);
-                atan1 = Math.Atan2(startPoint.Y * b, startPoint.X * a);
-                atan2 = Math.Atan2(endPoint.Y * b, endPoint.X * a);
-            }
-            return new[] {atan1, atan2};
+            return DxfEllipseParameterCodec.Encode(ellipse);
         }
 
         private void WriteSolid(Solid solid)
