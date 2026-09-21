@@ -3,6 +3,9 @@ on:
   push:
     branches: ['codex/javascript-port']
     paths: ['.github/workflows/javascript-development-kit.yml']
+  pull_request:
+    branches: [netstandard]
+    paths: ['.github/workflows/javascript-development-kit.yml']
   workflow_dispatch:
 permissions:
   contents: read
