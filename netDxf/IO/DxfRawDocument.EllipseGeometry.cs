@@ -61,25 +61,68 @@ namespace netDxf.IO
             Vector3 majorAxis, double axisRatio, double startParameter, double endParameter)
         {
             EllipsePacket packet = this.ReadEllipsePacket(record);
+            return this.ApplyEllipseGeometry(record, packet, center, majorAxis, axisRatio,
+                startParameter, endParameter, packet.Geometry.ExtrusionDirection);
+        }
+
+        /// <summary>Replaces raw ELLIPSE geometry and its explicitly supplied WCS extrusion plane.</summary>
+        /// <param name="record">An ELLIPSE belonging to this exact immutable snapshot.</param>
+        /// <param name="center">Finite WCS center.</param>
+        /// <param name="majorAxis">Finite nonzero relative WCS major semi-axis, perpendicular to extrusion.</param>
+        /// <param name="axisRatio">Finite minor-to-major ratio in (0,1].</param>
+        /// <param name="startParameter">Finite stored start parameter, without normalization.</param>
+        /// <param name="endParameter">Finite stored end parameter, without normalization.</param>
+        /// <param name="extrusionDirection">Finite nonzero WCS extrusion, retained without normalization.</param>
+        /// <returns>A same-version immutable snapshot, or this snapshot for an exact no-op.</returns>
+        /// <remarks>
+        /// This is explicit definition editing, not a shape-preserving transform. Reversing extrusion
+        /// reverses the derived minor-axis direction; parameters are not swapped or reinterpreted.
+        /// The existing fixed 1e-12 normalized perpendicularity rule and dependency guards apply.
+        /// Missing center/axis Z is inserted after Y when needed. Missing extrusion components are
+        /// inserted after the last stored geometry field only when different from defaults (0,0,1).
+        /// Existing fields, including explicit defaults, keep their positions; unchanged tags keep
+        /// object identity. Source bytes remain unchanged. This does not regenerate private geometry,
+        /// proxies, associations or extents, and does not enable a new historical typed dialect.
+        /// </remarks>
+        public DxfRawDocument WithEllipseGeometryAndPlane(DxfRawRecord record, Vector3 center,
+            Vector3 majorAxis, double axisRatio, double startParameter, double endParameter,
+            Vector3 extrusionDirection)
+        {
+            EllipsePacket packet = this.ReadEllipsePacket(record);
+            return this.ApplyEllipseGeometry(record, packet, center, majorAxis, axisRatio,
+                startParameter, endParameter, extrusionDirection);
+        }
+
+        private DxfRawDocument ApplyEllipseGeometry(DxfRawRecord record, EllipsePacket packet,
+            Vector3 center, Vector3 majorAxis, double axisRatio, double startParameter,
+            double endParameter, Vector3 extrusionDirection)
+        {
             CheckRawGeometryPoint(center, nameof(center));
             CheckRawGeometryPoint(majorAxis, nameof(majorAxis));
-            if (!RawEllipsePlane(majorAxis, packet.Geometry.ExtrusionDirection))
-                throw new ArgumentOutOfRangeException(nameof(majorAxis), "A nonzero major semi-axis in the existing ellipse plane is required.");
+            CheckRawGeometryPoint(extrusionDirection, nameof(extrusionDirection));
+            if (!RawEllipsePlane(majorAxis, extrusionDirection))
+                throw new ArgumentOutOfRangeException(nameof(majorAxis), "A nonzero major semi-axis perpendicular to a nonzero extrusion is required.");
             if (!RawEllipseRatio(axisRatio))
                 throw new ArgumentOutOfRangeException(nameof(axisRatio), "The axis ratio must be finite and in (0,1].");
             CheckConicAngle(startParameter, nameof(startParameter));
             CheckConicAngle(endParameter, nameof(endParameter));
             double[] values = { center.X, center.Y, center.Z, majorAxis.X, majorAxis.Y, majorAxis.Z,
-                axisRatio, startParameter, endParameter };
+                axisRatio, startParameter, endParameter, extrusionDirection.X, extrusionDirection.Y, extrusionDirection.Z };
             bool changed = false;
             for (int i = 0; i < values.Length; i++) changed |= !SameRawGeometryScalar(values[i], packet.Values[i]);
             if (!changed) return this;
             if (!packet.CanEdit)
                 throw new NotSupportedException("ELLIPSE has proxy, private, geometry-sensitive XData or unknown fields requiring explicit regeneration.");
             this.CheckRawGeometryIncomingReferences(record);
-            int additions = 0;
-            for (int i = 2; i < 6; i += 3)
-                if (packet.Slots[i] < 0 && !SameRawGeometryScalar(values[i], 0.0)) additions++;
+            int additions = 0, normalAnchor = -1;
+            var insert = new bool[values.Length];
+            for (int i = 0; i < values.Length; i++)
+            {
+                normalAnchor = Math.Max(normalAnchor, packet.Slots[i]);
+                // A missing slot already holds its schema default, including +Z extrusion.
+                insert[i] = packet.Slots[i] < 0 && !SameRawGeometryScalar(values[i], packet.Values[i]);
+                if (insert[i]) additions++;
+            }
             if ((long)this.Tags.Count + additions > this.options.MaximumTags)
                 throw new InvalidOperationException("The ellipse edit exceeds the raw tag budget.");
             var tags = new List<DxfTag>(record.Tags.Count + additions);
@@ -91,8 +134,11 @@ namespace netDxf.IO
                     { tag = new DxfTag(RawEllipseCodes[i], values[i]); break; }
                 tags.Add(tag);
                 for (int i = 2; i < 6; i += 3)
-                    if (packet.Slots[i] < 0 && packet.Slots[i - 1] == at && !SameRawGeometryScalar(values[i], 0.0))
+                    if (insert[i] && packet.Slots[i - 1] == at)
                         tags.Add(new DxfTag(RawEllipseCodes[i], values[i]));
+                if (at == normalAnchor)
+                    for (int i = 9; i < 12; i++)
+                        if (insert[i]) tags.Add(new DxfTag(RawEllipseCodes[i], values[i]));
             }
             return this.WithRecord(record, tags);
         }
