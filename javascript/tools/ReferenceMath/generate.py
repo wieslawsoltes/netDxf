@@ -118,6 +118,8 @@ def fused_polynomial(expression):
    if isinstance(node.op,ast.Add):
     if isinstance(left,ast.BinOp) and isinstance(left.op,ast.Mult):return 'fma('+emit(left.left)+','+emit(left.right)+','+emit(right)+')'
     if isinstance(right,ast.BinOp) and isinstance(right.op,ast.Mult):return 'fma('+emit(right.left)+','+emit(right.right)+','+emit(left)+')'
+   if isinstance(node.op,ast.Sub) and isinstance(right,ast.BinOp) and isinstance(right.op,ast.Mult):
+    return 'fma(-('+emit(right.left)+'),'+emit(right.right)+','+emit(left)+')'
    op={ast.Add:'+',ast.Sub:'-',ast.Mult:'*',ast.Div:'/'}[type(node.op)]
    return '('+emit(left)+op+emit(right)+')'
   if isinstance(node,ast.Subscript):return emit(node.value)+'['+ast.unparse(node.slice)+']'
@@ -152,7 +154,17 @@ domainResult.setUint32(4, 0);
 
  for fn,new in fnnames:
   body=transform(getfn(srcfile,fn),d)
-  if new=='Atan2':body=body.replace('return x + y;', 'return x + x;')
+  if new=='Atan2':
+   body=body.replace('return x + y;', 'return x + x;')
+   # The x86-64 FMA selector includes the same IEEE source, with DLA_FMS
+   # and contracted explicit polynomial multiply/add nodes. Keep correction
+   # sums and final rounded additions separate, as in the selected kernel.
+   body,count=re.subn(r'\bzz\s*=([^;]+);',lambda m:'zz = '+fused_polynomial(' '.join(m[1].split()))+';',body)
+   assert count==8,('Atan2 polynomials',count)
+   for a,b in [('ax','u'),('ay','u')]:
+    old='[v,vv] = mul2('+a+','+b+');'
+    assert body.count(old)==1,old
+    body=body.replace(old,'v = '+a+' * '+b+'; vv = fma('+a+','+b+',-v);')
   if fname=='asincos.js':
    # The x86_64 FMA implementation contracts the table polynomial and its
    # separately written first-order multiply/add across the next statement.

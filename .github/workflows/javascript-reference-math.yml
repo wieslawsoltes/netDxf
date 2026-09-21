@@ -31,6 +31,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             sysdeps/ieee754/dbl-64
+            sysdeps/x86_64/fpu/multiarch
             math
       - name: Reproduce native modules and retain preferred source and notices
         shell: bash
@@ -47,8 +48,8 @@ jobs:
         run: |
           set -euo pipefail
           branch=codex/javascript-port
-          test "$(git ls-remote origin "refs/heads/$branch" | cut -f1)" = "$GITHUB_SHA"
           if ! git diff --cached --quiet; then
+            test "$(git ls-remote origin "refs/heads/$branch" | cut -f1)" = "$GITHUB_SHA"
             git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               commit -m 'build(js): reproduce pinned LGPL reference math and preferred sources'
             git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$branch"
