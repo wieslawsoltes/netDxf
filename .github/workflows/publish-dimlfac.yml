@@ -1,0 +1,25 @@
+name: Publish reviewed DIMLFAC source
+on:
+  push:
+    branches: [codex/dxf-dimlfac-fidelity-20260921]
+    paths: [.github/workflows/publish-dimlfac.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply fixed reviewed edits and remove publishing files
+        shell: bash
+        run: |
+          echo "cec29daf8ec432b4f8a07180001cedd4f023e219cc7aa278f4fc1e1463602ae2  tools/_publish_dimlfac.py" | sha256sum --check
+          python3 tools/_publish_dimlfac.py
+          git add netDxf tests/netDxf.Conformance doc/dxf-conformance tools .github/workflows
+          test "$(git write-tree)" = "95d16ee815c685bceb4fbaa779bd77c46b8a9696"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Fix exact finite DIMLFAC admission in styles, overrides and typed reader"
+          git push origin HEAD:refs/heads/codex/dxf-dimlfac-fidelity-20260921
