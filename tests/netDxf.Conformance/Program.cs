@@ -105,6 +105,8 @@ internal static partial class Program
         RunGeoDataTests();
         RegisterMixedModuleIntegrationTests();
         RunDimensionStyleParityTests();
+        RegisterDimLfacFidelityTests();
+        RegisterDStyleContainerTests();
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();

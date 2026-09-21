@@ -1846,7 +1846,12 @@ namespace netDxf.IO
                         break;
                     case 144:
                         dimlfac = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(dimlfac))
+                        if (double.IsNaN(dimlfac) || double.IsInfinity(dimlfac))
+                        {
+                            throw new FormatException("DIMLFAC must be finite.");
+                        }
+                        // Scalar admission is exact, not a geometric tolerance test.
+                        if (dimlfac == 0.0)
                         {
                             dimlfac = defaultDim.DimScaleLinear;
                         }
@@ -5440,7 +5445,11 @@ namespace netDxf.IO
             switch (subclassMarker)
             {
                 case SubclassMarker.AlignedDimension:
-                    dim = this.ReadAlignedDimension(defPoint, normal);
+                    // Rotated dimensions share the aligned base subclass. The decoded
+                    // group 70 type selects the parser before its reference points are consumed.
+                    dim = type == DimensionTypeFlags.Linear
+                        ? (Dimension)this.ReadLinearDimension(defPoint, normal)
+                        : this.ReadAlignedDimension(defPoint, normal);
                     break;
                 case SubclassMarker.LinearDimension:
                     dim = this.ReadLinearDimension(defPoint, normal);
@@ -10995,15 +11004,16 @@ namespace netDxf.IO
 
             // post process dimension style overrides,
             // it is stored in the dimension XData and the information stored there might contain handles to Linetypes, TextStyles and/or Blocks,
-            // therefore is better process it at the end, when everything has been created read dimension style overrides
-            foreach (Dimension dim in this.doc.Entities.Dimensions)
+            // Resolve every block/layout, not only the active-layout shortcut. Snapshot each
+            // family before callbacks can register referenced table objects or blocks.
+            foreach (Dimension dim in this.doc.Blocks.SelectMany(block => block.Entities).OfType<Dimension>().ToArray())
             {
                 if (dim.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
                 {
                     dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
                 }
             }
-            foreach (Leader leader in this.doc.Entities.Leaders)
+            foreach (Leader leader in this.doc.Blocks.SelectMany(block => block.Entities).OfType<Leader>().ToArray())
             {
                 if (leader.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
                 {

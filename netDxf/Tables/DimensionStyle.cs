@@ -1009,16 +1009,18 @@ namespace netDxf.Tables
         /// <remarks>
         /// All linear dimension distances, including radii, diameters, and coordinates, are multiplied by DimScaleLinear before being converted to dimension text.<br />
         /// Positive values of DimScaleLinear are applied to dimensions in both model space and paper space; negative values are applied to paper space only.<br />
-        /// DimScaleLinear has no effect on angular dimensions.
+        /// DimScaleLinear has no effect on angular dimensions.<br />
+        /// Finite nonzero values are retained independently of MathHelper.Epsilon, including negative and subnormal values.
+        /// Both signs of zero, NaN and infinities are rejected before assignment.
         /// </remarks>
         public double DimScaleLinear
         {
             get { return this.dimlfac; }
             set
             {
-                if (MathHelper.IsZero(value))
+                if (value == 0.0 || double.IsNaN(value) || double.IsInfinity(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "The scale factor cannot be zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "The scale factor must be finite and nonzero.");
                 }
                 this.dimlfac = value;
             }
