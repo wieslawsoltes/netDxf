@@ -95,6 +95,7 @@ export function jsGeometry(input) {
           target[step.member].Add(handler);observers.set(step.observer,{target,event:step.member,handler});break;
         }
         case 'unobserve': {const item=observers.get(step.observer);item.target[item.event].Remove(item.handler);observers.delete(step.observer);break;}
+        case 'enumerator-reset': target.Reset();break;
         case 'events': return {ok:true,value:structuredClone(observations)};
         case 'pat-names': result = api.HatchPattern.NamesFromText(step.text); break;
         case 'pat-load': result = api.HatchPattern.LoadText(step.text, step.patternName); break;

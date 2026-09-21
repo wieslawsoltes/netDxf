@@ -25,6 +25,7 @@ internal static partial class Program
         var args=Arguments(step); object? result;
         switch(kind) {
             case "lin-names": case "lin-load": case "lin-save": case "shape-names": case "shape-query": result=StyleFileStep(step,target);break;
+            case "enumerator-reset": ((IEnumerator)target!).Reset();result=null;break;
             case "events": return Observations.ToArray();
             case "observe": case "unobserve": result=ObservationStep(step,target);break;
             case "reference-equals": result=ReferenceEquals(args[0],args[1]);break;

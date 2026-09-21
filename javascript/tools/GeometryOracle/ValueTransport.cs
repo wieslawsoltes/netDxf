@@ -63,7 +63,7 @@ internal static partial class Program
             for (int at=0;at<items.Length;at++) array.SetValue(items[at],at);
             return array;
         }
-        if (v.TryGetProperty("new", out var constructor)) return Create(Resolve(constructor.GetString()!), Arguments(v), Signature(v));
+        if (v.TryGetProperty("new", out var constructor)) return Create(Resolve(constructor.GetString()!), Arguments(v), Signature(v), v.TryGetProperty("nonPublic", out var nestedHidden) && nestedHidden.GetBoolean());
         if (v.TryGetProperty("static", out var typeName)) {
             var type = Resolve(typeName.GetString()!);
             return type.GetProperty(v.GetProperty("property").GetString()!, BindingFlags.Public|BindingFlags.Static)!.GetValue(null);

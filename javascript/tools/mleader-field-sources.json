@@ -1,0 +1,47 @@
+[
+  {
+    "source": "netDxf/Entities/MLeaderArrowHead.Fields.cs",
+    "sha256": "475007cac6f0e6318c16710445e584703cf91945335e281df81f012ed178e851",
+    "target": "netDxf/Entities/MLeaderArrowHead.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderBlockAttribute.Fields.cs",
+    "sha256": "bee7a0dadb61bf6a4eda52a9557478a91566cd3914327b73c8f496902bfb15ef",
+    "target": "netDxf/Entities/MLeaderBlockAttribute.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderBlockContent.Fields.cs",
+    "sha256": "1948fcb93b2576c005ee470fe6861eb35757570b3161207a08b7f9138375870b",
+    "target": "netDxf/Entities/MLeaderBlockContent.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderContext.Fields.cs",
+    "sha256": "71803acd7efe3dc0eac71ff5a877f1821c1b616cab1468882363f0dc4dabca7e",
+    "target": "netDxf/Entities/MLeaderContext.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderLine.Fields.cs",
+    "sha256": "117ae748c7ec0e35a1ee32c7b26eaed4f1477afb2d2b667c13ecd4deed182049",
+    "target": "netDxf/Entities/MLeaderLine.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderMTextContent.Fields.cs",
+    "sha256": "4e4670c6579621ade7e908f0a2d6508c5f5158b594dc622fabdf22b5558fd9f1",
+    "target": "netDxf/Entities/MLeaderMTextContent.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderNode.Fields.cs",
+    "sha256": "2399ff32846599afeac7a565c0ee45f4eced8cf13cd176d89c4392793f33754a",
+    "target": "netDxf/Entities/MLeaderNode.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderProperties.Fields.cs",
+    "sha256": "85bc4694b2386f64b628150bdd3dee6ee054c9387240a4092a21f29eae6ce21e",
+    "target": "netDxf/Entities/MLeaderProperties.Fields.js"
+  },
+  {
+    "source": "netDxf/Entities/MLeaderStyleProperties.Fields.cs",
+    "sha256": "55a47c580dd897153d4027cbe8e7e266b8c95a0f7d8b68de3814c371c43664de",
+    "target": "netDxf/Entities/MLeaderStyleProperties.Fields.js"
+  }
+]

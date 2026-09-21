@@ -8,6 +8,7 @@ using netDxf.Collections;
 internal static partial class Program {
   private static bool DimensionWire(object value,out object? result){
     result=null;
+    if(MLeaderWire(value,out result))return true;
     if(value is DimensionStyleOverride o){result=new{type="DimensionStyleOverride",kind=(int)o.Type,valueType=o.Value?.GetType().Name,value=Wire(o.Value)};return true;}
     if(value is DimensionStyleOverrideChangeEventArgs a){result=new{type="DimensionStyleOverrideChangeEventArgs",item=Wire(a.Item)};return true;}
     if(value is DimensionStyleOverrideDictionaryEventArgs e){result=new{type="DimensionStyleOverrideDictionaryEventArgs",item=Wire(e.Item),cancel=e.Cancel};return true;}
