@@ -156,3 +156,5 @@ export { SunReferences } from './netDxf/Objects/SunReferences.js';
 
 export { DxfGeoData, DxfGeoCoordinateType, DxfGeoScaleEstimation, DxfGeoMeshPoint, DxfGeoMeshFace } from './netDxf/Objects/DxfGeoData.js';
 export { DxfVbaProject } from './netDxf/Objects/DxfVbaProject.js';
+export { ObservableDictionary } from './netDxf/Collections/ObservableDictionary.js';
+export { ObservableDictionaryEventArgs } from './netDxf/Collections/ObservableDictionaryEventArgs.js';

@@ -1,4 +1,4 @@
-# Third-party mathematical code
+# Third-party code
 
 The original netDxf port remains under the MIT license in `LICENSE`.
 
@@ -47,3 +47,31 @@ reference profile, not every native libm or rounding mode.
 the Boost Software License 1.0, included in `netDxf/GTE/LICENSE.BSL-1.0`.
 The netDxf translation and JavaScript adaptation retain their MIT notices.
 The aggregate package expression is now `MIT AND LGPL-2.1-or-later AND BSL-1.0`.
+
+## Generic dictionary capacity sizing
+
+The prime-size table and prime-selection helper in `runtime/GenericDictionary.js`
+adapt the .NET Foundation's MIT-licensed `HashHelpers.cs`:
+https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/Collections/HashHelpers.cs
+The dictionary's publicly observed semantics are compared against the separately
+pinned .NET 8.0.31 runtime, not inferred from the upstream table.
+
+Copyright (c) .NET Foundation and Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
