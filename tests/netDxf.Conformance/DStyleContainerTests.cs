@@ -72,7 +72,6 @@ internal static partial class Program
             new OrdinateDimension(Vector2.Zero, new Vector2(2, 3), new Vector2(7, 3), OrdinateDimensionAxis.X, style),
             new Leader(new[] { Vector2.Zero, new Vector2(5, 3), new Vector2(9, 3) }, style)
         };
-        if (placement >= 3) ((LinearDimension)entities[0]).TextReferencePoint = new Vector2(7, 5);
         for (int i = 0; i < entities.Length; i++)
         {
             var entity = entities[i]; entity.Layer = new Layer("DSTYLE_ENTITY_" + i);
@@ -111,6 +110,9 @@ internal static partial class Program
             else doc.Blocks.Add(block);
         }
         doc.Layouts[Layout.ModelSpaceName].AssociatedBlock.Entities.Add(new Line(new Vector3(17.25, -4.5, 2), new Vector3(18.5, 9.25, -3)));
+        // Adoption builds the initial display block and resets automatic text placement.
+        // Assign the stored manual position afterwards; this fixture does not qualify block regeneration.
+        if (placement >= 3) ((LinearDimension)entities[0]).TextReferencePoint = new Vector2(7, 5);
         return doc;
     }
 
