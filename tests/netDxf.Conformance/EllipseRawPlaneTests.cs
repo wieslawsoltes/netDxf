@@ -123,14 +123,14 @@ internal static partial class Program
             });
         Run("ellipse-raw-plane/optional-bits-and-budget",()=>
         {
-            var tags=RawEllipseTags(DxfVersion.AutoCad13,false,1);var raw=DxfRawDocument.Create(tags,false,new DxfRawOptions(maximumTags:tags.Count+2));
+            var tags=RawEllipseTags(DxfVersion.AutoCad13,false,1);var raw=DxfRawDocument.Create(tags,false,new DxfRawOptions(maximumTags:tags.Count+3));
             Throws<InvalidOperationException>(()=>EllipsePlaneEdit(raw,RawEllipseRecord(raw),Vector3.Zero,new(0,0,2),Vector3.UnitY));
-            raw=DxfRawDocument.Create(tags,false,new DxfRawOptions(maximumTags:tags.Count+3));
-            var edit=EllipsePlaneEdit(raw,RawEllipseRecord(raw),Vector3.Zero,new(0,0,2),Vector3.UnitY);Equal(tags.Count+3,edit.Tags.Count,"Missing-component budget");
-            var record=RawEllipseRecord(edit);Check(!record.Tags.Any(t=>t.Code==210||t.Code==30),"Unchanged defaults materialized");
+            raw=DxfRawDocument.Create(tags,false,new DxfRawOptions(maximumTags:tags.Count+4));
+            var edit=EllipsePlaneEdit(raw,RawEllipseRecord(raw),Vector3.Zero,new(0,0,2),Vector3.UnitY);Equal(tags.Count+4,edit.Tags.Count,"Complete-vector component budget");
+            var record=RawEllipseRecord(edit);Check(record.Tags.Any(t=>t.Code==210) && !record.Tags.Any(t=>t.Code==30),"Required vector X or optional center Z presence");
             raw=DxfRawDocument.Create(tags);edit=EllipsePlaneEdit(raw,RawEllipseRecord(raw),new(1.25,-2,0),new(4,0,0),new(-0.0,0,1),.5,0,2*Math.PI);
-            record=RawEllipseRecord(edit);Equal(tags.Count+1,edit.Tags.Count,"Negative zero did not materialize precisely once");SameDoubleBits(-0.0,(double)record.Tags.Single(t=>t.Code==210).Value,"Extrusion sign bit");
-            Check(!record.Tags.Any(t=>t.Code==220||t.Code==230),"Absent extrusion defaults changed presence");
+            record=RawEllipseRecord(edit);Equal(tags.Count+3,edit.Tags.Count,"Signed-zero extrusion did not materialize one complete vector");SameDoubleBits(-0.0,(double)record.Tags.Single(t=>t.Code==210).Value,"Extrusion sign bit");
+            Check(record.Tags.Count(t=>t.Code==220||t.Code==230)==2,"Changed extrusion omitted required vector defaults");
             Check(ReferenceEquals(edit,EllipsePlaneEdit(edit,record,new(1.25,-2,0),new(4,0,0),new(-0.0,0,1),.5,0,2*Math.PI)),"Signed-zero repeat lost identity");
         });
         foreach (short missing in new short[]{210,220,230})
@@ -140,6 +140,38 @@ internal static partial class Program
                 var record=RawEllipseRecord(edit);RawLinePointBits(new(2,-3,6),RawLinePoint(RawEllipseRead(edit,record),"ExtrusionDirection"));
                 Equal(1,record.Tags.Count(t=>t.Code==missing),"Missing extrusion component not inserted once");
             });
+        for (int layout = 0; layout < 8; layout++) foreach (bool binary in new[] { false, true })
+        {
+            int kind = layout;
+            Run($"ellipse-raw-plane/vector-packet/{kind}/{binary}", () =>
+            {
+                short[][] layouts = {
+                    Array.Empty<short>(), new short[] {210}, new short[] {220}, new short[] {230},
+                    new short[] {220,230}, new short[] {210,230}, new short[] {210,220}, new short[] {230,220,210}
+                };
+                var raw = Modified(tags => {
+                    int at = RawLineAt(tags,210);
+                    tags.RemoveAll(t => t.Code == 210 || t.Code == 220 || t.Code == 230);
+                    foreach (short code in layouts[kind]) {
+                        tags.Insert(at++, new DxfTag(code, code == 230 ? 1.0 : 0.0));
+                        if (kind == 7) tags.Insert(at++, new DxfTag(999,"retained vector separator"));
+                    }
+                });
+                var record = RawEllipseRecord(raw); byte[] source = SaveRaw(raw);
+                var edit = EllipsePlaneEdit(raw,record,new(8,-16,32),new(0,0,6),new(0,2,0));
+                var result = RawEllipseRecord(edit); int x = result.Tags.ToList().FindIndex(t=>t.Code==210);
+                Check(x >= 0 && result.Tags[x+1].Code==220 && result.Tags[x+2].Code==230,"Extrusion vector groups are not complete and adjacent");
+                Equal(3,result.Tags.Count(t=>t.Code==210||t.Code==220||t.Code==230),"Extrusion vector duplicates");
+                var before = record.Tags.Where(t=>t.Code!=210&&t.Code!=220&&t.Code!=230&&!RawEllipseFields.Contains(t.Code)).ToArray();
+                var after = result.Tags.Where(t=>t.Code!=210&&t.Code!=220&&t.Code!=230&&!RawEllipseFields.Contains(t.Code)).ToArray();
+                SameRawTags(before,after);Check(before.Zip(after).All(p=>ReferenceEquals(p.First,p.Second)),"Regrouping changed unrelated tags");
+                var oldX=record.Tags.FirstOrDefault(t=>t.Code==210);
+                if(oldX!=null)Check(ReferenceEquals(oldX,result.Tags[x]),"Unchanged X component lost identity");
+                RawLinePointBits(new(0,2,0),RawLinePoint(RawEllipseRead(edit,result),"ExtrusionDirection"));
+                Check(source.SequenceEqual(SaveRaw(raw)),"Regrouping mutated source bytes");
+                File.WriteAllBytes(Path.Combine(ArtifactDirectory,$"ellipse-plane-packet-{kind}-{binary}.dxf"),SaveRaw(edit,binary));
+            });
+        }
         Run("ellipse-raw-plane/snapshot-and-old-api",()=>
         {
             var raw=Modified(_=>{});var other=Modified(_=>{});var record=RawEllipseRecord(raw);

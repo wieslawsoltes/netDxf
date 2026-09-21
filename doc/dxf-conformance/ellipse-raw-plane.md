@@ -38,14 +38,26 @@ rules, not a claimed native AutoCAD tolerance policy.
 
 An exact bit-identical no-op returns the original snapshot and preserves original
 bytes. Actual edits first validate every value, dependency guard and tag budget.
-They replace changed existing slots in place. Unchanged tags retain object
-identity, value and relative order, including application-neutral XData. Missing
+They replace changed center/axis/ratio/parameter slots in place. Missing
 center/axis Z is added immediately after its Y only when different from positive
-zero. Missing extrusion components are added, in X/Y/Z order, after the last
-existing geometry field and only when different from their defaults (0,0,1).
-Negative zero differs from positive zero; explicit defaults already present are
-not removed. Missing default components remain absent. Repeating the resulting
-exact definition is a snapshot-identity no-op.
+zero. A changed extrusion is written as one complete, adjacent 210/220/230 vector,
+including zero/default components. The vector occupies the first existing
+extrusion slot, or follows the last geometry field when no extrusion is stored.
+Partial or reordered extrusion components are regrouped, while unchanged stored
+components reuse their tag objects. All non-extrusion tags retain relative order
+and unchanged values retain object identity, including application-neutral XData.
+An unchanged extrusion packet remains untouched, including absent defaults.
+Negative zero differs from positive zero. Repeating the resulting exact definition
+is a snapshot-identity no-op.
+
+The first independent run exposed a real interoperability defect in the initial
+implementation: omitting default-valued group 210 while inserting only 220/230
+left the independent reader at its default +Z plane. This was corrected in
+production, not ignored by the checker. The raw budget accounts for every needed
+vector component. Added cases cover absent, partial, reversed and separated
+source extrusion groups; changed output is required to contain a complete vector.
+This is a deliberate difference between source-preserving no-ops and authored
+plane changes, not a promise to normalize every malformed source packet.
 
 Source snapshots remain immutable. Changed output may normalize textual spelling
 and line endings. Proxies, application/embedded data, unknown fields,
@@ -67,7 +79,8 @@ Ordinary full ellipses also pass through all six existing typed profiles.
 The independent checker regenerates source and expected edited packets, compares
 retained fields and independently samples WCS curves in both snapshots. It rejects
 actual changed/deleted/repeated tags and missing/extra inventories. The fixture
-matrix produces 256 source/edit pairs (512 drawings), not native producer files.
+matrix produces 256 source/edit pairs plus 16 vector-packet drawings (528 drawings),
+not native producer files.
 Exact-head executed C# and independent results are recorded in the PR. Python
 syntax validation alone is not C# qualification. Extreme raw-value tests do not
 claim native or independent geometric acceptance at those extremes.
@@ -84,3 +97,8 @@ execution; the physical declared profiles are checked separately. This adds no
 historical typed dialect, pre-R11 profile, general version conversion, complete
 private FIELD/TABLE/cache regeneration, dependency-complete import or native
 AutoCAD open/AUDIT/save/reopen, visual or font qualification.
+
+The [ezdxf tag-format documentation](https://ezdxf.readthedocs.io/en/stable/dxfinternals/dxftags.html)
+explains the reader's component adjacency requirement. Complete-vector emission
+is qualified here against that independent reader as well as physical raw tags;
+it is not proof that every native application accepts all retained source forms.

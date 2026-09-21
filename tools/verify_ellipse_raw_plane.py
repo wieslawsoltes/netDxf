@@ -36,7 +36,7 @@ def check(before, after, variant):
     replacement = values(target(variant))
     present = {code for code,_ in source}
     missing = {code for code,default in DEFAULTS.items()
-               if code not in present and key((code,default)) != key((code,replacement[code]))}
+               if code not in present and (code >= 210 or key((code,default)) != key((code,replacement[code])))}
     anchor = max(i for i,(code,_) in enumerate(source) if code in CODES)
     expected = []
     for i,(code,value) in enumerate(source):
@@ -67,6 +67,12 @@ def check_curve(entity, variant):
 
 def main(directory):
     specs = list(itertools.product(VERSIONS,(False,True),(False,True),range(4),(False,True)))
+    packet_names = {f'ellipse-plane-packet-{layout}-{binary}.dxf' for layout in range(8) for binary in (False,True)}
+    def packet_inventory(actual):
+        require(actual == packet_names, 'Missing or extra vector-packet fixtures')
+    packet_inventory({p.name for p in directory.glob('ellipse-plane-packet-*.dxf')})
+    reject(lambda:packet_inventory(packet_names-{next(iter(packet_names))}))
+    reject(lambda:packet_inventory(packet_names|{'ellipse-plane-packet-extra.dxf'}))
     stems = [f'ellipse-raw-plane-{v}-{bi}-{bl}-{variant}-{output}' for v,bi,bl,variant,output in specs]
     names = {stem+'-'+side+'.dxf' for stem in stems for side in ('before','after')}
     def inventory(actual):
@@ -103,9 +109,34 @@ def main(directory):
                 check_curve(entity,variant)
             else:
                 verify_curve(entity,variant,False)
-    print(f'PASS: {len(specs)} complete source/edit pairs / {len(specs)*2} drawings; '
-          f'{len(specs)*34} independent curve samples; {corruptions} tag corruptions '
-          'and two inventory controls rejected; zero graph errors or repairs.')
+    for name in sorted(packet_names):
+        path = directory/name
+        tags = load_tags(path)
+        a,b = selected(tags)
+        record = tags[a:b]
+        vector = [(210,0.0),(220,2.0),(230,0.0)]
+        def complete_vector(candidate):
+            found = [(i,t) for i,t in enumerate(candidate) if t[0] in (210,220,230)]
+            require([t for _,t in found] == vector and found[1][0] == found[0][0]+1
+                    and found[2][0] == found[0][0]+2, 'Incomplete or split extrusion packet')
+        complete_vector(record)
+        require(path.read_bytes().startswith(b'AutoCAD Binary DXF') == name.endswith('-True.dxf'), 'Packet transport changed')
+        at = tags.index((9,'$ACADVER'));require(tags[at+1] == (1,'AC1032'),'Packet version changed')
+        for code in (210,220,230):
+            at = next(i for i,t in enumerate(record) if t[0] == code)
+            damaged = record[:at]+record[at+1:]
+            corruptions += reject(lambda:complete_vector(damaged))
+            damaged = record[:at]+[record[at]]+record[at:]
+            corruptions += reject(lambda:complete_vector(damaged))
+        at = next(i for i,t in enumerate(record) if t[0] == 220)
+        corruptions += reject(lambda:complete_vector(record[:at]+[(999,'split')]+record[at:]))
+        doc = ezdxf.readfile(path)
+        require(not any(any(c.values()) for c in audit_signature(doc)), 'Vector-packet graph errors or repairs')
+        check_curve(doc.entitydb['A'],1)
+    print(f'PASS: {len(specs)} complete source/edit pairs plus {len(packet_names)} vector-packet drawings '
+          f'/ {len(specs)*2+len(packet_names)} drawings; '
+          f'{len(specs)*34+len(packet_names)*17} independent curve samples; {corruptions} tag corruptions '
+          'and four inventory controls rejected; zero graph errors or repairs.')
 
 
 if __name__ == '__main__':
