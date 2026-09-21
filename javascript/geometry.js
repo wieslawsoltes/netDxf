@@ -38,3 +38,8 @@ export { HeaderEnum } from './runtime/HeaderBox.js';
 export { DimensionStyleAlternateUnits } from './netDxf/Tables/DimensionStyleAlternateUnits.js';
 export { DimensionStyleTolerances } from './netDxf/Tables/DimensionStyleTolerances.js';
 export { DimensionStyle } from './netDxf/Tables/DimensionStyle.js';
+export { DimensionStyleOverride } from './netDxf/Tables/DimensionStyleOverride.js';
+export { DimensionStyleOverrideChangeEventArgs } from './netDxf/Tables/DimensionStyleOverrideChangeEventArgs.js';
+export { DimensionStyleOverrideDictionary } from './netDxf/Collections/DimensionStyleOverrideDictionary.js';
+export { DimensionStyleOverrideDictionaryEventArgs } from './netDxf/Collections/DimensionStyleOverrideDictionaryEventArgs.js';
+export { BoxedChar } from './runtime/BoxedChar.js';
