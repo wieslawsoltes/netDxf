@@ -34,3 +34,7 @@ export { Copy as CloneValue, Color, Culture } from './runtime/GeometryRuntime.js
 export { HeaderVariables } from './netDxf/Header/HeaderVariables.js';
 export { HeaderDateTime, HeaderTimeSpan, SetHeaderEnvironment } from './runtime/HeaderTime.js';
 export { HeaderEnum } from './runtime/HeaderBox.js';
+
+export { DimensionStyleAlternateUnits } from './netDxf/Tables/DimensionStyleAlternateUnits.js';
+export { DimensionStyleTolerances } from './netDxf/Tables/DimensionStyleTolerances.js';
+export { DimensionStyle } from './netDxf/Tables/DimensionStyle.js';
