@@ -36,6 +36,7 @@ internal static partial class Program
         if (v.ValueKind == JsonValueKind.Number) return v.GetDouble();
         if (v.ValueKind == JsonValueKind.String) return v.GetString();
         if (v.ValueKind == JsonValueKind.True || v.ValueKind == JsonValueKind.False) return v.GetBoolean();
+        if (v.TryGetProperty("stringRef", out var stringReference)) return new string(stringReference.GetString()!.ToCharArray());
         if (v.TryGetProperty("char", out var character)) return (char)character.GetUInt16();
         if (v.TryGetProperty("datetime", out var headerDate)) return new DateTime(long.Parse(headerDate.GetProperty("ticks").GetString()!,CultureInfo.InvariantCulture), (DateTimeKind)(headerDate.TryGetProperty("kind",out var dateKind)?dateKind.GetInt32():0));
         if (v.TryGetProperty("timespan", out var headerSpan)) return new TimeSpan(long.Parse(headerSpan.GetString()!,CultureInfo.InvariantCulture));

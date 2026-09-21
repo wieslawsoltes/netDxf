@@ -29,3 +29,14 @@ import * as packedModels from '@netdxf/javascript';
   if(clone.TextHeight!==4||clone.Position.Z!==3||source.Position.Z!==0)
     throw new Error('Packed TOLERANCE transform isolation failed');
 }
+
+{
+  const {Leader,Vector2,Vector3,Matrix3,DimensionStyleOverride,DimensionStyleOverrideType,BoxedString}=packedModels;
+  const leader=new Leader('Packed LEADER',[Vector2.Zero,new Vector2(4,3)]);
+  const shared=new BoxedString('prefix'),override=new DimensionStyleOverride(DimensionStyleOverrideType.DimPrefix,shared);
+  leader.StyleOverrides.Add(override);leader.StyleOverrides.set_Item(DimensionStyleOverrideType.DimPrefix,new DimensionStyleOverride(DimensionStyleOverrideType.DimPrefix,shared));
+  if(leader.StyleOverrides.get_Item(DimensionStyleOverrideType.DimPrefix)!==override)throw new Error('Packed LEADER override identity failed');
+  leader.Update(true);const copy=leader.Clone();copy.TransformBy(Matrix3.Scale(2),new Vector3(1,2,3));
+  if(copy.Annotation===leader.Annotation||copy.Style===leader.Style||copy.LineColor!==leader.LineColor||copy.Annotation.Reactors.get_Item(0)!==copy||copy.Hook.X!==9||leader.Hook.X!==4)
+    throw new Error('Packed LEADER annotation/clone/transform failed');
+}

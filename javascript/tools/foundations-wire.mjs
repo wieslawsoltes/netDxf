@@ -1,3 +1,4 @@
+import {ModelBoxing} from './model-boxing.mjs';
 import { BoxedScalar } from '../runtime/BoxedScalar.js';
 // Shared Node/browser operation interpreter; production implementations provide all behavior.
 import * as api from '../index.js';
@@ -12,11 +13,13 @@ import { wire } from './model-wire.mjs';
 
 export function jsGeometry(input) {
   api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;
-  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = input.culture ?? ''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
+  const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = input.culture??''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
   const native = input.nativeManifest;
   const observers=new Map(), observations=[];
+  const boxing=new ModelBoxing(values);
   function read(value) {
     if (value == null || typeof value !== 'object') return value;
+    if ('stringRef' in value) return new api.BoxedString(value.stringRef);
     if ('char' in value) return new api.BoxedChar(String.fromCharCode(value.char));
     if ('datetime' in value) return new api.HeaderDateTime(BigInt(value.datetime.ticks),value.datetime.kind??0);
     if ('timespan' in value) return new api.HeaderTimeSpan(BigInt(value.timespan));
@@ -56,7 +59,7 @@ export function jsGeometry(input) {
       const boxed = item && typeof item === 'object' && ['int','short','byte','double'].find(key=>key in item);
       return boxed ? new BoxedScalar({int:'Int32',short:'Int16',byte:'Byte',double:'Double'}[boxed],read(item)) : read(item);
     }) : value.values.map(read);
-    if ('new' in value) return construct(resolve(value.new),(value.args ?? []).map(read),value.signature);
+    if ('new' in value) return construct(resolve(value.new),(value.args ?? []).map(read),value.signature,value.args??[]);
     if ('static' in value) return resolve(value.static)[value.property];
     throw new Error('Unknown value descriptor.');
   }
@@ -67,7 +70,8 @@ export function jsGeometry(input) {
     if (file && signature!==undefined && !method) throw new Error('Unmapped exact member '+type.name+'.'+step.member+'('+signature+')');
     return (target??type)[method?.implementation??step.member](...args.map(Copy));
   }
-  function construct(type,args,signature) {
+  function construct(type,args,signature,descriptors=[]) {
+    if(type===api.DimensionStyleOverride)args=[args[0],boxing.Read(descriptors[1],args[1])];
     if (type.CreateOverload && signature) return type.CreateOverload(signature.map(typeName).join(','),...args.map(Copy));
     return new type(...args);
   }
@@ -102,7 +106,7 @@ export function jsGeometry(input) {
         case 'pat-save': result = target.ToPatString(step.newLine ?? '\n'); break;
         case 'map-add': target.set(args[0],args[1]);break;
         case 'value': result = read(step.value); break;
-        case 'new': result = construct(type,args,step.signature); break;
+        case 'new': result = construct(type,args,step.signature,step.args??[]); break;
         case 'get': result = (target ?? type)[step.member]; if(target instanceof api.DimensionStyle && step.member==='DecimalSeparator') result=new api.BoxedChar(result); break;
         case 'set': { const value=read(step.value); (target ?? type)[step.member] = value instanceof api.BoxedChar && !(target instanceof api.HeaderVariable) ? value.Value : value; break; }
         case 'index':
@@ -138,7 +142,7 @@ export function jsGeometry(input) {
         }
         default: throw new Error('Unknown step: '+step.kind);
       }
-      if (step.id) values.set(step.id,result);
+      if (step.id) {values.set(step.id,result);boxing.Register(step.id,step.kind==='value'?step.value:null);}
       return {ok:true,value:wire(result)};
     } catch (error) { return {ok:false,error:error.name,param:error.ParamName ?? null}; }
   });

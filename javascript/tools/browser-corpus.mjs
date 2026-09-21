@@ -1,3 +1,4 @@
+import {leaderCorpus} from './leader-corpus.mjs';
 import {toleranceCorpus} from './tolerance-corpus.mjs';
 import { unitFormatCorpus } from './unit-format-corpus.mjs';
 import { mleaderCorpus } from './mleader-corpus.mjs';
@@ -142,6 +143,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await toleranceOracle.close();}
+// Keep classic LEADER inputs after every preceding corpus without changing their order.
+const leaderOracle=new ModelOracleSession();
+try {
+  for(const probe of leaderCorpus()) {
+    const observed=await leaderOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await leaderOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

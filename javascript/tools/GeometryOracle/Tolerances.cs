@@ -10,7 +10,7 @@ internal static partial class Program {
         return result is not null;
     }
     private static bool ToleranceWire(object value,out object? result){
-        result=null;if(ToleranceValueWire(value,out result))return true;if(value is not Tolerance t)return false;
+        result=null;if(LeaderWire(value,out result))return true;if(ToleranceValueWire(value,out result))return true;if(value is not Tolerance t)return false;
         var common=new {type=t.GetType().Name,kind=(int)t.Type,code=t.CodeName,handle=t.Handle,owner=t.Owner?.CodeName,
             color=Wire(t.Color),layer=Wire(t.Layer),linetype=Wire(t.Linetype),lineweight=(int)t.Lineweight,transparency=Wire(t.Transparency),
             linetypeScale=Wire(t.LinetypeScale),normal=Wire(t.Normal),visible=t.IsVisible,colorName=t.ColorName,shadow=Wire(t.ShadowMode),proxy=Wire(t.ProxyGraphics),

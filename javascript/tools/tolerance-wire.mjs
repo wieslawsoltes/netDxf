@@ -1,3 +1,4 @@
+import {leaderWire} from './leader-wire.mjs';
 // Observation only; both languages serialize values from their own production model.
 import {Tolerance,ToleranceEntry,ToleranceValue,DatumReferenceValue} from '../index.js';
 export function toleranceValueWire(value,wire){
@@ -6,6 +7,7 @@ export function toleranceValueWire(value,wire){
   if(value instanceof DatumReferenceValue)return {type:'DatumReferenceValue',text:wire(value.Value),material:value.MaterialCondition};
 }
 export function toleranceWire(value,wire){
+  const leader=leaderWire(value,wire);if(leader!==undefined)return leader;
   const detail=toleranceValueWire(value,wire);if(detail!==undefined)return detail;
   if(!(value instanceof Tolerance))return;
   const common={type:value.constructor.name,kind:value.Type,code:value.CodeName,handle:value.Handle,

@@ -27,6 +27,7 @@ import {Copy,DotNetMath,MultiplyDouble as mul} from '../../runtime/GeometryRunti
 import {ValueList} from '../../runtime/ValueList.js';
 import {EventHook} from '../../runtime/EventHook.js';
 import {BoxedScalar} from '../../runtime/BoxedScalar.js';
+import {BoxedString} from '../../runtime/BoxedString.js';
 import {HeaderEnum} from '../../runtime/HeaderBox.js';
 import {ArgumentException,ArgumentNullException,ArgumentOutOfRangeException,Exception,NullReferenceException} from '../../runtime/Errors.js';
 const exact=Symbol('exact Leader constructor');
@@ -85,7 +86,8 @@ export class Leader extends EntityObject {
     const a=old.Value,b=item.Value;
     // CLR object-valued numeric/bool arguments are separately boxed. Explicit boxed
     // adapters preserve shared identities; primitive empty strings are interned.
-    return a===null?b===null:typeof a==='object'?a===b:a===''&&b==='';
+    if(a===''||a instanceof BoxedString&&a.Value==='')return b===''||b instanceof BoxedString&&b.Value==='';
+    return a===null?b===null:typeof a==='object'&&a===b;
   }
   get Style(){return this.#style;}
   set Style(value){if(value==null)throw new ArgumentNullException('value');this.#style=this.OnDimensionStyleChangedEvent(this.#style,value);}

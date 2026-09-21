@@ -4,7 +4,7 @@ import {mleaderWire} from './mleader-wire.mjs';
 import * as api from '../index.js';
 import {BoxedScalar} from '../runtime/BoxedScalar.js';
 import {dimensionSchema} from './dimension-schema.mjs';
-const valueType=v=>v==null?null:v instanceof BoxedScalar||v instanceof api.HeaderEnum||v instanceof api.BoxedChar?v.Type:({number:'Double',boolean:'Boolean',string:'String',bigint:'Int64'}[typeof v]??v.constructor.name);
+const valueType=v=>v==null?null:v instanceof BoxedScalar||v instanceof api.HeaderEnum||v instanceof api.BoxedChar||v instanceof api.BoxedString||v instanceof api.BoxedBoolean?v.Type:({number:'Double',boolean:'Boolean',string:'String',bigint:'Int64'}[typeof v]??v.constructor.name);
 export function dimensionWire(value,wire){
   const tolerance=toleranceWire(value,wire);if(tolerance!==undefined)return tolerance;
   const mleader=mleaderWire(value,wire);if(mleader!==undefined)return mleader;
