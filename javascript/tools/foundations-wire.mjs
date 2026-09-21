@@ -164,13 +164,13 @@ export function jsGeometry(input) {
         case 'get': result = (target ?? type)[step.member]; break;
         case 'set': (target ?? type)[step.member] = read(step.value); break;
         case 'index':
-          if (Array.isArray(target) && typeof target.get_Item !== 'function') {
+          if ((Array.isArray(target) || target instanceof Uint8Array) && typeof target.get_Item !== 'function') {
             if (!Number.isInteger(args[0]) || args[0] < 0 || args[0] >= target.length) throw new IndexOutOfRangeException();
             result = Copy(target[args[0]]);
           } else result = target.get_Item(...args);
           break;
         case 'set-index':
-          if (Array.isArray(target) && typeof target.set_Item !== 'function') {
+          if ((Array.isArray(target) || target instanceof Uint8Array) && typeof target.set_Item !== 'function') {
             if (!Number.isInteger(args[0]) || args[0] < 0 || args[0] >= target.length) throw new IndexOutOfRangeException();
             target[args[0]] = Copy(read(step.value));
           } else target.set_Item(...args, read(step.value));

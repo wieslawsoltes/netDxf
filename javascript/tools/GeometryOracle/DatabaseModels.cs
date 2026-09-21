@@ -11,6 +11,8 @@ internal static partial class Program
     private static bool DatabaseModelWire(object value,out object? result)
     {
         result=null;
+        if(value is DxfGeoMeshPoint geoPoint) {result=new {type="DxfGeoMeshPoint",source=Wire(geoPoint.Source),target=Wire(geoPoint.Target)};return true;}
+        if(value is DxfGeoMeshFace geoFace) {result=new {type="DxfGeoMeshFace",first=geoFace.First,second=geoFace.Second,third=geoFace.Third};return true;}
         if(value is DxfLightListEntry lightEntry) {result=new {type="DxfLightListEntry",light=ObjectReferenceWire(lightEntry.Light),name=Wire(lightEntry.Name)};return true;}
         if(value is DxfLayerIndexEntry layerEntry) {result=new {type="DxfLayerIndexEntry",name=Wire(layerEntry.LayerName),buffer=ObjectReferenceWire(layerEntry.Buffer),count=layerEntry.Count};return true;}
         if(value is DxfDictionaryEntry entry) {result=new {type="DxfDictionaryEntry",name=entry.Name,target=ObjectReferenceWire(entry.Target),hard=entry.IsHardOwner};return true;}
@@ -18,7 +20,16 @@ internal static partial class Program
         if(value is not DxfDatabaseObject model)return false;
         var common=new {type=value.GetType().Name,code=model.CodeName,handle=model.Handle,owner=ObjectReferenceWire(model.Owner),extension=ObjectReferenceWire(model.ExtensionDictionary),erased=model.IsErased,registered=model.Database is not null,
             xdata=model.XData.Values.Select(Wire).ToArray(),reactors=model.PersistentReactors.Select(ObjectReferenceWire).ToArray(),owned=DatabaseList(model,"DeclaredOwnedObjects"),references=DatabaseList(model,"DatabaseReferences")};
-        if(model is DxfLightList lightList) result=new {common,version=lightList.StoredVersion,entries=lightList.Entries.Select(Wire).ToArray()};
+        if(model is DxfGeoData geo) {
+            var fields=new System.Collections.Generic.Dictionary<string,object?>();
+            foreach(string name in new[]{"Version","CoordinateType","DesignPoint","ReferencePoint","UpDirection","NorthDirection",
+              "HorizontalUnitScale","VerticalUnitScale","HorizontalUnits","VerticalUnits","ScaleEstimation","UserScaleFactor",
+              "SeaLevelCorrection","SeaLevelElevation","CoordinateProjectionRadius","CoordinateSystemDefinition","GeoRssTag",
+              "ObservationFrom","ObservationTo","ObservationCoverage"})fields[name]=Wire(typeof(DxfGeoData).GetProperty(name)!.GetValue(geo));
+            result=new {common,fields,host=ObjectReferenceWire(geo.HostBlock),points=geo.MeshPoints.Select(Wire).ToArray(),faces=geo.MeshFaces.Select(Wire).ToArray()};
+        }
+        else if(model is DxfVbaProject vba) result=new {common,length=vba.DataLength,data=Wire(vba.Data),chunks=vba.Chunks.Select(Wire).ToArray()};
+        else if(model is DxfLightList lightList) result=new {common,version=lightList.StoredVersion,entries=lightList.Entries.Select(Wire).ToArray()};
         else if(model is DxfIdBuffer) result=new {common};
         else if(model is DxfSpatialIndex spatialIndex) result=new {common,timestamp=Wire(spatialIndex.Timestamp)};
         else if(model is DxfLayerIndex layerIndex) result=new {common,timestamp=Wire(layerIndex.Timestamp),entries=layerIndex.Entries.Select(Wire).ToArray()};

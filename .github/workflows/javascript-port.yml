@@ -201,6 +201,9 @@ jobs:
           node javascript/tools/dotnet.mjs geometry
           node javascript/tools/style-differential.mjs
           node javascript/tools/entity-differential.mjs
+      - name: Compare GEODATA metadata and inert VBA envelopes on the actual host
+        if: ${{ !cancelled() }}
+        run: node javascript/tools/geodata-vba-differential.mjs
       - name: Compare layout and viewport APIs on the actual host
         if: ${{ !cancelled() }}
         run: node javascript/tools/layout-viewport-differential.mjs
@@ -236,6 +239,7 @@ jobs:
             javascript/artifacts/mline-differential/Release/results.json
             javascript/artifacts/block-differential/Release/results.json
             javascript/artifacts/layout-viewport-differential/Release/results.json
+            javascript/artifacts/geodata-vba-differential/Release/results.json
             javascript/artifacts/surface-differential/Release/results.json
             javascript/artifacts/exp-log-differential/Release/results.json
             javascript/artifacts/style-differential/Release/results.json

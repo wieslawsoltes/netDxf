@@ -1,3 +1,4 @@
+import { geoDataVbaCorpus } from './geodata-vba-corpus.mjs';
 import { layoutViewportCorpus } from './layout-viewport-corpus.mjs';
 import { ModelOracleSession } from './ModelOracleSession.mjs';
 import { blockCorpus } from './block-corpus.mjs';
@@ -107,7 +108,7 @@ try {
   const read=name=>fs.readFileSync(path.join(sourceRoot,'TestDxfDocument/Support',name));
   const hatches=hatchCorpus(['acad.pat','acadiso.pat'].map(name=>({name,text:read(name).toString('utf8')})));
   const styles=styleCorpus(['acad.lin','acadiso.lin'].map(name=>({name,text:read(name).toString('utf8')})),read('ltypeshp.shx'));
-  for(const [category,probes] of [['blocks',blockCorpus().concat(insertCorpus())],['mlines',mlineCorpus()],['output-settings',outputSettingsCorpus()],['groups',groupCorpus()],['surfaces',surfaceCorpus()],['hatch',hatches],['styles',styles],['entities',entityCorpus()],['coordinates',coordinateCorpus()],['database-models',databaseModelCorpus()]])for(const probe of probes){
+  for(const [category,probes] of [['blocks',blockCorpus().concat(insertCorpus())],['mlines',mlineCorpus()],['output-settings',outputSettingsCorpus()],['groups',groupCorpus()],['surfaces',surfaceCorpus()],['hatch',hatches],['styles',styles],['entities',entityCorpus()],['coordinates',coordinateCorpus()],['database-models',databaseModelCorpus()],['geodata-vba',geoDataVbaCorpus()]])for(const probe of probes){
     const expected=await modelOracle.request(probe.request);
     if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)throw new Error('Incomplete model oracle response.');
     cases.push({name:`${category}/${probe.name}`,input:probe.request,expected:{models:sha256(canonical(expected))}});

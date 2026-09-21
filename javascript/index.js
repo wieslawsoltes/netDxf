@@ -153,3 +153,6 @@ export { EntityChangeEventArgs } from './netDxf/Entities/EntityChangeEventArgs.j
 export { Viewport } from './netDxf/Entities/Viewport.js';
 export { Layout } from './netDxf/Objects/Layout.js';
 export { SunReferences } from './netDxf/Objects/SunReferences.js';
+
+export { DxfGeoData, DxfGeoCoordinateType, DxfGeoScaleEstimation, DxfGeoMeshPoint, DxfGeoMeshFace } from './netDxf/Objects/DxfGeoData.js';
+export { DxfVbaProject } from './netDxf/Objects/DxfVbaProject.js';
