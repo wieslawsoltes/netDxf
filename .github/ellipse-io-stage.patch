@@ -1,0 +1,123 @@
+diff --git a/netDxf/IO/DxfReader.cs b/netDxf/IO/DxfReader.cs
+index c4c0745..4566c27 100644
+--- a/netDxf/IO/DxfReader.cs
++++ b/netDxf/IO/DxfReader.cs
+@@ -6990,15 +6990,12 @@ namespace netDxf.IO
+                 }
+             }
+ 
+-            Vector3 ocsAxisPoint = MathHelper.Transform(axisPoint, normal, CoordinateSystem.World, CoordinateSystem.Object);
+-
+-            double rotation = Vector2.Angle(new Vector2(ocsAxisPoint.X, ocsAxisPoint.Y));
+-            double majorAxis = 2 * axisPoint.Modulus();
+-            double minorAxis = majorAxis * ratio;
++            DxfEllipseParameterCodec.ReadAxes(axisPoint, normal, ratio,
++                out double majorAxis, out double minorAxis, out double rotation);
+ 
+             Ellipse ellipse = new Ellipse(center, majorAxis, minorAxis)
+             {
+-                Rotation = rotation * MathHelper.RadToDeg,
++                Rotation = rotation,
+                 Normal = normal
+             };
+ 
+@@ -7011,30 +7008,7 @@ namespace netDxf.IO
+ 
+         private static void SetEllipseParameters(Ellipse ellipse, double[] param)
+         {
+-            if (MathHelper.IsZero(param[0]) && MathHelper.IsEqual(param[1], MathHelper.TwoPI))
+-            {
+-                ellipse.StartAngle = 0.0;
+-                ellipse.EndAngle = 0.0;
+-            }
+-            else
+-            {
+-                double a = ellipse.MajorAxis * 0.5;
+-                double b = ellipse.MinorAxis * 0.5;
+-
+-                Vector2 startPoint = new Vector2(a * Math.Cos(param[0]), b * Math.Sin(param[0]));
+-                Vector2 endPoint = new Vector2(a * Math.Cos(param[1]), b * Math.Sin(param[1]));
+-
+-                if (Vector2.Equals(startPoint, endPoint))
+-                {
+-                    ellipse.StartAngle = 0.0;
+-                    ellipse.EndAngle = 0.0;
+-                }
+-                else
+-                {
+-                    ellipse.StartAngle = Vector2.Angle(startPoint) * MathHelper.RadToDeg;
+-                    ellipse.EndAngle = Vector2.Angle(endPoint) * MathHelper.RadToDeg;
+-                }
+-            }
++            DxfEllipseParameterCodec.Decode(ellipse, param[0], param[1]);
+         }
+ 
+         private Point ReadPoint()
+diff --git a/netDxf/IO/DxfWriter.cs b/netDxf/IO/DxfWriter.cs
+index 75c3495..9b3ec6c 100644
+--- a/netDxf/IO/DxfWriter.cs
++++ b/netDxf/IO/DxfWriter.cs
+@@ -2428,16 +2428,14 @@ namespace netDxf.IO
+ 
+         private void WriteEllipse(Ellipse ellipse)
+         {
++            Vector3 axisPoint = DxfEllipseParameterCodec.WriteAxis(ellipse);
++            double[] paramaters = GetEllipseParameters(ellipse);
+             this.chunk.Write(100, SubclassMarker.Ellipse);
+ 
+             this.chunk.Write(10, ellipse.Center.X);
+             this.chunk.Write(20, ellipse.Center.Y);
+             this.chunk.Write(30, ellipse.Center.Z);
+ 
+-            Vector2 axis = Vector2.Rotate(new Vector2(0.5*ellipse.MajorAxis, 0.0), ellipse.Rotation * MathHelper.DegToRad);
+-
+-            Vector3 axisPoint = MathHelper.Transform(new Vector3(axis.X, axis.Y, 0.0), ellipse.Normal, CoordinateSystem.Object, CoordinateSystem.World);
+-
+             this.chunk.Write(11, axisPoint.X);
+             this.chunk.Write(21, axisPoint.Y);
+             this.chunk.Write(31, axisPoint.Z);
+@@ -2448,7 +2446,6 @@ namespace netDxf.IO
+ 
+             this.chunk.Write(40, ellipse.MinorAxis/ellipse.MajorAxis);
+ 
+-            double[] paramaters = GetEllipseParameters(ellipse);
+             this.chunk.Write(41, paramaters[0]);
+             this.chunk.Write(42, paramaters[1]);
+ 
+@@ -2457,23 +2454,7 @@ namespace netDxf.IO
+ 
+         private static double[] GetEllipseParameters(Ellipse ellipse)
+         {
+-            double atan1;
+-            double atan2;
+-            if (ellipse.IsFullEllipse)
+-            {
+-                atan1 = 0.0;
+-                atan2 = MathHelper.TwoPI;
+-            }
+-            else
+-            {
+-                Vector2 startPoint = ellipse.PolarCoordinateRelativeToCenter(ellipse.StartAngle);
+-                Vector2 endPoint = ellipse.PolarCoordinateRelativeToCenter(ellipse.EndAngle);
+-                double a = 1 / (0.5 * ellipse.MajorAxis);
+-                double b = 1 / (0.5 * ellipse.MinorAxis);
+-                atan1 = Math.Atan2(startPoint.Y * b, startPoint.X * a);
+-                atan2 = Math.Atan2(endPoint.Y * b, endPoint.X * a);
+-            }
+-            return new[] {atan1, atan2};
++            return DxfEllipseParameterCodec.Encode(ellipse);
+         }
+ 
+         private void WriteSolid(Solid solid)
+diff --git a/tests/netDxf.Conformance/Program.cs b/tests/netDxf.Conformance/Program.cs
+index 7cdab77..dd94c80 100644
+--- a/tests/netDxf.Conformance/Program.cs
++++ b/tests/netDxf.Conformance/Program.cs
+@@ -60,6 +60,7 @@ internal static partial class Program
+         RegisterEllipseSamplingTests();
+         RegisterEllipseAffineSafetyTests();
+         RegisterEllipseParameterEvaluationTests();
++        RegisterEllipseIoParameterTests();
+         RegisterConicSplineTests();
+         RegisterSplineKnotInsertionTests();
+         RegisterSplineSplitTests();
