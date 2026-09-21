@@ -159,6 +159,12 @@ internal static partial class Program
         }
         if (fault == "oblique-thickness") e.Thickness = 1;
         if (fault == "angle") e.StartAngle = double.NaN;
+        if (fault == "oblique-thickness" || fault == "angle")
+        {
+            Check(e.ProxyGraphics == null, "Geometry setup retained stale proxy");
+            // The failed transform must still preserve a deliberately reattached cache.
+            e.ProxyGraphics = new byte[] { 1, 2, 3 };
+        }
         Vector3 translation = fault == "translation" ? new Vector3(double.PositiveInfinity,0,0) : Vector3.Zero;
         var before = (Ellipse)e.Clone(); bool rejected = false;
         try
