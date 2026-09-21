@@ -12,12 +12,12 @@ namespace netDxf.Entities
         private void ApplyReviewedAffine(Matrix3 matrix, Vector3 translation)
         {
             for (int r = 0; r < 3; r++) for (int c = 0; c < 3; c++) EllipseFinite(matrix[r, c]);
-            EllipseFinite(translation); EllipseFinite(this.center); EllipseFinite(this.Normal);
+            EllipseFinite(translation); EllipseFinite(this.center); EllipseFinite(base.Normal);
             EllipseFinite(this.majorAxis); EllipseFinite(this.minorAxis);
             EllipseFinite(this.rotation); EllipseFinite(this.startAngle); EllipseFinite(this.endAngle); EllipseFinite(this.thickness);
             if (this.majorAxis <= 0 || this.minorAxis <= 0 || this.minorAxis > this.majorAxis)
                 throw new InvalidOperationException("The source ellipse must have positive ordered axes.");
-            Vector3 normal = EllipseUnit(this.Normal);
+            Vector3 normal = EllipseUnit(base.Normal);
             Vector3 nextCenter = matrix * this.center + translation;
             EllipseFinite(nextCenter);
             bool identity = true;
@@ -61,7 +61,7 @@ namespace netDxf.Entities
             Matrix3 targetAxes = MathHelper.ArbitraryAxis(nextNormal);
             Vector3 local = targetAxes.Transpose() * majorDirection;
             double rotationRadians = Math.Atan2(local.Y, local.X);
-            double nextRotation = MathHelper.NormalizeAngle(rotationRadians * MathHelper.RadToDeg);
+            double nextRotation = NormalizeEllipseAngle(rotationRadians * MathHelper.RadToDeg);
             // Use exactly the orientation that the public rotation will reconstruct.
             rotationRadians = nextRotation * MathHelper.DegToRad;
             Vector3 targetX = targetAxes * new Vector3(Math.Cos(rotationRadians), Math.Sin(rotationRadians), 0);
@@ -71,7 +71,7 @@ namespace netDxf.Entities
             {
                 nextStart = ImagePolarAngle(this.startAngle, minor / major, a, b, targetX, targetY);
                 nextEnd = ImagePolarAngle(this.endAngle, minor / major, a, b, targetX, targetY);
-                if (MathHelper.IsEqual(nextStart, nextEnd))
+                if (nextStart == nextEnd)
                     throw new NotSupportedException("The transformed elliptical arc endpoints are indistinguishable at this precision.");
             }
             double nextThickness = this.thickness;
@@ -93,15 +93,15 @@ namespace netDxf.Entities
             // No validation or user code remains after publication starts.
             this.center = nextCenter; this.majorAxis = nextMajor; this.minorAxis = nextMinor;
             this.rotation = nextRotation; this.startAngle = nextStart; this.endAngle = nextEnd;
-            this.thickness = nextThickness; this.Normal = nextNormal; this.ClearProxyGraphics();
+            this.thickness = nextThickness; base.Normal = nextNormal; this.ClearProxyGraphics();
         }
 
         private static double ImagePolarAngle(double angle, double ratio, Vector3 a, Vector3 b, Vector3 x, Vector3 y)
         {
-            double radians = MathHelper.NormalizeAngle(angle) * MathHelper.DegToRad;
-            double parameter = Math.Atan2(Math.Sin(radians), ratio * Math.Cos(radians));
-            Vector3 point = Math.Cos(parameter) * a + Math.Sin(parameter) * b;
-            return MathHelper.NormalizeAngle(Math.Atan2(Vector3.DotProduct(point, y), Vector3.DotProduct(point, x)) * MathHelper.RadToDeg);
+            double parameter = ConicParameter.FromPolar(1, ratio, angle);
+            ConicParameter.SinCos(parameter, out double sine, out double cosine);
+            Vector3 point = cosine * a + sine * b;
+            return NormalizeEllipseAngle(Math.Atan2(Vector3.DotProduct(point, y), Vector3.DotProduct(point, x)) * MathHelper.RadToDeg);
         }
 
         private static Vector2 StablePolarPoint(double majorAxis, double minorAxis, double angle)
@@ -109,13 +109,23 @@ namespace netDxf.Entities
             EllipseFinite(angle); EllipseFinite(majorAxis); EllipseFinite(minorAxis);
             double a = majorAxis * 0.5, b = minorAxis * 0.5;
             if (a <= 0 || b <= 0 || b > a) throw new InvalidOperationException("Positive ordered semi-axes are required.");
-            double radians = MathHelper.NormalizeAngle(angle) * MathHelper.DegToRad;
-            double cos = Math.Cos(radians), sin = Math.Sin(radians);
+            double radians = NormalizeEllipseAngle(angle) * MathHelper.DegToRad;
+            ConicParameter.SinCos(radians, out double sin, out double cos);
             if (sin == 0) return new Vector2(cos < 0 ? -a : a, 0);
             double denominator = EllipseLength(new Vector3((b / a) * cos, sin, 0));
             double radius = b / denominator;
             EllipseFinite(radius);
             return new Vector2(radius * cos, radius * sin);
+        }
+
+        // Ellipse sweep state must not depend on the process-wide geometric
+        // comparison epsilon. Nonfinite assignments retain the prior NaN storage
+        // behavior; operations that require finite geometry still validate it.
+        private static double NormalizeEllipseAngle(double angle)
+        {
+            double reduced = angle % 360.0;
+            if (reduced < 0) reduced += 360.0;
+            return reduced == 0 || reduced == 360.0 ? 0.0 : reduced;
         }
 
         private static void EllipseFinite(double value)

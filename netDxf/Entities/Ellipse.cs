@@ -149,7 +149,7 @@ namespace netDxf.Entities
         public double Rotation
         {
             get { return this.rotation; }
-            set { this.rotation = MathHelper.NormalizeAngle(value); }
+            set { this.rotation = NormalizeEllipseAngle(value); }
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace netDxf.Entities
         public double StartAngle
         {
             get { return this.startAngle; }
-            set { this.startAngle = MathHelper.NormalizeAngle(value); }
+            set { this.startAngle = NormalizeEllipseAngle(value); }
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace netDxf.Entities
         public double EndAngle
         {
             get { return this.endAngle; }
-            set { this.endAngle = MathHelper.NormalizeAngle(value); }
+            set { this.endAngle = NormalizeEllipseAngle(value); }
         }
 
         /// <summary>
@@ -184,10 +184,10 @@ namespace netDxf.Entities
         /// <summary>
         /// Checks if the actual instance is a full ellipse.
         /// </summary>
-        /// <remarks>An ellipse is considered full when its start and end angles are equal.</remarks>
+        /// <remarks>Only exactly equal normalized start and end angles denote a full ellipse; MathHelper.Epsilon does not change the sweep.</remarks>
         public bool IsFullEllipse
         {
-            get { return MathHelper.IsEqual(this.startAngle, this.endAngle); }
+            get { return this.startAngle == this.endAngle; }
         }
 
         #endregion
