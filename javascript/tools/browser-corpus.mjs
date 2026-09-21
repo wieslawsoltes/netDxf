@@ -1,3 +1,4 @@
+import {toleranceCorpus} from './tolerance-corpus.mjs';
 import { unitFormatCorpus } from './unit-format-corpus.mjs';
 import { mleaderCorpus } from './mleader-corpus.mjs';
 import { dimensionCorpus } from './dimension-corpus.mjs';
@@ -130,6 +131,17 @@ try {
       expected:{referenceMath:expected.map(value=>sha256(canonical(value)))}});
   }
 }finally {await modelOracle.close();}
+// Append the recovered TOLERANCE inputs after every previous comparison; source
+// assertion failures remain explicit, non-comparable evidence in both browser modes.
+const toleranceOracle=new ModelOracleSession();
+try {
+  for(const probe of toleranceCorpus()) {
+    const observed=await toleranceOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await toleranceOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

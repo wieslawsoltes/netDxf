@@ -78,7 +78,8 @@
     "test:headers": "node tools/header-differential.mjs",
     "test:dimensions": "node tools/dimension-differential.mjs",
     "test:mleaders": "node tools/mleader-differential.mjs",
-    "test:unit-formats": "node tools/unit-format-differential.mjs"
+    "test:unit-formats": "node tools/unit-format-differential.mjs",
+    "test:tolerances": "node tools/tolerance-differential.mjs"
   },
   "repository": {
     "type": "git",
