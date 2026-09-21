@@ -98,9 +98,28 @@ internal static partial class Program
                 byte[] source=EllipseIoSource(DxfVersion.AutoCad2018,false,false,kind);double old=MathHelper.Epsilon;
                 try
                 {
-                    MathHelper.Epsilon=epsilon;using var input=new MemoryStream(source);
-                    var doc=DxfDocument.Load(input)??throw new InvalidOperationException("Epsilon affected load");
-                    Check(!doc.Entities.Ellipses.Single().IsFullEllipse,"Epsilon coalesced short arc");
+                    if (epsilon < 1)
+                    {
+                        MathHelper.Epsilon=epsilon;using var input=new MemoryStream(source);
+                        var doc=DxfDocument.Load(input)??throw new InvalidOperationException("Epsilon affected load");
+                        Check(!doc.Entities.Ellipses.Single().IsFullEllipse,"Epsilon coalesced short arc");
+                    }
+                    else
+                    {
+                        // Whole-document loading at epsilon=100 fails in the unchanged
+                        // DIMSTYLE scale setter before reaching ELLIPSE. Exercise the
+                        // actual ellipse codec at that deliberately extreme epsilon.
+                        var spec=EllipseIoCases[kind];
+                        var e=new Ellipse(Vector3.Zero,2*spec.Axis,2*spec.Axis*spec.Ratio);
+                        MathHelper.Epsilon=epsilon;
+                        object[] axes={new Vector3(0,spec.Axis,0),Vector3.UnitZ,spec.Ratio,0.0,0.0,0.0};
+                        Codec("DxfEllipseParameterCodec","ReadAxes",axes);
+                        SameDoubleBits(90,(double)axes[5],"Epsilon changed ellipse orientation");
+                        Codec("DxfReader","SetEllipseParameters",e,new[]{spec.First,spec.Last});
+                        Check(!e.IsFullEllipse,"Epsilon coalesced short arc");
+                        var parameters=(double[])Codec("DxfWriter","GetEllipseParameters",e)!;
+                        Check(parameters[0]!=parameters[1],"Epsilon collapsed written parameters");
+                    }
                 }
                 finally{MathHelper.Epsilon=old;}
             });
