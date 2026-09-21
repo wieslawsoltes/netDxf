@@ -106,9 +106,9 @@ internal static partial class Program
                     }
                     else
                     {
-                        // Whole-document loading at epsilon=100 fails in the unchanged
-                        // DIMSTYLE scale setter before reaching ELLIPSE. Exercise the
-                        // actual ellipse codec at that deliberately extreme epsilon.
+                        // Historically DIMSTYLE blocked whole-document loading at 100.
+                        // Retain this direct codec coverage; DimLfacFidelityTests also
+                        // exercises complete document loading at that extreme epsilon.
                         var spec=EllipseIoCases[kind];
                         var e=new Ellipse(Vector3.Zero,2*spec.Axis,2*spec.Axis*spec.Ratio);
                         MathHelper.Epsilon=epsilon;

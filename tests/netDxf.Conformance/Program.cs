@@ -106,6 +106,7 @@ internal static partial class Program
         RegisterMixedModuleIntegrationTests();
         RunDimensionStyleParityTests();
         RegisterDimLfacFidelityTests();
+        RegisterDStyleContainerTests();
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();
