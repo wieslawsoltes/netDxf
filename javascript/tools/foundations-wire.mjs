@@ -1,3 +1,4 @@
+import { observableDictionaryCall } from './observable-dictionary-wire.mjs';
 import {ModelBoxing} from './model-boxing.mjs';
 import { BoxedScalar } from '../runtime/BoxedScalar.js';
 // Shared Node/browser operation interpreter; production implementations provide all behavior.
@@ -14,6 +15,7 @@ import { wire } from './model-wire.mjs';
 export function jsGeometry(input) {
   api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;
   const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = input.culture??''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
+  if(input.op==='observable-dictionary')return observableDictionaryCall(input);
   const native = input.nativeManifest;
   const observers=new Map(), observations=[];
   const boxing=new ModelBoxing(values);

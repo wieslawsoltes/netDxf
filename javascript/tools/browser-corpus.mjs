@@ -1,3 +1,5 @@
+import { ObservableDictionaryOracleSession } from './ObservableDictionaryOracleSession.mjs';
+import { observableDictionaryCorpus } from './observable-dictionary-corpus.mjs';
 import {leaderCorpus} from './leader-corpus.mjs';
 import {toleranceCorpus} from './tolerance-corpus.mjs';
 import { unitFormatCorpus } from './unit-format-corpus.mjs';
@@ -153,6 +155,17 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await leaderOracle.close();}
+// Append observable dictionary observations; constructor rejection is a real result,
+// whereas process failure is retained as unavailable native evidence, never waived.
+const dictionaryOracle=new ObservableDictionaryOracleSession();
+try {
+  for(const probe of observableDictionaryCorpus()) {
+    const observed=await dictionaryOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await dictionaryOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

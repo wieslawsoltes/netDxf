@@ -80,7 +80,8 @@
     "test:mleaders": "node tools/mleader-differential.mjs",
     "test:unit-formats": "node tools/unit-format-differential.mjs",
     "test:tolerances": "node tools/tolerance-differential.mjs",
-    "test:leaders": "node tools/leader-differential.mjs"
+    "test:leaders": "node tools/leader-differential.mjs",
+    "test:observable-dictionaries": "node tools/observable-dictionary-differential.mjs"
   },
   "repository": {
     "type": "git",

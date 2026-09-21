@@ -31,6 +31,7 @@ internal static partial class Program
             framework=RuntimeInformation.FrameworkDescription,os=RuntimeInformation.OSDescription,architecture=RuntimeInformation.ProcessArchitecture.ToString(),runtime=Environment.Version.ToString()
         };
         if(input.TryGetProperty("op",out var benchmarkOp)&&benchmarkOp.GetString()=="benchmark")return Benchmark();
+        if(input.TryGetProperty("op",out var dictionaryOp)&&dictionaryOp.GetString()=="observable-dictionary")return ObservableDictionaryRequest(input);
         var results=new List<object>();
         foreach(var step in input.GetProperty("steps").EnumerateArray()) {
             try { results.Add(new {ok=true,value=Step(step)}); }
