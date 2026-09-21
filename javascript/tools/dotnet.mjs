@@ -77,11 +77,11 @@ export function build(mode = 'oracle') {
   } else if (mode === 'native-port') {
     const roslyn = path.dirname(tool.compiler);
     const names = ['Microsoft.CodeAnalysis', 'Microsoft.CodeAnalysis.CSharp'];
-    compile(tool, 'NativePort', [path.join(javascriptRoot, 'tools/NativePort/Program.cs')], true,
+    compile(tool, 'NativePort', walk(path.join(javascriptRoot, 'tools/NativePort')).filter(file => file.endsWith('.cs')), true,
       ['-nullable:enable', ...names.map(n => '-r:' + path.join(roslyn, n + '.dll'))]);
     for (const name of names) fs.copyFileSync(path.join(roslyn,name+'.dll'), path.join(oracleRoot, name + '.dll'));
     console.log(run(command, [path.join(oracleRoot, 'NativePort.dll'), sourceRoot, javascriptRoot, tool.refs,
-      ...(process.argv.includes('--check') ? ['--check'] : [])]).trim());
+      ...(process.argv.includes('--check') ? ['--check'] : []), ...(process.argv.includes('--dimensions') ? ['--dimensions'] : [])]).trim());
   } else if (mode === 'conformance') {
     const globalUsings = path.join(oracleRoot,'GlobalUsings.cs');
     fs.writeFileSync(globalUsings,['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks'].map(n=>`global using ${n};`).join('\n'));
@@ -96,7 +96,7 @@ export function build(mode = 'oracle') {
     compile(tool,'GeometryOracle',walk(path.join(javascriptRoot,'tools/GeometryOracle')).filter(f=>f.endsWith('.cs')),true,[library,'-nullable:enable']);
   } else if (mode === 'oracle') {
     compile(tool,'Oracle',walk(path.join(javascriptRoot,'tools','Oracle')).filter(f=>f.endsWith('.cs')),true,[library,'-nullable:enable']);
-  } else throw new Error('Usage: node tools/dotnet.mjs oracle|inventory [--generate]|conformance|native-port [--check]');
+  } else throw new Error('Usage: node tools/dotnet.mjs oracle|inventory [--generate]|conformance|native-port [--dimensions] [--check]');
   fs.writeFileSync(path.join(oracleRoot,'toolchain.json'),JSON.stringify({configuration,sdk:tool.sdkVersion,referencePack:tool.refVersion,runtime:baseline.toolchain.runtime,sourceRoot,framework:'.NET 8',build:'SDK Roslyn csc; no NuGet restore'},null,2)+'\n');
 }
 export const dotnetCommand = command;
