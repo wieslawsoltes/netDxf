@@ -1,3 +1,4 @@
+# Retry after restoring the reviewed verifier header; the required final tree is unchanged.
 name: Publish reviewed DIMLFAC source
 on:
   push:

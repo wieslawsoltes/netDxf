@@ -1,4 +1,5 @@
-"""DIMLFAC real-value packets, independent loads, and complete inventory."""
+#!/usr/bin/env python3
+"""Verify exact DIMLFAC packets, typed independent reads, and complete inventory."""
 import itertools
 import math
 from pathlib import Path
