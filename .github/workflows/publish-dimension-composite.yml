@@ -1,0 +1,25 @@
+name: Publish reviewed dimension composite override fix
+on:
+  push:
+    branches: [codex/dxf-dimension-composite-overrides-20260922]
+    paths: [.github/workflows/publish-dimension-composite.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed source and remove publishing files
+        shell: bash
+        run: |
+          echo '3acdcc36ecf319a69211d7c0930c29f8236b3ea89b993ae3d4936c06cb0ab599  tools/_publish_dimension_composite.py' | sha256sum --check
+          python3 tools/_publish_dimension_composite.py
+          git add netDxf tests/netDxf.Conformance tools doc/dxf-conformance .github/workflows
+          test "$(git write-tree)" = '0fb540050aed1612804f35c97d80d247047da62b'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve inherited components of composite dimension overrides'
+          git push origin HEAD:refs/heads/codex/dxf-dimension-composite-overrides-20260922
