@@ -3454,39 +3454,40 @@ namespace netDxf.IO
             string prefix = style.DimPrefix;
             string suffix = style.DimSuffix;
             bool writeDIMSAH = false;
+            // Composite fields start from the base style; sparse overrides replace only their component.
             bool writeDIMZIN = false;
             bool writeDIMAZIN = false;
-            bool suppressLinearLeadingZeros = false;
-            bool suppressLinearTrailingZeros = false;
-            bool suppressAngularLeadingZeros = false;
-            bool suppressAngularTrailingZeros = false;
-            bool suppressZeroFeet = true;
-            bool suppressZeroInches = true;
+            bool suppressLinearLeadingZeros = style.SuppressLinearLeadingZeros;
+            bool suppressLinearTrailingZeros = style.SuppressLinearTrailingZeros;
+            bool suppressAngularLeadingZeros = style.SuppressAngularLeadingZeros;
+            bool suppressAngularTrailingZeros = style.SuppressAngularTrailingZeros;
+            bool suppressZeroFeet = style.SuppressZeroFeet;
+            bool suppressZeroInches = style.SuppressZeroInches;
 
             bool writeDIMALTU = false;
-            LinearUnitType altLinearUnitType = LinearUnitType.Decimal;
-            bool altStackedUnits = false;
+            LinearUnitType altLinearUnitType = style.AlternateUnits.LengthUnits;
+            bool altStackedUnits = style.AlternateUnits.StackUnits;
             bool writeDIMAPOST = false;
             // DIMAPOST follows the same combined-value rule independently of DIMPOST.
             string altPrefix = style.AlternateUnits.Prefix;
             string altSuffix = style.AlternateUnits.Suffix;
             bool writeDIMALTZ = false;
-            bool altSuppressLinearLeadingZeros = false;
-            bool altSuppressLinearTrailingZeros = false;
-            bool altSuppressZeroFeet = true;
-            bool altSuppressZeroInches = true;
+            bool altSuppressLinearLeadingZeros = style.AlternateUnits.SuppressLinearLeadingZeros;
+            bool altSuppressLinearTrailingZeros = style.AlternateUnits.SuppressLinearTrailingZeros;
+            bool altSuppressZeroFeet = style.AlternateUnits.SuppressZeroFeet;
+            bool altSuppressZeroInches = style.AlternateUnits.SuppressZeroInches;
 
             bool writeDIMTZIN = false;
-            bool tolSuppressLinearLeadingZeros = false;
-            bool tolSuppressLinearTrailingZeros = false;
-            bool tolSuppressZeroFeet = true;
-            bool tolSuppressZeroInches = true;
+            bool tolSuppressLinearLeadingZeros = style.Tolerances.SuppressLinearLeadingZeros;
+            bool tolSuppressLinearTrailingZeros = style.Tolerances.SuppressLinearTrailingZeros;
+            bool tolSuppressZeroFeet = style.Tolerances.SuppressZeroFeet;
+            bool tolSuppressZeroInches = style.Tolerances.SuppressZeroInches;
 
             bool writeDIMALTTZ = false;
-            bool tolAltSuppressLinearLeadingZeros = false;
-            bool tolAltSuppressLinearTrailingZeros = false;
-            bool tolAltSuppressZeroFeet = true;
-            bool tolAltSuppressZeroInches = true;
+            bool tolAltSuppressLinearLeadingZeros = style.Tolerances.AlternateSuppressLinearLeadingZeros;
+            bool tolAltSuppressLinearTrailingZeros = style.Tolerances.AlternateSuppressLinearTrailingZeros;
+            bool tolAltSuppressZeroFeet = style.Tolerances.AlternateSuppressZeroFeet;
+            bool tolAltSuppressZeroInches = style.Tolerances.AlternateSuppressZeroInches;
 
             XData xdataEntry;
             if (xdata.ContainsAppId(ApplicationRegistry.DefaultName))
@@ -3754,6 +3755,7 @@ namespace netDxf.IO
                         altLinearUnitType = (LinearUnitType) styleOverride.Value;
                         break;
                     case DimensionStyleOverrideType.AltUnitsStackedUnits:
+                        writeDIMALTU = true;
                         altStackedUnits = (bool) styleOverride.Value;
                         break;
                     case DimensionStyleOverrideType.AltUnitsLengthPrecision:
