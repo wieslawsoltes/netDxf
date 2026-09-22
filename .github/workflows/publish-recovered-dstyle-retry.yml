@@ -1,0 +1,48 @@
+name: Complete recovered DSTYLE publication
+on:
+  push:
+    branches: [codex/dxf-dstyle-xdata-preservation-20260922]
+    paths: [.github/workflows/publish-recovered-dstyle-retry.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - name: Verify and publish the original recovered source
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, re, subprocess, zlib
+          if subprocess.check_output(['git','rev-parse','HEAD~2^{tree}'],text=True).strip() != 'd355b91a8415be58f46d516b893a230786269cbb':
+              raise RuntimeError('Qualified baseline moved.')
+          text = Path('.github/workflows/publish-recovered-dstyle.yml').read_text()
+          payload = re.search("payload = '''(.*?)'''", text, re.S).group(1)
+          payload = payload.replace('NJHYDidxA4jaHcA0k', 'NJHYDidxA4jaQqA0k').replace('CQNze0PDc3r3KE1v', 'CQNze0PDc3KE1v')
+          patch = zlib.decompress(base64.b64decode(payload))
+          if hashlib.sha256(patch).hexdigest() != '4e6bbfaf2e2002a03efb3ffa4d9dbe43ff3cc6cdd55b118bc2b2f658d7c25ab4':
+              raise RuntimeError('Recovered patch checksum mismatch.')
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','--index','-'],input=patch,check=True)
+          subprocess.run(['git','rm','--','.github/workflows/publish-recovered-dstyle.yml','.github/workflows/publish-recovered-dstyle-retry.yml'],check=True)
+          actual = subprocess.check_output(['git','write-tree'],text=True).strip()
+          if actual != 'e60290ce27ed416c93ee9b2e47dfa2039a5e65b1':
+              raise RuntimeError('Recovered source tree mismatch: '+actual)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Publish all recovered DSTYLE XData preservation changes and tests' -m 'Recovers local implementation e5495f2955b2366da0c1acf5af9d60d03290ade5 and final documentation 2e63ee3800a3b445ee818ca02d0e284eb5769a1c as exact tree e60290ce27ed416c93ee9b2e47dfa2039a5e65b1. No implementation or verification assertion changes.'
+          git push origin HEAD:refs/heads/codex/dxf-dstyle-xdata-preservation-20260922
+      - name: Retain publication inputs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-publication-input
+          path: .github/workflows/publish-recovered-dstyle.yml
+          retention-days: 2
