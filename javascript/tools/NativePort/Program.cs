@@ -75,7 +75,11 @@ internal static class Program
                 members=emitter.MemberMappings,outputSha256=Hash(Encoding.UTF8.GetBytes(text))});
         }
         var manifest=new {schemaVersion=1,sourceRef="3496ab91893a1e4ec9261b4833479f1799149cdc",generator="tools/NativePort/Program.cs",files=inventory};
-        outputs.Add((DimensionMode?"dimension-port-manifest.json":"native-port-manifest.json",JsonSerializer.Serialize(manifest,new JsonSerializerOptions{WriteIndented=true})+"\n"));
+        // .NET 8 indented JSON uses Environment.NewLine. Generated metadata must
+        // be identical across hosts; JSON string control characters are escaped,
+        // so this changes formatting whitespace only, never values or source hashes.
+        string manifestText=JsonSerializer.Serialize(manifest,new JsonSerializerOptions{WriteIndented=true}).Replace("\r\n","\n")+"\n";
+        outputs.Add((DimensionMode?"dimension-port-manifest.json":"native-port-manifest.json",manifestText));
         // Commit output only after every selected method successfully lowers.
         foreach(var (file,text) in outputs)
         {
