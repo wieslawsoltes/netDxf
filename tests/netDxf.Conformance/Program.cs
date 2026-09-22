@@ -113,6 +113,7 @@ internal static partial class Program
         RegisterDimensionAffixFidelityTests();
         RegisterDimensionCompositeOverrideTests();
         RegisterAlternateUnitModeTests();
+        RegisterDimensionXDataPreservationTests();
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();

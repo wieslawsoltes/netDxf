@@ -2182,30 +2182,12 @@ namespace netDxf.IO
             this.chunk.Write(21, xAxis.Y);
             this.chunk.Write(31, xAxis.Z);
 
-            this.AddToleranceTextHeightXData(tolerance.XData, tolerance.TextHeight);
-
-            this.WriteXData(tolerance.XData);
-        }
-
-        private void AddToleranceTextHeightXData(XDataDictionary xdata, double textHeight)
-        {
-            XData xdataEntry;
-            if (xdata.ContainsAppId(ApplicationRegistry.DefaultName))
+            this.WriteDimensionStyleXData(tolerance.XData, new[]
             {
-                xdataEntry = xdata[ApplicationRegistry.DefaultName];
-                xdataEntry.XDataRecord.Clear();
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry(ApplicationRegistry.DefaultName));
-                xdata.Add(xdataEntry);
-            }
-
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.String, "DSTYLE"));
-            xdataEntry.XDataRecord.Add(XDataRecord.OpenControlString);
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 140));
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Real, textHeight));
-            xdataEntry.XDataRecord.Add(XDataRecord.CloseControlString);
+                new XDataRecord(XDataCode.String, "DSTYLE"), XDataRecord.OpenControlString,
+                new XDataRecord(XDataCode.Int16, (short)140), new XDataRecord(XDataCode.Real, tolerance.TextHeight),
+                XDataRecord.CloseControlString
+            }, true);
         }
 
         private void WriteLeader(Leader leader)
@@ -2289,13 +2271,8 @@ namespace netDxf.IO
             this.chunk.Write(223, wcsOffset.Y);
             this.chunk.Write(233, wcsOffset.Z);
 
-            // dimension style overrides info
-            if (leader.StyleOverrides.Count > 0)
-            {
-                this.AddDimensionStyleOverridesXData(leader.XData, leader.StyleOverrides, leader.Style);
-            }
-
-            this.WriteXData(leader.XData);
+            this.WriteDimensionStyleXData(leader.XData,
+                this.CreateDimensionStyleOverridesXData(leader.StyleOverrides, leader.Style));
         }
 
         private void WriteMesh(Mesh mesh)
@@ -3417,12 +3394,6 @@ namespace netDxf.IO
 
             this.chunk.Write(3, this.EncodeNonAsciiCharacters(dim.Style.Name));
 
-            // add dimension style overrides info
-            if (dim.StyleOverrides.Count > 0)
-            {
-                this.AddDimensionStyleOverridesXData(dim.XData, dim.StyleOverrides, dim.Style);
-            }
-
             switch (dim.DimensionType)
             {
                 case DimensionType.Aligned:
@@ -3452,7 +3423,7 @@ namespace netDxf.IO
             }
         }
 
-        private void AddDimensionStyleOverridesXData(XDataDictionary xdata, DimensionStyleOverrideDictionary overrides, DimensionStyle style)
+        private IList<XDataRecord> CreateDimensionStyleOverridesXData( DimensionStyleOverrideDictionary overrides, DimensionStyle style)
         {
             bool writeDIMPOST = false;
             // DIMPOST is one combined value. Preserve the inherited component when
@@ -3495,17 +3466,8 @@ namespace netDxf.IO
             bool tolAltSuppressZeroFeet = style.Tolerances.AlternateSuppressZeroFeet;
             bool tolAltSuppressZeroInches = style.Tolerances.AlternateSuppressZeroInches;
 
-            XData xdataEntry;
-            if (xdata.ContainsAppId(ApplicationRegistry.DefaultName))
-            {
-                xdataEntry = xdata[ApplicationRegistry.DefaultName];
-                xdataEntry.XDataRecord.Clear();
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry(ApplicationRegistry.DefaultName));
-                xdata.Add(xdataEntry);
-            }
+            // This entry is a detached serialization buffer, never attached to the entity.
+            var xdataEntry = new XData(new ApplicationRegistry(ApplicationRegistry.DefaultName));
 
             xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.String, "DSTYLE"));
             xdataEntry.XDataRecord.Add(XDataRecord.OpenControlString);
@@ -3981,6 +3943,7 @@ namespace netDxf.IO
             }
 
             xdataEntry.XDataRecord.Add(XDataRecord.CloseControlString);
+            return xdataEntry.XDataRecord;
         }
 
         private void WriteAlignedDimension(AlignedDimension dim)
@@ -3997,7 +3960,8 @@ namespace netDxf.IO
             this.chunk.Write(24, wcsPoints[1].Y);
             this.chunk.Write(34, wcsPoints[1].Z);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteLinearDimension(LinearDimension dim)
@@ -4021,7 +3985,8 @@ namespace netDxf.IO
 
             this.chunk.Write(100, SubclassMarker.LinearDimension);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteRadialDimension(RadialDimension dim)
@@ -4036,7 +4001,8 @@ namespace netDxf.IO
 
             this.chunk.Write(40, 0.0);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteDiametricDimension(DiametricDimension dim)
@@ -4051,7 +4017,8 @@ namespace netDxf.IO
 
             this.chunk.Write(40, 0.0);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteAngular3PointDimension(Angular3PointDimension dim)
@@ -4074,7 +4041,8 @@ namespace netDxf.IO
 
             //this.chunk.Write(40, 0.0);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteAngular2LineDimension(Angular2LineDimension dim)
@@ -4101,7 +4069,8 @@ namespace netDxf.IO
 
             //this.chunk.Write(40, 0.0);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteOrdinateDimension(OrdinateDimension dim)
@@ -4118,7 +4087,8 @@ namespace netDxf.IO
             this.chunk.Write(24, wcsPoints[1].Y);
             this.chunk.Write(34, wcsPoints[1].Z);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteArcLengthDimension(ArcLengthDimension dim)
@@ -4143,7 +4113,8 @@ namespace netDxf.IO
 
             //this.chunk.Write(40, 0.0);
 
-            this.WriteXData(dim.XData);
+            this.WriteDimensionStyleXData(dim.XData,
+                this.CreateDimensionStyleOverridesXData(dim.StyleOverrides, dim.Style));
         }
 
         private void WriteImage(Image image)
@@ -5430,6 +5401,27 @@ namespace netDxf.IO
             //    text,
             //    @"(?<char>[^\u0000-\u00ff]{1})",
             //    m => "\\U+" + string.Format("{0:X4}", Convert.ToInt32(m.Groups["char"].Value[0])));
+        }
+
+        private void WriteDimensionStyleXData(XDataDictionary xdata, IList<XDataRecord> generated, bool toleranceOnly = false)
+        {
+            // Serialize a replacement view; never change the caller's XData or fire its events.
+            bool written = false;
+            foreach (string app in xdata.AppIds)
+            {
+                if (string.Equals(app, ApplicationRegistry.DefaultName, StringComparison.OrdinalIgnoreCase))
+                {
+                    IList<XDataRecord> merged = DimensionStyleXData.WithOverrides(xdata[app].XDataRecord, generated, toleranceOnly);
+                    if (merged.Count != 0) this.WriteXDataRecords(app, merged);
+                    written = true;
+                }
+                else this.WriteXDataRecords(app, xdata[app].XDataRecord);
+            }
+            if (!written)
+            {
+                IList<XDataRecord> merged = DimensionStyleXData.WithOverrides(null, generated, toleranceOnly);
+                if (merged.Count != 0) this.WriteXDataRecords(ApplicationRegistry.DefaultName, merged);
+            }
         }
 
         private void WriteXData(XDataDictionary xData)
