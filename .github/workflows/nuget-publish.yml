@@ -1,0 +1,53 @@
+name: Publish verified NuGet assets
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nuget-${{ github.event.release.tag_name || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    # Opt in explicitly; no package is published by installing these workflows.
+    if: vars.NUGET_PUBLISH_ENABLED == 'true'
+    environment: nuget
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Require an existing release tag on netstandard history
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.event.release.tag_name || github.ref_name }}
+          EXPECTED_SHA: ${{ github.sha }}
+          DRY_RUN: 'false'
+        run: python tools/ci/pipeline.py release-plan
+      - name: Download the published release assets, without rebuilding
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || github.ref_name }}
+        run: |
+          test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = false
+          gh release download "$TAG" --dir artifacts/packages
+      - name: Check exact source, qualification, package targets, symbols and checksums
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+        run: python tools/ci/pipeline.py verify-release
+      - name: Publish the verified package and symbols (duplicates remain errors)
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          test -n "$NUGET_API_KEY" || { echo 'Configure NUGET_API_KEY in the protected nuget environment.'; exit 1; }
+          dotnet nuget push artifacts/packages/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json

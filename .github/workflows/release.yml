@@ -1,0 +1,106 @@
+name: Release
+on:
+  push:
+    tags: ['v[0-9]*']
+  pull_request:
+    branches: [netstandard]
+    paths: ['.github/workflows/**', 'tools/ci/**', 'tests/ci_pipeline/**', 'tests/netDxf.PackageSmoke/**']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Validate/build/test/pack without creating a release or publishing a package
+        type: boolean
+        default: true
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.plan.outputs.version }}
+      publish: ${{ steps.plan.outputs.publish }}
+      prerelease: ${{ steps.plan.outputs.prerelease }}
+      tag: ${{ steps.plan.outputs.tag }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Validate version, immutable tag target and netstandard ancestry
+        id: plan
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          EXPECTED_SHA: ${{ github.sha }}
+          DRY_RUN: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: python tools/ci/pipeline.py release-plan
+  build:
+    needs: plan
+    uses: ./.github/workflows/ci-build.yml
+    with:
+      version: ${{ needs.plan.outputs.version }}
+  test:
+    needs: plan
+    uses: ./.github/workflows/dxf-conformance.yml
+  qualify:
+    needs: [plan, build, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-packages
+          path: artifacts/packages
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: dxf-conformance-*
+          path: artifacts/release-tests
+      - name: Verify checksums and require complete source-bound test reports
+        run: python tools/ci/pipeline.py qualify
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: qualified-release
+          path: artifacts/packages/
+          if-no-files-found: error
+          retention-days: 30
+  github-release:
+    needs: [plan, qualify]
+    if: needs.plan.outputs.publish == 'true'
+    environment: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: qualified-release
+          path: artifacts/packages
+      - name: Verify downloaded release assets
+        run: python3 tools/ci/pipeline.py verify
+      - name: Create a draft without replacing any existing release or assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.plan.outputs.tag }}
+          VERSION: ${{ needs.plan.outputs.version }}
+          PRERELEASE: ${{ needs.plan.outputs.prerelease }}
+        run: |
+          args=()
+          if [ "$PRERELEASE" = true ]; then args+=(--prerelease); fi
+          gh release create "$TAG" artifacts/packages/* --verify-tag --draft --title "netDxf $VERSION" --notes-file artifacts/packages/RELEASE-NOTES.md "${args[@]}"
