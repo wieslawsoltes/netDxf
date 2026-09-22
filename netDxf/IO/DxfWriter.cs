@@ -864,6 +864,9 @@ namespace netDxf.IO
                 case LinearUnitType.Fractional:
                     this.chunk.Write(70, style.AlternateUnits.StackUnits ? (short) 5 : (short) 7);
                     break;
+                case LinearUnitType.WindowsDesktop:
+                    this.chunk.Write(70, (short) 8);
+                    break;
             }
 
             this.chunk.Write(9, "$DIMALTZ");
@@ -1317,6 +1320,9 @@ namespace netDxf.IO
                     break;
                 case LinearUnitType.Fractional:
                     this.chunk.Write(273, style.AlternateUnits.StackUnits ? (short) 5 : (short) 7);
+                    break;
+                case LinearUnitType.WindowsDesktop:
+                    this.chunk.Write(273, (short) 8);
                     break;
             }       
             this.chunk.Write(274, style.Tolerances.AlternatePrecision);              
@@ -3946,6 +3952,9 @@ namespace netDxf.IO
                     case LinearUnitType.Fractional:
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16,
                             altStackedUnits ? (short) 5 : (short) 7));
+                        break;
+                    case LinearUnitType.WindowsDesktop:
+                        xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 8));
                         break;
                 }
             }

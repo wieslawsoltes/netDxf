@@ -112,6 +112,7 @@ internal static partial class Program
         RegisterDimensionLabelScaleTests();
         RegisterDimensionAffixFidelityTests();
         RegisterDimensionCompositeOverrideTests();
+        RegisterAlternateUnitModeTests();
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();

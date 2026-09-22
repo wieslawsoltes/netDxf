@@ -153,7 +153,9 @@ namespace netDxf.Tables
         /// Decimal<br/>
         /// Engineering<br/>
         /// Architectural<br/>
-        /// Fractional
+        /// Fractional<br/>
+        /// WindowsDesktop (DIMALTU code 8; primary DIMLUNIT uses code 6).<br/>
+        /// StackUnits is inactive for WindowsDesktop and is read back as false.
         /// </remarks>
         public LinearUnitType LengthUnits
         {

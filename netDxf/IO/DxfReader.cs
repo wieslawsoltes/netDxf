@@ -1976,6 +1976,10 @@ namespace netDxf.IO
                                 dimensionStyleAlternateUnits.LengthUnits = LinearUnitType.Fractional;
                                 dimensionStyleAlternateUnits.StackUnits = false;
                                 break;
+                            case 8:
+                                dimensionStyleAlternateUnits.LengthUnits = LinearUnitType.WindowsDesktop;
+                                dimensionStyleAlternateUnits.StackUnits = false;
+                                break;
                             default:
                                 dimensionStyleAlternateUnits.LengthUnits = LinearUnitType.Scientific;
                                 dimensionStyleAlternateUnits.StackUnits = false;
@@ -6255,6 +6259,10 @@ namespace netDxf.IO
                     break;
                 case 7:
                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsLengthUnits, LinearUnitType.Fractional));
+                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsStackedUnits, false));
+                    break;
+                case 8:
+                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsLengthUnits, LinearUnitType.WindowsDesktop));
                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsStackedUnits, false));
                     break;
             }
