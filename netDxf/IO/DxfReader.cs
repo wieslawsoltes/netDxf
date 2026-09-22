@@ -6116,14 +6116,22 @@ namespace netDxf.IO
             {
                 if (!string.IsNullOrEmpty(handleDimblk1))
                 {
-                    if (this.doc.GetObjectByHandle(handleDimblk1) is BlockRecord dimblk1)
+                    if (long.TryParse(handleDimblk1, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long nullArrow1) && nullArrow1 == 0)
+                    {
+                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow1, null));
+                    }
+                    else if (this.doc.GetObjectByHandle(handleDimblk1) is BlockRecord dimblk1)
                     {
                         overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow1, this.doc.Blocks[dimblk1.Name]));
                     }
                 }
                 if (!string.IsNullOrEmpty(handleDimblk2))
                 {
-                    if (this.doc.GetObjectByHandle(handleDimblk2) is BlockRecord dimblk2)
+                    if (long.TryParse(handleDimblk2, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long nullArrow2) && nullArrow2 == 0)
+                    {
+                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow2, null));
+                    }
+                    else if (this.doc.GetObjectByHandle(handleDimblk2) is BlockRecord dimblk2)
                     {
                         overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow2, this.doc.Blocks[dimblk2.Name]));
                     }
@@ -6135,7 +6143,12 @@ namespace netDxf.IO
                 // therefore the DIMBLK1 and DIMBLK2 variables will be used 
                 if (!string.IsNullOrEmpty(handleDimblk))
                 {
-                    if (this.doc.GetObjectByHandle(handleDimblk) is BlockRecord dimblk)
+                    if (long.TryParse(handleDimblk, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long nullArrow) && nullArrow == 0)
+                    {
+                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow1, null));
+                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow2, null));
+                    }
+                    else if (this.doc.GetObjectByHandle(handleDimblk) is BlockRecord dimblk)
                     {
                         overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow1, this.doc.Blocks[dimblk.Name]));
                         overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimArrow2, this.doc.Blocks[dimblk.Name]));
