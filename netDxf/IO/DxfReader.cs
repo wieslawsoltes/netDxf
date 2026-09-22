@@ -4248,7 +4248,7 @@ namespace netDxf.IO
         private double ReadToleranceTextHeightXData(XData xData)
         {
             double textHeight = -1;
-            using (IEnumerator<XDataRecord> records = xData.XDataRecord.GetEnumerator())
+            using (IEnumerator<XDataRecord> records = DimensionStyleXData.ForReading(xData.XDataRecord, true).GetEnumerator())
             {
                 while (records.MoveNext())
                 {
@@ -4275,7 +4275,7 @@ namespace netDxf.IO
                         }
 
                         // all style overrides are enclosed between XDataCode.ControlString "{" and "}"
-                        if (data.Code != XDataCode.ControlString && (string) data.Value != "{")
+                        if (data.Code != XDataCode.ControlString || (string) data.Value != "{")
                         {
                             return textHeight; // premature end
                         }
@@ -5526,7 +5526,7 @@ namespace netDxf.IO
             string handleDimblk1 = string.Empty;
             string handleDimblk2 = string.Empty;
 
-            using (IEnumerator<XDataRecord> records = xDataOverrides.XDataRecord.GetEnumerator())
+            using (IEnumerator<XDataRecord> records = DimensionStyleXData.ForReading(xDataOverrides.XDataRecord).GetEnumerator())
             {
                 while (records.MoveNext())
                 {
@@ -5545,7 +5545,7 @@ namespace netDxf.IO
                         }
 
                         // all style overrides are enclosed between XDataCode.ControlString "{" and "}"
-                        if (data.Code != XDataCode.ControlString && (string) data.Value != "{")
+                        if (data.Code != XDataCode.ControlString || (string) data.Value != "{")
                         {
                             return overrides; // premature end
                         }
