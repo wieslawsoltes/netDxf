@@ -61,3 +61,5 @@ export * from './runtime/DimensionExports.js';
 export { DxfObjectReferences } from './netDxf/Collections/DxfObjectReferences.js';
 
 export { StringEnum, StringValueAttribute, StringComparison } from './netDxf/StringEnum.js';
+
+export * from './runtime/DocumentExports.js';
