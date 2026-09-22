@@ -1431,6 +1431,7 @@ namespace netDxf.IO
             // internal blocks do not need more information
             if (blockRecord.IsForInternalUseOnly)
             {
+                this.WriteXData(blockRecord.XData);
                 return;
             }
 
@@ -1439,31 +1440,7 @@ namespace netDxf.IO
             this.chunk.Write(280, blockRecord.AllowExploding ? (short) 1 : (short) 0);
             this.chunk.Write(281, blockRecord.ScaleUniformly ? (short) 1 : (short) 0);
 
-            AddBlockRecordUnitsXData(blockRecord);
-
-            this.WriteXData(blockRecord.XData);
-        }
-
-        private static void AddBlockRecordUnitsXData(BlockRecord record)
-        {
-            // for DXF versions prior to AutoCad2007 the block record units is stored in an extended data block
-            XData xdataEntry;
-            if (record.XData.ContainsAppId(ApplicationRegistry.DefaultName))
-            {
-                xdataEntry = record.XData[ApplicationRegistry.DefaultName];
-                xdataEntry.XDataRecord.Clear();
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry(ApplicationRegistry.DefaultName));
-                record.XData.Add(xdataEntry);
-            }
-
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.String, "DesignCenter Data"));
-            xdataEntry.XDataRecord.Add(XDataRecord.OpenControlString);
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 1));
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) record.Units));
-            xdataEntry.XDataRecord.Add(XDataRecord.CloseControlString);
+            this.WriteBlockRecordXData(blockRecord);
         }
 
         /// <summary>
@@ -1597,60 +1574,7 @@ namespace netDxf.IO
             this.chunk.Write(390, "0");
 
             // description is stored in XData
-            if (!string.IsNullOrEmpty(layer.Description))
-            {
-                AddLayerDescriptionXData(layer);
-            }
-
-            // transparency is stored in XData
-            if (layer.Transparency.Value >= 0 && (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 || (layer.Transparency.HasValueEdit || layer.HasTransparencyAssignment) && layer.XData.ContainsAppId("AcCmTransparency")))
-            {
-                AddLayerTransparencyXData(layer);
-            }
-
-            this.WriteXData(layer.XData);
-        }
-
-        private static void AddLayerDescriptionXData(Layer layer)
-        {
-            XData xdataEntry;
-            if (layer.XData.ContainsAppId("AcAecLayerStandard"))
-            {
-                xdataEntry = layer.XData["AcAecLayerStandard"];
-                xdataEntry.XDataRecord.Clear();
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry("AcAecLayerStandard"));
-                layer.XData.Add(xdataEntry);
-            }
-
-            // the first entry seems to be always empty, its use is unknown
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.String, string.Empty));
-            // the second entry holds the layer description
-            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.String, layer.Description));
-        }
-
-        private static void AddLayerTransparencyXData(Layer layer)
-        {
-            XData xdataEntry;
-            if (layer.XData.ContainsAppId("AcCmTransparency"))
-            {
-                xdataEntry = layer.XData["AcCmTransparency"];
-            }
-            else
-            {
-                xdataEntry = new XData(new ApplicationRegistry("AcCmTransparency"));
-                layer.XData.Add(xdataEntry);
-            }
-
-            int alpha = Transparency.ToAlphaValue(layer.Transparency);
-            // The reader projects the last Int32 slot. Keep every other stored tag,
-            // including private ancillary data and earlier slots, in its original order.
-            int slot = xdataEntry.XDataRecord.FindLastIndex(record => record.Code == XDataCode.Int32);
-            var value = new XDataRecord(XDataCode.Int32, alpha);
-            if (slot < 0) xdataEntry.XDataRecord.Add(value);
-            else xdataEntry.XDataRecord[slot] = value;
+            this.WriteLayerXData(layer);
         }
 
         /// <summary>

@@ -1451,6 +1451,7 @@ namespace netDxf.IO
 
             string name = string.Empty;
             DrawingUnits units = DrawingUnits.Unitless;
+            bool hasNativeUnits = false;
             bool allowExploding = true;
             bool scaleUniformly = false;
             List<XData> xData = new List<XData>();
@@ -1468,6 +1469,7 @@ namespace netDxf.IO
                         break;
                     case 70:
                         units = (DrawingUnits) this.chunk.ReadShort();
+                        hasNativeUnits = true;
                         this.chunk.Next();
                         break;
                     case 280:
@@ -1511,74 +1513,16 @@ namespace netDxf.IO
 
             if (xData.Count > 0) this.tableEntryXData.Add(record, xData);
 
-            // here is where DXF versions prior to AutoCad2007 stores the block units
-            // read the layer transparency from the extended data
-            if (record.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData designCenterData))
+            // XData is attached later. Read the parsed source, not the empty record dictionary.
+            // An explicit native field is authoritative; legacy units fill only an absent field.
+            if (!hasNativeUnits)
             {
-                using (IEnumerator<XDataRecord> records = designCenterData.XDataRecord.GetEnumerator())
+                XData designCenterData = xData.Find(data => string.Equals(data.ApplicationRegistry.Name,
+                    ApplicationRegistry.DefaultName, StringComparison.OrdinalIgnoreCase));
+                if (designCenterData != null)
                 {
-                    while (records.MoveNext())
-                    {
-                        XDataRecord data = records.Current;
-                        if (data == null)
-                        {
-                            break; // premature end
-                        }
-
-                        // the record units are stored under the string "DesignCenter Data"
-                        if (data.Code == XDataCode.String && string.Equals((string)data.Value, "DesignCenter Data", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            if (records.MoveNext())
-                            {
-                                data = records.Current;
-                            }
-                            else
-                            {
-                                break; // premature end
-                            }
-
-                            // all style overrides are enclosed between XDataCode.ControlString "{" and "}"
-                            if (data == null) break; // premature end
-                            if (data.Code != XDataCode.ControlString)
-                            {
-                                break; // premature end
-                            }
-
-                            if (records.MoveNext())
-                            {
-                                data = records.Current;
-                            }
-                            else
-                            {
-                                break; // premature end
-                            }
-
-                            if (data == null) continue;
-                            while (data.Code != XDataCode.ControlString)
-                            {
-                                if (records.MoveNext())
-                                {
-                                    data = records.Current;
-                                }
-                                else
-                                {
-                                    break; // premature end
-                                }
-
-                                // the second 1070 code is the one that stores the block units,
-                                // it will override the first 1070 that stores the Autodesk Design Center version number
-                                if (data == null)
-                                {
-                                    break;  // premature end
-                                }
-
-                                if (data.Code == XDataCode.Int16)
-                                {
-                                    record.Units = (DrawingUnits)(short)data.Value;
-                                }
-                            }
-                        }
-                    }
+                    short? legacyUnits = BlockRecordXData.ReadUnits(designCenterData.XDataRecord);
+                    if (legacyUnits.HasValue) record.Units = (DrawingUnits)legacyUnits.Value;
                 }
             }
 

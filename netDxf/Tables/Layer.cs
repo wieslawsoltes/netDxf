@@ -56,6 +56,7 @@ namespace netDxf.Tables
         #region private fields
 
         private string description;
+        internal bool HasDescriptionAssignment { get; private set; }
         private AciColor color;
         private bool isVisible;
         private bool isFrozen;
@@ -65,6 +66,7 @@ namespace netDxf.Tables
         private Lineweight lineweight;
         private Transparency transparency;
         internal bool HasTransparencyAssignment { get; private set; }
+        internal bool HasTransparencyReset { get; private set; }
 
         #endregion
 
@@ -128,7 +130,11 @@ namespace netDxf.Tables
         public string Description
         {
             get { return this.description; }
-            set { this.description = string.IsNullOrEmpty(value) ? string.Empty : value; }
+            set
+            {
+                this.description = string.IsNullOrEmpty(value) ? string.Empty : value;
+                this.HasDescriptionAssignment = true;
+            }
         }
 
         /// <summary>
@@ -229,7 +235,11 @@ namespace netDxf.Tables
             get { return this.transparency; }
             set
             {
-                this.transparency = value ?? throw new ArgumentNullException(nameof(value));
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                // An explicit reset must not depend on a previous Save attaching XData.
+                this.HasTransparencyReset |= this.transparency.StoredAlphaValue.HasValue ||
+                    this.transparency.Value != 0 || this.transparency.HasValueEdit;
+                this.transparency = value;
                 this.HasTransparencyAssignment = true;
             }
         }
@@ -286,6 +296,8 @@ namespace netDxf.Tables
         {
             Layer copy = new Layer(newName)
             {
+                description = this.description,
+                HasDescriptionAssignment = this.HasDescriptionAssignment,
                 Color = (AciColor) this.Color.Clone(),
                 IsVisible = this.isVisible,
                 IsFrozen = this.isFrozen,
@@ -294,7 +306,8 @@ namespace netDxf.Tables
                 Linetype = (Linetype) this.Linetype.Clone(),
                 Lineweight = this.Lineweight,
                 transparency = (Transparency) this.Transparency.Clone(),
-                HasTransparencyAssignment = this.HasTransparencyAssignment
+                HasTransparencyAssignment = this.HasTransparencyAssignment,
+                HasTransparencyReset = this.HasTransparencyReset
             };
 
             foreach (XData data in this.XData.Values)
