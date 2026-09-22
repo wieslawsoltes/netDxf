@@ -1,5 +1,10 @@
 # Typed document ownership and database lifecycle
 
+This is the historical `6665f8c` checkpoint. The later
+[registered annotation continuation](REGISTERED_ANNOTATIONS.md) admits MULTILEADER
+and SECTION and supersedes the corresponding rejection and coverage statements
+below; the source-bound results here remain historical.
+
 Initial core: `027e61974ea683321beff527b840b826dcc21b4f`.
 Expanded executable checkpoint: `6665f8cbca3ccf54f8f23a1d15db7fa4aa050978`.
 Executable tree: `c44fb7671a30ad8fe6d59f0d15e61c35a3f30a36`.

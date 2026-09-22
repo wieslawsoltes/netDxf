@@ -12,29 +12,32 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
-`027e619` introduces typed in-memory document ownership; `6665f8c` extends the
-database lifecycles and required verification. [Document ownership contracts and
-source-bound results](doc/DOCUMENT_OWNERSHIP.md) describe actual supported APIs,
-language adapters and remaining boundaries. No unpublished document patch
-survived; this work was reconstructed from the unchanged pinned sources.
+`361b895` extends typed ownership to registered MULTILEADER and SECTION, including
+style adoption, live references, settings, mapped graph cloning and guarded
+erasure. [Registered annotation contracts and evidence](doc/REGISTERED_ANNOTATIONS.md)
+describe the supported scope and remaining boundaries.
 
-Local Debug and Release match **188 ownership scenarios / 8,130 operations** each.
-The suites pass **2,881 original JavaScript cases**, **867 supplemental tests**,
-and **35,309 unchanged C# cases in each configuration**. This includes **61 new
-complete original erasure cases**, counted separately from 41 new supplemental
-tests. The offline package passes with **487 files**. The dedicated hosted
-Ubuntu/Windows Debug/Release matrix also passed all four profiles; its
-[receipt](doc/document-ownership-hosted-6665f8c.json) records the actual evidence.
+Local Debug and Release match **112 annotation scenarios / 6,633 operations**,
+plus the existing **188 ownership scenarios / 8,130 operations** and detached
+multileader corpus. The suites pass **2,905 original JavaScript cases**, **886
+supplemental tests**, and **35,309 unchanged C# cases in each configuration**.
+This continuation adds 24 complete original cases and 19 supplemental tests.
+The offline-installed package passes with **490 files**. The expanded hosted
+Ubuntu/Windows Debug/Release matrix also passed all four profiles, including the
+entire mirrored suite. `5451075` supplies the Windows bridge-build prerequisite;
+[the receipt](doc/registered-annotations-hosted-5451075.json) retains the initial
+failure and corrected results.
 
-Release inline Chromium executes **140,719 comparisons** with no new ownership
-mismatch or page error, but retains **83 previous-category failures**. HTTP-origin
-navigation is blocked in the local environment. Both full-port gates remain
-failed. These are source-bound local results at `6665f8c`, not blanket CI success.
+Release inline Chromium executes **140,831 comparisons**, with no new annotation
+mismatch or page error, but **87 failures in other categories remain**. Both
+full-port gates still fail. The HTTP-origin and Debug browser modes and other
+unexecuted qualification categories are not counted as passing.
 
-The ledger is **358/510 library mirrors**, **54/193 original conformance-file
-mirrors**, and **2,881/35,309 original cases**. Presence is not complete API or
-behavioral qualification. Earlier [drawing utility results](doc/DRAWING_UTILITIES.md)
-and other reports remain historical evidence for their named commits.
+The ledger is **361/510 library mirrors**, **56/193 conformance-file mirrors**,
+and **2,905/35,309 original cases**. Presence is not complete API or behavioral
+qualification. Earlier [document ownership](doc/DOCUMENT_OWNERSHIP.md),
+[drawing utility](doc/DRAWING_UTILITIES.md) and other reports retain historical
+results for their named commits.
 
 ## Implemented areas and boundaries
 
@@ -57,7 +60,9 @@ The typed document core now connects admitted entities, registered tables, block
 INSERT attributes, model/paper-space layouts, XData and dimension-generated
 blocks. Named-object ownership supports adoption, validation, cloning and guarded
 erasure; added lifecycles cover draw order, spatial filters, plot settings,
-GEODATA and SUN. Layer states support snapshot/restore and explicit LAS adapters.
+GEODATA and SUN. Registered MULTILEADER/SECTION now share document ownership,
+including mapped SECTION graph cloning and erasure. Layer states support
+snapshot/restore and explicit LAS adapters.
 Typed DXF IO and specialized stored-entity adoption remain unfinished.
 
 Detailed earlier implementation descriptions remain in the
@@ -115,7 +120,8 @@ npm run verify:complete
 ```
 
 `test:differential` continues through independent stages after a failure and keeps
-each log. Individual `test:document-ownership`, `test:drawing-time` and
+each log. Individual `test:registered-annotations`, `test:document-ownership`,
+`test:drawing-time` and
 `test:string-enum` commands run those comparisons. Generated foundations and concrete dimensions are checked using
 `verify:native` and `verify:dimension-source`. Browser checks require real
 Chromium, not a mocked DOM. `DOTNET_ROOT` or `DOTNET` selects an isolated compiler;
