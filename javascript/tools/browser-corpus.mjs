@@ -1,3 +1,5 @@
+import { drawingTimeCorpus } from './drawing-time-corpus.mjs';
+import { stringEnumCorpus } from './string-enum-corpus.mjs';
 import { objectReferenceCorpus } from './object-reference-corpus.mjs';
 import { concreteDimensionCorpus } from './concrete-dimension-corpus.mjs';
 import { ObservableDictionaryOracleSession } from './ObservableDictionaryOracleSession.mjs';
@@ -188,6 +190,17 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await referenceOracle.close();}
+// Append drawing utilities after all preceding inputs. Native failures are not
+// replaced by synthesized snapshots, nor excluded from the comparison count.
+const utilityOracle=new OracleClient({args:[path.join(oracleRoot,'GeometryOracle.dll')]});
+try {
+  for(const probe of drawingTimeCorpus().concat(stringEnumCorpus())) {
+    const expected=await utilityOracle.request(probe.request);
+    if(!Array.isArray(expected)||expected.length!==probe.request.steps.length)
+      throw new Error('Incomplete drawing utility oracle response: '+probe.name);
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))}});
+  }
+} finally {await utilityOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,
