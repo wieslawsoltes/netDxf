@@ -1,0 +1,25 @@
+name: Publish reviewed dimension literal fix
+on:
+  push:
+    branches: [codex/dxf-dimension-literal-text-20260922]
+    paths: [.github/workflows/publish-dimension-literal.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply fixed edits and remove publication files
+        shell: bash
+        run: |
+          echo '1106c00931333d84e253bf6bb0b6afd509cc7f704843886f3a022ba19ede5121  tools/_publish_dimension_literal.py' | sha256sum --check
+          python3 tools/_publish_dimension_literal.py
+          git add netDxf tests/netDxf.Conformance tools doc/dxf-conformance .github/workflows
+          test "$(git write-tree)" = '18e9d37279befed07b19550ff3a90e455f153df0'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve literal dimension text and single-space suppression on typed loading'
+          git push origin HEAD:refs/heads/codex/dxf-dimension-literal-text-20260922
