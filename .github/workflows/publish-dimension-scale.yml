@@ -1,0 +1,25 @@
+name: Publish reviewed dimension scale fix
+on:
+  push:
+    branches: [codex/dxf-dimension-label-scale-20260922]
+    paths: [.github/workflows/publish-dimension-scale.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed source edits and remove publishing files
+        shell: bash
+        run: |
+          echo '547aacdf04966d5e2fafe6773e875e7c25ecf32843eeaf6320ba3aad3e9abae6  tools/_publish_dimension_scale.py' | sha256sum --check
+          python3 tools/_publish_dimension_scale.py
+          git add netDxf tests/netDxf.Conformance tools doc/dxf-conformance .github/workflows
+          test "$(git write-tree)" = 'fc80459f7a7d665e6df2c8d63080461180594f0a'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Apply dimension scale once and pass destination ownership into label generation'
+          git push origin HEAD:refs/heads/codex/dxf-dimension-label-scale-20260922
