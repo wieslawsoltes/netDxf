@@ -38,6 +38,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
+      - name: Build the optional Windows replacement host
+        if: runner.os == 'Windows'
+        working-directory: javascript
+        run: npm run build:windows-host
       - run: node javascript/tools/dotnet.mjs geometry
       - run: node javascript/tools/document-ownership-differential.mjs
       - if: ${{ !cancelled() }}
