@@ -254,6 +254,50 @@ internal static partial class Program
                 using var cleared = new MemoryStream(); Check(loaded.Save(cleared, binary), "Explicit null clear"); cleared.Position = 0;
                 Equal("", DxfDocument.Load(cleared)!.Layers[TxLayer].Description, "Explicit clear was resurrected");
             });
+        foreach (DxfVersion version in SupportedVersions) foreach (bool binary in new[] { false, true })
+        foreach (bool priorSave in new[] { false, true }) foreach (bool clone in new[] { false, true })
+        for (int edit = 0; edit < 3; edit++)
+        {
+            int e = edit;
+            Run($"table-xdata/alpha-reset/{version}/{binary}/{priorSave}/{clone}/{e}", () =>
+            {
+                var doc = new DxfDocument(version);
+                var layer = new Layer(TxLayer) { Transparency = Transparency.FromAlphaValue(0x02000080) };
+                doc.Layers.Add(layer);
+                if (priorSave)
+                {
+                    var original = TxSnapshot(layer);
+                    using var first = new MemoryStream(); Check(doc.Save(first, binary), "Initial alpha save"); original();
+                }
+                if (e == 0) layer.Transparency = new Transparency(0);
+                else if (e == 1) layer.Transparency.Value = 0;
+                else new LayerStateProperties(TxLayer) { Transparency = new Transparency(0) }
+                    .CopyTo(layer, LayerPropertiesRestoreFlags.Transparency);
+                if (clone)
+                {
+                    layer = (Layer)layer.Clone(); doc = new DxfDocument(version); doc.Layers.Add(layer);
+                }
+                var unchanged = TxSnapshot(layer);
+                using var output = new MemoryStream(); Check(doc.Save(output, binary), "Opaque reset save"); unchanged();
+                Check(!layer.XData.ContainsAppId("AcCmTransparency"), "Save attached source transparency app");
+                var raw = LoadRaw(output.ToArray());
+                var record = raw.Sections.SelectMany(s => s.Records).Single(r => r.Name == "LAYER" &&
+                    r.Tags.Any(t => t.Code == 2 && Equals(t.Value, TxLayer)));
+                Equal(0x020000FF, (int)record.Tags.Single(t => t.Code == 1071).Value, "Opaque reset packed-alpha presence");
+                output.Position = 0;
+                var loaded = DxfDocument.Load(output)!.Layers[TxLayer];
+                Equal((short)0, loaded.Transparency.Value, "Opaque reset projection");
+                Equal((int?)0x020000FF, loaded.Transparency.StoredAlphaValue, "Opaque reset stored value");
+                var fresh = new Layer("FRESH_ZERO") { Transparency = new Transparency(0) };
+                Throws<ArgumentNullException>(() => fresh.Transparency = null!);
+                doc.Layers.Add(fresh);
+                using var freshOutput = new MemoryStream(); Check(doc.Save(freshOutput, binary), "Fresh opaque save");
+                var freshRaw = LoadRaw(freshOutput.ToArray());
+                var freshRecord = freshRaw.Sections.SelectMany(s => s.Records).Single(r => r.Name == "LAYER" &&
+                    r.Tags.Any(t => t.Code == 2 && Equals(t.Value, "FRESH_ZERO")));
+                Check(!freshRecord.Tags.Any(t => t.Code == 1001 && Equals(t.Value, "AcCmTransparency")), "Fresh opaque omission policy");
+            });
+        }
         var invalid = new XDataRecord[][]
         {
             new[] { DxString("DesignCenter Data") },

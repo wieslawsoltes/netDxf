@@ -39,7 +39,11 @@ transparency instead of clearing or mutating the original applications. It
 updates the last string or last Int32, respectively, matching the existing
 typed reader's projection. Other values, order, application names and binary
 payloads are retained. Missing slots receive conventional generated fields.
-The existing packed-alpha codec, raw-alpha and presence policies are reused.
+The existing packed-alpha codec and raw-alpha policy are reused. Explicit value
+edits and property resets after a nondefault/stored value retain packed-alpha
+presence even without a previous Save attaching XData. An internal reset flag
+is copied by clones and is set only after a valid assignment. Fresh unedited
+opaque values keep their previous omission policy.
 
 An internal assignment flag distinguishes an untouched default description
 from an explicit empty/null clear. A raw-only description is preserved until
@@ -56,11 +60,11 @@ undocumented native AcAecLayerStandard or AcCmTransparency semantics.
 
 ## Verification
 
-The final harness has 510 cases: 60 mixed table round trips, 300 legacy-unit
+The final harness has 654 cases: 60 mixed table round trips, 300 legacy-unit
 cases, 24 nested-only controls, 12 native-field precedence checks, 12 layer
 clone/create cases, four raw-only/explicit-clear cases, 12 malformed-save cases,
 72 independently patched malformed-input cases, 12 missing-subsection append
-cases and two missing-layer-slot append cases. All six existing typed profiles
+cases, two missing-layer-slot append cases and 144 explicit-alpha-reset cases. All six existing typed profiles
 and both transports are exercised. The mixed cases cover model/paper instances,
 unreferenced definitions and both internal layout block records; each checks
 both output transports, repeated reload, stable handles, source application and
@@ -80,7 +84,13 @@ mistyped packets and incomplete/extra inventories must reject.
 A fresh identical compiled harness is executed against the preceding production
 assembly and the changed production assembly. Full suite and hosted execution
 counts, failures, artifact hashes and source qualification are recorded in the
-PR, not inferred from this test definition. One combined local build/run command
+PR, not inferred from this test definition. The initial complete independent
+run passed 213 scripts but failed the existing transparency checker: 12 stored
+carrier-transfer fixtures expected explicit opaque alpha after a reset. The old
+presence predicate depended on a prior Save attaching an application. Production
+now retains edit/reset intent without source mutation; the existing checker and
+all previous assertions remain unchanged, with 144 new reset/clone/transfer tests.
+One combined local build/run command
 exceeded its tool-call window; its partial test log is not counted. A complete
 fresh focused run provides the recorded result. No baseline assertion,
 registration, independent verifier or existing conformance workflow was changed.

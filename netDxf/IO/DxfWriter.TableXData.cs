@@ -54,10 +54,12 @@ namespace netDxf.IO
             const string descriptionApp = "AcAecLayerStandard", transparencyApp = "AcCmTransparency";
             bool descriptionFound = false, transparencyFound = false;
             bool writeDescription = layer.HasDescriptionAssignment || !string.IsNullOrEmpty(layer.Description);
-            // Keep the existing alpha-presence and opaque/raw-value policy unchanged.
+            // Explicit reset/edit intent survives without Save attaching source XData.
+            // A fresh unedited opaque value still omits the application.
             bool writeTransparency = layer.Transparency.Value >= 0 &&
                 (layer.Transparency.StoredAlphaValue.HasValue || layer.Transparency.Value > 0 ||
-                (layer.Transparency.HasValueEdit || layer.HasTransparencyAssignment) && layer.XData.ContainsAppId(transparencyApp));
+                layer.Transparency.HasValueEdit || layer.HasTransparencyReset ||
+                layer.HasTransparencyAssignment && layer.XData.ContainsAppId(transparencyApp));
 
             foreach (string app in layer.XData.AppIds)
             {
