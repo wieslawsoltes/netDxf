@@ -1,0 +1,25 @@
+name: Export retained table candidate source
+on:
+  push:
+    branches: [codex/dxf-table-xdata-preservation-20260922]
+    paths: [.github/workflows/export-table-source.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: e77ed873294169f528c7c1b4420056bdcdc62e9b
+          persist-credentials: false
+      - name: Archive exact reviewed helper and test tree
+        run: |
+          test "$(git rev-parse HEAD^{tree})" = 7d405dd330ed3548621fa9be3a8f7812994022a7
+          git archive --format=tar.gz --output=table-source.tar.gz HEAD
+          sha256sum table-source.tar.gz > table-source.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: retained-table-source
+          path: table-source.*
+          retention-days: 2
