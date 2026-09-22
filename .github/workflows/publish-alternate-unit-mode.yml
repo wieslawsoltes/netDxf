@@ -1,0 +1,25 @@
+name: Publish reviewed alternate-unit mode
+on:
+  push:
+    branches: [codex/dxf-alternate-unit-mode-20260922]
+    paths: [.github/workflows/publish-alternate-unit-mode.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed mappings and remove publishing files
+        shell: bash
+        run: |
+          echo '56844f45520fbb45d019a289f14fadef55cd500b028545877910b3af3e137d4c  tools/_publish_alternate_unit_mode.py' | sha256sum --check
+          python3 tools/_publish_alternate_unit_mode.py
+          git add netDxf tests/netDxf.Conformance tools doc/dxf-conformance .github/workflows
+          test "$(git write-tree)" = 'd355b91a8415be58f46d516b893a230786269cbb'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve DIMALTU operating-system mode in headers, styles and overrides'
+          git push origin HEAD:refs/heads/codex/dxf-alternate-unit-mode-20260922
