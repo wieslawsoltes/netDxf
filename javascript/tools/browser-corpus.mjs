@@ -1,3 +1,4 @@
+import { concreteDimensionCorpus } from './concrete-dimension-corpus.mjs';
 import { ObservableDictionaryOracleSession } from './ObservableDictionaryOracleSession.mjs';
 import { observableDictionaryCorpus } from './observable-dictionary-corpus.mjs';
 import {leaderCorpus} from './leader-corpus.mjs';
@@ -166,6 +167,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await dictionaryOracle.close();}
+// Append all reconstructed dimension inputs; no preceding input is removed or reordered.
+const concreteOracle=new ModelOracleSession();
+try {
+  for(const probe of concreteDimensionCorpus()) {
+    const observed=await concreteOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await concreteOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

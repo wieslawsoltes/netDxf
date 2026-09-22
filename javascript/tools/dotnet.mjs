@@ -1,5 +1,6 @@
 // Offline, package-free .NET oracle build using the Roslyn compiler supplied with .NET 8.
 import fs from 'node:fs';
+import { acquireBuildLease } from './oracle-leases.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -62,6 +63,10 @@ function compile(tool, name, files, executable = false, extra = []) {
   console.log(`${configuration}: compiled ${name} (${files.length} source files).`);
 }
 export function build(mode = 'oracle') {
+  const release = acquireBuildLease(oracleRoot);
+  try { return buildUnlocked(mode); } finally { release(); }
+}
+function buildUnlocked(mode) {
   if (!['Debug','Release'].includes(configuration)) throw new Error('CONFIGURATION must be Debug or Release.');
   const sourceFingerprint = computeSourceFingerprint();
   if (sourceFingerprint !== baseline.sourceFingerprint) throw new Error('Oracle source drift: use the pinned checkout '+baseline.ref+'; actual fingerprint '+sourceFingerprint);

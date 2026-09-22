@@ -1,3 +1,4 @@
+import { concreteDimensionInvoke } from './concrete-dimension-wire.mjs';
 import { observableDictionaryCall } from './observable-dictionary-wire.mjs';
 import {ModelBoxing} from './model-boxing.mjs';
 import { BoxedScalar } from '../runtime/BoxedScalar.js';
@@ -67,10 +68,13 @@ export function jsGeometry(input) {
   }
   function invoke(type, target, step, args) {
     const signature=step.signature?.map(typeName).join(',');
+    if(step.member==='Build'){const result=concreteDimensionInvoke(type,signature,args.map(Copy));if(result.handled)return result.value;}
     const file=native?.files.find(f=>f.source.split('/').at(-1)===type.name+'.cs');
     const method=file?.members.find(m=>m.name===step.member&&m.signature===signature&&m.isStatic===!target);
     if (file && signature!==undefined && !method) throw new Error('Unmapped exact member '+type.name+'.'+step.member+'('+signature+')');
-    return (target??type)[method?.implementation??step.member](...args.map(Copy));
+    const callable=(target??type)[method?.implementation??step.member];
+    if(typeof callable!=='function')throw new InvalidOperationException('No matching reflected method.');
+    return callable.apply(target??type,args.map(Copy));
   }
   function construct(type,args,signature,descriptors=[]) {
     if(type===api.DimensionStyleOverride)args=[args[0],boxing.Read(descriptors[1],args[1])];
@@ -110,7 +114,11 @@ export function jsGeometry(input) {
         case 'value': result = read(step.value); break;
         case 'new': result = construct(type,args,step.signature,step.args??[]); break;
         case 'get': result = (target ?? type)[step.member]; if(target instanceof api.DimensionStyle && step.member==='DecimalSeparator') result=new api.BoxedChar(result); break;
-        case 'set': { const value=read(step.value); (target ?? type)[step.member] = value instanceof api.BoxedChar && !(target instanceof api.HeaderVariable) ? value.Value : value; break; }
+        case 'set': {
+          let descriptor,scope=target??type;
+          while(scope&&!descriptor){descriptor=Object.getOwnPropertyDescriptor(scope,step.member);scope=Object.getPrototypeOf(scope);}
+          if(descriptor?.get&&!descriptor.set)throw new ArgumentException('Property set method not found.');
+          const value=read(step.value); (target ?? type)[step.member] = value instanceof api.BoxedChar && !(target instanceof api.HeaderVariable) ? value.Value : value; break; }
         case 'index':
           if ((Array.isArray(target) || target instanceof Uint8Array) && typeof target.get_Item !== 'function') {
             if (!Number.isInteger(args[0]) || args[0] < 0 || args[0] >= target.length) throw new IndexOutOfRangeException();

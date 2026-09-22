@@ -1,3 +1,4 @@
+import { concreteDimensionWire } from './concrete-dimension-wire.mjs';
 import { viewportEntityWire } from './layout-viewport-wire.mjs';
 import {insertEntityWire} from './block-wire.mjs';
 import { mlineEntityWire } from './mline-wire.mjs';
@@ -33,6 +34,7 @@ export function entityWire(value, wire) {
     colorName:value.ColorName,shadow:wire(value.ShadowMode),proxy:wire(value.ProxyGraphics),
     reactors:Array.from(value.Reactors,r=>r===null?null:{code:r.CodeName,handle:r.Handle}),
     xdata:Array.from(value.XData.Values,wire)};
+  const dimension=concreteDimensionWire(value,common,wire);if(dimension!==undefined)return dimension;
   const viewport=viewportEntityWire(value,common,wire);if(viewport!==undefined)return viewport;
   const insert=insertEntityWire(value,common,wire);if(insert!==undefined)return insert;
   const mline=mlineEntityWire(value,common,wire);if(mline!==undefined)return mline;

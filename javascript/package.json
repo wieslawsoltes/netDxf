@@ -31,7 +31,8 @@
     "native/build.mjs",
     "third_party/glibc-math",
     "tools/ReferenceMath",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "dimension-port-manifest.json"
   ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
@@ -81,7 +82,9 @@
     "test:unit-formats": "node tools/unit-format-differential.mjs",
     "test:tolerances": "node tools/tolerance-differential.mjs",
     "test:leaders": "node tools/leader-differential.mjs",
-    "test:observable-dictionaries": "node tools/observable-dictionary-differential.mjs"
+    "test:observable-dictionaries": "node tools/observable-dictionary-differential.mjs",
+    "test:concrete-dimensions": "node tools/concrete-dimension-differential.mjs",
+    "verify:dimension-source": "node tools/dotnet.mjs native-port --dimensions --check"
   },
   "repository": {
     "type": "git",

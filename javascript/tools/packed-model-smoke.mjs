@@ -40,3 +40,21 @@ import * as packedModels from '@netdxf/javascript';
   if(copy.Annotation===leader.Annotation||copy.Style===leader.Style||copy.LineColor!==leader.LineColor||copy.Annotation.Reactors.get_Item(0)!==copy||copy.Hook.X!==9||leader.Hook.X!==4)
     throw new Error('Packed LEADER annotation/clone/transform failed');
 }
+
+{
+  const names=['AlignedDimension','LinearDimension','Angular2LineDimension','Angular3PointDimension','ArcLengthDimension','DiametricDimension','RadialDimension','OrdinateDimension'];
+  for(const name of names) {
+    const { [name]: Standalone }=await import('@netdxf/javascript/netDxf/Entities/'+name+'.js');
+    if(Standalone!==packedModels[name])throw new Error('Packed dimension export differs: '+name);
+    const d=new Standalone(),block=packedModels.DimensionBlock.Build(d,'Packed');
+    if(block.Entities.Count===0||d.Block!==null)throw new Error('Packed dimension generation failed: '+name);
+    d.Block=block;d.Update();const copy=d.Clone();
+    if(d.Block===block||copy.Block!==null||copy.Style===d.Style)throw new Error('Packed dimension lifecycle failed: '+name);
+  }
+  for(const [name,prefix]of [['RadialDimension','R'],['DiametricDimension','Ø']]) {
+    const d=new packedModels[name]();
+    d.StyleOverrides.Add(new packedModels.DimensionStyleOverride(packedModels.DimensionStyleOverrideType.DimPrefix,new packedModels.BoxedString('')));
+    const texts=Array.from(packedModels.DimensionBlock.Build(d).Entities).filter(e=>e instanceof packedModels.MText);
+    if(!texts.length||texts.some(t=>!t.Value.startsWith(prefix)))throw new Error('Packed dimension prefix lost: '+name);
+  }
+}
