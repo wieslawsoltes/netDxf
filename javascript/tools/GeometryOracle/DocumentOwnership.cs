@@ -11,6 +11,7 @@ using netDxf.Tables;
 using netDxf.Entities;
 using netDxf.Objects;
 using netDxf.Blocks;
+using netDxf.IO;
 internal static partial class Program
 {
     private static object? OwnerRef(DxfObject? item) => item == null ? null : new {
@@ -84,6 +85,12 @@ internal static partial class Program
                 object? target=step.TryGetProperty("target",out var targetId)?Values[targetId.GetString()!]:null;
                 string member=step.TryGetProperty("member",out var key)?key.GetString()!:"";
                 switch(method){
+                    case "opaque": {
+                        var args=Arguments(step);
+                        result=Activator.CreateInstance(typeof(DxfOpaqueObject),BindingFlags.Instance|BindingFlags.NonPublic,null,
+                            new object[]{(string)args[0]!,((IEnumerable<DxfTag>)args[1]!).ToList()},System.Globalization.CultureInfo.InvariantCulture);break;
+                    }
+                    case "append-loaded":typeof(DxfXRecord).GetMethod("AddLoadedData",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(target,Arguments(step));break;
                     case "mapping": {
                         var mapping=new Dictionary<DxfObject,DxfObject>();
                         foreach(var pair in step.GetProperty("pairs").EnumerateArray())mapping.Add((DxfObject)Read(pair[0])!,(DxfObject)Read(pair[1])!);

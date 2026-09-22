@@ -30,7 +30,7 @@ export class MLeaderData {
   get Document(){let parent=this.Parent;while(parent instanceof MLeaderData)parent=parent.Parent;if(parent instanceof DxfDatabaseObject)return parent.Database?.Document??null;return parent?.Type===36?MLeaderData.RegisteredDocument(parent):null;}
   // A typed document host must provide both identity lookup and object registration.
   // This hook does not manufacture a document or treat detached ownership as registration.
-  static RegisteredDocument(item){let owner=item;while(owner!=null){if(typeof owner.GetObjectByHandle==='function'&&owner.Objects&&owner.DrawingVariables)return owner.GetObjectByHandle(item.Handle)===item?owner:null;owner=owner.Owner;}return null;}
+  static RegisteredDocument(item){let owner=item;while(owner!=null){if(typeof owner.GetObjectByHandle==='function'&&owner.DrawingVariables)return owner.GetObjectByHandle(item.Handle)===item?owner:null;owner=owner.Owner;}return null;}
   get Children(){return [];}
   Tree(){const root=this;return{*[Symbol.iterator](){yield root;for(const child of root.Children)yield*child.Tree();}};}
   get References(){const root=this;return{*[Symbol.iterator](){for(const item of root.Tree())for(const field of item.Fields){const target=item.Value(field);if(field.Reference&&target!==null)yield target;}}};}

@@ -55,7 +55,10 @@ export function documentOwnershipCall(input){
     let result=null,error=null,param=null;
     try{
       const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
+      if(target==null&&['get','set','item','call','append-loaded'].includes(step.method))throw new apiErrors.NullReferenceException();
       switch(step.method){
+        case 'opaque':result=new api.DxfOpaqueObject(...args);break;
+        case 'append-loaded':target.AddLoadedData(...args);break;
         case 'mapping': {
           const mapping=new Map();for(const [key,value] of step.pairs.map(pair=>pair.map(read))){if(key==null)throw new apiErrors.ArgumentNullException('key');if(mapping.has(key))throw new ArgumentException('Duplicate key.');mapping.set(key,value);}result=mapping;break;
         }

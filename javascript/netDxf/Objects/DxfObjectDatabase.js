@@ -21,6 +21,8 @@ import { InstallDatabaseOutputSettings } from './DxfObjectDatabase.OutputSetting
 import { InstallDatabaseGeoData } from './DxfObjectDatabase.GeoData.js';
 import { InstallDatabaseSun } from './DxfObjectDatabase.Sun.js';
 import { InstallDatabaseErasure } from './DxfObjectDatabase.Erase.js';
+import { InstallDatabaseMLeaderStyle } from './DxfMLeaderStyle.js';
+import { InstallDatabaseSection } from './DxfObjectDatabase.Section.js';
 const maximum=9223372036854775807n;
 const parse=handle=>typeof handle==='string'&&/^[0-9a-f]{1,16}$/i.test(handle)?BigInt('0x'+handle):null;
 const nullHandle=handle=>parse(handle)===0n;
@@ -112,6 +114,7 @@ export class DxfObjectDatabase {
     if(candidate<=0n||candidate>maximum-BigInt(incoming.length+registrations.size))throw new InvalidOperationException('The document handle range is exhausted.');
     this.Document.NumHandles=candidate;
   }
+  GetReservedSeed(tag,current){return this.#seed(tag,current);}
   ReserveUnresolvedReference(tag){this.Document.NumHandles=this.#seed(tag,this.Document.NumHandles);}
   Register(item,preserveHandle){
     if(item.IsErased)throw new InvalidOperationException('An erased object cannot be registered again.');
@@ -177,3 +180,5 @@ InstallDatabaseOutputSettings(DxfObjectDatabase);
 InstallDatabaseGeoData(DxfObjectDatabase);
 InstallDatabaseSun(DxfObjectDatabase);
 InstallDatabaseErasure(DxfObjectDatabase);
+InstallDatabaseMLeaderStyle(DxfObjectDatabase);
+InstallDatabaseSection(DxfObjectDatabase);

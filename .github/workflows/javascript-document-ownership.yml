@@ -41,18 +41,20 @@ jobs:
       - run: node javascript/tools/dotnet.mjs geometry
       - run: node javascript/tools/document-ownership-differential.mjs
       - if: ${{ !cancelled() }}
-        run: node --test javascript/tests/unit/document-ownership.js javascript/tests/unit/document-lifecycle.js
+        run: node javascript/tools/registered-annotations-differential.mjs
+      - if: ${{ !cancelled() }}
+        run: node --test javascript/tests/unit/document-ownership.js javascript/tests/unit/document-lifecycle.js javascript/tests/unit/registered-annotations.js
       - if: ${{ !cancelled() }}
         run: node javascript/tests/netDxf.Conformance/Program.js
         env:
-          DXF_TEST_FILTER: typed-erasure/
-          DXF_JS_TEST_ARTIFACTS: javascript/artifacts/document-erasure-originals
+          DXF_JS_TEST_ARTIFACTS: javascript/artifacts/document-originals
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: javascript-document-ownership-${{ matrix.os }}-${{ matrix.configuration }}
           path: |
             javascript/artifacts/document-ownership/${{ matrix.configuration }}/results.json
-            javascript/artifacts/document-erasure-originals/*.json
+            javascript/artifacts/registered-annotations/${{ matrix.configuration }}/results.json
+            javascript/artifacts/document-originals/*.json
           if-no-files-found: error
           retention-days: 7

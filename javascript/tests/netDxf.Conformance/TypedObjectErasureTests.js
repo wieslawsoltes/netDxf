@@ -1,4 +1,5 @@
-// Complete original in-memory cases. IO/independent-fixture, MULTILEADER and the
+import { NewMLeader } from './MLeaderTests.js';
+// Complete original in-memory cases. IO/independent-fixture, and the
 // arbitrary-handle case that ends with typed Save remain unported, not skipped.
 import * as api from '../../index.js';
 import { ArgumentException, InvalidOperationException, NotSupportedException } from '../../runtime/Errors.js';
@@ -10,6 +11,7 @@ const sum=items=>Array.from(items,r=>r.Uses).reduce((a,b)=>a+b,0);
 export function RegisterTypedObjectErasureTests(){
   for(const flag of [false,true])for(const hard of [false,true])Run(`typed-erasure/ownership/${BooleanName(flag)}/${BooleanName(hard)}`,()=>ErasureOwnership(flag,hard));
   for(const kind of ['idbuffer','dictionary-default','dictionary-entry','reactor-document','reactor-object','reactor-line','reactor-layer','reactor-attribute','reactor-layout-viewport','xdata-document','xdata-object','xdata-line','xdata-layer','xdata-attribute','xdata-attdef','xdata-layout-viewport','layout-shade','standalone-shade','header','header-identity','xrecord330','xrecord339','xrecord340','xrecord349','xrecord350','xrecord359','xrecord360','xrecord369','xrecord390','xrecord399','xrecord480','xrecord481','lowercase-padded'])Run('typed-erasure/incoming/'+kind,()=>ErasureIncoming(kind));
+  Run('typed-erasure/mleader-and-unused-block',ErasureMLeader);
   Run('typed-erasure/terminal-adoption',ErasureTerminal);
   Run('typed-erasure/appid-bookkeeping-and-handlers',ErasureAppIds);
   Run('typed-erasure/renamed-shared-appid-unregistration',ErasureRenamedAppId);
@@ -126,3 +128,5 @@ export function ErasureOpaque(owned,code){const [doc,target]=ErasureLeaf(),opaqu
 export function ErasureOpaqueUnrelated(){const [doc,target]=ErasureLeaf(),opaque=ErasureNewOpaque(340,doc.Layers.get_Item('0').Handle);doc.NamedObjects.Add('OPAQUE',opaque);const stored=opaque.Tags.get_Item(1).Value;doc.Objects.EraseOwnedTree(target);Check(!opaque.IsErased&&opaque.Database===doc.Objects,'Unrelated opaque object erased.');Equal(stored,opaque.Tags.get_Item(1).Value,'Opaque payload changed');}
 export function ErasureCloneCallback(){const source=new DxfDocument(),root=ErasureGraph(source),target=new DxfDocument();void target.Objects;const callback={*[Symbol.iterator](){source.Objects.EraseOwnedTree(root);}};ErasureReject(target,()=>target.Objects.Clone(root,target.NamedObjects,'COPY',callback));Check(root.IsErased,'Mapping callback did not execute.');}
 export function ErasureDeep(){const doc=new DxfDocument(),root=new DxfDictionary();doc.NamedObjects.Add('DEEP',root);let current=root;for(let i=0;i<2048;i++){const child=new DxfDictionary();current.Add('CHILD',child);current=child;}doc.Objects.EraseOwnedTree(root);Check(root.IsErased&&current.IsErased,'Deep ownership closure incomplete.');Equal(1,doc.Objects.Items.Count,'Deep registration residue');}
+
+export function ErasureMLeader(){const [doc,leader]=NewMLeader(api.DxfVersion.AutoCad2018),block=doc.Blocks.Add(new Block('UNUSED'));block.Entities.Add(leader);const style=leader.Properties.Style;ErasureReject(doc,()=>doc.Objects.EraseOwnedTree(style));block.Entities.Remove(leader);doc.Objects.EraseOwnedTree(style);Check(style.IsErased,'MULTILEADER style cleanup failed.');}

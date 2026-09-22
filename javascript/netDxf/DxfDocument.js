@@ -11,9 +11,11 @@ import { DrawingEntities } from './Collections/DrawingEntities.js';
 import { ReferenceList } from '../runtime/ReferenceList.js';
 import { BindResource, ChangeResource, Listen, Unlisten } from '../runtime/RegisteredTable.js';
 import { InstallDocumentObjects } from './DxfDocument.Objects.js';
+import { InstallDocumentMultiLeader } from './DxfDocument.MultiLeader.js';
+import { InstallDocumentSection } from './DxfDocument.Section.js';
 import { InstallDocumentMetadata, ObjectMetadataMembers } from './DxfDocument.MetadataReferences.js';
 import { ArgumentException, ArgumentNullException, NotSupportedException, NullReferenceException } from '../runtime/Errors.js';
-const transportPending=new Set(['MULTILEADER','SECTION','ACAD_TABLE']);
+const transportPending=new Set(['ACAD_TABLE']);
 const tables=[['VPorts','VPorts'],['Views','Views'],['ApplicationRegistries','ApplicationRegistries'],['Layers','Layers'],['Linetypes','Linetypes'],
   ['TextStyles','TextStyles'],['ShapeStyles','ShapeStyles'],['DimensionStyles','DimensionStyles'],['MlineStyles','MLineStyles'],['UCSs','UCSs'],
   ['Blocks','BlockRecords'],['ImageDefinitions','ImageDefinitions'],['UnderlayDgnDefinitions','UnderlayDgnDefinitions'],
@@ -56,13 +58,31 @@ export class DxfDocument extends DxfObject {
     const result={};return this.AddedObjects.TryGetValue(BigInt('0x'+handle).toString(16).toUpperCase(),result)?result.value:null;}
   ValidateStoredTableEntityAdoption(entity){
     if(entity==null)throw new ArgumentNullException('entity');
+    if(entity instanceof api.MultiLeader)entity.ValidateIncoming(this);
+    if(entity instanceof api.Section)entity.Validate(this);
     if(transportPending.has(entity.CodeName))
       throw new NotSupportedException('Database-backed entity adoption is not yet available: '+entity.CodeName);
+    if(entity instanceof api.Insert)this.ValidateStoredTableBlockAdoption(entity.Block);
+    else if(entity instanceof api.Dimension&&entity.Block!==null)this.ValidateStoredTableBlockAdoption(entity.Block);
     if(entity.StoredRecords?.Count>0)throw new NotSupportedException('Stored polyline record adoption is not yet available.');
-    if(!simpleEntities.has(entity.CodeName)&&!['DIMENSION','ARC_DIMENSION','LEADER','TOLERANCE','INSERT','SHAPE','TEXT','MTEXT','IMAGE','MLINE','DGNUNDERLAY','DWFUNDERLAY','PDFUNDERLAY','VIEWPORT'].includes(entity.CodeName))
+    if(!simpleEntities.has(entity.CodeName)&&!['DIMENSION','ARC_DIMENSION','LEADER','TOLERANCE','INSERT','SHAPE','TEXT','MTEXT','IMAGE','MLINE','DGNUNDERLAY','DWFUNDERLAY','PDFUNDERLAY','VIEWPORT','MULTILEADER','SECTION','SECTIONOBJECT'].includes(entity.CodeName))
       throw new NotSupportedException('Unknown entity registration: '+entity.CodeName);
   }
-  ValidateStoredTableBlockAdoption(block){for(const entity of block.Entities)this.ValidateStoredTableEntityAdoption(entity);}
+  ValidateStoredTableBlockAdoption(root){
+    const visited=new Set();
+    const visit=block=>{
+      if(block==null||visited.has(block)||this.Blocks.Contains(block.Name))return;
+      visited.add(block);
+      for(const entity of block.Entities){
+        if(entity instanceof api.Hatch)HatchSourceRelations.ValidateOwner(entity,block,this);
+        if(entity.StoredRecords?.Count>0)throw new NotSupportedException('Stored polyline record adoption is not yet available.');
+        if(entity instanceof api.Section)entity.Validate(this);
+        else if(transportPending.has(entity.CodeName))throw new NotSupportedException('Database-backed entity adoption is not yet available: '+entity.CodeName);
+        else if(entity instanceof api.Insert)visit(entity.Block);
+        else if(entity instanceof api.Dimension)visit(entity.Block);
+      }
+    };visit(root);
+  }
   StoredTableReferencesRemoval(root){
     // The source's section-reference scan initializes the object database even
     // for an ordinary entity. Keep that observable allocation and inspect every
@@ -71,6 +91,7 @@ export class DxfDocument extends DxfObject {
     const block=root instanceof api.Block?root:root instanceof api.Layout?root.AssociatedBlock:null;
     if(block!==null){for(const member of ObjectMetadataMembers(block))removed.add(member);removed.add(block.Record);for(const item of [...block.Entities,...block.AttributeDefinitions.Values])for(const member of ObjectMetadataMembers(item))removed.add(member);}
     for(const item of removed)if(item instanceof api.Hatch)item.ValidateOpaqueSourceRelease();
+    if(this.SectionReferencesRemoval(removed))return true;
     const database=this.Objects;
     for(const item of removed)if(api.SunReferences.Get(item)!==null)return true;
     for(const item of database.Items){
@@ -81,17 +102,6 @@ export class DxfDocument extends DxfObject {
       }
     }
     return false;
-  }
-  MLeaderReferences(target){
-    if(target instanceof api.Block)target=target.Record;
-    const result=new ReferenceList();if(target==null)return result;
-    for(const item of this.AddedObjects.Values){let refs=[];
-      if(item.CodeName==='MULTILEADER')refs=Array.from(item.Data).flatMap(data=>Array.from(data.References));
-      else if(item.DatabaseReferences)refs=item.DatabaseReferences;
-      else if(item.StoredRecords)refs=Array.from(item.StoredRecords).flatMap(record=>Array.from(record.References));
-      const uses=Array.from(refs).filter(value=>value===target).length;if(uses)result.Add(new api.DxfObjectReference(item,uses));
-    }
-    return result;
   }
   #resource(entity,property,name,event,assignHandle){BindResource(this,entity,property,this[name],assignHandle);Listen(this,entity,event,(sender,e)=>ChangeResource(sender,e,this[name]));}
   #release(entity,property,name){if(entity[property]!==null)this[name].References.get_Item(entity[property].Name).Remove(entity);}
@@ -200,5 +210,7 @@ export class DxfDocument extends DxfObject {
 }
 InstallDocumentMetadata(DxfDocument);
 InstallDocumentObjects(DxfDocument);
+InstallDocumentMultiLeader(DxfDocument);
+InstallDocumentSection(DxfDocument);
 
 RegisterDatabaseModel('DxfDocument',DxfDocument);
