@@ -41,7 +41,9 @@ internal static class Program
         var declarations = new List<(string file,TypeDeclarationSyntax node,SemanticModel model)>();
         foreach(string file in selected)
         {
-            var tree=trees.Single(t=>t.FilePath==Path.Combine(Root,file));var model=Compilation.GetSemanticModel(tree);
+            // Manifest paths use forward slashes; filesystem paths use host separators.
+            var selectedPath=Path.GetFullPath(Path.Combine(Root,file));
+            var tree=trees.Single(t=>Path.GetFullPath(t.FilePath)==selectedPath);var model=Compilation.GetSemanticModel(tree);
             foreach(var node in tree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>())
             {
                 var symbol=(INamedTypeSymbol)model.GetDeclaredSymbol(node)!;Files.Add(symbol,file);declarations.Add((file,node,model));
