@@ -1,3 +1,4 @@
+import { RegisterDatabaseModel } from '../../runtime/DatabaseModel.js';
 // Copyright (c) Daniel Carvajal and netDxf contributors. MIT License; see package LICENSE.
 import { EntityObject } from './EntityObject.js';
 import { EntityType } from './EntityType.js';
@@ -139,3 +140,5 @@ export class Insert extends EntityObject {
   }
 }
 InstallInsertArray(Insert);
+
+RegisterDatabaseModel('Insert',Insert);

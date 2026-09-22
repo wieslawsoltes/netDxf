@@ -13,12 +13,20 @@ import { TableNameComparer } from '../Collections/TableObjects.js';
 import { ReferenceList } from '../../runtime/ReferenceList.js';
 import { IsAncestor, IsReservedDictionaryName, ReadOnlyReferenceView } from '../../runtime/DatabaseModel.js';
 import { ArgumentException, ArgumentNullException, InvalidOperationException, FormatException } from '../../runtime/Errors.js';
+import { OrdinalIgnoreCaseKey } from '../../runtime/Collections.js';
+import { ReferenceMap } from '../../runtime/DatabaseReferenceMap.js';
+import { SetDatabaseRegistry } from '../../runtime/RegisteredDatabaseState.js';
+import { InstallDatabaseContainers } from './DxfObjectDatabase.Containers.js';
+import { InstallDatabaseOutputSettings } from './DxfObjectDatabase.OutputSettings.js';
+import { InstallDatabaseGeoData } from './DxfObjectDatabase.GeoData.js';
+import { InstallDatabaseSun } from './DxfObjectDatabase.Sun.js';
+import { InstallDatabaseErasure } from './DxfObjectDatabase.Erase.js';
 const maximum=9223372036854775807n;
 const parse=handle=>typeof handle==='string'&&/^[0-9a-f]{1,16}$/i.test(handle)?BigInt('0x'+handle):null;
 const nullHandle=handle=>parse(handle)===0n;
 export class DxfObjectDatabase {
   #objects=new GenericDictionary(0,TableNameComparer,'string'); #document; #root;
-  constructor(document){this.#document=document;this.#root=new DxfDictionary();this.#root.Owner=document;this.Register(this.#root,false);}
+  constructor(document){this.#document=document;SetDatabaseRegistry(this,this.#objects);this.#root=new DxfDictionary();this.#root.Owner=document;this.Register(this.#root,false);}
   get Document(){return this.#document;}
   get Root(){return this.#root;}
   get Items(){return ReadOnlyReferenceView(new ReferenceList(this.#objects.Values));}
@@ -97,7 +105,7 @@ export class DxfObjectDatabase {
       if(item instanceof DxfXRecord)for(const tag of item.Data)candidate=this.#seed(tag,candidate);
       for(const tag of item.AllocationReservations)candidate=this.#seed(tag,candidate);
       for(const data of item.XData.Values){
-        if(!this.Document.ApplicationRegistries.Contains(data.ApplicationRegistry.Name))registrations.add(TableNameComparer.GetHashCode(data.ApplicationRegistry.Name)+'/'+data.ApplicationRegistry.Name.toUpperCase());
+        if(!this.Document.ApplicationRegistries.Contains(data.ApplicationRegistry.Name))registrations.add(OrdinalIgnoreCaseKey(data.ApplicationRegistry.Name));
         for(const tag of data.XDataRecord)if(tag.Code===XDataCode.DatabaseHandle)candidate=this.#seed(new DxfTag(1005,tag.Value),candidate);
       }
     }
@@ -128,11 +136,12 @@ export class DxfObjectDatabase {
     if(destination.Contains(name)||destination===this.Root&&IsReservedDictionaryName(name))throw new ArgumentException('The destination name already exists or is reserved.','name');
     return this.CloneOwnershipGraph(source,destination,name,false,externalReferences);
   }
-  CloneOwnershipGraph(source,destination,name,extension,externalReferences=null){
+  CloneOwnershipGraph(source,destination,name,extension,externalReferences=null,sun=false){
     Polyline3D.RejectStoredRecordOwnershipClone(source);
-    const external=new Map();if(externalReferences)for(const pair of externalReferences){const key=pair.Key??pair[0],value=pair.Value??pair[1];if(external.has(key))throw new ArgumentException('Duplicate mapping.');external.set(key,value);}
+    const external=ReferenceMap(externalReferences);
     Polyline3D.RejectStoredRecordOwnershipClone(source);this.CheckRegistered(destination);
-    if(extension){if(destination===this.Document.Layers||destination.ExtensionDictionary!==null)throw new InvalidOperationException('The destination extension-dictionary slot is occupied or reserved.');}
+    if(sun)this.CheckSunDestination(destination);
+    else if(extension){if(destination===this.Document.Layers||destination.ExtensionDictionary!==null)throw new InvalidOperationException('The destination extension-dictionary slot is occupied or reserved.');}
     else if(destination.Database!==this||destination.Contains(name)||destination===this.Root&&IsReservedDictionaryName(name))throw new ArgumentException('The destination name already exists or is reserved.','name');
     if(source.IsErased||source.Database===null)throw new InvalidOperationException('The clone source must remain registered and cannot be erased.');source.Database.CheckRegistered(source);
     const errors=source.Database.Validate();if(errors.Count)throw new InvalidOperationException('Cannot clone an invalid source graph: '+Array.from(errors).join('; '));
@@ -159,6 +168,12 @@ export class DxfObjectDatabase {
       if(original instanceof DxfXRecord)for(let i=0;i<original.Data.Count;i++){const tag=original.Data.get_Item(i);if(DxfObjectDatabase.IsReference(tag)&&!nullHandle(tag.Value))clone.ReplaceLoadedData(i,new DxfTag(tag.Code,resolveHandle(tag.Value,'XRECORD').Handle));}
       for(const data of original.XData.Values)for(let i=0;i<data.XDataRecord.Count;i++){const tag=data.XDataRecord.get_Item(i);if(tag.Code===XDataCode.DatabaseHandle&&!nullHandle(tag.Value))clone.XData.get_Item(data.ApplicationRegistry.Name).XDataRecord.set_Item(i,new XDataRecord(XDataCode.DatabaseHandle,resolveHandle(tag.Value,'XData').Handle));}
     }
-    const result=map.get(source);if(extension)destination.ExtensionDictionary=result;else destination.AddLoaded(name,result,true);return result;
+    const result=map.get(source);if(sun)SunReferences.Set(destination,result);else if(extension)destination.ExtensionDictionary=result;else destination.AddLoaded(name,result,true);return result;
   }
 }
+
+InstallDatabaseContainers(DxfObjectDatabase);
+InstallDatabaseOutputSettings(DxfObjectDatabase);
+InstallDatabaseGeoData(DxfObjectDatabase);
+InstallDatabaseSun(DxfObjectDatabase);
+InstallDatabaseErasure(DxfObjectDatabase);

@@ -1,3 +1,4 @@
+import { RegisterDatabaseModel } from '../../runtime/DatabaseModel.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { EntityObject } from './EntityObject.js';
 import { EntityType } from './EntityType.js';
@@ -118,3 +119,5 @@ export class Viewport extends EntityObject {
   }
 }
 InstallViewFields(Viewport,fields);
+
+RegisterDatabaseModel('Viewport',Viewport);

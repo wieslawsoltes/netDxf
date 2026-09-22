@@ -5,7 +5,7 @@ export class DrawingEntities {
   #document; #activeLayout='Model';
   constructor(document){this.#document=document;}
   get ActiveLayout(){return this.#activeLayout;}
-  set ActiveLayout(value){if(!this.#document.Layouts.Contains(value))throw new ArgumentException('The layout '+value+' does not exist.','value');this.#activeLayout=value;}
+  set ActiveLayout(value){if(!this.#document.Layouts.List.ContainsKey(value))throw new ArgumentException('The layout '+value+' does not exist.','value');this.#activeLayout=value;}
   get All(){const layout=this.#document.Layouts.get_Item(this.#activeLayout);if(layout===null)throw new NullReferenceException();return layout.AssociatedBlock.Entities;}
   #ofType(name){const entities=this.All;return{*[Symbol.iterator](){for(const e of entities)if(api[name]&&e instanceof api[name])yield e;}};}
   Add(entity,enumerable=entity!=null&&typeof entity[Symbol.iterator]==='function'){

@@ -87,7 +87,8 @@
     "verify:dimension-source": "node tools/dotnet.mjs native-port --dimensions --check",
     "test:object-references": "node tools/object-reference-differential.mjs",
     "test:drawing-time": "node tools/drawing-time-differential.mjs",
-    "test:string-enum": "node tools/string-enum-differential.mjs"
+    "test:string-enum": "node tools/string-enum-differential.mjs",
+    "test:document-ownership": "node tools/document-ownership-differential.mjs"
   },
   "repository": {
     "type": "git",

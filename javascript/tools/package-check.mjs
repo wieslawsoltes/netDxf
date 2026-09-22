@@ -17,7 +17,7 @@ try {
     if(!info.files.some(f=>f.path===file)) throw new Error('Required mathematical source/notice is missing: '+file);
   const install=path.join(temp,'install');fs.mkdirSync(install);
   run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
-  const script=fs.readFileSync(new URL('./packed-core-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-header-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-model-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-unit-format-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-observable-dictionary-smoke.mjs',import.meta.url),'utf8');
+  const script=fs.readFileSync(new URL('./packed-core-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-header-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-model-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-unit-format-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-observable-dictionary-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-document-smoke.mjs',import.meta.url),'utf8');
   run(process.env.PYTHON||'python',['tools/ReferenceMath/generate-exp-log.py','--check'],path.join(install,'node_modules','@netdxf','javascript'));
   run(process.execPath,['--input-type=module','-e',script],install);
   run(process.execPath,['--input-type=module','-e',`import fs from 'node:fs';

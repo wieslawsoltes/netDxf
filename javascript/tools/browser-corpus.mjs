@@ -1,3 +1,5 @@
+import { documentOwnershipCorpus } from './document-ownership-corpus.mjs';
+import { DocumentOracleSession } from './DocumentOracleSession.mjs';
 import { drawingTimeCorpus } from './drawing-time-corpus.mjs';
 import { stringEnumCorpus } from './string-enum-corpus.mjs';
 import { objectReferenceCorpus } from './object-reference-corpus.mjs';
@@ -201,6 +203,16 @@ try {
     cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))}});
   }
 } finally {await utilityOracle.close();}
+// Append every typed ownership input without changing any prior comparison.
+const documentOracle=new DocumentOracleSession();
+try {
+  for(const probe of documentOwnershipCorpus(process.platform==='win32'?'\r\n':'\n')) {
+    const observed=await documentOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await documentOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

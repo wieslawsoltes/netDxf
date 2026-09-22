@@ -1,10 +1,11 @@
+import { documentLifecycleCorpus } from './document-lifecycle-corpus.mjs';
 // Deterministic input-only authoring scenarios. Native outputs are never embedded.
 const r=ref=>({ref}), make=(id,type,args=[])=>({method:'new',id,value:{new:type,args}});
 const get=(target,member,id)=>({method:'get',target,member,id});
 const call=(target,member,args=[],signature)=>({method:'call',target,member,args,...(signature?{signature}:{})});
 const set=(target,member,value)=>({method:'set',target,member,value});
 const snap=target=>({method:'snapshot',target});
-export function documentOwnershipCorpus(){
+export function documentOwnershipCorpus(newLine = '\n'){
   const all=[],add=(name,steps)=>all.push({name:'document/'+name,request:{op:'document-ownership',steps}});
   const initial=()=>[make('doc','DxfDocument'),get('doc','Entities','entities')];
   add('default',initial());
@@ -19,5 +20,5 @@ export function documentOwnershipCorpus(){
   add('line-resource-lifecycle',[...initial(),make('entity','Entities.Line'),make('layer','Tables.Layer',['Custom']),set('entity','Layer',r('layer')),call('entities','Add',[r('entity')]),get('doc','Layers','layers'),call('layers','GetReferences',['Custom']),make('other','Tables.Layer',['Other']),set('entity','Layer',r('other')),call('layers','Remove',['Custom']),snap('doc'),call('entities','Remove',[r('entity')]),call('layers','Remove',['Other']),snap('doc')]);
   add('paper-space',[...initial(),get('doc','Layouts','layouts'),make('a','Objects.Layout',['A']),make('b','Objects.Layout',['B']),call('layouts','Add',[r('a')]),call('layouts','Add',[r('b')]),set('entities','ActiveLayout','B'),make('line','Entities.Line'),call('entities','Add',[r('line')]),snap('doc'),call('layouts','Remove',['A']),snap('doc'),call('layouts','Remove',['B']),snap('doc')]);
   add('dimension-regeneration',[...initial(),set('doc','BuildDimensionBlocks',true),make('dimension','Entities.AlignedDimension'),call('entities','Add',[r('dimension')]),snap('doc'),call('dimension','Update'),snap('doc'),call('entities','Remove',[r('dimension')]),snap('doc')]);
-  return all;
+  return all.concat(documentLifecycleCorpus()).map(probe=>({...probe,request:{...probe.request,newLine}}));
 }

@@ -1,3 +1,4 @@
+import { RegisterDatabaseModel } from '../../runtime/DatabaseModel.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { DxfObject } from '../DxfObject.js';
 import { DxfObjectCode } from '../DxfObjectCode.js';
@@ -14,3 +15,5 @@ export class BlockRecord extends DxfObject {
   get IsForInternalUseOnly(){if(this.Name==null)throw new NullReferenceException();return this.Name.startsWith('*');}
   ToString(){return this.Name;}
 }
+
+RegisterDatabaseModel('BlockRecord',BlockRecord);

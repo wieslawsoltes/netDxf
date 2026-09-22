@@ -1,3 +1,4 @@
+import { documentOwnershipCall } from './document-ownership-wire.mjs';
 import { stringEnumCall } from './string-enum-wire.mjs';
 import { concreteDimensionInvoke } from './concrete-dimension-wire.mjs';
 import { observableDictionaryCall } from './observable-dictionary-wire.mjs';
@@ -17,6 +18,7 @@ import { wire } from './model-wire.mjs';
 export function jsGeometry(input) {
   api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;
   const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = input.culture??''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
+  if(input.op==='document-ownership')return documentOwnershipCall(input);
   if(input.op==='string-enum')return stringEnumCall(input);
   if(input.op==='observable-dictionary')return observableDictionaryCall(input);
   const native = input.nativeManifest;

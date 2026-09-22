@@ -1,3 +1,4 @@
+import { RegisterDatabaseModel } from '../../runtime/DatabaseModel.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { TableObject } from './TableObject.js';
 import { DxfObjectCode } from '../DxfObjectCode.js';
@@ -49,3 +50,5 @@ export class VPort extends TableObject {
   }
 }
 InstallViewFields(VPort,fields); InstallVPortUcsRelationships(VPort);
+
+RegisterDatabaseModel('VPort',VPort);

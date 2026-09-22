@@ -1,3 +1,5 @@
+import { HatchSourceRelations } from './Entities/HatchSourceRelations.js';
+import { RegisterDatabaseModel } from '../runtime/DatabaseModel.js';
 // Copyright (c) Daniel Carvajal and netDxf contributors. MIT License; see package LICENSE.
 import * as api from '../index.js';
 import { DxfObject } from './DxfObject.js';
@@ -40,6 +42,7 @@ export class DxfDocument extends DxfObject {
     this.TextStyles.Add(api.TextStyle.Default);this.ApplicationRegistries.Add(api.ApplicationRegistry.Default);
     this.DimensionStyles.Add(api.DimensionStyle.Default);this.MlineStyles.Add(api.MLineStyle.Default);
     this.Layouts.Add(api.Layout.ModelSpace);this.RasterVariables=new api.RasterVariables(this);
+    for(const key of ['SupportFolders','Comments','Classes','Entities']){const value=this[key];Object.defineProperty(this,key,{get:()=>value,enumerable:true,configurable:false});}
   }
   get DrawingVariables(){return this.#variables;}
   get NumHandles(){return this.#handles;}
@@ -160,7 +163,7 @@ export class DxfDocument extends DxfObject {
     if(entity instanceof api.PolyfaceMesh){for(const face of entity.Faces)if(face.Layer!==null){face.Layer=this.Layers.Add(face.Layer,assignHandle);this.Layers.References.get_Item(face.Layer.Name).Add(entity);}Listen(this,entity,'PolyfaceMeshFaceLayerChanged',(sender,e)=>ChangeResource(sender,e,this.Layers));}
     // HATCH is admitted below as a model with relationship-aware Block validation.
     if(entity instanceof api.Hatch){
-      Listen(this,entity,'HatchBoundaryPathAdded',(sender,e)=>{for(const item of e.Item.Entities)if(item.Owner===null)sender.Owner.Entities.Add(item);});
+      Listen(this,entity,'HatchBoundaryPathAdded',(sender,e)=>{HatchSourceRelations.ValidatePathOwner(sender,e.Item,sender.Owner);for(const item of e.Item.Entities)if(item.Owner===null)sender.Owner.Entities.Add(item);});
       Listen(this,entity,'HatchBoundaryPathRemoved',(sender,e)=>{for(const item of e.Item.Entities)sender.Owner.Entities.Remove(item);});
     }
     BindResource(this,entity,'Layer',this.Layers,assignHandle);BindResource(this,entity,'Linetype',this.Linetypes,assignHandle);
@@ -197,3 +200,5 @@ export class DxfDocument extends DxfObject {
 }
 InstallDocumentMetadata(DxfDocument);
 InstallDocumentObjects(DxfDocument);
+
+RegisterDatabaseModel('DxfDocument',DxfDocument);

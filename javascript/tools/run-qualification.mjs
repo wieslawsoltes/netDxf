@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['document-ownership',['tools/document-ownership-differential.mjs']],
   ['drawing-time',['tools/drawing-time-differential.mjs']],
   ['string-enum',['tools/string-enum-differential.mjs']],
   ['object-references',['tools/object-reference-differential.mjs']],

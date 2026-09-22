@@ -1,9 +1,12 @@
 // Input conversion and observation only. Production DxfDocument owns every mutation.
+import { wire as modelWire } from './model-wire.mjs';
+import { Culture } from '../runtime/GeometryRuntime.js';
 import * as api from '../index.js';
 import { resolve, typeName } from './model-types.mjs';
 import { Copy } from '../runtime/GeometryRuntime.js';
 import { HeaderDateTime } from '../runtime/HeaderTime.js';
 import { doubleBits, fromBits } from './wire.mjs';
+import * as apiErrors from '../runtime/Errors.js';
 import { KeyNotFoundException, ArgumentException } from '../runtime/Errors.js';
 export function ownershipRef(item){return item==null?null:{type:item.constructor.name,code:item.CodeName,handle:item.Handle,name:item instanceof api.TableObject?item.Name:null,owner:item.Owner?.Handle??null,ownerCode:item.Owner?.CodeName??null};}
 const tableNames=['VPorts','Views','ApplicationRegistries','Layers','Linetypes','TextStyles','ShapeStyles','DimensionStyles','MlineStyles','UCSs','Blocks','ImageDefinitions','UnderlayDgnDefinitions','UnderlayDwfDefinitions','UnderlayPdfDefinitions','Groups','Layouts'];
@@ -12,16 +15,30 @@ export function ownershipDocument(doc){return {handle:doc.Handle,seed:doc.Drawin
   registry:Array.from(doc.AddedObjects,p=>({key:p.Key,value:ownershipRef(p.Value)})),
   tables:tableNames.map(name=>({name,table:ownershipRef(doc[name]),items:Array.from(doc[name],ownershipRef)})),
   layouts:Array.from(doc.Layouts,l=>({name:l.Name,block:ownershipRef(l.AssociatedBlock),viewport:ownershipRef(l.Viewport),entities:Array.from(l.AssociatedBlock.Entities,ownershipRef),attributes:Array.from(l.AssociatedBlock.AttributeDefinitions.Values,ownershipRef)}))};}
+function layerProperties(p) { return {name:p.Name,flags:p.Flags,linetype:p.LinetypeName,color:modelWire(p.Color),lineweight:p.Lineweight,transparency:modelWire(p.Transparency)}; }
+function layerState(state) { return {common:ownershipRef(state),description:state.Description,current:state.CurrentLayer,paper:state.PaperSpace,properties:Array.from(state.Properties,p=>({key:p.Key,value:layerProperties(p.Value)}))}; }
+function detailed(value) {
+  if(value instanceof api.LayerState)return layerState(value);
+  if(value instanceof api.LayerStateProperties)return layerProperties(value);
+  if(value instanceof api.DxfSortOrderEntry)return {entity:ownershipRef(value.Entity),handle:value.SortHandle};
+  return modelWire(value);
+}
 function wire(value){
-  if(value==null)return null;if(value instanceof api.DxfDocument)return ownershipDocument(value);
+  if(value==null)return null;
+  if(value instanceof api.LayerState)return layerState(value);
+  if(value instanceof api.LayerStateProperties)return layerProperties(value);
+  if(value instanceof api.DxfSortOrderEntry)return {entity:ownershipRef(value.Entity),handle:value.SortHandle};
+  if(value instanceof api.DxfDocument)return ownershipDocument(value);
   if(value instanceof api.DxfObject)return ownershipRef(value);
   if(value instanceof api.DxfObjectReference)return {reference:ownershipRef(value.Reference),uses:value.Uses};
   if(value instanceof api.XData)return {registry:ownershipRef(value.ApplicationRegistry),records:value.XDataRecord.Count};
   if(typeof value==='string'||typeof value==='boolean'||typeof value==='number')return value;
   if(typeof value==='bigint')return {long:value.toString()};
+  if(value instanceof Map)return Array.from(value,([key,value])=>({key:wire(key),value:wire(value)}));
   if(value[Symbol.iterator])return Array.from(value,wire);if(value.MoveNext)return {iterator:true};return {type:value.constructor.name};
 }
 export function documentOwnershipCall(input){
+  api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;api.MathHelper.Epsilon=1e-12;Culture.Current=input.culture??'';api.Text.DefaultMirrText=false;api.MText.DefaultMirrText=false;
   const values=new Map();
   const ref=id=>{if(!values.has(id))throw new KeyNotFoundException();return values.get(id);};
   function read(v){
@@ -39,6 +56,11 @@ export function documentOwnershipCall(input){
     try{
       const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
       switch(step.method){
+        case 'mapping': {
+          const mapping=new Map();for(const [key,value] of step.pairs.map(pair=>pair.map(read))){if(key==null)throw new apiErrors.ArgumentNullException('key');if(mapping.has(key))throw new ArgumentException('Duplicate key.');mapping.set(key,value);}result=mapping;break;
+        }
+        case 'model':result=detailed(target);break;
+        case 'las': {const text=target.ToLasString(input.newLine ?? Culture.NewLine);result={saved:true,text,loaded:layerState(api.LayerState.LoadText(text))};break;}
         case 'new':result=read(step.value);break;
         case 'get':result=target[step.member];break;
         case 'set':{
@@ -54,7 +76,7 @@ export function documentOwnershipCall(input){
         case 'same':result=args[0]===args[1];break;
         default:throw new Error('Unknown ownership operation.');
       }
-      if(step.id)values.set(step.id,result);result=wire(result);
+      if(step.id)values.set(step.id,result);if(!['model','las'].includes(step.method))result=wire(result);
     }catch(e){error=e.name;param=e.ParamName??null;}
     return {result,error,param};
   });
