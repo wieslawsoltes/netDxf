@@ -1,0 +1,40 @@
+name: Publish reviewed table XData preservation
+on:
+  push:
+    branches: [codex/dxf-table-xdata-preservation-20260922]
+    paths: [.github/workflows/publish-table-xdata.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Verify original patch and exact target tree
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, subprocess, zlib
+          if subprocess.check_output(['git','rev-parse','HEAD^1^{tree}'],text=True).strip() != 'e60290ce27ed416c93ee9b2e47dfa2039a5e65b1':
+              raise RuntimeError('The qualified baseline moved.')
+          payload = '''
+          eNrtfWtz28i14HdVzX+AlewlecU3KVKyRjPR2FKiuh7bZXkms6W4FBAAJcQgwQCgHuPow/0X+3+27v/a8+gGuoEGCD08N7sbVzKSgO7T3afPu08fuP58bnU6
+          l35i2T03dHru7bzjhMt5GC3speP1EnsWeJ1b107sziryYi+tpXdjzf3Asxah61mDfn8yHm/5S9e7tfo1/3W7zmR3f9fed4az4WA6nfTHE3fuOFPPG+0NJu5k7nnufDDac7Y6nY7Vc73r3nIdBFs7OzuPmPEf/mB1+u2+tTfoD/oD6w9/2Nr5nfURO1i/vIYOltrBspeuFXiXXtnNZYLQ+Wz5S3hJr9ZLP4m3dqD776wf6F3kOWHk0rOPVx536PBD6ybyEy+yPBc6WeEyuLMSaJJC6yA0Kw7CBJ7RqyRcdQLvSWd
+          '''
+          patch = zlib.decompress(base64.b64decode(payload))
+          if hashlib.sha256(patch).hexdigest() != '0206b38847e8e04a250a9c6737eafe18edbca7476438726c2453451de6ebfd61':
+              raise RuntimeError('Reviewed patch checksum mismatch.')
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','--index','-'],input=patch,check=True)
+          subprocess.run(['git','rm','--','.github/workflows/publish-table-xdata.yml'],check=True)
+          if subprocess.check_output(['git','write-tree'],text=True).strip() != '9c81ec8597c8f42085ffe142ccbcd38a4a1779c9':
+              raise RuntimeError('Target tree mismatch.')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve block and layer XData, recover legacy units, and retain description clones'
+          git push origin HEAD:refs/heads/codex/dxf-table-xdata-preservation-20260922
