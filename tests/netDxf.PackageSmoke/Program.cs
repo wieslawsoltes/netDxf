@@ -1,5 +1,6 @@
 using System.Text;
 using netDxf;
+using netDxf.Blocks;
 using netDxf.Entities;
 using netDxf.Header;
 using netDxf.Tables;
@@ -14,9 +15,16 @@ foreach (bool binary in new[] { false, true })
     var doc = new DxfDocument(version) { BuildDimensionBlocks = true };
     var style = new DimensionStyle("PACKAGE_DIM") { DimPrefix = "S:", DimSuffix = ":END" };
     style.AlternateUnits.LengthUnits = LinearUnitType.WindowsDesktop;
+    style.TextFillColor = new AciColor(2);
+    style.DimArrow1 = new Block("PACKAGE_ARROW", new EntityObject[] { new Line(Vector2.Zero, Vector2.UnitX) });
+    style.DimArrow2 = style.DimArrow1;
+    style.LeaderArrow = style.DimArrow1;
     var dim = new AlignedDimension(Vector2.Zero, new Vector2(10, 0), 3, style) { UserText = " " };
     dim.StyleOverrides.Add(DimensionStyleOverrideType.DimPrefix, "");
     dim.StyleOverrides.Add(DimensionStyleOverrideType.DimSuffix, "");
+    foreach (var reset in new[] { DimensionStyleOverrideType.DimArrow1, DimensionStyleOverrideType.DimArrow2,
+        DimensionStyleOverrideType.LeaderArrow, DimensionStyleOverrideType.TextFillColor })
+        dim.StyleOverrides.Add(reset, null);
     doc.Entities.Add(dim);
     doc.Entities.Add(new Line(new Vector3(1, 2, 3), new Vector3(4, 5, 6)));
     using var stream = new MemoryStream();
@@ -29,6 +37,11 @@ foreach (bool binary in new[] { false, true })
         || dimension.Style.AlternateUnits.LengthUnits != LinearUnitType.WindowsDesktop
         || (string)dimension.StyleOverrides[DimensionStyleOverrideType.DimPrefix].Value != ""
         || (string)dimension.StyleOverrides[DimensionStyleOverrideType.DimSuffix].Value != ""
+        || dimension.Style.TextFillColor.Index != 2
+        || dimension.StyleOverrides[DimensionStyleOverrideType.DimArrow1].Value != null
+        || dimension.StyleOverrides[DimensionStyleOverrideType.DimArrow2].Value != null
+        || dimension.StyleOverrides[DimensionStyleOverrideType.LeaderArrow].Value != null
+        || dimension.StyleOverrides[DimensionStyleOverrideType.TextFillColor].Value != null
         || copy.Entities.Lines.Single().EndPoint != new Vector3(4, 5, 6)
         || copy.Objects.Validate().Count != 0 || !stream.CanRead)
         throw new InvalidOperationException($"Package round trip failed: {version}/{binary}");

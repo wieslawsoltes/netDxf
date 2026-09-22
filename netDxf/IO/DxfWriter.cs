@@ -1203,6 +1203,8 @@ namespace netDxf.IO
             this.chunk.Write(100, SubclassMarker.DimensionStyle);
 
             this.chunk.Write(2, this.EncodeNonAsciiCharacters(style.Name));
+            // The first group 70 is the symbol-table flag field, not DIMTFILLCLR.
+            this.chunk.Write(70, (short) 0);
 
             string units = string.IsNullOrEmpty(style.DimPrefix) ? "" : "<>";
             this.chunk.Write(3, this.EncodeNonAsciiCharacters(style.DimPrefix + units + style.DimSuffix));
@@ -1225,10 +1227,6 @@ namespace netDxf.IO
             {
                 this.chunk.Write(69, (short) 2);
                 this.chunk.Write(70, style.TextFillColor.Index);
-            }
-            else
-            {
-                this.chunk.Write(70, (short) 0);
             }
 
             switch (style.Tolerances.DisplayMethod)
@@ -3474,26 +3472,23 @@ namespace netDxf.IO
                         break;
                     case DimensionStyleOverrideType.LeaderArrow:
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 341));
-                        if (styleOverride.Value != null)
-                        {
-                            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle, ((Block) styleOverride.Value).Record.Handle));
-                        }
+                        // Null explicitly requests the default closed-filled arrow, not inheritance.
+                        xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle,
+                            styleOverride.Value == null ? "0" : ((Block) styleOverride.Value).Record.Handle));
                         break;
                     case DimensionStyleOverrideType.DimArrow1:
                         writeDIMSAH = true;
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 343));
-                        if (styleOverride.Value != null)
-                        {
-                            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle, ((Block) styleOverride.Value).Record.Handle));
-                        }
+                        // Null explicitly requests the default closed-filled arrow, not inheritance.
+                        xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle,
+                            styleOverride.Value == null ? "0" : ((Block) styleOverride.Value).Record.Handle));
                         break;
                     case DimensionStyleOverrideType.DimArrow2:
                         writeDIMSAH = true;
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 344));
-                        if (styleOverride.Value != null)
-                        {
-                            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle, ((Block) styleOverride.Value).Record.Handle));
-                        }
+                        // Null explicitly requests the default closed-filled arrow, not inheritance.
+                        xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.DatabaseHandle,
+                            styleOverride.Value == null ? "0" : ((Block) styleOverride.Value).Record.Handle));
                         break;
                     case DimensionStyleOverrideType.TextStyle:
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 340));
@@ -3504,7 +3499,13 @@ namespace netDxf.IO
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, ((AciColor) styleOverride.Value).Index));
                         break;
                     case DimensionStyleOverrideType.TextFillColor:
-                        if (styleOverride.Value != null)
+                        if (styleOverride.Value == null)
+                        {
+                            // DIMTFILL=0 clears an inherited fill. Omitting it would restore the base setting.
+                            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 69));
+                            xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 0));
+                        }
+                        else
                         {
                             xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 70));
                             xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, ((AciColor) styleOverride.Value).Index));
