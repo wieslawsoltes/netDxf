@@ -5315,10 +5315,8 @@ namespace netDxf.IO
                 {
                     case 1:
                         userText = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
-                        if (string.IsNullOrEmpty(userText.Trim(' ', '\t')))
-                        {
-                            userText = string.Empty;
-                        }
+                        // Group 1 is literal text: exactly one blank suppresses the label.
+                        // Other whitespace is user content, not the default measurement.
                         this.chunk.Next();
                         break;
                     case 2:
