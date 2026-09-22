@@ -84,7 +84,8 @@
     "test:leaders": "node tools/leader-differential.mjs",
     "test:observable-dictionaries": "node tools/observable-dictionary-differential.mjs",
     "test:concrete-dimensions": "node tools/concrete-dimension-differential.mjs",
-    "verify:dimension-source": "node tools/dotnet.mjs native-port --dimensions --check"
+    "verify:dimension-source": "node tools/dotnet.mjs native-port --dimensions --check",
+    "test:object-references": "node tools/object-reference-differential.mjs"
   },
   "repository": {
     "type": "git",

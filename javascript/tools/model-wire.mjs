@@ -27,6 +27,8 @@ function wire(value) {
   if (typeof value === 'boolean') return value;
   if(typeof value.MoveNext==='function'&&'Current' in value)return {type:'Enumerator'};
   if(Object.hasOwn(value,'Key')&&Object.hasOwn(value,'Value'))return [wire(value.Key),wire(value.Value)];
+  if (value instanceof api.DxfObjectReference) return {type:'DxfObjectReference',reference:wire(value.Reference),uses:wire(value.Uses)};
+  if (value instanceof api.DxfObjectReferences) return {type:'DxfObjectReferences',empty:value.IsEmpty(),references:wire(value.ToList())};
   const unitFormat=unitFormatWire(value,wire);if(unitFormat!==undefined)return unitFormat;
   const dimension=dimensionWire(value,wire);if(dimension!==undefined)return dimension;
   const header=headerWire(value,wire);if(header!==undefined)return header;

@@ -133,7 +133,9 @@ export function jsGeometry(input) {
           break;
         case 'snapshot': result = target; break;
         case 'call': {
-          if(type===api.EntityCollection&&step.member==='Remove'&&step.signature)
+          if(type===api.DxfObjectReferences&&step.member==='Add'&&step.signature)
+            result=target.Add(args[0],step.signature[0].startsWith('IEnumerable<'));
+          else if(type===api.EntityCollection&&step.member==='Remove'&&step.signature)
             result=target.Remove(args[0],step.signature[0].startsWith('IEnumerable<'));
           else if(type===api.DxfClassCollection&&['Contains','Remove'].includes(step.member)&&step.signature?.[0]==='DxfClass')
             result=target[step.member](args[0],'DxfClass');

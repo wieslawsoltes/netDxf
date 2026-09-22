@@ -17,3 +17,18 @@
   input.X = 9; event.Item.Value.Y = 8;
   if (event.Item.Value.X !== 1 || event.Item.Value.Y !== 2) throw new Error('Packed event arguments lost value copies.');
 }
+
+{
+  const { DxfObjectReferences, DxfObjectReference, Layer } = await import('@netdxf/javascript');
+  const { DxfObjectReferences: Standalone } = await import('@netdxf/javascript/netDxf/Collections/DxfObjectReferences.js');
+  if (Standalone !== DxfObjectReferences) throw new Error('Reference accounting standalone export differs.');
+  const a=new Layer('Same'),b=new Layer('Same'),refs=new DxfObjectReferences(true);
+  refs.Add(a);refs.Add(a);refs.Add(b);
+  const first=refs.ToList();
+  if(first.Count!==2||first.get_Item(0).Reference!==a||first.get_Item(0).Uses!==2)
+    throw new Error('Packed reference accounting identity failed.');
+  refs.Remove(a);first.Clear();
+  if(refs.ToList().get_Item(0).Uses!==1)throw new Error('Packed reference accounting snapshot failed.');
+  const overflow=new DxfObjectReferences();overflow.Add([new DxfObjectReference(a,2147483647)]);overflow.Add(a);
+  if(overflow.ToList().get_Item(0).Uses!==-2147483648)throw new Error('Packed reference accounting overflow failed.');
+}

@@ -1,3 +1,4 @@
+import { objectReferenceCorpus } from './object-reference-corpus.mjs';
 import { concreteDimensionCorpus } from './concrete-dimension-corpus.mjs';
 import { ObservableDictionaryOracleSession } from './ObservableDictionaryOracleSession.mjs';
 import { observableDictionaryCorpus } from './observable-dictionary-corpus.mjs';
@@ -177,6 +178,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await concreteOracle.close();}
+// Reference accounting follows all prior comparison inputs without replacing any.
+const referenceOracle=new ModelOracleSession();
+try {
+  for(const probe of objectReferenceCorpus()) {
+    const observed=await referenceOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await referenceOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

@@ -24,6 +24,10 @@ internal static partial class Program
         if (value is string textValue) return Utf16Wire(textValue);
         if (value is bool) return value;
         if (value is char character) return new {charCode=(int)character};
+        if (value is DxfObjectReference reference) return new {type="DxfObjectReference",reference=Wire(reference.Reference),uses=Wire(reference.Uses)};
+        if (value.GetType().FullName == "netDxf.Collections.DxfObjectReferences") return new {
+            type="DxfObjectReferences",empty=(bool)value.GetType().GetMethod("IsEmpty")!.Invoke(value,null)!,
+            references=Wire(value.GetType().GetMethod("ToList")!.Invoke(value,null))};
         if (UnitFormatWire(value,out var unitFormatValue)) return unitFormatValue;
         if (DimensionWire(value,out var dimensionValue)) return dimensionValue;
         if (value is IEnumerator && value is not IEnumerable) return new {type="Enumerator"};

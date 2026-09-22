@@ -41,11 +41,15 @@ jobs:
       - run: node javascript/tools/dotnet.mjs geometry
       - run: node javascript/tools/observable-dictionary-differential.mjs
       - if: ${{ !cancelled() }}
-        run: node --test javascript/tests/unit/observable-dictionaries.js
+        run: node javascript/tools/object-reference-differential.mjs
+      - if: ${{ !cancelled() }}
+        run: node --test javascript/tests/unit/observable-dictionaries.js javascript/tests/unit/object-references.js
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: javascript-observable-dictionaries-${{ matrix.os }}-${{ matrix.configuration }}
-          path: javascript/artifacts/observable-dictionary-differential/${{ matrix.configuration }}/results.json
+          path: |
+            javascript/artifacts/observable-dictionary-differential/${{ matrix.configuration }}/results.json
+            javascript/artifacts/object-reference-differential/${{ matrix.configuration }}/results.json
           if-no-files-found: error
           retention-days: 7
