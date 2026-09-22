@@ -50,6 +50,7 @@ namespace netDxf.Entities
             }
 
             string dimText = string.Empty;
+            double alternateMeasurement = measure;
 
             UnitStyleFormat unitFormat = new UnitStyleFormat
             {
@@ -98,6 +99,7 @@ namespace netDxf.Entities
                     scale = layout != null && layout.IsPaperSpace ? -scale : 1.0;
                 }
 
+                alternateMeasurement = measure * scale;
                 if (style.DimRoundoff > 0.0)
                 {
                     measure = MathHelper.RoundToNearest(measure*scale, style.DimRoundoff);
@@ -144,6 +146,9 @@ namespace netDxf.Entities
             }
 
             dimText = string.Format("{0}{1}{2}", prefix, dimText, style.DimSuffix);
+            if (style.AlternateUnits.Enabled && dimType != DimensionType.Angular && dimType != DimensionType.Angular3Point
+                && (string.IsNullOrEmpty(userText) || userText.Contains("<>")))
+                dimText += FormatAlternateUnits(alternateMeasurement, style);
 
             if (!string.IsNullOrEmpty(userText))
             {
@@ -477,6 +482,10 @@ namespace netDxf.Entities
                 TextOffset = dim.Style.TextOffset,
                 TextFractionHeightScale = dim.Style.TextFractionHeightScale,
 
+                // Independent value-object copy: overrides must not edit the base style.
+                AlternateUnits = (DimensionStyleAlternateUnits)dim.Style.AlternateUnits.Clone(),
+                DimScaleOverall = dim.Style.DimScaleOverall,
+
                 // primary units
                 AngularPrecision = dim.Style.AngularPrecision,
                 LengthPrecision = dim.Style.LengthPrecision,
@@ -502,6 +511,7 @@ namespace netDxf.Entities
 
             foreach (DimensionStyleOverride styleOverride in dim.StyleOverrides.Values)
             {
+                ApplyAlternateUnitOverride(copy.AlternateUnits, styleOverride);
                 switch (styleOverride.Type)
                 {
                     case DimensionStyleOverrideType.DimLineColor:
