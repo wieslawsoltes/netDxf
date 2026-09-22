@@ -12,22 +12,29 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
-`88d3168` implements DrawingTime; `0b23eed` implements StringEnum and required
-Node/browser/package/platform qualification. [Drawing utility contracts and
-source-bound results](doc/DRAWING_UTILITIES.md) describe the recovery, language
-adapters and boundaries. The [actual hosted receipt](doc/drawing-utilities-hosted-0b23eed.json)
-retains the successful Ubuntu/Windows Debug/Release matrix.
+`027e619` introduces typed in-memory document ownership; `6665f8c` extends the
+database lifecycles and required verification. [Document ownership contracts and
+source-bound results](doc/DOCUMENT_OWNERSHIP.md) describe actual supported APIs,
+language adapters and remaining boundaries. No unpublished document patch
+survived; this work was reconstructed from the unchanged pinned sources.
 
-The new utility corpora match **32,667 exact operations per configuration**.
-Local checks pass **826 supplemental tests**, **2,820 original JavaScript cases**,
-and **35,309 unchanged C# cases in each configuration**. The offline package
-passes with 448 files. Release inline Chromium executes **140,531 comparisons**,
-with no new utility mismatches, but **83 failures in existing scenarios remain**.
-These results describe the executable `0b23eed` tree, not every later CI job.
+Local Debug and Release match **188 ownership scenarios / 8,130 operations** each.
+The suites pass **2,881 original JavaScript cases**, **867 supplemental tests**,
+and **35,309 unchanged C# cases in each configuration**. This includes **61 new
+complete original erasure cases**, counted separately from 41 new supplemental
+tests. The offline package passes with **487 files**. The dedicated hosted
+Ubuntu/Windows Debug/Release matrix also passed all four profiles; its
+[receipt](doc/document-ownership-hosted-6665f8c.json) records the actual evidence.
 
-The ledger is **324/510 library mirrors**, **53/193 original conformance-file
-mirrors**, and **2,820/35,309 original cases**. File presence does not establish
-complete API or behavioral compatibility. Full-port verification still fails.
+Release inline Chromium executes **140,719 comparisons** with no new ownership
+mismatch or page error, but retains **83 previous-category failures**. HTTP-origin
+navigation is blocked in the local environment. Both full-port gates remain
+failed. These are source-bound local results at `6665f8c`, not blanket CI success.
+
+The ledger is **358/510 library mirrors**, **54/193 original conformance-file
+mirrors**, and **2,881/35,309 original cases**. Presence is not complete API or
+behavioral qualification. Earlier [drawing utility results](doc/DRAWING_UTILITIES.md)
+and other reports remain historical evidence for their named commits.
 
 ## Implemented areas and boundaries
 
@@ -43,8 +50,15 @@ reference accounting, common entity metadata, many primitive/display/curve/surfa
 entities, hatch boundaries, attributes, blocks/INSERT, groups, MLINE,
 layouts/viewports, GEODATA/VBA, dimensions and their source-derived block builder,
 multileaders, classic leaders, and tolerance annotations. These do not establish
-complete registered document ownership, typed transport or rendering of referenced
-resources. Each model's contract and source-bound evidence is documented in `doc/`.
+complete registration for every entity family, typed transport or rendering of
+referenced resources. Each model's contract and source-bound evidence is documented in `doc/`.
+
+The typed document core now connects admitted entities, registered tables, blocks,
+INSERT attributes, model/paper-space layouts, XData and dimension-generated
+blocks. Named-object ownership supports adoption, validation, cloning and guarded
+erasure; added lifecycles cover draw order, spatial filters, plot settings,
+GEODATA and SUN. Layer states support snapshot/restore and explicit LAS adapters.
+Typed DXF IO and specialized stored-entity adoption remain unfinished.
 
 Detailed earlier implementation descriptions remain in the
 [historical overview](https://github.com/wieslawsoltes/netDxf/blob/6852f80d3ca39fb38a5af249a339b6dc3d1db55c/javascript/README.md).
@@ -101,8 +115,8 @@ npm run verify:complete
 ```
 
 `test:differential` continues through independent stages after a failure and keeps
-each log. Individual `test:drawing-time` and `test:string-enum` commands run the
-new comparisons. Generated foundations and concrete dimensions are checked using
+each log. Individual `test:document-ownership`, `test:drawing-time` and
+`test:string-enum` commands run those comparisons. Generated foundations and concrete dimensions are checked using
 `verify:native` and `verify:dimension-source`. Browser checks require real
 Chromium, not a mocked DOM. `DOTNET_ROOT` or `DOTNET` selects an isolated compiler;
 `CHROMIUM` selects a browser executable. See the verification contract for the
@@ -114,9 +128,9 @@ numeric, filesystem, HTTP-origin, performance or full-port requirements.
 
 ## Remaining work and license
 
-Complete typed DxfDocument, registered ownership, typed reading/writing, missing
-APIs, original tests/examples and broad platform/performance qualification remain
-unfinished. There are no throwing generated stubs counted as completed mirrors.
+Complete typed DxfDocument APIs, specialized entity/database ownership, typed
+reading/writing, original tests/examples and broad platform/performance
+qualification remain unfinished. There are no throwing generated stubs counted as completed mirrors.
 
 Original netDxf code retains Daniel Carvajal's MIT license. The mathematical
 adaptations retain LGPL-2.1-or-later, and GTE portions retain Boost Software License
