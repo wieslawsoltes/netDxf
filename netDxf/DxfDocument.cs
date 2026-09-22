@@ -827,6 +827,11 @@ namespace netDxf
 
         internal void AddEntityToDocument(EntityObject entity, bool assignHandle)
         {
+            this.AddEntityToDocument(entity, assignHandle, entity == null ? null : entity.Owner);
+        }
+
+        internal void AddEntityToDocument(EntityObject entity, bool assignHandle, Block owner)
+        {
             // null entities are not allowed
             if (entity == null)
             {
@@ -857,7 +862,7 @@ namespace netDxf
                     this.AddDimensionStyleOverridesReferencedDxfObjects(dim, dim.StyleOverrides, assignHandle);
                     if (this.buildDimensionBlocks)
                     {
-                        Block dimBlock = DimensionBlock.Build(dim, "DimBlock");
+                        Block dimBlock = DimensionBlock.BuildForOwner(dim, "DimBlock", owner);
                         dimBlock.SetName("*D" + ++this.DimensionBlocksIndex, false);
                         dim.Block = this.blocks.Add(dimBlock);
                         this.blocks.References[dimBlock.Name].Add(dim);

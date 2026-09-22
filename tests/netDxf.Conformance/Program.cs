@@ -109,6 +109,7 @@ internal static partial class Program
         RegisterDStyleContainerTests();
         RegisterDimensionTextBlockTests();
         RegisterDimensionTextLiteralTests();
+        RegisterDimensionLabelScaleTests();
         RunOutputSettingsTests();
         RunLayerFilterPointerTests();
         RunLayerIndexTests();

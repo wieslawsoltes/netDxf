@@ -89,18 +89,13 @@ namespace netDxf.Entities
             }
             else
             {
-                double scale = Math.Abs(style.DimScaleLinear);
-                if (owner != null)
+                double scale = style.DimScaleLinear;
+                if (scale < 0.0)
                 {
-                    Layout layout = owner.Record.Layout;
-                    if (layout != null)
-                    {
-                        // if DIMLFAC is negative the scale value is only applied to dimensions in PaperSpace
-                        if (style.DimScaleLinear < 0 && !layout.IsPaperSpace)
-                        {
-                            scale = 1.0;
-                        }
-                    }
+                    // Negative DIMLFAC applies only to an explicit paper-space owner.
+                    // A detached or ordinary block definition has no paper-space context.
+                    Layout layout = owner == null ? null : owner.Record.Layout;
+                    scale = layout != null && layout.IsPaperSpace ? -scale : 1.0;
                 }
 
                 if (style.DimRoundoff > 0.0)
@@ -132,12 +127,12 @@ namespace netDxf.Entities
                     case LinearUnitType.WindowsDesktop:
                         unitFormat.LinearDecimalPlaces = (short) Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalDigits;
                         unitFormat.DecimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-                        dimText = LinearUnitFormat.ToDecimal(measure*style.DimScaleLinear, unitFormat);
+                        dimText = LinearUnitFormat.ToDecimal(measure, unitFormat);
                         break;
                 }
             }
 
-            string prefix = string.Empty;
+            string prefix = style.DimPrefix;
             if (dimType == DimensionType.Diameter)
             {
                 prefix = string.IsNullOrEmpty(style.DimPrefix) ? "Ø" : style.DimPrefix;
@@ -672,39 +667,7 @@ namespace netDxf.Entities
         /// </remarks>
         public static Block Build(Dimension dim, string name)
         {
-            Block block;
-            switch (dim.DimensionType)
-            {
-                case DimensionType.Linear:
-                    block = Build((LinearDimension)dim, name);
-                    break;
-                case DimensionType.Aligned:
-                    block = Build((AlignedDimension)dim, name);
-                    break;
-                case DimensionType.Angular:
-                    block = Build((Angular2LineDimension)dim, name);
-                    break;
-                case DimensionType.Angular3Point:
-                    block = Build((Angular3PointDimension)dim, name);
-                    break;
-                case DimensionType.Diameter:
-                    block = Build((DiametricDimension)dim, name);
-                    break;
-                case DimensionType.Radius:
-                    block = Build((RadialDimension)dim, name);
-                    break;
-                case DimensionType.Ordinate:
-                    block = Build((OrdinateDimension)dim, name);
-                    break;
-                case DimensionType.ArcLength:
-                    block = Build((ArcLengthDimension)dim, name);
-                    break;
-                default:
-                    block = null;
-                    break;
-            }
-
-            return block;
+            return BuildForOwner(dim, name, dim.Owner);
         }
 
         /// <summary>
@@ -720,6 +683,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(AlignedDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(AlignedDimension dim, string name, Block owner)
         {
             DimensionStyle style = BuildDimensionStyleOverride(dim);
             List<EntityObject> entities = new List<EntityObject>();
@@ -771,7 +739,7 @@ namespace netDxf.Entities
                 textRot += MathHelper.PI;
             }
 
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
 
             MText mText = DimensionText(textRef + gap * vec, MTextAttachmentPoint.BottomCenter, textRot, texts[0], style);
             if (mText != null)
@@ -806,6 +774,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(LinearDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(LinearDimension dim, string name, Block owner)
         {
             DimensionStyle style = BuildDimensionStyleOverride(dim);
             List<EntityObject> entities = new List<EntityObject>();
@@ -865,7 +838,7 @@ namespace netDxf.Entities
                 textRot += MathHelper.PI;
             }
 
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
             MText mText = DimensionText(textRef + gap * vec, MTextAttachmentPoint.BottomCenter, textRot, texts[0], style);
             //MText mText = DimensionText(Vector2.Polar(textRef, (style.TextOffset + style.TextHeight*0.5) * style.DimScaleOverall, textRot + MathHelper.HalfPI), MTextAttachmentPoint.MiddleCenter, textRot, texts[0], style);
 
@@ -901,6 +874,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(Angular2LineDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(Angular2LineDimension dim, string name, Block owner)
         {
             double offset = MathHelper.IsZero(dim.Offset) ? MathHelper.Epsilon : dim.Offset;
             double measure = dim.Measurement;
@@ -972,7 +950,7 @@ namespace netDxf.Entities
                 gap *= -1;
             }
 
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
             string dimText;
             Vector2 position;
             MTextAttachmentPoint attachmentPoint;
@@ -1010,6 +988,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(Angular3PointDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(Angular3PointDimension dim, string name, Block owner)
         {
             double offset = MathHelper.IsZero(dim.Offset) ? MathHelper.Epsilon : Math.Abs(dim.Offset);
             double measure = dim.Measurement;
@@ -1082,7 +1065,7 @@ namespace netDxf.Entities
                 gap *= -1;
             }
 
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
             string dimText;
             Vector2 position;
             MTextAttachmentPoint attachmentPoint;
@@ -1120,6 +1103,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(DiametricDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(DiametricDimension dim, string name, Block owner)
         {
             double measure = dim.Measurement;
             double offset = Vector2.Distance(dim.CenterPoint, dim.TextReferencePoint);
@@ -1192,7 +1180,7 @@ namespace netDxf.Entities
             }
 
             // dimension text
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
             string dimText ;
             if (texts.Count > 1)
             {
@@ -1235,6 +1223,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(RadialDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(RadialDimension dim, string name, Block owner)
         {
             double offset = Vector2.Distance(dim.CenterPoint, dim.TextReferencePoint);
             double radius = dim.Measurement;
@@ -1300,7 +1293,7 @@ namespace netDxf.Entities
                 entities.AddRange(CenterCross(centerRef, radius, style));
 
             // dimension text
-            List<string> texts = FormatDimensionText(radius, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(radius, dim.DimensionType, dim.UserText, style, owner);
             string dimText;
             if (texts.Count > 1)
             {
@@ -1344,6 +1337,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(OrdinateDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(OrdinateDimension dim, string name, Block owner)
         {
             DimensionStyle style = BuildDimensionStyleOverride(dim);
             List<EntityObject> entities = new List<EntityObject>();
@@ -1409,7 +1407,7 @@ namespace netDxf.Entities
             // dimension text
             Vector2 midText = Vector2.Polar(ref2, side*style.TextOffset*style.DimScaleOverall, rotation);
 
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
             string dimText;
             if (texts.Count > 1)
             {
@@ -1443,6 +1441,11 @@ namespace netDxf.Entities
         /// Also the list of <see cref="DimensionStyleOverride">dimension style overrides</see> associated with the specified dimension will be applied where necessary.
         /// </remarks>
         public static Block Build(ArcLengthDimension dim, string name)
+        {
+            return Build(dim, name, dim.Owner);
+        }
+
+        private static Block Build(ArcLengthDimension dim, string name, Block owner)
         {
             double offset = MathHelper.IsZero(dim.Offset) ? MathHelper.Epsilon : Math.Abs(dim.Offset);
             double arcAngle = dim.ArcAngle;
@@ -1516,7 +1519,7 @@ namespace netDxf.Entities
                 gap *= -1;
             }
 
-            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, dim.Owner);
+            List<string> texts = FormatDimensionText(measure, dim.DimensionType, dim.UserText, style, owner);
             string dimText;
             Vector2 position;
             MTextAttachmentPoint attachmentPoint;

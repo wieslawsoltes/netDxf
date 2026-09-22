@@ -97,7 +97,7 @@ namespace netDxf.Collections
             //for new block definitions configure its entities
             foreach (EntityObject entity in block.Entities)
             {
-                this.Owner.AddEntityToDocument(entity, assignHandle);
+                this.Owner.AddEntityToDocument(entity, assignHandle, block);
             }
 
             //for new block definitions configure its attributes
@@ -226,7 +226,7 @@ namespace netDxf.Collections
 
         private void Block_EntityAdded(TableObject sender, BlockEntityChangeEventArgs e)
         {
-            this.Owner.AddEntityToDocument(e.Item, string.IsNullOrEmpty(e.Item.Handle));
+            this.Owner.AddEntityToDocument(e.Item, string.IsNullOrEmpty(e.Item.Handle), (Block)sender);
         }
 
         private void Block_EntityRemoved(TableObject sender, BlockEntityChangeEventArgs e)
