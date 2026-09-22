@@ -1,0 +1,25 @@
+name: Publish reviewed dimension affix fix
+on:
+  push:
+    branches: [codex/dxf-dimension-affix-fidelity-20260922]
+    paths: [.github/workflows/publish-dimension-affix.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed source and remove publishing files
+        shell: bash
+        run: |
+          echo '47fcb284f43aef2479c96e299da2c5691dbf241c8180a26f22423f1c44cc4e8f  tools/_publish_dimension_affix.py' | sha256sum --check
+          python3 tools/_publish_dimension_affix.py
+          git add netDxf tests/netDxf.Conformance tools doc/dxf-conformance .github/workflows
+          test "$(git write-tree)" = '1c550202d6197f5b3254265d6a2d6c3863d73e17'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve complete dimension affix pairs and independent alternate header prefixes'
+          git push origin HEAD:refs/heads/codex/dxf-dimension-affix-fidelity-20260922
