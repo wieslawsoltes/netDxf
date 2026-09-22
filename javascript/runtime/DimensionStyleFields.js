@@ -1,11 +1,13 @@
 // Shared storage for dimension styles. Numeric fields retain exact binary64 payloads.
+import { BoxedString } from './BoxedString.js';
 import { MathHelper } from '../netDxf/MathHelper.js';
 import { AngleUnitType } from '../netDxf/Units/AngleUnitType.js';
 import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException } from './Errors.js';
 const reject = value => { throw new ArgumentOutOfRangeException('value', value); };
 export const DimensionChecks = Object.freeze({
   Required(value) { if (value == null) throw new ArgumentNullException('value'); return value; },
-  EmptyString(value) { return value ?? ''; },
+  // Typed string fields use text values; object-valued overrides keep their boxes.
+  EmptyString(value) { return value instanceof BoxedString ? value.Value : value ?? ''; },
   Nonnegative(value) { if (value < 0) reject(value); return value; },
   AtLeastMinusOne(value) { if (value < -1) reject(value); return value; },
   Positive(value) { if (value <= 0) reject(value); return value; },
