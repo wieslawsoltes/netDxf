@@ -2,6 +2,9 @@ name: Release
 on:
   push:
     tags: ['v[0-9]*']
+  pull_request:
+    branches: [netstandard]
+    paths: ['.github/workflows/**', 'tools/ci/**', 'tests/ci_pipeline/**', 'tests/netDxf.PackageSmoke/**']
   workflow_dispatch:
     inputs:
       dry_run:
@@ -36,7 +39,7 @@ jobs:
           REF_TYPE: ${{ github.ref_type }}
           REF_NAME: ${{ github.ref_name }}
           EXPECTED_SHA: ${{ github.sha }}
-          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          DRY_RUN: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         run: python tools/ci/pipeline.py release-plan
   build:
     needs: plan

@@ -42,6 +42,8 @@ jobs:
           test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = false
           gh release download "$TAG" --dir artifacts/packages
       - name: Check exact source, qualification, package targets, symbols and checksums
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
         run: python tools/ci/pipeline.py verify-release
       - name: Publish the verified package and symbols (duplicates remain errors)
         env:

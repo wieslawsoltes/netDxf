@@ -40,6 +40,10 @@ succeeded, do not rerun it as a way to publish NuGet; use the separate publicati
 workflow described below. A failed upload requires inspection of the draft
 before retrying; no blanket `--clobber` or duplicate-success policy is used.
 
+Pipeline-changing pull requests automatically run the complete Release flow in
+nonpublishing mode, including both reusable matrices and the final artifact gate.
+PR events cannot pass the tag-publication plan.
+
 For a nonpublishing rehearsal, manually run **Release** with `dry_run=true`
 (the default). A branch run builds a CI prerelease; a tag run uses its version.
 The same qualification executes and produces `qualified-release` artifacts,
@@ -53,7 +57,8 @@ strict validation, not direct interpolation into shell commands.
 `NUGET_PUBLISH_ENABLED` equals `true`. It runs when a GitHub release is published,
 or manually when the operator selects the release tag. It refuses drafts and
 branch refs, downloads the **already qualified release assets**, verifies their
-checksums, exact source, package identity, five-framework inventory and portable
+checksums, exact source, tag/version equality, full configuration receipt, package
+identity, five-framework inventory and portable
 symbols, then pushes the package and its accompanying symbols. It does not
 rebuild different bytes in a credential-bearing job.
 

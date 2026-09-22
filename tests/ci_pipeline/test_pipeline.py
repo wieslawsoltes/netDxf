@@ -85,12 +85,34 @@ class QualificationTests(unittest.TestCase):
             (folder/'results.json').write_text(json.dumps(result))
             with patch.object(p,'identity',return_value=identity):
                 p.qualify(packages,evidence);p.verify(packages)
+                release=evidence/'dxf-conformance-windows-latest-Release/conformance/results.json'
+                release.write_text('[{"name":"substitution","passed":true}]')
+                with self.assertRaises(ValueError):p.qualify(packages,evidence)
+                release.write_text('[{"name":"one","passed":true}]')
                 reports[0]['timed_out']=True;(folder/'results.json').write_text(json.dumps(result))
                 with self.assertRaises(ValueError):p.qualify(packages,evidence)
                 reports[0]['timed_out']=False;reports.pop();(folder/'results.json').write_text(json.dumps(result))
                 with self.assertRaises(ValueError):p.qualify(packages,evidence)
                 (evidence/'dxf-conformance-windows-latest-Debug/ci-source.json').write_text(json.dumps({**identity,'commit':'c'*40}))
                 with self.assertRaises(ValueError):p.qualify(packages,evidence)
+
+    def test_release_receipt_matrix_is_complete(self):
+        import copy
+        build={'package':p.PACKAGE,'frameworks':list(p.TFMS)}
+        report={**build,'conformance':[{'host':host,'configuration':config,'count':10,'sha256':'d'*64}
+                  for host in ('ubuntu-latest','windows-latest') for config in ('Debug','Release')],
+                'independent_verifiers':len(list((ROOT/'tools').glob('verify_*.py'))),
+                'independent_report_sha256':'e'*64}
+        p.validate_qualification(report,build)
+        for mutation in ('duplicate','zero','unequal','wrong-target','missing-verifier','bad-hash'):
+            broken=copy.deepcopy(report)
+            if mutation=='duplicate':broken['conformance'][3]=broken['conformance'][0]
+            elif mutation=='zero':broken['conformance'][0]['count']=0
+            elif mutation=='unequal':broken['conformance'][0]['count']=11
+            elif mutation=='wrong-target':broken['frameworks'].pop()
+            elif mutation=='missing-verifier':broken['independent_verifiers']-=1
+            else:broken['conformance'][0]['sha256']='not-a-hash'
+            with self.subTest(mutation=mutation),self.assertRaises(ValueError):p.validate_qualification(broken,build)
 
     def test_package_target_and_source_validation(self):
         import zipfile
