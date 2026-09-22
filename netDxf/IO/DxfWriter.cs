@@ -874,7 +874,7 @@ namespace netDxf.IO
                     style.AlternateUnits.SuppressZeroInches));
 
             this.chunk.Write(9, "$DIMAPOST");
-            string altUnits = string.IsNullOrEmpty(style.DimPrefix) ? "" : "[]";
+            string altUnits = string.IsNullOrEmpty(style.AlternateUnits.Prefix) ? "" : "[]";
             this.chunk.Write(1, this.EncodeNonAsciiCharacters(style.AlternateUnits.Prefix + altUnits + style.AlternateUnits.Suffix));
 
             this.chunk.Write(9, "$DIMATFIT");
@@ -1204,7 +1204,7 @@ namespace netDxf.IO
             string units = string.IsNullOrEmpty(style.DimPrefix) ? "" : "<>";
             this.chunk.Write(3, this.EncodeNonAsciiCharacters(style.DimPrefix + units + style.DimSuffix));
 
-            string altUnits = string.IsNullOrEmpty(style.DimPrefix) ? "" : "[]";
+            string altUnits = string.IsNullOrEmpty(style.AlternateUnits.Prefix) ? "" : "[]";
             this.chunk.Write(4, this.EncodeNonAsciiCharacters(style.AlternateUnits.Prefix + altUnits + style.AlternateUnits.Suffix));
 
             this.chunk.Write(40, style.DimScaleOverall);
@@ -2286,7 +2286,7 @@ namespace netDxf.IO
             // dimension style overrides info
             if (leader.StyleOverrides.Count > 0)
             {
-                this.AddDimensionStyleOverridesXData(leader.XData, leader.StyleOverrides);
+                this.AddDimensionStyleOverridesXData(leader.XData, leader.StyleOverrides, leader.Style);
             }
 
             this.WriteXData(leader.XData);
@@ -3414,7 +3414,7 @@ namespace netDxf.IO
             // add dimension style overrides info
             if (dim.StyleOverrides.Count > 0)
             {
-                this.AddDimensionStyleOverridesXData(dim.XData, dim.StyleOverrides);
+                this.AddDimensionStyleOverridesXData(dim.XData, dim.StyleOverrides, dim.Style);
             }
 
             switch (dim.DimensionType)
@@ -3446,11 +3446,13 @@ namespace netDxf.IO
             }
         }
 
-        private void AddDimensionStyleOverridesXData(XDataDictionary xdata, DimensionStyleOverrideDictionary overrides)
+        private void AddDimensionStyleOverridesXData(XDataDictionary xdata, DimensionStyleOverrideDictionary overrides, DimensionStyle style)
         {
             bool writeDIMPOST = false;
-            string prefix = string.Empty;
-            string suffix = string.Empty;
+            // DIMPOST is one combined value. Preserve the inherited component when
+            // only the other component is overridden; an explicit empty string clears it.
+            string prefix = style.DimPrefix;
+            string suffix = style.DimSuffix;
             bool writeDIMSAH = false;
             bool writeDIMZIN = false;
             bool writeDIMAZIN = false;
@@ -3465,8 +3467,9 @@ namespace netDxf.IO
             LinearUnitType altLinearUnitType = LinearUnitType.Decimal;
             bool altStackedUnits = false;
             bool writeDIMAPOST = false;
-            string altPrefix = string.Empty;
-            string altSuffix = string.Empty;
+            // DIMAPOST follows the same combined-value rule independently of DIMPOST.
+            string altPrefix = style.AlternateUnits.Prefix;
+            string altSuffix = style.AlternateUnits.Suffix;
             bool writeDIMALTZ = false;
             bool altSuppressLinearLeadingZeros = false;
             bool altSuppressLinearTrailingZeros = false;

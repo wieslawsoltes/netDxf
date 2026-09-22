@@ -5583,15 +5583,9 @@ namespace netDxf.IO
 
                                     string dimpost = this.DecodeEncodedNonAsciiCharacters((string) data.Value);
                                     string[] textPrefixSuffix = GetDimStylePrefixAndSuffix(dimpost, '<', '>');
-                                    if (!string.IsNullOrEmpty(textPrefixSuffix[0]))
-                                    {
-                                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimPrefix, textPrefixSuffix[0]));
-                                    }
-
-                                    if (!string.IsNullOrEmpty(textPrefixSuffix[1]))
-                                    {
-                                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimSuffix, textPrefixSuffix[1]));
-                                    }
+                                    // The stored pair overrides both components, including empty values.
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimPrefix, textPrefixSuffix[0]));
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.DimSuffix, textPrefixSuffix[1]));
 
                                     break;
                                 case 4: // DIMAPOST
@@ -5602,15 +5596,9 @@ namespace netDxf.IO
 
                                     string dimapost = this.DecodeEncodedNonAsciiCharacters((string) data.Value);
                                     string[] altTextPrefixSuffix = GetDimStylePrefixAndSuffix(dimapost, '[', ']');
-                                    if (!string.IsNullOrEmpty(altTextPrefixSuffix[0]))
-                                    {
-                                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsPrefix, altTextPrefixSuffix[0]));
-                                    }
-
-                                    if (!string.IsNullOrEmpty(altTextPrefixSuffix[1]))
-                                    {
-                                        overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsSuffix, altTextPrefixSuffix[1]));
-                                    }
+                                    // The stored pair overrides both components, including empty values.
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsPrefix, altTextPrefixSuffix[0]));
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.AltUnitsSuffix, altTextPrefixSuffix[1]));
 
                                     break;
                                 case 40: // DIMSCALE
