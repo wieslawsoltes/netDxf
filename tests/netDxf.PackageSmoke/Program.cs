@@ -6,7 +6,14 @@ using netDxf.Header;
 using netDxf.Tables;
 using netDxf.Units;
 
+#if !NETFRAMEWORK
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+// The predecessor of this fixed positive finite value is available on every target.
+double nearTurn = BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(360.0) - 1);
+#if NET6_0_OR_GREATER
+if (nearTurn != Math.BitDecrement(360.0)) throw new InvalidOperationException("Portable endpoint fixture differs from BitDecrement");
+#endif
 int count = 0;
 foreach (var version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007,
     DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })
@@ -36,7 +43,7 @@ foreach (bool binary in new[] { false, true })
     circle.Radius = 3;
     var arc = new Arc(new Vector3(4, 5, 6), 4, 30, 210) { ProxyGraphics = circularProxy };
     arc.StartAngle = 1e-13;
-    arc.EndAngle = Math.BitDecrement(360);
+    arc.EndAngle = nearTurn;
     if (circle.ProxyGraphics != null || arc.ProxyGraphics != null)
         throw new InvalidOperationException("Circular edit retained stale proxy graphics");
     doc.Entities.Add(circle);
@@ -46,7 +53,7 @@ foreach (bool binary in new[] { false, true })
     stream.Position = 0;
     var copy = DxfDocument.Load(stream) ?? throw new InvalidOperationException("Package load failed");
     if (copy.Entities.Circles.Single().Radius != 3 || copy.Entities.Arcs.Single().StartAngle != 1e-13
-        || copy.Entities.Arcs.Single().EndAngle != Math.BitDecrement(360)
+        || copy.Entities.Arcs.Single().EndAngle != nearTurn
         || copy.Entities.Circles.Single().ProxyGraphics != null || copy.Entities.Arcs.Single().ProxyGraphics != null)
         throw new InvalidOperationException("Installed circular edit round trip failed");
     var dimension = copy.Entities.Dimensions.Single();
@@ -152,3 +159,6 @@ foreach (bool binary in new[] { false, true })
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
+#if PACKAGE_TARGET_SMOKE
+TargetAssetEvidence.Complete(count);
+#endif
