@@ -85,6 +85,10 @@ internal static partial class Program
                 object? target=step.TryGetProperty("target",out var targetId)?Values[targetId.GetString()!]:null;
                 string member=step.TryGetProperty("member",out var key)?key.GetString()!:"";
                 switch(method){
+                    case "geometry-internal-get":result=RetainedGet(target!,step.GetProperty("member").GetString()!);break;
+                    case "geometry-load":result=TableGeometryLoad(step,(DxfDocument)target!);break;
+                    case "geometry-model":result=TableGeometrySnapshot(target);break;
+                    case "geometry-call":result=TableGeometryCall(step,target);break;
                     case "table-load":result=TableStyleLoad(step,(DxfDocument)target!);break;
                     case "table-model":result=TableStyleSnapshot(target);break;
                     case "table-call":result=TableStyleCall(step,target);break;
@@ -123,7 +127,7 @@ internal static partial class Program
                     default:throw new ArgumentException("Unknown ownership method "+method);
                 }
                 if(step.TryGetProperty("id",out var id))Values[id.GetString()!]=result;
-                if(method!="model"&&method!="las"&&method!="retained-model"&&method!="manager-model"&&method!="table-model")result=OwnershipWire(result);
+                if(method!="model"&&method!="las"&&method!="retained-model"&&method!="manager-model"&&method!="table-model"&&method!="geometry-model")result=OwnershipWire(result);
             }catch(Exception e){while(e is TargetInvocationException&&e.InnerException!=null)e=e.InnerException;error=e.GetType().Name;param=(e as ArgumentException)?.ParamName;}
             results.Add(new {result,error,param});
         }

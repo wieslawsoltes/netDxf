@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['table-geometry',['tools/table-geometry-differential.mjs']],
   ['table-styles',['tools/table-style-differential.mjs']],
   ['section-manager',['tools/section-manager-differential.mjs']],
   ['retained-polylines',['tools/retained-polyline-differential.mjs']],

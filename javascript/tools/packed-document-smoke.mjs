@@ -73,3 +73,19 @@
   const map=new a.DxfStoredCellStyleMap(d,tags,s=>s);d.NamedObjects.Add('CELL_MAP',map);map.Resolve(h=>d.GetObjectByHandle(h));
   const entries=map.Entries;map.ReplaceEntryNames(['After']);if(map.Entries.get_Item(0).Name!=='After'||entries.get_Item(0).Name!=='Before'||d.Objects.Validate().Count!==0)throw new Error('Packed CELLSTYLEMAP snapshot failed.');
 }
+
+// TABLEGEOMETRY values and loaded-packet edits use only the installed package.
+{
+  const api = await import('@netdxf/javascript');
+  const module = await import('@netdxf/javascript/netDxf/Objects/DxfStoredTableGeometry.js');
+  if (module.DxfStoredTableGeometry !== api.DxfStoredTableGeometry) throw new Error('TABLEGEOMETRY standalone export differs.');
+  const doc = new api.DxfDocument(api.DxfVersion.AutoCad2018);
+  const packet = [[100,'AcDbTableGeometry'],[90,0],[91,0],[92,0]].map(([code,value])=>new api.DxfTag(code,value));
+  const geometry = new api.DxfStoredTableGeometry(doc,packet);
+  doc.NamedObjects.Add('geometry',geometry);geometry.Resolve(handle=>doc.StoredTableHandleTarget(handle));
+  const value = new api.DxfStoredTableCellGeometry(new api.Vector3(-0,1,2),api.Vector3.Zero,-1,2,3,4,5);
+  const cell = new api.DxfStoredTableGeometryCell(0,-0,1,doc.TextStyles.get_Item('Standard'),[value]);
+  geometry.ReplaceGeometry(7,8,[cell,cell]);const prior=geometry.Payload;
+  geometry.ReplaceGeometry(7,8,[cell,cell]);
+  if(geometry.Payload!==prior||geometry.References.Count!==2||!Object.is(geometry.Cells.get_Item(0).WidthWithGap,-0)||doc.Objects.Validate().Count!==0)throw new Error('Packed TABLEGEOMETRY edit differs.');
+}

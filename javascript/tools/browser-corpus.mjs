@@ -1,3 +1,4 @@
+import { tableGeometryCorpus } from './table-geometry-corpus.mjs';
 import { tableStyleCorpus } from './table-style-corpus.mjs';
 import { sectionManagerCorpus } from './section-manager-corpus.mjs';
 import { retainedPolylineCorpus } from './retained-polyline-corpus.mjs';
@@ -258,6 +259,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await tableOracle.close();}
+// Append all TABLEGEOMETRY observations after the pre-existing corpora.
+const tableGeometryOracle=new DocumentOracleSession();
+try {
+  for(const probe of tableGeometryCorpus()) {
+    const observed=await tableGeometryOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await tableGeometryOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

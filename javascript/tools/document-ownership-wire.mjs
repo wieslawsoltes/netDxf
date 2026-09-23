@@ -1,3 +1,4 @@
+import { tableGeometryLoad, tableGeometryCall, tableGeometrySnapshot } from './table-geometry-wire.mjs';
 import { tableStyleLoad, tableStyleCall, tableStyleSnapshot } from './table-style-wire.mjs';
 import { managerCall, managerLoad, managerSnapshot } from './section-manager-wire.mjs';
 import { createRetainedParent, retainedSnapshot, retainedSet } from './retained-polyline-wire.mjs';
@@ -61,6 +62,10 @@ export function documentOwnershipCall(input){
       const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
       if(target==null&&['get','set','item','call','append-loaded'].includes(step.method))throw new apiErrors.NullReferenceException();
       switch(step.method){
+        case 'geometry-internal-get':result=target[step.member];break;
+        case 'geometry-load':result=tableGeometryLoad(step,target,read);break;
+        case 'geometry-model':result=tableGeometrySnapshot(target);break;
+        case 'geometry-call':result=tableGeometryCall(step,target,read,values);break;
         case 'table-load':result=tableStyleLoad(step,target,read);break;
         case 'table-model':result=tableStyleSnapshot(target);break;
         case 'table-call':result=tableStyleCall(step,target,read,values);break;
@@ -94,7 +99,7 @@ export function documentOwnershipCall(input){
         case 'same':result=args[0]===args[1];break;
         default:throw new Error('Unknown ownership operation.');
       }
-      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model','table-model'].includes(step.method))result=wire(result);
+      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model','table-model','geometry-model'].includes(step.method))result=wire(result);
     }catch(e){error=e.name;param=e.ParamName??null;}
     return {result,error,param};
   });
