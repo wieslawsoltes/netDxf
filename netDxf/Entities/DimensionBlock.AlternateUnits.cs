@@ -51,7 +51,8 @@ namespace netDxf.Entities
             }
             // Limit the scope of stacked MTEXT formatting to the alternate value.
             if (text.StartsWith("\\A1;", StringComparison.Ordinal)) text = "{" + text + "}";
-            return "[" + alternate.Prefix + text + alternate.Suffix + "]";
+            return "[" + FormatToleranceLabel(alternate.Prefix + text + alternate.Suffix, scaledMeasurement,
+                DimensionType.Linear, style, true) + "]";
         }
 
         private static void ApplyAlternateUnitOverride(DimensionStyleAlternateUnits alternate, DimensionStyleOverride item)

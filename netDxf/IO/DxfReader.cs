@@ -2168,20 +2168,8 @@ namespace netDxf.IO
             style.Tolerances.AlternateSuppressZeroFeet = suppress[2];
             style.Tolerances.AlternateSuppressZeroInches = suppress[3];
 
-            if (dimtol == 0 && dimlim == 0)
-            {
-                style.Tolerances.DisplayMethod =  DimensionStyleTolerancesDisplayMethod.None;
-            }
-            if (dimtol == 1 && dimlim == 0)
-            {
-                style.Tolerances.DisplayMethod =
-                    MathHelper.IsEqual(style.Tolerances.UpperLimit, style.Tolerances.LowerLimit) ?
-                    DimensionStyleTolerancesDisplayMethod.Symmetrical : DimensionStyleTolerancesDisplayMethod.Deviation;
-            }
-            if (dimtol == 0 && dimlim == 1)
-            {
-                style.Tolerances.DisplayMethod = DimensionStyleTolerancesDisplayMethod.Limits;
-            }
+            style.Tolerances.DisplayMethod = DimensionToleranceSettings.Decode(dimtol, dimlim,
+                style.Tolerances.UpperLimit, style.Tolerances.LowerLimit);
 
             string[] textPrefixSuffix = GetDimStylePrefixAndSuffix(dimpost, '<', '>');
             style.DimPrefix = textPrefixSuffix[0];
@@ -5444,7 +5432,7 @@ namespace netDxf.IO
             return dim;
         }
 
-        private List<DimensionStyleOverride> ReadDimensionStyleOverrideXData(XData xDataOverrides)
+        private List<DimensionStyleOverride> ReadDimensionStyleOverrideXData(XData xDataOverrides, DimensionStyle baseStyle)
         {
             List<DimensionStyleOverride> overrides = new List<DimensionStyleOverride>();
             
@@ -5460,8 +5448,9 @@ namespace netDxf.IO
 
             short dimtol = -1;
             short dimlim = -1;
-            double dimtm = 0.0;
-            double dimtp = 0.0;
+            double dimtm = DimensionToleranceSettings.Lower(baseStyle.Tolerances);
+            double dimtp = baseStyle.Tolerances.UpperLimit;
+            bool hasToleranceValue = false;
             short dimtzin = -1;
             short dimalttz = -1;
 
@@ -5603,7 +5592,7 @@ namespace netDxf.IO
                                     }
 
                                     dimtp = (double) data.Value;
-                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesUpperLimit, dimtp));
+                                    hasToleranceValue = true;
                                     break;
                                 case 48: // DIMTM
                                     if (data.Code != XDataCode.Real)
@@ -5612,7 +5601,7 @@ namespace netDxf.IO
                                     }
 
                                     dimtm = (double) data.Value;
-                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesLowerLimit, dimtm));
+                                    hasToleranceValue = true;
                                     break;
                                 case 49: // DIMFXL
                                     if (data.Code != XDataCode.Real)
@@ -6254,20 +6243,15 @@ namespace netDxf.IO
                 overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesAltSuppressZeroInches, suppress[3]));
             }
 
-            if (dimtol == 0 && dimlim == 0)
+            if (dimtol >= 0 || dimlim >= 0 || hasToleranceValue)
             {
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.None));
-            }
-            else if (dimtol == 1 && dimlim == 0)
-            {
+                short effectiveTol = dimtol >= 0 ? dimtol : DimensionToleranceSettings.ToleranceFlag(baseStyle.Tolerances);
+                short effectiveLim = dimlim >= 0 ? dimlim :
+                    baseStyle.Tolerances.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Limits ? (short) 1 : (short) 0;
                 overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod,
-                    MathHelper.IsEqual(dimtm, dimtp)
-                        ? DimensionStyleTolerancesDisplayMethod.Symmetrical
-                        : DimensionStyleTolerancesDisplayMethod.Deviation));
-            }
-            else if (dimtol == 0 && dimlim == 1)
-            {
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.Limits));
+                    DimensionToleranceSettings.Decode(effectiveTol, effectiveLim, dimtp, dimtm)));
+                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesUpperLimit, dimtp));
+                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesLowerLimit, dimtm));
             }
 
             return overrides;
@@ -10961,14 +10945,14 @@ namespace netDxf.IO
             {
                 if (dim.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
                 {
-                    dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
+                    dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides, dim.Style));
                 }
             }
             foreach (Leader leader in this.doc.Blocks.SelectMany(block => block.Entities).OfType<Leader>().ToArray())
             {
                 if (leader.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
                 {
-                    leader.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
+                    leader.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides, leader.Style));
                 }
             }
 

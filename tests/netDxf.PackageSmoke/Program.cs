@@ -45,6 +45,28 @@ foreach (bool binary in new[] { false, true })
         || copy.Entities.Lines.Single().EndPoint != new Vector3(4, 5, 6)
         || copy.Objects.Validate().Count != 0 || !stream.CanRead)
         throw new InvalidOperationException($"Package round trip failed: {version}/{binary}");
+    // Exercise the installed package's tolerance renderer and coupled wire settings.
+    dimension.UserText = "<>";
+    dimension.Style.DimLengthUnits = LinearUnitType.Decimal;
+    dimension.Style.LengthPrecision = 2;
+    dimension.Style.TextFractionHeightScale = 0.5;
+    dimension.Style.Tolerances.DisplayMethod = DimensionStyleTolerancesDisplayMethod.Symmetrical;
+    dimension.Style.Tolerances.UpperLimit = 0.25;
+    dimension.Style.Tolerances.LowerLimit = 99; // Inactive for symmetric tolerances.
+    dimension.Style.Tolerances.Precision = 3;
+    dimension.Update();
+    if (!dimension.Block.Entities.OfType<MText>().Single().Value.Contains("±0.250"))
+        throw new InvalidOperationException("Installed tolerance generation failed");
+    using var toleranceStream = new MemoryStream();
+    if (!copy.Save(toleranceStream, binary)) throw new InvalidOperationException("Tolerance package save failed");
+    toleranceStream.Position = 0;
+    var toleranceCopy = DxfDocument.Load(toleranceStream) ?? throw new InvalidOperationException("Tolerance package load failed");
+    var toleranceDimension = toleranceCopy.Entities.Dimensions.Single();
+    toleranceDimension.Update();
+    if (toleranceDimension.Style.Tolerances.DisplayMethod != DimensionStyleTolerancesDisplayMethod.Symmetrical
+        || toleranceDimension.Style.Tolerances.LowerLimit != 0.25
+        || !toleranceDimension.Block.Entities.OfType<MText>().Single().Value.Contains("±0.250"))
+        throw new InvalidOperationException("Installed symmetric tolerance round trip failed");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
