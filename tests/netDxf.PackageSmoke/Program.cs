@@ -216,6 +216,28 @@ foreach (bool binary in new[] { false, true })
     if (pointCopy.Entities.Points.Single().Position != new Vector3(2,6,12)
         || pointCopy.Entities.Points.Single().Thickness != -8)
         throw new InvalidOperationException("Installed POINT extrusion round trip failed");
+    // Switching from a symmetric base must recover its inactive lower allowance.
+    var transitionStyle = new DimensionStyle("PACKAGE_TRANSITION") { TextFractionHeightScale = .5 };
+    transitionStyle.Tolerances.DisplayMethod = DimensionStyleTolerancesDisplayMethod.Symmetrical;
+    transitionStyle.Tolerances.UpperLimit = .25; transitionStyle.Tolerances.LowerLimit = .125;
+    transitionStyle.Tolerances.Precision = 3;
+    var transition = new AlignedDimension(Vector2.Zero, new Vector2(10,0), 3, transitionStyle) { UserText = "<>" };
+    transition.StyleOverrides.Add(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.Deviation);
+    var transitionDoc = new DxfDocument(version) { BuildDimensionBlocks = true }; transitionDoc.Entities.Add(transition);
+    string transitionLabel = transition.Block.Entities.OfType<MText>().Single().Value;
+    using var transitionStream = new MemoryStream();
+    if (!transitionDoc.Save(transitionStream,binary)) throw new InvalidOperationException("Tolerance-transition package save failed");
+    if (transition.StyleOverrides.Count != 1 || transitionStyle.Tolerances.LowerLimit != .125)
+        throw new InvalidOperationException("Tolerance-transition save mutated source");
+    transitionStream.Position = 0;
+    var transitionCopy = DxfDocument.Load(transitionStream) ?? throw new InvalidOperationException("Tolerance-transition package load failed");
+    var transitionDim = transitionCopy.Entities.Dimensions.Single();
+    if (!transitionDim.StyleOverrides.ContainsType(DimensionStyleOverrideType.TolerancesLowerLimit)
+        || (double)transitionDim.StyleOverrides[DimensionStyleOverrideType.TolerancesLowerLimit].Value != .125)
+        throw new InvalidOperationException("Installed package lost reactivated tolerance lower allowance");
+    transitionDim.Update();
+    if (transitionDim.Block.Entities.OfType<MText>().Single().Value != transitionLabel)
+        throw new InvalidOperationException("Installed package changed deviation label after reload");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");

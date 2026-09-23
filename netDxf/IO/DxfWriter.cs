@@ -3746,9 +3746,11 @@ namespace netDxf.IO
 
             // Preserve independent native field absence (PR #185). Only synthesize
             // a lower field when symmetric semantics cannot use the inherited lower.
+            // The table writes the effective symmetric lower value, not an inactive
+            // authored lower property. A method change can reactivate that property:
+            // materialize it only when the serialized base would inherit a different value.
             if ((writeToleranceMethod || writeToleranceUpper || writeToleranceLower)
-                && tolerance.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Symmetrical
-                && DimensionToleranceSettings.Lower(style.Tolerances) != tolerance.UpperLimit)
+                && DimensionToleranceSettings.Lower(style.Tolerances) != DimensionToleranceSettings.Lower(tolerance))
                 writeToleranceLower = true;
             if (writeToleranceMethod)
             {
