@@ -12,32 +12,33 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
-`361b895` extends typed ownership to registered MULTILEADER and SECTION, including
-style adoption, live references, settings, mapped graph cloning and guarded
-erasure. [Registered annotation contracts and evidence](doc/REGISTERED_ANNOTATIONS.md)
-describe the supported scope and remaining boundaries.
+`89c7cc8` connects retained Polyline3D, PolygonMesh, PolyfaceMesh and legacy
+Polyline2D chains to the typed document registry. `fae312d` supplies independent
+qualification and required integration. [Retained polyline contracts and
+source-bound results](doc/RETAINED_POLYLINES.md) describe stable child handles,
+resource binding, guarded removal and registered 3D vertex editing.
 
-Local Debug and Release match **112 annotation scenarios / 6,633 operations**,
-plus the existing **188 ownership scenarios / 8,130 operations** and detached
-multileader corpus. The suites pass **2,905 original JavaScript cases**, **886
-supplemental tests**, and **35,309 unchanged C# cases in each configuration**.
-This continuation adds 24 complete original cases and 19 supplemental tests.
-The offline-installed package passes with **490 files**. The expanded hosted
-Ubuntu/Windows Debug/Release matrix also passed all four profiles, including the
-entire mirrored suite. `5451075` supplies the Windows bridge-build prerequisite;
-[the receipt](doc/registered-annotations-hosted-5451075.json) retains the initial
-failure and corrected results.
+Local Debug and Release each match **181 retained scenarios / 5,419 operations**,
+plus **188 ownership scenarios / 8,130 operations** and **112 annotation scenarios
+/ 6,633 operations**. The suites pass **2,905 original JavaScript cases**, **908
+supplemental tests** and **35,309 unchanged C# cases in each configuration**.
+There are 22 new supplemental tests, not additional original-case identities.
+The offline-installed package passes with **496 files**. The hosted
+Ubuntu/Windows Debug/Release matrix passes all four profiles, including the full
+mirrored original suite; its [receipt](doc/retained-polylines-hosted-fae312d.json)
+retains all 12 actual differential reports and original-suite metadata/hashes.
 
-Release inline Chromium executes **140,831 comparisons**, with no new annotation
-mismatch or page error, but **87 failures in other categories remain**. Both
-full-port gates still fail. The HTTP-origin and Debug browser modes and other
-unexecuted qualification categories are not counted as passing.
+Release inline Chromium executes all **141,012 comparisons**, with no retained
+case mismatch or page error, but **87 earlier-category failures remain**. Both
+full-port gates still fail. The synthetic internal retained fixtures qualify
+registration/topology, not typed DXF reading, writing or round-trip fidelity.
+Unexecuted or unavailable qualification categories are not counted as passing.
 
-The ledger is **361/510 library mirrors**, **56/193 conformance-file mirrors**,
+The ledger is **366/510 library mirrors**, **56/193 conformance-file mirrors**,
 and **2,905/35,309 original cases**. Presence is not complete API or behavioral
-qualification. Earlier [document ownership](doc/DOCUMENT_OWNERSHIP.md),
-[drawing utility](doc/DRAWING_UTILITIES.md) and other reports retain historical
-results for their named commits.
+qualification. Earlier [registered annotations](doc/REGISTERED_ANNOTATIONS.md),
+[document ownership](doc/DOCUMENT_OWNERSHIP.md), [drawing utilities](doc/DRAWING_UTILITIES.md)
+and other reports retain historical results for their named commits.
 
 ## Implemented areas and boundaries
 
@@ -62,8 +63,10 @@ blocks. Named-object ownership supports adoption, validation, cloning and guarde
 erasure; added lifecycles cover draw order, spatial filters, plot settings,
 GEODATA and SUN. Registered MULTILEADER/SECTION now share document ownership,
 including mapped SECTION graph cloning and erasure. Layer states support
-snapshot/restore and explicit LAS adapters.
-Typed DXF IO and specialized stored-entity adoption remain unfinished.
+snapshot/restore and explicit LAS adapters. Retained polyline/mesh chains now
+share document registration, stable child identities and dependency guards;
+3D retained vertex editing uses the actual document allocator. Typed DXF IO and
+remaining specialized stored-entity adoption are still unfinished.
 
 Detailed earlier implementation descriptions remain in the
 [historical overview](https://github.com/wieslawsoltes/netDxf/blob/6852f80d3ca39fb38a5af249a339b6dc3d1db55c/javascript/README.md).
@@ -120,9 +123,9 @@ npm run verify:complete
 ```
 
 `test:differential` continues through independent stages after a failure and keeps
-each log. Individual `test:registered-annotations`, `test:document-ownership`,
-`test:drawing-time` and
-`test:string-enum` commands run those comparisons. Generated foundations and concrete dimensions are checked using
+each log. Individual `test:retained-polylines`, `test:registered-annotations`,
+`test:document-ownership`, `test:drawing-time` and `test:string-enum` commands run
+those comparisons. Generated foundations and concrete dimensions are checked using
 `verify:native` and `verify:dimension-source`. Browser checks require real
 Chromium, not a mocked DOM. `DOTNET_ROOT` or `DOTNET` selects an isolated compiler;
 `CHROMIUM` selects a browser executable. See the verification contract for the
