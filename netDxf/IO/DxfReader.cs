@@ -2175,7 +2175,7 @@ namespace netDxf.IO
             if (dimtol == 1 && dimlim == 0)
             {
                 style.Tolerances.DisplayMethod =
-                    MathHelper.IsEqual(style.Tolerances.UpperLimit, style.Tolerances.LowerLimit) ?
+                    style.Tolerances.UpperLimit == style.Tolerances.LowerLimit ?
                     DimensionStyleTolerancesDisplayMethod.Symmetrical : DimensionStyleTolerancesDisplayMethod.Deviation;
             }
             if (dimtol == 0 && dimlim == 1)
@@ -5444,7 +5444,7 @@ namespace netDxf.IO
             return dim;
         }
 
-        private List<DimensionStyleOverride> ReadDimensionStyleOverrideXData(XData xDataOverrides)
+        private List<DimensionStyleOverride> ReadDimensionStyleOverrideXData(XData xDataOverrides, DimensionStyle baseStyle)
         {
             List<DimensionStyleOverride> overrides = new List<DimensionStyleOverride>();
             
@@ -5460,8 +5460,9 @@ namespace netDxf.IO
 
             short dimtol = -1;
             short dimlim = -1;
-            double dimtm = 0.0;
-            double dimtp = 0.0;
+            // Omitted DSTYLE bounds inherit from the resolved base style, not zero.
+            double dimtm = baseStyle.Tolerances.LowerLimit;
+            double dimtp = baseStyle.Tolerances.UpperLimit;
             short dimtzin = -1;
             short dimalttz = -1;
 
@@ -6261,7 +6262,7 @@ namespace netDxf.IO
             else if (dimtol == 1 && dimlim == 0)
             {
                 overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod,
-                    MathHelper.IsEqual(dimtm, dimtp)
+                    dimtm == dimtp
                         ? DimensionStyleTolerancesDisplayMethod.Symmetrical
                         : DimensionStyleTolerancesDisplayMethod.Deviation));
             }
@@ -10961,14 +10962,14 @@ namespace netDxf.IO
             {
                 if (dim.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
                 {
-                    dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
+                    dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides, dim.Style));
                 }
             }
             foreach (Leader leader in this.doc.Blocks.SelectMany(block => block.Entities).OfType<Leader>().ToArray())
             {
                 if (leader.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
                 {
-                    leader.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
+                    leader.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides, leader.Style));
                 }
             }
 
