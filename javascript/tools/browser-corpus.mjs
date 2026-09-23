@@ -1,3 +1,5 @@
+import { transportSectionsCorpus } from './transport-sections-corpus.mjs';
+import { ValidateTransportObservation } from './transport-sections-observation.mjs';
 import { gteCorpus } from './gte-corpus.mjs';
 import { GteOracleSession } from './GteOracleSession.mjs';
 import { codecReadersCorpus } from './codec-readers-corpus.mjs';
@@ -319,6 +321,16 @@ try {
   }
 } finally { await gteOracle.close(); }
 const gteManifest = JSON.parse(fs.readFileSync(path.join(javascriptRoot,'gte-port-manifest.json'),'utf8'));
+// Typed section IO inputs follow every preceding comparison without removing any.
+const transportOracle=new ModelOracleSession();
+try {
+  for(const probe of transportSectionsCorpus()) {
+    const observed=await transportOracle.observe(probe.request);
+    const expected=observed.ok?ValidateTransportObservation(observed.value,probe.request.steps.length):{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{transportSections:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await transportOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

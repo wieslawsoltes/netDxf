@@ -14,3 +14,23 @@
   const counts=[],large=new BinaryCodeValueWriter({Write:bytes=>counts.push(bytes.length)});counts.length=0;large.WriteString('Ω'.repeat(40000));
   if(String(counts)!=='65536,14464,1')throw new Error('Installed UTF-8 framing differs.');
 }
+
+// Section helpers come from the installed tarball, with no checkout/oracle dependencies.
+{
+  const api=await import('@netdxf/javascript');
+  const standalone=await import('@netdxf/javascript/netDxf/IO/DxfThumbnailImage.js');
+  const {TextCodeValueWriter}=await import('@netdxf/javascript/netDxf/IO/TextCodeValueWriter.js');
+  const {TextCodeValueReader}=await import('@netdxf/javascript/netDxf/IO/TextCodeValueReader.js');
+  if(standalone.DxfThumbnailImage!==api.DxfThumbnailImage)throw new Error('Preview standalone identity differs.');
+  const host={text:'',WriteLine(v){this.text+=String(v)+'\n';}},writer=new TextCodeValueWriter(host);
+  const bytes=Uint8Array.from({length:257},(_,i)=>i);api.DxfThumbnailImage.Write(writer,bytes);
+  const reader=new TextCodeValueReader(host.text);reader.Next();reader.Next();
+  const loaded=api.DxfThumbnailImage.Read(reader);
+  if(loaded.length!==bytes.length||loaded.some((v,i)=>v!==bytes[i])||reader.ReadString()!=='ENDSEC')throw new Error('Packed preview transport failed.');
+  const data=new api.DxfTransport.EntityCommonDataReader();
+  api.DxfTransport.ReadEntityCommonData({Code:160,ReadLong:()=>0n},18,data);data.Complete();
+  if(data.ProxyGraphics.length!==0)throw new Error('Packed proxy metadata failed.');
+  const background=new api.MTextBackgroundFill();background.ScaleFactor=null;background.ColorIndex=null;
+  const tags=[];api.DxfTransport.WriteMTextBackground({Write:(c,v)=>tags.push([c,v])},18,background);
+  if(tags.length!==3||background.ScaleFactor!==null||background.ColorIndex!==null)throw new Error('Packed background output mutated defaults.');
+}

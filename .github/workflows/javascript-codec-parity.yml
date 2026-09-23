@@ -43,11 +43,13 @@ jobs:
         working-directory: javascript
         run: npm run build:windows-host
       - run: node javascript/tools/dotnet.mjs geometry
-      - run: node javascript/tools/codec-readers-differential.mjs
+      - run: node javascript/tools/transport-sections-differential.mjs
+      - if: ${{ !cancelled() }}
+        run: node javascript/tools/codec-readers-differential.mjs
       - if: ${{ !cancelled() }}
         run: node javascript/tools/codec-writers-differential.mjs
       - if: ${{ !cancelled() }}
-        run: node --test javascript/tests/unit/codec-readers.js javascript/tests/unit/codec-writers.js javascript/tests/unit/codec-observation.js
+        run: node --test javascript/tests/unit/codec-readers.js javascript/tests/unit/codec-writers.js javascript/tests/unit/codec-observation.js javascript/tests/unit/transport-sections.js
       - if: ${{ !cancelled() }}
         run: node javascript/tests/netDxf.Conformance/Program.js
         env:
@@ -57,6 +59,7 @@ jobs:
         with:
           name: javascript-codecs-${{ matrix.os }}-${{ matrix.configuration }}
           path: |
+            javascript/artifacts/transport-sections/${{ matrix.configuration }}/results.json
             javascript/artifacts/codec-readers/${{ matrix.configuration }}/results.json
             javascript/artifacts/codec-writers/${{ matrix.configuration }}/results.json
             javascript/artifacts/codec-originals/results.json

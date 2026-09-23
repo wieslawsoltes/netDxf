@@ -47,7 +47,8 @@ export class DxfThumbnailImage {
     for (let offset = 0; offset < data.length;) {
       const count = Math.min(127, data.length - offset);
       // Each packet owns its bytes, including across synchronous writer callbacks.
-      const part = data.slice(offset, offset + count);
+      const part = new Uint8Array(count);
+      part.set(data.subarray(offset, offset + count));
       chunk.Write(310, part); offset += count;
     }
     chunk.Write(0, 'ENDSEC');

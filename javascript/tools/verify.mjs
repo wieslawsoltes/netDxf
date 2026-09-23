@@ -42,6 +42,7 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  transportSections:[`transport-sections/${configuration}`,{equal:{'stats.scenarios':1165,'stats.observedScenarios':1165,'stats.requestedOperations':3473,'stats.operations':3473,'stats.oracleFailures':0}}],
   gte:[`gte/${configuration}`,{equal:{'stats.scenarios':401,'stats.observedScenarios':401,'stats.requestedOperations':5435,'stats.operations':5435,'stats.oracleFailures':0}}],
   codecReaders:[`codec-readers/${configuration}`,{equal:{'stats.scenarios':913,'stats.requestedCommands':27962,'stats.commands':27407,'stats.constructorRejections':35}}],
   codecWriters:[`codec-writers/${configuration}`,{equal:{'stats.scenarios':509,'stats.requestedCommands':5527,'stats.commands':5495,'stats.constructorRejections':5}}],
@@ -80,7 +81,7 @@ const specs={
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
   entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':8498,'stats.operations':69997}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:144719}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:145884}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -94,7 +95,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{minimum:{'stats.comparisons':1782},equal:{'stats.sourceFixtures':399}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:144719}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:145884}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));

@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['transport-sections',['tools/transport-sections-differential.mjs']],
   ['gte',['tools/gte-differential.mjs']],
   ['codec-readers',['tools/codec-readers-differential.mjs']],
   ['codec-writers',['tools/codec-writers-differential.mjs']],

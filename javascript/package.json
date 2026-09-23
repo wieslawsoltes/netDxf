@@ -102,7 +102,8 @@
     "test:codec-writers": "node tools/codec-writers-differential.mjs",
     "generate:gte": "node tools/dotnet.mjs native-port --gte",
     "verify:gte": "node tools/dotnet.mjs native-port --gte --check",
-    "test:gte": "node tools/gte-differential.mjs"
+    "test:gte": "node tools/gte-differential.mjs",
+    "test:transport-sections": "node tools/transport-sections-differential.mjs"
   },
   "repository": {
     "type": "git",

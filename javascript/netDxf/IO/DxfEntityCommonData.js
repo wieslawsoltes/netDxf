@@ -76,6 +76,7 @@ export function WriteEntityCommonData(chunk, version, entity, encode = value => 
   else chunk.Write(160, BigInt(bytes.length));
   for (let offset = 0; offset < bytes.length;) {
     const size = Math.min(127, bytes.length - offset);
-    chunk.Write(310, bytes.slice(offset, offset + size)); offset += size;
+    const part = new Uint8Array(size); part.set(bytes.subarray(offset, offset + size));
+    chunk.Write(310, part); offset += size;
   }
 }
