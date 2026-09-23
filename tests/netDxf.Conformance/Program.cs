@@ -115,6 +115,7 @@ internal static partial class Program
         RegisterAlternateUnitModeTests();
         RegisterAlternateDimensionLabelTests();
         RegisterDimensionResetTests();
+        RegisterToleranceFidelityTests();
         RegisterDimensionXDataPreservationTests();
         RegisterTableXDataPreservationTests();
         RunOutputSettingsTests();
