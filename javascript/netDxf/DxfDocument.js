@@ -1,3 +1,9 @@
+import { InstallDocumentPolylineTopology } from './DxfDocument.PolylineTopology.js';
+import { InstallDocumentPolyline2DRecords } from './DxfDocument.Polyline2DRecords.js';
+import { InstallDocumentPolyfaceMeshRecords } from './DxfDocument.PolyfaceMeshRecords.js';
+import { InstallDocumentPolygonMeshRecords } from './DxfDocument.PolygonMeshRecords.js';
+import { InstallDocumentPolylineRecords } from './DxfDocument.PolylineRecords.js';
+import { IsRetainedParent } from '../runtime/RetainedPolylineRegistration.js';
 import { HatchSourceRelations } from './Entities/HatchSourceRelations.js';
 import { RegisterDatabaseModel } from '../runtime/DatabaseModel.js';
 // Copyright (c) Daniel Carvajal and netDxf contributors. MIT License; see package LICENSE.
@@ -64,7 +70,7 @@ export class DxfDocument extends DxfObject {
       throw new NotSupportedException('Database-backed entity adoption is not yet available: '+entity.CodeName);
     if(entity instanceof api.Insert)this.ValidateStoredTableBlockAdoption(entity.Block);
     else if(entity instanceof api.Dimension&&entity.Block!==null)this.ValidateStoredTableBlockAdoption(entity.Block);
-    if(entity.StoredRecords?.Count>0)throw new NotSupportedException('Stored polyline record adoption is not yet available.');
+    if(IsRetainedParent(entity))entity.ValidateStoredRecords(this,false);
     if(!simpleEntities.has(entity.CodeName)&&!['DIMENSION','ARC_DIMENSION','LEADER','TOLERANCE','INSERT','SHAPE','TEXT','MTEXT','IMAGE','MLINE','DGNUNDERLAY','DWFUNDERLAY','PDFUNDERLAY','VIEWPORT','MULTILEADER','SECTION','SECTIONOBJECT'].includes(entity.CodeName))
       throw new NotSupportedException('Unknown entity registration: '+entity.CodeName);
   }
@@ -75,7 +81,7 @@ export class DxfDocument extends DxfObject {
       visited.add(block);
       for(const entity of block.Entities){
         if(entity instanceof api.Hatch)HatchSourceRelations.ValidateOwner(entity,block,this);
-        if(entity.StoredRecords?.Count>0)throw new NotSupportedException('Stored polyline record adoption is not yet available.');
+        if(IsRetainedParent(entity))entity.ValidateStoredRecords(this,false);
         if(entity instanceof api.Section)entity.Validate(this);
         else if(transportPending.has(entity.CodeName))throw new NotSupportedException('Database-backed entity adoption is not yet available: '+entity.CodeName);
         else if(entity instanceof api.Insert)visit(entity.Block);
@@ -91,6 +97,7 @@ export class DxfDocument extends DxfObject {
     const block=root instanceof api.Block?root:root instanceof api.Layout?root.AssociatedBlock:null;
     if(block!==null){for(const member of ObjectMetadataMembers(block))removed.add(member);removed.add(block.Record);for(const item of [...block.Entities,...block.AttributeDefinitions.Values])for(const member of ObjectMetadataMembers(item))removed.add(member);}
     for(const item of removed)if(item instanceof api.Hatch)item.ValidateOpaqueSourceRelease();
+    if(this.StoredPolylineReferencesRemoval(removed))return true;
     if(this.SectionReferencesRemoval(removed))return true;
     const database=this.Objects;
     for(const item of removed)if(api.SunReferences.Get(item)!==null)return true;
@@ -178,6 +185,11 @@ export class DxfDocument extends DxfObject {
     }
     BindResource(this,entity,'Layer',this.Layers,assignHandle);BindResource(this,entity,'Linetype',this.Linetypes,assignHandle);
     this.AddedObjects.Add(entity.Handle,entity);
+    if(entity instanceof api.Polyline3D)this.RegisterStoredPolylineRecords(entity);
+    if(entity instanceof api.PolygonMesh)this.RegisterStoredPolygonMeshRecords(entity);
+    if(entity instanceof api.PolyfaceMesh)this.RegisterStoredPolyfaceMeshRecords(entity);
+    if(entity instanceof api.Polyline2D)this.RegisterStoredPolyline2DRecords(entity);
+
     Listen(this,entity,'LayerChanged',(sender,e)=>ChangeResource(sender,e,this.Layers));Listen(this,entity,'LinetypeChanged',(sender,e)=>ChangeResource(sender,e,this.Linetypes));
   }
   #bindAttribute(attribute,assignHandle,definition){
@@ -205,7 +217,12 @@ export class DxfDocument extends DxfObject {
     else if(code==='VIEWPORT'&&entity.ClippingBoundary!==null){entity.ClippingBoundary.RemoveReactor(entity);this.Entities.Remove(entity.ClippingBoundary);}
     if(entity instanceof api.Hatch)entity.UnLinkBoundary();
     if(entity instanceof api.PolyfaceMesh)for(const face of entity.Faces)if(face.Layer!==null)this.Layers.References.get_Item(face.Layer.Name).Remove(entity);
-    this.#release(entity,'Layer','Layers');this.#release(entity,'Linetype','Linetypes');this.AddedObjects.Remove(entity.Handle);Unlisten(this,entity);entity.Handle=null;entity.Owner=null;return true;
+    this.#release(entity,'Layer','Layers');this.#release(entity,'Linetype','Linetypes');this.AddedObjects.Remove(entity.Handle);
+    if(entity instanceof api.Polyline3D)this.UnregisterStoredPolylineRecords(entity);
+    if(entity instanceof api.PolygonMesh)this.UnregisterStoredPolygonMeshRecords(entity);
+    if(entity instanceof api.PolyfaceMesh)this.UnregisterStoredPolyfaceMeshRecords(entity);
+    if(entity instanceof api.Polyline2D)this.UnregisterStoredPolyline2DRecords(entity);
+    Unlisten(this,entity);entity.Handle=null;entity.Owner=null;return true;
   }
 }
 InstallDocumentMetadata(DxfDocument);
@@ -214,3 +231,13 @@ InstallDocumentMultiLeader(DxfDocument);
 InstallDocumentSection(DxfDocument);
 
 RegisterDatabaseModel('DxfDocument',DxfDocument);
+
+InstallDocumentPolylineRecords(DxfDocument);
+
+InstallDocumentPolygonMeshRecords(DxfDocument);
+
+InstallDocumentPolyfaceMeshRecords(DxfDocument);
+
+InstallDocumentPolyline2DRecords(DxfDocument);
+
+InstallDocumentPolylineTopology(DxfDocument);
