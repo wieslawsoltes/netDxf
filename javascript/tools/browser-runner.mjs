@@ -1,3 +1,5 @@
+import { gteCall } from './gte-wire.mjs';
+import { validateGteObservation } from './gte-observation.mjs';
 import { jsNurbs } from './nurbs-wire.mjs';
 // Browser-native execution. Golden result digests are supplied only by the pinned C# oracle.
 import { mathCall } from './math-wire.mjs';
@@ -24,7 +26,7 @@ export async function runBrowserCorpus(corpus, native, { hashCanonical = webHash
     if (!Array.isArray(corpus.cases) || !corpus.cases.length) throw new Error('Missing browser corpus.');
     for (const key of ['runtimeFingerprint','verificationFingerprint','sourceRef','sourceFingerprint','configuration','fixtures']) report[key] = corpus[key];
     const geometry = createGeometryCaller(native);
-    const methods = {nurbs:jsNurbs,math:input=>({ok:true,value:mathCall(input.requests)}),referenceMath:input=>({ok:true,value:referenceMathCall(input.calls)}),raw:jsRaw,handles:jsHandles,objects:jsObjects,models:input=>jsGeometry({...input,nativeManifest:native}),
+    const methods = {gte:input=>validateGteObservation(input,gteCall(input,corpus.gteManifest)),nurbs:jsNurbs,math:input=>({ok:true,value:mathCall(input.requests)}),referenceMath:input=>({ok:true,value:referenceMathCall(input.calls)}),raw:jsRaw,handles:jsHandles,objects:jsObjects,models:input=>jsGeometry({...input,nativeManifest:native}),
       geometry:input=>({ok:true,value:geometry(input)}),lifecycle:input=>({ok:true,value:lifecycleCall(input)}),collection:input=>({ok:true,value:collectionCall(input)})};
     const compare = async (name,op,expected,result) => {
       if (typeof expected !== 'string' || !/^[a-f0-9]{64}$/.test(expected)) throw new Error('Invalid expected digest: '+name);

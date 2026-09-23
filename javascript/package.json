@@ -32,7 +32,8 @@
     "third_party/glibc-math",
     "tools/ReferenceMath",
     "THIRD_PARTY_NOTICES.md",
-    "dimension-port-manifest.json"
+    "dimension-port-manifest.json",
+    "gte-port-manifest.json"
   ],
   "scripts": {
     "test": "node tests/netDxf.Conformance/Program.js",
@@ -98,7 +99,10 @@
     "test:stored-table": "node tools/stored-table-differential.mjs",
     "test:stored-dependencies": "node tools/stored-dependencies-differential.mjs",
     "test:codec-readers": "node tools/codec-readers-differential.mjs",
-    "test:codec-writers": "node tools/codec-writers-differential.mjs"
+    "test:codec-writers": "node tools/codec-writers-differential.mjs",
+    "generate:gte": "node tools/dotnet.mjs native-port --gte",
+    "verify:gte": "node tools/dotnet.mjs native-port --gte --check",
+    "test:gte": "node tools/gte-differential.mjs"
   },
   "repository": {
     "type": "git",

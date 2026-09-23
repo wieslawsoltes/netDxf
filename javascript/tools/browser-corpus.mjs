@@ -1,3 +1,5 @@
+import { gteCorpus } from './gte-corpus.mjs';
+import { GteOracleSession } from './GteOracleSession.mjs';
 import { codecReadersCorpus } from './codec-readers-corpus.mjs';
 import { codecWritersCorpus } from './codec-writers-corpus.mjs';
 import { ValidateCodecObservation } from './codec-observation.mjs';
@@ -306,8 +308,19 @@ try {
     cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))}});
   }
 } finally {await codecOracle.close();}
+// Keep every earlier input. Native aborts are explicit unavailable observations.
+const gteOracle = new GteOracleSession();
+try {
+  for (const probe of gteCorpus()) {
+    const observed = await gteOracle.observe(probe.request);
+    const expected = observed.ok ? observed.value : {oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{gte:sha256(canonical(expected))},
+      ...(!observed.ok ? {sourceOracleFailure:observed.failure} : {})});
+  }
+} finally { await gteOracle.close(); }
+const gteManifest = JSON.parse(fs.readFileSync(path.join(javascriptRoot,'gte-port-manifest.json'),'utf8'));
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,
-  sourceFingerprint: baseline.sourceFingerprint, fixtures: inventory.fixtures.length, cases }));
+  sourceFingerprint: baseline.sourceFingerprint, fixtures: inventory.fixtures.length, gteManifest, cases }));
 console.log(`Prepared ${cases.length} browser inputs with ${cases.reduce((n,c) => n + Object.values(c.expected).reduce((count,expected)=>count+(Array.isArray(expected)?expected.length:1),0),0)} exact .NET result digests.`);

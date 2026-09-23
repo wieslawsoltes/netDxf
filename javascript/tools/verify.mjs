@@ -21,6 +21,9 @@ guard('generated',()=>{
   for(const f of generated.files)assert(sha256(fs.readFileSync(path.join(javascriptRoot,f.path)))===f.sha256,'Generated file drift: '+f.path);
   const native=read('native-port-manifest.json'), dimensions=read('dimension-port-manifest.json');
   assert(dimensions.sourceRef===baseline.ref&&dimensions.files.length===9,'Incomplete/unpinned dimension lowering.');
+  const gte=read('gte-port-manifest.json');
+  assert(gte.sourceRef===baseline.ref&&gte.files.length===17,'Incomplete/unpinned GTE lowering.');
+  native.files.push(...gte.files);
   native.files.push(...dimensions.files);assert(native.sourceRef===baseline.ref,'Unpinned native lowering.');
   for(const f of native.files)assert(sha256(fs.readFileSync(path.join(sourceRoot,f.source)))===f.sourceSha256&&
     sha256(fs.readFileSync(path.join(javascriptRoot,f.target)))===f.outputSha256,'Native mirror drift: '+f.target);
@@ -39,6 +42,7 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  gte:[`gte/${configuration}`,{equal:{'stats.scenarios':401,'stats.observedScenarios':401,'stats.requestedOperations':5435,'stats.operations':5435,'stats.oracleFailures':0}}],
   codecReaders:[`codec-readers/${configuration}`,{equal:{'stats.scenarios':913,'stats.requestedCommands':27962,'stats.commands':27407,'stats.constructorRejections':35}}],
   codecWriters:[`codec-writers/${configuration}`,{equal:{'stats.scenarios':509,'stats.requestedCommands':5527,'stats.commands':5495,'stats.constructorRejections':5}}],
   storedDependencies:[`stored-dependencies/${configuration}`,{equal:{'stats.scenarios':738,'stats.observedScenarios':738,'stats.requestedOperations':5566,'stats.operations':5566,'stats.oracleFailures':0}}],
@@ -76,7 +80,7 @@ const specs={
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
   entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':8498,'stats.operations':69997}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:144318}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:144719}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -90,7 +94,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{minimum:{'stats.comparisons':1782},equal:{'stats.sourceFixtures':399}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:144318}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:144719}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));

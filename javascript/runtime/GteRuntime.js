@@ -62,7 +62,7 @@ export class GteSortedDictionary {
   #find(key) { return this.#entries.findIndex(entry => compareDouble(entry.Key, key) === 0); }
   ContainsKey(key) { return this.#find(key) !== -1; }
   Add(key, value) {
-    if (this.ContainsKey(key)) throw new ArgumentException('An item with the same key has already been added.', 'key');
+    if (this.ContainsKey(key)) throw new ArgumentException('An item with the same key has already been added.');
     this.#entries.push(Object.freeze({Key: key, Value: value}));
     this.#entries.sort((a, b) => compareDouble(a.Key, b.Key)); this.#version++;
   }

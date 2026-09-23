@@ -18,8 +18,9 @@ try {
   const install=path.join(temp,'install');fs.mkdirSync(install);
   run(npm,['install','--offline','--ignore-scripts','--no-audit','--no-fund','--prefix',install,path.join(temp,info.filename)],install);
   const script=fs.readFileSync(new URL('./packed-core-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-header-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-model-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-unit-format-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-observable-dictionary-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-document-smoke.mjs',import.meta.url),'utf8')+'\n'+fs.readFileSync(new URL('./packed-codec-smoke.mjs',import.meta.url),'utf8');
+  const gteSmoke=fs.readFileSync(new URL('./packed-gte-smoke.mjs',import.meta.url),'utf8');
   run(process.env.PYTHON||'python',['tools/ReferenceMath/generate-exp-log.py','--check'],path.join(install,'node_modules','@netdxf','javascript'));
-  run(process.execPath,['--input-type=module','-e',script],install);
+  run(process.execPath,['--input-type=module','-e',script+'\n'+gteSmoke],install);
   run(process.execPath,['--input-type=module','-e',`import fs from 'node:fs';
     import {DxfRawDocument,DxfTag,FileStream,UnitHelper,XDataRecord,XDataCode} from '@netdxf/javascript/node';
     const tags=[[0,'SECTION'],[2,'HEADER'],[9,'$ACADVER'],[1,'AC1032'],[0,'ENDSEC'],[0,'EOF']].map(([c,v])=>new DxfTag(c,v));

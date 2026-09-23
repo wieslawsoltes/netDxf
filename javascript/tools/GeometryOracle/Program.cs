@@ -36,6 +36,7 @@ internal static partial class Program
         if(input.TryGetProperty("op",out var writerOp)&&writerOp.GetString()=="codec-writers")return CodecWritersRequest(input);
         if(input.TryGetProperty("op",out var codecOp)&&codecOp.GetString()=="codec-readers")return CodecReadersRequest(input);
         if(input.TryGetProperty("op",out var ownershipOp)&&ownershipOp.GetString()=="document-ownership")return DocumentOwnershipRequest(input);
+        if(input.TryGetProperty("op",out var gteOp)&&gteOp.GetString()=="gte")return GteRequest(input);
         var results=new List<object>();
         foreach(var step in input.GetProperty("steps").EnumerateArray()) {
             try { results.Add(new {ok=true,value=Step(step)}); }
