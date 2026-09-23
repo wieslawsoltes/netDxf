@@ -102,3 +102,87 @@ jobs:
           path: artifacts/packages/
           if-no-files-found: error
           retention-days: 14
+  runtime-smoke:
+    name: Execute package (${{ matrix.os }}, ${{ matrix.asset }} on ${{ matrix.runtime }})
+    needs: package
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Package target/runtime matrix begins
+          - {"os": "ubuntu-latest", "runtime": "net8.0", "asset": "netstandard2.0"}
+          - {"os": "ubuntu-latest", "runtime": "net6.0", "asset": "net6.0"}
+          - {"os": "ubuntu-latest", "runtime": "net8.0", "asset": "net8.0"}
+          - {"os": "windows-latest", "runtime": "net8.0", "asset": "netstandard2.0"}
+          - {"os": "windows-latest", "runtime": "net6.0", "asset": "net6.0"}
+          - {"os": "windows-latest", "runtime": "net8.0", "asset": "net8.0"}
+          - {"os": "windows-latest", "runtime": "net471", "asset": "net471"}
+          - {"os": "windows-latest", "runtime": "net48", "asset": "net48"}
+          # Package target/runtime matrix ends
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        if: matrix.runtime == 'net6.0'
+        with:
+          dotnet-version: '6.0.x'
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-packages
+          path: artifacts/packages/
+      - name: Execute shared assertions against the exact installed asset
+        env:
+          SMOKE_HOST: ${{ matrix.os }}
+          SMOKE_RUNTIME: ${{ matrix.runtime }}
+          SMOKE_ASSET: ${{ matrix.asset }}
+        shell: bash
+        run: python tools/ci/runtime_assets.py run --host "$SMOKE_HOST" --runtime "$SMOKE_RUNTIME" --asset "$SMOKE_ASSET"
+      - name: Retain runtime identity, process log and loaded-assembly evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: runtime-smoke-${{ matrix.os }}-${{ matrix.asset }}
+          path: |
+            artifacts/target-smoke/*/result.json
+            artifacts/target-smoke/*/receipt.xml
+            artifacts/target-smoke/*/run.log
+          if-no-files-found: error
+          retention-days: 14
+  runtime-evidence:
+    name: Require complete package runtime matrix
+    needs: runtime-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-packages
+          path: artifacts/packages/
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: runtime-smoke-*
+          path: artifacts/runtime-reports/
+          merge-multiple: false
+      - name: Reject missing, duplicate, changed or wrong-source runtime evidence
+        run: python tools/ci/runtime_assets.py collect
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: runtime-qualification
+          path: artifacts/runtime-qualified/
+          if-no-files-found: error
+          retention-days: 30
