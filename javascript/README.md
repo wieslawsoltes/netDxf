@@ -12,6 +12,38 @@ load .NET, WebAssembly, a native DXF engine or a conversion service.
 
 ## Current checkpoint
 
+`c401128` reconstructs the missing GTE source generator; `0d3e89e` adds its
+manifest, independent numerical checks, a duplicate-key exception fix and required
+verification. The previously pushed runtime-only `01252a9` modules are preserved:
+all **17 GTE files regenerate byte-for-byte**, as do the foundation and dimension
+clusters. [GTE contracts and evidence](doc/GTE_NUMERICS.md) record the actual scope.
+
+**Exact GTE parity is not verified.** Release observes **369/401 scenarios and
+4,858/5,435 operations**, retaining twelve polynomial operation differences and
+32 native recursion failures. Debug observes **363/401 scenarios and 4,800/5,435
+operations**, retaining twelve differences and 38 native recursion/assertion
+failures. These failures remain mandatory; unexecuted operations are not passes.
+
+Local checks pass **3,587 mirrored original cases**, **1,124 supplemental tests**,
+both **35,309-case unchanged C# suites**, and the **557-file installed package**.
+The 22 new tests are supplemental, not original-case identities. Release Chromium
+executes **144,719 checks**, retaining 119 failures: 87 previous-model scenarios
+and 32 GTE missing-native observations. No page error occurs; Node numerical
+failures are not waived by matching browser digests. Full-parity gates still fail.
+
+The ledger is **411/510 library mirrors**, **65/193 conformance-file mirrors**, and
+**3,587/35,309 original cases**. File presence is not complete parity. The full
+50-stage standalone refresh, other browser modes and wider platform/performance
+acceptance were not rerun locally in this continuation. Complete typed DXF IO and
+other documented gaps are still unfinished.
+
+The [hosted GTE receipt](doc/gte-hosted-0d3e89e.json) records all four completed
+Ubuntu/Windows Debug/Release profiles. Every job passes generation, 22 focused
+tests and all mirrored originals, but **fails the exact numerical comparison**.
+The downloaded archives and original identities were checked; no failure is waived.
+
+## Previous codec checkpoint (historical)
+
 `1601130` corrects reader state/diagnostics; `fc0735f` corrects writer framing,
 re-entrant output and required verification. [Codec contracts and source-bound
 results](doc/CODEC_STREAMS.md) distinguish low-level transport from unfinished
@@ -45,6 +77,12 @@ Load/Save/SaveAtomic, version conversion, private/evaluator APIs and wider
 platform acceptance remain unfinished.
 
 ## Implemented areas
+
+GTE numerical modules provide source-derived matrix/linear-system, integration,
+interval and curve/fitting APIs through the separate `Gte` namespace. They retain
+their documented numerical/source-failure limits; the core `BezierCurve` identity
+is not replaced by `Gte.BezierCurve`.
+
 
 The raw layer supports text/binary transport, exact retained bytes, immutable
 record/tag views, edits, handle indexing/remapping, dependency traversal, object
