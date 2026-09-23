@@ -2168,20 +2168,8 @@ namespace netDxf.IO
             style.Tolerances.AlternateSuppressZeroFeet = suppress[2];
             style.Tolerances.AlternateSuppressZeroInches = suppress[3];
 
-            if (dimtol == 0 && dimlim == 0)
-            {
-                style.Tolerances.DisplayMethod =  DimensionStyleTolerancesDisplayMethod.None;
-            }
-            if (dimtol == 1 && dimlim == 0)
-            {
-                style.Tolerances.DisplayMethod =
-                    style.Tolerances.UpperLimit == style.Tolerances.LowerLimit ?
-                    DimensionStyleTolerancesDisplayMethod.Symmetrical : DimensionStyleTolerancesDisplayMethod.Deviation;
-            }
-            if (dimtol == 0 && dimlim == 1)
-            {
-                style.Tolerances.DisplayMethod = DimensionStyleTolerancesDisplayMethod.Limits;
-            }
+            style.Tolerances.DisplayMethod = DimensionToleranceSettings.Decode(dimtol, dimlim,
+                style.Tolerances.UpperLimit, style.Tolerances.LowerLimit);
 
             string[] textPrefixSuffix = GetDimStylePrefixAndSuffix(dimpost, '<', '>');
             style.DimPrefix = textPrefixSuffix[0];
@@ -5460,9 +5448,9 @@ namespace netDxf.IO
 
             short dimtol = -1;
             short dimlim = -1;
-            // Omitted DSTYLE bounds inherit from the resolved base style, not zero.
-            double dimtm = baseStyle.Tolerances.LowerLimit;
+            double dimtm = DimensionToleranceSettings.Lower(baseStyle.Tolerances);
             double dimtp = baseStyle.Tolerances.UpperLimit;
+            bool hasToleranceValue = false;
             short dimtzin = -1;
             short dimalttz = -1;
 
@@ -5605,6 +5593,7 @@ namespace netDxf.IO
 
                                     dimtp = (double) data.Value;
                                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesUpperLimit, dimtp));
+                                    hasToleranceValue = true;
                                     break;
                                 case 48: // DIMTM
                                     if (data.Code != XDataCode.Real)
@@ -5614,6 +5603,7 @@ namespace netDxf.IO
 
                                     dimtm = (double) data.Value;
                                     overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesLowerLimit, dimtm));
+                                    hasToleranceValue = true;
                                     break;
                                 case 49: // DIMFXL
                                     if (data.Code != XDataCode.Real)
@@ -6255,20 +6245,16 @@ namespace netDxf.IO
                 overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesAltSuppressZeroInches, suppress[3]));
             }
 
-            if (dimtol == 0 && dimlim == 0)
+            if (dimtol >= 0 || dimlim >= 0 || hasToleranceValue)
             {
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.None));
-            }
-            else if (dimtol == 1 && dimlim == 0)
-            {
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod,
-                    dimtm == dimtp
-                        ? DimensionStyleTolerancesDisplayMethod.Symmetrical
-                        : DimensionStyleTolerancesDisplayMethod.Deviation));
-            }
-            else if (dimtol == 0 && dimlim == 1)
-            {
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.Limits));
+                short effectiveTol = dimtol >= 0 ? dimtol : DimensionToleranceSettings.ToleranceFlag(baseStyle.Tolerances);
+                short effectiveLim = dimlim >= 0 ? dimlim :
+                    baseStyle.Tolerances.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Limits ? (short) 1 : (short) 0;
+                var method = DimensionToleranceSettings.Decode(effectiveTol, effectiveLim, dimtp, dimtm);
+                // Missing numeric fields remain inherited. A numeric-only packet needs
+                // a derived method only when it changes the inherited presentation.
+                if (dimtol >= 0 || dimlim >= 0 || method != baseStyle.Tolerances.DisplayMethod)
+                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, method));
             }
 
             return overrides;
