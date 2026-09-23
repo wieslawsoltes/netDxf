@@ -41,7 +41,7 @@ def packet(record, row, tilted, version):
     if kind in ('RAY','XLINE'):
         require(not any(c in (39,50,210,220,230) for c,_ in record),'Unexpected infinite-line geometry field')
     proxies = [t for t in record if t[0] in (92,160,310)]
-    length_code = 92 if version == 'AutoCad2000' else 160
+    length_code = 160 if version in ('AutoCad2013','AutoCad2018') else 92
     require(proxies == ([] if changed else [(length_code,4),(310,PROXY)]), 'Proxy field inventory or bytes')
     return values
 
@@ -72,7 +72,7 @@ def inspect(path, version, binary, tilted, placement):
             at=next(i for i,t in enumerate(record) if t[0]==310)
             bad=list(record);bad[at]=(310,b'BAD!');controls+=reject(lambda:packet(bad,row,tilted,version))
             bad=list(record);bad.insert(at,bad[at]);controls+=reject(lambda:packet(bad,row,tilted,version))
-        require(load_proxy_graphic(Tags(DXFTag(c,v) for c,v in record),length_code=92 if version=='AutoCad2000' else 160)
+        require(load_proxy_graphic(Tags(DXFTag(c,v) for c,v in record),length_code=160 if version in ('AutoCad2013','AutoCad2018') else 92)
                 == (None if row%2 else PROXY),'Independent proxy extraction')
     doc=ezdxf.readfile(path)
     require(doc.dxfversion==VERSIONS[version],'Independent version')

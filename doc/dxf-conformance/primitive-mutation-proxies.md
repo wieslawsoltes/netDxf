@@ -49,7 +49,9 @@ text/binary round trips. It is already shared by ordinary package consumption
 and the eight packaged-asset/runtime profiles from PR #196. No prior assertion,
 registration or independent verifier is removed. The initial independent checker
 used `unitvector` instead of ezdxf's `unit_vector` attribute; its spelling was
-corrected without altering production or any expected geometry.
+corrected without altering production or any expected geometry. The new checker
+also initially assumed group 160 before R2013; it now checks the established
+R2013+ group-160 versus earlier group-92 policy explicitly.
 
 Primary references: [Autodesk common entity groups](https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-DXF/files/GUID-3610039E-27D1-4E23-B6D3-7E60B22BB5BD.htm)
 and [POINT geometry](https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-DXF/files/GUID-9C6AD32D-769D-4213-85A4-CA9CCB5C5317.htm).
@@ -57,3 +59,10 @@ These changes do not qualify native rendering, POINT affine thickness handling,
 normal/appearance cache invalidation, historical typed dialects/pre-R11,
 FIELD/TABLE/private-cache regeneration, transaction-wide rollback, dependency
 imports, general version conversion or AutoCAD open/AUDIT/save/reopen.
+
+Three existing LINE affine boundary fixtures edit their geometry after initially attaching
+proxy bytes. They now assert invalidation during that setup and explicitly reattach
+the same bytes before their original identity/no-change/coincident-reverse assertions.
+The first complete runs exposed these three setup dependencies; those failing runs
+are retained separately, not counted as successful qualification. No original
+test identity or operation-under-test assertion is removed.

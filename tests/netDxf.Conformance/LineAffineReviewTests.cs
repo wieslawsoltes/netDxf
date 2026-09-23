@@ -159,12 +159,13 @@ internal static partial class Program
     private static void LineReviewBoundary(string mode)
     {
         var line=LineReviewSubject(0,2);
+        byte[] setupProxy = line.ProxyGraphics!;
         switch(mode)
         {
-            case "identity-bits":line.StartPoint=new Vector3(-0.0,2,3);line.Thickness=-0.0;long[] bits=LineReviewBits(line);line.TransformBy(Matrix4.Identity);Check(bits.SequenceEqual(LineReviewBits(line)),"identity bits");Check(line.ProxyGraphics!=null,"identity proxy");break;
-            case "unchanged":line.StartPoint=Vector3.UnitX;line.EndPoint=Vector3.UnitX*3;line.TransformBy(Matrix3.Scale(1,2,1),Vector3.Zero);Check(line.ProxyGraphics!=null,"unchanged geometry proxy");break;
+            case "identity-bits":line.StartPoint=new Vector3(-0.0,2,3);line.Thickness=-0.0;Check(line.ProxyGraphics==null,"Direct setup edit retained stale proxy");line.ProxyGraphics=setupProxy;long[] bits=LineReviewBits(line);line.TransformBy(Matrix4.Identity);Check(bits.SequenceEqual(LineReviewBits(line)),"identity bits");Check(line.ProxyGraphics!=null,"identity proxy");break;
+            case "unchanged":line.StartPoint=Vector3.UnitX;line.EndPoint=Vector3.UnitX*3;Check(line.ProxyGraphics==null,"Direct setup edit retained stale proxy");line.ProxyGraphics=setupProxy;line.TransformBy(Matrix3.Scale(1,2,1),Vector3.Zero);Check(line.ProxyGraphics!=null,"unchanged geometry proxy");break;
             case "reverse":var first=line.StartPoint;var last=line.EndPoint;line.Reverse();Equal(first,line.EndPoint,"reverse end");Equal(last,line.StartPoint,"reverse start");Check(line.ProxyGraphics==null,"reverse proxy");line.Reverse();Equal(first,line.StartPoint,"reverse twice");break;
-            case "reverse-coincident":line.EndPoint=line.StartPoint;line.Reverse();Check(line.ProxyGraphics!=null,"coincident reverse proxy");break;
+            case "reverse-coincident":line.EndPoint=line.StartPoint;Check(line.ProxyGraphics==null,"Direct setup edit retained stale proxy");line.ProxyGraphics=setupProxy;line.Reverse();Check(line.ProxyGraphics!=null,"coincident reverse proxy");break;
             case "cancellation":line.StartPoint=line.EndPoint=new Vector3(1e308,1e308,1);line.TransformBy(new Matrix3(2,-2,1,0,1,0,0,0,1),new Vector3(7,0,0));Equal(8.0,line.StartPoint.X,"overflow cancellation exact point");break;
             case "unbounded-normal-magnitude":line.StartPoint=line.EndPoint=Vector3.Zero;line.Normal=new Vector3(1,1,1);line.Thickness=1e-308;double d=double.MaxValue;line.TransformBy(new Matrix3(d,d,d,d,d,d,d,d,d),Vector3.Zero);Check(double.IsFinite(line.Thickness)&&line.Thickness>1,"rescaled thickness");LineReviewNear(1,line.Normal.Modulus(),"extreme unit normal");break;
             case "minimum-scale":line.StartPoint=Vector3.Zero;line.EndPoint=Vector3.UnitX;line.Thickness=1;line.TransformBy(Matrix3.Scale(double.Epsilon),Vector3.Zero);Equal(double.Epsilon,line.EndPoint.X,"minimum coordinate");Equal(double.Epsilon,line.Thickness,"minimum thickness");Equal(Vector3.UnitZ,line.Normal,"minimum scale normal");break;
