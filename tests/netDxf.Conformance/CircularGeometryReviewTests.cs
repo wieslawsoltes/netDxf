@@ -102,6 +102,11 @@ internal static partial class Program
         if (mode == "normal-shear")
         {
             ((Circle)originals[0]).Thickness = 0; ((Arc)originals[1]).Thickness = 0;
+            foreach (var original in originals)
+            {
+                Check(original.ProxyGraphics == null, "Thickness setup retained stale proxy");
+                original.ProxyGraphics = new byte[] { 1, 2, 3, 4 };
+            }
         }
         var transformed = originals.Select(e => (EntityObject)e.Clone()).ToArray();
         var doc = new DxfDocument(version);
@@ -180,6 +185,12 @@ internal static partial class Program
         if (fault == "radius-nan") { if (entity is Circle c) c.Radius = double.NaN; else ((Arc)entity).Radius = double.NaN; }
         if (fault == "thickness-nan") { if (entity is Circle c) c.Thickness = double.NaN; else ((Arc)entity).Thickness = double.NaN; }
         if (fault == "center-nan") { if (entity is Circle c) c.Center = new Vector3(double.NaN,0,0); else ((Arc)entity).Center = new Vector3(double.NaN,0,0); }
+        if (fault is "underflow" or "radius-nan" or "thickness-nan" or "center-nan")
+        {
+            Check(entity.ProxyGraphics == null, "Direct geometry setup retained stale proxy");
+            // Preserve the original failed-transform rollback assertion with explicit test bytes.
+            entity.ProxyGraphics = new byte[] { 1, 2, 3, 4 };
+        }
         Vector3 translation = fault == "nonfinite-translation" ? new Vector3(double.PositiveInfinity,0,0) : Vector3.Zero;
         var values = ReviewedCircularValues(entity); var normal = entity.Normal; var proxy = entity.ProxyGraphics!;
         double start = entity is Arc arc ? arc.StartAngle : 0, end = entity is Arc a ? a.EndAngle : 0;

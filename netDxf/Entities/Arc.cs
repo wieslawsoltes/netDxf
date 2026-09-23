@@ -119,7 +119,7 @@ namespace netDxf.Entities
         public Vector3 Center
         {
             get { return this.center; }
-            set { this.center = value; }
+            set { CircularEntityMutation.Assign(this, ref this.center, value); }
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The arc radius must be greater than zero.");
                 }
-                this.radius = value;
+                CircularEntityMutation.Assign(this, ref this.radius, value);
             }
         }
 
@@ -144,7 +144,7 @@ namespace netDxf.Entities
         public double StartAngle
         {
             get { return this.startAngle; }
-            set { this.startAngle = MathHelper.NormalizeAngle(value); }
+            set { CircularEntityMutation.Assign(this, ref this.startAngle, MathHelper.NormalizeAngle(value)); }
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace netDxf.Entities
         public double EndAngle
         {
             get { return this.endAngle; }
-            set { this.endAngle = MathHelper.NormalizeAngle(value); }
+            set { CircularEntityMutation.Assign(this, ref this.endAngle, MathHelper.NormalizeAngle(value)); }
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { CircularEntityMutation.Assign(this, ref this.thickness, value); }
         }
 
         #endregion
