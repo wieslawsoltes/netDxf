@@ -30,6 +30,8 @@ def close(actual, wanted, label):
         require(actual == wanted, label + ': overflow classification')
     else:
         require(math.isfinite(actual), label + ': nonfinite result')
+        require((actual == 0.) == (wanted == 0.), label + ': zero/nonzero classification')
+        if wanted != 0.: require((actual > 0) == (wanted > 0), label + ': sign')
         # A stated 32-ULP envelope covers double rounding in component scaling,
         # sum-of-squares, sqrt and rescaling; no geometric/global epsilon is used.
         require(abs(actual - wanted) <= 32 * max(math.ulp(wanted), math.ulp(actual)), label + ': numerical mismatch')

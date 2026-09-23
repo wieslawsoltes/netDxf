@@ -342,8 +342,8 @@ namespace netDxf.GTE
 
             if (robust)
             {
-                double maxAbsComp = 0.0;
-                for (int i = 0; i < v.Size; ++i)
+                double maxAbsComp = v.Size == 0 ? 0.0 : Math.Abs(v[0]);
+                for (int i = 1; i < v.Size; ++i)
                 {
                     double absComp = Math.Abs(v[i]);
                     if (absComp > maxAbsComp)
@@ -378,8 +378,8 @@ namespace netDxf.GTE
 
             if (robust)
             {
-                double maxAbsComp = 0.0;
-                for (int i = 0; i < v.Size; i++)
+                double maxAbsComp = v.Size == 0 ? 0.0 : Math.Abs(v[0]);
+                for (int i = 1; i < v.Size; i++)
                 {
                     double absComp = Math.Abs(v[i]);
                     if (absComp > maxAbsComp)

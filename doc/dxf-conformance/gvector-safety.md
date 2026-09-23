@@ -27,7 +27,8 @@ empty vectors, overflowing lengths, mixed magnitudes, null sentinels, arithmetic
 source aliases and a Gram-Schmidt basis. An independent Python checker derives
 all 52 expected inputs separately and calculates norms/components using
 2,000-digit Decimal arithmetic. Its declared comparison envelope is 32 ULP;
-input bits, dimensions, record inventories and required fields are exact.
+input bits, dimensions, zero/nonzero and sign classifications, record inventories
+and required fields are exact.
 Altered observations and incomplete/duplicate/extra inventories must reject.
 These are geometry-kernel observations, not synthetic DXF drawings counted as
 native application evidence.
