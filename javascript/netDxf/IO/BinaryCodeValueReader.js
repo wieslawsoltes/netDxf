@@ -6,7 +6,7 @@ import { NormalizeHandle } from '../../runtime/NumberFormatting.js';
 import { Encoding } from '../../runtime/Encoding.js';
 import { BinaryCursor, BinarySentinel } from '../../runtime/BinaryCursor.js';
 export class BinaryCodeValueReader {
-  #reader; #encoding; #legacy; #code = 0; #value = null; #valueType = -1;
+  #reader; #encoding; #legacy; #code = 0; #value = null; #valueType = -1; #valuePosition = -1;
   Code5IsString = false;
   constructor(reader, encoding = Encoding.UTF8, legacyGroupCodes = false) {
     if (encoding == null) throw new ArgumentNullException('encoding');
@@ -27,6 +27,7 @@ export class BinaryCodeValueReader {
         if (this.#code < 255) throw new InvalidDataException('A legacy binary DXF escape requires a group code of at least 255.');
       }
     } else this.#code = this.#reader.ReadInt16();
+    this.#valuePosition = this.#reader.Position;
     const type = {};
     if (this.#code === 999 || !DxfGroupCode.TryGetValueType(this.#code,type)) throw new Exception(`Code ${this.#code} not valid in binary DXF.`);
     if (this.#code === 5 && this.Code5IsString) type.value = T.String;
@@ -35,12 +36,12 @@ export class BinaryCodeValueReader {
       case T.String: value = this.#reader.NullTerminatedString(this.#encoding); break;
       case T.Handle: {
         const handle = NormalizeHandle(this.#reader.NullTerminatedString(this.#encoding));
-        if (handle == null) throw new InvalidDataException('Invalid hexadecimal handle.');
+        if (handle == null) throw this.#invalid('hexadecimal handle (1 to 16 digits)');
         value = handle; break;
       }
       case T.Double: {
         value = this.#reader.ReadDouble();
-        if (!Number.isFinite(value)) throw new InvalidDataException('Invalid finite double-precision number.');
+        if (!Number.isFinite(value)) throw this.#invalid('finite double-precision number');
         break;
       }
       case T.Int16: value = this.#reader.ReadInt16(); break;
@@ -48,13 +49,14 @@ export class BinaryCodeValueReader {
       case T.Int64: value = this.#reader.ReadInt64(); break;
       case T.Boolean: {
         const flag = this.#reader.ReadByte();
-        if (flag > 1) throw new InvalidDataException('Invalid boolean (0 or 1).');
+        if (flag > 1) throw this.#invalid('boolean (0 or 1)');
         value = flag === 1; break;
       }
       case T.BinaryData: value = new Uint8Array(this.#reader.ReadBytes(this.#reader.ReadByte())); break;
     }
     this.#value = value; this.#valueType = type.value;
   }
+  #invalid(kind) { return new InvalidDataException(`Invalid ${kind} value for group code ${this.#code} at byte address ${this.#valuePosition < 0 ? 'unknown' : this.#valuePosition}.`); }
   #cast(type, reference = false) {
     if (this.#value === null) {
       if (reference) return null;

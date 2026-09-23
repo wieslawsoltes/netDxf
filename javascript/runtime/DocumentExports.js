@@ -37,3 +37,7 @@ export { DxfStoredTableContent, DxfStoredTableContentSubclass } from '../netDxf/
 export { DxfStoredTableContentValue, DxfStoredTableContentValueEdit, DxfStoredTableContentValueKind } from '../netDxf/Objects/DxfStoredTableContent.Value.js';
 export { StoredTable } from '../netDxf/Entities/StoredTable.js';
 export { StoredTableGrid, StoredTableCell } from '../netDxf/Entities/StoredTableGrid.js';
+
+export { DxfStoredField } from '../netDxf/Objects/DxfStoredField.js';
+export { DxfStoredDimAssoc, DxfStoredDimAssocPoint } from '../netDxf/Objects/DxfStoredDimAssoc.js';
+export { DxfStoredSunStudy } from '../netDxf/Objects/DxfStoredSunStudy.js';
