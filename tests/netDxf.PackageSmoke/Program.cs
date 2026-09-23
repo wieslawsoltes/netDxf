@@ -67,6 +67,17 @@ foreach (bool binary in new[] { false, true })
         || toleranceDimension.Style.Tolerances.LowerLimit != 0.25
         || !toleranceDimension.Block.Entities.OfType<MText>().Single().Value.Contains("±0.250"))
         throw new InvalidOperationException("Installed symmetric tolerance round trip failed");
+    // Exercise fixed extensions from the installed package, including unrelated overrides.
+    dimension.Style.ExtLineFixed = true;
+    dimension.Style.ExtLineFixedLength = 1;
+    dimension.Style.ExtLineOffset = .5;
+    dimension.Style.ExtLineExtend = .25;
+    dimension.Style.ExtLine1Linetype = new Linetype("SMOKE_EXT1");
+    dimension.Style.ExtLine2Linetype = new Linetype("SMOKE_EXT2");
+    dimension.Update();
+    var extensionLines = dimension.Block.Entities.OfType<Line>().Where(l => l.Linetype.Name.StartsWith("SMOKE_EXT")).ToArray();
+    if (extensionLines.Length != 2 || extensionLines.Any(l => Math.Abs(l.StartPoint.Y - 2) > 1e-9 || Math.Abs(l.EndPoint.Y - 3.25) > 1e-9))
+        throw new InvalidOperationException("Installed fixed extension geometry failed");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
