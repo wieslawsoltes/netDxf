@@ -27,3 +27,8 @@ export { LayerStateManager } from '../netDxf/Collections/LayerStateManager.js';
 export { DxfObjectDatabase } from '../netDxf/Objects/DxfObjectDatabase.js';
 export { DxfSortentsTable, DxfSortOrderEntry } from '../netDxf/Objects/DxfSortentsTable.js';
 export { DxfStoredSectionManager } from '../netDxf/Objects/DxfStoredSectionManager.js';
+export { DxfTableStyle } from '../netDxf/Objects/DxfTableStyle.js';
+export { DxfTableStyleHeader, DxfTableStyleRow, DxfTableStyleRowEdit, DxfTableStyleRowValues } from '../netDxf/Objects/DxfTableStyle.Projection.js';
+export { DxfTableStyleBorderValues, DxfTableStyleRowBorders } from '../netDxf/Objects/DxfTableStyle.Borders.js';
+export { DxfTableStyleRowDataTypes } from '../netDxf/Objects/DxfTableStyle.DataTypes.js';
+export { DxfStoredCellStyleMap, DxfStoredCellStyleMapEntry } from '../netDxf/Objects/DxfStoredCellStyleMap.js';
