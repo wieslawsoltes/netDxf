@@ -41,10 +41,11 @@ jobs:
         run: |
           test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = false
           gh release download "$TAG" --dir artifacts/packages
-      - name: Check exact source, qualification, package targets, symbols and checksums
+      - name: Revalidate source-bound assets and the live release tag
         env:
+          GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
-        run: python tools/ci/pipeline.py verify-release
+        run: python tools/ci/publication.py
       - name: Publish the verified package and symbols (duplicates remain errors)
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
