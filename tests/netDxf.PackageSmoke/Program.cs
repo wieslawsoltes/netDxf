@@ -27,10 +27,26 @@ foreach (bool binary in new[] { false, true })
         dim.StyleOverrides.Add(reset, null);
     doc.Entities.Add(dim);
     doc.Entities.Add(new Line(new Vector3(1, 2, 3), new Vector3(4, 5, 6)));
+    // Direct edits must not serialize display bytes from the old circular geometry.
+    byte[] circularProxy = { 1, 3, 7, 255 };
+    var circle = new Circle(new Vector3(2, 3, 4), 2) { ProxyGraphics = circularProxy };
+    circle.Radius = 2;
+    if (!circle.ProxyGraphics.SequenceEqual(circularProxy))
+        throw new InvalidOperationException("Identical circular assignment discarded the proxy");
+    circle.Radius = 3;
+    var arc = new Arc(new Vector3(4, 5, 6), 4, 30, 210) { ProxyGraphics = circularProxy };
+    arc.StartAngle = 45;
+    if (circle.ProxyGraphics != null || arc.ProxyGraphics != null)
+        throw new InvalidOperationException("Circular edit retained stale proxy graphics");
+    doc.Entities.Add(circle);
+    doc.Entities.Add(arc);
     using var stream = new MemoryStream();
     if (!doc.Save(stream, binary)) throw new InvalidOperationException("Package save failed");
     stream.Position = 0;
     var copy = DxfDocument.Load(stream) ?? throw new InvalidOperationException("Package load failed");
+    if (copy.Entities.Circles.Single().Radius != 3 || copy.Entities.Arcs.Single().StartAngle != 45
+        || copy.Entities.Circles.Single().ProxyGraphics != null || copy.Entities.Arcs.Single().ProxyGraphics != null)
+        throw new InvalidOperationException("Installed circular edit round trip failed");
     var dimension = copy.Entities.Dimensions.Single();
     dimension.Update();
     if (copy.DrawingVariables.AcadVer != version || dimension.UserText != " " || dimension.Block.Entities.OfType<MText>().Any()
