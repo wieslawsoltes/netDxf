@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <SmokeTargetFramework Condition="'$(SmokeTargetFramework)' == ''">net8.0</SmokeTargetFramework>
+    <TargetFramework>$(SmokeTargetFramework)</TargetFramework>
+    <NetDxfAssetTarget Condition="'$(NetDxfAssetTarget)' == ''">$(TargetFramework)</NetDxfAssetTarget>
+    <OutputType>Exe</OutputType>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Keep the legacy-runtime support warning visible; it is not a test failure. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NETSDK1138</WarningsNotAsErrors>
+    <IsPackable>false</IsPackable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <DefineConstants>$(DefineConstants);PACKAGE_TARGET_SMOKE</DefineConstants>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">3.0.1-ci.0</PackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Restore the real package but select its exact asset, including netstandard2.0.
+         The ordinary PackageSmoke project separately checks normal NuGet selection. -->
+    <PackageReference Include="netDxf.netstandard" Version="$(PackageVersion)"
+                      GeneratePathProperty="true" ExcludeAssets="compile;runtime" PrivateAssets="all" />
+    <Reference Include="netDxf.netstandard">
+      <HintPath>$(PkgnetDxf_netstandard)/lib/$(NetDxfAssetTarget)/netDxf.netstandard.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <!-- One shared assertion body, never a reduced or copied cross-target substitute. -->
+    <Compile Include="../netDxf.PackageSmoke/Program.cs" Link="PackageSmoke.cs" />
+  </ItemGroup>
+  <Target Name="RequireSelectedPackageAsset" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(PkgnetDxf_netstandard)/lib/$(NetDxfAssetTarget)/netDxf.netstandard.dll')"
+           Text="The requested assembly asset is absent from the restored candidate package." />
+  </Target>
+</Project>
