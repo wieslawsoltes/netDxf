@@ -48,9 +48,11 @@ failure suppression nor `always()` permits qualification after a failed gate.
 Runtime reports remain sealed in the strict 25-entry `runtime-evidence.zip`.
 
 The CI workflow is read-only and has no publication credentials. External actions
-remain commit-pinned. Only obsolete PR/queue CI runs can be cancelled by newer
-ones; tagged and manual release runs are not cancelled. The reusable workflow's
-concurrency namespace is distinct from the calling release workflow's namespace.
+remain commit-pinned. In-progress cancellation is enabled only for PR/queue CI; it is disabled for
+tagged and manual release runs. GitHub's default concurrency policy still allows
+only one pending run per group, so a newer request can replace an older pending
+request. This configuration does not promise an unlimited FIFO release queue.
+The reusable workflow's concurrency namespace is distinct from its caller's.
 
 ## Release draft or nonpublishing rehearsal
 
