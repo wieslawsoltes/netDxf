@@ -15,6 +15,7 @@ internal sealed partial class Emitter
 {
     private string E(ExpressionSyntax e)
     {
+        if(Gte && GteExpression(e) is string loweredExpression)return loweredExpression;
         switch(e)
         {
             case LiteralExpressionSyntax lit:return Literal(lit.Token.Value);
@@ -35,10 +36,10 @@ internal sealed partial class Emitter
             case ArrayCreationExpressionSyntax a:
                 if(a.Initializer!=null)return ArrayInitializer(a.Initializer,((IArrayTypeSymbol)Typ(a)!).ElementType);
                 var at=(IArrayTypeSymbol)Typ(a)!;if(at.Rank!=1)throw Bad(a,"Multidimensional arrays require explicit lowering");
-                return "Array.from({ length: "+E(a.Type.RankSpecifiers[0].Sizes[0])+" }, () => "+Def(at.ElementType)+")";
+                return Gte?"GteArray("+E(a.Type.RankSpecifiers[0].Sizes[0])+", () => "+Def(at.ElementType)+")":"Array.from({ length: "+E(a.Type.RankSpecifiers[0].Sizes[0])+" }, () => "+Def(at.ElementType)+")";
             case ImplicitArrayCreationExpressionSyntax a:return ArrayInitializer(a.Initializer,((IArrayTypeSymbol)Typ(a)!).ElementType);
             case ElementAccessExpressionSyntax a:
-                if(Sym(a) is IPropertySymbol pi&&pi.IsIndexer&&pi.ContainingNamespace.ToString().StartsWith("netDxf"))return E(a.Expression)+".get_Item("+string.Join(", ",a.ArgumentList.Arguments.Select(x=>E(x.Expression)))+")";
+                if(Sym(a) is IPropertySymbol pi&&pi.IsIndexer&&(pi.ContainingNamespace.ToString().StartsWith("netDxf") || Gte && pi.ContainingType.Name=="SortedDictionary"))return E(a.Expression)+".get_Item("+string.Join(", ",a.ArgumentList.Arguments.Select(x=>E(x.Expression)))+")";
                 return "GetElement("+E(a.Expression)+", "+string.Join(", ",a.ArgumentList.Arguments.Select(x=>E(x.Expression)))+")";
             case AssignmentExpressionSyntax a:return Assign(a);
             case BinaryExpressionSyntax b:return Binary(b);

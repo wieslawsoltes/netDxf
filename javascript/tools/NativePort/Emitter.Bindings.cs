@@ -16,6 +16,7 @@ internal sealed partial class Emitter
     private string Member(MemberAccessExpressionSyntax m)
     {
         var s=Sym(m);
+        if(Gte && GteMember(m,s) is string gteMember)return gteMember;
         if(s is IFieldSymbol empty&&empty.ContainingType.SpecialType==SpecialType.System_String&&empty.Name=="Empty")return "\"\"";
         if(s is IFieldSymbol f&&f.HasConstantValue)return Literal(f.ConstantValue);
         if(s is IFieldSymbol nf&&nf.ContainingNamespace.ToString().StartsWith("netDxf"))return (nf.IsStatic?Ref(nf.ContainingType):E(m.Expression))+"."+FieldName(nf);
@@ -41,12 +42,13 @@ internal sealed partial class Emitter
         var s=Sym(i) as IMethodSymbol ?? throw Bad(i,"Unbound method");
         var key=s.OriginalDefinition;
         string args=Arguments(i.ArgumentList.Arguments,s);
+        if(Gte && GteInvocation(i,s,args) is string invocation)return invocation;
         string? receiver=i.Expression is MemberAccessExpressionSyntax ma?EReceiver(ma.Expression,s):null;
         if(Program.Names.TryGetValue(key,out var name)||Program.Names.TryGetValue(s,out name))
-            return (s.IsStatic?Ref(s.ContainingType):receiver??"this")+"."+name+"("+args+")";
+            return (s.IsStatic?Ref(s.ContainingType):Gte?"GteReference("+(receiver??"this")+")":receiver??"this")+"."+name+"("+args+")";
         string ns=s.ContainingNamespace.ToString(), owner=s.ContainingType.Name;
-        if(Program.DimensionMode && ns.StartsWith("netDxf") && Program.Files.ContainsKey(s.ContainingType))
-            return (s.IsStatic?Ref(s.ContainingType):"RequireReference("+(receiver??"this")+")")+"."+s.Name+"("+args+")";
+        if((Program.DimensionMode || Gte) && ns.StartsWith("netDxf") && Program.Files.ContainsKey(s.ContainingType))
+            return (s.IsStatic?Ref(s.ContainingType):(Gte?"GteReference(":"RequireReference(")+(receiver??"this")+")")+"."+s.Name+"("+args+")";
         if(Program.DimensionMode && owner=="ICloneable" && s.Name=="Clone")return "RequireReference("+receiver+").Clone()";
         if(Program.DimensionMode && owner=="Char" && s.Name=="ToString")return "String("+receiver+")";
         if(Program.DimensionMode && owner=="Char" && s.Name=="Equals")return "("+receiver+" === "+args+")";
@@ -80,6 +82,7 @@ internal sealed partial class Emitter
         if(t.Name.EndsWith("Exception"))value="new Errors."+t.Name+"("+Arguments(args,ctor)+")";
         else if(t.Name=="List")
         {string input=args.Count==0?"":Arguments(args,ctor);if(init!=null)input="["+string.Join(", ",init.Expressions.Select(Copy))+"]";value="new List("+input+")";init=null;}
+        else if(Gte && t.Name=="SortedDictionary")value="new GteSortedDictionary()";
         else if(t.Name.StartsWith("Tuple"))value="new Tuple("+Arguments(args,ctor)+")";
         else if(t.Name=="StringBuilder")value="new StringBuilder()";
         else if(Program.DimensionMode && t.ToDisplayString()=="netDxf.Blocks.Block")value=Ref(t)+".CreateOverload("+Program.Q(Signature(ctor))+(args.Count>0?", "+Arguments(args,ctor):"")+")";
@@ -100,7 +103,10 @@ internal sealed partial class Emitter
     private string Assign(AssignmentExpressionSyntax a)
     {
         string op=a.OperatorToken.Text,right=Copy(a.Right);var lhs=a.Left;
+        if(Gte && Sym(a) is IMethodSymbol compound && Program.Names.TryGetValue(compound,out var compoundName))
+        {right=Ref(compound.ContainingType)+"."+compoundName+"("+E(lhs)+", "+right+")";op="=";}
         if(Program.DimensionMode && lhs is TupleExpressionSyntax tuple)return "(["+string.Join(", ",tuple.Arguments.Select(arg=>E(arg.Expression)))+"] = "+right+")";
+        if(Gte && lhs is TupleExpressionSyntax tupleGte)return "(["+string.Join(", ",tupleGte.Arguments.Select(arg=>E(arg.Expression)))+"] = "+right+")";
         if(lhs is ThisExpressionSyntax)return "this.$assign("+right+")";
         if(Sym(lhs) is IPropertySymbol property && property.SetMethod==null && SymbolEqualityComparer.Default.Equals(property.ContainingType,type))
           return (property.IsStatic?type.Name:"this")+".$property_"+property.Name+" "+op+" "+right;
@@ -108,7 +114,7 @@ internal sealed partial class Emitter
         {
             string r=E(index.Expression);string args=string.Join(", ",index.ArgumentList.Arguments.Select(x=>E(x.Expression)));
             string v=op=="="?right:"("+E(lhs)+" "+op[..^1]+" "+right+")";
-            if(Sym(index) is IPropertySymbol p && p.IsIndexer&&p.ContainingNamespace.ToString().StartsWith("netDxf"))return r+".set_Item("+args+", "+v+")";
+            if(Sym(index) is IPropertySymbol p && p.IsIndexer&&(p.ContainingNamespace.ToString().StartsWith("netDxf") || Gte && p.ContainingType.Name=="SortedDictionary"))return r+".set_Item("+args+", "+v+")";
             return "SetElement("+r+", "+args+", "+v+")";
         }
         return E(lhs)+" "+op+" "+right;

@@ -57,18 +57,19 @@ internal sealed partial class Emitter
     {
         var s=(IPropertySymbol)model.GetDeclaredSymbol(i)!;MemberMappings.Add(new{kind="indexer",name="Item",signature=string.Join(",",s.Parameters.Select(p=>p.Type.ToDisplayString()))});
         foreach(var a in i.AccessorList!.Accessors)
-        {bool get=a.IsKind(SyntaxKind.GetAccessorDeclaration);L((get?"get_Item(":"set_Item(")+string.Join(", ",s.Parameters.Select(p=>p.Name))+(get?") {":", value) {"));indent++;returns=get?s.Type:null;Block(a.Body!,false);indent--;L("}");returns=null;}
+        {bool get=a.IsKind(SyntaxKind.GetAccessorDeclaration);L((Gte?GteIndexerName(s,get)+"(":get?"get_Item(":"set_Item(")+string.Join(", ",s.Parameters.Select(p=>p.Name))+(get?") {":", value) {"));indent++;returns=get?s.Type:null;Block(a.Body!,false);indent--;L("}");returns=null;}
     }
     private void Block(BlockSyntax b,bool braces=true)
     {if(braces){L("{");indent++;}foreach(var s in b.Statements)S(s);if(braces){indent--;L("}");}}
     private void S(StatementSyntax s)
     {
+        if(Gte && GteStatement(s))return;
         switch(s)
         {
             case BlockSyntax b:Block(b);break;
             case LocalDeclarationStatementSyntax l:L(Declaration(l.Declaration)+";");break;
             case ExpressionStatementSyntax e:
-                if(Program.DimensionMode && e.Expression is InvocationExpressionSyntax call && Sym(call) is IMethodSymbol conditional && conditional.GetAttributes().Any(a=>a.AttributeClass?.ToDisplayString()=="System.Diagnostics.ConditionalAttribute" && a.ConstructorArguments[0].Value is "DEBUG"))
+                if((Program.DimensionMode || Gte) && e.Expression is InvocationExpressionSyntax call && Sym(call) is IMethodSymbol conditional && conditional.GetAttributes().Any(a=>a.AttributeClass?.ToDisplayString()=="System.Diagnostics.ConditionalAttribute" && a.ConstructorArguments[0].Value is "DEBUG"))
                     L("// Conditional(DEBUG) call omitted by Release-profile lowering; native Debug assertion failures remain blocking evidence.");
                 else L(E(e.Expression)+";");break;
             case ReturnStatementSyntax r:L(r.Expression==null?"return;":"return "+Copy(r.Expression)+";");break;
@@ -100,7 +101,10 @@ internal sealed partial class Emitter
         a.RefKindKeyword.Kind() is SyntaxKind.OutKeyword or SyntaxKind.RefKeyword?Reference(a.Expression):E(a.Expression)));
     private string Reference(ExpressionSyntax e)
     {
+        if(Gte && Sym(e) is IDiscardSymbol)return "{ value: 0 }";
         if(e is IdentifierNameSyntax id&&Sym(id) is IParameterSymbol p&&p.RefKind!=RefKind.None)return id.Identifier.ValueText;
+        if(Gte && e is ElementAccessExpressionSyntax element)return "GteElementRef("+E(element.Expression)+", ["+string.Join(", ",element.ArgumentList.Arguments.Select(a=>E(a.Expression)))+"], "+(Sym(element) is IPropertySymbol?"true":"false")+")";
+        if(Gte){string location=e is DeclarationExpressionSyntax declaration?((SingleVariableDesignationSyntax)declaration.Designation).Identifier.ValueText:E(e);return "GteRef(() => "+location+", v => { "+location+" = v; })";}
         string target=e is DeclarationExpressionSyntax de?((SingleVariableDesignationSyntax)de.Designation).Identifier.ValueText:E(e);
         return "{ get value() { return "+target+"; }, set value(v) { "+target+" = v; } }";
     }

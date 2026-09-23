@@ -86,7 +86,7 @@ function buildUnlocked(mode) {
       ['-nullable:enable', ...names.map(n => '-r:' + path.join(roslyn, n + '.dll'))]);
     for (const name of names) fs.copyFileSync(path.join(roslyn,name+'.dll'), path.join(oracleRoot, name + '.dll'));
     console.log(run(command, [path.join(oracleRoot, 'NativePort.dll'), sourceRoot, javascriptRoot, tool.refs,
-      ...(process.argv.includes('--check') ? ['--check'] : []), ...(process.argv.includes('--dimensions') ? ['--dimensions'] : [])]).trim());
+      ...(process.argv.includes('--check') ? ['--check'] : []), ...(process.argv.includes('--dimensions') ? ['--dimensions'] : []), ...(process.argv.includes('--gte') ? ['--gte'] : [])]).trim());
   } else if (mode === 'conformance') {
     const globalUsings = path.join(oracleRoot,'GlobalUsings.cs');
     fs.writeFileSync(globalUsings,['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks'].map(n=>`global using ${n};`).join('\n'));

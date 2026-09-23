@@ -22,6 +22,7 @@ internal sealed partial class Emitter
     private ISymbol? Sym(SyntaxNode n)=>model.GetSymbolInfo(n).Symbol;
     private ITypeSymbol? Typ(SyntaxNode n)=>model.GetTypeInfo(n).Type;
     private void L(string s="")=>body.Append(' ',indent*2).Append(s).Append('\n');
+    private bool Gte => Program.GteMode && Program.GteTypes.Contains(type);
     private string Ref(INamedTypeSymbol t){if(!SymbolEqualityComparer.Default.Equals(t,type))dependencies.Add(t);return t.Name;}
     private static string FieldName(ISymbol s)=>s.DeclaredAccessibility==Accessibility.Public?s.Name:"$"+s.Name;
     private string Copy(ExpressionSyntax e) {
@@ -60,6 +61,7 @@ internal sealed partial class Emitter
             switch(member)
             {
                 case FieldDeclarationSyntax:case ConstructorDeclarationSyntax:break;
+                case TypeDeclarationSyntax when Gte:break;
                 case PropertyDeclarationSyntax p:EmitProperty(p);break;
                 case IndexerDeclarationSyntax i:EmitIndexer(i);break;
                 case MethodDeclarationSyntax m:EmitMethod(m,(IMethodSymbol)model.GetDeclaredSymbol(m)!,m.Body,m.ExpressionBody?.Expression);break;
@@ -68,6 +70,7 @@ internal sealed partial class Emitter
                 default:throw Bad(member,"Unsupported member");
             }
         }
+        if(Gte)EmitGteIndexerDispatch();
         foreach(var group in type.GetMembers().OfType<IMethodSymbol>().Where(m=>Program.Names.ContainsKey(m)&&!m.IsAbstract).GroupBy(m=>(m.Name,m.IsStatic)))
         {
             if(group.Count()<2)continue;
@@ -77,21 +80,24 @@ internal sealed partial class Emitter
             L("throw new ArgumentException("+Program.Q("No matching "+type.Name+"."+group.Key.Name+" overload. Consult native-port-manifest.json.")+");");indent--;L("}");
         }
         var imports=new StringBuilder("// Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.\n// Native JavaScript generated from the pinned C# file by tools/NativePort.\n// Do not edit generated bodies: update the audited lowerer and regenerate.\n");
+        if(Gte)imports.Append("// Based on Geometric Tools, David Eberly, Copyright (c) 1998-2022.\n// Geometric Tools portions: Boost Software License 1.0; see LICENSE.BSL-1.0.\n");
         string moduleDir=Path.GetDirectoryName(Program.Files[type])!;
         string runtimePrefix=Path.GetRelativePath(moduleDir,"runtime").Replace('\\','/');
         imports.Append("import * as Errors from '../runtime/Errors.js';\nimport { Copy, CopyValue, DotNetMath, List, Tuple, Init, NumberText, Format, DoubleHash, Culture, StringBuilder, Int32, Int16, Byte, Color, GetElement, SetElement, Int32FromBytes, ConstructorTag, DotNetNaN, MultiplyDouble, RemainderDouble, NativeString, MemberwiseClone } from '../runtime/GeometryRuntime.js';\n");
         imports.Append("const { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException, ArithmeticException, NotSupportedException } = Errors;\n");
         foreach(var d in dependencies.OrderBy(d=>d.ToDisplayString(),StringComparer.Ordinal))
         {
+            if(Gte && Program.Files.TryGetValue(d,out var sibling) && sibling==Program.Files[type])continue;
             string path=Program.Files.TryGetValue(d,out var file)?file[..^3]+".js":d.ContainingNamespace.ToString().StartsWith("netDxf")?d.ContainingNamespace.ToString().Replace('.','/')+"/"+d.Name+".js":throw new Exception("Unmapped dependency "+d);
             string rel=Path.GetRelativePath(moduleDir,path).Replace('\\','/');imports.Append("import { ").Append(d.Name).Append(" } from './").Append(rel).Append("';\n");
         }
         if(Program.DimensionMode)imports.Append("import { DimensionValue, Cloneable, RequireReference, StringEquals, StringReplace, StringSubstring, DimensionCulture } from '../runtime/DimensionRuntime.js';\n");
+        if(Gte)imports.Append("import { GteInvoke, GteCopyTo, GteHash, GteArray, GteReference, GteRef, GteElementRef, GteFirst, GteLast, GteSortedDictionary } from '../runtime/GteRuntime.js';\n");
         imports.Replace("../runtime/",runtimePrefix+"/");
         foreach(var enumNode in node.SyntaxTree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>()) {
           var en=(INamedTypeSymbol)model.GetDeclaredSymbol(enumNode)!;
           imports.Append("\nexport const ").Append(en.Name).Append(" = Object.freeze(").Append(JsonSerializer.Serialize(en.GetMembers().OfType<IFieldSymbol>().Where(f=>f.HasConstantValue).ToDictionary(f=>f.Name,f=>f.ConstantValue))).Append(");\n");
         }
-        return imports+"\nexport class "+type.Name+baseName+" {\n"+body+"}\n";
+        return imports+(Gte?"\n\nexport class ":"\nexport class ")+type.Name+baseName+" {\n"+body+"}\n";
     }
 }

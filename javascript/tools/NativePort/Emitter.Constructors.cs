@@ -90,7 +90,7 @@ internal sealed partial class Emitter
             foreach(var c in ctors)
             {var s=(IMethodSymbol)model.GetDeclaredSymbol(c)!;L("static $create"+Program.Constructors[s]+"(...args) { return new "+type.Name+"(ConstructorTag, "+Program.Constructors[s]+", args); }");}
             string marker="  constructor(...args) {\n";
-            string dispatch="    if (args[0] === ConstructorTag) { this['$ctor' + args[1]](...args[2]); return; }\n";
+            string dispatch=(Gte&&type.IsAbstract?"    if (new.target === "+type.Name+") throw new NotSupportedException('Cannot construct an abstract class.');\n":"")+"    if (args[0] === ConstructorTag) { this['$ctor' + args[1]](...args[2]); return; }\n";
             body.Replace(marker,marker+dispatch);
         }
         if(derived) {
@@ -118,6 +118,8 @@ internal sealed partial class Emitter
         if(t.SpecialType==SpecialType.System_Boolean)return "typeof "+a+" === 'boolean'";
         if(t.SpecialType==SpecialType.System_String)return a+" === null || typeof "+a+" === 'string'";
         if(t.SpecialType==SpecialType.System_Object)return "true";
+        if(Gte && t.TypeKind==TypeKind.Delegate)return a+" === null || typeof "+a+" === 'function'";
+        if(Gte && t.Name=="SortedDictionary")return a+" === null || "+a+" instanceof GteSortedDictionary";
         if(t.TypeKind==TypeKind.Enum)return "typeof "+a+" === 'number'";
         if(t is INamedTypeSymbol n && Program.Files.ContainsKey(n))return (n.IsReferenceType?a+" === null || ":"")+a+" instanceof "+Ref(n);
         if(Program.DimensionMode && t.Name=="ICloneable")return "Cloneable("+a+")";
