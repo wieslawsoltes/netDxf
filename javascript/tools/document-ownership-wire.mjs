@@ -1,3 +1,5 @@
+import { storedTableLoad, storedTableSnapshot } from './stored-table-wire.mjs';
+import { tableContentLoad, tableContentCall, tableContentSnapshot, tableContentWith } from './table-content-wire.mjs';
 import { tableGeometryLoad, tableGeometryCall, tableGeometrySnapshot } from './table-geometry-wire.mjs';
 import { tableStyleLoad, tableStyleCall, tableStyleSnapshot } from './table-style-wire.mjs';
 import { managerCall, managerLoad, managerSnapshot } from './section-manager-wire.mjs';
@@ -62,6 +64,13 @@ export function documentOwnershipCall(input){
       const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
       if(target==null&&['get','set','item','call','append-loaded'].includes(step.method))throw new apiErrors.NullReferenceException();
       switch(step.method){
+        case 'stored-table-load':result=storedTableLoad(step,target,read);break;
+        case 'stored-table-model':result=storedTableSnapshot(target);break;
+        case 'stored-table-internal':result=target[step.member](...args);break;
+        case 'content-load':result=tableContentLoad(step,target,read);break;
+        case 'content-model':result=tableContentSnapshot(target);break;
+        case 'content-call':result=tableContentCall(step,target,read,values);break;
+        case 'content-with':result=tableContentWith(step,target,read);break;
         case 'geometry-internal-get':result=target[step.member];break;
         case 'geometry-load':result=tableGeometryLoad(step,target,read);break;
         case 'geometry-model':result=tableGeometrySnapshot(target);break;
@@ -99,7 +108,7 @@ export function documentOwnershipCall(input){
         case 'same':result=args[0]===args[1];break;
         default:throw new Error('Unknown ownership operation.');
       }
-      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model','table-model','geometry-model'].includes(step.method))result=wire(result);
+      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model','table-model','geometry-model','content-model','stored-table-model'].includes(step.method))result=wire(result);
     }catch(e){error=e.name;param=e.ParamName??null;}
     return {result,error,param};
   });

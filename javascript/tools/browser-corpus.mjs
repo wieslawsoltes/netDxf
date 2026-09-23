@@ -1,3 +1,5 @@
+import { tableContentCorpus } from './table-content-corpus.mjs';
+import { storedTableCorpus } from './stored-table-corpus.mjs';
 import { tableGeometryCorpus } from './table-geometry-corpus.mjs';
 import { tableStyleCorpus } from './table-style-corpus.mjs';
 import { sectionManagerCorpus } from './section-manager-corpus.mjs';
@@ -269,6 +271,17 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await tableGeometryOracle.close();}
+// Append TABLECONTENT and ACAD_TABLE after all previous comparisons. The retained
+// constructor fixtures do not replace typed reader/writer admission tests.
+const contentOracle=new DocumentOracleSession();
+try {
+  for(const probe of tableContentCorpus().concat(storedTableCorpus())) {
+    const observed=await contentOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await contentOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

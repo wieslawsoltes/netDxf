@@ -89,3 +89,26 @@
   geometry.ReplaceGeometry(7,8,[cell,cell]);
   if(geometry.Payload!==prior||geometry.References.Count!==2||!Object.is(geometry.Cells.get_Item(0).WidthWithGap,-0)||doc.Objects.Validate().Count!==0)throw new Error('Packed TABLEGEOMETRY edit differs.');
 }
+
+// Original-path retained TABLECONTENT and ACAD_TABLE APIs from the installed
+// package. These explicit in-memory packets are not a typed DXF file reader.
+{
+  const {DxfDocument,DxfVersion,DxfTag,DxfStoredTableContent,StoredTable}=await import('@netdxf/javascript');
+  const standalone=await import('@netdxf/javascript/netDxf/Objects/DxfStoredTableContent.js');
+  const entity=await import('@netdxf/javascript/netDxf/Entities/StoredTable.js');
+  if(standalone.DxfStoredTableContent!==DxfStoredTableContent||entity.StoredTable!==StoredTable)throw new Error('Retained table standalone exports differ.');
+  const doc=new DxfDocument(DxfVersion.AutoCad2018),tag=([c,v])=>new DxfTag(c,v);
+  const payload=[[100,'AcDbLinkedData'],[1,'Content'],[300,'Description'],[100,'AcDbLinkedTableData'],[90,0],[91,1],[301,'ROW'],
+    [1,'LINKEDTABLEDATAROW_BEGIN'],[90,1],[300,'CELL'],[1,'LINKEDTABLEDATACELL_BEGIN'],[95,1],[302,'CONTENT'],[1,'CELLCONTENT_BEGIN'],[90,1],
+    [300,'VALUE'],[93,6],[90,4],[1,'text'],[94,0],[300,''],[302,'text'],[304,'ACVALUE_END'],[91,0],[309,'CELLCONTENT_END'],
+    [309,'LINKEDTABLEDATACELL_END'],[309,'LINKEDTABLEDATAROW_END'],[92,0],[100,'AcDbFormattedTableData'],[100,'AcDbTableContent'],[340,'0']].map(tag);
+  const content=new DxfStoredTableContent(doc,payload);doc.NamedObjects.Add('Content',content);content.Resolve(h=>doc.StoredTableHandleTarget(h));
+  const old=content.StoredValues,value=old.get_Item(0);content.ReplaceContent('Edited','Description',null,[value.WithValue('literal\\U+0041','display')]);
+  if(content.StoredValues.get_Item(0).Value!=='literal\\U+0041'||old.get_Item(0)!==value||value.Value!=='text')throw new Error('Retained content snapshot/edit mismatch.');
+  const table=new StoredTable(doc,[[100,'AcDbBlockReference'],[10,0],[20,0],[30,0],[210,0],[220,0],[230,2],
+    [100,'AcDbTable'],[90,22],[91,1],[92,1],[141,3],[142,4],[171,1],[301,'CELL_VALUE'],[93,6],[90,4],[1,'text'],[304,'ACVALUE_END']].map(tag));
+  doc.Entities.Add(table);table.Resolve();
+  if(table.Grid.get_Item(0,0).LiteralValue!=='text'||table.Normal.Z!==2||table.BackingContent!==null)throw new Error('Retained table grid mismatch.');
+  if(!doc.Entities.Remove(table))throw new Error('Unreferenced retained table did not detach.');
+  if(doc.Objects.Validate().Count)throw new Error('Retained table registration invalidated the database.');
+}

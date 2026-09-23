@@ -85,6 +85,13 @@ internal static partial class Program
                 object? target=step.TryGetProperty("target",out var targetId)?Values[targetId.GetString()!]:null;
                 string member=step.TryGetProperty("member",out var key)?key.GetString()!:"";
                 switch(method){
+                    case "stored-table-load":result=StoredTableLoad(step,(DxfDocument)target!);break;
+                    case "stored-table-model":result=StoredTableSnapshot(target);break;
+                    case "stored-table-internal":result=StoredTableInternal(step,target!);break;
+                    case "content-load":result=TableContentLoad(step,(DxfDocument)target!);break;
+                    case "content-model":result=TableContentSnapshot(target);break;
+                    case "content-call":result=TableContentCall(step,(DxfStoredTableContent)target!);break;
+                    case "content-with":result=((DxfStoredTableContentValue)target!).WithValue(Read(step.GetProperty("value"))!,step.TryGetProperty("display",out var displayInput)?(string?)Read(displayInput):null);break;
                     case "geometry-internal-get":result=RetainedGet(target!,step.GetProperty("member").GetString()!);break;
                     case "geometry-load":result=TableGeometryLoad(step,(DxfDocument)target!);break;
                     case "geometry-model":result=TableGeometrySnapshot(target);break;
@@ -127,7 +134,7 @@ internal static partial class Program
                     default:throw new ArgumentException("Unknown ownership method "+method);
                 }
                 if(step.TryGetProperty("id",out var id))Values[id.GetString()!]=result;
-                if(method!="model"&&method!="las"&&method!="retained-model"&&method!="manager-model"&&method!="table-model"&&method!="geometry-model")result=OwnershipWire(result);
+                if(method!="model"&&method!="las"&&method!="retained-model"&&method!="manager-model"&&method!="table-model"&&method!="geometry-model"&&method!="content-model"&&method!="stored-table-model")result=OwnershipWire(result);
             }catch(Exception e){while(e is TargetInvocationException&&e.InnerException!=null)e=e.InnerException;error=e.GetType().Name;param=(e as ArgumentException)?.ParamName;}
             results.Add(new {result,error,param});
         }

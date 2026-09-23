@@ -93,7 +93,9 @@
     "test:retained-polylines": "node tools/retained-polyline-differential.mjs",
     "test:section-manager": "node tools/section-manager-differential.mjs",
     "test:table-styles": "node tools/table-style-differential.mjs",
-    "test:table-geometry": "node tools/table-geometry-differential.mjs"
+    "test:table-geometry": "node tools/table-geometry-differential.mjs",
+    "test:table-content": "node tools/table-content-differential.mjs",
+    "test:stored-table": "node tools/stored-table-differential.mjs"
   },
   "repository": {
     "type": "git",
