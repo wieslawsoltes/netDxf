@@ -472,6 +472,8 @@ namespace netDxf.Entities
                 ExtLine2Off = dim.Style.ExtLine2Off,
                 ExtLineOffset = dim.Style.ExtLineOffset,
                 ExtLineExtend = dim.Style.ExtLineExtend,
+                ExtLineFixed = dim.Style.ExtLineFixed,
+                ExtLineFixedLength = dim.Style.ExtLineFixedLength,
 
                 // symbols and arrows
                 ArrowSize = dim.Style.ArrowSize,
@@ -559,6 +561,12 @@ namespace netDxf.Entities
                         break;
                     case DimensionStyleOverrideType.ExtLineExtend:
                         copy.ExtLineExtend = (double) styleOverride.Value;
+                        break;
+                    case DimensionStyleOverrideType.ExtLineFixed:
+                        copy.ExtLineFixed = (bool) styleOverride.Value;
+                        break;
+                    case DimensionStyleOverrideType.ExtLineFixedLength:
+                        copy.ExtLineFixedLength = (double) styleOverride.Value;
                         break;
                     case DimensionStyleOverrideType.ArrowSize:
                         copy.ArrowSize = (double) styleOverride.Value;
@@ -735,12 +743,12 @@ namespace netDxf.Entities
             double dimexe = Math.Sign(dim.Offset) * style.ExtLineExtend * style.DimScaleOverall;
             if (!style.ExtLine1Off)
             {
-                entities.Add(ExtensionLine(ref1 + dimexo * vec, dimRef1 + dimexe * vec, style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, ref1, dimRef1, ref1 + dimexo * vec, dimRef1 + dimexe * vec, style, style.ExtLine1Linetype);
             }
 
             if (!style.ExtLine2Off)
             {
-                entities.Add(ExtensionLine(ref2 + dimexo * vec, dimRef2 + dimexe * vec, style, style.ExtLine2Linetype));
+                AddExtensionLine(entities, ref2, dimRef2, ref2 + dimexo * vec, dimRef2 + dimexe * vec, style, style.ExtLine2Linetype);
             }
 
             // dimension text
@@ -834,12 +842,12 @@ namespace netDxf.Entities
             double dimexe = style.ExtLineExtend * style.DimScaleOverall;
             if (!style.ExtLine1Off)
             {
-                entities.Add(ExtensionLine(ref1 + dimexo * dirRef1, dimRef1 + dimexe * dirRef1, style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, ref1, dimRef1, ref1 + dimexo * dirRef1, dimRef1 + dimexe * dirRef1, style, style.ExtLine1Linetype);
             }
 
             if (!style.ExtLine2Off)
             {
-                entities.Add(ExtensionLine(ref2 + dimexo * dirRef2, dimRef2 + dimexe * dirRef2, style, style.ExtLine2Linetype));
+                AddExtensionLine(entities, ref2, dimRef2, ref2 + dimexo * dirRef2, dimRef2 + dimexe * dirRef2, style, style.ExtLine2Linetype);
             }
 
             // dimension text
@@ -946,14 +954,14 @@ namespace netDxf.Entities
             if (!style.ExtLine1Off && t != 0)
             {
                 Vector2 s = Vector2.Polar(t < 0 ? ref1Start : ref1End, t*dimexo, startAngle);
-                entities.Add(ExtensionLine(s, Vector2.Polar(dimRef1, t*dimexe, startAngle), style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, t < 0 ? ref1Start : ref1End, dimRef1, s, Vector2.Polar(dimRef1, t*dimexe, startAngle), style, style.ExtLine1Linetype);
             }
 
             t = MathHelper.PointInSegment(dimRef2, ref2Start, ref2End);
             if (!style.ExtLine2Off && t != 0)
             {
                 Vector2 s = Vector2.Polar(t < 0 ? ref2Start : ref2End, t*dimexo, endAngle);
-                entities.Add(ExtensionLine(s, Vector2.Polar(dimRef2, t*dimexe, endAngle), style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, t < 0 ? ref2Start : ref2End, dimRef2, s, Vector2.Polar(dimRef2, t*dimexe, endAngle), style, style.ExtLine2Linetype);
             }
 
             double textRot = midRot - MathHelper.HalfPI;
@@ -1058,16 +1066,18 @@ namespace netDxf.Entities
                 refAngle = MathHelper.PI;
             }
 
+            // The second angular ray can have a different reference-point radius.
+            double refAngle2 = Vector2.Distance(refCenter, ref2) > Vector2.Distance(refCenter, dimRef2) ? MathHelper.PI : 0.0;
             double dimexo = style.ExtLineOffset * style.DimScaleOverall;
             double dimexe = style.ExtLineExtend * style.DimScaleOverall;
             if (!style.ExtLine1Off)
             {
-                entities.Add(ExtensionLine(Vector2.Polar(ref1, dimexo, startAngle + refAngle), Vector2.Polar(dimRef1, dimexe, startAngle + refAngle), style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, ref1, dimRef1, Vector2.Polar(ref1, dimexo, startAngle + refAngle), Vector2.Polar(dimRef1, dimexe, startAngle + refAngle), style, style.ExtLine1Linetype);
             }
 
             if (!style.ExtLine2Off)
             {
-                entities.Add(ExtensionLine(Vector2.Polar(ref2, dimexo, endAngle + refAngle), Vector2.Polar(dimRef2, dimexe, endAngle + refAngle), style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, ref2, dimRef2, Vector2.Polar(ref2, dimexo, endAngle + refAngle2), Vector2.Polar(dimRef2, dimexe, endAngle + refAngle2), style, style.ExtLine2Linetype);
             }
 
             // dimension text
@@ -1512,16 +1522,18 @@ namespace netDxf.Entities
                 refAngle = MathHelper.PI;
             }
 
+            // The second angular ray can have a different reference-point radius.
+            double refAngle2 = Vector2.Distance(refCenter, ref2) > Vector2.Distance(refCenter, dimRef2) ? MathHelper.PI : 0.0;
             double dimexo = style.ExtLineOffset * style.DimScaleOverall;
             double dimexe = style.ExtLineExtend * style.DimScaleOverall;
             if (!style.ExtLine1Off)
             {
-                entities.Add(ExtensionLine(Vector2.Polar(ref1, dimexo, startAngle + refAngle), Vector2.Polar(dimRef1, dimexe, startAngle + refAngle), style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, ref1, dimRef1, Vector2.Polar(ref1, dimexo, startAngle + refAngle), Vector2.Polar(dimRef1, dimexe, startAngle + refAngle), style, style.ExtLine1Linetype);
             }
 
             if (!style.ExtLine2Off)
             {
-                entities.Add(ExtensionLine(Vector2.Polar(ref2, dimexo, endAngle + refAngle), Vector2.Polar(dimRef2, dimexe, endAngle + refAngle), style, style.ExtLine1Linetype));
+                AddExtensionLine(entities, ref2, dimRef2, Vector2.Polar(ref2, dimexo, endAngle + refAngle2), Vector2.Polar(dimRef2, dimexe, endAngle + refAngle2), style, style.ExtLine2Linetype);
             }
 
             // dimension text
