@@ -12,6 +12,41 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
+`a7f4559` adds retained FIELD, DIMASSOC and SUNSTUDY dependency models and fixes
+binary error diagnostics; `8875577` adds independent verification and required
+integration. [Contracts, source-bound results and remaining failures](doc/STORED_DEPENDENCIES.md)
+distinguish retained loader adapters from typed DXF IO and evaluator support.
+The preceding TABLECONTENT/ACAD_TABLE work was already pushed at `bb7b117` and
+is preserved; no unpublished local patch survived the interrupted continuation.
+
+The new **738 scenarios / 5,566 operations** match C# in both configurations,
+including 520 exact binary-reader diagnostic inputs. All **26 complete original
+SUNSTUDY producer raw-fixture tests** are now ported, and **32 supplemental tests**
+are counted separately. Original fixtures and C# tests remain unchanged.
+
+Local checks pass **2,946 mirrored originals**, **1,062 supplemental tests**,
+both **35,309-case C# suites**, the **526-file offline package**, and exact source
+regeneration. All **47 differential stages** execute: Debug **42 pass / 5 fail**,
+Release **41 pass / 6 fail**. Both inline Chromium profiles execute **142,896**
+checks with no new dependency mismatches or page errors; Release retains **83**
+failures and Debug **27**, including 22 unavailable native observations. HTTP
+navigation is policy-blocked. Both full-port gates remain failing.
+
+The development-only independent MPFR reference audit passes both precision
+profiles; the existing descriptive 2,000-object benchmark also completes.
+Neither waives exact native numerical failures or establishes release performance.
+The ledger is **388/510 library mirrors**, **60/193 conformance-file mirrors**,
+and **2,946/35,309 original cases**. Presence is not complete API/behavioral parity.
+Typed IO, remaining private/TABLE APIs, evaluation, original tests and broad
+platform acceptance remain unfinished.
+
+All four hosted Ubuntu/Windows Debug/Release profiles also pass nine lifecycle
+corpora (**2,365 scenarios / 47,478 operations**), 236 focused tests and all 2,946
+mirrored original cases. The [hosted receipt](doc/stored-dependencies-hosted-8875577.json)
+records the checked reports, counts and archive hashes without claiming full parity.
+
+## Previous TABLEGEOMETRY checkpoint (historical)
+
 `11351a5` adds source-bound TABLEGEOMETRY values, strict counted packets and
 ReplaceGeometry; `198d9e4` supplies exact verification and required integration.
 [Geometry contracts and source-bound results](doc/TABLE_GEOMETRY.md) describe
