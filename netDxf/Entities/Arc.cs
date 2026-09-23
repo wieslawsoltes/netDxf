@@ -83,8 +83,8 @@ namespace netDxf.Entities
                 throw new ArgumentOutOfRangeException(nameof(radius), radius, "The arc radius must be greater than zero.");
             }
             this.radius = radius;
-            this.startAngle = MathHelper.NormalizeAngle(startAngle);
-            this.endAngle = MathHelper.NormalizeAngle(endAngle);
+            this.startAngle = ArcParameterAngles.Normalize(startAngle);
+            this.endAngle = ArcParameterAngles.Normalize(endAngle);
             this.thickness = 0.0;
         }
 
@@ -140,20 +140,22 @@ namespace netDxf.Entities
 
         /// <summary>
         /// Gets or sets the arc start angle in degrees.
+        /// Stored angles are normalized to [0,360) without geometric tolerance snapping.
         /// </summary>
         public double StartAngle
         {
             get { return this.startAngle; }
-            set { CircularEntityMutation.Assign(this, ref this.startAngle, MathHelper.NormalizeAngle(value)); }
+            set { CircularEntityMutation.Assign(this, ref this.startAngle, ArcParameterAngles.Normalize(value)); }
         }
 
         /// <summary>
         /// Gets or sets the arc end angle in degrees.
+        /// Stored angles are normalized to [0,360) without geometric tolerance snapping.
         /// </summary>
         public double EndAngle
         {
             get { return this.endAngle; }
-            set { CircularEntityMutation.Assign(this, ref this.endAngle, MathHelper.NormalizeAngle(value)); }
+            set { CircularEntityMutation.Assign(this, ref this.endAngle, ArcParameterAngles.Normalize(value)); }
         }
 
         /// <summary>
