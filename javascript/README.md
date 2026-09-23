@@ -12,6 +12,31 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
+`9cf0351` adds the source-bound SECTION_MANAGER lifecycle: creation, ordered
+membership replacement, retained-packet validation and guarded explicit erasure.
+[Manager contracts and source-bound evidence](doc/SECTION_MANAGER.md) document
+callback/disposal ordering, re-entrancy, the 65,536-member bound, CLASS handling,
+original identities and explicit typed-transport limitations.
+
+The new **174 scenarios / 5,406 operations** match C# in Debug and Release.
+Both full unchanged C# suites pass **35,309 cases**; JavaScript passes **2,905
+mirrored original cases** and **933 supplemental tests**, including 25 new manager
+tests. The 499-file offline package and both source-regeneration checks pass.
+The hosted Ubuntu/Windows Debug/Release matrix passes all four profiles,
+including four lifecycle corpora, 107 focused tests and every mirrored case;
+[the receipt](doc/section-manager-hosted-9cf0351.json) retains actual reports.
+
+Release inline Chromium executes all **141,186 comparisons** with no manager
+mismatch or page error, but **87 earlier-category failures remain**. HTTP-origin
+navigation is blocked by the local browser policy, and both complete gates fail.
+The ledger is **368/510 library mirrors, 56/193 conformance-file mirrors, and
+2,905/35,309 original cases**. Presence does not establish complete behavior.
+Typed reading/writing, general profile conversion and other listed work remain
+unfinished. The newer retained-polyline documentation was preserved before this
+increment was pushed; no unpublished source patch was found or lost.
+
+## Previous retained-polyline checkpoint
+
 `89c7cc8` connects retained Polyline3D, PolygonMesh, PolyfaceMesh and legacy
 Polyline2D chains to the typed document registry. `fae312d` supplies independent
 qualification and required integration. [Retained polyline contracts and
