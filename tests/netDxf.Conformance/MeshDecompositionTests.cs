@@ -41,7 +41,7 @@ internal static partial class Program
         var ring = DecompositionRing(kind); var points = ring.Select(p => DecompositionPoint(p,plane,scale)).ToArray();
         var indices = Enumerable.Range(0,points.Length).ToArray(); if (reverse) Array.Reverse(indices);
         var mesh = new Mesh(points,new[] { indices }) { Layer = new Layer("DECOMPOSITION"), Color = new AciColor(5), LinetypeScale = 2.25, IsVisible = false };
-        mesh.ProxyGraphics = new byte[] { 1,2,3,4 }; mesh.Normal = new Vector3(2,-3,6);
+        mesh.ProxyGraphics = new byte[] { 1,2,3,4 }; NormalFixtureEditAndRestore(mesh, new Vector3(2,-3,6));
         var data = new XData(new ApplicationRegistry("DECOMPOSITION")); data.XDataRecord.Add(new XDataRecord(XDataCode.String,"source payload")); mesh.XData.Add(data);
         return mesh;
     }

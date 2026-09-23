@@ -267,12 +267,19 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the entity <see cref="Vector3">normal</see>.
         /// </summary>
+        /// <remarks>
+        /// A change to the normalized stored direction invalidates common proxy graphics.
+        /// A normalized no-op retains the graphics; rejected input changes neither value.
+        /// </remarks>
         public Vector3 Normal
         {
             get { return this.normal; }
             set
             {
-                this.normal = Vector3.NormalizeFiniteDirection(value, nameof(value));
+                if (PrimitiveGeometryMutation.Assign(ref this.normal, Vector3.NormalizeFiniteDirection(value, nameof(value))))
+                {
+                    this.ClearProxyGraphics();
+                }
             }
         }
 

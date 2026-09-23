@@ -238,6 +238,43 @@ foreach (bool binary in new[] { false, true })
     transitionDim.Update();
     if (transitionDim.Block.Entities.OfType<MText>().Single().Value != transitionLabel)
         throw new InvalidOperationException("Installed package changed deviation label after reload");
+    // Shared by ordinary NuGet selection and all eight exact-asset profiles.
+    var normalLine = new Line(new Vector3(1,2,3), new Vector3(4,5,6));
+    byte[] normalProxy = { 1,7,19,33,255 };
+    normalLine.ProxyGraphics = normalProxy;
+    normalLine.Normal = new Vector3(0,0,8);
+    if (!(normalLine.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(normalProxy))
+        throw new InvalidOperationException("Installed normal no-op lost proxy");
+    normalLine.Normal = Vector3.UnitX;
+    if (normalLine.ProxyGraphics != null) throw new InvalidOperationException("Installed normal edit retained proxy");
+    normalLine.ProxyGraphics = normalProxy;
+    bool normalRejected = false;
+    try { normalLine.Normal = Vector3.Zero; } catch (ArgumentException) { normalRejected = true; }
+    if (!normalRejected || normalLine.Normal != Vector3.UnitX
+        || !(normalLine.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(normalProxy))
+        throw new InvalidOperationException("Installed normal rejection changed state");
+    var normalDef = new AttributeDefinition("NORMAL") { Value = "definition" };
+    normalDef.ProxyGraphics = normalProxy; normalDef.Normal = Vector3.UnitX;
+    if (normalDef.ProxyGraphics != null) throw new InvalidOperationException("Installed ATTDEF retained stale normal proxy");
+    var normalBlock = new Block("NORMAL_PACKAGE"); normalBlock.AttributeDefinitions.Add(normalDef);
+    var normalInsert = new Insert(normalBlock);
+    var normalDoc = new DxfDocument(version); normalDoc.Entities.Add(normalLine); normalDoc.Entities.Add(normalInsert);
+    var normalAttribute = normalInsert.Attributes.Single();
+    normalAttribute.Normal = Vector3.UnitX; normalAttribute.ProxyGraphics = normalProxy;
+    normalAttribute.Normal = Vector3.UnitZ;
+    if (normalAttribute.ProxyGraphics != null) throw new InvalidOperationException("Installed ATTRIB retained stale normal proxy");
+    using var normalStream = new MemoryStream();
+    if (!normalDoc.Save(normalStream,binary)) throw new InvalidOperationException("Normal package save failed");
+    normalStream.Position = 0;
+    var normalCopy = DxfDocument.Load(normalStream) ?? throw new InvalidOperationException("Normal package reload failed");
+    var normalLoadedLine = normalCopy.Entities.Lines.Single();
+    if (normalLoadedLine.Normal != Vector3.UnitX
+        || !(normalLoadedLine.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(normalProxy)
+        || normalCopy.Blocks["NORMAL_PACKAGE"].AttributeDefinitions["NORMAL"].Normal != Vector3.UnitX
+        || normalCopy.Blocks["NORMAL_PACKAGE"].AttributeDefinitions["NORMAL"].ProxyGraphics != null
+        || normalCopy.Entities.Inserts.Single().Attributes.Single().Normal != Vector3.UnitZ
+        || normalCopy.Entities.Inserts.Single().Attributes.Single().ProxyGraphics != null)
+        throw new InvalidOperationException("Installed normal/proxy round trip changed state");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");

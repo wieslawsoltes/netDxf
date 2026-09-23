@@ -102,6 +102,7 @@ internal static partial class Program
         RegisterVertexAffineReviewTests();
         RegisterMeshDecompositionTests();
         RegisterDirectionAssignmentTests();
+        RegisterNormalMutationTests();
         RegisterDirectionCachedNormalizationTests();
         RegisterInfiniteLineTransformTests();
         RunNamedObjectDatabaseTests();

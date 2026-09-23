@@ -16,10 +16,17 @@ namespace netDxf.Entities
 
         internal static void Assign(EntityObject entity, ref Vector3 field, Vector3 value)
         {
+            if (Assign(ref field, value)) entity.ClearProxyGraphics();
+        }
+
+        // Attribute and AttributeDefinition are not EntityObject subclasses.
+        // Keep their normalized direction comparisons identical to entity comparisons.
+        internal static bool Assign(ref Vector3 field, Vector3 value)
+        {
             bool changed = Bits(field.X) != Bits(value.X) || Bits(field.Y) != Bits(value.Y) || Bits(field.Z) != Bits(value.Z);
             // A coordinate-identical assignment still transfers the complete struct.
             field = value;
-            if (changed) entity.ClearProxyGraphics();
+            return changed;
         }
 
         private static long Bits(double value) { return BitConverter.DoubleToInt64Bits(value); }
