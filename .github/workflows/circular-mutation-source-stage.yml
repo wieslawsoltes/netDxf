@@ -1,0 +1,33 @@
+name: Apply reviewed circular mutation source patch
+on:
+  push:
+    branches: [codex/dxf-circular-mutation-20260923]
+permissions:
+  contents: read
+jobs:
+  apply:
+    if: github.repository == 'wieslawsoltes/netDxf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 2
+      - name: Verify patch and original source, apply, and remove staging files
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD^)" = 20795a89a4ed1c1aea6b972d353a75370cac461e
+          echo 'cff0ba49f3792cf86e63e25636655486917bcf038a6f7b227fad5901b5f1218c  tools/circular-mutation-core.patch' | sha256sum --check
+          test "$(git hash-object netDxf/Entities/Arc.cs)" = 87e1b9506de633e3b64b31edd76bbcff1852824b
+          test "$(git hash-object netDxf/Entities/Circle.cs)" = 904794edee157271953d825084a461aa53fce3c1
+          test "$(git hash-object tests/netDxf.Conformance/Program.cs)" = c956e25c4a6eca76438e7a7ef674bd1f30be797b
+          test "$(git hash-object tests/netDxf.Conformance/CircularGeometryReviewTests.cs)" = 394944c80f1c0abb85a88db079b305e68862b0a8
+          git apply --index tools/circular-mutation-core.patch
+          git rm tools/circular-mutation-core.patch .github/workflows/circular-mutation-source-stage.yml
+          test "$(git write-tree)" = 8c94009a749101a71e7aeef57bb1a7964d0532c0
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Invalidate stale CIRCLE and ARC proxies after direct edits; remove source staging'
+          git push origin HEAD:refs/heads/codex/dxf-circular-mutation-20260923
