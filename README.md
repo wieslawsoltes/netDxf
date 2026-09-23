@@ -197,3 +197,6 @@ Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families rema
 [MESH and 3DFACE affine review](doc/dxf-conformance/vertex-affine-review.md) adds atomic finite transforms, exact WCS coordinate evaluation, source-preserving rejection and changed-geometry proxy invalidation. The task preserves mesh topology and distinguishes the auxiliary normal from geometric face normals.
 
 [Polygon mesh conversion](doc/dxf-conformance/polygon-mesh-conversion.md) now uses consistent surface densities, includes both closure seams, and independently preserves ordinary appearance in detached MESH/3DFACE results.
+
+Core CI uses only build/test/package and release workflows; see [CI operations](doc/CI-RELEASE.md).
+[GVector safety](doc/dxf-conformance/gvector-safety.md) documents null-safe arithmetic and scaled normalization qualification.

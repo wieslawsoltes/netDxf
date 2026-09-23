@@ -14,6 +14,22 @@ double nearTurn = BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(
 #if NET6_0_OR_GREATER
 if (nearTurn != Math.BitDecrement(360.0)) throw new InvalidOperationException("Portable endpoint fixture differs from BitDecrement");
 #endif
+// These assertions run against each selected installed package assembly.
+netDxf.GTE.GVector nullVector = null!;
+var geometryVector = new netDxf.GTE.GVector(new[] { 3.0, 4.0 });
+if (!(nullVector == (netDxf.GTE.GVector)null!) || geometryVector == nullVector || !(geometryVector != nullVector))
+    throw new InvalidOperationException("GVector null equality failed");
+var doubledVector = 2 * geometryVector;
+if (doubledVector[0] != 6 || doubledVector[1] != 8 || netDxf.GTE.GVector.Dot(geometryVector, geometryVector) != 25)
+    throw new InvalidOperationException("GVector arithmetic failed");
+foreach (double scale in new[] { double.Epsilon, 1.0, 1e300 })
+{
+    var vector = new netDxf.GTE.GVector(new[] { 3 * scale, 4 * scale });
+    double length = netDxf.GTE.GVector.Normalize(ref vector, true);
+    if (double.IsNaN(length) || double.IsInfinity(length) || length <= 0
+        || Math.Abs(vector[0] - .6) > 2e-15 || Math.Abs(vector[1] - .8) > 2e-15)
+        throw new InvalidOperationException("GVector robust normalization failed");
+}
 int count = 0;
 foreach (var version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007,
     DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })

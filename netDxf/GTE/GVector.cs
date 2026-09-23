@@ -102,20 +102,17 @@ namespace netDxf.GTE
         // Comparison (for use by STL containers).
         public static bool operator ==(GVector vec1, GVector vec2)
         {
-            if (vec1 == null || vec2 == null)
+            // Do not invoke this overloaded operator to test either reference.
+            if (ReferenceEquals(vec1, null))
             {
-                return false;
+                return ReferenceEquals(vec2, null);
             }
-            return vec1.Equals(vec2);
+            return !ReferenceEquals(vec2, null) && vec1.Equals(vec2);
         }
 
         public static bool operator !=(GVector vec1, GVector vec2)
         {
-            if (vec1 == null || vec2 == null)
-            {
-                return false;
-            }
-            return !vec1.Equals(vec2);
+            return !(vec1 == vec2);
         }
 
         public static bool operator <(GVector vec1, GVector vec2)
@@ -345,8 +342,8 @@ namespace netDxf.GTE
 
             if (robust)
             {
-                double maxAbsComp = Math.Abs(v[0]);
-                for (int i = 1; i < v.Size; ++i)
+                double maxAbsComp = 0.0;
+                for (int i = 0; i < v.Size; ++i)
                 {
                     double absComp = Math.Abs(v[i]);
                     if (absComp > maxAbsComp)
@@ -358,7 +355,7 @@ namespace netDxf.GTE
                 double length;
                 if (maxAbsComp > 0.0)
                 {
-                    GVector scaled = v / maxAbsComp;
+                    GVector scaled = ScaleForNormalization(v, maxAbsComp);
                     length = maxAbsComp * Math.Sqrt(Dot(scaled, scaled));
                 }
                 else
@@ -381,8 +378,8 @@ namespace netDxf.GTE
 
             if (robust)
             {
-                double maxAbsComp = Math.Abs(v[0]);
-                for (int i = 1; i < v.Size; i++)
+                double maxAbsComp = 0.0;
+                for (int i = 0; i < v.Size; i++)
                 {
                     double absComp = Math.Abs(v[i]);
                     if (absComp > maxAbsComp)
@@ -394,8 +391,8 @@ namespace netDxf.GTE
                 double length;
                 if (maxAbsComp > 0.0)
                 {
-                    v /= maxAbsComp;
-                    length = Math.Abs(Dot(v, v));
+                    v = ScaleForNormalization(v, maxAbsComp);
+                    length = Math.Sqrt(Dot(v, v));
                     v /= length;
                     length *= maxAbsComp;
                 }
@@ -427,6 +424,19 @@ namespace netDxf.GTE
 
                 return length;
             }
+        }
+
+        // Divide components directly: forming 1/scale first can overflow for
+        // finite subnormal scales, despite every normalized component being bounded.
+        // Use a separate vector, retaining the existing nonzero ref-replacement policy.
+        private static GVector ScaleForNormalization(GVector value, double scale)
+        {
+            GVector scaled = new GVector(value.Size);
+            for (int i = 0; i < value.Size; i++)
+            {
+                scaled[i] = value[i] / scale;
+            }
+            return scaled;
         }
 
         // Gram-Schmidt orthonormalization to generate orthonormal vectors from
@@ -608,7 +618,7 @@ namespace netDxf.GTE
 
         public bool Equals(GVector other)
         {
-            if (other == null)
+            if (ReferenceEquals(other, null))
             {
                 return false;
             }
