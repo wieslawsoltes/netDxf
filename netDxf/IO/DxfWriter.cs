@@ -1070,16 +1070,9 @@ namespace netDxf.IO
             this.chunk.Write(9, "$DIMTIX");
             this.chunk.Write(70, style.FitTextInside ? (short)1 : (short)0);
 
-            if (style.Tolerances.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Deviation)
-            {
-                this.chunk.Write(9, "$DIMTM");
-                this.chunk.Write(40, MathHelper.IsZero(style.Tolerances.LowerLimit) ? MathHelper.Epsilon : style.Tolerances.LowerLimit);
-            }
-            else
-            {
-                this.chunk.Write(9, "$DIMTM");
-                this.chunk.Write(40, style.Tolerances.LowerLimit);
-            }
+            // A zero or small lower tolerance is data, not a display-mode sentinel.
+            this.chunk.Write(9, "$DIMTM");
+            this.chunk.Write(40, style.Tolerances.LowerLimit);
 
             this.chunk.Write(9, "$DIMTMOVE");
             this.chunk.Write(70, (short) style.FitTextMove);
