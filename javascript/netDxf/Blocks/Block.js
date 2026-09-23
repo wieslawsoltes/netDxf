@@ -1,3 +1,4 @@
+import { StoredTable } from '../Entities/StoredTable.js';
 // Copyright (c) Daniel Carvajal and netDxf contributors. MIT License; see package LICENSE.
 import { TableObject } from '../Tables/TableObject.js';
 import { TableObjectChangedEventArgs } from '../Tables/TableObjectChangedEventArgs.js';
@@ -50,6 +51,7 @@ export class Block extends TableObject {
     this.#entities.BeforeAddItem.Add((_,e)=>{
       const item=e.Item;
       if(item instanceof Hatch&&item.Owner===null)HatchSourceRelations.ValidateOwner(item,this);
+      if(item instanceof StoredTable&&item.Owner===null)item.ValidateIncoming(this.Record.Owner?.Owner??null);
       if(item instanceof Section&&this.Record.Owner!==null)item.Validate(this.Record.Owner.Owner);
       if(item!==null&&item.Owner===null&&this.Record.Owner!==null)this.Record.Owner.Owner.ValidateStoredTableEntityAdoption(item);
       e.Cancel=item==null||!!(this.Flags&F.ExternallyDependent)||item.Owner!==null;

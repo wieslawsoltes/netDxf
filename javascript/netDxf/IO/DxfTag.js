@@ -1,5 +1,6 @@
 // Copyright (c) Daniel Carvajal. MIT License; see ../LICENSE and package LICENSE.
 
+import { BoxedScalar } from '../../runtime/BoxedScalar.js';
 import { DxfGroupCode, DxfTagValueType, DxfHandleKind } from './DxfGroupCode.js';
 import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException } from '../../runtime/Errors.js';
 const arrowName = Symbol('DIMSTYLE group-5 name');
@@ -8,6 +9,14 @@ export class DxfTag {
   constructor(code, value, context) {
     const type = context === arrowName ? DxfTagValueType.String : DxfGroupCode.GetValueType(code);
     if (value == null) throw new ArgumentNullException('value');
+    // Explicit boxes retain CLR object-type distinctions; primitive Numbers keep
+    // the established code-directed JavaScript overload.
+    if (value instanceof BoxedScalar) {
+      const expected = new Map([[DxfTagValueType.Double, 'Double'], [DxfTagValueType.Int16, 'Int16'],
+        [DxfTagValueType.Int32, 'Int32'], [DxfTagValueType.Int64, 'Int64']]).get(type);
+      if (value.Type !== expected) throw new ArgumentException('DXF tag value does not match its mapped primitive type.', 'value');
+      value = value.Value;
+    }
     const kind = typeof value;
     let valid;
     switch (type) {
