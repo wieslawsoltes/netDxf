@@ -21,6 +21,14 @@ namespace netDxf.Entities
             FiniteTolerance(factor); FiniteTolerance(style.TextFractionHeightScale);
             if (factor <= 0.0 || style.TextFractionHeightScale <= 0.0)
                 throw new ArgumentOutOfRangeException(nameof(style), "Tolerance conversion and text-height factors must be positive.");
+            // Angular allowances are already expressed in DIMAUNIT. Convert only
+            // the degree-valued nominal measurement, before adding limit allowances.
+            if (type == DimensionType.Angular || type == DimensionType.Angular3Point)
+            {
+                if (style.DimAngularUnits == AngleUnitType.Gradians) measurement *= MathHelper.DegToGrad;
+                else if (style.DimAngularUnits == AngleUnitType.Radians) measurement *= MathHelper.DegToRad;
+                FiniteTolerance(measurement);
+            }
             string height = style.TextFractionHeightScale.ToString("R", CultureInfo.InvariantCulture);
             if (tolerance.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Limits)
             {
@@ -87,7 +95,19 @@ namespace netDxf.Entities
                 SuppressZeroInches = alternate ? tolerance.AlternateSuppressZeroInches : tolerance.SuppressZeroInches
             };
             if (type == DimensionType.Angular || type == DimensionType.Angular3Point)
-                return AngleUnitFormat.Format(value, style.DimAngularUnits == AngleUnitType.SurveyorUnits ? AngleUnitType.DecimalDegrees : style.DimAngularUnits, format);
+            {
+                // value is now in display units. Reapplying degree conversion
+                // would scale the allowances and already-converted limit endpoints.
+                switch (style.DimAngularUnits)
+                {
+                    case AngleUnitType.DecimalDegrees:
+                    case AngleUnitType.SurveyorUnits: return AngleUnitFormat.ToDecimal(value, format);
+                    case AngleUnitType.DegreesMinutesSeconds: return AngleUnitFormat.ToDegreesMinutesSeconds(value, format);
+                    case AngleUnitType.Gradians: return LinearUnitFormat.ToDecimal(value, format) + format.GradiansSymbol;
+                    case AngleUnitType.Radians: return LinearUnitFormat.ToDecimal(value, format) + format.RadiansSymbol;
+                    default: throw new ArgumentOutOfRangeException(nameof(style), "Unknown tolerance angle format.");
+                }
+            }
             switch (alternate ? style.AlternateUnits.LengthUnits : style.DimLengthUnits)
             {
                 case LinearUnitType.Scientific: return LinearUnitFormat.ToScientific(value, format);

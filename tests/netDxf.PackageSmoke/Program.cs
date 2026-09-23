@@ -117,6 +117,38 @@ foreach (bool binary in new[] { false, true })
     fraction.Update();
     if (!fraction.Block.Entities.OfType<MText>().Single().Value.Contains(fractionRows))
         throw new InvalidOperationException("Installed fractional tolerance round trip failed");
+    // Verify the installed renderer, not only an in-tree test assembly: allowances
+    // are selected-unit scalars and fraction rows must survive typed reloading.
+    var semanticDoc = new DxfDocument(version) { BuildDimensionBlocks = true };
+    var angularStyle = new DimensionStyle("SMOKE_ANGULAR_UNITS")
+    {
+        DimAngularUnits = AngleUnitType.Radians, AngularPrecision = 2, TextFractionHeightScale = .5,
+        Tolerances = new DimensionStyleTolerances {
+            DisplayMethod = DimensionStyleTolerancesDisplayMethod.Limits, UpperLimit = .25, LowerLimit = .125, Precision = 3 }
+    };
+    var angular = new Angular2LineDimension(Vector2.Zero, Vector2.UnitX, Vector2.Zero, Vector2.UnitY, 3, angularStyle)
+        { UserText = "<>TAIL" };
+    var fractionStyle = new DimensionStyle("SMOKE_STACK_ROWS")
+    {
+        DimLengthUnits = LinearUnitType.Fractional, LengthPrecision = 2, FractionType = FractionFormatType.NotStacked,
+        TextFractionHeightScale = .5, Tolerances = new DimensionStyleTolerances {
+            DisplayMethod = DimensionStyleTolerancesDisplayMethod.Deviation, UpperLimit = .5, LowerLimit = .25, Precision = 2 }
+    };
+    var fractional = new AlignedDimension(Vector2.Zero, new Vector2(10.5, 0), 3, fractionStyle) { UserText = "<>TAIL" };
+    semanticDoc.Entities.Add(angular); semanticDoc.Entities.Add(fractional);
+    const string angularExpected = @"{\H0.5x;\S1.821r^ 1.446r;}TAIL";
+    const string fractionExpected = @"{\A1;10 1/2{\H0.5x;\S+0 1\/2^ -0 1\/4;}}TAIL";
+    for (int generation = 0; generation < 2; generation++)
+    {
+        foreach (var host in semanticDoc.Entities.Dimensions) host.Update();
+        if (semanticDoc.Entities.Dimensions.OfType<Angular2LineDimension>().Single().Block.Entities.OfType<MText>().Single().Value != angularExpected
+            || semanticDoc.Entities.Dimensions.OfType<AlignedDimension>().Single().Block.Entities.OfType<MText>().Single().Value != fractionExpected)
+            throw new InvalidOperationException("Installed tolerance units/stack grammar failed");
+        using var semanticStream = new MemoryStream();
+        if (!semanticDoc.Save(semanticStream, binary)) throw new InvalidOperationException("Semantic package save failed");
+        semanticStream.Position = 0;
+        semanticDoc = DxfDocument.Load(semanticStream) ?? throw new InvalidOperationException("Semantic package reload failed");
+    }
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
