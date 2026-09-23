@@ -73,3 +73,15 @@ private-cache regeneration, historical dialects or AutoCAD execution is qualifie
 DXF_TEST_FILTER=tolerance-unit-semantic/ dotnet run --project tests/netDxf.Conformance -c Release
 python tools/verify_tolerance_unit_semantics.py artifacts/conformance
 ```
+
+## Recovery and current-main integration
+
+The previously unpublished six-file checkpoint is preserved exactly on branch
+`codex/recover-tolerance-unit-semantics-20260923` (source tree
+`41deb7afe1a389c636b2ed96dd1579ec4e82736d`). The integration is based on merged
+PR #194 at `3216f397dc0cd780645ced41ce7754bbcefa2746`. That PR independently fixed
+stack escaping. Its production escape helper, 107 test identities, independent
+checker and installed-package assertions are retained, not replaced by the
+recovered equivalent implementation. The 211 recovered semantic cases and the
+new radian-limit package checks are added alongside them. Execution counts for
+the integrated source are distinct from the earlier standalone checkpoint.

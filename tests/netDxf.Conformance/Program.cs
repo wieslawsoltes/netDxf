@@ -120,6 +120,7 @@ internal static partial class Program
         RegisterToleranceLabelTests();
         RegisterToleranceStackEscapeTests();
         RegisterToleranceSparseSymmetryTests();
+        RegisterToleranceUnitSemanticTests();
         RegisterDimensionResetTests();
         RegisterDimensionExtensionRenderingTests();
         RegisterDimensionXDataPreservationTests();
