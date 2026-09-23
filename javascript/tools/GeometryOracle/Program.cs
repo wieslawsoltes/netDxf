@@ -33,6 +33,7 @@ internal static partial class Program
         if(input.TryGetProperty("op",out var benchmarkOp)&&benchmarkOp.GetString()=="benchmark")return Benchmark();
         if(input.TryGetProperty("op",out var dictionaryOp)&&dictionaryOp.GetString()=="observable-dictionary")return ObservableDictionaryRequest(input);
         if(input.TryGetProperty("op",out var stringEnumOp)&&stringEnumOp.GetString()=="string-enum")return StringEnumRequest(input);
+        if(input.TryGetProperty("op",out var codecOp)&&codecOp.GetString()=="codec-readers")return CodecReadersRequest(input);
         if(input.TryGetProperty("op",out var ownershipOp)&&ownershipOp.GetString()=="document-ownership")return DocumentOwnershipRequest(input);
         var results=new List<object>();
         foreach(var step in input.GetProperty("steps").EnumerateArray()) {

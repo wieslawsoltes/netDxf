@@ -34,7 +34,10 @@ export class BinaryCodeValueReader {
     } else this.#code = this.#reader.ReadInt16();
     this.#valuePosition = this.#reader.CanSeek ? this.#reader.Position : -1;
     const type = {};
-    if (this.#code === 999 || !DxfGroupCode.TryGetValueType(this.#code,type)) throw new Exception(`Code ${this.#code} not valid in binary DXF.`);
+    // The source reads Position again for these structural errors, even when
+    // CanSeek is false; preserve the resulting stream exception and prior Value.
+    if (this.#code === 999) throw new Exception(`The comment group, 999, is not used in binary DXF files at byte address ${this.#reader.Position}`);
+    if (!DxfGroupCode.TryGetValueType(this.#code,type)) throw new Exception(`Code ${this.#code} not valid at byte address ${this.#reader.Position}`);
     if (this.#code === 5 && this.Code5IsString) type.value = T.String;
     let value;
     switch (type.value) {

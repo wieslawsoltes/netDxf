@@ -1,11 +1,13 @@
 /** .NET exception names retained for mapped JavaScript argument and IO failures. */
 export class Exception extends Error {
   constructor(message = '', options) { super(message, options); this.name = new.target.name; }
+  get Message() { return this.message; }
 }
 export class ArgumentException extends Exception {
   constructor(message = 'Invalid argument.', paramName = null) {
     super(message); this.ParamName = paramName;
   }
+  get Message() { return this.ParamName ? `${this.message} (Parameter '${this.ParamName}')` : this.message; }
 }
 export class ArgumentNullException extends ArgumentException {
   constructor(paramName) { super('Value cannot be null.', paramName); }
