@@ -1,3 +1,4 @@
+import { sectionManagerCorpus } from './section-manager-corpus.mjs';
 import { retainedPolylineCorpus } from './retained-polyline-corpus.mjs';
 import { registeredAnnotationsCorpus } from './registered-annotations-corpus.mjs';
 import { documentOwnershipCorpus } from './document-ownership-corpus.mjs';
@@ -236,6 +237,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await retainedOracle.close();}
+// SECTION_MANAGER lifecycle observations follow every previous corpus unchanged.
+const managerOracle=new DocumentOracleSession();
+try {
+  for(const probe of sectionManagerCorpus()) {
+    const observed=await managerOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await managerOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

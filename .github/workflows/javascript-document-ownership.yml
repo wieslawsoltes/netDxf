@@ -43,13 +43,15 @@ jobs:
         working-directory: javascript
         run: npm run build:windows-host
       - run: node javascript/tools/dotnet.mjs geometry
-      - run: node javascript/tools/retained-polyline-differential.mjs
+      - run: node javascript/tools/section-manager-differential.mjs
+      - if: ${{ !cancelled() }}
+        run: node javascript/tools/retained-polyline-differential.mjs
       - if: ${{ !cancelled() }}
         run: node javascript/tools/document-ownership-differential.mjs
       - if: ${{ !cancelled() }}
         run: node javascript/tools/registered-annotations-differential.mjs
       - if: ${{ !cancelled() }}
-        run: node --test javascript/tests/unit/document-ownership.js javascript/tests/unit/document-lifecycle.js javascript/tests/unit/registered-annotations.js javascript/tests/unit/retained-polylines.js
+        run: node --test javascript/tests/unit/document-ownership.js javascript/tests/unit/document-lifecycle.js javascript/tests/unit/registered-annotations.js javascript/tests/unit/retained-polylines.js javascript/tests/unit/section-manager.js
       - if: ${{ !cancelled() }}
         run: node javascript/tests/netDxf.Conformance/Program.js
         env:
@@ -59,6 +61,7 @@ jobs:
         with:
           name: javascript-document-ownership-${{ matrix.os }}-${{ matrix.configuration }}
           path: |
+            javascript/artifacts/section-manager/${{ matrix.configuration }}/results.json
             javascript/artifacts/retained-polyline/${{ matrix.configuration }}/results.json
             javascript/artifacts/document-ownership/${{ matrix.configuration }}/results.json
             javascript/artifacts/registered-annotations/${{ matrix.configuration }}/results.json

@@ -1,3 +1,4 @@
+import { managerCall, managerLoad, managerSnapshot } from './section-manager-wire.mjs';
 import { createRetainedParent, retainedSnapshot, retainedSet } from './retained-polyline-wire.mjs';
 // Input conversion and observation only. Production DxfDocument owns every mutation.
 import { wire as modelWire } from './model-wire.mjs';
@@ -58,6 +59,11 @@ export function documentOwnershipCall(input){
       const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
       if(target==null&&['get','set','item','call','append-loaded'].includes(step.method))throw new apiErrors.NullReferenceException();
       switch(step.method){
+        case 'manager-seed-from':target.NumHandles=BigInt('0x'+read(step.handle));break;
+        case 'manager-set-owner':target.Owner=read(step.owner);break;
+        case 'manager-call':result=managerCall(step,target,read,values);break;
+        case 'manager-model':result=managerSnapshot(target);break;
+        case 'manager-load':result=managerLoad(step,target,read);break;
         case 'retained-create':result=createRetainedParent(step);break;
         case 'retained-model':result=retainedSnapshot(target);break;
         case 'retained-set':retainedSet(target,step.field,read(step.value));break;
@@ -83,7 +89,7 @@ export function documentOwnershipCall(input){
         case 'same':result=args[0]===args[1];break;
         default:throw new Error('Unknown ownership operation.');
       }
-      if(step.id)values.set(step.id,result);if(!['model','las','retained-model'].includes(step.method))result=wire(result);
+      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model'].includes(step.method))result=wire(result);
     }catch(e){error=e.name;param=e.ParamName??null;}
     return {result,error,param};
   });

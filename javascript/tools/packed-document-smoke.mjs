@@ -47,3 +47,15 @@
   parent.InsertVertex(1,new Vector3(5,6,7));parent.MoveVertex(0,3);parent.RemoveVertexAt(3);
   if(!original.IsRemoved||document.GetObjectByHandle(original.Handle)!==null||parent.EndSequenceRecord!==end)throw new Error('Installed retained topology lifecycle failed.');
 }
+
+// The source-profile manager has a real lifecycle, not a source-module-only API.
+{
+  const {DxfDocument,Section,DxfStoredSectionManager}=await import('@netdxf/javascript');
+  const standalone=await import('@netdxf/javascript/netDxf/Objects/DxfStoredSectionManager.js');
+  if(standalone.DxfStoredSectionManager!==DxfStoredSectionManager)throw new Error('Manager export mismatch.');
+  const doc=new DxfDocument(18),section=new Section();doc.Entities.Add(section);
+  const manager=doc.Objects.CreateSectionManager([section,section],false),old=manager.Sections;
+  if(doc.Entities.Remove(section)||manager.Tags.Count!==5)throw new Error('Manager membership is not guarded.');
+  manager.ReplaceSections([],true);doc.Objects.EraseSectionManager(manager);
+  if(!manager.IsErased||old.Count!==2||!doc.Entities.Remove(section))throw new Error('Manager lifecycle/snapshot failure.');
+}

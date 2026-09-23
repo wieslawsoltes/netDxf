@@ -1,3 +1,4 @@
+import { InstallDatabaseSectionManager } from './DxfObjectDatabase.SectionManager.js';
 // Copyright (c) netDxf contributors. MIT License; see package LICENSE.
 import { DxfDatabaseObject, DxfDictionary, DxfDictionaryWithDefault, DxfXRecord } from './DxfDatabaseObject.js';
 import { DxfTag } from '../IO/DxfTag.js';
@@ -182,3 +183,5 @@ InstallDatabaseSun(DxfObjectDatabase);
 InstallDatabaseErasure(DxfObjectDatabase);
 InstallDatabaseMLeaderStyle(DxfObjectDatabase);
 InstallDatabaseSection(DxfObjectDatabase);
+
+InstallDatabaseSectionManager(DxfObjectDatabase);

@@ -26,3 +26,4 @@ export { LayerStateProperties } from '../netDxf/Objects/LayerStateProperties.js'
 export { LayerStateManager } from '../netDxf/Collections/LayerStateManager.js';
 export { DxfObjectDatabase } from '../netDxf/Objects/DxfObjectDatabase.js';
 export { DxfSortentsTable, DxfSortOrderEntry } from '../netDxf/Objects/DxfSortentsTable.js';
+export { DxfStoredSectionManager } from '../netDxf/Objects/DxfStoredSectionManager.js';
