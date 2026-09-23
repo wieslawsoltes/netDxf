@@ -85,6 +85,18 @@ internal static partial class Program
                 object? target=step.TryGetProperty("target",out var targetId)?Values[targetId.GetString()!]:null;
                 string member=step.TryGetProperty("member",out var key)?key.GetString()!:"";
                 switch(method){
+                    case "dependency-codec":result=DependencyCodec(step);break;
+                    case "dependency-set":RetainedPut(target!,step.GetProperty("field").GetString()!,Read(step.GetProperty("value")));break;
+                    case "dependency-unregister": {
+                        var registry=RetainedGet(Read(step.GetProperty("document"))!,"AddedObjects")!;
+                        result=registry.GetType().GetMethod("Remove",new[]{typeof(string)})!.Invoke(registry,new object?[]{((DxfObject)target!).Handle});break;
+                    }
+                    case "dependency-new":result=DependencyNew(step,target as DxfDocument);break;
+                    case "dependency-register":DependencyRegister(step,(DxfDatabaseObject)target!);break;
+                    case "dependency-resolve":DependencyResolve(step,target!);break;
+                    case "dependency-validate":result=DependencyValidate(step,target!);break;
+                    case "dependency-model":result=DependencySnapshot(target);break;
+                    case "dependency-internal":result=DependencyInternal(step,target!);break;
                     case "stored-table-load":result=StoredTableLoad(step,(DxfDocument)target!);break;
                     case "stored-table-model":result=StoredTableSnapshot(target);break;
                     case "stored-table-internal":result=StoredTableInternal(step,target!);break;
@@ -134,7 +146,7 @@ internal static partial class Program
                     default:throw new ArgumentException("Unknown ownership method "+method);
                 }
                 if(step.TryGetProperty("id",out var id))Values[id.GetString()!]=result;
-                if(method!="model"&&method!="las"&&method!="retained-model"&&method!="manager-model"&&method!="table-model"&&method!="geometry-model"&&method!="content-model"&&method!="stored-table-model")result=OwnershipWire(result);
+                if(method!="dependency-codec"&&method!="dependency-model"&&method!="model"&&method!="las"&&method!="retained-model"&&method!="manager-model"&&method!="table-model"&&method!="geometry-model"&&method!="content-model"&&method!="stored-table-model")result=OwnershipWire(result);
             }catch(Exception e){while(e is TargetInvocationException&&e.InnerException!=null)e=e.InnerException;error=e.GetType().Name;param=(e as ArgumentException)?.ParamName;}
             results.Add(new {result,error,param});
         }

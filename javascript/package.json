@@ -95,7 +95,8 @@
     "test:table-styles": "node tools/table-style-differential.mjs",
     "test:table-geometry": "node tools/table-geometry-differential.mjs",
     "test:table-content": "node tools/table-content-differential.mjs",
-    "test:stored-table": "node tools/stored-table-differential.mjs"
+    "test:stored-table": "node tools/stored-table-differential.mjs",
+    "test:stored-dependencies": "node tools/stored-dependencies-differential.mjs"
   },
   "repository": {
     "type": "git",

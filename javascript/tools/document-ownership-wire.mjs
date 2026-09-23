@@ -1,3 +1,4 @@
+import { dependencyCodec, dependencyNew, dependencyRegister, dependencyResolve, dependencyValidate, dependencySnapshot } from './stored-dependencies-wire.mjs';
 import { storedTableLoad, storedTableSnapshot } from './stored-table-wire.mjs';
 import { tableContentLoad, tableContentCall, tableContentSnapshot, tableContentWith } from './table-content-wire.mjs';
 import { tableGeometryLoad, tableGeometryCall, tableGeometrySnapshot } from './table-geometry-wire.mjs';
@@ -61,9 +62,18 @@ export function documentOwnershipCall(input){
   return input.steps.map(step=>{
     let result=null,error=null,param=null;
     try{
-      const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
+      const target=step.target?ref(step.target):null,args=step.method==='dependency-new'?[]:(step.args??[]).map(read);
       if(target==null&&['get','set','item','call','append-loaded'].includes(step.method))throw new apiErrors.NullReferenceException();
       switch(step.method){
+        case 'dependency-codec':result=dependencyCodec(step);break;
+        case 'dependency-set':target[step.field]=read(step.value);break;
+        case 'dependency-unregister':result=read(step.document).AddedObjects.Remove(target.Handle);break;
+        case 'dependency-new':result=dependencyNew(step,target,read);break;
+        case 'dependency-register':dependencyRegister(step,target,read);break;
+        case 'dependency-resolve':dependencyResolve(step,target,read,values);break;
+        case 'dependency-validate':result=dependencyValidate(step,target,read);break;
+        case 'dependency-model':result=dependencySnapshot(target);break;
+        case 'dependency-internal':result=target[step.member](...args);break;
         case 'stored-table-load':result=storedTableLoad(step,target,read);break;
         case 'stored-table-model':result=storedTableSnapshot(target);break;
         case 'stored-table-internal':result=target[step.member](...args);break;
@@ -108,7 +118,7 @@ export function documentOwnershipCall(input){
         case 'same':result=args[0]===args[1];break;
         default:throw new Error('Unknown ownership operation.');
       }
-      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model','table-model','geometry-model','content-model','stored-table-model'].includes(step.method))result=wire(result);
+      if(step.id)values.set(step.id,result);if(!['dependency-codec','dependency-model','model','las','retained-model','manager-model','table-model','geometry-model','content-model','stored-table-model'].includes(step.method))result=wire(result);
     }catch(e){error=e.name;param=e.ParamName??null;}
     return {result,error,param};
   });

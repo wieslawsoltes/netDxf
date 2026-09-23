@@ -43,7 +43,9 @@ jobs:
         working-directory: javascript
         run: npm run build:windows-host
       - run: node javascript/tools/dotnet.mjs geometry
-      - run: node javascript/tools/table-content-differential.mjs
+      - run: node javascript/tools/stored-dependencies-differential.mjs
+      - if: ${{ !cancelled() }}
+        run: node javascript/tools/table-content-differential.mjs
       - if: ${{ !cancelled() }}
         run: node javascript/tools/stored-table-differential.mjs
       - if: ${{ !cancelled() }}
@@ -59,7 +61,7 @@ jobs:
       - if: ${{ !cancelled() }}
         run: node javascript/tools/registered-annotations-differential.mjs
       - if: ${{ !cancelled() }}
-        run: node --test javascript/tests/unit/document-ownership.js javascript/tests/unit/document-lifecycle.js javascript/tests/unit/registered-annotations.js javascript/tests/unit/retained-polylines.js javascript/tests/unit/section-manager.js javascript/tests/unit/table-styles.js javascript/tests/unit/table-geometry.js javascript/tests/unit/stored-table-content.js
+        run: node --test javascript/tests/unit/document-ownership.js javascript/tests/unit/document-lifecycle.js javascript/tests/unit/registered-annotations.js javascript/tests/unit/retained-polylines.js javascript/tests/unit/section-manager.js javascript/tests/unit/table-styles.js javascript/tests/unit/table-geometry.js javascript/tests/unit/stored-table-content.js javascript/tests/unit/stored-dependencies.js
       - if: ${{ !cancelled() }}
         run: node javascript/tests/netDxf.Conformance/Program.js
         env:
@@ -69,6 +71,7 @@ jobs:
         with:
           name: javascript-document-ownership-${{ matrix.os }}-${{ matrix.configuration }}
           path: |
+            javascript/artifacts/stored-dependencies/${{ matrix.configuration }}/results.json
             javascript/artifacts/table-content/${{ matrix.configuration }}/results.json
             javascript/artifacts/stored-table/${{ matrix.configuration }}/results.json
             javascript/artifacts/table-geometry/${{ matrix.configuration }}/results.json

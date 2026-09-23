@@ -39,6 +39,7 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  storedDependencies:[`stored-dependencies/${configuration}`,{equal:{'stats.scenarios':738,'stats.observedScenarios':738,'stats.requestedOperations':5566,'stats.operations':5566,'stats.oracleFailures':0}}],
   tableContent:[`table-content/${configuration}`,{equal:{'stats.scenarios':284,'stats.observedScenarios':284,'stats.requestedOperations':4850,'stats.operations':4850,'stats.oracleFailures':0}}],
   storedTables:[`stored-table/${configuration}`,{equal:{'stats.scenarios':139,'stats.observedScenarios':139,'stats.requestedOperations':1679,'stats.operations':1679,'stats.oracleFailures':0}}],
   tableGeometry:[`table-geometry/${configuration}`,{equal:{'stats.scenarios':270,'stats.observedScenarios':270,'stats.requestedOperations':3966,'stats.operations':3966,'stats.oracleFailures':0}}],
@@ -73,7 +74,7 @@ const specs={
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
   entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':8498,'stats.operations':69997}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:142158}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:142896}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -87,7 +88,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{minimum:{'stats.comparisons':1782},equal:{'stats.sourceFixtures':399}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:142158}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:142896}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));

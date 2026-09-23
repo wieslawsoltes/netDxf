@@ -1,3 +1,4 @@
+import { storedDependenciesCorpus } from './stored-dependencies-corpus.mjs';
 import { tableContentCorpus } from './table-content-corpus.mjs';
 import { storedTableCorpus } from './stored-table-corpus.mjs';
 import { tableGeometryCorpus } from './table-geometry-corpus.mjs';
@@ -282,6 +283,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await contentOracle.close();}
+// Retained dependencies and binary diagnostics follow every earlier input unchanged.
+const dependencyOracle=new DocumentOracleSession();
+try {
+  for(const probe of storedDependenciesCorpus()) {
+    const observed=await dependencyOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await dependencyOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

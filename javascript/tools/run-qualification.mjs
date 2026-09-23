@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['stored-dependencies',['tools/stored-dependencies-differential.mjs']],
   ['table-content',['tools/table-content-differential.mjs']],
   ['stored-table',['tools/stored-table-differential.mjs']],
   ['table-geometry',['tools/table-geometry-differential.mjs']],

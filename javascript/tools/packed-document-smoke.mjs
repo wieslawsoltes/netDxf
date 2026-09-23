@@ -112,3 +112,23 @@
   if(!doc.Entities.Remove(table))throw new Error('Unreferenced retained table did not detach.');
   if(doc.Objects.Validate().Count)throw new Error('Retained table registration invalidated the database.');
 }
+
+// Retained dependency models use explicit loader adapters, not implicit typed IO.
+{
+  const api=await import('@netdxf/javascript');
+  const {DxfStoredField:Standalone}=await import('@netdxf/javascript/netDxf/Objects/DxfStoredField.js');
+  if(Standalone!==api.DxfStoredField)throw new Error('FIELD standalone export differs.');
+  const document=new api.DxfDocument(api.DxfVersion.AutoCad2018),line=new api.Line();document.Entities.Add(line);
+  const field=new api.DxfStoredField(document,[new api.DxfTag(100,'AcDbField'),new api.DxfTag(340,line.Handle)],'AcObjProp','stored expression');
+  field.Owner=document.NamedObjects;document.Objects.Register(field,false);document.NamedObjects.AddLoaded('Field',field,true);
+  field.Resolve([],[],handle=>document.GetObjectByHandle(handle));
+  if(field.ReferencedObjects.Count!==0||field.References.get_Item(0)!==line||document.Entities.Remove(line)!==false)
+    throw new Error('Packed FIELD resolution or removal guard failed.');
+  const point=new api.DxfStoredDimAssocPoint(0,13,line.Handle,-1,0,-0,new api.Vector3(1,2,3));point.Point.X=99;
+  if(point.Point.X!==1||!Object.is(point.NearParameter,-0))throw new Error('Packed DIMASSOC scalar/value copy failed.');
+  if(typeof api.DxfStoredSunStudy!=='function')throw new Error('SUNSTUDY export missing.');
+  const {BinaryCodeValueReader}=await import('@netdxf/javascript/netDxf/IO/BinaryCodeValueReader.js');
+  const stream=new api.MemoryStream(Uint8Array.from([...new TextEncoder().encode('AutoCAD Binary DXF\r\n'),26,0,84,1,0]));
+  try{new BinaryCodeValueReader(stream).Next();throw new Error('Invalid handle unexpectedly accepted.');}
+  catch(error){if(error.name!=='InvalidDataException'||!error.message.includes('group code 340 at byte address 24'))throw error;}
+}
