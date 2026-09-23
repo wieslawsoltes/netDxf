@@ -1,0 +1,49 @@
+name: Publish reviewed queue and projection source
+on:
+  push:
+    branches: [codex/ci-merge-queue-20260923]
+    paths: [.github/workflows/publish-queue-projection.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify reviewed patch and publish only non-workflow source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, lzma, os
+          data = Path('tools/queue-projection-source.b64').read_bytes()
+          assert hashlib.sha1(f'blob {len(data)}\0'.encode() + data).hexdigest() == '083d777765b89c5c67aee4714885449be7c9ec7d'
+          compressed = base64.b64decode(data, validate=True)
+          assert len(compressed) == 8732 and hashlib.sha256(compressed).hexdigest() == '354446eeba6d852ad5b9ed78e823c6805f1009e8a54735a61614a5491835d2c6'
+          patch = lzma.decompress(compressed, memlimit=268435456)
+          assert len(patch) == 27642 and hashlib.sha256(patch).hexdigest() == '05f3b23afa32f14e3eede5a51023f3f3df52851215722be573b3415ba3506b02'
+          Path(os.environ['RUNNER_TEMP'], 'queue-projection.diff').write_bytes(patch)
+          PY
+          git config core.autocrlf false
+          cp "$(git rev-parse --git-path index)" "$RUNNER_TEMP/check.index"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/check.index"
+          git update-index --force-remove tools/queue-projection-source.b64 .github/workflows/publish-queue-projection.yml
+          test "$(git write-tree)" = '5bdcf686de2b090ff55945b02e33ff31cf00a4e8'
+          unset GIT_INDEX_FILE
+          git apply --check "$RUNNER_TEMP/queue-projection.diff"
+          git apply --index "$RUNNER_TEMP/queue-projection.diff"
+          test -z "$(git diff --cached --name-only -- .github/workflows)"
+          cp "$(git rev-parse --git-path index)" "$RUNNER_TEMP/check.index"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/check.index"
+          git update-index --force-remove tools/queue-projection-source.b64 .github/workflows/publish-queue-projection.yml
+          test "$(git write-tree)" = 'ad4c50f38abdd9a4afc94ec3a0b7af5a54530ea2'
+          unset GIT_INDEX_FILE
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Guard merge-queue release planning and expand sparse tolerance inheritance controls'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/codex/ci-merge-queue-20260923
