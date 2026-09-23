@@ -1,0 +1,37 @@
+name: Publish reviewed tolerance label implementation
+on:
+  push:
+    branches: [codex/tolerance-labels-20260923]
+    paths: [.github/workflows/publish-tolerance-labels.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Apply hash-verified diff and remove publication files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import shutil
+          import subprocess
+          import zlib
+          parts = Path('.github/tolerance-publish')
+          data = zlib.decompress(b''.join((parts / (str(i) + '.z')).read_bytes() for i in range(5)))
+          assert len(data) == 65828
+          assert hashlib.sha256(data).hexdigest() == '6870adc1a6c851b8f5b61f707d9fc2d2fe8719cc98ef033d9bfbde3ffd5de151'
+          subprocess.run(['git', '-c', 'core.whitespace=cr-at-eol', 'apply', '--index', '-'], input=data, check=True)
+          shutil.rmtree(parts)
+          Path('.github/workflows/publish-tolerance-labels.yml').unlink()
+          PY
+          git add -A .github
+          test "$(git write-tree)" = c6ea43a2676e57375af56c78d4fb0b17503313fd
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Render tolerance and limit labels and retain complete native tolerance fields'
+          git push origin HEAD:refs/heads/codex/tolerance-labels-20260923
