@@ -93,7 +93,7 @@ namespace netDxf.Entities
         public Vector3 Position
         {
             get { return this.position; }
-            set { this.position = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.position, value); }
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.thickness, value); }
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace netDxf.Entities
         public double Rotation
         {
             get { return this.rotation; }
-            set { this.rotation = MathHelper.NormalizeAngle(value); }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.rotation, MathHelper.NormalizeAngle(value)); }
         }
 
         #endregion

@@ -84,7 +84,7 @@ namespace netDxf.Entities
         public Vector3 StartPoint
         {
             get { return this.start; }
-            set { this.start = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.start, value); }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace netDxf.Entities
         public Vector3 EndPoint
         {
             get { return this.end; }
-            set { this.end = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.end, value); }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.thickness, value); }
         }
 
         #endregion

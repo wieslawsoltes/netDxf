@@ -156,6 +156,45 @@ foreach (bool binary in new[] { false, true })
         semanticStream.Position = 0;
         semanticDoc = DxfDocument.Load(semanticStream) ?? throw new InvalidOperationException("Semantic package reload failed");
     }
+    // Shared by ordinary package consumption and all eight exact-asset runtime profiles.
+    var primitiveLine = new Line(Vector3.Zero, Vector3.UnitX);
+    var primitivePoint = new netDxf.Entities.Point(Vector3.Zero);
+    var primitiveRay = new Ray(Vector3.Zero, Vector3.UnitX);
+    var primitiveXline = new XLine(Vector3.Zero, Vector3.UnitX);
+    EntityObject[] primitiveHosts = { primitiveLine, primitiveLine, primitiveLine,
+        primitivePoint, primitivePoint, primitivePoint, primitiveRay, primitiveRay, primitiveXline, primitiveXline };
+    Action[] primitiveNoOps = {
+        () => primitiveLine.StartPoint = primitiveLine.StartPoint, () => primitiveLine.EndPoint = primitiveLine.EndPoint,
+        () => primitiveLine.Thickness = primitiveLine.Thickness, () => primitivePoint.Position = primitivePoint.Position,
+        () => primitivePoint.Thickness = primitivePoint.Thickness, () => primitivePoint.Rotation = primitivePoint.Rotation + 360,
+        () => primitiveRay.Origin = primitiveRay.Origin, () => primitiveRay.Direction = new Vector3(8,0,0),
+        () => primitiveXline.Origin = primitiveXline.Origin, () => primitiveXline.Direction = new Vector3(8,0,0) };
+    Action[] primitiveEdits = {
+        () => primitiveLine.StartPoint = new Vector3(2,3,4), () => primitiveLine.EndPoint = new Vector3(5,6,7),
+        () => primitiveLine.Thickness = 2, () => primitivePoint.Position = new Vector3(8,9,10),
+        () => primitivePoint.Thickness = -2, () => primitivePoint.Rotation = 90,
+        () => primitiveRay.Origin = new Vector3(11,12,13), () => primitiveRay.Direction = Vector3.UnitY,
+        () => primitiveXline.Origin = new Vector3(14,15,16), () => primitiveXline.Direction = Vector3.UnitY };
+    for (int field = 0; field < primitiveHosts.Length; field++)
+    {
+        primitiveHosts[field].ProxyGraphics = new byte[] { 1,3,7,255 };
+        primitiveNoOps[field]();
+        if (!(primitiveHosts[field].ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(new byte[] { 1,3,7,255 }))
+            throw new InvalidOperationException("Installed primitive no-op changed proxy");
+        primitiveEdits[field]();
+        if (primitiveHosts[field].ProxyGraphics != null)
+            throw new InvalidOperationException("Installed primitive edit retained stale proxy");
+    }
+    var primitiveDoc = new DxfDocument(version);
+    primitiveDoc.Entities.Add(primitiveLine); primitiveDoc.Entities.Add(primitivePoint);
+    primitiveDoc.Entities.Add(primitiveRay); primitiveDoc.Entities.Add(primitiveXline);
+    using var primitiveStream = new MemoryStream();
+    if (!primitiveDoc.Save(primitiveStream, binary)) throw new InvalidOperationException("Primitive package save failed");
+    primitiveStream.Position = 0;
+    var primitiveCopy = DxfDocument.Load(primitiveStream) ?? throw new InvalidOperationException("Primitive package load failed");
+    if (primitiveCopy.Entities.Lines.Single().ProxyGraphics != null || primitiveCopy.Entities.Points.Single().ProxyGraphics != null
+        || primitiveCopy.Entities.Rays.Single().ProxyGraphics != null || primitiveCopy.Entities.XLines.Single().ProxyGraphics != null)
+        throw new InvalidOperationException("Installed primitive round trip restored stale graphics");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");

@@ -90,7 +90,7 @@ namespace netDxf.Entities
         public Vector3 Center
         {
             get { return this.center; }
-            set { CircularEntityMutation.Assign(this, ref this.center, value); }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.center, value); }
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The circle radius must be greater than zero.");
                 }
-                CircularEntityMutation.Assign(this, ref this.radius, value);
+                PrimitiveGeometryMutation.Assign(this, ref this.radius, value);
             }
         }
 
@@ -115,7 +115,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { CircularEntityMutation.Assign(this, ref this.thickness, value); }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.thickness, value); }
         }
 
         #endregion
