@@ -126,25 +126,27 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newPosition = transformation * this.Position + translation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
+            PointAffineTransform.Apply(this, transformation, translation);
+        }
 
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
+        /// <summary>Transforms the POINT location and signed extrusion with a finite affine matrix.</summary>
+        /// <param name="transformation">Affine 4x4 matrix using column vectors.</param>
+        /// <remarks>Invalid or unrepresentable results reject before the stored geometry is changed.</remarks>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            InfiniteLineTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
+        }
 
-            Vector2 refAxis = Vector2.Rotate(Vector2.UnitX, this.Rotation * MathHelper.DegToRad);
-            Vector3 v = transOW * new Vector3(refAxis.X, refAxis.Y, 0.0);
-            v = transformation * v;
-            v = transWO * v;
-            double newRotation = Vector2.Angle(new Vector2(v.X, v.Y)) * MathHelper.RadToDeg;
-
-            this.Position = newPosition;
-            this.Rotation = newRotation;
-            this.Normal = newNormal;
+        // Affine staging uses the stored normal, not subclass property callbacks.
+        internal Vector3 AffineNormal { get { return base.Normal; } }
+        internal void PublishAffine(Vector3 nextPosition, Vector3 nextNormal, double nextThickness, double nextRotation)
+        {
+            if (!LineAffineTransform.Same(nextNormal, base.Normal)) base.Normal = nextNormal;
+            this.position = nextPosition;
+            this.thickness = nextThickness;
+            this.rotation = nextRotation;
+            this.ClearProxyGraphics();
         }
 
         /// <summary>

@@ -23,8 +23,22 @@ namespace netDxf.Entities
 
             Vector3 start = Point(matrix, line.StartPoint, translation);
             Vector3 end = Point(matrix, line.EndPoint, translation);
+            TransformExtrusion(matrix, normal, line.Thickness, out normal, out double thickness);
+            // All arithmetic and representability checks finish before setters
+            // or proxy invalidation. Publication bypasses virtual Normal accessors.
+            bool changed = !Same(start, line.StartPoint) || !Same(end, line.EndPoint) ||
+                !Same(normal, line.AffineNormal) || thickness != line.Thickness;
+            if (!changed) return;
+            line.PublishAffine(start, end, normal, thickness);
+        }
+
+        // Shared by primitives storing an independent signed extrusion vector.
+        // Inputs must already have been validated; preserve the established LINE arithmetic.
+        internal static void TransformExtrusion(Matrix3 matrix, Vector3 sourceNormal, double sourceThickness,
+            out Vector3 normal, out double thickness, string entityName = "LINE")
+        {
+            normal = sourceNormal;
             Dyadic x = Dot(matrix, 0, normal, 0), y = Dot(matrix, 1, normal, 0), z = Dot(matrix, 2, normal, 0);
-            double thickness;
             if (x.IsZero && y.IsZero && z.IsZero)
             {
                 // A singular map can remove extrusion without destroying the
@@ -38,17 +52,11 @@ namespace netDxf.Entities
                 double length = Math.Sqrt(sx * sx + sy * sy + sz * sz);
                 normal = new Vector3(sx / length, sy / length, sz / length);
                 if ((!x.IsZero && normal.X == 0) || (!y.IsZero && normal.Y == 0) || (!z.IsZero && normal.Z == 0))
-                    throw new NotSupportedException("A transformed LINE normal component underflows to zero.");
-                thickness = (Dyadic.From(line.Thickness) * Dyadic.From(length)).Round(exponent);
-                if (line.Thickness != 0 && thickness == 0)
-                    throw new NotSupportedException("Nonzero transformed LINE thickness underflows to zero.");
+                    throw new NotSupportedException("A transformed " + entityName + " normal component underflows to zero.");
+                thickness = (Dyadic.From(sourceThickness) * Dyadic.From(length)).Round(exponent);
+                if (sourceThickness != 0 && thickness == 0)
+                    throw new NotSupportedException("Nonzero transformed " + entityName + " thickness underflows to zero.");
             }
-            // All arithmetic and representability checks finish before setters
-            // or proxy invalidation. Publication bypasses virtual Normal accessors.
-            bool changed = !Same(start, line.StartPoint) || !Same(end, line.EndPoint) ||
-                !Same(normal, line.AffineNormal) || thickness != line.Thickness;
-            if (!changed) return;
-            line.PublishAffine(start, end, normal, thickness);
         }
 
         internal static void CheckAffine(Matrix4 matrix)

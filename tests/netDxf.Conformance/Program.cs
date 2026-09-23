@@ -88,6 +88,7 @@ internal static partial class Program
         RegisterEllipseMutationProxyTests();
         RegisterCircularMutationTests();
         RegisterPrimitiveMutationTests();
+        RegisterPointAffineTests();
         RegisterArcAngleFidelityTests();
         RegisterFace3DEdgeVisibilityTests();
         RegisterRawConicGeometryTests();

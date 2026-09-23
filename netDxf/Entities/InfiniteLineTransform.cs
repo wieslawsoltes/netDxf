@@ -78,7 +78,7 @@ namespace netDxf.Entities
                 throw new NotSupportedException("A nonzero transformed origin coordinate underflows to zero.");
             return result;
         }
-        private static bool TryDirection(Matrix3 matrix, Vector3 value, out Vector3 direction)
+        internal static bool TryDirection(Matrix3 matrix, Vector3 value, out Vector3 direction)
         {
             Dyadic x = Dot(matrix, 0, value, 0), y = Dot(matrix, 1, value, 0), z = Dot(matrix, 2, value, 0);
             direction = value;
