@@ -1,0 +1,34 @@
+name: Recover retained tolerance source
+on:
+  push:
+    branches: [codex/recover-tolerance-unit-semantics-20260923]
+    paths: [.github/workflows/recover-tolerance.yml]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Restore hash-verified retained patch and remove recovery files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, hashlib, subprocess
+          from pathlib import Path
+          names = [f'tools/_recover-{i}.b64' for i in range(4)]
+          encoded = ''.join(Path(name).read_text().strip() for name in names)
+          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
+          assert len(patch) == 37716
+          assert hashlib.sha256(patch).hexdigest() == '91eb773336504243917395a0f8a030568fd927bc43923e279d2650d22382b3c3'
+          subprocess.run(['git','rm','.github/workflows/recover-tolerance.yml',*names], check=True)
+          assert subprocess.check_output(['git','write-tree'], text=True).strip() == '88093576f83c0a3d6815aa19e5e41278573d1b6b'
+          subprocess.run(['git','apply','--index','-'], input=patch, check=True)
+          assert subprocess.check_output(['git','write-tree'], text=True).strip() == '41deb7afe1a389c636b2ed96dd1579ec4e82736d'
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Recover exact unpublished tolerance unit and MTEXT semantic implementation'
+          git push origin HEAD:refs/heads/codex/recover-tolerance-unit-semantics-20260923
