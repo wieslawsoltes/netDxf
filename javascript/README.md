@@ -12,6 +12,35 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
+`14d8727` adds stored TABLESTYLE/CELLSTYLEMAP models and qualified edits;
+`7b2249b` adds independent C# comparisons and mandatory verification. The
+[table-style contract](doc/TABLE_STYLES.md) describes source-bound headers, rows,
+six-slot borders, stored data/unit codes, STYLE bindings, immutable snapshots,
+bounded entry-name edits and callback/Unicode behavior. Internal retained
+constructors do not substitute for the missing typed DXF reader/writer.
+
+The new **279 scenarios / 5,829 operations** match in Debug and Release. Local
+checks pass **2,907 mirrored original cases**, **970 supplemental tests**, both
+**35,309-case unchanged C# suites**, and the **509-file offline package**. This
+adds two complete original constructor cases and 37 supplemental regressions;
+original serialization cases are not shortened to claim extra coverage.
+
+Release inline Chromium executes all **141,465 comparisons**, with no new table
+mismatches or page errors, but **83 other failures remain**. The complete parity
+gates still fail. The current ledger is **375/510 library mirrors**, **58/193
+conformance-file mirrors**, and **2,907/35,309 original cases**. Presence is not
+complete API or behavioral qualification. See the contract for current hosted
+and aggregate evidence and explicit remaining TABLE/private-schema boundaries.
+
+The hosted Ubuntu/Windows Debug/Release matrix passed all four profiles, each
+running all five lifecycle corpora, 144 focused tests and all mirrored originals.
+Its [receipt](doc/table-styles-hosted-7b2249b.json) retains the actual 20 differential
+reports and full-suite metadata/hashes. The broader 43-stage local refresh passed
+38 stages in Debug and 37 in Release; the remaining failures and the corrected
+initial missing-Debug-oracle attempt are documented, not waived.
+
+## Previous checkpoint (historical)
+
 `9cf0351` adds the source-bound SECTION_MANAGER lifecycle: creation, ordered
 membership replacement, retained-packet validation and guarded explicit erasure.
 [Manager contracts and source-bound evidence](doc/SECTION_MANAGER.md) document
