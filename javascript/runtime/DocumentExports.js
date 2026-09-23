@@ -41,3 +41,7 @@ export { StoredTableGrid, StoredTableCell } from '../netDxf/Entities/StoredTable
 export { DxfStoredField } from '../netDxf/Objects/DxfStoredField.js';
 export { DxfStoredDimAssoc, DxfStoredDimAssocPoint } from '../netDxf/Objects/DxfStoredDimAssoc.js';
 export { DxfStoredSunStudy } from '../netDxf/Objects/DxfStoredSunStudy.js';
+
+export { DxfVersionCompatibilityKind, DxfVersionCompatibilityDiagnostic, DxfVersionCompatibilityReport } from '../netDxf/DxfVersionCompatibilityReport.js';
+
+export { DxfOpaqueEntity } from '../netDxf/Entities/DxfOpaqueEntity.js';

@@ -1,3 +1,6 @@
+import { InstallHeaderProbe } from './IO/DxfReader.HeaderProbe.js';
+import { InstallDocumentOpaqueEntity } from './DxfDocument.OpaqueEntity.js';
+import { InstallVersionCompatibility } from './DxfDocument.VersionCompatibility.js';
 import { InstallDocumentStoredTable } from './DxfDocument.StoredTable.js';
 import { InstallDocumentPolylineTopology } from './DxfDocument.PolylineTopology.js';
 import { InstallDocumentPolyline2DRecords } from './DxfDocument.Polyline2DRecords.js';
@@ -175,7 +178,7 @@ export class DxfDocument extends DxfObject {
     if(entity instanceof api.PolygonMesh)this.UnregisterStoredPolygonMeshRecords(entity);
     if(entity instanceof api.PolyfaceMesh)this.UnregisterStoredPolyfaceMeshRecords(entity);
     if(entity instanceof api.Polyline2D)this.UnregisterStoredPolyline2DRecords(entity);
-    Unlisten(this,entity);if(entity instanceof api.StoredTable)entity.MarkRemoved();entity.Handle=null;entity.Owner=null;return true;
+    Unlisten(this,entity);if(entity instanceof api.StoredTable)entity.MarkRemoved();if(entity instanceof api.DxfOpaqueEntity)entity.MarkRemoved();entity.Handle=null;entity.Owner=null;return true;
   }
 }
 InstallDocumentMetadata(DxfDocument);
@@ -196,3 +199,9 @@ InstallDocumentPolyline2DRecords(DxfDocument);
 InstallDocumentPolylineTopology(DxfDocument);
 
 InstallDocumentStoredTable(DxfDocument);
+
+InstallVersionCompatibility(DxfDocument);
+
+InstallDocumentOpaqueEntity(DxfDocument);
+
+InstallHeaderProbe(DxfDocument);

@@ -1,3 +1,5 @@
+import { IsDatabaseModel } from '../../runtime/DatabaseModel.js';
+import { RejectOpaqueBlockGeometry } from '../../runtime/OpaqueEntityState.js';
 import { StoredTable } from '../Entities/StoredTable.js';
 // Copyright (c) Daniel Carvajal and netDxf contributors. MIT License; see package LICENSE.
 import { TableObject } from '../Tables/TableObject.js';
@@ -49,6 +51,7 @@ export class Block extends TableObject {
       Object.defineProperty(this,event,{value:new EventHook(),enumerable:true});
     this.#entities=new EntityCollection();
     this.#entities.BeforeAddItem.Add((_,e)=>{
+      if(IsDatabaseModel(e.Item,'DxfOpaqueEntity')&&e.Item.Owner===null)e.Item.ValidateIncoming(this.Record.Owner?.Owner??null,this);
       const item=e.Item;
       if(item instanceof Hatch&&item.Owner===null)HatchSourceRelations.ValidateOwner(item,this);
       if(item instanceof StoredTable&&item.Owner===null)item.ValidateIncoming(this.Record.Owner?.Owner??null);
@@ -120,6 +123,7 @@ export class Block extends TableObject {
   RemovePreparedSection(section){this.#entities.RemovePreparedSection(section);}
   Clone(newName){
     const checkName=arguments.length>0||!(this.#flags&F.AnonymousBlock);if(arguments.length===0)newName=this.Name;
+    RejectOpaqueBlockGeometry(this);
     Polyline3D.RejectStoredRecordBlockClone(this);
     if(this.Record.Layout!==null&&!TableObject.IsValidName(newName))throw new ArgumentException('*Model_Space and *Paper_Space# blocks can only be cloned with a new valid name.');
     const copy=new Block(exact,{name:newName,checkName});copy.Description=this.#description;copy.Flags=this.#flags;copy.Layer=ref(this.Layer).Clone();copy.Origin=this.#origin;

@@ -75,3 +75,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## .NET StreamReader encoding-detection adaptation (MIT)
+
+The UTF-8 preamble and optional BOM detection in `runtime/ProbeStreamReaders.js`
+follow the .NET Foundation's `IsPreamble`, `DetectEncoding`, and `ReadBuffer`
+semantics. They preserve fragmented-read behavior instead of guessing encodings.
+Source: https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/IO/StreamReader.cs
+Copyright (c) .NET Foundation and Contributors. The full notice is retained in
+`runtime/DOTNET-MIT-LICENSE.txt` and included in the installed package. This
+source-level adaptation does not introduce a .NET runtime dependency.

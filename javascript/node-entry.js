@@ -22,3 +22,7 @@ import { NodeSupportFolders, NodeLayerStateFiles, DeleteLinetypeFile } from './r
 SetSupportFolderHost(NodeSupportFolders);
 SetLayerStateFileHost(NodeLayerStateFiles);
 SetLinetypeTableFileHost(DeleteLinetypeFile);
+
+import { SetHeaderProbeFileHost } from './netDxf/IO/DxfReader.HeaderProbe.js';
+import { FileStream as HeaderProbeFileStream } from './runtime/NodeFileStream.js';
+SetHeaderProbeFileHost(file => new HeaderProbeFileStream(file));
