@@ -158,3 +158,10 @@ export { DxfGeoData, DxfGeoCoordinateType, DxfGeoScaleEstimation, DxfGeoMeshPoin
 export { DxfVbaProject } from './netDxf/Objects/DxfVbaProject.js';
 export { ObservableDictionary } from './netDxf/Collections/ObservableDictionary.js';
 export { ObservableDictionaryEventArgs } from './netDxf/Collections/ObservableDictionaryEventArgs.js';
+
+// The GTE namespace has its own BezierCurve; retain both unambiguous entry paths.
+export * as Gte from './runtime/GteExports.js';
+export { GMatrix, GVector, GTE, LexicoArray2, GaussianElimination, BandedMatrix,
+  RootsBisection, RootsPolynomial, Integration, TIQueryIntervals, FIQueryIntervals,
+  FIQueryIntervalsType, ParametricCurve, BSplineCurve, NURBSCurve, BSplineCurveFit,
+  BSplineSurfaceFit, BSplineReduction, BezierCurve as GteBezierCurve } from './runtime/GteExports.js';
