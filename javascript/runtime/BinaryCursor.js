@@ -12,6 +12,7 @@ export class BinaryCursor {
     } else throw new ArgumentException('A byte buffer or seekable MemoryStream is required by the low-level codec.');
     this.#view = new DataView(this.#bytes.buffer,this.#bytes.byteOffset,this.#bytes.byteLength);
   }
+  get CanSeek() { return true; }
   get Position() { return this.#origin + this.#position; }
   get Length() { return this.#origin + this.#bytes.length; }
   #move(size) {

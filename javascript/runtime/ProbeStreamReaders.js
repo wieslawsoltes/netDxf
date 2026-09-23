@@ -2,28 +2,7 @@
 // Copyright (c) netDxf contributors. MIT License; see package LICENSE.
 // Encoding detection adapted from .NET Foundation and Contributors (MIT).
 // See DOTNET-MIT-LICENSE.txt and THIRD_PARTY_NOTICES.md.
-import { BinaryCursor } from './BinaryCursor.js';
-import { EndOfStreamException } from './Errors.js';
-export function ReadStreamBytes(stream,count){
-  const bytes=new Uint8Array(count);let used=0;
-  while(used<count){const n=stream.Read(bytes,used,count-used);if(n===0)break;used+=n;}
-  return used===count?bytes:bytes.slice(0,used);
-}
-/** A BinaryCursor-compatible adapter which actually invokes the Stream APIs. */
-export class ProbeBinaryCursor extends BinaryCursor {
-  #stream;
-  constructor(stream){super(new Uint8Array());this.#stream=stream;}
-  get Position(){return this.#stream.Position;}
-  get Length(){return this.#stream.Length;}
-  ReadBytes(count){return ReadStreamBytes(this.#stream,count);}
-  #value(size,kind){const bytes=this.ReadBytes(size);if(bytes.length!==size)throw new EndOfStreamException('Unable to read beyond the end of the stream.');return new DataView(bytes.buffer,bytes.byteOffset,size)[kind](0,true);}
-  ReadByte(){const byte=this.#stream.ReadByte();if(byte<0)throw new EndOfStreamException('Unable to read beyond the end of the stream.');return byte;}
-  ReadInt16(){return this.#value(2,'getInt16');}
-  ReadInt32(){return this.#value(4,'getInt32');}
-  ReadInt64(){return this.#value(8,'getBigInt64');}
-  ReadDouble(){return this.#value(8,'getFloat64');}
-  NullTerminatedString(encoding){const bytes=[];for(let byte;(byte=this.ReadByte())!==0;)bytes.push(byte);return encoding.GetString(Uint8Array.from(bytes));}
-}
+export { ReadStreamBytes, StreamBinaryCursor as ProbeBinaryCursor } from './StreamBinaryCursor.js';
 export const ProbeAscii=Object.freeze({GetString:bytes=>Array.from(bytes,b=>b<128?String.fromCharCode(b):'?').join('')});
 /** UTF-8 replacement decoding with standard StreamReader BOM detection.
  * Buffered reading preserves early exit: no whole-file read or remainder parsing.

@@ -1,18 +1,23 @@
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { InvalidCastException, NullReferenceException } from '../../runtime/Errors.js';
 import { DxfGroupCode, DxfTagValueType as T } from './DxfGroupCode.js';
-import { ArgumentNullException, InvalidDataException, Exception } from '../../runtime/Errors.js';
+import { ArgumentNullException, EndOfStreamException, InvalidDataException, Exception } from '../../runtime/Errors.js';
 import { NormalizeHandle } from '../../runtime/NumberFormatting.js';
+import { Format } from '../../runtime/DisplayFormatting.js';
 import { Encoding } from '../../runtime/Encoding.js';
 import { BinaryCursor, BinarySentinel } from '../../runtime/BinaryCursor.js';
+import { StreamBinaryCursor } from '../../runtime/StreamBinaryCursor.js';
+import { MemoryStream } from '../../runtime/MemoryStream.js';
 export class BinaryCodeValueReader {
   #reader; #encoding; #legacy; #code = 0; #value = null; #valueType = -1; #valuePosition = -1;
   Code5IsString = false;
   constructor(reader, encoding = Encoding.UTF8, legacyGroupCodes = false) {
+    if (reader == null) throw new ArgumentNullException('reader');
     if (encoding == null) throw new ArgumentNullException('encoding');
-    this.#reader = reader instanceof BinaryCursor ? reader : new BinaryCursor(reader);
+    this.#reader = reader instanceof BinaryCursor ? reader : new StreamBinaryCursor(reader instanceof Uint8Array ? new MemoryStream(reader,false) : reader);
     this.#encoding = encoding; this.#legacy = legacyGroupCodes;
     const sentinel = this.#reader.ReadBytes(22);
+    if (sentinel.length !== 22) throw new EndOfStreamException('The binary DXF sentinel is incomplete; 22 bytes are required.');
     for (let i = 0; i < 22; i++) if (sentinel[i] !== BinarySentinel[i]) throw new InvalidDataException('Not a valid binary DXF sentinel.');
   }
   get Code() { return this.#code; }
@@ -27,7 +32,7 @@ export class BinaryCodeValueReader {
         if (this.#code < 255) throw new InvalidDataException('A legacy binary DXF escape requires a group code of at least 255.');
       }
     } else this.#code = this.#reader.ReadInt16();
-    this.#valuePosition = this.#reader.Position;
+    this.#valuePosition = this.#reader.CanSeek ? this.#reader.Position : -1;
     const type = {};
     if (this.#code === 999 || !DxfGroupCode.TryGetValueType(this.#code,type)) throw new Exception(`Code ${this.#code} not valid in binary DXF.`);
     if (this.#code === 5 && this.Code5IsString) type.value = T.String;
@@ -52,7 +57,12 @@ export class BinaryCodeValueReader {
         if (flag > 1) throw this.#invalid('boolean (0 or 1)');
         value = flag === 1; break;
       }
-      case T.BinaryData: value = new Uint8Array(this.#reader.ReadBytes(this.#reader.ReadByte())); break;
+      case T.BinaryData: {
+        const length = this.#reader.ReadByte();
+        value = new Uint8Array(this.#reader.ReadBytes(length));
+        if (value.length !== length) throw new EndOfStreamException(`Incomplete binary DXF chunk for group ${this.#code}: expected ${length} bytes, received ${value.length}.`);
+        break;
+      }
     }
     this.#value = value; this.#valueType = type.value;
   }
@@ -75,5 +85,5 @@ export class BinaryCodeValueReader {
   ReadDouble() { return this.#cast(T.Double); }
   ReadString() { return this.#cast(T.String, true); }
   ReadHex() { return this.ReadString(); }
-  ToString() { return `${this.#code}:${this.#value}`; }
+  ToString() { return Format('{0}:{1}', this.#code, this.#value instanceof Uint8Array ? 'System.Byte[]' : this.#value); }
 }
