@@ -63,3 +63,6 @@ export { DxfObjectReferences } from './netDxf/Collections/DxfObjectReferences.js
 export { StringEnum, StringValueAttribute, StringComparison } from './netDxf/StringEnum.js';
 
 export * from './runtime/DocumentExports.js';
+
+export { DxfThumbnailImage } from './netDxf/IO/DxfThumbnailImage.js';
+export * as DxfTransport from './runtime/DxfTransport.js';
