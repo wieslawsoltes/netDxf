@@ -1,0 +1,26 @@
+name: Publish reviewed tolerance integration
+on:
+  push:
+    branches: [codex/tolerance-labels-20260923]
+    paths: [.github/workflows/publish-tolerance-integration.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Apply fixed integration edits and require the reviewed tree
+        shell: bash
+        run: |
+          test "$(git hash-object .github/integrate-tolerance.py)" = 80adaf8f09d6fa4d078d8a92b0e0c682fc7adf15
+          python3 .github/integrate-tolerance.py
+          rm .github/integrate-tolerance.py .github/workflows/publish-tolerance-integration.yml
+          git add netDxf tests tools doc .github
+          test "$(git write-tree)" = 6ae3a6a3b3f420a6ecfe155f7da0ccead08379b8
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Integrate all PR 185 tests and preserve sparse tolerance fields during label rendering'
+          git push origin HEAD:refs/heads/codex/tolerance-labels-20260923
