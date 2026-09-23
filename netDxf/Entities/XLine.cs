@@ -84,7 +84,7 @@ namespace netDxf.Entities
         public Vector3 Origin
         {
             get { return this.origin; }
-            set { this.origin = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.origin, value); }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace netDxf.Entities
             get { return this.direction; }
             set
             {
-                this.direction = Vector3.NormalizeFiniteDirection(value, nameof(value));
+                PrimitiveGeometryMutation.Assign(this, ref this.direction, Vector3.NormalizeFiniteDirection(value, nameof(value)));
             }
         }
 

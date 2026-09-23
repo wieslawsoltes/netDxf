@@ -83,18 +83,23 @@ class QualificationTests(unittest.TestCase):
             reports=[{'script':s.relative_to(ROOT).as_posix(),'passed':True,'exit_code':0,'timed_out':False} for s in (ROOT/'tools').glob('verify_*.py')]
             result={'results':reports,'passed':len(reports),'failed':0}
             (folder/'results.json').write_text(json.dumps(result))
-            with patch.object(p,'identity',return_value=identity):
-                p.qualify(packages,evidence);p.verify(packages)
+            # This fixture isolates the original conformance gate. Runtime evidence
+            # receives full, unmocked archive/receipt tests in test_runtime_release.py.
+            import runtime_release
+            runtime = root/'runtime.zip'; runtime.write_bytes(b'runtime fixture')
+            runtime_receipt = {'sha256':p.digest(runtime),'profiles':8,'scenario_executions':96}
+            with patch.object(p,'identity',return_value=identity), patch.object(runtime_release,'verify',return_value=runtime_receipt):
+                p.qualify(packages,evidence,runtime);p.verify(packages)
                 release=evidence/'dxf-conformance-windows-latest-Release/conformance/results.json'
                 release.write_text('[{"name":"substitution","passed":true}]')
-                with self.assertRaises(ValueError):p.qualify(packages,evidence)
+                with self.assertRaises(ValueError):p.qualify(packages,evidence,runtime)
                 release.write_text('[{"name":"one","passed":true}]')
                 reports[0]['timed_out']=True;(folder/'results.json').write_text(json.dumps(result))
-                with self.assertRaises(ValueError):p.qualify(packages,evidence)
+                with self.assertRaises(ValueError):p.qualify(packages,evidence,runtime)
                 reports[0]['timed_out']=False;reports.pop();(folder/'results.json').write_text(json.dumps(result))
-                with self.assertRaises(ValueError):p.qualify(packages,evidence)
+                with self.assertRaises(ValueError):p.qualify(packages,evidence,runtime)
                 (evidence/'dxf-conformance-windows-latest-Debug/ci-source.json').write_text(json.dumps({**identity,'commit':'c'*40}))
-                with self.assertRaises(ValueError):p.qualify(packages,evidence)
+                with self.assertRaises(ValueError):p.qualify(packages,evidence,runtime)
 
     def test_release_receipt_matrix_is_complete(self):
         import copy

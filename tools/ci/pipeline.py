@@ -153,7 +153,7 @@ def test_results(path: Path) -> list:
     return data
 
 
-def qualify(packages: Path, evidence: Path) -> None:
+def qualify(packages: Path, evidence: Path, runtime_evidence: Path | None = None) -> None:
     verify(packages)
     build = json.loads((packages / 'build.json').read_text(encoding='utf-8'))
     require(build['commit'] == identity()['commit'] and build['tree'] == identity()['tree'], 'Wrong release source')
@@ -179,9 +179,16 @@ def qualify(packages: Path, evidence: Path) -> None:
     records = data['results']
     require(expected and len(records) == len(expected) and {r['script'] for r in records} == expected, 'Incomplete independent verification')
     require(data['failed'] == 0 and data['passed'] == len(expected) and all(r.get('passed') is True and r.get('exit_code') == 0 and r.get('timed_out') is False for r in records), 'Independent verification failure')
-    report = {**build, 'conformance': results, 'independent_verifiers': len(records), 'independent_report_sha256': digest(independent)}
+    import runtime_release
+    runtime_path = runtime_evidence if runtime_evidence is not None else ROOT / 'artifacts/release-runtime/runtime-evidence.zip'
+    runtime = runtime_release.verify(packages, runtime_path)
+    payload = runtime_path.read_bytes()
+    require(hashlib.sha256(payload).hexdigest() == runtime['sha256'], 'Runtime archive changed after validation')
+    (packages / runtime_release.ARCHIVE_NAME).write_bytes(payload)
+    report = {**build, 'conformance': results, 'independent_verifiers': len(records),
+              'independent_report_sha256': digest(independent), 'runtime_evidence': runtime}
     (packages / 'qualification.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-    (packages / 'RELEASE-NOTES.md').write_text(f"# netDxf {build['version']}\n\nSource: `{build['commit']}`\n\nAll five target frameworks built. Each of four Linux/Windows Debug/Release configurations passed {results[0]['count']:,} conformance cases; {len(records)} independent verifiers passed. Package-consumer smoke tests passed.\n\nThis release does not claim complete all-version AutoCAD parity or native visual qualification. See doc/dxf-conformance for scoped contracts and remaining limitations.\n", encoding='utf-8')
+    (packages / 'RELEASE-NOTES.md').write_text(f"# netDxf {build['version']}\n\nSource: `{build['commit']}`\n\nAll five target frameworks built. Each of four Linux/Windows Debug/Release configurations passed {results[0]['count']:,} conformance cases; {len(records)} independent verifiers passed. Package-consumer smoke tests passed. All eight packaged target/runtime profiles and 96 smoke-scenario executions were revalidated; their receipts and process logs are retained in runtime-evidence.zip.\n\nThis release does not claim complete all-version AutoCAD parity or native visual qualification. See doc/dxf-conformance for scoped contracts and remaining limitations.\n", encoding='utf-8')
     seal(packages)
     verify(packages)
 
@@ -207,6 +214,9 @@ def verify_release(directory: Path) -> None:
         require(build[key] == value and qualification[key] == value, 'Release source mismatch')
     require(qualification['version'] == build['version'], 'Release version mismatch')
     validate_qualification(qualification, build)
+    import runtime_release
+    runtime = runtime_release.verify(directory, directory / runtime_release.ARCHIVE_NAME)
+    require(qualification.get('runtime_evidence') == runtime, 'Release runtime evidence receipt differs from archived execution evidence')
     tag = os.environ.get('RELEASE_TAG', '')
     require(tag.startswith('v') and version(tag[1:]) == build['version'], 'Release tag/package version mismatch')
     for ext in ('nupkg', 'snupkg'):

@@ -5,7 +5,7 @@ namespace netDxf.Entities
 {
     // Stored geometry bits, not approximate geometric equality, determine whether
     // previously attached common proxy graphics can still describe the entity.
-    internal static class CircularEntityMutation
+    internal static class PrimitiveGeometryMutation
     {
         internal static void Assign(EntityObject entity, ref double field, double value)
         {
