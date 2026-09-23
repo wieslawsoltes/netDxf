@@ -134,6 +134,10 @@ namespace netDxf.Entities
                 }
             }
 
+            if (string.IsNullOrEmpty(userText) || userText.Contains("<>"))
+                dimText = FormatToleranceText(dimText, alternateMeasurement, style,
+                    dimType == DimensionType.Angular || dimType == DimensionType.Angular3Point, false);
+
             string prefix = style.DimPrefix;
             if (dimType == DimensionType.Diameter)
             {
@@ -484,6 +488,7 @@ namespace netDxf.Entities
 
                 // Independent value-object copy: overrides must not edit the base style.
                 AlternateUnits = (DimensionStyleAlternateUnits)dim.Style.AlternateUnits.Clone(),
+                Tolerances = (DimensionStyleTolerances)dim.Style.Tolerances.Clone(),
                 DimScaleOverall = dim.Style.DimScaleOverall,
 
                 // primary units
@@ -512,6 +517,7 @@ namespace netDxf.Entities
             foreach (DimensionStyleOverride styleOverride in dim.StyleOverrides.Values)
             {
                 ApplyAlternateUnitOverride(copy.AlternateUnits, styleOverride);
+                ApplyToleranceOverride(copy.Tolerances, styleOverride);
                 switch (styleOverride.Type)
                 {
                     case DimensionStyleOverrideType.DimLineColor:

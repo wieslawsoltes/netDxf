@@ -20,6 +20,7 @@ namespace netDxf.Entities
             double measurement = scaledMeasurement * alternate.Multiplier;
             if (double.IsNaN(measurement) || double.IsInfinity(measurement))
                 throw new ArgumentOutOfRangeException(nameof(scaledMeasurement), "Alternate measurement must be finite.");
+            double unrounded = measurement;
             if (alternate.Roundoff > 0.0) measurement = MathHelper.RoundToNearest(measurement, alternate.Roundoff);
             if (double.IsNaN(measurement) || double.IsInfinity(measurement))
                 throw new ArgumentOutOfRangeException(nameof(style), "Rounded alternate measurement must be finite.");
@@ -51,6 +52,7 @@ namespace netDxf.Entities
             }
             // Limit the scope of stacked MTEXT formatting to the alternate value.
             if (text.StartsWith("\\A1;", StringComparison.Ordinal)) text = "{" + text + "}";
+            text = FormatToleranceText(text, unrounded, style, false, true);
             return "[" + alternate.Prefix + text + alternate.Suffix + "]";
         }
 
