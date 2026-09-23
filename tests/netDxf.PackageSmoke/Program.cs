@@ -96,6 +96,27 @@ foreach (bool binary in new[] { false, true })
     var extensionLines = dimension.Block.Entities.OfType<Line>().Where(l => l.Linetype.Name.StartsWith("SMOKE_EXT")).ToArray();
     if (extensionLines.Length != 2 || extensionLines.Any(l => Math.Abs(l.StartPoint.Y - 2) > 1e-9 || Math.Abs(l.EndPoint.Y - 3.25) > 1e-9))
         throw new InvalidOperationException("Installed fixed extension geometry failed");
+    // Fraction delimiters inside tolerance rows must not become outer Unicode escapes.
+    dimension.Style.DimLengthUnits = LinearUnitType.Fractional;
+    dimension.Style.SuppressZeroFeet = false;
+    dimension.Style.SuppressZeroInches = false;
+    dimension.Style.Tolerances.DisplayMethod = DimensionStyleTolerancesDisplayMethod.Deviation;
+    dimension.Style.Tolerances.UpperLimit = .5;
+    dimension.Style.Tolerances.LowerLimit = .25;
+    dimension.Style.Tolerances.SuppressZeroFeet = false;
+    dimension.Style.Tolerances.SuppressZeroInches = false;
+    dimension.Update();
+    const string fractionRows = @"\S+0 1\/2^ -0 1\/4;";
+    if (!dimension.Block.Entities.OfType<MText>().Single().Value.Contains(fractionRows))
+        throw new InvalidOperationException("Installed fractional tolerance escaping failed");
+    using var fractionStream = new MemoryStream();
+    if (!copy.Save(fractionStream, binary)) throw new InvalidOperationException("Fraction package save failed");
+    fractionStream.Position = 0;
+    var fractionCopy = DxfDocument.Load(fractionStream) ?? throw new InvalidOperationException("Fraction package load failed");
+    var fraction = fractionCopy.Entities.Dimensions.Single();
+    fraction.Update();
+    if (!fraction.Block.Entities.OfType<MText>().Single().Value.Contains(fractionRows))
+        throw new InvalidOperationException("Installed fractional tolerance round trip failed");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
