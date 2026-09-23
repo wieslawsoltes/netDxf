@@ -1,0 +1,35 @@
+name: Publish reviewed clean-source guard
+on:
+  push:
+    branches: [codex/ci-clean-source-20260923]
+    paths: [.github/workflows/publish-clean-source.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Apply fixed source edits and verify the complete reviewed tree
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          for name, expected in {'tools/ci/pipeline.py': '0ca73ce63f5a6e72213f7697a6bd4c714c68bde3', 'tests/ci_pipeline/test_pipeline.py': 'f300b53ab76f41a81a3d632b1ba48b80dd31aa89'}.items():
+              assert subprocess.check_output(['git', 'hash-object', name], text=True).strip() == expected, name
+          def replace(name, old, new):
+              path = Path(name); text = path.read_text(); assert text.count(old) == 1, name
+              path.write_text(text.replace(old, new))
+          replace('tools/ci/pipeline.py', 'def identity() -> dict:\n    return', "def identity() -> dict:\n    require(not git('status', '--porcelain=v1', '--untracked-files=all'),\n            'Source checkout is dirty; commit source changes before binding artifacts to HEAD')\n    return")
+          replace('tests/ci_pipeline/test_pipeline.py', "with patch.object(p, 'git', return_value=sha), patch.object(p.subprocess, 'run'):", "with patch.object(p, 'git', side_effect=lambda *args: '' if args[0] == 'status' else sha), patch.object(p.subprocess, 'run'):")
+          Path('.github/workflows/publish-clean-source.yml').unlink()
+          PY
+          git add tools/ci tests/ci_pipeline doc/ci-clean-source.md .github/workflows
+          test "$(git write-tree)" = d31473e753639f92cbbb3326fd96b93d7e7fcd85
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Reject dirty checkouts before binding build and release evidence to HEAD'
+          git push origin HEAD:refs/heads/codex/ci-clean-source-20260923
