@@ -104,7 +104,12 @@ export class DxfDocument extends DxfObject {
     for(const item of database.Items){
       if(removed.has(item))continue;
       if(['SECTION_SETTINGS','TABLECONTENT','TABLEGEOMETRY','CELLSTYLEMAP','SUNSTUDY','FIELD','DIMASSOC'].includes(item.CodeName)){
-        if(Array.from(item.DatabaseReferences).some(target=>removed.has(target)))return true;
+        // Stored packets also reference owner-held ATTRIB/ENDBLK/layout VIEWPORT
+        // identities which intentionally are not top-level database registrations.
+        const references = item.References ?? (item instanceof api.DxfOpaqueObject
+          ? Array.from(item.Tags).filter(api.DxfObjectDatabase.IsReference).map(tag => this.StoredTableHandleTarget(tag.Value))
+          : item.DatabaseReferences);
+        if(Array.from(references).some(target=>removed.has(target)))return true;
         const seen=new Set();for(let owner=item.Owner;owner!==null&&!seen.has(owner);owner=owner.Owner){if(removed.has(owner))return true;seen.add(owner);}
       }
     }

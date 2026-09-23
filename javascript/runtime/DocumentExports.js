@@ -32,3 +32,4 @@ export { DxfTableStyleHeader, DxfTableStyleRow, DxfTableStyleRowEdit, DxfTableSt
 export { DxfTableStyleBorderValues, DxfTableStyleRowBorders } from '../netDxf/Objects/DxfTableStyle.Borders.js';
 export { DxfTableStyleRowDataTypes } from '../netDxf/Objects/DxfTableStyle.DataTypes.js';
 export { DxfStoredCellStyleMap, DxfStoredCellStyleMapEntry } from '../netDxf/Objects/DxfStoredCellStyleMap.js';
+export { DxfStoredTableGeometry, DxfStoredTableGeometryCell, DxfStoredTableCellGeometry } from '../netDxf/Objects/DxfStoredTableGeometry.js';
