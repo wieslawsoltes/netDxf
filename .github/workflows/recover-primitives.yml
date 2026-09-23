@@ -14,13 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          fetch-depth: 3
-      - name: Verify original checkpoint and replay its three commits
+          fetch-depth: 4
+      - name: Verify and replay source; workflows are published separately
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD~2)" = '75cc346f98409a298e6559ad6854e39476e01d8f'
-          test "$(git rev-parse 'HEAD~2^{tree}')" = 'd14febdc7f9ce6dbbf8caf1beaa6d12ef2d914d2'
+          test "$(git rev-parse HEAD~3)" = '75cc346f98409a298e6559ad6854e39476e01d8f'
+          test "$(git rev-parse 'HEAD~3^{tree}')" = 'd14febdc7f9ce6dbbf8caf1beaa6d12ef2d914d2'
           python3 - <<'PY'
           from pathlib import Path
           import base64, hashlib, lzma, os
@@ -41,12 +41,14 @@ jobs:
           git config core.autocrlf false
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/recover-primitives.yml tools/recovered-primitives-{0,1,2}.b64
-          test "$(git write-tree)" = 'd14febdc7f9ce6dbbf8caf1beaa6d12ef2d914d2'
-          git commit -m 'Remove verified recovery transport before replaying original source commits'
-          git am --keep-cr "$RUNNER_TEMP/recovered-netdxf.mbox"
-          test "$(git write-tree)" = 'bd32ba4b2507ba14bf47224a33cb804cf213e619'
+          # The job token cannot update workflows. Keep all workflow files unchanged.
+          git am --keep-cr --exclude='.github/workflows/*' "$RUNNER_TEMP/recovered-netdxf.mbox"
+          test -z "$(git diff HEAD~3 HEAD -- .github/workflows)"
+          cp "$(git rev-parse --git-path index)" "$RUNNER_TEMP/source-only.index"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/source-only.index"
+          git update-index --force-remove .github/workflows/recover-primitives.yml tools/recovered-primitives-0.b64 tools/recovered-primitives-1.b64 tools/recovered-primitives-2.b64
+          test "$(git write-tree)" = 'f7ccc231bd615bcb47835d082e05965439491a93'
+          unset GIT_INDEX_FILE
           test -z "$(git status --porcelain)"
-          git diff --stat 75cc346f98409a298e6559ad6854e39476e01d8f HEAD
-          git log -3 --oneline
+          git log -3 --format='%H %s'
           git push origin HEAD:refs/heads/codex/recover-primitives-runtime-20260923
