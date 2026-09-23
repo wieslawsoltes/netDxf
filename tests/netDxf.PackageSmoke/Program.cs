@@ -27,10 +27,26 @@ foreach (bool binary in new[] { false, true })
         dim.StyleOverrides.Add(reset, null);
     doc.Entities.Add(dim);
     doc.Entities.Add(new Line(new Vector3(1, 2, 3), new Vector3(4, 5, 6)));
+    // Direct edits must not serialize display bytes from the old circular geometry.
+    byte[] circularProxy = { 1, 3, 7, 255 };
+    var circle = new Circle(new Vector3(2, 3, 4), 2) { ProxyGraphics = circularProxy };
+    circle.Radius = 2;
+    if (!circle.ProxyGraphics.SequenceEqual(circularProxy))
+        throw new InvalidOperationException("Identical circular assignment discarded the proxy");
+    circle.Radius = 3;
+    var arc = new Arc(new Vector3(4, 5, 6), 4, 30, 210) { ProxyGraphics = circularProxy };
+    arc.StartAngle = 45;
+    if (circle.ProxyGraphics != null || arc.ProxyGraphics != null)
+        throw new InvalidOperationException("Circular edit retained stale proxy graphics");
+    doc.Entities.Add(circle);
+    doc.Entities.Add(arc);
     using var stream = new MemoryStream();
     if (!doc.Save(stream, binary)) throw new InvalidOperationException("Package save failed");
     stream.Position = 0;
     var copy = DxfDocument.Load(stream) ?? throw new InvalidOperationException("Package load failed");
+    if (copy.Entities.Circles.Single().Radius != 3 || copy.Entities.Arcs.Single().StartAngle != 45
+        || copy.Entities.Circles.Single().ProxyGraphics != null || copy.Entities.Arcs.Single().ProxyGraphics != null)
+        throw new InvalidOperationException("Installed circular edit round trip failed");
     var dimension = copy.Entities.Dimensions.Single();
     dimension.Update();
     if (copy.DrawingVariables.AcadVer != version || dimension.UserText != " " || dimension.Block.Entities.OfType<MText>().Any()
@@ -45,6 +61,39 @@ foreach (bool binary in new[] { false, true })
         || copy.Entities.Lines.Single().EndPoint != new Vector3(4, 5, 6)
         || copy.Objects.Validate().Count != 0 || !stream.CanRead)
         throw new InvalidOperationException($"Package round trip failed: {version}/{binary}");
+    // Exercise the installed package's tolerance renderer and coupled wire settings.
+    dimension.UserText = "<>";
+    dimension.Style.DimLengthUnits = LinearUnitType.Decimal;
+    dimension.Style.LengthPrecision = 2;
+    dimension.Style.TextFractionHeightScale = 0.5;
+    dimension.Style.Tolerances.DisplayMethod = DimensionStyleTolerancesDisplayMethod.Symmetrical;
+    dimension.Style.Tolerances.UpperLimit = 0.25;
+    dimension.Style.Tolerances.LowerLimit = 99; // Inactive for symmetric tolerances.
+    dimension.Style.Tolerances.Precision = 3;
+    dimension.Update();
+    if (!dimension.Block.Entities.OfType<MText>().Single().Value.Contains("±0.250"))
+        throw new InvalidOperationException("Installed tolerance generation failed");
+    using var toleranceStream = new MemoryStream();
+    if (!copy.Save(toleranceStream, binary)) throw new InvalidOperationException("Tolerance package save failed");
+    toleranceStream.Position = 0;
+    var toleranceCopy = DxfDocument.Load(toleranceStream) ?? throw new InvalidOperationException("Tolerance package load failed");
+    var toleranceDimension = toleranceCopy.Entities.Dimensions.Single();
+    toleranceDimension.Update();
+    if (toleranceDimension.Style.Tolerances.DisplayMethod != DimensionStyleTolerancesDisplayMethod.Symmetrical
+        || toleranceDimension.Style.Tolerances.LowerLimit != 0.25
+        || !toleranceDimension.Block.Entities.OfType<MText>().Single().Value.Contains("±0.250"))
+        throw new InvalidOperationException("Installed symmetric tolerance round trip failed");
+    // Exercise fixed extensions from the installed package, including unrelated overrides.
+    dimension.Style.ExtLineFixed = true;
+    dimension.Style.ExtLineFixedLength = 1;
+    dimension.Style.ExtLineOffset = .5;
+    dimension.Style.ExtLineExtend = .25;
+    dimension.Style.ExtLine1Linetype = new Linetype("SMOKE_EXT1");
+    dimension.Style.ExtLine2Linetype = new Linetype("SMOKE_EXT2");
+    dimension.Update();
+    var extensionLines = dimension.Block.Entities.OfType<Line>().Where(l => l.Linetype.Name.StartsWith("SMOKE_EXT")).ToArray();
+    if (extensionLines.Length != 2 || extensionLines.Any(l => Math.Abs(l.StartPoint.Y - 2) > 1e-9 || Math.Abs(l.EndPoint.Y - 3.25) > 1e-9))
+        throw new InvalidOperationException("Installed fixed extension geometry failed");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
