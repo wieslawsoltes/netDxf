@@ -179,7 +179,9 @@ jobs:
           path: artifacts/runtime-reports/
           merge-multiple: false
       - name: Reject missing, duplicate, changed or wrong-source runtime evidence
-        run: python tools/ci/runtime_assets.py collect
+        run: |
+          python tools/ci/runtime_assets.py collect
+          python tools/ci/runtime_release.py capture
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: runtime-qualification
