@@ -5,231 +5,77 @@ names. **This is an incomplete port, not full DxfDocument or AutoCAD parity.**
 Development remains on draft PR #98, branch `codex/javascript-port`. The package
 is private and its publication gate rejects incomplete parity.
 
-The behavioral baseline is `3496ab91893a1e4ec9261b4833479f1799149cdc`, with SDK
+The behavioral reference is `3496ab91893a1e4ec9261b4833479f1799149cdc`, SDK
 8.0.425 / runtime 8.0.31 and Node 22.16.0. Original C# sources, original tests and
-shared DXF fixtures remain unchanged. Production JavaScript does not load .NET,
-WebAssembly, a native DXF engine or a server-side conversion service.
+shared fixtures remain unchanged. The production JavaScript package does not
+load .NET, WebAssembly, a native DXF engine or a conversion service.
 
 ## Current checkpoint
 
-`a7f4559` adds retained FIELD, DIMASSOC and SUNSTUDY dependency models and fixes
-binary error diagnostics; `8875577` adds independent verification and required
-integration. [Contracts, source-bound results and remaining failures](doc/STORED_DEPENDENCIES.md)
-distinguish retained loader adapters from typed DXF IO and evaluator support.
-The preceding TABLECONTENT/ACAD_TABLE work was already pushed at `bb7b117` and
-is preserved; no unpublished local patch survived the interrupted continuation.
+`1601130` corrects reader state/diagnostics; `fc0735f` corrects writer framing,
+re-entrant output and required verification. [Codec contracts and source-bound
+results](doc/CODEC_STREAMS.md) distinguish low-level transport from unfinished
+typed document IO. The published opaque/version/header and actual-stream work
+at `90d5a57` was restored and preserved; no unpublished checkout survived.
 
-The new **738 scenarios / 5,566 operations** match C# in both configurations,
-including 520 exact binary-reader diagnostic inputs. All **26 complete original
-SUNSTUDY producer raw-fixture tests** are now ported, and **32 supplemental tests**
-are counted separately. Original fixtures and C# tests remain unchanged.
+The independent reader/writer corpora match **1,422 scenarios / 32,902 executed
+commands**, plus **40 constructor rejections**, in each configuration. This adds
+**564 complete original codec cases** and **40 supplemental tests** without
+shortening typed Load/Save-dependent cases. All **3,587 mirrored originals**,
+**1,102 supplemental tests**, both **35,309-case unchanged C# suites**, the
+**537-file installed package** and exact source-regeneration checks pass locally.
 
-Local checks pass **2,946 mirrored originals**, **1,062 supplemental tests**,
-both **35,309-case C# suites**, the **526-file offline package**, and exact source
-regeneration. All **47 differential stages** execute: Debug **42 pass / 5 fail**,
-Release **41 pass / 6 fail**. Both inline Chromium profiles execute **142,896**
-checks with no new dependency mismatches or page errors; Release retains **83**
-failures and Debug **27**, including 22 unavailable native observations. HTTP
-navigation is policy-blocked. Both full-port gates remain failing.
+All **49 differential stages** were executed per configuration: **44 pass in
+Debug and 43 in Release**. The required browser corpus executes **144,318 checks**;
+Release retains **83 earlier-category failures**, with no new codec mismatch or
+page error. Debug also executes all checks and retains 31 failures, including
+22 unavailable native observations, with no new codec mismatch or page error.
+HTTP-origin navigation is blocked by the local browser policy.
+Both full-parity verification gates remain failing.
 
-The development-only independent MPFR reference audit passes both precision
-profiles; the existing descriptive 2,000-object benchmark also completes.
-Neither waives exact native numerical failures or establishes release performance.
-The ledger is **388/510 library mirrors**, **60/193 conformance-file mirrors**,
-and **2,946/35,309 original cases**. Presence is not complete API/behavioral parity.
-Typed IO, remaining private/TABLE APIs, evaluation, original tests and broad
+The hosted [codec matrix](doc/codec-streams-hosted-fc0735f.json) passed all four
+Ubuntu/Windows Debug/Release profiles, each running both corpora, 40 focused
+tests and all 3,587 mirrored original cases. The retained receipt includes the
+eight actual comparison reports and verified archive/result hashes.
+
+The ledger is **394/510 library mirrors**, **65/193 conformance-file mirrors**,
+and **3,587/35,309 original cases**. Source-file presence does not establish full
+API or behavioral equivalence. Typed DXF reading/writing and full document
+Load/Save/SaveAtomic, version conversion, private/evaluator APIs and wider
 platform acceptance remain unfinished.
 
-All four hosted Ubuntu/Windows Debug/Release profiles also pass nine lifecycle
-corpora (**2,365 scenarios / 47,478 operations**), 236 focused tests and all 2,946
-mirrored original cases. The [hosted receipt](doc/stored-dependencies-hosted-8875577.json)
-records the checked reports, counts and archive hashes without claiming full parity.
+## Implemented areas
 
-## Previous TABLEGEOMETRY checkpoint (historical)
+The raw layer supports text/binary transport, exact retained bytes, immutable
+record/tag views, edits, handle indexing/remapping, dependency traversal, object
+transactions, extension dictionaries and draw order. Raw tests do not count as
+tests of typed document transport. Unqualified private schemas remain opaque.
 
-`11351a5` adds source-bound TABLEGEOMETRY values, strict counted packets and
-ReplaceGeometry; `198d9e4` supplies exact verification and required integration.
-[Geometry contracts and source-bound results](doc/TABLE_GEOMETRY.md) describe
-immutable scalar/vector values, signed zero, snapshots, source identities,
-record limits and caller enumeration/re-entrancy. The retained-loader adapters
-are not a typed DXF reader or native TABLE layout generator.
+Typed models cover geometry, styles, headers, units, collections, many entities,
+blocks and INSERT, attributes, layouts/viewports, dimensions and annotations,
+retained tables and dependencies. Registered document ownership, resource
+canonicalization, XData, guarded graph cloning/erasure and selected object
+lifecycles use those actual models. The newly improved codecs preserve native
+stream callbacks, failure state and exact scalar transport; they are not the
+missing complete typed reader/writer pipeline.
 
-This also fixes a real registered-document removal gap: retained references to
-owner-held INSERT attributes and layout viewports now protect their owning
-entities/layouts, instead of being lost from a top-level-only reference scan.
+[Architecture](doc/ARCHITECTURE.md), [language adaptations](doc/LANGUAGE_ADAPTATIONS.md),
+[verification](doc/VERIFICATION.md), [document ownership](doc/DOCUMENT_OWNERSHIP.md),
+[retained dependencies](doc/STORED_DEPENDENCIES.md), [numerics](doc/NUMERICS.md)
+and [filesystem contracts](doc/FILESYSTEM.md) document their specific boundaries.
+Earlier source-bound counts remain historical, not qualification of later commits.
+The [previous complete overview](https://github.com/wieslawsoltes/netDxf/blob/90d5a575194db314cfbe073c1baa07769d79d80a/javascript/README.md)
+retains the earlier checkpoint descriptions.
 
-The new **270 scenarios / 3,966 operations** match in Debug and Release. Both
-unchanged C# suites pass **35,309 cases**; JavaScript passes **2,920 mirrored
-original cases** and **994 supplemental tests**. This adds 13 complete original
-constructor/value cases and 24 separate regressions. The **512-file installed
-package** and both source-regeneration checks pass.
+## Usage and verification
 
-All four hosted Ubuntu/Windows Debug/Release profiles pass six lifecycle corpora
-(**1,204 scenarios / 35,383 operations**), 168 focused tests and every mirrored
-original case. The [receipt](doc/table-geometry-hosted-198d9e4.json) retains all
-24 actual differential reports plus original-suite metadata and hashes.
+Source modules are native ESM. Browser applications can import `javascript/index.js`
+from their HTTP origin. Node file access uses the explicit `@netdxf/javascript/node`
+entry after an internal/offline package install; nothing is published to npm.
+Raw SaveAtomic uses the explicit host and no delete-and-copy fallback. Windows
+replacement requires the optional bridge described in [Windows host requirements](doc/WINDOWS_HOST.md).
 
-All **44 differential stages** were executed in both configurations: **39 pass
-in Debug and 38 in Release**. Release inline Chromium executes **141,735 digest
-checks**, without new geometry mismatches or page errors, but retains **83
-previous-category failures**. Debug inline Chromium also executes every digest
-check, retaining 31 failures including 22 unavailable native observations; no new
-geometry mismatch or page error occurs. HTTP-origin navigation remains blocked.
-Both full-port gates fail; details are recorded in the contract.
-
-The ledger is **377/510 library mirrors**, **59/193 original conformance-file
-mirrors**, and **2,920/35,309 original cases**. Presence is not complete API or
-behavioral qualification. Typed DXF IO, complete TABLE/private schemas, missing
-original tests and broader platform/performance qualification remain unfinished.
-
-## Previous TABLESTYLE checkpoint (historical)
-
-`14d8727` adds stored TABLESTYLE/CELLSTYLEMAP models and qualified edits;
-`7b2249b` adds independent C# comparisons and mandatory verification. The
-[table-style contract](doc/TABLE_STYLES.md) describes source-bound headers, rows,
-six-slot borders, stored data/unit codes, STYLE bindings, immutable snapshots,
-bounded entry-name edits and callback/Unicode behavior. Internal retained
-constructors do not substitute for the missing typed DXF reader/writer.
-
-The new **279 scenarios / 5,829 operations** match in Debug and Release. Local
-checks pass **2,907 mirrored original cases**, **970 supplemental tests**, both
-**35,309-case unchanged C# suites**, and the **509-file offline package**. This
-adds two complete original constructor cases and 37 supplemental regressions;
-original serialization cases are not shortened to claim extra coverage.
-
-Release inline Chromium executes all **141,465 comparisons**, with no new table
-mismatches or page errors, but **83 other failures remain**. The complete parity
-gates still fail. The current ledger is **375/510 library mirrors**, **58/193
-conformance-file mirrors**, and **2,907/35,309 original cases**. Presence is not
-complete API or behavioral qualification. See the contract for current hosted
-and aggregate evidence and explicit remaining TABLE/private-schema boundaries.
-
-The hosted Ubuntu/Windows Debug/Release matrix passed all four profiles, each
-running all five lifecycle corpora, 144 focused tests and all mirrored originals.
-Its [receipt](doc/table-styles-hosted-7b2249b.json) retains the actual 20 differential
-reports and full-suite metadata/hashes. The broader 43-stage local refresh passed
-38 stages in Debug and 37 in Release; the remaining failures and the corrected
-initial missing-Debug-oracle attempt are documented, not waived.
-
-## Previous checkpoint (historical)
-
-`9cf0351` adds the source-bound SECTION_MANAGER lifecycle: creation, ordered
-membership replacement, retained-packet validation and guarded explicit erasure.
-[Manager contracts and source-bound evidence](doc/SECTION_MANAGER.md) document
-callback/disposal ordering, re-entrancy, the 65,536-member bound, CLASS handling,
-original identities and explicit typed-transport limitations.
-
-The new **174 scenarios / 5,406 operations** match C# in Debug and Release.
-Both full unchanged C# suites pass **35,309 cases**; JavaScript passes **2,905
-mirrored original cases** and **933 supplemental tests**, including 25 new manager
-tests. The 499-file offline package and both source-regeneration checks pass.
-The hosted Ubuntu/Windows Debug/Release matrix passes all four profiles,
-including four lifecycle corpora, 107 focused tests and every mirrored case;
-[the receipt](doc/section-manager-hosted-9cf0351.json) retains actual reports.
-
-Release inline Chromium executes all **141,186 comparisons** with no manager
-mismatch or page error, but **87 earlier-category failures remain**. HTTP-origin
-navigation is blocked by the local browser policy, and both complete gates fail.
-The ledger is **368/510 library mirrors, 56/193 conformance-file mirrors, and
-2,905/35,309 original cases**. Presence does not establish complete behavior.
-Typed reading/writing, general profile conversion and other listed work remain
-unfinished. The newer retained-polyline documentation was preserved before this
-increment was pushed; no unpublished source patch was found or lost.
-
-## Previous retained-polyline checkpoint
-
-`89c7cc8` connects retained Polyline3D, PolygonMesh, PolyfaceMesh and legacy
-Polyline2D chains to the typed document registry. `fae312d` supplies independent
-qualification and required integration. [Retained polyline contracts and
-source-bound results](doc/RETAINED_POLYLINES.md) describe stable child handles,
-resource binding, guarded removal and registered 3D vertex editing.
-
-Local Debug and Release each match **181 retained scenarios / 5,419 operations**,
-plus **188 ownership scenarios / 8,130 operations** and **112 annotation scenarios
-/ 6,633 operations**. The suites pass **2,905 original JavaScript cases**, **908
-supplemental tests** and **35,309 unchanged C# cases in each configuration**.
-There are 22 new supplemental tests, not additional original-case identities.
-The offline-installed package passes with **496 files**. The hosted
-Ubuntu/Windows Debug/Release matrix passes all four profiles, including the full
-mirrored original suite; its [receipt](doc/retained-polylines-hosted-fae312d.json)
-retains all 12 actual differential reports and original-suite metadata/hashes.
-
-Release inline Chromium executes all **141,012 comparisons**, with no retained
-case mismatch or page error, but **87 earlier-category failures remain**. Both
-full-port gates still fail. The synthetic internal retained fixtures qualify
-registration/topology, not typed DXF reading, writing or round-trip fidelity.
-Unexecuted or unavailable qualification categories are not counted as passing.
-
-The ledger is **366/510 library mirrors**, **56/193 conformance-file mirrors**,
-and **2,905/35,309 original cases**. Presence is not complete API or behavioral
-qualification. Earlier [registered annotations](doc/REGISTERED_ANNOTATIONS.md),
-[document ownership](doc/DOCUMENT_OWNERSHIP.md), [drawing utilities](doc/DRAWING_UTILITIES.md)
-and other reports retain historical results for their named commits.
-
-## Implemented areas and boundaries
-
-The raw layer supports text/binary transport, retained source bytes, immutable
-record/tag views, record edits, handle indexing and remapping, dependency
-traversal, raw object-store transactions, dictionary trees, extension dictionaries
-and draw order. Unsupported private schemas remain opaque. Raw tests do not count
-as ports of tests requiring typed DxfDocument authoring or typed IO.
-
-Detached typed APIs include generated geometry and constants, colors, units and
-formatting, headers and exact tick adapters, styles, observable collections,
-reference accounting, common entity metadata, many primitive/display/curve/surface
-entities, hatch boundaries, attributes, blocks/INSERT, groups, MLINE,
-layouts/viewports, GEODATA/VBA, dimensions and their source-derived block builder,
-multileaders, classic leaders, and tolerance annotations. These do not establish
-complete registration for every entity family, typed transport or rendering of
-referenced resources. Each model's contract and source-bound evidence is documented in `doc/`.
-
-The typed document core now connects admitted entities, registered tables, blocks,
-INSERT attributes, model/paper-space layouts, XData and dimension-generated
-blocks. Named-object ownership supports adoption, validation, cloning and guarded
-erasure; added lifecycles cover draw order, spatial filters, plot settings,
-GEODATA and SUN. Registered MULTILEADER/SECTION now share document ownership,
-including mapped SECTION graph cloning and erasure. Layer states support
-snapshot/restore and explicit LAS adapters. Retained polyline/mesh chains now
-share document registration, stable child identities and dependency guards;
-3D retained vertex editing uses the actual document allocator. Typed DXF IO and
-remaining specialized stored-entity adoption are still unfinished.
-
-Detailed earlier implementation descriptions remain in the
-[historical overview](https://github.com/wieslawsoltes/netDxf/blob/6852f80d3ca39fb38a5af249a339b6dc3d1db55c/javascript/README.md).
-Its older coverage numbers are historical, not the current ledger. See also
-[architecture](doc/ARCHITECTURE.md), [language adaptations](doc/LANGUAGE_ADAPTATIONS.md),
-[verification](doc/VERIFICATION.md), [numerics](doc/NUMERICS.md), and
-[filesystem contracts](doc/FILESYSTEM.md).
-
-## Usage
-
-```js
-import {
-  DxfRawDocument, DxfTag, DrawingTime, HeaderDateTime,
-  StringEnum, StringComparison, DxfVersion,
-} from './javascript/index.js';
-
-const source = DxfRawDocument.Create([
-  [0, 'SECTION'], [2, 'HEADER'], [9, '$ACADVER'], [1, 'AC1032'],
-  [0, 'ENDSEC'], [0, 'EOF'],
-].map(([code, value]) => new DxfTag(code, value)));
-const binary = source.ToBytes(true);
-const loaded = DxfRawDocument.Load(binary);
-const julian = DrawingTime.ToJulianCalendar(HeaderDateTime.MinValue);
-const Versions = StringEnum.For(DxfVersion);
-const version = Versions.Parse('ac1032', StringComparison.OrdinalIgnoreCase);
-```
-
-The default entry is browser-safe and does not perform filesystem operations
-without an explicit host. The Node entry is `@netdxf/javascript/node`; its raw
-SaveAtomic stages beside the destination and never uses delete-and-copy fallback.
-Windows replacement requires the optional built Node-API host. See
-[Windows host qualification](doc/WINDOWS_HOST.md). The package is tested via an
-offline install, not published to npm.
-
-## Verification
-
-From `javascript/`, select the exact pinned checkout and toolchain:
+From javascript/, select the exact pinned source checkout and toolchain:
 
 ```sh
 export NETDXF_SOURCE_ROOT=/path/to/netDxf-pinned
@@ -248,27 +94,16 @@ npm run test:package
 npm run verify:complete
 ```
 
-`test:differential` continues through independent stages after a failure and keeps
-each log. Individual `test:table-geometry`, `test:retained-polylines`, `test:registered-annotations`,
-`test:document-ownership`, `test:drawing-time` and `test:string-enum` commands run
-those comparisons. Generated foundations and concrete dimensions are checked using
-`verify:native` and `verify:dimension-source`. Browser checks require real
-Chromium, not a mocked DOM. `DOTNET_ROOT` or `DOTNET` selects an isolated compiler;
-`CHROMIUM` selects a browser executable. See the verification contract for the
-additional source-generation, high-precision and performance checks.
+Individual `test:codec-readers` and `test:codec-writers` commands run the new
+categories. Full differential qualification continues after failures and retains
+each log. Real Chromium is required; a mocked DOM does not qualify browser use.
+`verify:complete` writes the missing-source/test ledger and failed/unavailable
+categories before failing. Focused successes do not waive full-port requirements.
 
-`verify:complete` writes the missing-source/test ledger and failed or unavailable
-categories before returning failure. Passing focused matrices do not waive
-numeric, filesystem, HTTP-origin, performance or full-port requirements.
+## License
 
-## Remaining work and license
-
-Complete typed DxfDocument APIs, specialized entity/database ownership, typed
-reading/writing, original tests/examples and broad platform/performance
-qualification remain unfinished. There are no throwing generated stubs counted as completed mirrors.
-
-Original netDxf code retains Daniel Carvajal's MIT license. The mathematical
-adaptations retain LGPL-2.1-or-later, and GTE portions retain Boost Software License
-1.0. The aggregate expression is `MIT AND LGPL-2.1-or-later AND BSL-1.0`.
-See [third-party notices](THIRD_PARTY_NOTICES.md) and retained preferred sources.
+Original netDxf portions retain Daniel Carvajal's MIT license. Mathematical
+adaptations retain LGPL-2.1-or-later; Geometric Tools portions retain Boost 1.0.
+The aggregate expression is `MIT AND LGPL-2.1-or-later AND BSL-1.0`.
+[Third-party notices](THIRD_PARTY_NOTICES.md) and preferred sources remain included.
 .NET and MPFR are not distributed as production dependencies.
