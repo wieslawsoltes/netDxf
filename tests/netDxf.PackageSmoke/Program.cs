@@ -195,6 +195,27 @@ foreach (bool binary in new[] { false, true })
     if (primitiveCopy.Entities.Lines.Single().ProxyGraphics != null || primitiveCopy.Entities.Points.Single().ProxyGraphics != null
         || primitiveCopy.Entities.Rays.Single().ProxyGraphics != null || primitiveCopy.Entities.XLines.Single().ProxyGraphics != null)
         throw new InvalidOperationException("Installed primitive round trip restored stale graphics");
+    var affinePoint = new netDxf.Entities.Point(new Vector3(1,2,3)) { Thickness = -2, Rotation = 30 };
+    affinePoint.ProxyGraphics = new byte[] { 1,3,7,255 };
+    affinePoint.TransformBy(Matrix3.Scale(2,3,4), Vector3.Zero);
+    if (affinePoint.Position != new Vector3(2,6,12) || affinePoint.Normal != Vector3.UnitZ
+        || affinePoint.Thickness != -8 || affinePoint.ProxyGraphics != null)
+        throw new InvalidOperationException("Installed POINT signed extrusion transform failed");
+    affinePoint.ProxyGraphics = new byte[] { 1,3,7,255 };
+    var projective = Matrix4.Identity; projective.M44 = 2;
+    bool pointRejected = false;
+    try { affinePoint.TransformBy(projective); } catch (NotSupportedException) { pointRejected = true; }
+    if (!pointRejected || affinePoint.Position != new Vector3(2,6,12) || affinePoint.Thickness != -8
+        || !(affinePoint.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(new byte[] { 1,3,7,255 }))
+        throw new InvalidOperationException("Installed POINT rejection changed geometry");
+    var pointDoc = new DxfDocument(version); pointDoc.Entities.Add(affinePoint);
+    using var pointStream = new MemoryStream();
+    if (!pointDoc.Save(pointStream,binary)) throw new InvalidOperationException("POINT package save failed");
+    pointStream.Position = 0;
+    var pointCopy = DxfDocument.Load(pointStream) ?? throw new InvalidOperationException("POINT package reload failed");
+    if (pointCopy.Entities.Points.Single().Position != new Vector3(2,6,12)
+        || pointCopy.Entities.Points.Single().Thickness != -8)
+        throw new InvalidOperationException("Installed POINT extrusion round trip failed");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
