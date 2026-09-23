@@ -96,7 +96,9 @@
     "test:table-geometry": "node tools/table-geometry-differential.mjs",
     "test:table-content": "node tools/table-content-differential.mjs",
     "test:stored-table": "node tools/stored-table-differential.mjs",
-    "test:stored-dependencies": "node tools/stored-dependencies-differential.mjs"
+    "test:stored-dependencies": "node tools/stored-dependencies-differential.mjs",
+    "test:codec-readers": "node tools/codec-readers-differential.mjs",
+    "test:codec-writers": "node tools/codec-writers-differential.mjs"
   },
   "repository": {
     "type": "git",

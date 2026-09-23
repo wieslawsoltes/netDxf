@@ -85,3 +85,12 @@ Source: https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Priva
 Copyright (c) .NET Foundation and Contributors. The full notice is retained in
 `runtime/DOTNET-MIT-LICENSE.txt` and included in the installed package. This
 source-level adaptation does not introduce a .NET runtime dependency.
+
+## BinaryWriter UTF-8 character-array framing
+
+`runtime/BinaryWriteCharacters.js` adapts .NET Foundation and Contributors'
+MIT-licensed `BinaryWriter.WriteCharsCommonWithoutLengthPrefix` chunking contract
+from dotnet/runtime v8.0.0. The existing `runtime/DOTNET-MIT-LICENSE.txt` retains
+the license. This adapter concerns native stream ordering, UTF-8 scalar boundaries
+and encoder failure state, not complete System.IO or arbitrary encoder emulation.
+Source: https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/IO/BinaryWriter.cs

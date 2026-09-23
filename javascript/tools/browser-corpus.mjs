@@ -1,3 +1,6 @@
+import { codecReadersCorpus } from './codec-readers-corpus.mjs';
+import { codecWritersCorpus } from './codec-writers-corpus.mjs';
+import { ValidateCodecObservation } from './codec-observation.mjs';
 import { storedDependenciesCorpus } from './stored-dependencies-corpus.mjs';
 import { tableContentCorpus } from './table-content-corpus.mjs';
 import { storedTableCorpus } from './stored-table-corpus.mjs';
@@ -293,6 +296,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await dependencyOracle.close();}
+// Append codec inputs after every preceding comparison. Constructor rejections
+// are observed results; missing or malformed command results fail preparation.
+const codecOracle=new OracleClient({args:[path.join(oracleRoot,'GeometryOracle.dll')]});
+try {
+  for(const probe of codecReadersCorpus().concat(codecWritersCorpus())) {
+    const expected=await codecOracle.request(probe.request);
+    ValidateCodecObservation(expected,probe.request.steps.length);
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))}});
+  }
+} finally {await codecOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

@@ -1,3 +1,5 @@
+import { codecReadersCall } from './codec-readers-wire.mjs';
+import { codecWritersCall } from './codec-writers-wire.mjs';
 import { documentOwnershipCall } from './document-ownership-wire.mjs';
 import { stringEnumCall } from './string-enum-wire.mjs';
 import { concreteDimensionInvoke } from './concrete-dimension-wire.mjs';
@@ -16,6 +18,8 @@ import { resolve, typeName } from './model-types.mjs';
 import { wire } from './model-wire.mjs';
 
 export function jsGeometry(input) {
+  if(input.op==='codec-readers')return codecReadersCall(input);
+  if(input.op==='codec-writers')return codecWritersCall(input);
   api.BlockRecord.DefaultUnits=0;api.Insert.DefaultInsUnits=0;
   const values = new Map(); api.MathHelper.Epsilon = 1e-12; Culture.Current = input.culture??''; api.Text.DefaultMirrText = false; api.MText.DefaultMirrText = false;
   if(input.op==='document-ownership')return documentOwnershipCall(input);
