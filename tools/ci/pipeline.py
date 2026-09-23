@@ -66,7 +66,10 @@ def build_version(requested: str = '') -> str:
     return version(f'{base}-ci.{run}')
 
 
-def release_plan(ref_type: str, ref_name: str, sha: str, dry_run: bool) -> dict:
+def release_plan(ref_type: str, ref_name: str, sha: str, dry_run: bool, event_name: str = "") -> dict:
+    # A queue/PR is validation-only, even if a caller misconfigures DRY_RUN.
+    if event_name in ("pull_request", "merge_group"):
+        dry_run = True
     require(re.fullmatch(r'[0-9a-f]{40}', sha) is not None, 'Invalid expected commit')
     require(git('rev-parse', 'HEAD') == sha, 'Checkout is not the triggering source')
     if ref_type == 'tag':
@@ -236,7 +239,7 @@ def main() -> None:
     if args.command == 'metadata':
         emit({'version': build_version(args.version), **identity()})
     elif args.command == 'release-plan':
-        emit(release_plan(os.environ['REF_TYPE'], os.environ['REF_NAME'], os.environ['EXPECTED_SHA'], os.environ.get('DRY_RUN', 'true') == 'true'))
+        emit(release_plan(os.environ['REF_TYPE'], os.environ['REF_NAME'], os.environ['EXPECTED_SHA'], os.environ.get('DRY_RUN', 'true') == 'true', os.environ.get('GITHUB_EVENT_NAME', '')))
     elif args.command == 'provenance':
         args.directory.mkdir(parents=True, exist_ok=True)
         (args.directory / 'ci-source.json').write_text(json.dumps(identity(), indent=2) + '\n', encoding='utf-8')
