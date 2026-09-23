@@ -27,7 +27,7 @@ class RuntimeReleaseGateTests(unittest.TestCase):
     def test_only_obsolete_pull_request_rehearsals_can_be_cancelled(self):
         release = (ROOT / '.github/workflows/release.yml').read_text()
         concurrency = release.split('concurrency:\n', 1)[1].split('jobs:\n', 1)[0]
-        self.assertEqual("  group: release-${{ github.ref }}\n  cancel-in-progress: ${{ github.event_name == 'pull_request' }}\n", concurrency)
+        self.assertEqual("  group: release-${{ github.ref }}\n  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}\n", concurrency)
         # Tag pushes and manual dispatches must not opt into cancellation.
         expression = concurrency.split('cancel-in-progress: ', 1)[1].strip()
         self.assertNotIn('workflow_dispatch', expression)

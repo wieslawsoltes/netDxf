@@ -124,6 +124,7 @@ internal static partial class Program
         Draft190_RegisterToleranceLabelTests();
         Draft190_RegisterToleranceSymmetryTests();
         RegisterToleranceModeTransitionTests();
+        RegisterToleranceProjectionTests();
         RegisterToleranceStackEscapeTests();
         RegisterToleranceSparseSymmetryTests();
         RegisterToleranceUnitSemanticTests();

@@ -1,5 +1,8 @@
 name: DXF conformance
 on:
+  merge_group:
+    types: [checks_requested]
+    branches: [netstandard]
   push:
     branches: [netstandard, 'codex/dxf-*']
   pull_request:
