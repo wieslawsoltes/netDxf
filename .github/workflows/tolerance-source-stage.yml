@@ -1,0 +1,32 @@
+name: Apply reviewed tolerance source patch
+on:
+  push:
+    branches: [codex/dxf-tolerance-fidelity-20260923]
+permissions:
+  contents: read
+jobs:
+  apply:
+    if: github.repository == 'wieslawsoltes/netDxf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 2
+      - name: Verify patch and original source, apply, and remove staging files
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD^)" = d6b894fc3ef2c3b78be7960b7712bf08c51249df
+          echo '5a2109f8bf90d1be93c0d521223af774674fad1377951c00970a2a6603d76651  tools/tolerance-core.patch' | sha256sum --check
+          test "$(git hash-object netDxf/IO/DxfReader.cs)" = ac6733a0e43b47aefdd21798dfc58c7660d2eb10
+          test "$(git hash-object netDxf/IO/DxfWriter.cs)" = 56e3251e70c432403b42f1d49451c8d72e3c2d98
+          test "$(git hash-object tests/netDxf.Conformance/Program.cs)" = c956e25c4a6eca76438e7a7ef674bd1f30be797b
+          git apply --index tools/tolerance-core.patch
+          git rm tools/tolerance-core.patch .github/workflows/tolerance-source-stage.yml
+          test "$(git write-tree)" = 2e9fe9b874937c7fb93a0933f4f80815d8aa2f83
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Preserve exact tolerance values and resolved inherited DSTYLE bounds; remove source staging'
+          git push origin HEAD:refs/heads/codex/dxf-tolerance-fidelity-20260923

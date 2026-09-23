@@ -1,0 +1,96 @@
+diff --git a/netDxf/IO/DxfReader.cs b/netDxf/IO/DxfReader.cs
+index ac6733a..c7aeb48 100644
+--- a/netDxf/IO/DxfReader.cs
++++ b/netDxf/IO/DxfReader.cs
+@@ -2175,7 +2175,7 @@ namespace netDxf.IO
+             if (dimtol == 1 && dimlim == 0)
+             {
+                 style.Tolerances.DisplayMethod =
+-                    MathHelper.IsEqual(style.Tolerances.UpperLimit, style.Tolerances.LowerLimit) ?
++                    style.Tolerances.UpperLimit == style.Tolerances.LowerLimit ?
+                     DimensionStyleTolerancesDisplayMethod.Symmetrical : DimensionStyleTolerancesDisplayMethod.Deviation;
+             }
+             if (dimtol == 0 && dimlim == 1)
+@@ -5444,7 +5444,7 @@ namespace netDxf.IO
+             return dim;
+         }
+ 
+-        private List<DimensionStyleOverride> ReadDimensionStyleOverrideXData(XData xDataOverrides)
++        private List<DimensionStyleOverride> ReadDimensionStyleOverrideXData(XData xDataOverrides, DimensionStyle baseStyle)
+         {
+             List<DimensionStyleOverride> overrides = new List<DimensionStyleOverride>();
+             
+@@ -5460,8 +5460,9 @@ namespace netDxf.IO
+ 
+             short dimtol = -1;
+             short dimlim = -1;
+-            double dimtm = 0.0;
+-            double dimtp = 0.0;
++            // Omitted DSTYLE bounds inherit from the resolved base style, not zero.
++            double dimtm = baseStyle.Tolerances.LowerLimit;
++            double dimtp = baseStyle.Tolerances.UpperLimit;
+             short dimtzin = -1;
+             short dimalttz = -1;
+ 
+@@ -6261,7 +6262,7 @@ namespace netDxf.IO
+             else if (dimtol == 1 && dimlim == 0)
+             {
+                 overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod,
+-                    MathHelper.IsEqual(dimtm, dimtp)
++                    dimtm == dimtp
+                         ? DimensionStyleTolerancesDisplayMethod.Symmetrical
+                         : DimensionStyleTolerancesDisplayMethod.Deviation));
+             }
+@@ -10961,14 +10962,14 @@ namespace netDxf.IO
+             {
+                 if (dim.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
+                 {
+-                    dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
++                    dim.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides, dim.Style));
+                 }
+             }
+             foreach (Leader leader in this.doc.Blocks.SelectMany(block => block.Entities).OfType<Leader>().ToArray())
+             {
+                 if (leader.XData.TryGetValue(ApplicationRegistry.DefaultName, out XData xDataOverrides))
+                 {
+-                    leader.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides));
++                    leader.StyleOverrides.AddRange(this.ReadDimensionStyleOverrideXData(xDataOverrides, leader.Style));
+                 }
+             }
+ 
+diff --git a/netDxf/IO/DxfWriter.cs b/netDxf/IO/DxfWriter.cs
+index 56e3251..6d0c5c1 100644
+--- a/netDxf/IO/DxfWriter.cs
++++ b/netDxf/IO/DxfWriter.cs
+@@ -1070,16 +1070,9 @@ namespace netDxf.IO
+             this.chunk.Write(9, "$DIMTIX");
+             this.chunk.Write(70, style.FitTextInside ? (short)1 : (short)0);
+ 
+-            if (style.Tolerances.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Deviation)
+-            {
+-                this.chunk.Write(9, "$DIMTM");
+-                this.chunk.Write(40, MathHelper.IsZero(style.Tolerances.LowerLimit) ? MathHelper.Epsilon : style.Tolerances.LowerLimit);
+-            }
+-            else
+-            {
+-                this.chunk.Write(9, "$DIMTM");
+-                this.chunk.Write(40, style.Tolerances.LowerLimit);
+-            }
++            // A zero or small lower tolerance is data, not a display-mode sentinel.
++            this.chunk.Write(9, "$DIMTM");
++            this.chunk.Write(40, style.Tolerances.LowerLimit);
+ 
+             this.chunk.Write(9, "$DIMTMOVE");
+             this.chunk.Write(70, (short) style.FitTextMove);
+diff --git a/tests/netDxf.Conformance/Program.cs b/tests/netDxf.Conformance/Program.cs
+index c956e25..486ff7d 100644
+--- a/tests/netDxf.Conformance/Program.cs
++++ b/tests/netDxf.Conformance/Program.cs
+@@ -115,6 +115,7 @@ internal static partial class Program
+         RegisterAlternateUnitModeTests();
+         RegisterAlternateDimensionLabelTests();
+         RegisterDimensionResetTests();
++        RegisterToleranceFidelityTests();
+         RegisterDimensionXDataPreservationTests();
+         RegisterTableXDataPreservationTests();
+         RunOutputSettingsTests();
