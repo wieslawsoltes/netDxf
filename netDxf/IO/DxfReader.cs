@@ -5592,6 +5592,7 @@ namespace netDxf.IO
                                     }
 
                                     dimtp = (double) data.Value;
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesUpperLimit, dimtp));
                                     hasToleranceValue = true;
                                     break;
                                 case 48: // DIMTM
@@ -5601,6 +5602,7 @@ namespace netDxf.IO
                                     }
 
                                     dimtm = (double) data.Value;
+                                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesLowerLimit, dimtm));
                                     hasToleranceValue = true;
                                     break;
                                 case 49: // DIMFXL
@@ -6248,10 +6250,11 @@ namespace netDxf.IO
                 short effectiveTol = dimtol >= 0 ? dimtol : DimensionToleranceSettings.ToleranceFlag(baseStyle.Tolerances);
                 short effectiveLim = dimlim >= 0 ? dimlim :
                     baseStyle.Tolerances.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Limits ? (short) 1 : (short) 0;
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod,
-                    DimensionToleranceSettings.Decode(effectiveTol, effectiveLim, dimtp, dimtm)));
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesUpperLimit, dimtp));
-                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesLowerLimit, dimtm));
+                var method = DimensionToleranceSettings.Decode(effectiveTol, effectiveLim, dimtp, dimtm);
+                // Missing numeric fields remain inherited. A numeric-only packet needs
+                // a derived method only when it changes the inherited presentation.
+                if (dimtol >= 0 || dimlim >= 0 || method != baseStyle.Tolerances.DisplayMethod)
+                    overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, method));
             }
 
             return overrides;

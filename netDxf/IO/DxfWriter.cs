@@ -3340,7 +3340,9 @@ namespace netDxf.IO
         private IList<XDataRecord> CreateDimensionStyleOverridesXData( DimensionStyleOverrideDictionary overrides, DimensionStyle style)
         {
             bool writeDIMPOST = false;
-            bool writeTolerance = false;
+            bool writeToleranceMethod = false;
+            bool writeToleranceUpper = false;
+            bool writeToleranceLower = false;
             var tolerance = (DimensionStyleTolerances)style.Tolerances.Clone();
             // DIMPOST is one combined value. Preserve the inherited component when
             // only the other component is overridden; an explicit empty string clears it.
@@ -3683,9 +3685,13 @@ namespace netDxf.IO
                         altSuppressZeroInches = (bool) styleOverride.Value;
                         break;
                     case DimensionStyleOverrideType.TolerancesDisplayMethod:
+                        writeToleranceMethod = true;
+                        break;
                     case DimensionStyleOverrideType.TolerancesLowerLimit:
+                        writeToleranceLower = true;
+                        break;
                     case DimensionStyleOverrideType.TolerancesUpperLimit:
-                        writeTolerance = true;
+                        writeToleranceUpper = true;
                         break;
                     case DimensionStyleOverrideType.TolerancesVerticalPlacement:
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 283));
@@ -3738,16 +3744,27 @@ namespace netDxf.IO
                 }
             }
 
-            if (writeTolerance)
+            // Preserve independent native field absence (PR #185). Only synthesize
+            // a lower field when symmetric semantics cannot use the inherited lower.
+            if ((writeToleranceMethod || writeToleranceUpper || writeToleranceLower)
+                && tolerance.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Symmetrical
+                && DimensionToleranceSettings.Lower(style.Tolerances) != tolerance.UpperLimit)
+                writeToleranceLower = true;
+            if (writeToleranceMethod)
             {
-                // Store a complete effective mode/value group without changing sparse source entries.
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 71));
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, DimensionToleranceSettings.ToleranceFlag(tolerance)));
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 72));
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16,
                     tolerance.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Limits ? (short) 1 : (short) 0));
+            }
+            if (writeToleranceUpper)
+            {
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 47));
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Real, tolerance.UpperLimit));
+            }
+            if (writeToleranceLower)
+            {
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 48));
                 xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Real, DimensionToleranceSettings.Lower(tolerance)));
             }

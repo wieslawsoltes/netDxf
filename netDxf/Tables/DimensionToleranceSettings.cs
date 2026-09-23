@@ -8,8 +8,10 @@ namespace netDxf.Tables
     {
         internal static double Lower(DimensionStyleTolerances settings)
         {
+            // Preserve exact bits of equal bounds (notably +0/-0); only an inactive
+            // unequal lower property needs projection to the symmetric upper allowance.
             return settings.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Symmetrical
-                ? settings.UpperLimit : settings.LowerLimit;
+                && settings.UpperLimit != settings.LowerLimit ? settings.UpperLimit : settings.LowerLimit;
         }
 
         internal static short ToleranceFlag(DimensionStyleTolerances settings)

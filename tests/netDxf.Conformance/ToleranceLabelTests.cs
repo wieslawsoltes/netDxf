@@ -267,12 +267,20 @@ internal static partial class Program
                 {
                     var target = loaded.Blocks.SelectMany(b => b.Entities).Single(e => e is Dimension || e is Leader);
                     var overrides = ContainerOverrides(target);
-                    SameDoubleBits(upper, (double)overrides[DimensionStyleOverrideType.TolerancesUpperLimit].Value, "Foreign effective upper");
-                    SameDoubleBits(lower, (double)overrides[DimensionStyleOverrideType.TolerancesLowerLimit].Value, "Foreign effective lower");
+                    bool hasUpper = change is 0 or 1, hasLower = change == 2;
+                    Equal(hasUpper, overrides.ContainsType(DimensionStyleOverrideType.TolerancesUpperLimit), "Sparse foreign upper presence");
+                    Equal(hasLower, overrides.ContainsType(DimensionStyleOverrideType.TolerancesLowerLimit), "Sparse foreign lower presence");
+                    SameDoubleBits(upper, hasUpper ? (double)overrides[DimensionStyleOverrideType.TolerancesUpperLimit].Value
+                        : CompositeStyle(target).Tolerances.UpperLimit, "Foreign effective upper");
+                    SameDoubleBits(lower, hasLower ? (double)overrides[DimensionStyleOverrideType.TolerancesLowerLimit].Value
+                        : CompositeStyle(target).Tolerances.LowerLimit, "Foreign effective lower");
                     var expected = tol != 0 ? (upper == lower ? DimensionStyleTolerancesDisplayMethod.Symmetrical : DimensionStyleTolerancesDisplayMethod.Deviation)
                         : lim != 0 ? DimensionStyleTolerancesDisplayMethod.Limits : DimensionStyleTolerancesDisplayMethod.None;
-                    Equal(expected, (DimensionStyleTolerancesDisplayMethod)overrides[DimensionStyleOverrideType.TolerancesDisplayMethod].Value, "Foreign effective mode");
-                    Equal(4, overrides.Count, "Complete group plus unrelated scalar");
+                    bool hasMethod = change >= 3 || expected != (DimensionStyleTolerancesDisplayMethod)m;
+                    Equal(hasMethod, overrides.ContainsType(DimensionStyleOverrideType.TolerancesDisplayMethod), "Sparse foreign method presence");
+                    Equal(expected, hasMethod ? (DimensionStyleTolerancesDisplayMethod)overrides[DimensionStyleOverrideType.TolerancesDisplayMethod].Value
+                        : CompositeStyle(target).Tolerances.DisplayMethod, "Foreign effective mode");
+                    Equal(1 + (hasUpper ? 1 : 0) + (hasLower ? 1 : 0) + (hasMethod ? 1 : 0), overrides.Count, "Sparse values plus unrelated scalar");
                     using var output = new MemoryStream(); Check(loaded.Save(output, !binary), "Foreign materialized save"); output.Position = 0;
                     loaded = DxfDocument.Load(output) ?? throw new InvalidOperationException("Foreign materialized reload");
                 }

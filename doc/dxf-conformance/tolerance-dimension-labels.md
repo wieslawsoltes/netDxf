@@ -46,26 +46,41 @@ writer no longer substitutes MathHelper.Epsilon for zero. Mode decoding uses
 exact scalar equality rather than geometric tolerance, and enabled DIMTOL takes
 precedence over DIMLIM.
 
-If any of the three public components is overridden, the DSTYLE writer emits the
-complete effective four-field group, deriving unselected components from the
-base style. If any native component is present on input, the reader combines it
-with inherited native settings and materializes the complete method/upper/lower
-triple. Absent groups remain absent. This intentionally changes loaded override
-counts and future inheritance: a stored complete group is no longer partly
-inherited. Equal-value Deviation and Symmetrical are indistinguishable in these
-native fields and load as Symmetrical. A symmetric authored inactive LowerLimit
-loads as the effective UpperLimit, not its unused authored value.
+Native tolerance fields remain independently sparse, preserving PR #185's
+inheritance contract. Mode overrides emit the flag pair; numeric overrides emit
+only their selected bound. There is one necessary projection: if explicit
+Symmetrical semantics need a different lower allowance than the inherited native
+lower, the writer adds that lower field. An explicitly stored equal lower keeps
+its exact bits, including a negative zero. Neither this projection nor saving
+changes the source dictionary. Other unselected fields remain absent.
 
-This compatibility behavior is explicit rather than silently introducing epsilon
-or relying on a same-library incomplete-packet round trip. Existing public
-signatures, version gates, other composite codecs and geometry algorithms remain.
+On reading, missing numeric fields remain inherited rather than being copied
+into the override dictionary. Explicit flags produce the effective method using
+inherited values for any absent flag or bound. Numeric-only input produces a
+method override only when the exact native bound relationship changes the base
+presentation; this lets an unequal pair inherited from a symmetric base render
+as a deviation. An untouched presentation continues to inherit. An explicit
+symmetric method with an inactive unequal lower still projects to equal native
+allowances. Equal-value Deviation and Symmetrical are indistinguishable in native
+flags and load as Symmetrical. These documented projections do not fabricate
+geometric epsilon or alter public signatures and version gates.
+
+PR #185 merged while this feature was in final verification. Its three new
+source/test/checker files are retained unchanged, and its entire sparse-presence
+matrix remains registered. The initial feature candidate materialized complete
+numeric groups; the integration instead preserves the newly merged sparse
+contract. The feature's 576 foreign-input cases now assert exact absence as well
+as the same effective values and modes. An additional 48-case matrix verifies
+minimal symmetric projection, repeat-save field inventories and signed-zero
+preservation. The earlier candidate's passing reports are historical, not final
+qualification of this integrated source.
 
 ## Verification
 
-The focused suite has 1,084 cases: 192 all-family direct formatter/clone tests,
+The feature suite has 1,132 cases: 192 all-family direct formatter/clone tests,
 282 version/transport/placement cases, 23 scalar/alignment/rounding/culture/invalid
 cases, 576 independently authored sparse-packet cases, and 11 format/eligibility
-cases. The SurveyorUnits case asserts the existing public angular rejection; an
+cases, plus 48 sparse-symmetry integration cases. The SurveyorUnits case asserts the existing public angular rejection; an
 initial fixture incorrectly tried to assign that disallowed value, and was
 corrected without changing production admission or any baseline assertion.
 
