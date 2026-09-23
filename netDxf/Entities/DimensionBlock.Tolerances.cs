@@ -60,9 +60,11 @@ namespace netDxf.Entities
 
         private static string StackLiteral(string value)
         {
-            // A numeric value must not introduce a second stack or terminate the current one.
-            return value.Replace("\\", "\\U+005C").Replace(";", "\\U+003B").Replace("^", "\\U+005E")
-                .Replace("/", "\\U+002F").Replace("{", "\\U+007B").Replace("}", "\\U+007D");
+            // Stack rows use character escaping, not the outer MTEXT Unicode syntax.
+            // Escape backslashes first so generated escapes are not escaped again.
+            // Caret-space survives caret decoding as a literal caret before stack parsing.
+            return value.Replace("\\", "\\\\").Replace(";", "\\;").Replace("^", "\\^ ")
+                .Replace("/", "\\/").Replace("#", "\\#").Replace("{", "\\{").Replace("}", "\\}");
         }
 
         private static string ToleranceNumber(double value, DimensionType type, DimensionStyle style, bool alternate)
