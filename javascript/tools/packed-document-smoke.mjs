@@ -30,3 +30,20 @@
   if([...doc.Entities.MultiLeaders].length!==1)throw new Error('Packed MULTILEADER registration failed.');
   doc.Entities.Remove(leader);doc.Objects.EraseOwnedTree(style);if(!style.IsErased)throw new Error('Packed style release failed.');
 }
+
+// Exercise retained registration through the existing internal constructor adapters.
+// This does not claim a typed DXF parser is available in the installed package.
+{
+  const {DxfDocument,DxfVersion,Polyline3D,Polyline3DRecord,Vector3,DxfTag}=await import('@netdxf/javascript');
+  const document=new DxfDocument(DxfVersion.AutoCad2018),parent=new Polyline3D([Vector3.Zero,Vector3.UnitX,Vector3.UnitY]);
+  const make=(index,end=false)=>{
+    const record=new Polyline3DRecord(end?'SEQEND':'VERTEX',[new DxfTag(5,(0xc0+index).toString(16).toUpperCase()),new DxfTag(330,'A0')]);
+    record.SourceVersion=DxfVersion.AutoCad2018;record.IdentityIndex=0;record.OwnerIndex=1;
+    return record;
+  };
+  parent.SetStoredRecords(null,[make(0),make(1),make(2)],make(3,true));document.Entities.Add(parent);
+  const original=parent.VertexRecords.get_Item(0),end=parent.EndSequenceRecord;
+  if(document.GetObjectByHandle(original.Handle)!==original)throw new Error('Installed retained registration failed.');
+  parent.InsertVertex(1,new Vector3(5,6,7));parent.MoveVertex(0,3);parent.RemoveVertexAt(3);
+  if(!original.IsRemoved||document.GetObjectByHandle(original.Handle)!==null||parent.EndSequenceRecord!==end)throw new Error('Installed retained topology lifecycle failed.');
+}

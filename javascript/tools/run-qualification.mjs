@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['retained-polylines',['tools/retained-polyline-differential.mjs']],
   ['registered-annotations',['tools/registered-annotations-differential.mjs']],
   ['document-ownership',['tools/document-ownership-differential.mjs']],
   ['drawing-time',['tools/drawing-time-differential.mjs']],

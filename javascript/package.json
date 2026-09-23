@@ -89,7 +89,8 @@
     "test:drawing-time": "node tools/drawing-time-differential.mjs",
     "test:string-enum": "node tools/string-enum-differential.mjs",
     "test:document-ownership": "node tools/document-ownership-differential.mjs",
-    "test:registered-annotations": "node tools/registered-annotations-differential.mjs"
+    "test:registered-annotations": "node tools/registered-annotations-differential.mjs",
+    "test:retained-polylines": "node tools/retained-polyline-differential.mjs"
   },
   "repository": {
     "type": "git",

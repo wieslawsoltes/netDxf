@@ -1,3 +1,4 @@
+import { retainedPolylineCorpus } from './retained-polyline-corpus.mjs';
 import { registeredAnnotationsCorpus } from './registered-annotations-corpus.mjs';
 import { documentOwnershipCorpus } from './document-ownership-corpus.mjs';
 import { DocumentOracleSession } from './DocumentOracleSession.mjs';
@@ -224,6 +225,17 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await annotationOracle.close();}
+// Retained metadata is constructed through explicit test-only source adapters.
+// These observations do not qualify typed file loading or writing.
+const retainedOracle=new DocumentOracleSession();
+try {
+  for(const probe of retainedPolylineCorpus()) {
+    const observed=await retainedOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await retainedOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,
