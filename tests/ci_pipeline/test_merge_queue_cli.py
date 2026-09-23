@@ -45,7 +45,7 @@ class MergeQueueCliTests(unittest.TestCase):
         self.assertFalse(output.exists(), 'Rejected plan emitted workflow outputs')
 
     def test_workflow_queue_routing_and_permissions(self):
-        for name in ('ci-build.yml', 'dxf-conformance.yml', 'release.yml'):
+        for name in ('ci-build.yml',):
             with self.subTest(name=name):
                 text = (ROOT/'.github/workflows'/name).read_text()
                 section = re.search(r'^  merge_group:\n((?:    .*\n)+)', text, re.M)
@@ -53,14 +53,15 @@ class MergeQueueCliTests(unittest.TestCase):
                 self.assertEqual('    types: [checks_requested]\n    branches: [netstandard]\n', section[1])
                 self.assertIn('permissions:\n  contents: read\n', text)
                 self.assertNotIn('pull_request_target:', text)
-        self.assertNotIn('merge_group:', (ROOT/'.github/workflows/nuget-publish.yml').read_text())
+        self.assertNotIn('merge_group:', (ROOT/'.github/workflows/release.yml').read_text())
+        self.assertFalse((ROOT/'.github/workflows/nuget-publish.yml').exists())
 
     def test_release_queue_is_nonpublishing_without_cancelling_tags(self):
         text = (ROOT/'.github/workflows/release.yml').read_text()
         self.assertIn("DRY_RUN: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}", text)
         self.assertIn('EXPECTED_SHA: ${{ github.sha }}', text)
         self.assertIn("if: needs.plan.outputs.publish == 'true'", text)
-        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}", text)
+        self.assertIn('cancel-in-progress: false', text)
         self.assertIn("tags: ['v[0-9]*']", text)
 
     def test_actual_merge_queue_cli_receipt(self):

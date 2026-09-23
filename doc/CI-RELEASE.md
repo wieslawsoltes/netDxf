@@ -1,92 +1,111 @@
-# Build, test and release operations
+# Core build, test, package and release operations
 
-## Workflows
+## Exactly two workflows
 
-`ci-build.yml` builds **all five existing library targets** (netstandard2.0,
-net471, net48, net6.0, net8.0) in Debug and Release on Linux and Windows.
-Framework reference-assembly packages allow compilation on Linux; compiling a
-.NET Framework target is not the same as running it on Windows. Existing
-compiler documentation warnings are retained, not suppressed. The workflow
-then builds a NuGet package and portable-symbol package and runs a separate
-net8.0 consumer **from that local package feed**, without a project reference
-or a cached package of the same name. The consumer exercises six DXF versions
-and both transports, suppression, explicit affix clearing, code-8 alternate
-units and graph integrity. Normal CI produces `3.0.1-ci.RUN` packages only as
-workflow artifacts; it does not publish them.
+`ci-build.yml` is the only PR, merge-queue and main-branch CI entry point. It
+contains all-target compilation, the complete conformance matrix, package
+creation, isolated installed-package tests, the eight packaged-target runtime
+profiles, retained runtime evidence, and final source-bound qualification.
+It runs on PRs targeting `netstandard`, queue `checks_requested` events targeting
+that branch, and pushes to `netstandard`. It has no path filter: changes to
+consumers, tests, workflows or documentation still receive the required checks.
+Branch-push runs that duplicate a PR run are removed. Manual invocation and
+`workflow_call` are retained.
 
-The existing `dxf-conformance.yml` retains every regression, independent checker
-and audit stage and adds `workflow_call` plus source provenance. It still runs
-on the same branches and PRs. Its full-suite filter is explicitly empty. Both
-workflows support reuse by releases, have distinct concurrency groups, and do
-not cancel running tag builds. Every external action is pinned to the reviewed
-commit behind its existing major version; upgrade pins deliberately.
+`release.yml` handles version-tag pushes, manually requested rehearsals/drafts,
+and publication of already qualified NuGet assets. It calls the same CI workflow
+for a tag or manual build. It does not start another PR or queue rehearsal: the
+CI workflow already produces the complete `qualified-release` artifact.
 
-## Release validation and draft creation
+The standalone `dxf-conformance.yml` and `nuget-publish.yml` files are removed.
+Their behavior is relocated, not bypassed: the entire conformance job body is
+retained verbatim, and the NuGet steps retain tag/source/checksum verification,
+protected environment, existing opt-in and duplicate-version failure behavior.
+No production regression test or independent verifier is removed for cleanup.
+Historical workflow names can remain visible in GitHub Actions history; deleting
+a YAML file does not erase prior runs. This change does not alter repository
+rulesets: administrators requiring old workflow-prefixed check names must select
+the corresponding consolidated checks rather than disable test requirements.
 
-1. Merge the intended source and version notes into `netstandard`.
-2. Create an immutable new tag such as `v3.0.2` or `v3.1.0-rc.1` at that commit,
-   then push that tag. Do not reuse `v3.0.1` or move an existing release tag.
-3. `release.yml` validates canonical version spelling, tag identity and ancestry
-   on `netstandard`, runs all build/package jobs and the complete conformance
-   matrix on that exact source, and requires all independent verifiers.
-4. After successful qualification, it creates a **draft GitHub release** with
-   the package, symbols, source archive, build metadata, qualification report,
-   smoke log, notes and SHA-256 checksums. Review the draft before publishing.
+## Build and qualification
 
-No tag or release is created merely by merging these workflows. Creating a
-public release version is a separate maintainer action. Existing releases and
-assets are never overwritten or silently skipped. If draft creation already
-succeeded, do not rerun it as a way to publish NuGet; use the separate publication
-workflow described below. A failed upload requires inspection of the draft
-before retrying; no blanket `--clobber` or duplicate-success policy is used.
+All five existing targets (`netstandard2.0`, `net471`, `net48`, `net6.0`, `net8.0`)
+compile on Linux and Windows in Debug and Release. The complete DXF conformance
+suite executes on .NET 8 in those four configurations, including every independent
+reader and audit stage. Its filter remains explicitly empty. Framework compilation
+on Linux does not claim execution there.
 
-Pipeline-changing pull requests automatically run the complete Release flow in
-nonpublishing mode, including both reusable matrices and the final artifact gate.
-PR events cannot pass the tag-publication plan.
+Package tests restore from an isolated candidate-only feed/cache, without a
+project reference. The eight explicit packaged-target profiles check their actual
+loaded DLL against the candidate archive. Framework profiles run on the installed
+compatible Windows CLR, not separate historical CLR installations. The ordinary
+consumer also checks normal NuGet target selection.
 
-For a nonpublishing rehearsal, manually run **Release** with `dry_run=true`
-(the default). A branch run builds a CI prerelease; a tag run uses its version.
-The same qualification executes and produces `qualified-release` artifacts,
-while all write jobs are skipped. Manual `dry_run=false` requires selecting an
-existing release tag. All dynamic inputs pass through environment variables and
-strict validation, not direct interpolation into shell commands.
+The `qualify` job requires successful conformance and runtime-evidence jobs; the
+latter depends on the package and all-target build chain. It downloads the same
+reports and invokes the unchanged source/checksum/runtime validators. Neither
+failure suppression nor `always()` permits qualification after a failed gate.
+Runtime reports remain sealed in the strict 25-entry `runtime-evidence.zip`.
 
-## Optional NuGet publication
+The CI workflow is read-only and has no publication credentials. External actions
+remain commit-pinned. Only obsolete PR/queue CI runs can be cancelled by newer
+ones; tagged and manual release runs are not cancelled. The reusable workflow's
+concurrency namespace is distinct from the calling release workflow's namespace.
 
-`nuget-publish.yml` is deliberately disabled until the repository variable
-`NUGET_PUBLISH_ENABLED` equals `true`. It runs when a GitHub release is published,
-or manually when the operator selects the release tag. It refuses drafts and
-branch refs, downloads the **already qualified release assets**, verifies their
-checksums, exact source, tag/version equality, full configuration receipt, package
-identity, five-framework inventory and portable
-symbols, then pushes the package and its accompanying symbols. It does not
-rebuild different bytes in a credential-bearing job.
+## Release draft or nonpublishing rehearsal
 
-Before enabling publication, maintainers must configure the `nuget` environment
-with required reviewers and an appropriately scoped `NUGET_API_KEY` secret.
-Configure required reviewers/tag restrictions for the `release` environment as
-well. An environment name in YAML does **not** install these protections. These
-repository settings and credentials are not changed by this implementation.
-Build/test jobs use read-only permissions and no publishing secrets; only the
-GitHub draft-creation job receives contents:write. NuGet secrets exist only in
-the publication step. A partially successful package/symbol push is reported as
-failure and needs inspection; duplicate versions are not automatically accepted.
+Merge and qualify the intended source before creating a new immutable `vVERSION`
+tag, such as `v3.0.2`. Tag pushes validate version spelling, tag target and
+`netstandard` ancestry, rerun core CI on that exact source, and then create a
+**draft** GitHub release behind the `release` environment. Its assets include the
+package, portable symbols, source archive, source-bound test and runtime evidence,
+release notes and checksums. Existing assets/releases are not overwritten.
 
-## Local validation
+For a rehearsal, run **Release** with `dry_run=true` and `publish_nuget=false`
+(the defaults). A branch run uses a CI prerelease; a tag run uses the selected tag
+version. No write step runs. To create a draft manually, select an existing
+release tag and set `dry_run=false`, leaving `publish_nuget=false`.
+
+## Optional NuGet publication without rebuilding
+
+The `publish-nuget` job requires repository variable `NUGET_PUBLISH_ENABLED=true`.
+It runs on a `release: published` event or a manual Release invocation with
+`publish_nuget=true`. These publication-only events skip the planner/build/draft
+chain. They fetch already published release assets without creating new bytes.
+Draft releases and branch refs reject. Exact source, live tag, complete qualified
+receipt, retained runtime evidence, package, symbols and checksums are revalidated
+immediately before any push. A live-tag check is not an atomic remote lock.
+
+For manual validation of existing assets, select their tag, set
+`publish_nuget=true` and retain `dry_run=true`; the actual push is skipped. A
+manual push additionally requires `dry_run=false`. A published-release event is
+itself an explicit publication request, still subject to the repository opt-in
+and `nuget` environment. The default setup publishes nothing merely by merging.
+
+Maintainers configure required reviewers/tag restrictions for `release` and
+`nuget`, plus a scoped `NUGET_API_KEY` secret in `nuget`. Environment names in YAML
+do not install those protections. No credentials, repository settings or
+permissions are escalated by this cleanup. The API key is available only to the
+actual push step. A partial package/symbol push is a failure needing inspection;
+duplicate versions are never silently accepted.
+
+## Validation
 
 ```sh
 python -m unittest discover -s tests/ci_pipeline -p 'test_*.py'
 dotnet restore netDxf/netDxf.csproj
 dotnet build netDxf/netDxf.csproj -c Release --no-restore
-# Use the exact packaging/consumer commands in ci-build.yml for an offline-feed smoke test.
+dotnet run --project tests/netDxf.Conformance -c Release
+python tools/run_independent_verifiers.py artifacts/conformance
 ```
 
-Build/package results do not establish full AutoCAD parity, native application
-acceptance, native font/visual equivalence or test execution on every library
-runtime. Conformance scope remains documented in `doc/dxf-conformance`.
-The project version is not bumped automatically, and JavaScript draft work is
-not merged or published by these pipelines.
+Workflow tests verify the exact two-file inventory, verbatim moved conformance
+job, acyclic dependency graph, event routing, real publication-gate expressions,
+manual dry-run exclusion, credentials and pins. Existing release-planner CLI tests
+continue to run in real disposable Git repositories. YAML checks and local tests
+are not proof of a hosted queue/runtime/release execution. Pipeline cleanup does
+not establish native AutoCAD acceptance or full all-version parity.
 
-References: [reusable workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows),
-[workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax),
-[NuGet symbol packages](https://learn.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg).
+References: [GitHub workflow events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows),
+[reusable workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows),
+[workflow syntax and permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
