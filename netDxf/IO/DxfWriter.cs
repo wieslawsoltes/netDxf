@@ -1072,7 +1072,7 @@ namespace netDxf.IO
 
             // A zero or small lower tolerance is data, not a display-mode sentinel.
             this.chunk.Write(9, "$DIMTM");
-            this.chunk.Write(40, style.Tolerances.LowerLimit);
+            this.chunk.Write(40, DimensionToleranceValue.Lower(style.Tolerances));
 
             this.chunk.Write(9, "$DIMTMOVE");
             this.chunk.Write(70, (short) style.FitTextMove);
@@ -1213,7 +1213,7 @@ namespace netDxf.IO
             this.chunk.Write(45, style.DimRoundoff);
             this.chunk.Write(46, style.DimLineExtend);
             this.chunk.Write(47, style.Tolerances.UpperLimit);
-            this.chunk.Write(48, style.Tolerances.LowerLimit);
+            this.chunk.Write(48, DimensionToleranceValue.Lower(style.Tolerances));
             this.chunk.Write(49, style.ExtLineFixedLength);
 
             if (style.TextFillColor != null)
@@ -3340,6 +3340,25 @@ namespace netDxf.IO
 
         private IList<XDataRecord> CreateDimensionStyleOverridesXData( DimensionStyleOverrideDictionary overrides, DimensionStyle style)
         {
+            double toleranceUpper = style.Tolerances.UpperLimit;
+            double toleranceLower = style.Tolerances.LowerLimit;
+            DimensionStyleTolerancesDisplayMethod toleranceMethod = style.Tolerances.DisplayMethod;
+            bool toleranceSelected = false;
+            foreach (DimensionStyleOverride item in overrides.Values)
+            {
+                if (item.Type == DimensionStyleOverrideType.TolerancesDisplayMethod)
+                { toleranceMethod = (DimensionStyleTolerancesDisplayMethod)item.Value; toleranceSelected = true; }
+                else if (item.Type == DimensionStyleOverrideType.TolerancesUpperLimit)
+                { toleranceUpper = (double)item.Value; toleranceSelected = true; }
+                else if (item.Type == DimensionStyleOverrideType.TolerancesLowerLimit)
+                { toleranceLower = (double)item.Value; toleranceSelected = true; }
+            }
+            toleranceLower = DimensionToleranceValue.Lower(toleranceMethod, toleranceUpper, toleranceLower);
+            // Add an inherited component only if its native representation would
+            // otherwise disagree with the effective public settings. Preserve
+            // unchanged sparse groups, including the qualified deviation cases.
+            bool addToleranceLower = toleranceSelected && !overrides.ContainsType(DimensionStyleOverrideType.TolerancesLowerLimit)
+                && System.BitConverter.DoubleToInt64Bits(toleranceLower) != System.BitConverter.DoubleToInt64Bits(DimensionToleranceValue.Lower(style.Tolerances));
             bool writeDIMPOST = false;
             // DIMPOST is one combined value. Preserve the inherited component when
             // only the other component is overridden; an explicit empty string clears it.
@@ -3702,7 +3721,7 @@ namespace netDxf.IO
                         break;
                     case DimensionStyleOverrideType.TolerancesLowerLimit:
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 48));
-                        xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Real, (double) styleOverride.Value));
+                        xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Real, toleranceLower));
                         break;
                     case DimensionStyleOverrideType.TolerancesUpperLimit:
                         xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short) 47));
@@ -3860,6 +3879,11 @@ namespace netDxf.IO
                     GetSuppressZeroesValue(tolAltSuppressLinearLeadingZeros, tolAltSuppressLinearTrailingZeros, tolAltSuppressZeroFeet, tolAltSuppressZeroInches)));
             }
 
+            if (addToleranceLower)
+            {
+                xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Int16, (short)48));
+                xdataEntry.XDataRecord.Add(new XDataRecord(XDataCode.Real, toleranceLower));
+            }
             xdataEntry.XDataRecord.Add(XDataRecord.CloseControlString);
             return xdataEntry.XDataRecord;
         }

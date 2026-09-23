@@ -6270,6 +6270,12 @@ namespace netDxf.IO
             {
                 overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.Limits));
             }
+            else if (dimtol < 0 && dimlim < 0 && baseStyle.Tolerances.DisplayMethod == DimensionStyleTolerancesDisplayMethod.Symmetrical && dimtm != dimtp)
+            {
+                // Sparse foreign bounds can turn the inherited DIMTOL into a
+                // deviation. Do not fabricate either absent numeric component.
+                overrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TolerancesDisplayMethod, DimensionStyleTolerancesDisplayMethod.Deviation));
+            }
 
             return overrides;
         }
