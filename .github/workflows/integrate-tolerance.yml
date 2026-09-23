@@ -1,0 +1,48 @@
+name: Integrate retained tolerance source
+on:
+  push:
+    branches: [codex/tolerance-unit-integration-20260923]
+    paths: [.github/workflows/integrate-tolerance.yml]
+permissions:
+  contents: read
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Apply reviewed integration and remove publication files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, subprocess
+          patch = Path('tools/_integrate_tolerance.diff').read_bytes()
+          assert len(patch) == 6561
+          assert hashlib.sha256(patch).hexdigest() == 'fd99de714eb2640b21125b1422410a9b5813bbe364a1ee3eda0b522aa83d1125'
+          subprocess.run(['git','rm','.github/workflows/integrate-tolerance.yml','tools/_integrate_tolerance.diff'], check=True)
+          assert subprocess.check_output(['git','write-tree'],text=True).strip() == '44e1b61f9dbab8bb084603d9cc1154c5eed6b9d2'
+          subprocess.run(['git','apply','--index','-'], input=patch, check=True)
+          note = '''
+          ## Recovery and current-main integration
+
+          The previously unpublished six-file checkpoint is preserved exactly on branch
+          `codex/recover-tolerance-unit-semantics-20260923` (source tree
+          `41deb7afe1a389c636b2ed96dd1579ec4e82736d`). The integration is based on merged
+          PR #194 at `3216f397dc0cd780645ced41ce7754bbcefa2746`. That PR independently fixed
+          stack escaping. Its production escape helper, 107 test identities, independent
+          checker and installed-package assertions are retained, not replaced by the
+          recovered equivalent implementation. The 211 recovered semantic cases and the
+          new radian-limit package checks are added alongside them. Execution counts for
+          the integrated source are distinct from the earlier standalone checkpoint.
+          '''
+          p = Path('doc/dxf-conformance/tolerance-unit-semantics.md')
+          p.write_bytes(p.read_bytes() + note.encode())
+          subprocess.run(['git','add',str(p)],check=True)
+          assert subprocess.check_output(['git','write-tree'],text=True).strip() == '95afcb9a639312e458b57bdb14a5dbf315a6a254'
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Integrate angular tolerance units and recovered tests while preserving PR194'
+          git push origin HEAD:refs/heads/codex/tolerance-unit-integration-20260923
