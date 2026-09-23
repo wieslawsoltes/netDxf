@@ -14,13 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          fetch-depth: 2
+          fetch-depth: 3
       - name: Verify original checkpoint and replay its three commits
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '75cc346f98409a298e6559ad6854e39476e01d8f'
-          test "$(git rev-parse HEAD^:.)" = 'd14febdc7f9ce6dbbf8caf1beaa6d12ef2d914d2'
+          test "$(git rev-parse HEAD~2)" = '75cc346f98409a298e6559ad6854e39476e01d8f'
+          test "$(git rev-parse 'HEAD~2^{tree}')" = 'd14febdc7f9ce6dbbf8caf1beaa6d12ef2d914d2'
           python3 - <<'PY'
           from pathlib import Path
           import base64, hashlib, lzma, os
