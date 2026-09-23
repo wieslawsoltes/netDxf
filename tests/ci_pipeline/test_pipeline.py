@@ -60,7 +60,7 @@ class PipelineTests(unittest.TestCase):
 
     def test_publishing_and_prerelease(self):
         sha = 'a'*40
-        with patch.object(p, 'git', return_value=sha), patch.object(p.subprocess, 'run'):
+        with patch.object(p, 'git', side_effect=lambda *args: '' if args[0] == 'status' else sha), patch.object(p.subprocess, 'run'):
             result = p.release_plan('tag','v3.0.2-rc.1',sha,False)
             self.assertTrue(result['publish']); self.assertTrue(result['prerelease'])
             self.assertFalse(p.release_plan('tag','v3.0.2',sha,True)['publish'])

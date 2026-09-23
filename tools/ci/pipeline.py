@@ -38,6 +38,8 @@ def git(*args: str) -> str:
 
 
 def identity() -> dict:
+    require(not git('status', '--porcelain=v1', '--untracked-files=all'),
+            'Source checkout is dirty; commit source changes before binding artifacts to HEAD')
     return {'commit': git('rev-parse', 'HEAD'), 'tree': git('rev-parse', 'HEAD^{tree}')}
 
 
