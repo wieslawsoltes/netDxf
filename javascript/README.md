@@ -12,6 +12,43 @@ WebAssembly, a native DXF engine or a server-side conversion service.
 
 ## Current checkpoint
 
+`11351a5` adds source-bound TABLEGEOMETRY values, strict counted packets and
+ReplaceGeometry; `198d9e4` supplies exact verification and required integration.
+[Geometry contracts and source-bound results](doc/TABLE_GEOMETRY.md) describe
+immutable scalar/vector values, signed zero, snapshots, source identities,
+record limits and caller enumeration/re-entrancy. The retained-loader adapters
+are not a typed DXF reader or native TABLE layout generator.
+
+This also fixes a real registered-document removal gap: retained references to
+owner-held INSERT attributes and layout viewports now protect their owning
+entities/layouts, instead of being lost from a top-level-only reference scan.
+
+The new **270 scenarios / 3,966 operations** match in Debug and Release. Both
+unchanged C# suites pass **35,309 cases**; JavaScript passes **2,920 mirrored
+original cases** and **994 supplemental tests**. This adds 13 complete original
+constructor/value cases and 24 separate regressions. The **512-file installed
+package** and both source-regeneration checks pass.
+
+All four hosted Ubuntu/Windows Debug/Release profiles pass six lifecycle corpora
+(**1,204 scenarios / 35,383 operations**), 168 focused tests and every mirrored
+original case. The [receipt](doc/table-geometry-hosted-198d9e4.json) retains all
+24 actual differential reports plus original-suite metadata and hashes.
+
+All **44 differential stages** were executed in both configurations: **39 pass
+in Debug and 38 in Release**. Release inline Chromium executes **141,735 digest
+checks**, without new geometry mismatches or page errors, but retains **83
+previous-category failures**. Debug inline Chromium also executes every digest
+check, retaining 31 failures including 22 unavailable native observations; no new
+geometry mismatch or page error occurs. HTTP-origin navigation remains blocked.
+Both full-port gates fail; details are recorded in the contract.
+
+The ledger is **377/510 library mirrors**, **59/193 original conformance-file
+mirrors**, and **2,920/35,309 original cases**. Presence is not complete API or
+behavioral qualification. Typed DXF IO, complete TABLE/private schemas, missing
+original tests and broader platform/performance qualification remain unfinished.
+
+## Previous TABLESTYLE checkpoint (historical)
+
 `14d8727` adds stored TABLESTYLE/CELLSTYLEMAP models and qualified edits;
 `7b2249b` adds independent C# comparisons and mandatory verification. The
 [table-style contract](doc/TABLE_STYLES.md) describes source-bound headers, rows,
@@ -177,7 +214,7 @@ npm run verify:complete
 ```
 
 `test:differential` continues through independent stages after a failure and keeps
-each log. Individual `test:retained-polylines`, `test:registered-annotations`,
+each log. Individual `test:table-geometry`, `test:retained-polylines`, `test:registered-annotations`,
 `test:document-ownership`, `test:drawing-time` and `test:string-enum` commands run
 those comparisons. Generated foundations and concrete dimensions are checked using
 `verify:native` and `verify:dimension-source`. Browser checks require real
