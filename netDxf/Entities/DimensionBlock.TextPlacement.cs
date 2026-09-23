@@ -57,6 +57,9 @@ namespace netDxf.Entities
                 text.LineSpacingFactor = dim.LineSpacingFactor;
             }
 
+            ApplyDimensionTextFill(dim, entities,
+                dim.Owner?.Record.Owner?.Owner.DrawingVariables.AcadVer);
+
             // Construct before publishing an automatic reference point. A failed
             // block construction must not erase an existing manual flag/position.
             Block block = new Block(name, entities, null, false) { Flags = BlockTypeFlags.AnonymousBlock };

@@ -110,6 +110,7 @@ internal static partial class Program
         RegisterDimLfacFidelityTests();
         RegisterDStyleContainerTests();
         RegisterDimensionTextBlockTests();
+        RegisterDimensionTextFillTests();
         RegisterDimensionTextLiteralTests();
         RegisterDimensionLabelScaleTests();
         RegisterDimensionAffixFidelityTests();

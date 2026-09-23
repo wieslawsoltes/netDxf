@@ -862,7 +862,7 @@ namespace netDxf
                     this.AddDimensionStyleOverridesReferencedDxfObjects(dim, dim.StyleOverrides, assignHandle);
                     if (this.buildDimensionBlocks)
                     {
-                        Block dimBlock = DimensionBlock.BuildForOwner(dim, "DimBlock", owner);
+                        Block dimBlock = DimensionBlock.BuildForOwner(dim, "DimBlock", owner, this.DrawingVariables.AcadVer);
                         dimBlock.SetName("*D" + ++this.DimensionBlocksIndex, false);
                         dim.Block = this.blocks.Add(dimBlock);
                         this.blocks.References[dimBlock.Name].Add(dim);

@@ -1,5 +1,6 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
 using netDxf.Blocks;
+using netDxf.Header;
 
 namespace netDxf.Entities
 {
@@ -7,7 +8,7 @@ namespace netDxf.Entities
     {
         // Adoption knows the destination before public ownership is assigned.
         // Pass that context explicitly; do not mutate the entity or use ambient state.
-        internal static Block BuildForOwner(Dimension dim, string name, Block owner)
+        internal static Block BuildForOwner(Dimension dim, string name, Block owner, DxfVersion? targetVersion = null)
         {
             Block block;
             switch (dim.DimensionType)
@@ -41,6 +42,10 @@ namespace netDxf.Entities
                     break;
             }
 
+            // During block adoption the destination's registry owner may not yet
+            // be published. Use the explicit document profile, not ambient state.
+            if (block != null && targetVersion.HasValue)
+                ApplyDimensionTextFill(dim, block.Entities, targetVersion);
             return block;
         }
     }

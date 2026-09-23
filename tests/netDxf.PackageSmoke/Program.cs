@@ -156,6 +156,30 @@ foreach (bool binary in new[] { false, true })
         semanticStream.Position = 0;
         semanticDoc = DxfDocument.Load(semanticStream) ?? throw new InvalidOperationException("Semantic package reload failed");
     }
+    // Regenerate indexed dimension fills and explicit no-fill resets from the installed asset.
+    var fillDocument = new DxfDocument(version) { BuildDimensionBlocks = true };
+    var fillStyle = new DimensionStyle("PACKAGE_FILL") { TextFillColor = new AciColor(2) };
+    var fillDimension = new AlignedDimension(Vector2.Zero, new Vector2(10, 0), 3, fillStyle) { UserText = "FILL" };
+    fillDimension.StyleOverrides.Add(DimensionStyleOverrideType.TextHeight, 1.25);
+    fillDocument.Entities.Add(fillDimension);
+    bool supportsMask = version >= DxfVersion.AutoCad2007;
+    for (int pass = 0; pass < 2; pass++)
+    {
+        var label = fillDimension.Block.Entities.OfType<MText>().Single();
+        if ((label.BackgroundFill != null) != supportsMask || (supportsMask &&
+            (label.BackgroundFill.ColorIndex != 2 || label.BackgroundFill.Flags != MTextBackgroundFillFlags.UseColor)))
+            throw new InvalidOperationException("Installed dimension fill inheritance failed");
+        using var fillStream = new MemoryStream();
+        if (!fillDocument.Save(fillStream, binary)) throw new InvalidOperationException("Fill package save failed");
+        fillStream.Position = 0;
+        fillDocument = DxfDocument.Load(fillStream) ?? throw new InvalidOperationException("Fill package reload failed");
+        fillDimension = fillDocument.Entities.Dimensions.Single();
+        fillDimension.Update();
+    }
+    fillDimension.StyleOverrides.Add(DimensionStyleOverrideType.TextFillColor, null);
+    fillDimension.Update();
+    if (fillDimension.Block.Entities.OfType<MText>().Single().BackgroundFill != null || fillDimension.Style.TextFillColor.Index != 2)
+        throw new InvalidOperationException("Installed explicit fill reset changed inheritance");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
