@@ -1,3 +1,4 @@
+import { tableStyleCorpus } from './table-style-corpus.mjs';
 import { sectionManagerCorpus } from './section-manager-corpus.mjs';
 import { retainedPolylineCorpus } from './retained-polyline-corpus.mjs';
 import { registeredAnnotationsCorpus } from './registered-annotations-corpus.mjs';
@@ -247,6 +248,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await managerOracle.close();}
+// Append table-style/map observations after every preceding corpus without reordering.
+const tableOracle=new DocumentOracleSession();
+try {
+  for(const probe of tableStyleCorpus()) {
+    const observed=await tableOracle.observe(probe.request);
+    const expected=observed.ok?observed.value:{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{models:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await tableOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

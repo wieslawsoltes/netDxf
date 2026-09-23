@@ -1,3 +1,4 @@
+import { tableStyleLoad, tableStyleCall, tableStyleSnapshot } from './table-style-wire.mjs';
 import { managerCall, managerLoad, managerSnapshot } from './section-manager-wire.mjs';
 import { createRetainedParent, retainedSnapshot, retainedSet } from './retained-polyline-wire.mjs';
 // Input conversion and observation only. Production DxfDocument owns every mutation.
@@ -47,6 +48,7 @@ export function documentOwnershipCall(input){
     if(v==null||typeof v!=='object')return v;
     if('ref'in v)return ref(v.ref);if('new'in v){const Type=resolve(v.new),args=(v.args??[]).map(read);return Type.CreateOverload&&v.signature?Type.CreateOverload(v.signature.map(typeName).join(','),...args):new Type(...args);}
     if('static'in v)return resolve(v.static)[v.property];if('enum'in v)return v.value;
+    if('utf16'in v)return v.utf16.map(c=>String.fromCharCode(c)).join('');
     if('int'in v)return v.int;if('short'in v)return v.short;if('byte'in v)return v.byte;
     if('double'in v)return fromBits(v.double);if('long'in v)return BigInt(v.long);
     if('copy'in v)return Copy(read(v.copy));if('array'in v)return v.array==='Byte'?Uint8Array.from(v.values.map(read)):v.values.map(read);
@@ -59,6 +61,9 @@ export function documentOwnershipCall(input){
       const target=step.target?ref(step.target):null,args=(step.args??[]).map(read);
       if(target==null&&['get','set','item','call','append-loaded'].includes(step.method))throw new apiErrors.NullReferenceException();
       switch(step.method){
+        case 'table-load':result=tableStyleLoad(step,target,read);break;
+        case 'table-model':result=tableStyleSnapshot(target);break;
+        case 'table-call':result=tableStyleCall(step,target,read,values);break;
         case 'manager-seed-from':target.NumHandles=BigInt('0x'+read(step.handle));break;
         case 'manager-set-owner':target.Owner=read(step.owner);break;
         case 'manager-call':result=managerCall(step,target,read,values);break;
@@ -89,7 +94,7 @@ export function documentOwnershipCall(input){
         case 'same':result=args[0]===args[1];break;
         default:throw new Error('Unknown ownership operation.');
       }
-      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model'].includes(step.method))result=wire(result);
+      if(step.id)values.set(step.id,result);if(!['model','las','retained-model','manager-model','table-model'].includes(step.method))result=wire(result);
     }catch(e){error=e.name;param=e.ParamName??null;}
     return {result,error,param};
   });

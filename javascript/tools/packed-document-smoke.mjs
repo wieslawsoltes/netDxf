@@ -59,3 +59,17 @@
   manager.ReplaceSections([],true);doc.Objects.EraseSectionManager(manager);
   if(!manager.IsErased||old.Count!==2||!doc.Entities.Remove(section))throw new Error('Manager lifecycle/snapshot failure.');
 }
+
+// TABLESTYLE/CELLSTYLEMAP APIs use only the installed package, not test fixture helpers.
+{
+  const a=await import('@netdxf/javascript'),standalone=await import('@netdxf/javascript/netDxf/Objects/DxfTableStyle.js');
+  if(standalone.DxfTableStyle!==a.DxfTableStyle)throw new Error('Packed TABLESTYLE standalone identity differs.');
+  const d=new a.DxfDocument(a.DxfVersion.AutoCad2018),packet=[[100,'AcDbTableStyle'],[3,'Style'],[70,0],[71,0],[40,0],[41,0],[280,0],[281,0]];
+  for(let row=0;row<3;row++)packet.push([7,'Standard'],[140,row+1],[170,5],[62,0],[63,7],[283,1],[90,4],[91,2]);
+  const style=new a.DxfTableStyle(d,packet.map(([c,v])=>new a.DxfTag(c,v)),s=>s);d.NamedObjects.Add('TABLE_STYLE',style);style.Resolve(h=>d.GetObjectByHandle(h),s=>s);
+  const old=style.Rows;style.ReplaceStyle(null,[old.get_Item(1).WithValues(new a.DxfTableStyleRowValues(6.25,5,2,7,false))]);
+  if(style.Rows.get_Item(1).Values.TextHeight!==6.25||old.get_Item(1).Values.TextHeight!==2||d.Objects.Validate().Count!==0)throw new Error('Packed TABLESTYLE edit/snapshot failed.');
+  const tags=[[100,'AcDbCellStyleMap'],[90,1],[300,'CELLSTYLE'],[1,'TABLEFORMAT_BEGIN'],[309,'TABLEFORMAT_END'],[1,'CELLSTYLE_BEGIN'],[90,0],[91,-1],[300,'Before'],[309,'CELLSTYLE_END']].map(([c,v])=>new a.DxfTag(c,v));
+  const map=new a.DxfStoredCellStyleMap(d,tags,s=>s);d.NamedObjects.Add('CELL_MAP',map);map.Resolve(h=>d.GetObjectByHandle(h));
+  const entries=map.Entries;map.ReplaceEntryNames(['After']);if(map.Entries.get_Item(0).Name!=='After'||entries.get_Item(0).Name!=='Before'||d.Objects.Validate().Count!==0)throw new Error('Packed CELLSTYLEMAP snapshot failed.');
+}
