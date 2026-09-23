@@ -37,7 +37,7 @@ internal static partial class Program
                     SameDoubleBits(i + 1, difference[i], "Component difference");
                     SameDoubleBits(2 * (i + 1), scaled[i], "Scalar product");
                     SameDoubleBits(i + 1, divided[i], "Scalar quotient");
-                    SameDoubleBits(i + 1, a[i], "Source mutation");
+                    SameDoubleBits(i + 1, a![i], "Source mutation");
                 }
                 SameDoubleBits(2 * Enumerable.Range(1, n).Sum(i => (double)i * i), GVector.Dot(a, b), "Dot product");
                 Check(!ReferenceEquals(a, sum) && !ReferenceEquals(a, divided), "New vector results");
