@@ -257,7 +257,12 @@ namespace netDxf.Entities
         public bool Clipping
         {
             get { return this.clipping; }
-            set { this.clipping = value; }
+            set
+            {
+                bool changed = this.clipping != value;
+                this.clipping = value;
+                if (changed) this.ClearProxyGraphics();
+            }
         }
 
         /// <summary>
@@ -272,7 +277,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Accepted brightness values range from 0 to 100.");
                 }
+                bool changed = this.brightness != value;
                 this.brightness = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -288,7 +295,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Accepted contrast values range from 0 to 100.");
                 }
+                bool changed = this.contrast != value;
                 this.contrast = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -304,7 +313,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Accepted fade values range from 0 to 100.");
                 }
+                bool changed = this.fade != value;
                 this.fade = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -314,7 +325,12 @@ namespace netDxf.Entities
         public ImageDisplayFlags DisplayOptions
         {
             get { return this.displayOptions; }
-            set { this.displayOptions = value; }
+            set
+            {
+                bool changed = this.displayOptions != value;
+                this.displayOptions = value;
+                if (changed) this.ClearProxyGraphics();
+            }
         }
 
         /// <summary>
@@ -327,7 +343,13 @@ namespace netDxf.Entities
         public ClippingBoundary ClippingBoundary
         {
             get { return this.clippingBoundary; }
-            set { this.clippingBoundary = value ?? new ClippingBoundary(0, 0, this.Definition.Width, this.Definition.Height); }
+            set
+            {
+                ClippingBoundary next = value ?? new ClippingBoundary(0, 0, this.Definition.Width, this.Definition.Height);
+                bool changed = !ReferenceEquals(this.clippingBoundary, next);
+                this.clippingBoundary = next;
+                if (changed) this.ClearProxyGraphics();
+            }
         }
 
         #endregion
