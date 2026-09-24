@@ -30,6 +30,34 @@ foreach (double scale in new[] { double.Epsilon, 1.0, 1e300 })
         || Math.Abs(vector[0] - .6) > 2e-15 || Math.Abs(vector[1] - .8) > 2e-15)
         throw new InvalidOperationException("GVector robust normalization failed");
 }
+// The same bounds assertions run on each selected installed target assembly.
+var boundsInputs = new[] {
+    new netDxf.GTE.GVector(new[] { 3.0, 5.0 }),
+    new netDxf.GTE.GVector(new[] { -2.0, 7.0 }),
+    new netDxf.GTE.GVector(new[] { 9.0, -4.0 }),
+    (netDxf.GTE.GVector)null!
+};
+var boundsBefore = boundsInputs.Take(3).Select(v => (double[])v.Vector.Clone()).ToArray();
+if (!netDxf.GTE.GVector.ComputeExtremes(3, boundsInputs, out var boundsMinimum, out var boundsMaximum)
+    || !boundsMinimum.Vector.SequenceEqual(new[] { -2.0, -4.0 })
+    || !boundsMaximum.Vector.SequenceEqual(new[] { 9.0, 7.0 })
+    || ReferenceEquals(boundsMinimum, boundsMaximum)
+    || ReferenceEquals(boundsMinimum.Vector, boundsMaximum.Vector)
+    || boundsInputs.Take(3).Any(v => ReferenceEquals(v.Vector, boundsMinimum.Vector)
+        || ReferenceEquals(v.Vector, boundsMaximum.Vector)))
+    throw new InvalidOperationException("Installed GVector bounds aliasing or coordinate failure");
+boundsMinimum[0] = 12345; boundsMaximum[1] = -12345;
+if (boundsMinimum[1] != -4 || boundsMaximum[0] != 9
+    || Enumerable.Range(0, 3).Any(i => !boundsInputs[i].Vector.SequenceEqual(boundsBefore[i])))
+    throw new InvalidOperationException("Installed bounds mutation changed source or other result");
+var singleBound = new netDxf.GTE.GVector(new[] { BitConverter.Int64BitsToDouble(long.MinValue), double.Epsilon });
+if (!netDxf.GTE.GVector.ComputeExtremes(1, new[] { singleBound }, out var singleMin, out var singleMax)
+    || ReferenceEquals(singleMin, singleMax) || ReferenceEquals(singleMin, singleBound)
+    || ReferenceEquals(singleMax, singleBound)
+    || BitConverter.DoubleToInt64Bits(singleMin[0]) != long.MinValue
+    || BitConverter.DoubleToInt64Bits(singleMax[0]) != long.MinValue
+    || singleMin[1] != double.Epsilon || singleMax[1] != double.Epsilon)
+    throw new InvalidOperationException("Installed singleton bounds lost independent exact values");
 int count = 0;
 foreach (var version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007,
     DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })

@@ -498,8 +498,10 @@ namespace netDxf.GTE
                 }
 
                 int size  = v[0].Size;
-                vmin = v[0];
-                vmax = vmin;
+                // C++ vector assignments copy values. C# reference assignments here
+                // would alias both extrema and overwrite the first input vector.
+                vmin = new GVector(v[0].vector);
+                vmax = new GVector(v[0].vector);
                 for (int j = 1; j < numVectors; ++j)
                 {
                     GVector  vec = v[j];
