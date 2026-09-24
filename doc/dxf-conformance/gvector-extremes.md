@@ -37,6 +37,13 @@ and rejects changed coordinates, state/identity flags, counts, input records,
 missing/extra/duplicate observations and duplicate JSON properties. It validates
 real exported operation results, not expected outputs substituted for execution.
 
+The shared installed-package consumer also checks the golden box, ignored null
+tail, independent buffers, output mutation and exact singleton signed-zero and
+subnormal values. These assertions execute before the existing twelve DXF
+round-trip scenarios in the ordinary package consumer and each of the eight
+exact-asset/runtime profiles. They do not increase the round-trip scenario count
+or imply that the full conformance suite runs on every target framework.
+
 Local execution is unavailable in the authoring continuation. Hosted core build,
 complete conformance, independent checks and package qualification are required
 before merge. Executed counts and source identity are recorded on the PR; this
