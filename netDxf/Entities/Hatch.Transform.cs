@@ -5,6 +5,16 @@ namespace netDxf.Entities
 {
     public partial class Hatch
     {
+        /// <summary>Transforms hatch geometry with a finite affine matrix.</summary>
+        /// <param name="transformation">Affine transformation, using column vectors.</param>
+        /// <remarks>Projective matrices reject before geometry, associations or proxy
+        /// graphics change. Valid matrices reuse the existing virtual affine path.</remarks>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            PlanarEntityTransform.CheckAffine(transformation);
+            base.TransformBy(transformation);
+        }
+
         /// <summary>Transforms stored boundary geometry and the hatch plane.</summary>
         /// <param name="transformation">Linear transformation, using column vectors.</param>
         /// <param name="translation">Translation in world coordinates.</param>
@@ -106,6 +116,9 @@ namespace netDxf.Entities
             // Everything above is temporary. Unlink only after validation succeeds.
             if (this.associative) this.UnLinkBoundary();
             if (identity) return;
+            // Same-plane translations/scales need not change Normal. Clear the
+            // old drawing cache before any prepared geometry is published.
+            this.ClearProxyGraphics();
             if (transformedPattern != null) this.pattern = transformedPattern;
             else { this.Pattern.Scale = scale; this.Pattern.Angle = angle; }
             this.Elevation = position.Z; this.Normal = normal;

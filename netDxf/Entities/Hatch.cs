@@ -201,7 +201,12 @@ namespace netDxf.Entities
             get { return this.pattern; }
             set
             {
-                this.pattern = value ?? throw new ArgumentNullException(nameof(value));
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (!ReferenceEquals(this.pattern, value))
+                {
+                    this.pattern = value;
+                    this.ClearProxyGraphics();
+                }
             }
         }
 
@@ -230,7 +235,7 @@ namespace netDxf.Entities
         public double Elevation
         {
             get { return this.elevation; }
-            set { this.elevation = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.elevation, value); }
         }
 
         #endregion
@@ -539,6 +544,9 @@ namespace netDxf.Entities
 
         private void BoundaryPaths_AddItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
+            // The collection has already changed. Invalidate before observers can
+            // see the committed topology, even if a subsequent callback throws.
+            this.ClearProxyGraphics();
             e.Item.ContainingHatch = this;
             if (this.associative)
             {
@@ -562,6 +570,7 @@ namespace netDxf.Entities
 
         private void BoundaryPaths_RemoveItem(ObservableCollection<HatchBoundaryPath> sender, ObservableCollectionEventArgs<HatchBoundaryPath> e)
         {
+            this.ClearProxyGraphics();
             if (!this.boundaryPaths.Contains(e.Item)) e.Item.ContainingHatch = null;
             if (this.associative)
             {

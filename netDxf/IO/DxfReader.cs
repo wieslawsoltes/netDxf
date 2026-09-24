@@ -10912,6 +10912,10 @@ namespace netDxf.IO
             foreach (KeyValuePair<Hatch, List<HatchBoundaryPath>> pair in this.hatchToPaths)
             {
                 Hatch hatch = pair.Key;
+                // These paths are the geometry read with this cache, not user edits.
+                // Keep the already validated private payload while hydration invokes
+                // the same topology/association handlers used by public mutations.
+                byte[] originalProxy = hatch.CommonData.ProxyGraphics;
                 foreach (HatchBoundaryPath path in pair.Value)
                 {
                     List<string> entities = this.hatchContours[path];
@@ -10926,6 +10930,7 @@ namespace netDxf.IO
                     }
                     hatch.BoundaryPaths.Add(path);
                 }
+                hatch.CommonData.ProxyGraphics = originalProxy;
             }
 
             // post process group entities
