@@ -106,7 +106,10 @@
     "test:transport-sections": "node tools/transport-sections-differential.mjs",
     "test:entity-body-io": "node tools/entity-body-io-differential.mjs",
     "test:primitive-io": "node tools/primitive-io-differential.mjs",
-    "test:primitive-browser": "node tools/primitive-browser-corpus.mjs && python tools/primitive-browser-check.py"
+    "test:primitive-browser": "node tools/primitive-browser-corpus.mjs && python tools/primitive-browser-check.py",
+    "test:database-payload": "node tools/database-payload-differential.mjs",
+    "test:source-metadata": "node tools/source-metadata-differential.mjs",
+    "test:database-browser": "node tools/database-browser-corpus.mjs && python tools/database-browser-check.py"
   },
   "repository": {
     "type": "git",

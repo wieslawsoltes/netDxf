@@ -39,6 +39,8 @@ internal static partial class Program
         if(input.TryGetProperty("op",out var gteOp)&&gteOp.GetString()=="gte")return GteRequest(input);
         if(input.TryGetProperty("op",out var sectionsOp)&&sectionsOp.GetString()=="transport-sections")return TransportSectionsRequest(input);
         if(input.TryGetProperty("op",out var bodyOp)&&bodyOp.GetString()=="entity-body-io")return EntityBodyIORequest(input);
+        if(input.TryGetProperty("op",out var databasePayloadOp)&&databasePayloadOp.GetString()=="database-payload-io")return DatabasePayloadRequest(input);
+        if(input.TryGetProperty("op",out var metadataOp)&&metadataOp.GetString()=="source-metadata-io")return SourceMetadataRequest(input);
         var results=new List<object>();
         foreach(var step in input.GetProperty("steps").EnumerateArray()) {
             try { results.Add(new {ok=true,value=Step(step)}); }

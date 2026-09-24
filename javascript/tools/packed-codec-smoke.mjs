@@ -65,3 +65,20 @@
   const output=[];WriteHelix({Write:(c,v)=>output.push([c,v])},18,helix);
   if(!output.some(([c,v])=>c===100&&v==='AcDbHelix'))throw new Error('HELIX body missing.');
 }
+
+// Database-body parsing and physical-source identity use installed modules only.
+{
+  const a=await import('@netdxf/javascript');
+  const io=await import('@netdxf/javascript/runtime/DatabasePayloadIO.js');
+  const standalone=await import('@netdxf/javascript/netDxf/IO/DxfReader.Containers.js');
+  if(standalone.ReadContainerPayload!==a.DxfTransport.ReadContainerPayload)throw new Error('Installed database adapter identity differs.');
+  const d=new a.DxfDocument(18),line=new a.Line();d.Entities.Add(line);
+  const ctx=new io.DatabaseIOContext(d),id=new io.SourceRecordIdentity();id.Handle=BigInt('0x'+line.Handle);id.IdentitySeen=true;
+  ctx.sourceObjectIdentities.add(id.Handle);ctx.RecordSourceObject(line,id);
+  const record=new io.DatabaseRecord(),tags=[[100,'AcDbIdBuffer'],[330,line.Handle],[330,'0'],[330,line.Handle]].map(([c,v])=>new a.DxfTag(c,v));
+  io.ReadContainerPayload(ctx,record,'IDBUFFER',tags,0);io.ResolveContainerReferences(ctx,record);
+  if(record.Object.References.Count!==3||record.Object.References.get_Item(1)!==null)throw new Error('Installed IDBUFFER references differ.');
+  const output=[];io.WriteContainerPayload({Write:(c,v)=>output.push([c,v])},record.Object);
+  if(output.length!==4||output[2][1]!=='0')throw new Error('Installed IDBUFFER output differs.');
+  id.Ambiguous=true;if(ctx.GetObjectBySourceHandle(line.Handle)!==null)throw new Error('Installed ambiguous source identity accepted.');
+}

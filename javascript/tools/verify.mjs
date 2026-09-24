@@ -42,6 +42,9 @@ const coverage=expected&&actual?guard('case-identities',()=>{
   const value=compareCaseCoverage(expected,actual);assert(value.unexpected.length===0,'Unexpected original test identities: '+value.unexpected.join(', '));return value;
 }):null;
 const specs={
+  databasePayload:[`database-payload/${configuration}`,{equal:{'stats.scenarios':1070,'stats.observedScenarios':1070,'stats.requestedOperations':4701,'stats.operations':4701,'stats.oracleFailures':0}}],
+  sourceMetadata:[`source-metadata/${configuration}`,{equal:{'stats.scenarios':420,'stats.observedScenarios':420,'stats.requestedOperations':12322,'stats.operations':12322,'stats.oracleFailures':0}}],
+  databaseBrowser:[`database-browser/${configuration}`,{equal:{comparisons:1490,scope:'database-io-only',fullSuite:false}}],
   primitiveBrowser:[`primitive-browser/${configuration}`,{equal:{comparisons:6416,scope:'primitive-io-only',fullSuite:false}}],
   primitiveIO:[`primitive-io/${configuration}`,{equal:{'stats.scenarios':6416,'stats.observedScenarios':6416,'stats.requestedOperations':25569,'stats.operations':25569,'stats.oracleFailures':0}}],
   entityBodyIO:[`entity-body-io/${configuration}`,{equal:{'stats.scenarios':1107,'stats.observedScenarios':1107,'stats.requestedOperations':3714,'stats.operations':3714,'stats.oracleFailures':0}}],
@@ -84,7 +87,7 @@ const specs={
   mathIndependent:[`math-independent/${configuration}`,{equal:{'stats.comparisons':30904,subject:'HighPrecisionMath development reference'}}],
   referenceMath:[`reference-math/${configuration}`,{equal:{'stats.comparisons':61876}}],
   entities:[`entity-differential/${configuration}`,{equal:{'stats.scenarios':8498,'stats.operations':69997}}],
-  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:153407}}],
+  browserInline:[`browser-inline/${configuration}`,{equal:{fixtures:399},minimum:{comparisons:154897}}],
   styles:[`style-differential/${configuration}`,{equal:{'stats.scenarios':541,'stats.operations':3585,'stats.textComparisons':112}}],
   hatch:[`hatch-differential/${configuration}`,{equal:{'stats.scenarios':376,'stats.operations':2559},minimum:{'stats.textComparisons':174}}],
   lifecycle:[`lifecycle-differential/${configuration}`,{equal:{'stats.comparisons':523,'stats.operations':15563,'stats.byteComparisons':256}}],
@@ -98,7 +101,7 @@ const specs={
   filesystem:[`filesystem-differential/${configuration}`,{minimum:{'stats.comparisons':1782},equal:{'stats.sourceFixtures':399}}],
   casing:[`casing-differential/${configuration}`,{minimum:{'stats.comparisons':3045}}],
   unit:['unit',{minimum:{tests:1}}],package:['package',{minimum:{files:1}}],
-  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:153407}}],
+  browser:['browser',{equal:{fixtures:399},minimum:{comparisons:154897}}],
 };
 for(const [name,[location,requirements]] of Object.entries(specs)){
   const report=guard(name,()=>read(`artifacts/${location}/results.json`));
