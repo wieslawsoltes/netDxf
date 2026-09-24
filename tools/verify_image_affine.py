@@ -5,7 +5,8 @@ import math
 from pathlib import Path
 import sys
 import ezdxf
-from verify_raw_line_geometry import load_tags, require, reject
+from verify_raw_line_geometry import require, reject
+from verify_ellipse_axis_proxies import load_visibility_tags
 from verify_dimlfac_fidelity import PROFILES, records
 
 PROXY = bytes((i * 17) & 255 for i in range(300))
@@ -59,7 +60,7 @@ def common(record):
     end = next((i for i in range(start,len(record)) if record[i][0] == 100),len(record))
     return record[start:end]
 
-def check_record(record):
+def check_record(record, year):
     require(record[0] == (0,'IMAGE'), 'Wrong entity')
     plane,skew,kind = row_spec(one(record,8))
     for codes,wanted in zip(((10,20,30),(11,21,31),(12,22,32)),expected(plane,skew,kind)):
@@ -67,14 +68,13 @@ def check_record(record):
     for code,value in ((13,8.),(23,6.),(280,1),(281,61),(282,37),(283,9),(71,2)):
         require(one(record,code) == value, 'Image pixel dimensions or display metadata')
     data = common(record)
-    counts = [v for c,v in data if c == 92]
-    chunks = [v for c,v in data if c == 310]
-    if kind == '0':
-        require(counts == [len(PROXY)] and b''.join(chunks) == PROXY, 'Retained common proxy bytes')
-    else:
-        require(not counts and not chunks, 'Stale image graphics')
+    length_code = 160 if year in (2013, 2018) else 92
+    proxies = [t for t in data if t[0] in (92,160,310)]
+    wanted = [] if kind != '0' else [(length_code,len(PROXY))] + [
+        (310,PROXY[i:i+127]) for i in range(0,len(PROXY),127)]
+    require(proxies == wanted, 'Common proxy presence, length, framing or bytes')
 
-def corrupt(record):
+def corrupt(record, year):
     controls = 0
     codes = (10,20,30,11,21,31,12,22,32,13,23,280,281,282,283,71)
     for code in codes:
@@ -84,20 +84,28 @@ def corrupt(record):
             if operation == 'change': bad[index] = (code,bad[index][1]+17)
             elif operation == 'remove': del bad[index]
             else: bad.insert(index,bad[index])
-            controls += reject(lambda: check_record(bad))
+            controls += reject(lambda: check_record(bad,year))
     if one(record,8).endswith('_0'):
-        at = next(i for i,t in enumerate(record) if t[0] == 310)
-        bad = list(record); bad[at] = (310,b'BROKEN')
-        controls += reject(lambda: check_record(bad))
+        for at,(code,value) in enumerate(record):
+            if code not in (92,160,310): continue
+            for operation in ('change','remove','duplicate','wrong-code'):
+                bad = list(record)
+                if operation == 'change': bad[at] = (code,value+b'!' if isinstance(value,bytes) else value+1)
+                elif operation == 'remove': del bad[at]
+                elif operation == 'duplicate': bad.insert(at,bad[at])
+                else: bad[at] = (160 if code == 92 else 92 if code == 160 else 999,value)
+                controls += reject(lambda: check_record(bad,year))
     else:
         at = next(i for i,t in enumerate(record) if t == (100,'AcDbEntity'))+1
-        bad = list(record); bad[at:at] = [(92,1),(310,b'X')]
-        controls += reject(lambda: check_record(bad))
+        # Both legacy and modern length codes must be detected as stale.
+        for length_code in (92,160):
+            bad = list(record); bad[at:at] = [(length_code,1),(310,b'X')]
+            controls += reject(lambda: check_record(bad,year))
     return controls
 
 def inspect(path, year, binary, placement):
     require(path.read_bytes().startswith(b'AutoCAD Binary DXF') == binary,'Wrong transport')
-    tags = load_tags(path); at = tags.index((9,'$ACADVER'))
+    tags = load_visibility_tags(path); at = tags.index((9,'$ACADVER'))
     require(tags[at+1] == (1,PROFILES[year]),'Wrong profile')
     entries = [tags[a:b] for a,b in records(tags)]
     images = [r for r in entries if r[0] == (0,'IMAGE')]
@@ -105,7 +113,7 @@ def inspect(path, year, binary, placement):
     require(len(images) == 48 and {one(r,8) for r in images} == wanted_layers,'Physical image inventory')
     controls = 0
     for record in images:
-        check_record(record); controls += corrupt(record)
+        check_record(record,year); controls += corrupt(record,year)
     doc = ezdxf.readfile(path)
     require(doc.dxfversion == PROFILES[year],'Independent version')
     space = doc.modelspace() if placement == 0 else doc.layouts.get('IA_PAPER') if placement == 1 else doc.blocks['IA_HOLDER']
@@ -116,9 +124,9 @@ def inspect(path, year, binary, placement):
         for actual,wanted in zip((item.dxf.insert,item.dxf.u_pixel,item.dxf.v_pixel),expected(plane,skew,kind)):
             near_vector(actual,wanted)
         require(item.dxf.owner == space.block_record_handle,'Independent owner')
-        require(tuple(item.dxf.image_size) == (8.,6.),'Independent pixel count')
+        require(tuple(item.dxf.image_size) == (8.,6.,0.),'Independent pixel count')
         definition = doc.entitydb[item.dxf.image_def_handle]
-        require(definition.dxftype() == 'IMAGEDEF' and tuple(definition.dxf.image_size) == (8.,6.),'Image definition reference')
+        require(definition.dxftype() == 'IMAGEDEF' and tuple(definition.dxf.image_size) == (8.,6.,0.),'Image definition reference')
         require(item.dxf.clipping == 1 and item.dxf.brightness == 61 and item.dxf.contrast == 37 and item.dxf.fade == 9,'Independent metadata')
         require(item.proxy_graphic == (PROXY if kind == '0' else None),'Independent graphics')
         require([(t.code,t.value) for t in item.get_xdata('IMAGE_AFFINE_KEEP')] == [(1000,'unchanged')],'Independent XData')

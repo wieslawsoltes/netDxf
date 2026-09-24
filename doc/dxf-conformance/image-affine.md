@@ -68,10 +68,25 @@ checks instead scale their bounds to each expected vector. Pixel clipping
 coordinates are checked in the typed round trips; this is not a new independent
 qualification of every clipping-coordinate dialect.
 
+The checker uses the existing byte-preserving tag loader, before generic scalar
+casting can stringify binary chunks. It checks the exact ordered proxy packet,
+including chunk boundaries and the expected 92/160 length code for each profile.
+Changed, removed, duplicated and wrong-code packet fields must reject; both
+legacy and modern stale-proxy insertions must reject. The independent image-size
+assertion includes ezdxf's zero Z component for this declared two-dimensional value.
+
+The shared installed-package consumer also exercises absolute/repeated rotation,
+projective refusal, out-of-plane shear, cache retention through save/load, and
+cache invalidation on a subsequent size edit. These assertions run with the
+existing package consumer and the eight exact-asset runtime profiles.
+
 The verifier is discovered by the existing core workflow. Exactly ci-build.yml
 and release.yml remain; no additional workflow or publication permission is added.
-Executed results belong in the PR, not inferred from this test design. This work
-was authored through repository tools; local execution was unavailable.
+Executed results belong in the PR, not inferred from this test design. Initial
+authoring used repository tools while local execution was unavailable. A later
+local environment recovered the exact source tree from the CI package archive
+and ran the focused conformance suite and independent checker. Hosted validation
+of the final source remains required before merge.
 
 ## Primary references and remaining boundaries
 
