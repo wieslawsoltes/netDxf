@@ -462,6 +462,35 @@ foreach (bool binary in new[] { false, true })
         throw new InvalidOperationException("Installed IMAGE round trip lost metadata or graphics");
     storedImage.Width *= 2;
     if (storedImage.ProxyGraphics != null) throw new InvalidOperationException("Installed IMAGE size edit retained stale graphics");
+    storedImage.ProxyGraphics = imageProxy;
+    storedImage.Brightness = storedImage.Brightness;
+    storedImage.Contrast = storedImage.Contrast;
+    storedImage.Fade = storedImage.Fade;
+    storedImage.DisplayOptions = storedImage.DisplayOptions;
+    storedImage.Clipping = storedImage.Clipping;
+    storedImage.ClippingBoundary = storedImage.ClippingBoundary;
+    if (!(storedImage.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(imageProxy))
+        throw new InvalidOperationException("Installed IMAGE appearance no-op lost graphics");
+    Action[] imageAppearanceEdits = {
+        () => storedImage.Brightness = storedImage.Brightness == 0 ? (short)100 : (short)0,
+        () => storedImage.Contrast = storedImage.Contrast == 0 ? (short)100 : (short)0,
+        () => storedImage.Fade = storedImage.Fade == 0 ? (short)100 : (short)0,
+        () => storedImage.DisplayOptions = (ImageDisplayFlags)((int)storedImage.DisplayOptions ^ 1),
+        () => storedImage.Clipping = !storedImage.Clipping,
+        () => storedImage.ClippingBoundary = null
+    };
+    foreach (var appearanceEdit in imageAppearanceEdits)
+    {
+        storedImage.ProxyGraphics = imageProxy;
+        appearanceEdit();
+        if (storedImage.ProxyGraphics != null)
+            throw new InvalidOperationException("Installed IMAGE appearance edit retained stale graphics");
+    }
+    storedImage.ProxyGraphics = Array.Empty<byte>();
+    bool brightnessRejected = false;
+    try { storedImage.Brightness = 101; } catch (ArgumentOutOfRangeException) { brightnessRejected = true; }
+    if (!brightnessRejected || storedImage.ProxyGraphics == null || storedImage.ProxyGraphics.Length != 0)
+        throw new InvalidOperationException("Installed IMAGE refusal lost explicit empty graphics");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
