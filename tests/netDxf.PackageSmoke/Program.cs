@@ -293,11 +293,19 @@ foreach (bool binary in new[] { false, true })
         throw new InvalidOperationException("Installed normal/proxy round trip changed state");
     // Run value-key operations against the actual installed target assembly.
     var equalityVector = new netDxf.GTE.GVector(new[] { 0.0, double.NaN, 2.0 });
-    var equalVector = new netDxf.GTE.GVector(new[] { -0.0, double.NaN, 2.0 });
+    var alternateNaN = BitConverter.Int64BitsToDouble(0x7ff8000000001234L);
+    var equalVector = new netDxf.GTE.GVector(new[] { -0.0, alternateNaN, 2.0 });
     var differentVector = new netDxf.GTE.GVector(new[] { double.Epsilon, double.NaN, 2.0 });
     if (equalityVector != equalVector || equalityVector == differentVector
         || !new HashSet<netDxf.GTE.GVector> { equalityVector }.Contains(equalVector))
         throw new InvalidOperationException("Installed vector equality/hash contract failed");
+    foreach (long payload in new[] { 0x7ff8000000000001L, 0x7ff0000000000001L, unchecked((long)0xfff8000000001234UL) })
+    {
+        var payloadKey = new netDxf.GTE.GVector(new[] { -0.0, BitConverter.Int64BitsToDouble(payload), 2.0 });
+        if (equalityVector != payloadKey || equalityVector.GetHashCode() != payloadKey.GetHashCode()
+            || !new HashSet<netDxf.GTE.GVector> { equalityVector }.Contains(payloadKey))
+            throw new InvalidOperationException("Installed target distinguished equal NaN payload hashes");
+    }
     var equalityMatrix = new netDxf.GTE.GMatrix(1, 3, equalityVector.Vector);
     var equalMatrix = new netDxf.GTE.GMatrix(1, 3, equalVector.Vector);
     if (equalityMatrix != equalMatrix || equalityMatrix == (netDxf.GTE.GMatrix)null!

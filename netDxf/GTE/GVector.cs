@@ -663,7 +663,11 @@ namespace netDxf.GTE
                 hash = hash * 31 + this.Size;
                 foreach (double value in this.vector)
                 {
-                    hash = hash * 31 + value.GetHashCode();
+                    // Framework's Double hash can distinguish NaN payloads even
+                    // though Double.Equals considers them equal. Hash a canonical
+                    // representative without changing the stored component bits.
+                    double canonical = double.IsNaN(value) ? double.NaN : value == 0.0 ? 0.0 : value;
+                    hash = hash * 31 + canonical.GetHashCode();
                 }
                 return hash;
             }

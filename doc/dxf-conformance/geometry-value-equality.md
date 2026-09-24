@@ -21,7 +21,10 @@ unchanged. Subclasses that define their own equality remain responsible for
 maintaining their own equality contract.
 
 Hashes now use the compared values (and matrix dimensions) rather than backing
-array identity. Independently constructed equal values can be found or removed
+array identity. Signed zero and NaN representatives are canonicalized for hashing
+without changing the stored bits, including on .NET Framework runtimes whose
+Double hash can distinguish NaN payloads. Independently constructed equal values
+can be found or removed
 using Dictionary and HashSet. Hashes are computed on demand; the classes and
 their exposed component buffers are still mutable. **Never mutate a key while
 it is indexed in a hash collection.** Hash values are runtime/process data,
