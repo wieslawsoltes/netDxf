@@ -1,3 +1,4 @@
+import { retainedRecordIOCorpus } from './retained-record-io-corpus.mjs';
 import { environmentIOCorpus } from './environment-io-corpus.mjs';
 import { ValidateEnvironmentObservation } from './environment-io-observation.mjs';
 import { databasePayloadCorpus } from './database-payload-corpus.mjs';
@@ -379,6 +380,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await environmentOracle.close();}
+// Append retained-record and SECTION IO inputs without replacing earlier cases.
+const retainedRecordOracle=new ModelOracleSession();
+try {
+  for(const probe of retainedRecordIOCorpus()) {
+    const observed=await retainedRecordOracle.observe(probe.request);
+    const expected=observed.ok?ValidateDatabaseObservation(observed.value,probe.request.steps.length,'payload'):{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{retainedRecordIO:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await retainedRecordOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

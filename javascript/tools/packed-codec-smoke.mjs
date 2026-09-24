@@ -102,3 +102,19 @@
   const slot=[];io.WriteSunReference({Write:(c,v)=>slot.push([c,v])},18,document.Viewport);
   if(slot.length!==1||slot[0][0]!==361||slot[0][1]!==sun.Handle)throw new Error('Installed SUN owner slot differs.');
 }
+
+// Section record admission and retained FIELD headers use only installed modules.
+{
+  const api=await import('@netdxf/javascript');
+  const io=await import('@netdxf/javascript/runtime/DatabasePayloadIO.js');
+  const standalone=await import('@netdxf/javascript/netDxf/IO/DxfReader.SectionSettings.js');
+  if(io.ReadSectionSettingsRecord!==standalone.ReadSectionSettingsRecord)throw new Error('Section reader export mismatch.');
+  const document=new api.DxfDocument(18),context=new io.DatabaseIOContext(document),tag=(c,v)=>new api.DxfTag(c,v);
+  const record=io.ReadSectionSettingsRecord(context,'SECTIONSETTINGS',[tag(5,'C00'),tag(100,'AcDbSectionSettings'),tag(90,1),tag(91,0)]);
+  document.NamedObjects.Add('Settings',record.Object);io.ResolveSectionSettingsReferences(context);
+  const emitted=[];if(!io.WriteSectionSettingsPayload({Write:(c,v)=>emitted.push([c,v])},18,record.Object)||emitted.length!==3)throw new Error('Section settings payload mismatch.');
+  const manager=io.ReadSectionManagerRecord(context,'SECTION_MANAGER',[tag(5,'C01'),tag(100,'AcDbSectionManager'),tag(70,0),tag(90,0)]);
+  document.NamedObjects.Add('ACAD_SECTION_MANAGER',manager.Object);io.ResolveSectionManagerReferences(context);io.PrepareSectionManagerClasses(document,document.Classes);
+  if(document.Classes.get_Item('SECTION_MANAGER').InstanceCount!==1)throw new Error('Section manager class missing.');
+  const header={};if(!io.TryReadStoredFieldHeader([tag(1,'Evaluator'),tag(2,'Text'),tag(90,0),tag(97,0)],0,4,header)||header.code!=='Text'||header.children.length!==0)throw new Error('Stored FIELD header parse mismatch.');
+}
