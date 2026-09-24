@@ -19,3 +19,22 @@ export { ReadGeoDataPayload,ReadGeoTag,ResolveGeoDataHosts } from '../netDxf/IO/
 export { PrepareGeoDataClass,WriteGeoDataPayload,WriteGeoVector,SplitGeoDefinition } from '../netDxf/IO/DxfWriter.GeoData.js';
 export { SunOwnerContext,AddSunReference,ReadSunRecord,ReadSunPayload,ResolveSunReferences,IsNullSourceHandle } from '../netDxf/IO/DxfReader.Sun.js';
 export { PrepareSunClass,WriteSunPayload,WriteSunReference } from '../netDxf/IO/DxfWriter.Sun.js';
+
+export * from '../netDxf/IO/DxfReader.StoredField.js';
+export * from '../netDxf/IO/DxfWriter.StoredField.js';
+export * from '../netDxf/IO/DxfReader.StoredDimAssoc.js';
+export * from '../netDxf/IO/DxfWriter.StoredDimAssoc.js';
+export * from '../netDxf/IO/DxfReader.StoredSunStudy.js';
+export * from '../netDxf/IO/DxfWriter.StoredSunStudy.js';
+export * from '../netDxf/IO/DxfReader.StoredTableContent.js';
+export * from '../netDxf/IO/DxfWriter.StoredTableContent.js';
+export * from '../netDxf/IO/DxfReader.StoredTableGeometry.js';
+export * from '../netDxf/IO/DxfWriter.StoredTableGeometry.js';
+export * from '../netDxf/IO/DxfReader.StoredCellStyleMap.js';
+export * from '../netDxf/IO/DxfWriter.StoredCellStyleMap.js';
+export * from '../netDxf/IO/DxfReader.TableStyle.js';
+export * from '../netDxf/IO/DxfWriter.TableStyle.js';
+export * from '../netDxf/IO/DxfReader.StoredEnvelopes.js';
+export * from '../netDxf/IO/DxfWriter.StoredEnvelopes.js';
+export { TryReadPrivateXRecord } from '../netDxf/IO/DxfReader.PrivateXRecord.js';
+export { ResolveDeclaredOwnership } from '../netDxf/IO/DxfReader.DeclaredOwnership.js';
