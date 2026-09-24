@@ -405,6 +405,63 @@ foreach (bool binary in new[] { false, true })
         || equalityMatrix == new netDxf.GTE.GMatrix(3, 1, equalVector.Vector)
         || !new Dictionary<netDxf.GTE.GMatrix, int> { [equalityMatrix] = 1 }.ContainsKey(equalMatrix))
         throw new InvalidOperationException("Installed matrix equality/hash contract failed");
+    // IMAGE geometry assertions are shared by normal NuGet selection and all
+    // eight exact-asset profiles, without increasing the DXF scenario count.
+    var imageDefinition = new netDxf.Objects.ImageDefinition("PACKAGE_IMAGE", "package-image.png", 8, 96, 6, 96, ImageResolutionUnits.Inches);
+    var packageImage = new Image(imageDefinition, new Vector3(1,2,3), 4, 3);
+    packageImage.Rotation = 30; packageImage.Rotation = 90;
+    if (Math.Abs(packageImage.Rotation - 90) > 1e-10)
+        throw new InvalidOperationException("Installed IMAGE rotation is not absolute");
+    byte[] imageProxy = { 5,17,255 };
+    packageImage.ProxyGraphics = imageProxy;
+    var imageU = packageImage.Uvector; var imageV = packageImage.Vvector;
+    packageImage.Rotation = 90; packageImage.Rotation = packageImage.Rotation;
+    if (packageImage.Uvector != imageU || packageImage.Vvector != imageV
+        || !(packageImage.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(imageProxy))
+        throw new InvalidOperationException("Installed repeated IMAGE rotation changed geometry/cache");
+    var imageClip = packageImage.ClippingBoundary;
+    var imageProjective = Matrix4.Identity; imageProjective.M44 = 2;
+    bool imageRefused = false;
+    try { packageImage.TransformBy(imageProjective); } catch (NotSupportedException) { imageRefused = true; }
+    if (!imageRefused || packageImage.Position != new Vector3(1,2,3)
+        || !ReferenceEquals(imageClip,packageImage.ClippingBoundary)
+        || !(packageImage.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(imageProxy))
+        throw new InvalidOperationException("Installed IMAGE refusal changed state");
+    packageImage.TransformBy(new Matrix3(1,0,0, 0,1,0, .5,0,1),new Vector3(2,3,4));
+    void CheckImagePlane(Image actualImage)
+    {
+        var axes = MathHelper.ArbitraryAxis(actualImage.Normal);
+        var actual = new[] { actualImage.Position,
+            axes * new Vector3(actualImage.Uvector.X * actualImage.Width,actualImage.Uvector.Y * actualImage.Width,0),
+            axes * new Vector3(actualImage.Vvector.X * actualImage.Height,actualImage.Vvector.Y * actualImage.Height,0) };
+        var expected = new[] { new Vector3(3,5,7.5),new Vector3(0,4,0),new Vector3(-3,0,-1.5) };
+        for (int i=0;i<actual.Length;i++)
+        {
+            var coordinates = new[] { actual[i].X,actual[i].Y,actual[i].Z };
+            var wanted = new[] { expected[i].X,expected[i].Y,expected[i].Z };
+            for (int j=0;j<3;j++) if (double.IsNaN(coordinates[j]) || double.IsInfinity(coordinates[j])
+                || Math.Abs(coordinates[j]-wanted[j]) > 1e-10)
+                throw new InvalidOperationException("Installed IMAGE WCS pixel plane changed");
+        }
+    }
+    CheckImagePlane(packageImage);
+    if (packageImage.ProxyGraphics != null || !ReferenceEquals(imageClip,packageImage.ClippingBoundary)
+        || !ReferenceEquals(imageDefinition,packageImage.Definition))
+        throw new InvalidOperationException("Installed IMAGE affine edit changed dependencies or retained stale graphics");
+    packageImage.ProxyGraphics = imageProxy;
+    var imageDoc = new DxfDocument(version); imageDoc.Entities.Add(packageImage);
+    using var imageStream = new MemoryStream();
+    if (!imageDoc.Save(imageStream,binary)) throw new InvalidOperationException("IMAGE package save failed");
+    imageStream.Position = 0;
+    var imageCopy = DxfDocument.Load(imageStream) ?? throw new InvalidOperationException("IMAGE package load failed");
+    var storedImage = imageCopy.Blocks.SelectMany(b => b.Entities).OfType<Image>().Single();
+    CheckImagePlane(storedImage);
+    if (!(storedImage.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(imageProxy)
+        || storedImage.Definition.Width != 8 || storedImage.Definition.Height != 6
+        || imageCopy.Objects.Validate().Count != 0 || !imageStream.CanRead)
+        throw new InvalidOperationException("Installed IMAGE round trip lost metadata or graphics");
+    storedImage.Width *= 2;
+    if (storedImage.ProxyGraphics != null) throw new InvalidOperationException("Installed IMAGE size edit retained stale graphics");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");

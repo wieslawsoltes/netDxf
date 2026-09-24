@@ -58,6 +58,7 @@ internal static partial class Program
         RegisterHatchEdgeInputTests();
         RegisterHatchGraphicsFidelityTests();
         RegisterWipeoutAffineTests();
+        RegisterImageAffineTests();
         RegisterHatchBulgeExplosionTests();
         RegisterSplineAffineAtomicTests();
         RegisterSplineCountPolicyTests();

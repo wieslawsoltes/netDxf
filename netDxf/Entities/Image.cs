@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using netDxf.Objects;
 using netDxf.Tables;
 
@@ -33,7 +32,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents a raster image <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class Image :
+    public partial class Image :
         EntityObject
     {
         #region delegates and events
@@ -154,7 +153,7 @@ namespace netDxf.Entities
         public Vector3 Position
         {
             get { return this.position; }
-            set { this.position = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.position, value); }
         }
 
         /// <summary>
@@ -170,7 +169,7 @@ namespace netDxf.Entities
                     throw new ArgumentException("The U vector can not be the zero vector.", nameof(value));
                 }
 
-                this.uvector = Vector2.Normalize(value);
+                this.AssignImageAxis(ref this.uvector, Vector2.Normalize(value));
             }
         }
 
@@ -187,7 +186,7 @@ namespace netDxf.Entities
                     throw new ArgumentException("The V vector can not be the zero vector.", nameof(value));
                 }
 
-                this.vvector = Vector2.Normalize(value);
+                this.AssignImageAxis(ref this.vvector, Vector2.Normalize(value));
             }
         }
 
@@ -203,7 +202,7 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The Image height must be greater than zero.");
                 }
-                this.height = value;
+                PrimitiveGeometryMutation.Assign(this, ref this.height, value);
             }
         }
 
@@ -219,28 +218,21 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The Image width must be greater than zero.");
                 }
-                this.width = value;
+                PrimitiveGeometryMutation.Assign(this, ref this.width, value);
             }
         }
 
         /// <summary>
         /// Gets or sets the image rotation in degrees.
         /// </summary>
-        /// <remarks>The image rotation is the angle of the U-vector.</remarks>
+        /// <remarks>The image rotation is the absolute angle of the U-vector. Relative U/V skew is preserved.</remarks>
         public double Rotation
         {
             get
             {
                 return Vector2.Angle(this.uvector) * MathHelper.RadToDeg;
             }
-            set
-            {
-                List<Vector2> uv = MathHelper.Transform(new List<Vector2> { this.uvector, this.vvector },
-                    MathHelper.NormalizeAngle(value) * MathHelper.DegToRad,
-                    CoordinateSystem.Object, CoordinateSystem.World);
-                this.uvector = uv[0];
-                this.vvector = uv[1];
-            }
+            set { this.SetAbsoluteRotation(value); }
         }
 
         /// <summary>
@@ -350,57 +342,7 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newPosition = transformation * this.Position + translation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal);
-            transWO = transWO.Transpose();
-
-            Vector3 v;
-            v = transOW * new Vector3(this.Uvector.X * this.Width, this.Uvector.Y * this.Width, 0.0);
-            v = transformation * v;
-            v = transWO * v;
-            Vector2 newUvector = new Vector2(v.X, v.Y);
-            
-            double newWidth;
-            if (Vector2.Equals(Vector2.Zero, newUvector))
-            {
-                newUvector = this.Uvector;
-                newWidth = MathHelper.Epsilon;
-            }
-            else
-            {
-                newWidth = newUvector.Modulus();
-            }
-
-            v = transOW * new Vector3(this.Vvector.X * this.Height, this.Vvector.Y * this.Height, 0.0);
-            v = transformation * v;
-            v = transWO * v;
-            Vector2 newVvector = new Vector2(v.X, v.Y);
-
-            double newHeight;
-            if (Vector2.Equals(Vector2.Zero, newVvector))
-            {
-                newVvector = this.Uvector;
-                newHeight = MathHelper.Epsilon;
-            }
-            else
-            {
-                newHeight = newVvector.Modulus();
-            }
-
-            this.Position = newPosition;
-            this.Normal = newNormal;
-            this.Uvector = newUvector;
-            this.Vvector = newVvector;
-            this.Width = newWidth;
-            this.Height = newHeight;
+            this.ApplyImageTransform(transformation, translation);
         }
 
         /// <summary>
