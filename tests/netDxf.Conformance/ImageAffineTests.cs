@@ -156,7 +156,7 @@ internal static partial class Program
         {
             int k = kind;
             Run($"image-affine/reject/rank-overflow/{k}/{matrix4}", () => {
-                var item = ImageAffineSubject(0,0); var matrix = k == 0 ? Matrix3.Zero : k == 1 ? Matrix3.Scale(1,0,1) : Matrix3.Scale(double.MaxValue);
+                var item = ImageAffineSubject(0,0); var matrix = k == 0 ? Matrix3.Scale(0) : k == 1 ? Matrix3.Scale(1,0,1) : Matrix3.Scale(double.MaxValue);
                 ImageReject(item,() => { if(matrix4)item.TransformBy(LineReviewMatrix4(matrix,Vector3.Zero));else item.TransformBy(matrix,Vector3.Zero); });
             });
         }
