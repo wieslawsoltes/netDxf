@@ -45,3 +45,7 @@ export { DxfStoredSunStudy } from '../netDxf/Objects/DxfStoredSunStudy.js';
 export { DxfVersionCompatibilityKind, DxfVersionCompatibilityDiagnostic, DxfVersionCompatibilityReport } from '../netDxf/DxfVersionCompatibilityReport.js';
 
 export { DxfOpaqueEntity } from '../netDxf/Entities/DxfOpaqueEntity.js';
+
+export { DictionaryObject } from '../netDxf/Objects/DictionaryObject.js';
+export { XRecord } from '../netDxf/Objects/XRecord.js';
+export { XRecordEntry } from '../netDxf/Objects/XRecordEntry.js';

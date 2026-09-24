@@ -5,6 +5,10 @@ import { XDataRecord } from '../netDxf/XDataRecord.js';
 import { ApplicationRegistry } from '../netDxf/Tables/ApplicationRegistry.js';
 import { DecodeDxfText } from './DxfStringEncoding.js';
 import { FormatException, ArgumentOutOfRangeException } from './Errors.js';
+import { ReferenceList } from './ReferenceList.js';
+import { GenericDictionary } from './GenericDictionary.js';
+import { TableNameComparer } from '../netDxf/Collections/TableObjects.js';
+import { TableHandleMap } from './TablePayload.js';
 import { SourceIdentityContext } from '../netDxf/IO/DxfReader.SourceIdentity.js';
 export class DatabaseRecord {
   Object=null; SourceIdentity=null; Default=null;
@@ -12,6 +16,10 @@ export class DatabaseRecord {
   Entries=[]; ContainerReferences=[]; SortKeys=[];
 }
 export class DatabaseIOContext extends SourceIdentityContext {
+  // Original main-reader state, shared by physical observation and record import.
+  databaseRecords=new ReferenceList(); entityDatabaseMetadata=new TableHandleMap();
+  managedReactorHandles=new Set(); dictionaries=new GenericDictionary(0,TableNameComparer,'string');
+  namedDictionary=null; layerStateManagerDictionaryHandle=null; mleaderReferences=[];
   pendingSectionSettings=new Map();storedSectionManagers=[];
   storedFields=[];storedDimAssocs=[];storedSunStudies=[];storedTableContents=[];storedTableGeometries=[];storedCellStyleMaps=[];tableStyles=[];
   outputShadeReferences=[];geoDataHosts=[];sunReferences=[];

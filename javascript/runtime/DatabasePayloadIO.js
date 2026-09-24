@@ -43,3 +43,6 @@ export * from '../netDxf/IO/DxfReader.SectionSettings.js';
 export * from '../netDxf/IO/DxfWriter.SectionSettings.js';
 export * from '../netDxf/IO/DxfReader.SectionManager.js';
 export * from '../netDxf/IO/DxfWriter.SectionManager.js';
+
+export * from '../netDxf/IO/DxfReader.Objects.js';
+export * from '../netDxf/IO/DxfWriter.Objects.js';
