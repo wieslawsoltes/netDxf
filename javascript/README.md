@@ -9,7 +9,36 @@ The reference is `3496ab91893a1e4ec9261b4833479f1799149cdc`, with SDK 8.0.425 /
 runtime 8.0.31 and Node 22.16.0. Production JavaScript does not load .NET,
 WebAssembly, an external DXF engine or a conversion service.
 
-## Database payload and physical-source I/O checkpoint
+## Local retained-record and section I/O checkpoint (not pushed)
+
+Local commits `cb33807` and `88a5944` add four original SECTIONSETTINGS and
+SECTION_MANAGER reader/writer partials and reconstruct qualification for the
+retained-object codecs already published at `e494c18`. The actual current remote
+source was preserved, including earlier output/GEODATA/SUN work and all eighteen
+workflow deletions. No unpublished checkout survived; the complete remote file
+tree was restored and verified before editing.
+
+This session exposes no GitHub write actions and direct Git cannot resolve the
+host, so these changes are committed locally and supplied as patches, **not
+published to the branch**. See the [record I/O contract](doc/RETAINED_RECORD_IO.md)
+and [actual local receipt](doc/retained-record-io-local-88a5944.json).
+
+Both Debug and Release match **2,593 scenarios / 5,909 operations**, and both
+focused real-Chromium runs match all 2,593 scenario digests without page errors.
+All **1,370 supplemental tests**, **3,619 mirrored original cases**, both unchanged
+**35,309-case C# suites**, the **616-file offline package**, and all three source
+regeneration checks pass. Four preceding regression categories pass both profiles.
+The 46 new supplemental tests do not inflate original-case coverage.
+
+Current local presence is **462/510 library mirrors**, **66/193 original test-file
+mirrors**, and **3,619/35,309 original cases**. Four library paths are newly added;
+24 further paths were already in the newer remote head, beyond the older README.
+File presence does not establish complete behavior. Typed document Load/Save,
+remaining I/O, original tests and broad qualification are still incomplete.
+Both full-parity gates fail. The complete 57-stage aggregate, 159,250-check browser
+suites and hosted/Windows CI were not rerun; focused successes do not replace them.
+
+## Database payload and physical-source I/O checkpoint (historical)
 
 `57ae692` adds twelve original-path database reader/writer partials and corrects
 primitive cast diagnostics. `f1777d4` requires independent payload, source-identity,
