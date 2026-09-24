@@ -10,6 +10,7 @@ internal static partial class Program
     private static void RegisterGVectorSafetyTests()
     {
         RegisterGVectorExtremesTests();
+        RegisterGeometryOrderingTests();
         Run("gvector-safety/null-equality", () =>
         {
             GVector absent = null!;

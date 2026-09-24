@@ -58,6 +58,23 @@ if (!netDxf.GTE.GVector.ComputeExtremes(1, new[] { singleBound }, out var single
     || BitConverter.DoubleToInt64Bits(singleMax[0]) != long.MinValue
     || singleMin[1] != double.Epsilon || singleMax[1] != double.Epsilon)
     throw new InvalidOperationException("Installed singleton bounds lost independent exact values");
+// Every installed target must honor the same lexicographic geometry relations.
+var orderA = new netDxf.GTE.GVector(new[] { 1.0, 100.0 });
+var orderB = new netDxf.GTE.GVector(new[] { 2.0, -100.0 });
+var orderEmpty = new netDxf.GTE.GVector(0);
+var orderNaN = new netDxf.GTE.GVector(new[] { double.NaN, -0.0 });
+var orderNaNCopy = new netDxf.GTE.GVector(new[] { BitConverter.Int64BitsToDouble(0x7ff8000000001234L), 0.0 });
+if (!(orderA < orderB) || !(orderA <= orderB) || orderA > orderB || orderA >= orderB
+    || !(orderB > orderA) || !(orderB >= orderA) || !(orderEmpty <= new netDxf.GTE.GVector(0))
+    || !(orderNaN <= orderNaNCopy) || !(orderNaN >= orderNaNCopy) || orderNaN < orderNaNCopy
+    || !(orderNaN < new netDxf.GTE.GVector(new[] { double.NegativeInfinity, 0.0 })))
+    throw new InvalidOperationException("Installed vector ordering contract failed");
+var orderMatrixA = new netDxf.GTE.GMatrix(1, 2, orderA.Vector);
+var orderMatrixB = new netDxf.GTE.GMatrix(1, 2, orderB.Vector);
+if (!(orderMatrixA < orderMatrixB) || !(orderMatrixA <= orderMatrixB)
+    || !(orderMatrixB > orderMatrixA) || !(orderMatrixB >= orderMatrixA)
+    || orderMatrixA <= new netDxf.GTE.GMatrix(2, 1, orderA.Vector))
+    throw new InvalidOperationException("Installed matrix ordering/shape contract failed");
 int count = 0;
 foreach (var version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007,
     DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })
