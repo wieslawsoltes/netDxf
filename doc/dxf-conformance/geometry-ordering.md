@@ -20,9 +20,11 @@ for unequal vector lengths or unequal matrix row/column counts. Null operands
 continue to throw `NullReferenceException`. Matrices compare their stored entry
 sequence, not a new layout-independent coordinate ordering. Changing
 `GTE.UseRowMajor` does not convert matrix storage. Sorted-container comparers
-built from these operators must restrict keys to a common dimension or shape;
-mutable keys must not be edited while indexed. No `IComparable` interface or
-new public signature is introduced.
+built from these operators must restrict keys to a common concrete runtime type
+and dimension or shape; mutable keys must not be edited while indexed. As before,
+relational operators compare coordinates even across subclasses, while `Equals`
+retains its exact-runtime-type restriction. No type ordering, `IComparable`
+interface or new public signature is introduced.
 
 ```csharp
 var a = new GVector(new[] { 1.0, 100.0 });
