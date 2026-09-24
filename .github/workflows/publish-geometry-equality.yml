@@ -1,0 +1,46 @@
+name: Publish reviewed geometry equality source
+on:
+  push:
+    branches: [codex/gte-value-equality-20260924]
+    paths: [.github/workflows/publish-geometry-equality.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 2
+      - name: Apply the exact reviewed source without modifying workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '1ba230881bae509461d4ec0c661418db4eff465d'
+          test "$(git rev-parse 'HEAD^^{tree}')" = '562cce31fd3b635b707e7a49fe7b783b6de52fda'
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,lzma,os
+          data=Path('tools/geometry-equality.diff.xz').read_bytes()
+          assert len(data)==7488 and hashlib.sha256(data).hexdigest()=='d7b55827eaf761b07b740f7d83fa1a3ffb3d911a1e616e8d9c5df8c16e298a4e'
+          patch=lzma.decompress(data,memlimit=268435456)
+          assert len(patch)==26053 and hashlib.sha256(patch).hexdigest()=='54647715810313b0015ea2d773543179a7a75f82ed12d7ac2459c62661a26cfc'
+          Path(os.environ['RUNNER_TEMP'],'geometry-equality.diff').write_bytes(patch)
+          PY
+          git config core.autocrlf false
+          git apply --check "$RUNNER_TEMP/geometry-equality.diff"
+          git apply --index "$RUNNER_TEMP/geometry-equality.diff"
+          test -z "$(git diff --cached -- .github/workflows)"
+          cp "$(git rev-parse --git-path index)" "$RUNNER_TEMP/equality.index"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/equality.index"
+          git update-index --force-remove .github/workflows/publish-geometry-equality.yml tools/geometry-equality.diff.xz
+          test "$(git write-tree)" = 'd9f5dc94b4479ea645e3cedb6c12608002805891'
+          unset GIT_INDEX_FILE
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Fix recursive GMatrix equality and exact vector/matrix value hashes'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/codex/gte-value-equality-20260924
