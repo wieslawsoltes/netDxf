@@ -3822,6 +3822,7 @@ namespace netDxf.IO
             Vector3 v = Vector3.UnitY;
             ClippingBoundaryType boundaryType = ClippingBoundaryType.Rectangular;
             double x = 0.0;
+            double imageHeight = 1.0;
             List<Vector2> vertexes = new List<Vector2>();
             List<XData> xData = new List<XData>();
 
@@ -3866,6 +3867,10 @@ namespace netDxf.IO
                         v.Z = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
+                    case 23:
+                        imageHeight = this.chunk.ReadDouble();
+                        this.chunk.Next();
+                        break;
                     case 71:
                         boundaryType = (ClippingBoundaryType) this.chunk.ReadShort();
                         this.chunk.Next();
@@ -3894,31 +3899,28 @@ namespace netDxf.IO
                 }
             }
 
-            // for polygonal boundaries the last vertex is equal to the first, we will remove it
-            if (boundaryType == ClippingBoundaryType.Polygonal)
-            {
+            if (double.IsNaN(imageHeight) || double.IsInfinity(imageHeight) || imageHeight <= 0.0)
+                throw new FormatException("A WIPEOUT requires a finite positive image height.");
+            if (boundaryType != ClippingBoundaryType.Rectangular && boundaryType != ClippingBoundaryType.Polygonal)
+                throw new FormatException("Unrecognized WIPEOUT clipping boundary type.");
+
+            // A repeated closing corner is optional on input, not an arbitrary
+            // final vertex to discard. Retain an unclosed polygon's last corner.
+            if (boundaryType == ClippingBoundaryType.Polygonal && vertexes.Count > 1 &&
+                vertexes[0].X == vertexes[vertexes.Count - 1].X && vertexes[0].Y == vertexes[vertexes.Count - 1].Y)
                 vertexes.RemoveAt(vertexes.Count - 1);
-            }
+            if (boundaryType == ClippingBoundaryType.Rectangular && vertexes.Count != 2)
+                throw new FormatException("A rectangular WIPEOUT requires two opposite pixel corners.");
 
-            Vector3 normal = Vector3.Normalize(Vector3.CrossProduct(u, v));
-            List<Vector2> ocsPoints = MathHelper.Transform(new List<Vector3> {position, u, v}, normal, out double elevation);
-            double bx = ocsPoints[0].X;
-            double by = ocsPoints[0].Y;
-            double max = ocsPoints[1].X;
-
+            // Pixel clipping coordinates start at the top-left; U and V are WCS
+            // vectors. Do not reduce them to a single scale or average their Z
+            // components with the insertion point to infer an elevation.
             for (int i = 0; i < vertexes.Count; i++)
-            {
-                double vx = bx + max * (0.5 + vertexes[i].X);
-                double vy = by + max * (0.5 - vertexes[i].Y);
-                vertexes[i] = new Vector2(vx, vy);
-            }
-
-            ClippingBoundary clippingBoundary = boundaryType == ClippingBoundaryType.Rectangular ? new ClippingBoundary(vertexes[0], vertexes[1]) : new ClippingBoundary(vertexes);
-            Wipeout entity = new Wipeout(clippingBoundary)
-            {
-                Normal = normal,
-                Elevation = elevation
-            };
+                vertexes[i] = new Vector2(vertexes[i].X + 0.5, imageHeight - 0.5 - vertexes[i].Y);
+            ClippingBoundary clippingBoundary = boundaryType == ClippingBoundaryType.Rectangular
+                ? new ClippingBoundary(vertexes[0], vertexes[1]) : new ClippingBoundary(vertexes);
+            Wipeout entity = new Wipeout(clippingBoundary);
+            entity.TransformBy(new Matrix3(u.X, v.X, 0.0, u.Y, v.Y, 0.0, u.Z, v.Z, 0.0), position);
 
             entity.XData.AddRange(xData);
 

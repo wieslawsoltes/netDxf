@@ -81,6 +81,19 @@ foreach (var version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, 
 foreach (bool binary in new[] { false, true })
 {
     var doc = new DxfDocument(version) { BuildDimensionBlocks = true };
+    var packageWipeout = new Wipeout(0, 0, 4, 3) { Elevation = 5, ProxyGraphics = new byte[] { 2, 4, 8 } };
+    var wipeoutBoundary = packageWipeout.ClippingBoundary;
+    var invalidWipeoutMatrix = Matrix4.Identity; invalidWipeoutMatrix.M44 = 2;
+    bool wipeoutRefused = false;
+    try { packageWipeout.TransformBy(invalidWipeoutMatrix); } catch (NotSupportedException) { wipeoutRefused = true; }
+    if (!wipeoutRefused || !ReferenceEquals(wipeoutBoundary, packageWipeout.ClippingBoundary) || packageWipeout.ProxyGraphics == null)
+        throw new InvalidOperationException("Installed WIPEOUT projective refusal mutated geometry/cache");
+    packageWipeout.TransformBy(new Matrix3(1, 1, 0, 0, 1, 0, 0, 0, 1), Vector3.Zero);
+    if (packageWipeout.ClippingBoundary.Type != ClippingBoundaryType.Polygonal || packageWipeout.ClippingBoundary.Vertexes.Count != 4
+        || packageWipeout.ClippingBoundary.Vertexes[2] != new Vector2(7, 3) || packageWipeout.ProxyGraphics != null)
+        throw new InvalidOperationException("Installed WIPEOUT shear lost rectangle corners or kept stale graphics");
+    packageWipeout.ProxyGraphics = new byte[] { 2, 4, 8 };
+    doc.Entities.Add(packageWipeout);
     var style = new DimensionStyle("PACKAGE_DIM") { DimPrefix = "S:", DimSuffix = ":END" };
     style.AlternateUnits.LengthUnits = LinearUnitType.WindowsDesktop;
     style.TextFillColor = new AciColor(2);
@@ -136,6 +149,11 @@ foreach (bool binary in new[] { false, true })
         || copy.Entities.Arcs.Single().EndAngle != nearTurn
         || copy.Entities.Circles.Single().ProxyGraphics != null || copy.Entities.Arcs.Single().ProxyGraphics != null)
         throw new InvalidOperationException("Installed circular edit round trip failed");
+    var storedWipeout = copy.Entities.Wipeouts.Single();
+    if (storedWipeout.Elevation != 5 || storedWipeout.ClippingBoundary.Type != ClippingBoundaryType.Polygonal
+        || storedWipeout.ClippingBoundary.Vertexes.Count != 4 || !storedWipeout.ProxyGraphics.SequenceEqual(new byte[] { 2, 4, 8 })
+        || (storedWipeout.ClippingBoundary.Vertexes[2] - new Vector2(7, 3)).Modulus() > 1e-12)
+        throw new InvalidOperationException("Installed WIPEOUT load lost elevated clipping geometry or proxy");
     var storedHatch = copy.Entities.Hatches.Single(h => h.Layer.Name == "PACKAGE_HATCH");
     var storedMovedHatch = copy.Entities.Hatches.Single(h => h.Layer.Name == "PACKAGE_HATCH_MOVED");
     if (!storedHatch.ProxyGraphics.SequenceEqual(circularProxy) || storedMovedHatch.ProxyGraphics != null

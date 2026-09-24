@@ -102,7 +102,10 @@ namespace netDxf.Entities
             get { return this.clippingBoundary; }
             set
             {
-                this.clippingBoundary = value ?? throw new ArgumentNullException(nameof(value));
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (ReferenceEquals(this.clippingBoundary, value)) return;
+                this.clippingBoundary = value;
+                this.ClearProxyGraphics();
             }
         }
 
@@ -113,7 +116,7 @@ namespace netDxf.Entities
         public double Elevation
         {
             get { return this.elevation; }
-            set { this.elevation = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.elevation, value); }
         }
 
         #endregion
@@ -125,38 +128,59 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="transformation">Transformation matrix.</param>
         /// <param name="translation">Translation vector.</param>
-        /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
+        /// <remarks>
+        /// Column-vector convention. Rectangles become polygonal when their image is not axis-aligned in the new OCS.
+        /// Non-finite or numerically degenerate planes reject before mutation. Changed geometry invalidates proxy graphics.
+        /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            double newElevation = this.Elevation;
-
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
+            // A rectangle stores only opposite corners. Transform all four corners:
+            // a rotated or sheared rectangle need not be rectangular in the new OCS.
+            IReadOnlyList<Vector2> source = this.clippingBoundary.Vertexes;
+            bool rectangular = this.clippingBoundary.Type == ClippingBoundaryType.Rectangular;
+            Vector2[] points;
+            if (rectangular)
             {
-                newNormal = this.Normal;
+                Vector2 a = source[0], b = source[1];
+                points = new[] { a, new Vector2(b.X, a.Y), b, new Vector2(a.X, b.Y) };
+            }
+            else
+            {
+                points = new Vector2[source.Count];
+                for (int i = 0; i < points.Length; i++) points[i] = source[i];
             }
 
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal).Transpose();
+            // Derive the image plane from its two axes, not A * Normal. The same
+            // finite/rank/representation policy is used by SOLID, TRACE and polylines.
+            PlanarEntityTransform result = PlanarEntityTransform.Prepare(transformation, translation,
+                points, base.Normal, this.elevation, 0.0);
+            if (!result.Changed) return;
 
-            List<Vector2> vertexes = new List<Vector2>();
+            Vector2[] next = result.Vertexes;
+            bool axisAligned = rectangular &&
+                ((next[0].Y == next[1].Y && next[1].X == next[2].X &&
+                  next[2].Y == next[3].Y && next[3].X == next[0].X) ||
+                 (next[0].X == next[1].X && next[1].Y == next[2].Y &&
+                  next[2].X == next[3].X && next[3].Y == next[0].Y));
+            ClippingBoundary boundary = axisAligned
+                ? new ClippingBoundary(next[0], next[2]) : new ClippingBoundary(next);
 
-            foreach (Vector2 vertex in this.ClippingBoundary.Vertexes)
-            {
-                Vector3 v = transOW * new Vector3(vertex.X, vertex.Y, this.Elevation);
-                v = transformation * v + translation;
-                v = transWO * v;
-                vertexes.Add(new Vector2(v.X, v.Y));
-                newElevation = v.Z;
-            }
+            // Finish all validation/allocation before publishing. Bypass overridable
+            // Normal accessors so a callback cannot leave half-published geometry.
+            base.Normal = result.Normal;
+            this.elevation = result.Elevation;
+            this.clippingBoundary = boundary;
+            this.ClearProxyGraphics();
+        }
 
-            ClippingBoundary newClipping = this.ClippingBoundary.Type == ClippingBoundaryType.Rectangular
-                ? new ClippingBoundary(vertexes[0], vertexes[1])
-                : new ClippingBoundary(vertexes);
-
-            this.Normal = newNormal;
-            this.Elevation = newElevation;
-            this.ClippingBoundary = newClipping;
+        /// <summary>Applies a finite affine transform; projective matrices reject before mutation.</summary>
+        public override void TransformBy(Matrix4 transformation)
+        {
+            PlanarEntityTransform.CheckAffine(transformation);
+            this.TransformBy(new Matrix3(transformation.M11, transformation.M12, transformation.M13,
+                transformation.M21, transformation.M22, transformation.M23,
+                transformation.M31, transformation.M32, transformation.M33),
+                new Vector3(transformation.M14, transformation.M24, transformation.M34));
         }
 
         /// <summary>
