@@ -1,4 +1,5 @@
 // Copyright (c) netDxf contributors. MIT License; see package LICENSE.
+import { IsDatabaseModel } from '../../runtime/DatabaseModel.js';
 import { EntityObject } from '../Entities/EntityObject.js';
 import { Attribute } from '../Entities/Attribute.js';
 import { AttributeDefinition } from '../Entities/AttributeDefinition.js';
@@ -35,9 +36,8 @@ export function InstallPlotSettingsFidelity(Type) {
     ShadePlotObject: {
       get() { return state(this).shade; },
       set(value) {
-        if (value instanceof EntityObject || value instanceof Attribute || value instanceof AttributeDefinition)
+        if (value instanceof EntityObject || value instanceof Attribute || value instanceof AttributeDefinition || IsDatabaseModel(value,'DxfDocument'))
           throw new ArgumentException('A shade-plot reference must identify a nongraphical object.', 'value');
-        // The typed DxfDocument and its registration/type guard remain unported.
         state(this).shade = value;
       }
     }

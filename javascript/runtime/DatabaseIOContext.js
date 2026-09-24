@@ -12,6 +12,7 @@ export class DatabaseRecord {
   Entries=[]; ContainerReferences=[]; SortKeys=[];
 }
 export class DatabaseIOContext extends SourceIdentityContext {
+  outputShadeReferences=[];geoDataHosts=[];sunReferences=[];
   dataTableReferences=[]; lightListReferences=[]; pendingLayerIndexes=new Map();
   constructor(document){super(document);}
   ReadDatabaseXData(target,tags,start){
