@@ -109,6 +109,25 @@ foreach (bool binary in new[] { false, true })
         throw new InvalidOperationException("Circular edit retained stale proxy graphics");
     doc.Entities.Add(circle);
     doc.Entities.Add(arc);
+    var hatchPath = new HatchBoundaryPath(new HatchBoundaryPath.Edge[] {
+        new HatchBoundaryPath.Polyline { IsClosed = true, Vertexes = new[] {
+            new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(4, 3, 0), new Vector3(0, 3, 0) } }
+    });
+    var hatch = new Hatch(HatchPattern.Solid, new[] { hatchPath }, false) {
+        Layer = new Layer("PACKAGE_HATCH"), Elevation = 2.5, ProxyGraphics = circularProxy
+    };
+    hatch.TransformBy(Matrix4.Identity);
+    var projectiveHatch = Matrix4.Identity; projectiveHatch.M41 = double.Epsilon;
+    bool hatchRejected = false;
+    try { hatch.TransformBy(projectiveHatch); } catch (NotSupportedException) { hatchRejected = true; }
+    if (!hatchRejected || !hatch.ProxyGraphics.SequenceEqual(circularProxy)
+        || !ReferenceEquals(hatchPath, hatch.BoundaryPaths[0]) || hatch.Elevation != 2.5)
+        throw new InvalidOperationException("Installed HATCH transform refusal or no-op cache failed");
+    var movedHatch = (Hatch)hatch.Clone(); movedHatch.Layer = new Layer("PACKAGE_HATCH_MOVED");
+    movedHatch.TransformBy(Matrix3.Identity, new Vector3(7, -11, 13));
+    if (movedHatch.ProxyGraphics != null || movedHatch.Elevation != 15.5 || hatch.ProxyGraphics == null)
+        throw new InvalidOperationException("Installed in-plane HATCH edit retained stale graphics");
+    doc.Entities.Add(hatch); doc.Entities.Add(movedHatch);
     using var stream = new MemoryStream();
     if (!doc.Save(stream, binary)) throw new InvalidOperationException("Package save failed");
     stream.Position = 0;
@@ -117,6 +136,17 @@ foreach (bool binary in new[] { false, true })
         || copy.Entities.Arcs.Single().EndAngle != nearTurn
         || copy.Entities.Circles.Single().ProxyGraphics != null || copy.Entities.Arcs.Single().ProxyGraphics != null)
         throw new InvalidOperationException("Installed circular edit round trip failed");
+    var storedHatch = copy.Entities.Hatches.Single(h => h.Layer.Name == "PACKAGE_HATCH");
+    var storedMovedHatch = copy.Entities.Hatches.Single(h => h.Layer.Name == "PACKAGE_HATCH_MOVED");
+    if (!storedHatch.ProxyGraphics.SequenceEqual(circularProxy) || storedMovedHatch.ProxyGraphics != null
+        || storedMovedHatch.Elevation != 15.5)
+        throw new InvalidOperationException("Installed HATCH hydration changed cache/geometry state");
+    storedHatch.BoundaryPaths.Add((HatchBoundaryPath)storedHatch.BoundaryPaths[0].Clone());
+    if (storedHatch.ProxyGraphics != null) throw new InvalidOperationException("Installed HATCH topology did not invalidate cache");
+    storedHatch.ProxyGraphics = circularProxy; storedHatch.Pattern = HatchPattern.Line;
+    if (storedHatch.ProxyGraphics != null) throw new InvalidOperationException("Installed HATCH pattern did not invalidate cache");
+    storedHatch.ProxyGraphics = circularProxy; storedHatch.Elevation += 1;
+    if (storedHatch.ProxyGraphics != null) throw new InvalidOperationException("Installed HATCH elevation did not invalidate cache");
     var dimension = copy.Entities.Dimensions.Single();
     dimension.Update();
     if (copy.DrawingVariables.AcadVer != version || dimension.UserText != " " || dimension.Block.Entities.OfType<MText>().Any()
