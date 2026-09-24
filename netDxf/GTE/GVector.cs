@@ -623,7 +623,7 @@ namespace netDxf.GTE
                 return false;
             }
 
-            if (this.Size != other.Size)
+            if (other.GetType() != this.GetType() || this.Size != other.Size)
             {
                 return false;
             }
@@ -631,7 +631,10 @@ namespace netDxf.GTE
             int size = this.Size;
             for (int i = 0; i < size; i++)
             {
-                if (Math.Abs(this[i] - other[i]) > double.Epsilon)
+                // Use an equivalence relation, not an absolute-error comparison.
+                // Double.Equals treats signed zeros alike and NaNs alike, but never
+                // equates NaN with a finite value or distinct subnormal components.
+                if (!this[i].Equals(other[i]))
                 {
                     return false;
                 }
@@ -652,7 +655,18 @@ namespace netDxf.GTE
 
         public override int GetHashCode()
         {
-            return this.vector.GetHashCode();
+            // Hash the same values used by Equals, not the backing-array identity.
+            // Components remain mutable; callers must not mutate collection keys.
+            unchecked
+            {
+                int hash = this.GetType().GetHashCode();
+                hash = hash * 31 + this.Size;
+                foreach (double value in this.vector)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+                return hash;
+            }
         }
     }
 }

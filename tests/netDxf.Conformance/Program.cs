@@ -41,6 +41,7 @@ internal static partial class Program
         RegisterEntityTextFilePreflightTests();
         RegisterMatrixIdentityReviewTests();
         RegisterGVectorSafetyTests();
+        RegisterGeometryValueEqualityTests();
         RegisterArbitraryAxisReviewTests();
         RegisterVector4ComponentReviewTests();
         RegisterIdentityConsumerReviewTests();

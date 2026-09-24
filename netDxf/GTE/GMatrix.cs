@@ -250,20 +250,17 @@ namespace netDxf.GTE
         // Comparisons for sorted containers and geometric ordering.
         public static bool operator ==(GMatrix mat1, GMatrix mat2)
         {
-            if (mat1 == null || mat2 == null)
+            // Reference guards must not call the operator they are implementing.
+            if (ReferenceEquals(mat1, null))
             {
-                return false;
+                return ReferenceEquals(mat2, null);
             }
-            return mat1.numRows == mat2.numRows && mat1.numCols == mat2.numCols && mat1.elements == mat2.elements;
+            return !ReferenceEquals(mat2, null) && mat1.Equals(mat2);
         }
 
         public static bool operator !=(GMatrix mat1, GMatrix mat2)
         {
-            if (mat1 == null || mat2 == null)
-            {
-                return false;
-            }
-            return mat1.numRows == mat2.numRows && mat1.numCols == mat2.numCols && mat1.elements != mat2.elements;
+            return !(mat1 == mat2);
         }
 
         public static bool operator <(GMatrix mat1, GMatrix mat2)
@@ -702,12 +699,9 @@ namespace netDxf.GTE
 
         public bool Equals(GMatrix other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return this == other;
+            return !ReferenceEquals(other, null) && other.GetType() == this.GetType()
+                && this.numRows == other.numRows && this.numCols == other.numCols
+                && this.elements.Equals(other.elements);
         }
 
         public override bool Equals(object obj)
@@ -722,7 +716,14 @@ namespace netDxf.GTE
 
         public override int GetHashCode()
         {
-            return this.elements.GetHashCode();
+            // Values are mutable: do not change them while used as dictionary keys.
+            unchecked
+            {
+                int hash = this.GetType().GetHashCode();
+                hash = hash * 31 + this.numRows;
+                hash = hash * 31 + this.numCols;
+                return hash * 31 + this.elements.GetHashCode();
+            }
         }
     }
 }
