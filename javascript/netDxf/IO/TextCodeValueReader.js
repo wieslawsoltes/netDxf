@@ -1,3 +1,4 @@
+import { CodecCastException } from '../../runtime/CodecValueType.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { InvalidCastException, NullReferenceException } from '../../runtime/Errors.js';
 import { DxfGroupCode, DxfTagValueType as T } from './DxfGroupCode.js';
@@ -74,7 +75,7 @@ export class TextCodeValueReader {
       throw new NullReferenceException('A null codec value cannot be unboxed.');
     }
     if (this.#valueType !== type && !(type === T.String && this.#valueType === T.Handle))
-      throw new InvalidCastException('The current codec value has a different primitive type.');
+      throw CodecCastException(this.#valueType,type);
     return this.#value;
   }
   ReadByte() { return this.#cast(-2); }

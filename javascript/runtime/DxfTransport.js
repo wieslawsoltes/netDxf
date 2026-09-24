@@ -18,3 +18,5 @@ export { ReadArc, WriteArc, ReadCircle, WriteCircle, ReadEllipse, WriteEllipse,
   ReadFace3d, ReadFace3D, WriteFace3D, ReadSolid, WriteSolid, ReadTrace, WriteTrace } from './PrimitiveEntityIO.js';
 export { ReadSpline, WriteSpline } from './SplineIO.js';
 export { ReadHelix, WriteHelix, ValidateHelixVersions, PrepareHelixClass } from '../netDxf/IO/DxfHelix.js';
+
+export * from "./DatabasePayloadIO.js";
