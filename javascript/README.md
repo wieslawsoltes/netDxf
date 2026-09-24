@@ -9,7 +9,29 @@ The reference is `3496ab91893a1e4ec9261b4833479f1799149cdc`, with SDK 8.0.425 /
 runtime 8.0.31 and Node 22.16.0. Production JavaScript does not load .NET,
 WebAssembly, an external DXF engine or a conversion service.
 
-## Primitive geometry, SPLINE and HELIX checkpoint
+## Database payload and physical-source I/O checkpoint
+
+`57ae692` adds twelve original-path database reader/writer partials and corrects
+primitive cast diagnostics. `f1777d4` requires independent payload, source-identity,
+browser and installed-package verification. The [contract](doc/DATABASE_PAYLOAD_IO.md)
+covers IDBUFFER, SORTENTSTABLE, SPATIAL_FILTER, DATATABLE, LIGHTLIST, layer filters,
+object pointers and layer indexes without claiming complete typed document I/O.
+
+Both configurations match **1,490 scenarios / 17,023 operations** and all
+**1,490 focused Chromium comparisons**. Existing reader, primitive, entity-body
+and section comparisons also pass both profiles. All **1,276 supplemental tests**,
+**3,619 mirrored originals**, both **35,309-case C# suites**, the **588-file
+installed package**, and all three source-regeneration checks pass. The
+[local receipt](doc/database-io-local-f1777d4.json) preserves the actual evidence.
+There are **52 new supplemental tests**, not additional original-case identities.
+
+Coverage is **434/510 library mirrors**, **66/193 original test-file mirrors** and
+**3,619/35,309 original cases**. Full-parity verification still fails. The complete
+55-stage aggregate and 154,897-check browser suites were not rerun; focused
+success does not replace them. Deleted workflows remain deleted; no hosted or
+Windows qualification is claimed for this checkpoint.
+
+## Primitive geometry, SPLINE and HELIX checkpoint (historical)
 
 `7df3337` implements body readers/writers for ten primitives plus SPLINE/HELIX;
 `02017a3` adds callback/error-order fixes and required verification. The
