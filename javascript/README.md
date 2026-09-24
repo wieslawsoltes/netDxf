@@ -9,7 +9,28 @@ The reference is `3496ab91893a1e4ec9261b4833479f1799149cdc`, with SDK 8.0.425 /
 runtime 8.0.31 and Node 22.16.0. Production JavaScript does not load .NET,
 WebAssembly, an external DXF engine or a conversion service.
 
-## Recovered and published entity-body checkpoint
+## Primitive geometry, SPLINE and HELIX checkpoint
+
+`7df3337` implements body readers/writers for ten primitives plus SPLINE/HELIX;
+`02017a3` adds callback/error-order fixes and required verification. The
+[transport contract](doc/PRIMITIVE_IO.md) distinguishes these working adapters
+from the incomplete full typed document pipeline. Selected main-reader/writer
+methods are not counted as whole source mirrors.
+
+Local Debug and Release each match **6,416 scenarios / 25,569 operations**.
+Both focused Chromium runs match all **6,416 scenario digests** with no page
+errors. The recovered body and prior section corpora also pass in both profiles.
+All **1,224 supplemental tests**, **3,619 mirrored originals**, both **35,309-case
+unchanged C# suites**, the **573-file installed package**, and all three source
+regeneration checks pass. The [receipt](doc/primitive-io-local-02017a3.json) retains
+actual source-bound reports. These are local checks, not hosted CI results.
+
+Current presence: **422/510 library files**, **66/193 original test files**, and
+**3,619/35,309 original cases**. Both full-parity gates remain failing. The complete
+53-stage aggregate and 153,407-check browser suites were not rerun; the focused
+browser report cannot satisfy full qualification. Deleted workflows stay deleted.
+
+## Recovered and published entity-body checkpoint (historical)
 
 The previously unpublished `59f72f6` recovery archive was restored and its complete
 file tree reproduced exactly (`7f888a6e67b2cf05c66e34e0bf93c0899742cd15`). The
