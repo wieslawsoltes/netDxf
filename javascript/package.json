@@ -109,7 +109,9 @@
     "test:primitive-browser": "node tools/primitive-browser-corpus.mjs && python tools/primitive-browser-check.py",
     "test:database-payload": "node tools/database-payload-differential.mjs",
     "test:source-metadata": "node tools/source-metadata-differential.mjs",
-    "test:database-browser": "node tools/database-browser-corpus.mjs && python tools/database-browser-check.py"
+    "test:database-browser": "node tools/database-browser-corpus.mjs && python tools/database-browser-check.py",
+    "test:environment-io": "node tools/environment-io-differential.mjs",
+    "test:environment-browser": "node tools/environment-browser-corpus.mjs && python tools/environment-browser-check.py"
   },
   "repository": {
     "type": "git",

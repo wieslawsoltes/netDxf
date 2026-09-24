@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { javascriptRoot, configuration } from './dotnet.mjs';
 const commands=[
+  ['environment-io',['tools/environment-io-differential.mjs']],
   ['database-payload',['tools/database-payload-differential.mjs']],
   ['source-metadata',['tools/source-metadata-differential.mjs']],
   ['primitive-io',['tools/primitive-io-differential.mjs']],

@@ -82,3 +82,23 @@
   if(output.length!==4||output[2][1]!=='0')throw new Error('Installed IDBUFFER output differs.');
   id.Ambiguous=true;if(ctx.GetObjectBySourceHandle(line.Handle)!==null)throw new Error('Installed ambiguous source identity accepted.');
 }
+
+// Installed output, geographic and SUN adapters do not depend on checkout fixtures.
+{
+  const a=await import('@netdxf/javascript');
+  const io=await import('@netdxf/javascript/runtime/DatabasePayloadIO.js');
+  const standalone=await import('@netdxf/javascript/netDxf/IO/DxfReader.OutputSettings.js');
+  if(standalone.ParsePlotSettings!==io.ParsePlotSettings)throw new Error('Output settings standalone identity differs.');
+  const document=new a.DxfDocument(18),context=new io.DatabaseIOContext(document),handle={};
+  const plot=io.ParsePlotSettings(context,[new a.DxfTag(100,'AcDbPlotSettings'),new a.DxfTag(1,'Setup'),new a.DxfTag(147,-0)],handle);
+  if(plot.PageSetupName!=='Setup'||!Object.is(plot.StandardScaleFactor,-0)||handle.value!==null)throw new Error('Installed plot projection differs.');
+  try{plot.ShadePlotObject=document;throw new Error('Document accepted as a shade object.');}catch(error){if(error.name!=='ArgumentException'||error.ParamName!=='value')throw error;}
+  const record=new io.DatabaseRecord();
+  if(!io.ReadOutputSettingsPayload(context,record,'WIPEOUTVARIABLES',[new a.DxfTag(100,'AcDbWipeoutVariables'),new a.DxfTag(70,1)],0)||!record.Object.DisplayFrame)throw new Error('Installed wipeout flags differ.');
+  const text='x'.repeat(254)+'\\U+0041'+'🧪',chunks=io.SplitGeoDefinition(text);
+  if(chunks.some(s=>s.length>255)||chunks.join('')!==text||chunks[1]!=='\\U+0041🧪')throw new Error('Installed geographic text chunking differs.');
+  const sun=new a.DxfSun();document.Objects.SetSun(document.Viewport,sun);const fields=[];
+  if(!io.WriteSunPayload({Write:(c,v)=>fields.push([c,v])},18,sun)||fields[0][1]!=='AcDbSun')throw new Error('Installed SUN payload missing.');
+  const slot=[];io.WriteSunReference({Write:(c,v)=>slot.push([c,v])},18,document.Viewport);
+  if(slot.length!==1||slot[0][0]!==361||slot[0][1]!==sun.Handle)throw new Error('Installed SUN owner slot differs.');
+}
