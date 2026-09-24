@@ -115,80 +115,40 @@ namespace netDxf.GTE
             return !(vec1 == vec2);
         }
 
+        // Ordering is lexicographic for equal-size vectors. Double.CompareTo
+        // agrees with our value equality: signed zeros tie and all NaNs tie,
+        // before numeric values. Different sizes retain the existing false result.
         public static bool operator <(GVector vec1, GVector vec2)
         {
-            if (vec1.Size != vec2.Size)
-            {
-                return false;
-            }
-
-            int size = vec1.Size;
-            for (int i = 0; i < size; i++)
-            {
-                if (vec1[i] < vec2[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return vec1.Size == vec2.Size && CompareComponents(vec1, vec2) < 0;
         }
 
         public static bool operator <=(GVector vec1, GVector vec2)
         {
-            if (vec1.Size != vec2.Size)
-            {
-                return false;
-            }
-
-            int size = vec1.Size;
-            for (int i = 0; i <= size; i++)
-            {
-                if (vec1[i] < vec2[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return vec1.Size == vec2.Size && CompareComponents(vec1, vec2) <= 0;
         }
 
         public static bool operator >(GVector vec1, GVector vec2)
         {
-            if (vec1.Size != vec2.Size)
-            {
-                return false;
-            }
-
-            int size = vec1.Size;
-            for (int i = 0; i < size; i++)
-            {
-                if (vec1[i] > vec2[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return vec1.Size == vec2.Size && CompareComponents(vec1, vec2) > 0;
         }
 
         public static bool operator >=(GVector vec1, GVector vec2)
         {
-            if (vec1.Size != vec2.Size)
-            {
-                return false;
-            }
+            return vec1.Size == vec2.Size && CompareComponents(vec1, vec2) >= 0;
+        }
 
-            int size = vec1.Size;
-            for (int i = 0; i < size; i++)
+        private static int CompareComponents(GVector left, GVector right)
+        {
+            for (int i = 0; i < left.Size; i++)
             {
-                if (vec1[i] >= vec2[i])
+                int comparison = left.vector[i].CompareTo(right.vector[i]);
+                if (comparison != 0)
                 {
-                    return false;
+                    return comparison;
                 }
             }
-
-            return true;
+            return 0;
         }
 
         // Special vectors.
