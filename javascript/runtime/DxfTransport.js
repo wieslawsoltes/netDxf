@@ -6,3 +6,9 @@ export { TryReadMTextBackground, WriteMTextBackground, ValidateMTextBackgroundVe
   ValidateMTextBackgroundVersions } from '../netDxf/IO/DxfMTextBackground.js';
 export { ValidateMeshOutput, ValidateDocumentMeshOutput } from '../netDxf/IO/DxfMeshWriteValidation.js';
 export { ValidateMeshVersions } from '../netDxf/IO/DxfMeshVersion.js';
+
+export { ReadOleFrame, WriteOleFrame } from '../netDxf/IO/DxfOleFrame.js';
+export { ReadOle2Frame, WriteOle2Frame } from '../netDxf/IO/DxfOle2Frame.js';
+export { ReadLight, WriteLight, ValidateLightVersions } from '../netDxf/IO/DxfLight.js';
+export { ReadAcisEntity, WriteAcisEntity, ValidateAcisEntities } from '../netDxf/IO/DxfAcisSat.js';
+export { ReadLwPolyline, WriteLwPolyline, ValidateLwPolylineFidelity } from '../netDxf/IO/DxfLwPolyline.js';
