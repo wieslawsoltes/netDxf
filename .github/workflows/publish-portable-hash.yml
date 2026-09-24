@@ -1,0 +1,37 @@
+name: Publish reviewed Framework hash compatibility
+on:
+  push:
+    branches: [codex/gte-value-equality-20260924]
+    paths: [.github/workflows/publish-portable-hash.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 2
+      - name: Apply exact canonical-NaN hash correction without editing workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '34ae28f30c1e0cadbd6e5f2b44277935dbc0892f'
+          echo '38b1f70321d380339412f3ac4d2ffa22522cca403ab81c2da226186748e425ac  tools/portable-hash.diff' | sha256sum --check
+          git config core.autocrlf false
+          git apply --check tools/portable-hash.diff
+          git apply --index tools/portable-hash.diff
+          test -z "$(git diff --cached -- .github/workflows)"
+          cp "$(git rev-parse --git-path index)" "$RUNNER_TEMP/portable.index"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/portable.index"
+          git update-index --force-remove .github/workflows/publish-portable-hash.yml tools/portable-hash.diff
+          test "$(git write-tree)" = '3a07177b349d2e2cbe56eed92713027aa2a28eca'
+          unset GIT_INDEX_FILE
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Canonicalize equal NaN hashes on Framework and test distinct payloads across package runtimes'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/codex/gte-value-equality-20260924
