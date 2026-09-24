@@ -116,7 +116,7 @@ internal static partial class Program
 
     private static void DegreeElevationMetadata(int owner)
     {
-        var source = DegreeBezierSubject(3, 0); ProjectionAppearance(source); source.Normal = new Vector3(2, -3, 6);
+        var source = DegreeBezierSubject(3, 0); ProjectionAppearance(source); NormalFixtureEditAndRestore(source, new Vector3(2, -3, 6));
         source.KnotTolerance = 1e-8; source.CtrlPointTolerance = 3e-8; source.FitTolerance = 2e-9;
         source.KnotParameterization = SplineKnotParameterization.FitUniform;
         if (owner == 1) new Block("ELEVATION_DETACHED").Entities.Add(source);

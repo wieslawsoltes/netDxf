@@ -177,7 +177,7 @@ class RuntimeArchiveTests(unittest.TestCase):
         section=build.split('  runtime-evidence:',1)[1]
         self.assertLess(section.index('python tools/ci/runtime_assets.py collect'),section.index('python tools/ci/runtime_release.py capture'))
         self.assertLess(section.index('python tools/ci/runtime_release.py capture'),section.index('actions/upload-artifact@'))
-        release=(ROOT/'.github/workflows/release.yml').read_text().split('  qualify:',1)[1].split('  github-release:',1)[0]
+        release=build.split('  qualify:',1)[1]
         self.assertIn('name: runtime-qualification',release);self.assertIn('path: artifacts/release-runtime',release)
         self.assertLess(release.index('name: runtime-qualification'),release.index('python tools/ci/pipeline.py qualify'))
         publication=(ROOT/'tools/ci/publication.py').read_text()

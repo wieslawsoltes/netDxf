@@ -13,7 +13,7 @@ spec.loader.exec_module(p)
 
 class MergeQueueTests(unittest.TestCase):
     def test_all_required_workflows_run_requested_queue_checks(self):
-        for filename in ('ci-build.yml', 'dxf-conformance.yml', 'release.yml'):
+        for filename in ('ci-build.yml',):
             text = (ROOT / '.github/workflows' / filename).read_text()
             events = text.split('\non:\n', 1)[1].split('\npermissions:', 1)[0]
             with self.subTest(workflow=filename):
@@ -24,11 +24,15 @@ class MergeQueueTests(unittest.TestCase):
     def test_queue_uses_complete_existing_build_and_test_gates(self):
         release = (ROOT / '.github/workflows/release.yml').read_text()
         self.assertIn('uses: ./.github/workflows/ci-build.yml', release)
-        self.assertIn('uses: ./.github/workflows/dxf-conformance.yml', release)
-        self.assertIn('needs: [plan, build, test]', release)
+        build = (ROOT / '.github/workflows/ci-build.yml').read_text()
+        self.assertIn('needs: [conformance, runtime-evidence]', build)
+        self.assertIn('needs: [plan, build]', release)
+        self.assertNotIn('  pull_request:', release)
+        self.assertNotIn('  merge_group:', release)
         self.assertIn("github.event_name == 'merge_group' || (github.event_name == 'workflow_dispatch'", release)
         self.assertIn("if: needs.plan.outputs.publish == 'true'", release)
-        self.assertNotIn('merge_group:', (ROOT / '.github/workflows/nuget-publish.yml').read_text())
+        self.assertFalse((ROOT / '.github/workflows/nuget-publish.yml').exists())
+        self.assertFalse((ROOT / '.github/workflows/dxf-conformance.yml').exists())
 
     def test_queue_and_pr_force_dry_run_for_every_ref_kind(self):
         sha = 'a' * 40

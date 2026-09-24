@@ -40,6 +40,7 @@ internal static partial class Program
         RegisterMTextOrientationOrderTests();
         RegisterEntityTextFilePreflightTests();
         RegisterMatrixIdentityReviewTests();
+        RegisterGVectorSafetyTests();
         RegisterArbitraryAxisReviewTests();
         RegisterVector4ComponentReviewTests();
         RegisterIdentityConsumerReviewTests();
@@ -102,6 +103,7 @@ internal static partial class Program
         RegisterVertexAffineReviewTests();
         RegisterMeshDecompositionTests();
         RegisterDirectionAssignmentTests();
+        RegisterNormalMutationTests();
         RegisterDirectionCachedNormalizationTests();
         RegisterInfiniteLineTransformTests();
         RunNamedObjectDatabaseTests();

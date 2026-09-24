@@ -174,7 +174,7 @@ internal static partial class Program
             { var s = SplineAffineSubject(0); Array.Fill(s.ControlPoints, Vector3.Zero); s.Normal = Vector3.UnitZ;
               SplineAffineApply(s, Matrix3.Scale(2), Vector3.Zero, four); Equal(new Vector3(4, -6, 10), s.StartTangent!.Value, "Tangent-only image"); Check(s.ProxyGraphics == null, "Tangent-only stale proxy"); });
             Run($"spline-affine-atomic/unchanged/{four}", () =>
-            { var s = SplineAffineSubject(0); Array.Fill(s.ControlPoints, Vector3.UnitX); s.Normal = Vector3.UnitZ;
+            { var s = SplineAffineSubject(0); Array.Fill(s.ControlPoints, Vector3.UnitX); NormalFixtureEditAndRestore(s, Vector3.UnitZ);
               s.StartTangent = Vector3.UnitX; s.EndTangent = new Vector3(-0.0, 0, -0.0); var bits = SplineAffineBits(s); var proxy = s.ProxyGraphics!;
               SplineAffineApply(s, new(1, 0, 0, 0, 2, 0, 0, 0, 3), Vector3.Zero, four);
               Check(bits.SequenceEqual(SplineAffineBits(s)), "Unchanged geometry bit drift"); Check(proxy.SequenceEqual(s.ProxyGraphics!), "Unchanged geometry proxy lost"); });

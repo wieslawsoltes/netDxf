@@ -90,7 +90,7 @@ internal static partial class Program
         Spline source = fitted ? new Spline(new[] { new Vector3(1, 2, 3), new Vector3(3, 5, 7), new Vector3(7, 1, 2) }) : KnotSubject(3, 0);
         source.StartTangent = new Vector3(2, -4, 8); source.EndTangent = new Vector3(-3, 6, 9);
         source.KnotTolerance = 1e-9; source.CtrlPointTolerance = 2e-8; source.FitTolerance = 3e-9;
-        ProjectionAppearance(source); source.Normal = new Vector3(2, -3, 6);
+        ProjectionAppearance(source); NormalFixtureEditAndRestore(source, new Vector3(2, -3, 6));
         var doc = new DxfDocument();
         if (owner == 1) new Block("KNOT_DETACHED").Entities.Add(source);
         if (owner == 2) doc.Entities.Add(source);

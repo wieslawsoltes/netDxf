@@ -62,7 +62,7 @@ internal static partial class Program
 
     private static void TrimMetadata(int ownership)
     {
-        var source = BasisSubject(3, 8); ProjectionAppearance(source); source.Normal = new Vector3(2, -3, 6);
+        var source = BasisSubject(3, 8); ProjectionAppearance(source); NormalFixtureEditAndRestore(source, new Vector3(2, -3, 6));
         source.KnotTolerance = 2e-9; source.CtrlPointTolerance = 3e-9; source.FitTolerance = 4e-9;
         if (ownership == 1) new Block("TRIM_DETACHED").Entities.Add(source);
         if (ownership == 2) new DxfDocument().Entities.Add(source);

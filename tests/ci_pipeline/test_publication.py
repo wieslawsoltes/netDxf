@@ -63,8 +63,9 @@ class PublicationTests(unittest.TestCase):
                 with self.assertRaises(ValueError): p.verify_publication(directory, 'wieslawsoltes/netDxf', 'v3.0.3')
 
     def test_real_workflows_gate_both_publication_steps(self):
-        for name, publish in (('release.yml', 'gh release create'), ('nuget-publish.yml', 'dotnet nuget push')):
-            text = (ROOT / '.github/workflows' / name).read_text()
+        for job, publish in (('github-release', 'gh release create'), ('publish-nuget', 'dotnet nuget push')):
+            workflow = (ROOT / '.github/workflows/release.yml').read_text()
+            text = workflow.split('  ' + job + ':\n', 1)[1].split('\n  publish-nuget:', 1)[0]
             self.assertEqual(1, text.count('python tools/ci/publication.py'))
             self.assertLess(text.index('python tools/ci/publication.py'), text.index(publish))
             before = text[:text.index('python tools/ci/publication.py')].rsplit('- name:', 1)[-1]
