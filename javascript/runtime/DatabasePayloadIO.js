@@ -38,3 +38,8 @@ export * from '../netDxf/IO/DxfReader.StoredEnvelopes.js';
 export * from '../netDxf/IO/DxfWriter.StoredEnvelopes.js';
 export { TryReadPrivateXRecord } from '../netDxf/IO/DxfReader.PrivateXRecord.js';
 export { ResolveDeclaredOwnership } from '../netDxf/IO/DxfReader.DeclaredOwnership.js';
+
+export * from '../netDxf/IO/DxfReader.SectionSettings.js';
+export * from '../netDxf/IO/DxfWriter.SectionSettings.js';
+export * from '../netDxf/IO/DxfReader.SectionManager.js';
+export * from '../netDxf/IO/DxfWriter.SectionManager.js';
