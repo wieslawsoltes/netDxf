@@ -47,3 +47,21 @@
   const reader=new TextCodeValueReader(text.value);reader.Next();const loaded=ReadOleFrame(reader,new a.DxfDocument(18));
   if(loaded.BinaryDataLength!==3||loaded.GetBinaryData()[2]!==3||reader.Value!=='ENDSEC')throw new Error('Installed OLE body roundtrip failed.');
 }
+
+// Primitive and inherited HELIX codecs resolve from the offline-installed tarball.
+{
+  const a=await import('@netdxf/javascript');
+  const {WriteHelix}=await import('@netdxf/javascript/netDxf/IO/DxfHelix.js');
+  const {BinaryCodeValueReader}=await import('@netdxf/javascript/netDxf/IO/BinaryCodeValueReader.js');
+  const {BinaryCodeValueWriter}=await import('@netdxf/javascript/netDxf/IO/BinaryCodeValueWriter.js');
+  if(WriteHelix!==a.DxfTransport.WriteHelix)throw new Error('HELIX standalone differs.');
+  const d=new a.DxfDocument(18),line=new a.Line(new a.Vector3(-0,2,3),a.Vector3.UnitX),bytes=new a.MemoryStream();
+  const writer=new BinaryCodeValueWriter(bytes);a.DxfTransport.WriteLine(writer,18,line);writer.Write(0,'ENDSEC');writer.Flush();bytes.Position=0;
+  const reader=new BinaryCodeValueReader(bytes);reader.Next();const copy=a.DxfTransport.ReadLine(reader,d);
+  if(!Object.is(copy.StartPoint.X,-0)||reader.Value!=='ENDSEC')throw new Error('Primitive body roundtrip differs.');
+  const spline=new a.Spline([a.Vector3.Zero,a.Vector3.UnitX,a.Vector3.UnitY,new a.Vector3(1,1,1)],null,3),helix=new a.Helix(spline);
+  d.Entities.Add(helix);a.DxfTransport.PrepareHelixClass(d,d.Classes);
+  if(d.Classes.get_Item('HELIX').InstanceCount!==1)throw new Error('HELIX class not prepared.');
+  const output=[];WriteHelix({Write:(c,v)=>output.push([c,v])},18,helix);
+  if(!output.some(([c,v])=>c===100&&v==='AcDbHelix'))throw new Error('HELIX body missing.');
+}

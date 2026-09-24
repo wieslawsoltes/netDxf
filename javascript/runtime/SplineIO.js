@@ -5,7 +5,7 @@ import { SplineTypeFlags as F } from '../netDxf/Entities/SplineTypeFlags.js';
 import { SplineCreationMethod as M } from '../netDxf/Entities/SplineCreationMethod.js';
 import { Vector3 } from '../netDxf/Vector3.js';
 import { ReadXDataRecord, WriteXData } from './DxfXDataIO.js';
-import { NullReferenceException, InvalidDataException, NotSupportedException } from './Errors.js';
+import { NullReferenceException, InvalidDataException, NotSupportedException, InvalidOperationException, ArgumentOutOfRangeException } from './Errors.js';
 export function ReadSpline(chunk,document,stopAtHelix=false) {
   if(chunk==null)throw new NullReferenceException();
   let flags=F.Open,degree=3,knotTolerance=1e-7,ctrlPointTolerance=1e-7,fitTolerance=1e-10;
@@ -41,6 +41,8 @@ export function ReadSpline(chunk,document,stopAtHelix=false) {
       const tail=controls.length-degree+i,a=controls[i],b=controls[tail];
       if(a.X!==b.X||a.Y!==b.Y||a.Z!==b.Z||(weights!==null&&weights[i]!==weights[tail]))throw new NotSupportedException('Periodic SPLINE control points and weights must have an exact degree-fold cyclic overlap; refusing a lossy import.');
     }
+    // List.RemoveRange validates count before the Spline constructor validates degree.
+    if(degree<0)throw new ArgumentOutOfRangeException('count');
     controls.splice(0,degree);if(weights!==null)weights.splice(0,degree);
   }
   const e=new Spline(controls,weights,knots,degree,fit,method,periodic);
@@ -48,6 +50,7 @@ export function ReadSpline(chunk,document,stopAtHelix=false) {
   for(const flag of [F.FitChord,F.FitSqrtChord,F.FitUniform,F.FitCustom])if((flags&flag)!==0){e.KnotParameterization=flag;break;}
   if(stopAtHelix)e.Normal=normal;e.XData.AddRange(data);return e;
 }
+const tangentValue=value=>{if(value===null)throw new InvalidOperationException('Nullable object must have a value.');return value;};
 export function WriteSpline(chunk,version,e,writeXData=true) {
   if(chunk==null)throw new NullReferenceException();chunk.Write(100,'AcDbSpline');if(e==null)throw new NullReferenceException();
   let flags=F.Rational;if(e.IsClosed||e.IsClosedPeriodic)flags|=F.Closed;
@@ -55,8 +58,8 @@ export function WriteSpline(chunk,version,e,writeXData=true) {
   if(e.CreationMethod===M.FitPoints)flags|=F.FitPointCreationMethod;flags|=e.KnotParameterization;
   chunk.Write(70,(flags<<16)>>16);chunk.Write(71,e.Degree);
   chunk.Write(42,e.KnotTolerance);chunk.Write(43,e.CtrlPointTolerance);chunk.Write(44,e.FitTolerance);
-  if(e.StartTangent!==null){chunk.Write(12,e.StartTangent.X);chunk.Write(22,e.StartTangent.Y);chunk.Write(32,e.StartTangent.Z);}
-  if(e.EndTangent!==null){chunk.Write(13,e.EndTangent.X);chunk.Write(23,e.EndTangent.Y);chunk.Write(33,e.EndTangent.Z);}
+  if(e.StartTangent!==null){chunk.Write(12,tangentValue(e.StartTangent).X);chunk.Write(22,tangentValue(e.StartTangent).Y);chunk.Write(32,tangentValue(e.StartTangent).Z);}
+  if(e.EndTangent!==null){chunk.Write(13,tangentValue(e.EndTangent).X);chunk.Write(23,tangentValue(e.EndTangent).Y);chunk.Write(33,tangentValue(e.EndTangent).Z);}
   for(const knot of e.Knots)chunk.Write(40,knot);
   if(e.IsClosedPeriodic)for(let i=0;i<e.Degree;i++) {
     const p=e.ControlPoints[e.ControlPoints.length-e.Degree+i];chunk.Write(10,p.X);chunk.Write(20,p.Y);chunk.Write(30,p.Z);chunk.Write(41,e.Weights[e.Weights.length-e.Degree+i]);
