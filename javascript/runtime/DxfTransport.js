@@ -12,3 +12,9 @@ export { ReadOle2Frame, WriteOle2Frame } from '../netDxf/IO/DxfOle2Frame.js';
 export { ReadLight, WriteLight, ValidateLightVersions } from '../netDxf/IO/DxfLight.js';
 export { ReadAcisEntity, WriteAcisEntity, ValidateAcisEntities } from '../netDxf/IO/DxfAcisSat.js';
 export { ReadLwPolyline, WriteLwPolyline, ValidateLwPolylineFidelity } from '../netDxf/IO/DxfLwPolyline.js';
+
+export { ReadArc, WriteArc, ReadCircle, WriteCircle, ReadEllipse, WriteEllipse,
+  ReadLine, WriteLine, ReadPoint, WritePoint, ReadRay, WriteRay, ReadXLine, WriteXLine,
+  ReadFace3d, ReadFace3D, WriteFace3D, ReadSolid, WriteSolid, ReadTrace, WriteTrace } from './PrimitiveEntityIO.js';
+export { ReadSpline, WriteSpline } from './SplineIO.js';
+export { ReadHelix, WriteHelix, ValidateHelixVersions, PrepareHelixClass } from '../netDxf/IO/DxfHelix.js';
