@@ -1,3 +1,5 @@
+import { objectGraphIOCorpus } from './object-graph-io-corpus.mjs';
+import { ValidateObjectGraphObservation } from './object-graph-io-observation.mjs';
 import { retainedRecordIOCorpus } from './retained-record-io-corpus.mjs';
 import { environmentIOCorpus } from './environment-io-corpus.mjs';
 import { ValidateEnvironmentObservation } from './environment-io-observation.mjs';
@@ -390,6 +392,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await retainedRecordOracle.close();}
+// OBJECTS dispatch and physical import follow all previous inputs unchanged.
+const objectGraphOracle=new ModelOracleSession();
+try {
+  for(const probe of objectGraphIOCorpus()) {
+    const observed=await objectGraphOracle.observe(probe.request);
+    const expected=observed.ok?ValidateObjectGraphObservation(observed.value,probe.request.steps.length):{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{objectGraphIO:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await objectGraphOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

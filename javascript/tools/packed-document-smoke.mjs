@@ -132,3 +132,24 @@
   try{new BinaryCodeValueReader(stream).Next();throw new Error('Invalid handle unexpectedly accepted.');}
   catch(error){if(error.name!=='InvalidDataException'||!error.message.includes('group code 340 at byte address 24'))throw error;}
 }
+
+// Actual OBJECTS graph parsing and envelopes from the installed package only.
+// This is a section-level integration check, not full DxfDocument.Load/Save.
+{
+  const api=await import('@netdxf/javascript');
+  const io=await import('@netdxf/javascript/runtime/DatabasePayloadIO.js');
+  const {TextCodeValueReader}=await import('@netdxf/javascript/netDxf/IO/TextCodeValueReader.js');
+  const {WriteDatabaseObject}=await import('@netdxf/javascript/netDxf/IO/DxfWriter.Objects.js');
+  if(WriteDatabaseObject!==io.WriteDatabaseObject)throw new Error('Installed OBJECTS standalone export differs.');
+  const document=new api.DxfDocument(18),context=new io.DatabaseIOContext(document);
+  const tags=[[0,'SECTION'],[2,'OBJECTS'],[0,'DICTIONARY'],[5,'C0'],[330,'0'],[100,'AcDbDictionary'],[3,'Data'],[360,'C1'],
+    [0,'XRECORD'],[5,'C1'],[330,'C0'],[100,'AcDbXrecord'],[280,1],[1,'saved'],[10,'-0'],[0,'ENDSEC'],[0,'EOF']];
+  const inner=new TextCodeValueReader(tags.map(([c,v])=>c+'\n'+v+'\n').join(''));
+  context.Chunk=new io.DatabaseMetadataReader(inner,context.entityDatabaseMetadata,context.sourceObjectIdentities);
+  for(let i=0;i<3;i++)context.Chunk.Next();context.namedDictionary=io.ReadDictionaryDatabaseRecord(context);
+  io.ReadDatabaseRecord(context);io.ImportDatabaseObjects(context);
+  const item=document.NamedObjects.get_Item('Data');
+  if(document.GetObjectByHandle('C1')!==item||item.Owner!==document.NamedObjects||!Object.is(item.Data.get_Item(1).Value,-0)||document.Objects.Validate().Count!==0)throw new Error('Installed OBJECTS graph import differs.');
+  const output=[];io.WriteDatabaseObject({Write:(c,v)=>output.push([c,v])},document,item);
+  if(output[0][1]!=='XRECORD'||output[1][1]!=='C1'||output[2][1]!=='C0'||output.at(-1)[0]!==10)throw new Error('Installed OBJECTS envelope differs.');
+}

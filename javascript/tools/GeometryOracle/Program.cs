@@ -43,6 +43,7 @@ internal static partial class Program
         if(input.TryGetProperty("op",out var metadataOp)&&metadataOp.GetString()=="source-metadata-io")return SourceMetadataRequest(input);
         if(input.TryGetProperty("op",out var environmentIOOp)&&environmentIOOp.GetString()=="environment-io")return EnvironmentIORequest(input);
         if(input.TryGetProperty("op",out var retainedRecordOp)&&retainedRecordOp.GetString()=="retained-record-io")return RetainedRecordIORequest(input);
+        if(input.TryGetProperty("op",out var objectGraphOp)&&objectGraphOp.GetString()=="object-graph-io")return ObjectGraphIORequest(input);
         var results=new List<object>();
         foreach(var step in input.GetProperty("steps").EnumerateArray()) {
             try { results.Add(new {ok=true,value=Step(step)}); }
