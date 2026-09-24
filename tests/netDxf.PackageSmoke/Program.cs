@@ -491,6 +491,53 @@ foreach (bool binary in new[] { false, true })
     try { storedImage.Brightness = 101; } catch (ArgumentOutOfRangeException) { brightnessRejected = true; }
     if (!brightnessRejected || storedImage.ProxyGraphics == null || storedImage.ProxyGraphics.Length != 0)
         throw new InvalidOperationException("Installed IMAGE refusal lost explicit empty graphics");
+    var underlay = new Underlay(new netDxf.Objects.UnderlayPdfDefinition("PACKAGE_UNDERLAY", "package.pdf"), new Vector3(5,-3,7), 1)
+    { Scale = new Vector2(4,3), ClippingBoundary = new ClippingBoundary(0,0,2,3) };
+    byte[] underlayProxy = { 1,3,7,255 };
+    underlay.ProxyGraphics = underlayProxy;
+    var underlayClip = underlay.ClippingBoundary;
+    var underlayProjective = Matrix4.Identity; underlayProjective.M44 = 2;
+    bool underlayRefused = false;
+    try { underlay.TransformBy(underlayProjective); } catch (NotSupportedException) { underlayRefused = true; }
+    if (!underlayRefused || underlay.Position != new Vector3(5,-3,7)
+        || !(underlay.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(underlayProxy))
+        throw new InvalidOperationException("Installed underlay projective refusal failed");
+    underlayRefused = false;
+    try { underlay.TransformBy(new Matrix3(1,.5,0,0,1,0,0,0,1),Vector3.UnitX); }
+    catch (NotSupportedException) { underlayRefused = true; }
+    if (!underlayRefused || underlay.Position != new Vector3(5,-3,7)
+        || !ReferenceEquals(underlayClip,underlay.ClippingBoundary)
+        || !(underlay.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(underlayProxy))
+        throw new InvalidOperationException("Installed underlay shear refusal changed state");
+    underlay.TransformBy(new Matrix3(0,1,0,1,0,0,0,0,1),new Vector3(11,-13,17));
+    void CheckUnderlay(Underlay value)
+    {
+        var axes = MathHelper.ArbitraryAxis(value.Normal); double a = value.Rotation*MathHelper.DegToRad;
+        var u = axes * new Vector3(Math.Cos(a)*value.Scale.X,Math.Sin(a)*value.Scale.X,0);
+        var v = axes * new Vector3(-Math.Sin(a)*value.Scale.Y,Math.Cos(a)*value.Scale.Y,0);
+        if (value.Position != new Vector3(8,-8,24) || (u-new Vector3(0,4,0)).Modulus() > 1e-10
+            || (v-new Vector3(3,0,0)).Modulus() > 1e-10 || value.Scale.X <= 0 || value.Scale.Y <= 0)
+            throw new InvalidOperationException("Installed underlay reflection changed page basis");
+    }
+    CheckUnderlay(underlay);
+    if (underlay.ProxyGraphics != null || !ReferenceEquals(underlayClip,underlay.ClippingBoundary))
+        throw new InvalidOperationException("Installed underlay transform cache/dependency error");
+    underlay.ProxyGraphics = underlayProxy;
+    var underlayDoc = new DxfDocument(version); underlayDoc.Entities.Add(underlay);
+    using var underlayStream = new MemoryStream();
+    if (!underlayDoc.Save(underlayStream,binary)) throw new InvalidOperationException("Underlay package save failed");
+    underlayStream.Position = 0;
+    var underlayCopy = DxfDocument.Load(underlayStream) ?? throw new InvalidOperationException("Underlay package load failed");
+    var loadedUnderlay = underlayCopy.Blocks.SelectMany(b=>b.Entities).OfType<Underlay>().Single();
+    CheckUnderlay(loadedUnderlay);
+    loadedUnderlay.Position = loadedUnderlay.Position; loadedUnderlay.Scale = loadedUnderlay.Scale;
+    loadedUnderlay.Rotation = loadedUnderlay.Rotation; loadedUnderlay.Contrast = loadedUnderlay.Contrast;
+    loadedUnderlay.Fade = loadedUnderlay.Fade; loadedUnderlay.DisplayOptions = loadedUnderlay.DisplayOptions;
+    loadedUnderlay.ClippingBoundary = loadedUnderlay.ClippingBoundary;
+    if (!(loadedUnderlay.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(underlayProxy))
+        throw new InvalidOperationException("Installed underlay hydration/no-op lost graphics");
+    loadedUnderlay.Fade = 1;
+    if (loadedUnderlay.ProxyGraphics != null) throw new InvalidOperationException("Installed underlay appearance edit retained graphics");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");
