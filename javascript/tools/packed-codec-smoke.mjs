@@ -34,3 +34,16 @@
   const tags=[];api.DxfTransport.WriteMTextBackground({Write:(c,v)=>tags.push([c,v])},18,background);
   if(tags.length!==3||background.ScaleFactor!==null||background.ColorIndex!==null)throw new Error('Packed background output mutated defaults.');
 }
+
+// Entity body codecs are exercised solely from the installed package.
+{
+  const a=await import('@netdxf/javascript');
+  const {ReadOleFrame,WriteOleFrame}=await import('@netdxf/javascript/netDxf/IO/DxfOleFrame.js');
+  const {TextCodeValueReader}=await import('@netdxf/javascript/netDxf/IO/TextCodeValueReader.js');
+  const {TextCodeValueWriter}=await import('@netdxf/javascript/netDxf/IO/TextCodeValueWriter.js');
+  if(ReadOleFrame!==a.DxfTransport.ReadOleFrame)throw new Error('Installed entity codec barrel identity differs.');
+  const frame=new a.OleFrame(Uint8Array.of(1,2,3)),text={value:'',WriteLine(v){this.value+=String(v??'')+'\n';},Flush(){}};
+  const writer=new TextCodeValueWriter(text);WriteOleFrame(writer,18,frame);writer.Write(0,'ENDSEC');writer.Flush();
+  const reader=new TextCodeValueReader(text.value);reader.Next();const loaded=ReadOleFrame(reader,new a.DxfDocument(18));
+  if(loaded.BinaryDataLength!==3||loaded.GetBinaryData()[2]!==3||reader.Value!=='ENDSEC')throw new Error('Installed OLE body roundtrip failed.');
+}

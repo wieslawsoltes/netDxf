@@ -1,3 +1,5 @@
+import { entityBodyIOCorpus } from './entity-body-io-corpus.mjs';
+import { ValidateEntityBodyObservation } from './entity-body-io-observation.mjs';
 import { transportSectionsCorpus } from './transport-sections-corpus.mjs';
 import { ValidateTransportObservation } from './transport-sections-observation.mjs';
 import { gteCorpus } from './gte-corpus.mjs';
@@ -331,6 +333,16 @@ try {
       ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
   }
 } finally {await transportOracle.close();}
+// Append all body-codec cases without replacing any previous category.
+const bodyOracle=new ModelOracleSession();
+try {
+  for(const probe of entityBodyIOCorpus()) {
+    const observed=await bodyOracle.observe(probe.request);
+    const expected=observed.ok?ValidateEntityBodyObservation(observed.value,probe.request.steps.length):{oracleFailure:observed.failure};
+    cases.push({name:probe.name,input:probe.request,expected:{entityBodyIO:sha256(canonical(expected))},
+      ...(!observed.ok?{sourceOracleFailure:observed.failure}:{})});
+  }
+} finally {await bodyOracle.close();}
 if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed while preparing browser oracle.');
 const dir = path.join(javascriptRoot, 'artifacts/browser'); fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'corpus.json'), JSON.stringify({ ...proof, configuration, sourceRef: baseline.ref,

@@ -38,6 +38,7 @@ internal static partial class Program
         if(input.TryGetProperty("op",out var ownershipOp)&&ownershipOp.GetString()=="document-ownership")return DocumentOwnershipRequest(input);
         if(input.TryGetProperty("op",out var gteOp)&&gteOp.GetString()=="gte")return GteRequest(input);
         if(input.TryGetProperty("op",out var sectionsOp)&&sectionsOp.GetString()=="transport-sections")return TransportSectionsRequest(input);
+        if(input.TryGetProperty("op",out var bodyOp)&&bodyOp.GetString()=="entity-body-io")return EntityBodyIORequest(input);
         var results=new List<object>();
         foreach(var step in input.GetProperty("steps").EnumerateArray()) {
             try { results.Add(new {ok=true,value=Step(step)}); }
