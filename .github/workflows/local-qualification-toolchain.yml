@@ -1,0 +1,37 @@
+name: Retain local qualification toolchain
+on:
+  push:
+    branches: [codex/dxf-qualification-toolchain-20260925]
+    paths: [.github/workflows/local-qualification-toolchain.yml]
+permissions:
+  contents: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 8.0.x
+      - name: Bundle the selected SDK and matching runtime/reference packs
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=$(dirname "$(readlink -f "$(command -v dotnet)")")
+          sdk=$(find "$root/sdk" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          runtime=$(find "$root/shared/Microsoft.NETCore.App" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          host=$(find "$root/host/fxr" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          ref=$(find "$root/packs/Microsoft.NETCore.App.Ref" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          app=$(find "$root/packs/Microsoft.NETCore.App.Host.linux-x64" -mindepth 1 -maxdepth 1 -type d -name '8.*' -printf '%f\n' | sort -V | tail -1)
+          mkdir -p "$RUNNER_TEMP/qualification-sdk"
+          cd "$root"
+          tar -czf "$RUNNER_TEMP/qualification-sdk/dotnet8-linux-x64.tar.gz" dotnet "sdk/$sdk" "host/fxr/$host" "shared/Microsoft.NETCore.App/$runtime" "packs/Microsoft.NETCore.App.Ref/$ref" "packs/Microsoft.NETCore.App.Host.linux-x64/$app" LICENSE.txt ThirdPartyNotices.txt
+          dotnet --info > "$RUNNER_TEMP/qualification-sdk/toolchain.txt"
+          printf 'source=%s\nsdk=%s\nruntime=%s\nhost=%s\nreference_pack=%s\napphost_pack=%s\n' "$GITHUB_SHA" "$sdk" "$runtime" "$host" "$ref" "$app" >> "$RUNNER_TEMP/qualification-sdk/toolchain.txt"
+          cd "$RUNNER_TEMP/qualification-sdk"
+          sha256sum dotnet8-linux-x64.tar.gz toolchain.txt > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: local-qualification-sdk
+          path: ${{ runner.temp }}/qualification-sdk/
+          retention-days: 1
+          compression-level: 0
