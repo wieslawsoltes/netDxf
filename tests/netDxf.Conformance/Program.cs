@@ -110,6 +110,7 @@ internal static partial class Program
         RunTableXDataTests();
         RunThumbnailImageTests();
         RegisterMeshEdgeDiagnosticTests();
+        RegisterMeshHeaderMutationTests();
         RegisterVertexAffineReviewTests();
         RegisterMeshDecompositionTests();
         RegisterDirectionAssignmentTests();
