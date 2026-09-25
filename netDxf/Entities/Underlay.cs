@@ -103,7 +103,7 @@ namespace netDxf.Entities
         {
             this.definition = definition ?? throw new ArgumentNullException(nameof(definition));
             this.position = position;
-            if (scale <= 0)
+            if (scale <= 0 || double.IsNaN(scale) || double.IsInfinity(scale))
             {
                 throw new ArgumentOutOfRangeException(nameof(scale), scale, "The Underlay scale must be greater than zero.");
             }
@@ -173,17 +173,20 @@ namespace netDxf.Entities
         /// Gets or sets the underlay scale.
         /// </summary>
         /// <remarks>
-        /// Any of the vector scale components cannot be zero.<br />
-        /// Even thought the DXF has a code for the Z scale it seems that it has no use.
-        /// The X and Y components multiplied by the original size of the PDF page represent the width and height of the final underlay.
-        /// The Z component even thought it is present in the DXF it seems it has no use.
+        /// Assignments require finite, nonzero components; negative and subnormal values are allowed.<br />
+        /// The signed X and Y components scale the two local page axes. The independent
+        /// DXF Z scalar is exposed by <see cref="ScaleZ"/> and does not change this page geometry.<br />
+        /// Loaded finite zero components are retained for file fidelity. A nonidentity linear
+        /// transformation of a collapsed page is not supported.
         /// </remarks>
         public Vector2 Scale
         {
             get { return this.scale; }
             set
             {
-                if (MathHelper.IsZero(value.X) || MathHelper.IsZero(value.Y))
+                FiniteUnderlay(value.X);
+                FiniteUnderlay(value.Y);
+                if (value.X == 0.0 || value.Y == 0.0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Any of the vector scale components cannot be zero.");
                 }
@@ -311,7 +314,10 @@ namespace netDxf.Entities
                 //Underlay properties
                 Definition = (UnderlayDefinition) this.definition.Clone(),
                 Position = this.position,
-                Scale = this.scale,
+                // Copy stored scalars directly: loaded finite zero scales are valid
+                // retained data, but are not accepted as new public assignments.
+                scale = this.scale,
+                scaleZ = this.scaleZ,
                 Rotation = this.rotation,
                 Contrast = this.contrast,
                 Fade = this.fade,

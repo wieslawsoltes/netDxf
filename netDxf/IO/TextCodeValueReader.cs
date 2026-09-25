@@ -442,6 +442,16 @@ namespace netDxf.IO
                 double.TryParse(valueString, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) &&
                 !double.IsNaN(result) && !double.IsInfinity(result))
             {
+                // .NET Framework parsing can discard the sign of an exact zero.
+                // Restore it only after the existing grammar/finite checks succeed;
+                // this also keeps a parsed negative underflow zero correctly signed.
+                if (result == 0.0)
+                {
+                    int start = 0;
+                    while (start < valueString.Length && char.IsWhiteSpace(valueString[start])) start++;
+                    if (start < valueString.Length && valueString[start] == '-')
+                        return BitConverter.Int64BitsToDouble(long.MinValue);
+                }
                 return result;
             }
             throw this.InvalidValue("finite double-precision number");
