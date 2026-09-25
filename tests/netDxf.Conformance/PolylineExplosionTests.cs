@@ -13,6 +13,10 @@ internal static partial class Program
     {
         var result = (Polyline3D)LegacyAffineSubject(false, smooth); result.IsClosed = closed;
         result.ColorName = "Palette$Ink"; result.ShadowMode = EntityShadowMode.Ignore;
+        // Seed the cache after the final geometry edit: opening a previously closed
+        // polyline correctly invalidates the cache supplied by LegacyAffineSubject.
+        // The explosion operation below must still preserve this nonempty payload.
+        result.ProxyGraphics = new byte[] { 2,3,5,7 };
         return result;
     }
     private static void PolylineExplosionModel(int smooth, bool closed, int ownership)

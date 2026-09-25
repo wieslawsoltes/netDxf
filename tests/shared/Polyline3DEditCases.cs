@@ -135,6 +135,7 @@ namespace NetDxf.Qualification
         {
             var item = Subject(retained, out var document); item.ProxyGraphics = Cache(cache);
             string before = State(item); var list = item.Vertexes; var records = item.VertexRecords.ToArray();
+            var iterator = item.Vertexes.GetEnumerator(); Check(iterator.MoveNext(), "No-op enumeration setup");
             switch (operation)
             {
                 case 0: item.SetVertex(1, item.Vertexes[1]); break;
@@ -145,6 +146,8 @@ namespace NetDxf.Qualification
             }
             Check(State(item) == before && ReferenceEquals(list, item.Vertexes) && records.SequenceEqual(item.VertexRecords), "No-op changed state/identities");
             SameCache(Cache(cache), item.ProxyGraphics); Check(document.Objects.Validate().Count == 0, "No-op graph");
+            Check(iterator.MoveNext() && Same(iterator.Current, Points()[1]), "No-op invalidated active vertex enumeration");
+            iterator.Dispose();
         }
         private static void Refused(bool retained, int cache, int fault)
         {
@@ -190,6 +193,12 @@ namespace NetDxf.Qualification
             {
                 var item = Subject(retained, out var document); var point = item.Vertexes[0];
                 if (axis == 0) point.X = value; if (axis == 1) point.Y = value; if (axis == 2) point.Z = value;
+                if (Bits(value) == long.MinValue)
+                {
+                    var positive = point;
+                    if (axis == 0) positive.X = 0; if (axis == 1) positive.Y = 0; if (axis == 2) positive.Z = 0;
+                    item.SetVertex(0, positive);
+                }
                 item.ProxyGraphics = Cache(cache); item.SetVertex(0, point); SameCache(null, item.ProxyGraphics); Check(Same(point, item.Vertexes[0]), "Accepted scalar bits changed");
                 item.ProxyGraphics = Cache(cache); item.SetVertex(0, point); SameCache(Cache(cache), item.ProxyGraphics);
             }

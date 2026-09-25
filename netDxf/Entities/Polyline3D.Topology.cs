@@ -19,9 +19,9 @@ namespace netDxf.Entities
             ValidateTopologyPosition(position, nameof(position));
             this.ValidateTopologyEdit();
             Vector3 previous = this.vertexes[index];
-            bool changed = PrimitiveGeometryMutation.Assign(ref previous, position);
+            if (!PrimitiveGeometryMutation.Assign(ref previous, position)) return;
             this.vertexes[index] = position;
-            if (changed) this.ClearProxyGraphics();
+            this.ClearProxyGraphics();
         }
 
         /// <summary>Inserts a point and, for a retained sequence, a new owned VERTEX identity.</summary>
