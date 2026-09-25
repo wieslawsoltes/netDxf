@@ -69,8 +69,8 @@ Independent Python checks are development dependencies, not library runtime depe
 
 ```sh
 python -m pip install -r tools/requirements-independent.txt
-python tools/ci/pipeline.py build --configuration Release
-python tools/ci/pipeline.py conformance --configuration Release --artifacts artifacts/dxf-conformance
+dotnet restore netDxf/netDxf.csproj
+dotnet build netDxf/netDxf.csproj --no-restore -c Release
 ```
 
 For direct conformance and independent-output execution:

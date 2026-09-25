@@ -46,6 +46,7 @@ namespace netDxf.Entities
         private readonly List<int[]> faces;
         private readonly List<MeshEdge> edges;
         private byte subdivisionLevel;
+        private bool blendCrease;
 
         #endregion
 
@@ -117,19 +118,35 @@ namespace netDxf.Entities
         }
 
         /// <summary>Gets or sets the blend-crease flag, DXF group 72.</summary>
-        /// <remarks>False is the default. This stores subdivision metadata; it does not evaluate a smoothed mesh.</remarks>
-        public bool BlendCrease { get; set; }
+        /// <remarks>False is the default. A changed value clears stale common proxy graphics;
+        /// assigning the same value preserves them. This stores subdivision metadata, not a smoothed mesh.</remarks>
+        public bool BlendCrease
+        {
+            get { return this.blendCrease; }
+            set
+            {
+                if (this.blendCrease == value) return;
+                this.blendCrease = value;
+                this.ClearProxyGraphics();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the mesh subdivision level.
         /// </summary>
         /// <remarks>
         /// The valid range is from 0 to 255. The recommended range is 0-5 to prevent creating extremely dense meshes.
+        /// Changed values clear stale common proxy graphics; this does not evaluate subdivision or generate replacement graphics.
         /// </remarks>
         public byte SubdivisionLevel
         {
             get { return this.subdivisionLevel; }
-            set { this.subdivisionLevel = value; }
+            set
+            {
+                if (this.subdivisionLevel == value) return;
+                this.subdivisionLevel = value;
+                this.ClearProxyGraphics();
+            }
         }
 
         #endregion

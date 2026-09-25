@@ -2,6 +2,7 @@
 """Source-only documentation/workflow guard; this is not CAD conformance evidence."""
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
 import re
@@ -83,6 +84,21 @@ def check_links(root: Path, document: str, text: str) -> int:
     return count
 
 
+def pipeline_commands(source: str) -> set[str]:
+    choices = [keyword.value for node in ast.walk(ast.parse(source))
+               if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+               and node.func.attr == 'add_argument' and node.args
+               and isinstance(node.args[0], ast.Constant) and node.args[0].value == 'command'
+               for keyword in node.keywords if keyword.arg == 'choices']
+    require(len(choices) == 1, 'Cannot identify the pipeline command inventory')
+    return set(ast.literal_eval(choices[0]))
+
+
+def check_pipeline_commands(text: str, choices: set[str]) -> None:
+    for command in re.findall(r'^\s*python(?:3)?\s+tools/ci/pipeline\.py\s+([\w-]+)', text, re.MULTILINE):
+        require(command in choices or command == '--help', f'Unknown documented pipeline command: {command}')
+
+
 def strings(value):
     if isinstance(value, str):
         yield value
@@ -127,6 +143,10 @@ def self_test() -> int:
     size_limit(b'x', 1, 'control')
     count += reject(lambda: size_limit(b'', 1, 'control'))
     count += reject(lambda: size_limit(b'xx', 1, 'control'))
+    choices = pipeline_commands("parser.add_argument('command', choices=('metadata', 'verify'))")
+    check_pipeline_commands('python tools/ci/pipeline.py verify --directory artifacts/packages', choices)
+    for command in ('build', 'conformance'):
+        count += reject(lambda: check_pipeline_commands('python tools/ci/pipeline.py ' + command, choices))
     with tempfile.TemporaryDirectory(prefix='netdxf-hygiene-') as directory:
         root = Path(directory)
         (root / 'README.md').write_text('control', encoding='utf-8')
@@ -151,17 +171,20 @@ def main() -> None:
     require(paths and len(paths) == len(set(paths)), 'Missing or duplicate tracked-file inventory')
     workflow_inventory({path for path in paths if path.startswith('.github/workflows/') and path.lower().endswith(('.yml', '.yaml'))})
     require(not RETIRED.intersection(paths), 'Retired narrative checkpoints are still tracked')
+    choices = pipeline_commands((ROOT / 'tools/ci/pipeline.py').read_text(encoding='utf-8'))
     links = 0
     for path, budget in FRONT_DOORS.items():
         content = (ROOT / path).read_bytes()
         size_limit(content, budget, path)
         links += check_links(ROOT, path, content.decode('utf-8-sig'))
+        check_pipeline_commands(content.decode('utf-8-sig'), choices)
     report = (ROOT / REPORT).read_text(encoding='utf-8-sig')
     require('Full AutoCAD parity' in report and 'not established' in report, 'Missing explicit report qualification boundary')
     links += check_links(ROOT, REPORT, report)
+    check_pipeline_commands(report, choices)
     check_retired_references(ROOT, paths)
     print(f'PASS: two core workflow paths, three maintained documentation entry points, '
-          f'{links} existing local links, no live retired-checkpoint references; {count} negative controls rejected. '
+          f'{links} existing local links, valid pipeline command names, no live retired-checkpoint references; {count} negative controls rejected. '
           'Source hygiene only, not additional CAD conformance or native acceptance.')
 
 
