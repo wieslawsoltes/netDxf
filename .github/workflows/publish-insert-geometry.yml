@@ -1,0 +1,79 @@
+name: Publish exact INSERT geometry source
+on:
+  push:
+    branches: [codex/dxf-insert-geometry-20260925]
+    paths: [.github/workflows/publish-insert-geometry.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: github.repository == 'wieslawsoltes/netDxf'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+      - name: Apply fixed integration edits and require the committed source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/codex/dxf-insert-geometry-20260925
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace(b,a,z):
+              assert b.count(a)==1,(a,b.count(a))
+              return b.replace(a,z)
+          p=Path('netDxf/Entities/Insert.cs');b=p.read_bytes()
+          b=replace(b,b'set { this.position = value; }',b'set { FiniteInsert(value); PrimitiveGeometryMutation.Assign(this, ref this.position, value); }')
+          b=replace(b,b'if (MathHelper.IsZero(value.X) || MathHelper.IsZero(value.Y) || MathHelper.IsZero(value.Z))',b'FiniteInsert(value);\r\n                if (value.X == 0 || value.Y == 0 || value.Z == 0)')
+          b=replace(b,b'                this.scale = value;',b'                PrimitiveGeometryMutation.Assign(this, ref this.scale, value);')
+          b=replace(b,b'set { this.rotation = MathHelper.NormalizeAngle(value); }',b'set { FiniteInsert(value); PrimitiveGeometryMutation.Assign(this, ref this.rotation, MathHelper.NormalizeAngle(value)); }')
+          a=b.index(b'            if (this.IsMultiple)',b.index(b'public override void TransformBy(Matrix3'))
+          z=b.index(b'        /// <summary>\r\n        /// Assigns a handle',a)
+          b=b[:a]+b'            this.ApplyInsertTransform(transformation, translation);\r\n        }\r\n\r\n'+b[z:]
+          b=replace(b,b'                Scale = this.scale,',b'                scale = this.scale,')
+          b=replace(b,b'/// <remarks>None of the vector scale components can be zero.</remarks>',b'/// <remarks>Assignments require finite, exactly nonzero components. Signed and subnormal values are allowed.\r\n        /// Loaded finite zero scales are retained for file fidelity but cannot undergo nonidentity linear transforms.</remarks>')
+          p.write_bytes(b)
+          p=Path('netDxf/Entities/Insert.Array.cs');b=p.read_bytes()
+          b=replace(b,b'                this.columnCount = value;',b'                bool changed = this.columnCount != value;\n                this.columnCount = value;\n                if (changed) this.ClearProxyGraphics();')
+          b=replace(b,b'                this.rowCount = value;',b'                bool changed = this.rowCount != value;\n                this.rowCount = value;\n                if (changed) this.ClearProxyGraphics();')
+          b=replace(b,b'ValidateArraySpacing(value); this.columnSpacing = value;',b'ValidateArraySpacing(value); PrimitiveGeometryMutation.Assign(this, ref this.columnSpacing, value);')
+          b=replace(b,b'ValidateArraySpacing(value); this.rowSpacing = value;',b'ValidateArraySpacing(value); PrimitiveGeometryMutation.Assign(this, ref this.rowSpacing, value);')
+          a=b.index(b'        private void TransformArray(')
+          p.write_bytes(b[:a]+b'    }\n}\n')
+          p=Path('netDxf/IO/DxfReader.cs');b=p.read_bytes()
+          a=b.index(b'        private Insert ReadInsert(');z=b.index(b'        private Line ReadLine()',a);s=b[a:z]
+          for axis in 'XYZ':
+              line=f'                        if (MathHelper.IsZero(scale.{axis})) scale.{axis} = 1.0; // just in case, the insert scale components cannot be zero\n'.encode()
+              s=replace(s,line,b'')
+          s=replace(s,b'                Scale = scale,\n',b'')
+          s=replace(s,b'            insert.XData.AddRange(xData);',b'            insert.RestoreScale(scale);\n            insert.XData.AddRange(xData);')
+          b=b[:a]+s+b[z:]
+          assert b.count(b'insert.Scale *= scale;')==2
+          p.write_bytes(b.replace(b'insert.Scale *= scale;',b'insert.RestoreScale(insert.Scale * scale);'))
+          p=Path('tests/netDxf.Conformance/Program.cs');b=p.read_bytes()
+          p.write_bytes(replace(b,b'        RegisterPortableDoubleTests();',b'        RegisterPortableDoubleTests();\n        RegisterInsertGeometryTests();'))
+          p=Path('tests/netDxf.PackageSmoke/Program.cs');b=p.read_bytes()
+          p.write_bytes(replace(b,b'NetDxf.Qualification.PortableDoubleCases.VerifyInstalled(typeof(DxfDocument).Assembly);',b'NetDxf.Qualification.PortableDoubleCases.VerifyInstalled(typeof(DxfDocument).Assembly);\nNetDxf.Qualification.InsertGeometryCases.VerifyInstalled();'))
+          for name in ('netDxf.Conformance','netDxf.PackageSmoke','netDxf.TargetSmoke'):
+              p=Path('tests')/name/(name+'.csproj');b=p.read_bytes()
+              old=b'    <Compile Include="../shared/PortableDoubleCases.cs" Link="PortableDoubleCases.cs" />\n'
+              p.write_bytes(replace(b,old,old+b'    <Compile Include="../shared/InsertGeometryCases.cs" Link="InsertGeometryCases.cs" />\n'))
+          p=Path('doc/dxf-conformance/insert-arrays.md');b=p.read_bytes()
+          start=b.index(b'For active arrays, `TransformBy` transforms');end=b.index(b'\n\n## Version matrix',start)
+          new=b'For the original array-only transform implementation, the qualification below remains its historical evidence. The subsequent [INSERT/MINSERT geometry contract](insert-geometry.md) replaces both singleton and array transform paths, transforms dormant singleton spacings, preserves tiny source scales, stages attached attributes, and invalidates graphics after edits. The existing `1e-10` orthogonality threshold remains explicit; exact-zero authoring and reader-only scalar restoration are now separate policies. Clipping, dynamic blocks and recursive rendering remain outside these features.'
+          p.write_bytes(b[:start]+new+b[end:])
+          PY
+          git add netDxf/Entities/Insert.cs netDxf/Entities/Insert.Array.cs netDxf/IO/DxfReader.cs tests/netDxf.Conformance/Program.cs tests/netDxf.PackageSmoke/Program.cs tests/netDxf.Conformance/netDxf.Conformance.csproj tests/netDxf.PackageSmoke/netDxf.PackageSmoke.csproj tests/netDxf.TargetSmoke/netDxf.TargetSmoke.csproj doc/dxf-conformance/insert-arrays.md
+          git update-index --force-remove .github/workflows/publish-insert-geometry.yml
+          test "$(git write-tree)" = f64423292f0de6fc9de5b4d86f3868cfd213b9da
+          git reset HEAD -- .github/workflows/publish-insert-geometry.yml
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Integrate exact INSERT transform, scalar hydration and package regressions'
+          git push origin HEAD:refs/heads/codex/dxf-insert-geometry-20260925
