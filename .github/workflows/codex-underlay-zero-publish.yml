@@ -1,0 +1,45 @@
+name: Publish reviewed legacy zero correction
+on:
+  push:
+    branches: [codex/dxf-underlay-scales-20260925]
+    paths: [.codex-underlay-zero.payload, .github/workflows/codex-underlay-zero-publish.yml]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Apply reviewed source-bound correction
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, gzip, hashlib, os, pathlib, shutil, subprocess, tempfile
+          def git(*args, **kwargs):
+              return subprocess.check_output(['git', *args], text=True, **kwargs).strip()
+          base = '97835634e0014cda29adb1d849722e0c698a41ed'
+          payload = '.codex-underlay-zero.payload'
+          workflow = '.github/workflows/codex-underlay-zero-publish.yml'
+          assert git('rev-parse', base + '^{tree}') == 'a1de4acf9c9752ff8c8b8cd67c6680ec8fa7719f'
+          assert set(git('diff', '--name-only', base, 'HEAD').splitlines()) == {payload, workflow}
+          assert git('hash-object', payload) == '6b08b9fe2787ce23c26912814ad8b77e12133adb'
+          patch = gzip.decompress(base64.b64decode(pathlib.Path(payload).read_bytes().strip(), validate=True))
+          assert len(patch) == 8421 and hashlib.sha256(patch).hexdigest() == '1aaf4bbfcb07edf42352490cca4ee4357891939a46d995a4ff0908f5dfc414d1'
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'underlay-zero.patch'
+          path.write_bytes(patch)
+          subprocess.run(['git','apply','--index','--whitespace=error-all',str(path)], check=True)
+          git('rm', payload)
+          with tempfile.TemporaryDirectory() as directory:
+              index = str(pathlib.Path(directory) / 'index')
+              shutil.copyfile(git('rev-parse','--git-path','index'), index)
+              env = dict(os.environ, GIT_INDEX_FILE=index)
+              git('update-index','--force-remove',workflow,env=env)
+              assert git('write-tree',env=env) == '7f8f48366cc3ab6b8518f7e1385aa071d42f007d'
+          git('config','user.name','OpenAI')
+          git('config','user.email','noreply@openai.com')
+          git('commit','-m','Preserve signed text zero on legacy runtimes and strengthen installed-package regressions')
+          git('push','origin','HEAD:refs/heads/codex/dxf-underlay-scales-20260925')
+          PY
