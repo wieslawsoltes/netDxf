@@ -17,10 +17,11 @@ REPORT = 'doc/dxf-conformance/remaining-major-gaps.md'
 RETIRED = {
     'doc/dxf-conformance/checkpoint-2026-09-13.md',
     'doc/dxf-conformance/checkpoint-hatch-2026-09-13.md',
-    'doc/dxf-conformance/checkpoint-2026-09-14.md',
 }
-# The maintained entry points use ordinary inline links. Reference-style link
-# definitions are also inspected when looking for live retired-file references.
+# PR #58's checkpoint is NOT retired: the pinned ledger and HATCH audit need it.
+REQUIRED_CHECKPOINT = 'doc/dxf-conformance/checkpoint-2026-09-14.md'
+# Maintained entry points use ordinary inline links. Reference-style definitions
+# are also inspected when looking for live retired-file references.
 INLINE = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 DEFINITION = re.compile(r'^\s{0,3}\[[^\]\n]+\]:\s*(\S+)', re.MULTILINE)
 
@@ -107,15 +108,16 @@ def check_retired_references(root: Path, paths: list[str]) -> None:
                 continue
             if local_target(root, path, destination) in RETIRED:
                 problems.append(f'{path}: {destination}')
-    # Historical evidence files are deliberately not rewritten. If the active
-    # source-pinned ledger needs one of these files, retain it instead of silently
-    # removing an evidence prerequisite or changing its recorded source identity.
+    # Historical evidence files are deliberately not rewritten. A document needed
+    # by the active source-pinned ledger must stay, not lose its evidence link.
     ledger = json.loads((root / 'doc/dxf-conformance/coverage.json').read_text(encoding='utf-8-sig'))
     for value in strings(ledger):
         url = urlsplit(value)
         if not url.scheme and not url.netloc and Path(unquote(url.path)).name in names:
             problems.append('coverage.json: ' + value)
     require(not problems, 'Retired files still have live references; migrate links to immutable history or retain the file:\n' + '\n'.join(problems))
+    require(REQUIRED_CHECKPOINT in paths and (root / REQUIRED_CHECKPOINT).is_file(),
+            'Source-pinned ledger/HATCH audit checkpoint must remain available')
 
 
 def self_test() -> int:
@@ -135,6 +137,8 @@ def self_test() -> int:
         count += reject(lambda: check_links(root, 'index.md', '[escape](%2e%2e/outside.md)'))
         require(local_target(root, 'doc/dxf-conformance/README.md', 'checkpoint-2026-09-13.md') in RETIRED,
                 'Relative retired-target resolution')
+        require(local_target(root, 'doc/dxf-conformance/README.md', 'checkpoint-2026-09-14.md') not in RETIRED,
+                'Referenced evidence is not redundant narrative')
         require(local_target(root, 'README.md', 'https://github.com/example/repo/blob/pinned/checkpoint-2026-09-13.md') is None,
                 'Immutable archive URL must remain external')
     return count
@@ -156,7 +160,7 @@ def main() -> None:
     require('Full AutoCAD parity' in report and 'not established' in report, 'Missing explicit report qualification boundary')
     links += check_links(ROOT, REPORT, report)
     check_retired_references(ROOT, paths)
-    print(f'PASS: two unchanged-policy workflow paths, three maintained documentation entry points, '
+    print(f'PASS: two core workflow paths, three maintained documentation entry points, '
           f'{links} existing local links, no live retired-checkpoint references; {count} negative controls rejected. '
           'Source hygiene only, not additional CAD conformance or native acceptance.')
 
