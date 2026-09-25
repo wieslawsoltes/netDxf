@@ -37,6 +37,7 @@
     <Compile Include="../shared/InsertGeometryCases.cs" Link="InsertGeometryCases.cs" />
     <Compile Include="../shared/InsertSequenceCases.cs" Link="InsertSequenceCases.cs" />
     <Compile Include="../shared/Polyline3DEditCases.cs" Link="Polyline3DEditCases.cs" />
+    <Compile Include="../shared/Polyline2DEditCases.cs" Link="Polyline2DEditCases.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net48'">
     <Reference Include="System.Numerics" />
