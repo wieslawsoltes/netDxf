@@ -2546,7 +2546,7 @@ namespace netDxf.IO
             this.chunk.Write(220, insert.Normal.Y);
             this.chunk.Write(230, insert.Normal.Z);
 
-            if (insert.Attributes.Count > 0)
+            if (insert.SequenceEnd != null)
             {
                 //Obsolete; formerly an entities follow flag (optional; ignore if present)
                 //AutoCAD will fail loading the file if it is not there, more DXF voodoo
@@ -2562,9 +2562,11 @@ namespace netDxf.IO
                 EndSequence endSequence = this.insertEndSequences[insert.Handle];
                 this.chunk.Write(0, endSequence.CodeName);
                 this.chunk.Write(5, endSequence.Handle);
-            this.WriteDatabaseMetadata(endSequence);
+                this.WriteDatabaseMetadata(endSequence);
+                this.chunk.Write(330, insert.Handle);
                 this.chunk.Write(100, SubclassMarker.Entity);
-                this.chunk.Write(8, this.EncodeNonAsciiCharacters(insert.Layer.Name));
+                this.chunk.Write(8, this.EncodeNonAsciiCharacters((endSequence.StoredLayer ?? insert.Layer).Name));
+                this.WriteXData(endSequence.XData);
             }
             else
             {
@@ -5218,12 +5220,10 @@ namespace netDxf.IO
 
         private void PreprocessInserts(Insert insert)
         {
-            EndSequence endSequence = new EndSequence
-            {
-                Owner = insert
-            };
-            this.doc.NumHandles = endSequence.AssignHandle(this.doc.NumHandles);
-
+            EndSequence endSequence = insert.SequenceEnd;
+            if (endSequence == null) return;
+            if (!ReferenceEquals(endSequence.Owner, insert) || !ReferenceEquals(this.doc.GetObjectByHandle(endSequence.Handle), endSequence))
+                throw new InvalidOperationException("The INSERT sequence terminator must be registered with its actual owner.");
             this.insertEndSequences.Add(insert.Handle, endSequence);
         }
 

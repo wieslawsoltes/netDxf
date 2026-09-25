@@ -72,6 +72,7 @@ namespace netDxf
             }
             foreach (Hatch hatch in removed.OfType<Hatch>()) hatch.ValidateOpaqueSourceRelease();
             if (this.OpaqueEntityReferencesRemoval(removed)) return true;
+            if (this.InsertSequenceReferencesRemoval(removed)) return true;
             if (this.StoredPolylineReferencesRemoval(removed)) return true;
             if (this.SectionReferencesRemoval(removed)) return true;
             foreach (DxfObject item in removed) if (SunReferences.Get(item) != null) return true;

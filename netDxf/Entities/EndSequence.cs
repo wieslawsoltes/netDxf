@@ -31,6 +31,10 @@ namespace netDxf.Entities
     internal class EndSequence :
         DxfObject
     {
+        // INSERT terminators retain a source layer; generated POLYLINE terminators
+        // continue to use their parent layer.
+        internal netDxf.Tables.Layer StoredLayer;
+
         /// <summary>
         /// Initializes a new instance of the <c>EndSequence</c> class.
         /// </summary>

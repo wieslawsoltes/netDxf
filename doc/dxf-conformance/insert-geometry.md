@@ -141,3 +141,10 @@ Native AutoCAD open/AUDIT/save/reopen, historical typed DXF, private FIELD/TABLE
 cache regeneration, dependency-complete imports, full version conversion,
 dynamic blocks, clipped/nested rendering and exhaustive text equivalence remain
 outside this increment. Full AutoCAD parity is not established.
+
+## Attribute-sequence qualification correction
+
+The initial independent run found missing SEQEND owners and unstable terminator
+handles. See [INSERT sequence identity and ownership](insert-sequences.md) for
+the retained-record correction, 132 additional shared cases, metadata/lifecycle
+coverage and the distinction between diagnostic replay and final-head evidence.

@@ -640,6 +640,7 @@ namespace netDxf.Entities
             {
                 entityNumber = attrib.AssignHandle(entityNumber);
             }
+            if (this.SequenceEnd != null) entityNumber = this.SequenceEnd.AssignHandle(entityNumber);
             return base.AssignHandle(entityNumber);
         }
 
@@ -650,6 +651,7 @@ namespace netDxf.Entities
         /// <returns>A new Insert that is a copy of this instance.</returns>
         public override object Clone()
         {
+            this.CheckSequenceEndClone();
             Polyline3D.RejectStoredRecordBlockClone(this.Block);
             // copy attributes
             List<Attribute> copyAttributes = new List<Attribute>();
@@ -682,6 +684,7 @@ namespace netDxf.Entities
             foreach (XData data in this.XData.Values)
                 entity.XData.Add((XData) data.Clone());
 
+            this.CopySequenceEndTo(entity);
             this.CopyCommonDataTo(entity);
             return entity;
         }

@@ -16,7 +16,7 @@ using Attribute = netDxf.Entities.Attribute;
 
 namespace NetDxf.Qualification
 {
-    internal static class InsertGeometryCases
+    internal static partial class InsertGeometryCases
     {
         internal sealed class Case
         {
@@ -139,6 +139,7 @@ namespace NetDxf.Qualification
         }
         internal static IEnumerable<Case> All(string? directory)
         {
+            foreach (var test in SequenceCases(directory)) yield return test;
             for(int p=0;p<3;p++)for(int m=0;m<7;m++)foreach(bool multiple in new[]{false,true})foreach(bool four in new[]{false,true})
             {
                 int plane=p,map=m;

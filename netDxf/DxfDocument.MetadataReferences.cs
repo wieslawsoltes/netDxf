@@ -21,7 +21,11 @@ namespace netDxf
             var result = new List<DxfObject>();
             if (owner == null) return result;
             result.Add(owner);
-            if (owner is Insert insert) foreach (netDxf.Entities.Attribute attribute in insert.Attributes) result.Add(attribute);
+            if (owner is Insert insert)
+            {
+                foreach (netDxf.Entities.Attribute attribute in insert.Attributes) result.Add(attribute);
+                if (insert.SequenceEnd != null) result.Add(insert.SequenceEnd);
+            }
             if (owner is Block block) result.Add(block.End);
             if (owner is Polyline3D polyline) foreach (Polyline3DRecord record in polyline.StoredRecords) result.Add(record);
             if (owner is PolygonMesh mesh) foreach (PolygonMeshRecord record in mesh.StoredRecords) result.Add(record);

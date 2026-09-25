@@ -15,5 +15,6 @@
   <ItemGroup>
     <Compile Include="../shared/PortableDoubleCases.cs" Link="PortableDoubleCases.cs" />
     <Compile Include="../shared/InsertGeometryCases.cs" Link="InsertGeometryCases.cs" />
+    <Compile Include="../shared/InsertSequenceCases.cs" Link="InsertSequenceCases.cs" />
   </ItemGroup>
 </Project>
