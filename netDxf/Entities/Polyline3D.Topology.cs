@@ -4,6 +4,26 @@ namespace netDxf.Entities
 {
     public partial class Polyline3D
     {
+        /// <summary>Replaces a point while preserving its retained VERTEX identity and metadata.</summary>
+        /// <param name="index">The zero-based index of the point to replace.</param>
+        /// <param name="position">The finite replacement position.</param>
+        /// <remarks>
+        /// Retained sequences require a registered parent in their source document and an unchanged
+        /// count and smoothing mode, just like the topology methods. The complete existing sequence
+        /// is validated before assignment. No handle is allocated. Exact coordinate bits determine
+        /// whether parent proxy graphics are invalidated, including the sign of zero.
+        /// </remarks>
+        public void SetVertex(int index, Vector3 position)
+        {
+            if (index < 0 || index >= this.vertexes.Count) throw new ArgumentOutOfRangeException(nameof(index));
+            ValidateTopologyPosition(position, nameof(position));
+            this.ValidateTopologyEdit();
+            Vector3 previous = this.vertexes[index];
+            if (!PrimitiveGeometryMutation.Assign(ref previous, position)) return;
+            this.vertexes[index] = position;
+            this.ClearProxyGraphics();
+        }
+
         /// <summary>Inserts a point and, for a retained sequence, a new owned VERTEX identity.</summary>
         /// <param name="index">The insertion index, from zero through Vertexes.Count.</param>
         /// <param name="position">The finite position of the inserted point.</param>
@@ -19,7 +39,7 @@ namespace netDxf.Entities
             ValidateTopologyPosition(position, nameof(position));
             if (this.vertexes.Count >= 65536) throw new NotSupportedException("A polyline topology edit cannot exceed 65,536 vertices.");
             DxfDocument document = this.ValidateTopologyEdit();
-            if (!this.HasStoredRecords) { this.vertexes.Insert(index, position); return; }
+            if (!this.HasStoredRecords) { this.vertexes.Insert(index, position); this.ClearProxyGraphics(); return; }
             Polyline3DRecord inserted = document.PreparePolylineVertexInsertion(this, position);
             // Reserve list storage before committing registration. The new record has no user
             // metadata or callbacks; registration only installs internal metadata bookkeeping.
@@ -28,6 +48,7 @@ namespace netDxf.Entities
             document.RegisterPolylineVertexInsertion(inserted);
             this.vertexes.Insert(index, position);
             this.storedVertexRecords.Insert(index, inserted);
+            this.ClearProxyGraphics();
         }
 
         /// <summary>Removes a point and its retained VERTEX after checking incoming dependencies.</summary>
@@ -43,7 +64,7 @@ namespace netDxf.Entities
         {
             if (index < 0 || index >= this.vertexes.Count) throw new ArgumentOutOfRangeException(nameof(index));
             DxfDocument document = this.ValidateTopologyEdit();
-            if (!this.HasStoredRecords) { this.vertexes.RemoveAt(index); return; }
+            if (!this.HasStoredRecords) { this.vertexes.RemoveAt(index); this.ClearProxyGraphics(); return; }
             if (this.vertexes.Count <= 2) throw new InvalidOperationException("A retained 3D polyline must keep at least two vertices for output.");
             Polyline3DRecord removed = this.storedVertexRecords[index];
             document.ValidatePolylineVertexRemoval(removed);
@@ -52,6 +73,7 @@ namespace netDxf.Entities
             this.storedVertexRecords.RemoveAt(index);
             removed.Owner = null;
             removed.IsRemoved = true;
+            this.ClearProxyGraphics();
         }
 
         /// <summary>Moves a point and its retained VERTEX identity to a final zero-based index.</summary>
@@ -77,6 +99,7 @@ namespace netDxf.Entities
                 this.storedVertexRecords.RemoveAt(fromIndex);
                 this.storedVertexRecords.Insert(toIndex, record);
             }
+            this.ClearProxyGraphics();
         }
 
         private DxfDocument ValidateTopologyEdit()
