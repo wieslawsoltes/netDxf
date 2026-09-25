@@ -121,7 +121,7 @@ not waive those requirements.
 Feature contracts and PR discussions retain the implementation history. The
 [previous expanded README](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/README.md)
 is available at its immutable baseline; it is not a current missing-feature list.
-The [upstream update history](Updates.txt) and original documentation assets remain.
+The original documentation assets and licensing material remain.
 
 netDxf was originally developed by Daniel Carvajal. This repository and its
 contributors continue that work under the [MIT License](LICENSE). Existing
