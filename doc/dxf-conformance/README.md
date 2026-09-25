@@ -1,67 +1,133 @@
-# DXF conformance work
+# DXF contracts and qualification
 
-Start with the [current version and feature comparison](version-feature-matrix.md), with typed editing distinguished from raw preservation and each format family shown separately. The machine-readable source is [coverage.json](coverage.json). It includes evidence links, a pinned production commit/tree, explicit missing/lossy/rejected states, and the remaining implementation sequence.
+Start with the [remaining major parity gaps](remaining-major-gaps.md) for the
+reviewed baseline, priorities and acceptance criteria. This page indexes the
+implementation contracts; it is not a running copy of every PR description.
 
-The [recovery and stored-style editing checkpoint](checkpoint-recovery-editing-2026-09-15.md) records PR #95 and its combined qualification. It integrates [ordinary legacy 2D child records](polyline2d-records.md), [MESH public declaration framing](mesh-field-framing.md), [bounded periodic HATCH conversion/evaluation](hatch-periodic-conversion.md), [TABLESTYLE scalar edits](table-style-editing.md), [CELLSTYLEMAP entry-name replacement](cell-style-map-editing.md), and their [eleventh mixed graph](eleventh-mixed.md). Final qualification records 34,836 passing cases and 127 independent gates in each local configuration, all four Linux/Windows implementation CI jobs, and 297 scoped rows across nine format profiles. Source-bound packet preservation, explicit editing, sampled curve evaluation and native application qualification remain distinct claims.
+**Full AutoCAD parity is not established.** Ordered preservation, typed editing,
+geometric evaluation, coordinated regeneration and native application acceptance
+are different claims. A stored object or a passing round trip does not prove
+that its native behavior is implemented.
 
-The [editing, retained-record and opaque-entity checkpoint](checkpoint-editing-opaque-2026-09-15.md) records PR #94: 33,296 passing cases and 121 independent gates in each local configuration, all four Linux/Windows implementation CI jobs, all five Release library targets, and 291 scoped rows. It adds [TABLEGEOMETRY replacement](table-geometry-editing.md), [SECTION_MANAGER creation and erasure](section-manager-lifecycle.md), [retained Polyface records](polyface-records.md), [explicit HATCH pattern affine transforms](hatch-pattern-affine.md), [TABLECONTENT edits](table-content-editing.md), [standalone opaque entities](opaque-entities.md), and the [tenth mixed graph](tenth-mixed.md). Qualified opaque HATCH backlink release, collection insertion and retained child removal guards have preserved before/after evidence. The integration receipt pins source and CI artifacts; module notes distinguish native packets from declared schema carriers and keep evaluation, regeneration and unknown private dependencies outside their claims.
+## How to read the evidence
 
-The preceding [map, mesh and conic checkpoint](checkpoint-map-mesh-conic-2026-09-15.md) records PR #93: 30,772 passing cases and 112 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 284 scoped rows. It adds stored CELLSTYLEMAP access, explicit SECTION_MANAGER membership editing, retained PolygonMesh records, affine HATCH conics and bounded target-version diagnostics. The integration receipt pins exact source and verified CI artifacts. The CELLSTYLEMAP getter return-type change requires consumers to recompile; its migration is documented.
+The [coverage ledger](coverage.json) and its [generated comparison](version-feature-matrix.md)
+are explicitly source-pinned historical evidence: their recorded audit is
+15 September 2026, PR #95. They are not a current count of every implemented
+feature. Later feature notes and PR receipts retain their own source identities,
+fixtures, execution scope and limitations. Do not promote broad support rows
+using only a larger suite count or a newer commit label.
 
-The [stored reference and editing checkpoint](checkpoint-stored-editing-2026-09-15.md) records PR #92: 29,293 passing cases and 106 independent gates in each local configuration, all four platform CI jobs, all five Release library targets, and 278 scoped rows. SUNSTUDY/TABLEGEOMETRY storage, VIEW live-section references, explicit retained Polyline3D topology and direct HATCH transforms have separate source and lifecycle contracts. The integration receipt pins the verified source archive and distinguishes storage from evaluation.
+Feature documents may also record earlier implementations. Read their source
+pins and subsequent PR corrections before treating a historical limitation or
+normalization policy as current. The new major-gap report separates confirmed
+merged work from pending draft branches; it does not rewrite old test evidence.
 
-The [POLYFACE and PolygonMesh integrity checkpoint](checkpoint-polyline-integrity-2026-09-15.md) records PR #91: 28,627 passing cases and 100 independent gates in each local configuration, all five Release library targets, and 272 scoped rows. All four implementation CI jobs passed; Linux Release also passed all 100 independent gates. Signed face topology, independent clones and exact polygon-grid cardinality have explicit evidence; arbitrary child metadata and native smooth-surface regeneration remain outside this increment.
+| Claim | Required evidence |
+|---|---|
+| API behavior | Tests of the actual library, including no-op and rejected edits |
+| Wire preservation | Applicable versions/transports, exact records and reference identities |
+| Independent interoperability | Actual exported drawings checked by an independent implementation |
+| Installed-package execution | The loaded assembly hash and the tested runtime/scenarios |
+| Native AutoCAD equivalence | Reproducible native open/AUDIT/regenerate/save/reopen and relevant visual checks |
 
-The merged [SECTION_MANAGER, HATCH and source identity checkpoint](checkpoint-section-hatch-2026-09-15.md) records PR #90: 27,555 passing cases, 98 independent gates per configuration and 272 scoped rows. The [association and child-record recovery checkpoint](checkpoint-recovery-2026-09-15.md) records PR #89: 26,980 passing cases, 96 independent gates in each local configuration, all five Release library targets, and a 270-row scoped comparison. It follows the [SECTION, style, field and sun checkpoint](checkpoint-section-storage-2026-09-15.md) for PR #88 and the [TABLE, DATATABLE and index checkpoint](checkpoint-table-storage-2026-09-15.md). Stored schemas, typed lifecycle operations, evaluation and native application qualification remain separate claims.
+## Transport, profiles and safe IO
 
-`DxfDocument` admits the six 2000–2018 format families. `DxfRawDocument` additionally admits R11/R12, R13 and R14 for ordered preservation and scoped immutable edits. Unknown raw records surviving is not evidence that the typed model can edit or evaluate them. No completeness percentage is inferred from test count.
+`DxfDocument` admits the six 2000–2018 DXF format families, subject to per-feature
+restrictions. `DxfRawDocument` additionally admits R11/R12, R13 and R14 for ordered
+preservation and selected edits. Historical raw support is not historical typed
+editing or universal version conversion.
 
-The [12 September source-pinned 113-row snapshot](version-feature-matrix-2026-09-12.md) is retained as history; its missing raw/VIEW/CLASSES/UCS entries are no longer the current state. Subsequent feature notes record their own baselines, red/green tests, version contracts and remaining boundaries.
+Read the [raw handle index](raw-handle-index.md), [guarded handle operations](raw-handle-operations.md),
+[embedded-handle context](raw-embedded-handle-context.md), [atomic-save contract](atomic-file-save.md)
+and [portable numeric parsing](portable-double-parsing.md). File replacement,
+stream ownership, graph publication and caller callbacks have different failure
+boundaries. Unknown data preservation does not authorize guessing its semantics.
 
-The current major modules cover [typed named-object graphs](named-object-database.md), [raw OBJECTS transactions](raw-object-transactions.md), [MTEXT columns](mtext-columns.md), [VPORT configurations](vport-records.md), and [LWPOLYLINE packet/reversal integrity](lwpolyline-integrity.md). Each note defines its admitted storage profiles, mutation rules, and qualification limits. Mixed database tests exercise references among duplicate-name VPORT records, MTEXT groups, extension dictionaries, XRECORDs, XDATA, and reactors.
+## Object graphs, resources and retained records
 
-Additional integrated modules add [optional LWPOLYLINE widths and vertex identifiers](lwpolyline-fidelity.md), [common graphical metadata and opaque proxy caches](common-entity-data.md), [typed pointer buffers, draw order and spatial filters](typed-containers.md), [VIEW/VPORT UCS relationships](view-ucs-relationships.md), and [public GEODATA coordinate metadata](geodata.md). Version gates and independent producer fixtures are documented per module. These schemas store and edit data; geographic transformations, clipping evaluation and proxy rendering are separate capabilities.
+| Area | Contracts |
+|---|---|
+| Objects and references | [Named-object database](named-object-database.md), [raw OBJECTS transactions](raw-object-transactions.md), [common entity data](common-entity-data.md), [APPID/XData lifecycle](appid-xdata-lifecycle.md) |
+| Containers and contexts | [Typed containers](typed-containers.md), [VIEW/UCS relationships](view-ucs-relationships.md), [VPORT records](vport-records.md), [GEODATA](geodata.md) |
+| Legacy polylines | [2D retained records](polyline2d-records.md), [3D retained records](polyline3d-records.md), [3D topology](polyline3d-topology.md), [3D explicit editing](polyline3d-edits.md) |
+| Legacy meshes | [POLYFACE grammar](polyface-grammar.md), [retained POLYFACE records](polyface-records.md), [polygon cardinality](POLYGONMESH_CARDINALITY.md) |
+| INSERT | [Affine geometry and atomic attributes](insert-geometry.md), [registered sequence terminators](insert-sequences.md) |
 
-The next integrated batch adds [stored MULTILEADER contexts and styles](multileader-contexts.md), [inert ACIS SAT envelopes](acis-sat.md), [STYLE font fidelity](text-style-fidelity.md), [DIMSTYLE settings and overrides](dimstyle-stored-settings.md), [standalone and embedded output settings](output-settings.md), and [attribute empty-value invariants](attribute-default-values.md). Eighteen mixed scenarios exercise shared resources and explicit cross-document mappings across the qualified profiles.
+Source-bound metadata and protected-removal contracts are deliberate. A refused
+clone or import is not equivalent to lost data; dependency-complete operations
+must preserve aliases, ownership and references rather than bypass those guards.
 
-The [parallel module checkpoint](checkpoint-modules-2026-09-14.md) records the PR #83, #84 and #85 increments, exact implementation source, the combined 22,047-case suite, independent verification and remaining qualification limits.
+## FIELD, TABLE and text
 
-Recent implementation evidence: [SPLINE reversal](spline-knot-reversal.md), [atomic saves](atomic-file-save.md), [raw handle indexing](raw-handle-index.md), [guarded remapping](raw-handle-operations.md), [empty HATCH retention](empty-hatch-retention.md), and [embedded-object safety](raw-embedded-handle-context.md). The comparison also reconciles [ACI metadata](hatch-gradient-aci.md), [MESH output validation](mesh-write-validation.md), [stored SPLINE clones](spline-clone-state.md), [Bezier domains](bezier-knot-parameterization.md), [periodic input](spline-periodic-input.md), [typed HELIX](helix.md) and [analytic authoring](helix-authoring.md).
+| Area | Contracts |
+|---|---|
+| FIELD evaluation | [Persistent results](field-results.md), [bounded standard evaluator](standard-field-evaluation.md), [atomic literal text hosts](field-text-hosts.md) |
+| TABLE operations | [Calculation, styles and measured layout](table-calculation-layout.md), [display selection](table-display-binding.md), [content editing](table-content-editing.md), [geometry editing](table-geometry-editing.md) |
+| Stored styles | [TABLESTYLE edits](table-style-editing.md), [CELLSTYLEMAP](cell-style-map.md), [map editing](cell-style-map-editing.md), [format editing](cell-style-format-editing.md) |
+| Text and dimensions | [Font/style fidelity](text-style-fidelity.md), [MTEXT columns](mtext-columns.md), [stored DIMSTYLE settings](dimstyle-stored-settings.md), [MULTILEADER contexts](multileader-contexts.md) |
 
-The [merged 14 September checkpoint](checkpoint-merged-2026-09-14.md) records PRs #69–#75, 1,173 additional cases since PR #68, the 16,765-case production suite and exact final-head CI/source checks. The current comparison is regenerated from the ledger; this older checkpoint is not the current feature count. The [earlier 14 September checkpoint](checkpoint-2026-09-14.md), [13 September HATCH checkpoint](checkpoint-hatch-2026-09-13.md), [earlier checkpoint](checkpoint-2026-09-13.md) and [PR #50 HATCH audit](hatch-remaining-audit.md) remain historical, not current missing-feature lists.
+The standard FIELD evaluator already includes explicit variables, arithmetic,
+child slots, date masks and angular formatting. Broader providers and native
+contexts remain separate. TABLE calculation, layout construction and display
+selection are implemented components, not a transaction that regenerates every
+inline, backing and private representation. Native font metrics, column reflow
+and all visual placement policies require their own providers and evidence.
 
-## Updating the comparison
+## Geometry, display payloads and sections
 
-Edit `coverage.json`, then regenerate. Python 3.10+ is required; CI selects Python 3.12 and checks the ledger and its generated output on Linux and Windows.
+| Area | Contracts |
+|---|---|
+| Curves | [SPLINE reversal](spline-knot-reversal.md), [periodic input](spline-periodic-input.md), [Bezier domains](bezier-knot-parameterization.md), [HELIX](helix.md), [HELIX authoring](helix-authoring.md) |
+| HATCH | [Empty retention](empty-hatch-retention.md), [pattern affine transforms](hatch-pattern-affine.md), [periodic conversion](hatch-periodic-conversion.md), [graphics coherence](hatch-graphics.md) |
+| Raster and underlays | [IMAGE affine geometry](image-affine.md), [IMAGE appearance](image-appearance.md), [UNDERLAY affine geometry](underlay-affine.md), [UNDERLAY scales](underlay-scales.md), [WIPEOUT geometry](wipeout-affine.md) |
+| Modern MESH and private data | [MESH preflight](mesh-write-validation.md), [field framing](mesh-field-framing.md), [inert ACIS envelopes](acis-sat.md), [opaque entities](opaque-entities.md) |
+| Sections and output | [Stored section manager](section-manager.md), [membership](section-manager-membership.md), [lifecycle](section-manager-lifecycle.md), [output settings](output-settings.md) |
+
+Finite/rank/tolerance admission and approximation limits are part of each
+geometry contract. Cache invalidation does not generate replacement graphics.
+Preserving an external file reference or a proxy payload does not decode or render
+that content. Direct mutable-list/array edits can bypass notifications; use the
+validated operations where available and follow the documented caller obligations.
+
+## Reproduce checks
+
+The [CI and release guide](../CI-RELEASE.md) defines the build, full-conformance,
+independent-output and installed-package matrices. Keep the two core workflows
+and their source-binding/publication guards intact. Feature verifiers are
+discovered by the existing runner, not by adding one workflow per feature.
 
 ```sh
-python tools/generate_dxf_coverage.py
+python -m pip install -r tools/requirements-independent.txt
+dotnet run --project tests/netDxf.Conformance -c Debug
+dotnet run --project tests/netDxf.Conformance -c Release
+python tools/run_independent_verifiers.py artifacts/conformance
 python tools/generate_dxf_coverage.py --check
 python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
 ```
 
-The validator checks schema/version columns, unique IDs, evidence paths, typed admission, and generated-output freshness. It does **not** prove implementation correctness or historical schema legality. Changes to support status must be backed by production changes and regression evidence, not just ledger edits.
+The new `tools/verify_repository_hygiene.py` is a source-maintenance check, not
+an additional CAD behavior test. It checks the two-workflow policy, compact
+entry-point documentation, existing inline links and retired-checkpoint
+references. Its execution status belongs in the cleanup PR's actual evidence.
 
-## Source and regression evidence
+Build results, previous local runs, constructed checker self-tests and current
+hosted results must be labeled separately. Qualify the final reviewed tree.
+Keep failed results and corruption controls; do not normalize an unstable
+identity merely to make an output comparison pass.
 
-The [Roslyn field-audit tool](../../tools/netDxf.FieldAudit/README.md) regenerates syntax evidence in CI. Linux Debug artifacts contain `field-audit/field-inventory.json`, `field-audit/field-inventory.md`, regression reports, generated DXF fixtures and an exact source archive. The Python `tools/verify_*.py` scripts provide independent ezdxf checks. Install `tools/requirements-independent.txt`, then run `python tools/run_independent_verifiers.py artifacts/conformance`. Linux Release CI runs every verifier and retains individual logs plus `artifacts/independent/results.json`; failed checks, timeouts and missing fixtures fail the job. The dependency is development-only and is not loaded by the library.
+## Historical narratives
 
-Feature changes are grouped into reviewable PRs with applicable version/transport fixtures, explicit downgrade/preservation semantics, and verified final-head CI before merge. Opaque preservation, semantic editing, geometric/rendering evaluation, and native AutoCAD validation remain separate claims. Full standard capability is still an open goal at the pinned snapshot.
+The [previous expanded index](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/README.md)
+retains the original chronological navigation. Three superseded narrative
+checkpoints are available unchanged in Git history rather than as current
+missing-feature lists:
 
-Stored [UCS-record orthographic base references](ucs-record-base.md) preserve the distinct79/346 relationship, actual target identities and explicit-null presence. Independent producer packets qualify storage and lifecycle behavior; the published schema contradiction and lack of positive native packets remain documented.
+- [PR #41 / 13 September](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/checkpoint-2026-09-13.md).
+- [PR #50 / HATCH](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/checkpoint-hatch-2026-09-13.md).
+- [PR #58 / 14 September](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/checkpoint-2026-09-14.md).
 
-Loaded [ordinary 3D POLYLINE child records](polyline3d-records.md) retain VERTEX and SEQEND identities, optional packets, common metadata and exact native association references. The focused module has 382 Debug/Release cases and 90 independently checked outputs, including clone/removal guards and parent-reactor moves. It remains source/profile bound; fitted records and full metadata-graph cloning remain separate work. [Ordinary legacy 2D records](polyline2d-records.md) now have their own retained-parent/child, optional-width, source-profile and removal contracts. Explicit [retained 3D topology operations](polyline3d-topology.md) support insertion, removal and movement under their documented guards.
-
-The [stored section manager](section-manager.md) retains the stored update flag,
-ordered section pointers and exact source identities with root-anchor and lifecycle
-guards. One unchanged R2018 native drawing and explicit R2007+ schema cases qualify
-storage. [Explicit membership replacement](section-manager-membership.md) edits its
-ordered list and flag atomically. [Database creation and guarded erasure](section-manager-lifecycle.md)
-now manage explicit manager lifecycles while preserving member identities; live sectioning,
-section generation and automatic membership maintenance remain separate.
-
-[POLYFACE face grammar and clone isolation](polyface-grammar.md) qualify signed indices,
-zero termination, advisory counts and independent face lifecycles across both
-transports. The newer [retained-record subset](polyface-records.md) adds source identities,
-physical record order and qualified common metadata with fixed-topology edits. Private
-metadata graphs and unrestricted topology changes remain outside that scope.
+Feature contracts, native fixtures, qualification records, the historical
+ledger, upstream notes and licensing material remain. The JavaScript port in
+PR #98 has separate fixed-reference and differential gates; C# results do not
+waive them.
