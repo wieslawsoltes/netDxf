@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Numerics;
+using BigInteger = System.Numerics.BigInteger;
 using System.Reflection;
 using System.Linq;
 using System.Text;
