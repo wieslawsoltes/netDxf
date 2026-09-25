@@ -180,8 +180,12 @@ namespace NetDxf.Qualification
             Check(insert.Attributes.Count == 0 && ReferenceEquals(insert.EndSequenceRecord, end), "Empty sequence discarded");
             var loaded = Load(Save(doc, binary)); var empty = (Insert)loaded.GetObjectByHandle(insert.Handle);
             Check(empty.Attributes.Count == 0 && empty.EndSequenceRecord.Handle == old, "Empty sequence did not round trip");
-            var clone = (Insert)empty.Clone(); Check(clone.EndSequenceRecord != null && clone.EndSequenceRecord.Handle == null, "Clone retained source identity");
-            loaded.Entities.Add(clone); Check(clone.EndSequenceRecord.Handle != old && ReferenceEquals(clone.EndSequenceRecord.Owner, clone), "Clone terminator alias");
+            var clone = (Insert)empty.Clone();
+            var cloneEnd = clone.EndSequenceRecord ?? throw new InvalidDataException("Clone lost sequence terminator");
+            Check(cloneEnd.Handle == null, "Clone retained source identity");
+            loaded.Entities.Add(clone);
+            Check(ReferenceEquals(clone.EndSequenceRecord, cloneEnd) && cloneEnd.Handle != old
+                && ReferenceEquals(cloneEnd.Owner, clone), "Clone terminator alias");
             var external = new DxfXRecord(); loaded.NamedObjects.Add("SQ_REFERENCE", external); external.Data.Add(new DxfTag(330, old));
             bool refused = false; try { refused = !loaded.Entities.Remove(empty); } catch (InvalidOperationException) { refused = true; }
             Check(refused && ReferenceEquals(loaded.GetObjectByHandle(old), empty.EndSequenceRecord), "Referenced terminator removed");
