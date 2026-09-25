@@ -76,6 +76,29 @@ namespace netDxf.Entities
         private void ValidateEditedVertexPacket(int index, double? startWidth, double? endWidth, double bulge)
         {
             if (!this.HasStoredRecords) return;
+            this.ValidateEditedVertexPacketTotal(this.EditedVertexPacketDelta(index, startWidth, endWidth, bulge));
+        }
+
+        // Called after the existing full-state validation. Budget the final packets before any
+        // live width, order, default, or proxy state changes. Bulk validation remains linear.
+        private void ValidateBulkVertexPackets(bool reverse, double width)
+        {
+            if (!this.HasStoredRecords) return;
+            long delta = 0;
+            for (int i = 0; i < this.vertexes.Count; i++)
+            {
+                Polyline2DVertex source = this.vertexes[reverse
+                    ? (i == 0 ? this.vertexes.Count - 1 : i - 1) : i];
+                delta += this.EditedVertexPacketDelta(i,
+                    reverse ? source.EndWidthOverride : width,
+                    reverse ? source.StartWidthOverride : width,
+                    reverse ? -source.Bulge : source.Bulge);
+            }
+            this.ValidateEditedVertexPacketTotal(delta);
+        }
+
+        private int EditedVertexPacketDelta(int index, double? startWidth, double? endWidth, double bulge)
+        {
             Polyline2DRecord record = this.storedVertexRecords[index];
             // Match GeometryTags' existing optional-field policy without staging anything on the
             // live vertex. Adding absent widths or a nonzero bulge must not exceed packet budgets.
@@ -85,6 +108,11 @@ namespace netDxf.Entities
             int delta = proposed - record.GeometryTags().Count;
             if (record.TopologyTagCount() + delta > 4096)
                 throw new NotSupportedException("The edited retained legacy vertex would exceed its packet tag admission budget.");
+            return delta;
+        }
+
+        private void ValidateEditedVertexPacketTotal(long delta)
+        {
             long total = delta;
             foreach (Polyline2DRecord item in this.StoredRecords) total += item.TopologyTagCount();
             if (total > 1048576)

@@ -55,14 +55,41 @@ vertex properties likewise leave the collection's enumeration version alone.
 Reader hydration's late common-data attachment and clone copying are unchanged.
 No replacement graphics are fabricated.
 
-Reverse retains its existing complete validation, mutation and cache behavior;
-its identity/finite-sequence validator is shared with the new explicit methods.
-The old reversal exception wording remains unchanged. No other geometry
-algorithm or serializer is modified.
+Reverse retains its existing identity/finite-sequence validation, segment
+orientation, inherited-default swapping and cache behavior. The added prospective
+packet validation described below runs before any list reversal or default edit.
+Existing exception wording for existing validation stays unchanged; no serializer
+or curve algorithm is modified.
+
+## Bulk packet preflight
+
+`SetConstantWidth` can add two previously absent fields to every retained
+VERTEX. `Reverse` can move outgoing width/bulge fields onto a different retained
+record with a different metadata size. Checking only the *current* packet sizes
+allowed either operation to mutate successfully into a state later rejected by
+Save. Both operations now preflight each final record and the final aggregate
+tag count before changing a live vertex, ordering, defaults, ConstantWidth or
+proxy bytes. Single-vertex and bulk edits share the same candidate-count helper;
+the bulk traversal is linear, not a full-chain scan per point.
+
+The unchanged limits are library admission budgets, not Autodesk DXF format
+limits: 4,096 tags per retained record and 1,048,576 for the retained chain.
+Counts use the existing GeometryTags optional-field policy and include existing
+child metadata/XData. Both exact boundaries are admitted. Adding one tag beyond
+a boundary rejects without partially applying the requested edit. The existing
+current-state validation still runs first, so this is not an API for repairing
+already inadmissible source records.
+
+No-op SetConstantWidth at a full packet preserves state, cache and active list
+enumerators. Invalid scalar candidates retain their existing rejection. The
+ordinary non-retained paths, unsupported smoothing modes, existing source
+ownership spellings and removal/reference guards are unchanged. Reversal already
+swapped legacy start/end defaults; this continuation preserves and tests that
+behavior rather than reimplementing it.
 
 ## Verification
 
-The shared harness defines 408 cases: 90 header cases, 81 vertex changes,
+The original shared edit harness defines 408 cases: 90 header cases, 81 vertex changes,
 27 exact no-ops, 171 refusal cases, 15 grouped scalar/packet-budget/clone/mapping/
 identity cases, and 24 version/transport/representation matrices. It is included
 in conformance, ordinary installed-package consumption and each existing exact
@@ -91,6 +118,22 @@ interpretation and zero database audit errors/repairs. Corrupted flags, scalar
 bits, missing/extra widths, stale/missing proxies, owners, record identities and
 fixture inventories must reject. Passing definitions are not execution evidence;
 actual runs and source hashes belong in the accompanying qualification record.
+
+The bulk continuation adds 47 shared cases, for 455 combined cases. Eighteen
+per-record cases cover both operations, three cache states and sizes immediately
+below/at/above the prospective limit; three grouped no-op cases exercise all
+representations; two 256-vertex cases cover exact aggregate admission and a
+one-tag overflow while every individual candidate fits. Twenty-four matrices
+exercise six versions, both transports and both bulk operations, generating
+72 additional source/output/opposite-format-resave drawings. Each contains one
+parent, four retained vertices and one terminator at a real packet boundary.
+
+The separate bulk verifier checks all 72 parents / 288 VERTEX records, inherited
+defaults, optional widths, exact coordinate and signed-bulge bits, unchanged
+metadata, packet sizes, ordered identities, source-versus-edited proxy bytes and
+following LINE geometry. Cross-save identities are never normalized. The
+same-compiled-test comparison and actual output replay belong in PR evidence;
+these definitions do not imply hosted or native AutoCAD qualification.
 
 ## Boundaries and primary references
 

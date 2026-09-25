@@ -15,5 +15,6 @@
     <Compile Include="../shared/InsertSequenceCases.cs" Link="InsertSequenceCases.cs" />
     <Compile Include="../shared/Polyline3DEditCases.cs" Link="Polyline3DEditCases.cs" />
     <Compile Include="../shared/Polyline2DEditCases.cs" Link="Polyline2DEditCases.cs" />
+    <Compile Include="../shared/Polyline2DBulkEditCases.cs" Link="Polyline2DBulkEditCases.cs" />
   </ItemGroup>
 </Project>

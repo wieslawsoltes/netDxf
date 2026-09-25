@@ -278,6 +278,7 @@ namespace netDxf.Entities
                 return;
             }
 
+            this.ValidateBulkVertexPackets(true, 0.0);
             this.vertexes.Reverse();
             this.ReverseStoredRecords();
 

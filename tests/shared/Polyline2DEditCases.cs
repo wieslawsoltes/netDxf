@@ -15,7 +15,7 @@ using netDxf.Tables;
 
 namespace NetDxf.Qualification
 {
-    internal static class Polyline2DEditCases
+    internal static partial class Polyline2DEditCases
     {
         internal sealed class Case
         {
@@ -156,6 +156,7 @@ namespace NetDxf.Qualification
             }
             foreach (var version in Versions) foreach (bool binary in new[] { false, true }) foreach (bool legacy in new[] { false, true })
                 yield return new Case($"wire/{version}/{binary}/{legacy}", () => Wire(version, binary, legacy, directory));
+            foreach (var item in BulkCases(directory)) yield return item;
         }
         internal static void VerifyInstalled()
         { foreach (var item in All(null)) try { item.Test(); } catch (Exception error) { throw new InvalidOperationException("Installed Polyline2D edit: " + item.Id, error); } }
