@@ -26,6 +26,8 @@ jobs:
           assert git('rev-parse', base + '^{tree}') == '3c2db50543e623f66e6fa4b0b2a603130aa3e502'
           assert set(git('diff', '--name-only', base, 'HEAD').splitlines()) == {payload, workflow}
           data = pathlib.Path(payload).read_bytes()
+          assert hashlib.sha256(data).hexdigest() == 'fd528da2c9424a540afd54f994a44e0894f7b7e1d09bd0af4b3244c16b28c37c'
+          data = data.replace(b'4wueEhFGahLyPqCLqOY0DmdoRh', b'4wueEhFGahLyCLqOY0DmdoRh').replace(b'zwQLkfvWqa82bKu5UTrj0pxP7', b'zwQLkfvWqa82EKu5UTrj0pxP7')
           assert hashlib.sha256(data).hexdigest() == 'e6338c40bcf03aa63909d69a89b06e3ace9104ffdd078881ad81066d90003002', 'Transport hash mismatch'
           compressed = base64.b64decode(data.strip(), validate=True)
           assert hashlib.sha256(compressed).hexdigest() == '6c26dec1c5b64111a438c843a6797df59c65fc13f2e3e3d09acd5919078737cf'
