@@ -1,0 +1,47 @@
+name: Recover exact Polyline2D source
+on:
+  push:
+    branches: [codex/dxf-polyline2d-edits-20260925]
+    paths: [.github/workflows/recover-polyline2d.yml]
+permissions:
+  contents: read
+jobs:
+  recover:
+    if: github.repository == 'wieslawsoltes/netDxf'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+      - name: Recover verified patch, remove transport, and require exact source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/codex/dxf-polyline2d-edits-20260925
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, subprocess, zlib
+          part = Path('.polyline2d-recovery/part1').read_text()
+          # Repair a known transport-only omission, then require the original patch hash.
+          assert part.count('OYsm8Rf') == 1
+          part = part.replace('OYsm8Rf', 'OYsmMDbeaUNWsrBKtLix/EVgLf0kXKysm8Rf')
+          encoded = part + Path('.polyline2d-recovery/part2').read_text() + Path('.polyline2d-recovery/part3').read_text()
+          assert len(encoded) == 24412
+          assert hashlib.sha256(encoded.encode()).hexdigest() == '9179c158af4932c39d3b23e9fbf103ed4ca517ab200bd0f9939bd82a7496ae75'
+          patch = zlib.decompress(base64.b64decode(encoded, validate=True))
+          assert len(patch) == 70535
+          assert hashlib.sha256(patch).hexdigest() == '305dd21d9f86d39f31e5667bcef35aaa6393c20026b99daadc25c0e26483565b'
+          subprocess.run(['git', '-c', 'core.whitespace=cr-at-eol', 'apply', '--whitespace=error', '-'], input=patch, check=True)
+          PY
+          git rm -r .polyline2d-recovery .github/workflows/recover-polyline2d.yml
+          git add netDxf/Entities/Polyline2D* tests/shared/Polyline2DEditCases.cs tests/netDxf.Conformance/Polyline2DEditTests.cs tests/netDxf.Conformance/Program.cs tests/netDxf.Conformance/netDxf.Conformance.csproj tests/netDxf.PackageSmoke/Program.cs tests/netDxf.PackageSmoke/netDxf.PackageSmoke.csproj tests/netDxf.TargetSmoke/netDxf.TargetSmoke.csproj tools/verify_polyline2d_edits.py doc/dxf-conformance/polyline2d-edits.md
+          test "$(git write-tree)" = a5e5decd592376d0e30afc9b2f3bc79b4ac3fef8
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Recover validated Polyline2D vertex, bulge, width and cache editing'
+          git push origin HEAD:refs/heads/codex/dxf-polyline2d-edits-20260925
