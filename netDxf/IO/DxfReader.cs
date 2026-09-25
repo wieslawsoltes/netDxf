@@ -8444,6 +8444,7 @@ namespace netDxf.IO
             short n = 0;
             short densityM = 0;
             short densityN = 0;
+            short storedDensityM = 0, storedDensityN = 0;
             List<Vertex> vertexes = new List<Vertex>();
             List<XData> xData = new List<XData>();
             
@@ -8475,6 +8476,7 @@ namespace netDxf.IO
                         break;
                     case 73:
                         densityM = this.chunk.ReadShort();
+                        storedDensityM = densityM;
                         if (densityM < 3 || densityM > 201)
                         {
                             densityM = (short) (this.doc.DrawingVariables.SurfU + 1);
@@ -8483,6 +8485,7 @@ namespace netDxf.IO
                         break;
                     case 74:
                         densityN = this.chunk.ReadShort();
+                        storedDensityN = densityN;
                         if (densityN < 3 || densityN > 201)
                         {
                             densityN = (short) (this.doc.DrawingVariables.SurfV + 1);
@@ -8522,7 +8525,7 @@ namespace netDxf.IO
             if (smoothType == PolylineSmoothType.NoSmooth && ((int)flags & ~129) == 8)
                 return this.ReadStoredPolylineSequence(flags, normal, xData);
             if (surfaceType == 0 && ((int)flags & ~33) == 16)
-                return this.ReadStoredPolygonMeshSequence(flags, normal, xData, m, n);
+                return this.ReadStoredPolygonMeshSequence(flags, normal, xData, m, n, storedDensityM, storedDensityN);
 
             //begin to read the vertex list (although it is not recommended the vertex list might have 0 entries)
             while (this.chunk.ReadString() != DxfObjectCode.EndSequence)

@@ -5132,6 +5132,7 @@ namespace netDxf.IO
                     Handle = pMesh.Handle, SubclassMarker = SubclassMarker.PolygonMesh,
                     Layer = pMesh.Layer, Normal = pMesh.Normal, Color = pMesh.Color,
                     Flags = pMesh.Flags, SmoothType = pMesh.SmoothType, M = pMesh.U, N = pMesh.V,
+                    DensityM = pMesh.DensityU, DensityN = pMesh.DensityV,
                     StoredMeshSource = pMesh
                 };
                 stored.XData.AddRange(pMesh.XData.Values); this.polylines.Add(pMesh.Handle, stored); return;
@@ -5209,8 +5210,8 @@ namespace netDxf.IO
                 SmoothType = pMesh.SmoothType,
                 M = pMesh.U,
                 N = pMesh.V,
-                DensityM = precisionU,
-                DensityN = precisionV
+                DensityM = pMesh.SmoothType == PolylineSmoothType.NoSmooth ? pMesh.DensityU : precisionU,
+                DensityN = pMesh.SmoothType == PolylineSmoothType.NoSmooth ? pMesh.DensityV : precisionV
             };
 
             polyline.XData.AddRange(pMesh.XData.Values);
