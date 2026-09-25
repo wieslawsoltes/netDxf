@@ -328,6 +328,7 @@ namespace netDxf.IO
             this.ValidateSourceIdentityDeclarations();
             // perform all necessary post processes
             this.PostProcesses();
+            this.ResolveInsertSequenceOwners();
             this.ResolveMTextColumnLinks();
             this.ResolveUcsReferences();
             this.ImportDatabaseObjects();
@@ -933,7 +934,7 @@ namespace netDxf.IO
                 {
                     // apply the units scale to the insertion scale (this is for nested blocks)
                     double scale = UnitHelper.ConversionFactor(insert.Owner.Record.Units, insert.Block.Record.Units);
-                    insert.Scale *= scale;
+                    insert.RestoreScale(insert.Scale * scale);
                 }
             }
             foreach (KeyValuePair<Dimension, string> pair in this.nestedDimensions)
@@ -7704,6 +7705,7 @@ namespace netDxf.IO
             Vector3 scale = new Vector3(1.0, 1.0, 1.0);
             double rotation = 0.0;
             short columns = 1, rows = 1;
+            bool attributesFollow = false;
             double columnSpacing = 0.0, rowSpacing = 0.0;
             string blockName = null;
             Block block = null;
@@ -7737,17 +7739,18 @@ namespace netDxf.IO
                         break;
                     case 41:
                         scale.X = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(scale.X)) scale.X = 1.0; // just in case, the insert scale components cannot be zero
                         this.chunk.Next();
                         break;
                     case 42:
                         scale.Y = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(scale.Y)) scale.Y = 1.0; // just in case, the insert scale components cannot be zero
                         this.chunk.Next();
                         break;
                     case 43:
                         scale.Z = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(scale.Z)) scale.Z = 1.0; // just in case, the insert scale components cannot be zero
+                        this.chunk.Next();
+                        break;
+                    case 66:
+                        attributesFollow = this.chunk.ReadShort() == 1;
                         this.chunk.Next();
                         break;
                     case 70:
@@ -7797,28 +7800,18 @@ namespace netDxf.IO
                 }
             }
 
-            if (this.chunk.ReadString() == DxfObjectCode.Attribute)
+            bool foundAttribute = false;
+            while (this.chunk.Code == 0 && this.chunk.ReadString() == DxfObjectCode.Attribute)
             {
-                while (this.chunk.ReadString() != DxfObjectCode.EndSequence)
-                {
-                    Attribute attribute = this.ReadAttribute(block, isBlockEntity);
-                    if (attribute != null)
-                    {
-                        attributes.Add(attribute);
-                    }
-                }
+                foundAttribute = true;
+                Attribute attribute = this.ReadAttribute(block, isBlockEntity);
+                if (attribute != null) attributes.Add(attribute);
             }
-
-            if (this.chunk.ReadString() == DxfObjectCode.EndSequence)
-            {
-                // read the end sequence object until a new element is found
-                this.chunk.Next();
-                // the EndSequence data is not needed
-                while (this.chunk.Code != 0)
-                {
-                    this.chunk.Next();
-                }
-            }
+            EndSequence sequenceEnd = null;
+            if (this.chunk.Code == 0 && this.chunk.ReadString() == DxfObjectCode.EndSequence)
+                sequenceEnd = this.ReadInsertSequenceEnd();
+            else if (attributesFollow || foundAttribute)
+                throw new FormatException("An INSERT attribute sequence requires SEQEND.");
 
             // It is a lot more intuitive to give the position in world coordinates and then define the orientation with the normal.
             Vector3 wcsBasePoint = MathHelper.Transform(basePoint, normal, CoordinateSystem.Object, CoordinateSystem.World);
@@ -7827,13 +7820,14 @@ namespace netDxf.IO
                 Block = block,
                 Position = wcsBasePoint,
                 Rotation = rotation,
-                Scale = scale,
                 ColumnCount = columns,
                 RowCount = rows,
                 ColumnSpacing = columnSpacing,
                 RowSpacing = rowSpacing,
                 Normal = normal
             };
+            insert.RestoreSequenceEnd(sequenceEnd);
+            insert.RestoreScale(scale);
             insert.XData.AddRange(xData);
 
             // post process nested inserts
@@ -10859,7 +10853,7 @@ namespace netDxf.IO
                     if (pair.Key is Insert insert)
                     {
                         double scale = UnitHelper.ConversionFactor(this.doc.DrawingVariables.InsUnits, insert.Block.Record.Units);
-                        insert.Scale *= scale;
+                        insert.RestoreScale(insert.Scale * scale);
                     }
 
                     if (pair.Key is AttributeDefinition attDef)

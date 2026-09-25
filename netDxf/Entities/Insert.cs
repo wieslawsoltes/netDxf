@@ -220,24 +220,26 @@ namespace netDxf.Entities
         public Vector3 Position
         {
             get { return this.position; }
-            set { this.position = value; }
+            set { FiniteInsert(value); PrimitiveGeometryMutation.Assign(this, ref this.position, value); }
         }
 
         /// <summary>
         /// Gets or sets the insert <see cref="Vector3">scale</see>.
         /// </summary>
-        /// <remarks>None of the vector scale components can be zero.</remarks>
+        /// <remarks>Assignments require finite, exactly nonzero components. Signed and subnormal values are allowed.
+        /// Loaded finite zero scales are retained for file fidelity but cannot undergo nonidentity linear transforms.</remarks>
         public Vector3 Scale
         {
             get { return this.scale; }
             set
             {
-                if (MathHelper.IsZero(value.X) || MathHelper.IsZero(value.Y) || MathHelper.IsZero(value.Z))
+                FiniteInsert(value);
+                if (value.X == 0 || value.Y == 0 || value.Z == 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "None of the vector scale components can be zero.");
                 }
 
-                this.scale = value;
+                PrimitiveGeometryMutation.Assign(this, ref this.scale, value);
             }
         }
 
@@ -247,7 +249,7 @@ namespace netDxf.Entities
         public double Rotation
         {
             get { return this.rotation; }
-            set { this.rotation = MathHelper.NormalizeAngle(value); }
+            set { FiniteInsert(value); PrimitiveGeometryMutation.Assign(this, ref this.rotation, MathHelper.NormalizeAngle(value)); }
         }
 
         #endregion
@@ -620,49 +622,7 @@ namespace netDxf.Entities
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            if (this.IsMultiple)
-            {
-                this.TransformArray(transformation, translation);
-                return;
-            }
-
-            Vector3 newPosition = transformation * this.Position + translation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-            transOW *= Matrix3.RotationZ(this.Rotation * MathHelper.DegToRad);
-
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal);
-            transWO = transWO.Transpose();
-
-            Vector3 v = transOW * Vector3.UnitX;
-            v = transformation * v;
-            v = transWO * v;
-            double newRotation = Vector2.Angle(new Vector2(v.X, v.Y));
-
-            transWO = Matrix3.RotationZ(newRotation).Transpose() * transWO;
-
-            Vector3 s = transOW * this.Scale;
-            s = transformation * s;
-            s = transWO * s;
-            Vector3 newScale = new Vector3(
-                MathHelper.IsZero(s.X) ? MathHelper.Epsilon : s.X,
-                MathHelper.IsZero(s.Y) ? MathHelper.Epsilon : s.Y,
-                MathHelper.IsZero(s.Z) ? MathHelper.Epsilon : s.Z);
-
-            this.Normal = newNormal;
-            this.Position = newPosition;
-            this.Scale = newScale;
-            this.Rotation = newRotation * MathHelper.RadToDeg;
-
-            foreach (Attribute att in this.attributes)
-            {
-                att.TransformBy(transformation, translation);
-            }
+            this.ApplyInsertTransform(transformation, translation);
         }
 
         /// <summary>
@@ -680,6 +640,7 @@ namespace netDxf.Entities
             {
                 entityNumber = attrib.AssignHandle(entityNumber);
             }
+            if (this.SequenceEnd != null) entityNumber = this.SequenceEnd.AssignHandle(entityNumber);
             return base.AssignHandle(entityNumber);
         }
 
@@ -690,6 +651,7 @@ namespace netDxf.Entities
         /// <returns>A new Insert that is a copy of this instance.</returns>
         public override object Clone()
         {
+            this.CheckSequenceEndClone();
             Polyline3D.RejectStoredRecordBlockClone(this.Block);
             // copy attributes
             List<Attribute> copyAttributes = new List<Attribute>();
@@ -710,7 +672,7 @@ namespace netDxf.Entities
                 //Insert properties
                 Position = this.position,
                 Block = (Block) this.block.Clone(),
-                Scale = this.scale,
+                scale = this.scale,
                 Rotation = this.rotation,
                 ColumnCount = this.columnCount,
                 RowCount = this.rowCount,
@@ -722,6 +684,7 @@ namespace netDxf.Entities
             foreach (XData data in this.XData.Values)
                 entity.XData.Add((XData) data.Clone());
 
+            this.CopySequenceEndTo(entity);
             this.CopyCommonDataTo(entity);
             return entity;
         }

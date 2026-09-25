@@ -42,7 +42,9 @@ namespace netDxf.Entities
             set
             {
                 if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), value, "An INSERT requires at least one column.");
+                bool changed = this.columnCount != value;
                 this.columnCount = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -53,7 +55,9 @@ namespace netDxf.Entities
             set
             {
                 if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), value, "An INSERT requires at least one row.");
+                bool changed = this.rowCount != value;
                 this.rowCount = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -62,7 +66,7 @@ namespace netDxf.Entities
         public double ColumnSpacing
         {
             get { return this.columnSpacing; }
-            set { ValidateArraySpacing(value); this.columnSpacing = value; }
+            set { ValidateArraySpacing(value); PrimitiveGeometryMutation.Assign(this, ref this.columnSpacing, value); }
         }
 
         /// <summary>Gets or sets the finite, signed row spacing (DXF group 45), default 0.</summary>
@@ -70,7 +74,7 @@ namespace netDxf.Entities
         public double RowSpacing
         {
             get { return this.rowSpacing; }
-            set { ValidateArraySpacing(value); this.rowSpacing = value; }
+            set { ValidateArraySpacing(value); PrimitiveGeometryMutation.Assign(this, ref this.rowSpacing, value); }
         }
 
         /// <summary>Gets whether this INSERT represents a rectangular array (MINSERT).</summary>
@@ -149,51 +153,5 @@ namespace netDxf.Entities
             return value;
         }
 
-        private void TransformArray(Matrix3 transformation, Vector3 translation)
-        {
-            Matrix3 frame = MathHelper.ArbitraryAxis(this.Normal) * Matrix3.RotationZ(this.Rotation * MathHelper.DegToRad);
-            Vector3 x = CheckedArrayPoint(transformation * (frame * Vector3.UnitX));
-            Vector3 y = CheckedArrayPoint(transformation * (frame * Vector3.UnitY));
-            Vector3 z = CheckedArrayPoint(transformation * (frame * Vector3.UnitZ));
-            double lx = ArrayAxisLength(x), ly = ArrayAxisLength(y), lz = ArrayAxisLength(z);
-            Vector3 ux = x / lx, uy = y / ly, uz = z / lz;
-            // A rectangular INSERT cannot encode shear. Validate before changing entity state.
-            const double orthogonalityTolerance = 1e-10;
-            if (Math.Abs(Vector3.DotProduct(ux, uy)) > orthogonalityTolerance ||
-                Math.Abs(Vector3.DotProduct(ux, uz)) > orthogonalityTolerance ||
-                Math.Abs(Vector3.DotProduct(uy, uz)) > orthogonalityTolerance)
-                throw new NotSupportedException("This transformation produces a non-orthogonal INSERT array. Explode the array before applying shear.");
-
-            Matrix3 target = MathHelper.ArbitraryAxis(uz);
-            Vector3 localX = target.Transpose() * ux;
-            double rotation = Math.Atan2(localX.Y, localX.X);
-            Vector3 targetY = target * (Matrix3.RotationZ(rotation) * Vector3.UnitY);
-            double signedY = Vector3.DotProduct(uy, targetY) < 0 ? -ly : ly;
-            Vector3 scale = CheckedArrayPoint(new Vector3(this.Scale.X * lx, this.Scale.Y * signedY, this.Scale.Z * lz));
-            if (MathHelper.IsZero(scale.X) || MathHelper.IsZero(scale.Y) || MathHelper.IsZero(scale.Z))
-                throw new NotSupportedException("The transformation collapses an INSERT scale component.");
-            Vector3 position = CheckedArrayPoint(transformation * this.Position + translation);
-            double dx = this.columnSpacing * lx, dy = this.rowSpacing * signedY;
-            ValidateArraySpacing(dx); ValidateArraySpacing(dy);
-
-            this.Normal = uz;
-            this.Position = position;
-            this.Scale = scale;
-            this.Rotation = rotation * MathHelper.RadToDeg;
-            this.columnSpacing = dx;
-            this.rowSpacing = dy;
-            foreach (Attribute attribute in this.attributes) attribute.TransformBy(transformation, translation);
-        }
-
-        private static double ArrayAxisLength(Vector3 value)
-        {
-            double largest = Math.Max(Math.Abs(value.X), Math.Max(Math.Abs(value.Y), Math.Abs(value.Z)));
-            if (largest == 0) throw new NotSupportedException("The transformation collapses an INSERT array axis.");
-            Vector3 scaled = value / largest;
-            double length = largest * Math.Sqrt(Vector3.DotProduct(scaled, scaled));
-            if (double.IsInfinity(length) || MathHelper.IsZero(length))
-                throw new NotSupportedException("The transformed INSERT array axis has an unsupported length.");
-            return length;
-        }
     }
 }

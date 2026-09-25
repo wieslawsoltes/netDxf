@@ -39,7 +39,7 @@ A cell offset is `OCS(normal) * Rz(rotation) * (column * columnSpacing, row * ro
 
 Coincident zero-spacing cells retain logical multiplicity; no deduplication changes the declared array. Nested INSERTs remain nested after one explosion level and keep their own array fields. Existing attribute-to-TEXT conversion is repeated with a translated position per cell; values and formatting are not independently stored for each cell.
 
-For active arrays, `TransformBy` transforms the grid axes, insertion, block scale and attached attributes together. Rotation, translation, reflection and anisotropic scaling are supported when the resulting frame remains orthogonal. A collapsed axis or shear that cannot be encoded by a rectangular INSERT is rejected before changing array state. The orthogonality check uses normalized axes and a `1e-10` dot-product tolerance; zero-scale checks use the existing library tolerance. The prior singleton INSERT transformation path is unchanged. General singleton shear/normal transformation issues, dormant singleton spacing transforms, clipping and recursive expansion policies remain outside this feature.
+For the original array-only transform implementation, the qualification below remains its historical evidence. The subsequent [INSERT/MINSERT geometry contract](insert-geometry.md) replaces both singleton and array transform paths, transforms dormant singleton spacings, preserves tiny source scales, stages attached attributes, and invalidates graphics after edits. The existing `1e-10` orthogonality threshold remains explicit; exact-zero authoring and reader-only scalar restoration are now separate policies. Clipping, dynamic blocks and recursive rendering remain outside these features.
 
 ## Version matrix
 

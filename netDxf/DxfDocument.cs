@@ -1061,6 +1061,7 @@ namespace netDxf
             this.linetypes.References[entity.Linetype.Name].Add(entity);
 
             this.AddedObjects.Add(entity.Handle, entity);
+            this.RegisterInsertSequenceEnd(entity as Insert);
             this.RegisterStoredPolylineRecords(entity as Polyline3D);
             this.RegisterStoredPolygonMeshRecords(entity as PolygonMesh);
             this.RegisterStoredPolyfaceMeshRecords(entity as PolyfaceMesh);
@@ -1280,6 +1281,7 @@ namespace netDxf
             this.layers.References[entity.Layer.Name].Remove(entity);
             this.linetypes.References[entity.Linetype.Name].Remove(entity);
             this.AddedObjects.Remove(entity.Handle);
+            this.UnregisterInsertSequenceEnd(entity as Insert);
             this.UnregisterStoredPolylineRecords(entity as Polyline3D);
             this.UnregisterStoredPolygonMeshRecords(entity as PolygonMesh);
             this.UnregisterStoredPolyfaceMeshRecords(entity as PolyfaceMesh);
@@ -1736,6 +1738,8 @@ namespace netDxf
 
         private void Insert_AttributeAdded(Insert sender, AttributeChangeEventArgs e)
         {
+            sender.EnsureSequenceEnd();
+            this.RegisterInsertSequenceEnd(sender);
             this.BindMetadataObject(e.Item);
             this.NumHandles = e.Item.AssignHandle(this.NumHandles);
 

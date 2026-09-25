@@ -76,11 +76,12 @@ def changed_host(tags, profile, kind):
     return output
 
 
-def normalize_generated_sequences(items, kind):
+def validate_attribute_sequences(items, kind):
+    """Validate the synthetic graph without rewriting any SEQEND identity."""
     if kind != 'ATTRIB':
         return items
     ordered = list(items)
-    replacements = {}
+    terminators = []
     for position, handle in enumerate(ordered):
         tags = items[handle]
         if tags[0] != [0, 'INSERT']:
@@ -96,23 +97,17 @@ def normalize_generated_sequences(items, kind):
         end = ordered[index]
         layers = [t for t in tags if t[0] == 8]
         check(len(layers) == 1, 'Ambiguous INSERT layer')
-        check(items[end] == [[0, 'SEQEND'], [5, end], [100, 'AcDbEntity'], layers[0]],
-              'Generated INSERT sequence end has unexpected metadata or payload')
-        # Never normalize an identity used by any semantic OR arbitrary handle.
+        check(items[end] == [[0, 'SEQEND'], [5, end], [330, handle], [100, 'AcDbEntity'], layers[0]],
+              'Stored INSERT sequence end has invalid identity, owner, metadata or payload')
+        # These synthetic FIELD hosts declare no external terminator references.
+        # Check that fixture constraint, but never canonicalize a stored handle.
         for record in items.values():
             check(not any(value == end for code, value in record
                           if 320 <= code <= 369 or 390 <= code <= 399 or code in (480, 481, 1005)),
-                  'A referenced sequence-end identity cannot be normalized')
-        replacements[end] = '<generated-insert-seqend:' + handle + '>'
-    check(len(replacements) == 2, 'Expected exactly two independent generated sequence ends')
-    result = {}
-    for handle, tags in items.items():
-        if handle in replacements:
-            new = replacements[handle]
-            result[new] = [[0, 'SEQEND'], [5, new]] + copy.deepcopy(tags[2:])
-        else:
-            result[handle] = tags
-    return result
+                  'Unexpected reference to a synthetic FIELD-host terminator')
+        terminators.append(end)
+    check(len(terminators) == 2, 'Expected exactly two independent stored sequence ends')
+    return items
 
 
 def expected(before, profile, kind, native):
@@ -143,7 +138,7 @@ def expected(before, profile, kind, native):
 
 
 def check_pair(before, after, profile, kind, native):
-    before, after = (normalize_generated_sequences(normalize_save_metadata(items), kind) for items in (before, after))
+    before, after = (validate_attribute_sequences(normalize_save_metadata(items), kind) for items in (before, after))
     wanted, selected = expected(before, profile, kind, native)
     compare(wanted, after)
     controls = 0
@@ -170,6 +165,20 @@ def check_pair(before, after, profile, kind, native):
             at = candidate[handle].index([100, 'AcDbEntity']) + 1
             candidate[handle][at:at] = [[92, 1], [310, {'hex': '00'}]]
             rejects(candidate)
+    # Terminators are unselected physical records: every field and their map
+    # identities must remain exact, not just survive generated-ID normalization.
+    for handle, tags in after.items():
+        if tags[0] != [0, 'SEQEND']:
+            continue
+        for index, (code, value) in enumerate(tags):
+            candidate = dict(after)
+            candidate[handle] = copy.deepcopy(tags)
+            candidate[handle][index] = [code, 'CORRUPT']
+            rejects(candidate)
+        candidate = {('CORRUPT' if key == handle else key): copy.deepcopy(row)
+                     for key, row in after.items()}
+        candidate['CORRUPT'][1] = [5, 'CORRUPT']
+        rejects(candidate)
     for handle in after:
         candidate = dict(after)
         if handle in selected:
