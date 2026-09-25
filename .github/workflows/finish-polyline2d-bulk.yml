@@ -1,0 +1,137 @@
+name: Integrate exact Polyline2D bulk preflight
+on:
+  push:
+    branches: [codex/dxf-polyline2d-edits-20260925]
+    paths: [.github/workflows/finish-polyline2d-bulk.yml]
+permissions:
+  contents: read
+jobs:
+  integrate:
+    if: github.repository == 'wieslawsoltes/netDxf'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+      - name: Apply fixed edits and require the exact tested source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/codex/dxf-polyline2d-edits-20260925
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace(path, old, new):
+              p=Path(path); b=p.read_bytes(); old=old.encode(); new=new.encode()
+              assert b.count(old)==1, (path, b.count(old))
+              p.write_bytes(b.replace(old,new))
+          replace('netDxf/Entities/Polyline2D.Edits.cs', '            if (!this.HasStoredRecords) return;\n            Polyline2DRecord record = this.storedVertexRecords[index];\n', '''            if (!this.HasStoredRecords) return;
+                      this.ValidateEditedVertexPacketTotal(this.EditedVertexPacketDelta(index, startWidth, endWidth, bulge));
+                  }
+          
+                  // Called after the existing full-state validation. Budget the final packets before any
+                  // live width, order, default, or proxy state changes. Bulk validation remains linear.
+                  private void ValidateBulkVertexPackets(bool reverse, double width)
+                  {
+                      if (!this.HasStoredRecords) return;
+                      long delta = 0;
+                      for (int i = 0; i < this.vertexes.Count; i++)
+                      {
+                          Polyline2DVertex source = this.vertexes[reverse
+                              ? (i == 0 ? this.vertexes.Count - 1 : i - 1) : i];
+                          delta += this.EditedVertexPacketDelta(i,
+                              reverse ? source.EndWidthOverride : width,
+                              reverse ? source.StartWidthOverride : width,
+                              reverse ? -source.Bulge : source.Bulge);
+                      }
+                      this.ValidateEditedVertexPacketTotal(delta);
+                  }
+          
+                  private int EditedVertexPacketDelta(int index, double? startWidth, double? endWidth, double bulge)
+                  {
+                      Polyline2DRecord record = this.storedVertexRecords[index];
+          ''')
+          replace('netDxf/Entities/Polyline2D.Edits.cs', '            long total = delta;\n            foreach (Polyline2DRecord item in this.StoredRecords) total += item.TopologyTagCount();\n', '''            return delta;
+                  }
+          
+                  private void ValidateEditedVertexPacketTotal(long delta)
+                  {
+                      long total = delta;
+                      foreach (Polyline2DRecord item in this.StoredRecords) total += item.TopologyTagCount();
+          ''')
+          replace('netDxf/Entities/Polyline2D.Fidelity.cs', '            this.ValidateVertexFidelity();\n            bool changed = this.constantWidth.HasValue;', '            this.ValidateVertexFidelity();\n            this.ValidateBulkVertexPackets(false, width);\n            bool changed = this.constantWidth.HasValue;')
+          replace('netDxf/Entities/Polyline2D.cs', '            this.vertexes.Reverse();\n            this.ReverseStoredRecords();', '            this.ValidateBulkVertexPackets(true, 0.0);\n            this.vertexes.Reverse();\n            this.ReverseStoredRecords();')
+          replace('tests/shared/Polyline2DEditCases.cs', '    internal static class Polyline2DEditCases', '    internal static partial class Polyline2DEditCases')
+          old='                yield return new Case($"wire/{version}/{binary}/{legacy}", () => Wire(version, binary, legacy, directory));\n'
+          replace('tests/shared/Polyline2DEditCases.cs', old, old+'            foreach (var item in BulkCases(directory)) yield return item;\n')
+          for name in ['netDxf.Conformance','netDxf.PackageSmoke','netDxf.TargetSmoke']:
+              old='    <Compile Include="../shared/Polyline2DEditCases.cs" Link="Polyline2DEditCases.cs" />\n'
+              replace('tests/'+name+'/'+name+'.csproj',old,old+'    <Compile Include="../shared/Polyline2DBulkEditCases.cs" Link="Polyline2DBulkEditCases.cs" />\n')
+          path='doc/dxf-conformance/polyline2d-edits.md'
+          replace(path, '''Reverse retains its existing complete validation, mutation and cache behavior;
+          its identity/finite-sequence validator is shared with the new explicit methods.
+          The old reversal exception wording remains unchanged. No other geometry
+          algorithm or serializer is modified.
+          ''', '''Reverse retains its existing identity/finite-sequence validation, segment
+          orientation, inherited-default swapping and cache behavior. The added prospective
+          packet validation described below runs before any list reversal or default edit.
+          Existing exception wording for existing validation stays unchanged; no serializer
+          or curve algorithm is modified.
+          
+          ## Bulk packet preflight
+          
+          `SetConstantWidth` can add two previously absent fields to every retained
+          VERTEX. `Reverse` can move outgoing width/bulge fields onto a different retained
+          record with a different metadata size. Checking only the *current* packet sizes
+          allowed either operation to mutate successfully into a state later rejected by
+          Save. Both operations now preflight each final record and the final aggregate
+          tag count before changing a live vertex, ordering, defaults, ConstantWidth or
+          proxy bytes. Single-vertex and bulk edits share the same candidate-count helper;
+          the bulk traversal is linear, not a full-chain scan per point.
+          
+          The unchanged limits are library admission budgets, not Autodesk DXF format
+          limits: 4,096 tags per retained record and 1,048,576 for the retained chain.
+          Counts use the existing GeometryTags optional-field policy and include existing
+          child metadata/XData. Both exact boundaries are admitted. Adding one tag beyond
+          a boundary rejects without partially applying the requested edit. The existing
+          current-state validation still runs first, so this is not an API for repairing
+          already inadmissible source records.
+          
+          No-op SetConstantWidth at a full packet preserves state, cache and active list
+          enumerators. Invalid scalar candidates retain their existing rejection. The
+          ordinary non-retained paths, unsupported smoothing modes, existing source
+          ownership spellings and removal/reference guards are unchanged. Reversal already
+          swapped legacy start/end defaults; this continuation preserves and tests that
+          behavior rather than reimplementing it.
+          ''')
+          replace(path, 'The shared harness defines 408 cases:', 'The original shared edit harness defines 408 cases:')
+          replace(path, '## Boundaries and primary references', '''The bulk continuation adds 47 shared cases, for 455 combined cases. Eighteen
+          per-record cases cover both operations, three cache states and sizes immediately
+          below/at/above the prospective limit; three grouped no-op cases exercise all
+          representations; two 256-vertex cases cover exact aggregate admission and a
+          one-tag overflow while every individual candidate fits. Twenty-four matrices
+          exercise six versions, both transports and both bulk operations, generating
+          72 additional source/output/opposite-format-resave drawings. Each contains one
+          parent, four retained vertices and one terminator at a real packet boundary.
+          
+          The separate bulk verifier checks all 72 parents / 288 VERTEX records, inherited
+          defaults, optional widths, exact coordinate and signed-bulge bits, unchanged
+          metadata, packet sizes, ordered identities, source-versus-edited proxy bytes and
+          following LINE geometry. Cross-save identities are never normalized. The
+          same-compiled-test comparison and actual output replay belong in PR evidence;
+          these definitions do not imply hosted or native AutoCAD qualification.
+          
+          ## Boundaries and primary references''')
+          PY
+          git add netDxf/Entities/Polyline2D.Edits.cs netDxf/Entities/Polyline2D.Fidelity.cs netDxf/Entities/Polyline2D.cs tests/shared/Polyline2DEditCases.cs tests/netDxf.Conformance/netDxf.Conformance.csproj tests/netDxf.PackageSmoke/netDxf.PackageSmoke.csproj tests/netDxf.TargetSmoke/netDxf.TargetSmoke.csproj doc/dxf-conformance/polyline2d-edits.md
+          git update-index --force-remove .github/workflows/finish-polyline2d-bulk.yml
+          test "$(git write-tree)" = a25f95d39c2a4d7a923efd2365547b1d4d092e5e
+          git reset HEAD -- .github/workflows/finish-polyline2d-bulk.yml
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'Wiesław Šoltés'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Preflight bulk polyline packets before changing live widths or ordering'
+          git push origin HEAD:refs/heads/codex/dxf-polyline2d-edits-20260925
