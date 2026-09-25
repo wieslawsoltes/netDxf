@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using netDxf.Objects;
 using netDxf.Tables;
 
@@ -33,7 +32,7 @@ namespace netDxf.Entities
     /// <summary>
     /// Represents an underlay <see cref="EntityObject">entity</see>.
     /// </summary>
-    public class Underlay :
+    public partial class Underlay :
         EntityObject
     {
         #region delegates and events
@@ -167,7 +166,7 @@ namespace netDxf.Entities
         public Vector3 Position
         {
             get { return this.position; }
-            set { this.position = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.position, value); }
         }
 
         /// <summary>
@@ -188,7 +187,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Any of the vector scale components cannot be zero.");
                 }
+                bool changed = !SameUnderlay(this.scale.X, value.X) || !SameUnderlay(this.scale.Y, value.Y);
                 this.scale = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -198,7 +199,7 @@ namespace netDxf.Entities
         public double Rotation
         {
             get { return this.rotation; }
-            set { this.rotation = MathHelper.NormalizeAngle(value); }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.rotation, MathHelper.NormalizeAngle(value)); }
         }
 
         /// <summary>
@@ -214,7 +215,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Accepted contrast values range from 20 to 100.");
                 }
+                bool changed = this.contrast != value;
                 this.contrast = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -231,7 +234,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Accepted fade values range from 0 to 80.");
                 }
+                bool changed = this.fade != value;
                 this.fade = value;
+                if (changed) this.ClearProxyGraphics();
             }
         }
 
@@ -241,7 +246,12 @@ namespace netDxf.Entities
         public UnderlayDisplayFlags DisplayOptions
         {
             get { return this.displayOptions; }
-            set { this.displayOptions = value; }
+            set
+            {
+                bool changed = this.displayOptions != value;
+                this.displayOptions = value;
+                if (changed) this.ClearProxyGraphics();
+            }
         }
 
         /// <summary>
@@ -253,7 +263,12 @@ namespace netDxf.Entities
         public ClippingBoundary ClippingBoundary
         {
             get { return this.clippingBoundary; }
-            set { this.clippingBoundary = value; }
+            set
+            {
+                bool changed = !ReferenceEquals(this.clippingBoundary, value);
+                this.clippingBoundary = value;
+                if (changed) this.ClearProxyGraphics();
+            }
         }
 
         #endregion
@@ -266,58 +281,14 @@ namespace netDxf.Entities
         /// <param name="transformation">Transformation matrix.</param>
         /// <param name="translation">Translation vector.</param>
         /// <remarks>
-        /// Non-uniform scaling for rotated underlays is not supported.
-        /// This is not a limitation of the code but the DXF format, unlike the Image there is no way to define the local UV vectors.<br />
+        /// Transformed local axes must remain orthogonal: unlike IMAGE, an underlay cannot store shear.<br />
+        /// Invalid, collapsed, or unrepresentable geometry rejects before changing this entity.
+        /// Nonidentity linear transforms use equivalent positive scales and an oriented normal.<br />
         /// Matrix3 adopts the convention of using column vectors to represent a transformation matrix.
         /// </remarks>
         public override void TransformBy(Matrix3 transformation, Vector3 translation)
         {
-            Vector3 newPosition = transformation * this.Position + translation;
-            Vector3 newNormal = transformation * this.Normal;
-            if (Vector3.Equals(Vector3.Zero, newNormal))
-            {
-                newNormal = this.Normal;
-            }
-
-            Matrix3 transOW = MathHelper.ArbitraryAxis(this.Normal);
-
-            Matrix3 transWO = MathHelper.ArbitraryAxis(newNormal);
-            transWO = transWO.Transpose();
-
-            List<Vector2> uv = MathHelper.Transform(
-                new[]
-                {
-                    this.Scale.X * Vector2.UnitX,
-                    this.Scale.Y * Vector2.UnitY
-                },
-                this.rotation * MathHelper.DegToRad,
-                CoordinateSystem.Object, CoordinateSystem.World);
-
-            Vector3 v;
-            v = transOW * new Vector3(uv[0].X , uv[0].Y, 0.0);
-            v = transformation * v;
-            v = transWO * v;
-            Vector2 newUvector = new Vector2(v.X, v.Y);
-
-            v = transOW * new Vector3(uv[1].X, uv[1].Y, 0.0);
-            v = transformation * v;
-            v = transWO * v;
-            Vector2 newVvector = new Vector2(v.X, v.Y);
-
-            int sign = Math.Sign(transformation.M11 * transformation.M22 * transformation.M33) < 0 ? -1 : 1;
-
-            double scaleX = sign * newUvector.Modulus();
-            scaleX = MathHelper.IsZero(scaleX) ? MathHelper.Epsilon : scaleX;
-            double scaleY = newVvector.Modulus();
-            scaleY = MathHelper.IsZero(scaleY) ? MathHelper.Epsilon : scaleY;
-
-            Vector2 newScale = new Vector2(scaleX, scaleY);
-            double newRotation = Vector2.Angle(sign * newUvector) * MathHelper.RadToDeg;
-
-            this.Position = newPosition;
-            this.Normal = newNormal;
-            this.Rotation = newRotation;
-            this.Scale = newScale;           
+            this.ApplyUnderlayTransform(transformation, translation);
         }
 
         /// <summary>
