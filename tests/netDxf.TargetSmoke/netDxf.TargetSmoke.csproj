@@ -32,4 +32,10 @@
     <Error Condition="!Exists('$(PkgnetDxf_netstandard)/lib/$(NetDxfAssetTarget)/netDxf.netstandard.dll')"
            Text="The requested assembly asset is absent from the restored candidate package." />
   </Target>
+  <ItemGroup>
+    <Compile Include="../shared/PortableDoubleCases.cs" Link="PortableDoubleCases.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
 </Project>

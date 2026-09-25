@@ -52,4 +52,8 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+
 </Project>
