@@ -104,6 +104,8 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets the polyline <see cref="Vector3">vertex</see> list.
         /// </summary>
+        /// <remarks>Direct list edits do not notify the entity. Use SetVertex and the explicit topology methods
+        /// to validate retained record state and invalidate stale parent proxy graphics.</remarks>
         public List<Vector3> Vertexes
         {
             get { return this.vertexes; }
@@ -117,6 +119,7 @@ namespace netDxf.Entities
             get { return this.flags.HasFlag(PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM); }
             set
             {
+                PolylineTypeFlags before = this.flags;
                 if (value)
                 {
                     this.flags |= PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM;
@@ -125,6 +128,7 @@ namespace netDxf.Entities
                 {
                     this.flags &= ~PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM;
                 }
+                if (this.flags != before) this.ClearProxyGraphics();
             }
         }
 
@@ -136,6 +140,7 @@ namespace netDxf.Entities
             get { return this.flags.HasFlag(PolylineTypeFlags.ContinuousLinetypePattern); }
             set
             {
+                PolylineTypeFlags before = this.flags;
                 if (value)
                 {
                     this.flags |= PolylineTypeFlags.ContinuousLinetypePattern;
@@ -144,6 +149,7 @@ namespace netDxf.Entities
                 {
                     this.flags &= ~PolylineTypeFlags.ContinuousLinetypePattern;
                 }
+                if (this.flags != before) this.ClearProxyGraphics();
             }
         }
 
@@ -160,6 +166,8 @@ namespace netDxf.Entities
             {
                 if (value == PolylineSmoothType.BezierSurface)
                     throw new ArgumentOutOfRangeException(nameof(value), value, "BezierSurface is a polygon mesh surface, not a polyline curve.");
+                PolylineTypeFlags beforeFlags = this.flags;
+                PolylineSmoothType beforeType = this.smoothType;
                 if (value == PolylineSmoothType.NoSmooth)
                 {
                     this.flags &= ~PolylineTypeFlags.SplineFit;
@@ -169,6 +177,7 @@ namespace netDxf.Entities
                     this.flags |= PolylineTypeFlags.SplineFit;
                 }
                 this.smoothType = value;
+                if (beforeFlags != this.flags || beforeType != value) this.ClearProxyGraphics();
             }
         }
 
@@ -202,6 +211,7 @@ namespace netDxf.Entities
             if (this.HasStoredRecords) this.ValidateStoredRecordGeometry();
             this.vertexes.Reverse();
             if (this.HasStoredRecords) this.storedVertexRecords.Reverse();
+            this.ClearProxyGraphics();
         }
 
         /// <summary>

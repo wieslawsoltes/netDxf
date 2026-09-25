@@ -17,6 +17,7 @@ if (nearTurn != Math.BitDecrement(360.0)) throw new InvalidOperationException("P
 // These assertions run against each selected installed package assembly.
 NetDxf.Qualification.PortableDoubleCases.VerifyInstalled(typeof(DxfDocument).Assembly);
 NetDxf.Qualification.InsertGeometryCases.VerifyInstalled();
+NetDxf.Qualification.Polyline3DEditCases.VerifyInstalled();
 netDxf.GTE.GVector nullVector = null!;
 var geometryVector = new netDxf.GTE.GVector(new[] { 3.0, 4.0 });
 if (!(nullVector == (netDxf.GTE.GVector)null!) || geometryVector == nullVector || !(geometryVector != nullVector))
