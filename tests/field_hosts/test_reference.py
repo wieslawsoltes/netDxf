@@ -45,30 +45,46 @@ class HostOracleTests(unittest.TestCase):
         for insert, attrib, end in [('A', 'B', 'C'), ('D', 'E', 'F')]:
             result[insert] = [[0, 'INSERT'], [5, insert], [100, 'AcDbEntity'], [8, '0'], [100, 'AcDbBlockReference'], [66, 1]]
             result[attrib] = [[0, 'ATTRIB'], [5, attrib], [330, insert], [100, 'AcDbEntity'], [100, 'AcDbText'], [1, 'x']]
-            result[end] = [[0, 'SEQEND'], [5, end], [100, 'AcDbEntity'], [8, '0']]
+            result[end] = [[0, 'SEQEND'], [5, end], [330, insert], [100, 'AcDbEntity'], [8, '0']]
         return result
 
-    def test_generated_sequence_identity_only(self):
+    def test_stored_sequence_identity_preserved(self):
         source = self.sequences(); original = copy.deepcopy(source)
-        result = v.normalize_generated_sequences(source, 'ATTRIB')
+        result = v.validate_attribute_sequences(source, 'ATTRIB')
         self.assertEqual(original, source)
-        self.assertEqual(['A', 'B', '<generated-insert-seqend:A>', 'D', 'E', '<generated-insert-seqend:D>'], list(result))
-        self.assertEqual(source['A'], result['A'])
-        self.assertEqual(source['C'][2:], result['<generated-insert-seqend:A>'][2:])
+        self.assertIs(source, result)
+        self.assertEqual(original, result)
+        self.assertEqual(['A', 'B', 'C', 'D', 'E', 'F'], list(result))
+
+    def test_changed_sequence_identity_is_rejected(self):
+        source = self.sequences()
+        changed = {('10' if key == 'C' else key): copy.deepcopy(row) for key, row in source.items()}
+        changed['10'][1] = [5, '10']
+        # Each graph is individually well-formed. The complete before/after
+        # comparison must reject the identity change previously normalized away.
+        before = v.validate_attribute_sequences(source, 'ATTRIB')
+        after = v.validate_attribute_sequences(changed, 'ATTRIB')
+        with self.assertRaises(ValueError): v.compare(before, after)
 
     def test_sequence_payload_not_normalized(self):
-        for variant in ('extra', 'missing', 'wrong-layer', 'owner'):
+        for variant in ('extra', 'missing', 'wrong-layer', 'owner', 'missing-owner', 'duplicate-owner',
+                        'zero-owner', 'foreign-owner', 'wrong-identity'):
             source = self.sequences()
             if variant == 'extra': source['C'].append([999, 'private'])
             if variant == 'missing': del source['C']
             if variant == 'wrong-layer': source['C'][-1] = [8, 'different']
             if variant == 'owner': source['B'][2] = [330, 'D']
-            with self.subTest(variant=variant), self.assertRaises(ValueError): v.normalize_generated_sequences(source, 'ATTRIB')
+            if variant == 'missing-owner': del source['C'][2]
+            if variant == 'duplicate-owner': source['C'].insert(2, [330, 'A'])
+            if variant == 'zero-owner': source['C'][2] = [330, '0']
+            if variant == 'foreign-owner': source['C'][2] = [330, 'D']
+            if variant == 'wrong-identity': source['C'][1] = [5, 'F']
+            with self.subTest(variant=variant), self.assertRaises(ValueError): v.validate_attribute_sequences(source, 'ATTRIB')
 
     def test_referenced_sequence_identity_not_normalized(self):
         for code in (320, 330, 340, 360, 390, 480, 1005):
             source = self.sequences(); source['X'] = [[0, 'XRECORD'], [5, 'X'], [code, 'C']]
-            with self.subTest(code=code), self.assertRaises(ValueError): v.normalize_generated_sequences(source, 'ATTRIB')
+            with self.subTest(code=code), self.assertRaises(ValueError): v.validate_attribute_sequences(source, 'ATTRIB')
 
     def test_exact_file_inventory(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -103,6 +103,22 @@ historical typed dialects, dynamic blocks, private FIELD/TABLE caches,
 dependency-complete imports and general DXF version conversion remain outside
 this correction. Full AutoCAD parity is not established.
 
+## FIELD-host checker integration
+
+The first corrected-head Linux Release artifact (run 36136669637,
+artifact 10864592964) contains 95,029 passing C# cases and 243/244 passing
+independent scripts. Both INSERT verifiers pass on actual emitted drawings.
+The remaining FIELD/text-host checker still expected the former ownerless
+SEQEND packet and canonicalized newly generated terminator identities. That
+old workaround is now removed: the checker requires the actual INSERT owner
+and leaves every terminator identity untouched for the whole-record
+before/after comparison. All existing field-result, host-text, reference and
+unselected-record expectations remain. Additional actual-output mutations
+challenge every SEQEND field and a changed record identity; unit tests reject
+an otherwise well-formed before/after identity change as well as missing,
+duplicate, zero and foreign owner fields. This strengthens the identity gate
+rather than allowing both old and new packets or ignoring ownership.
+
 Primary references:
 - Autodesk INSERT sequence flag and fields:
   https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-DXF/files/GUID-28FA4CFB-9D5E-4880-9F11-36C97578252F.htm
