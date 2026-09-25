@@ -111,8 +111,8 @@ export class DxfDocument extends DxfObject {
     }else if(code==='TOLERANCE')this.#resource(entity,'Style','DimensionStyles','ToleranceStyleChanged',assignHandle);
     else if(code==='INSERT'){
       BindResource(this,entity,'Block',this.Blocks,assignHandle);
-      for(const attribute of entity.Attributes)this.#bindAttribute(attribute,assignHandle,false);
-      Listen(this,entity,'AttributeAdded',(_,e)=>{this.BindMetadataObject(e.Item);this.NumHandles=e.Item.AssignHandle(this.NumHandles);this.#bindAttribute(e.Item,true,false);});
+      for(const attribute of entity.Attributes)this.#bindAttribute(attribute,assignHandle);
+      Listen(this,entity,'AttributeAdded',(_,e)=>{this.BindMetadataObject(e.Item);this.NumHandles=e.Item.AssignHandle(this.NumHandles);this.#bindAttribute(e.Item,true);});
       Listen(this,entity,'AttributeRemoved',(_,e)=>{this.UnbindMetadataObject(e.Item);this.#unbindAttribute(e.Item);});
     }else if(code==='TEXT'||code==='MTEXT')this.#resource(entity,'Style','TextStyles','TextStyleChanged',assignHandle);
     else if(code==='SHAPE')this.#resource(entity,'Style','ShapeStyles','StyleChanged',assignHandle);
@@ -148,14 +148,35 @@ export class DxfDocument extends DxfObject {
 
     Listen(this,entity,'LayerChanged',(sender,e)=>ChangeResource(sender,e,this.Layers));Listen(this,entity,'LinetypeChanged',(sender,e)=>ChangeResource(sender,e,this.Linetypes));
   }
-  #bindAttribute(attribute,assignHandle,definition){
-    if(definition){this.#resource(attribute,'Style','TextStyles','TextStyleChange',assignHandle);}
+  #bindAttribute(attribute,assignHandle){
+    // INSERT attributes have a different registration order and style event from ATTRDEF.
     this.#resource(attribute,'Layer','Layers','LayerChanged',assignHandle);this.#resource(attribute,'Linetype','Linetypes','LinetypeChanged',assignHandle);
-    if(!definition)this.#resource(attribute,'Style','TextStyles','TextStyleChanged',assignHandle);
+    this.#resource(attribute,'Style','TextStyles','TextStyleChanged',assignHandle);
   }
   #unbindAttribute(attribute){this.#release(attribute,'Layer','Layers');this.#release(attribute,'Linetype','Linetypes');this.#release(attribute,'Style','TextStyles');Unlisten(this,attribute);}
-  AddAttributeDefinitionToDocument(attribute,assignHandle=true){if(attribute==null)throw new ArgumentNullException('attDef');if(assignHandle||!attribute.Handle)this.NumHandles=attribute.AssignHandle(this.NumHandles);this.#bindAttribute(attribute,assignHandle,true);this.AddedObjects.Add(attribute.Handle,attribute);}
-  RemoveAttributeDefinitionFromDocument(attribute){this.#unbindAttribute(attribute);this.AddedObjects.Remove(attribute.Handle);attribute.Handle=null;attribute.Owner=null;return true;}
+  AddAttributeDefinitionToDocument(attribute,assignHandle=true){
+    if(attribute==null)throw new ArgumentNullException('attDef');
+    if(assignHandle||!attribute.Handle)this.NumHandles=attribute.AssignHandle(this.NumHandles);
+    this.#resource(attribute,'Style','TextStyles','TextStyleChange',assignHandle);
+    BindResource(this,attribute,'Layer',this.Layers,assignHandle);
+    BindResource(this,attribute,'Linetype',this.Linetypes,assignHandle);
+    // Native observers run before LayerChanged/LinetypeChanged are subscribed.
+    // Exceptions must retain that partially registered state, not attach in finally.
+    this.AddedObjects.Add(attribute.Handle,attribute);
+    Listen(this,attribute,'LayerChanged',(sender,e)=>ChangeResource(sender,e,this.Layers));
+    Listen(this,attribute,'LinetypeChanged',(sender,e)=>ChangeResource(sender,e,this.Linetypes));
+  }
+  RemoveAttributeDefinitionFromDocument(attribute){
+    this.#release(attribute,'Style','TextStyles');
+    Unlisten(this,attribute,'TextStyleChange');
+    this.#release(attribute,'Layer','Layers');
+    this.#release(attribute,'Linetype','Linetypes');
+    // Native removal observers still see the layer and linetype subscriptions.
+    this.AddedObjects.Remove(attribute.Handle);
+    Unlisten(this,attribute,'LayerChanged');
+    Unlisten(this,attribute,'LinetypeChanged');
+    attribute.Handle=null;attribute.Owner=null;return true;
+  }
   RemoveEntityFromDocument(entity){
     const code=entity.CodeName;
     if(entity instanceof api.Dimension){

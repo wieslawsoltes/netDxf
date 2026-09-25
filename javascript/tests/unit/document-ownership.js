@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DxfDocument, Line, Layer, Block, Insert, Layout, AlignedDimension, LayerState,
+import { DxfDocument, Line, Layer, Linetype, TextStyle, AttributeDefinition, Block, Insert, Layout, AlignedDimension, LayerState,
   LayerStateProperties, LayerPropertiesRestoreFlags, DxfDictionary, DxfPlaceholder, XData, ApplicationRegistry } from '../../index.js';
+import { EventHook } from '../../runtime/EventHook.js';
+import { Listen, Unlisten } from '../../runtime/RegisteredTable.js';
 import { documentOwnershipCorpus } from '../../tools/document-ownership-corpus.mjs';
 
 test('typed document default handle allocation and model-space registration',()=>{
@@ -77,4 +79,141 @@ test('database extension dictionaries reject the layer-table reserved slot',()=>
 });
 test('ownership corpus contains only deterministic inputs, not embedded results',()=>{
   const first=documentOwnershipCorpus();assert.deepEqual(first,documentOwnershipCorpus());assert.equal(new Set(first.map(p=>p.name)).size,first.length);assert.ok(first.every(p=>!('expected'in p)));
+});
+
+// Regression expectations follow pinned DxfDocument.cs registration/removal order.
+// These are supplemental cases, not replacements for original C# test identities.
+const hasAttributeReference=(table,name,attribute)=>Array.from(table.GetReferences(name)).some(item=>item.Reference===attribute);
+
+test('ATTRDEF add observers precede layer/linetype listeners but follow the style listener',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG');
+  const oldLayer=attribute.Layer.Name,oldLinetype=attribute.Linetype.Name;
+  const layer=new Layer('ObserverLayer'),linetype=new Linetype('ObserverLinetype'),style=new TextStyle('ObserverStyle','txt.shx');
+  let observations=0;
+  doc.AddedObjects.AddItem.Add((_,e)=>{
+    if(e.Item.Value!==attribute)return;
+    observations++;
+    assert.equal(doc.GetObjectByHandle(attribute.Handle),attribute);
+    attribute.Layer=layer;attribute.Linetype=linetype;attribute.Style=style;
+  });
+  doc.AddAttributeDefinitionToDocument(attribute);
+  assert.equal(observations,1);
+  assert.equal(doc.Layers.get_Item(layer.Name),null);
+  assert.equal(doc.Linetypes.get_Item(linetype.Name),null);
+  assert.equal(attribute.Layer,layer);assert.equal(attribute.Linetype,linetype);
+  assert.equal(attribute.Style,doc.TextStyles.get_Item(style.Name));
+  assert.equal(hasAttributeReference(doc.Layers,oldLayer,attribute),true);
+  assert.equal(hasAttributeReference(doc.Linetypes,oldLinetype,attribute),true);
+  assert.equal(hasAttributeReference(doc.TextStyles,style.Name,attribute),true);
+});
+
+test('ATTRDEF linetype binding callbacks cannot observe an early layer listener',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG'),layer=new Layer('DuringLinetypeBinding');
+  const originalLayer=attribute.Layer.Name;
+  let observations=0;
+  attribute.LinetypeChanged.Add(()=>{observations++;attribute.Layer=layer;});
+  doc.AddAttributeDefinitionToDocument(attribute);
+  assert.equal(observations,1);assert.equal(attribute.Layer,layer);
+  assert.equal(doc.Layers.get_Item(layer.Name),null);
+  assert.equal(hasAttributeReference(doc.Layers,originalLayer,attribute),true);
+});
+
+test('ATTRDEF duplicate handle failure retains only the completed style subscription',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG');
+  attribute.Handle=doc.Handle;
+  assert.throws(()=>doc.AddAttributeDefinitionToDocument(attribute,false),{name:'ArgumentException'});
+  attribute.Layer=new Layer('AfterDuplicateLayer');attribute.Linetype=new Linetype('AfterDuplicateLinetype');
+  attribute.Style=new TextStyle('AfterDuplicateStyle','txt.shx');
+  assert.equal(doc.GetObjectByHandle(doc.Handle),doc);
+  assert.equal(doc.Layers.get_Item('AfterDuplicateLayer'),null);
+  assert.equal(doc.Linetypes.get_Item('AfterDuplicateLinetype'),null);
+  assert.equal(attribute.Style,doc.TextStyles.get_Item('AfterDuplicateStyle'));
+});
+
+test('ATTRDEF throwing add observer preserves the indexed object without late listeners',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG'),failure=new Error('add observer');
+  doc.AddedObjects.AddItem.Add((_,e)=>{if(e.Item.Value===attribute)throw failure;});
+  assert.throws(()=>doc.AddAttributeDefinitionToDocument(attribute),error=>error===failure);
+  assert.equal(doc.GetObjectByHandle(attribute.Handle),attribute);
+  attribute.Layer=new Layer('AfterAddFailureLayer');attribute.Linetype=new Linetype('AfterAddFailureLinetype');
+  attribute.Style=new TextStyle('AfterAddFailureStyle','txt.shx');
+  assert.equal(doc.Layers.get_Item('AfterAddFailureLayer'),null);
+  assert.equal(doc.Linetypes.get_Item('AfterAddFailureLinetype'),null);
+  assert.equal(attribute.Style,doc.TextStyles.get_Item('AfterAddFailureStyle'));
+});
+
+test('ATTRDEF successful registration and removal keep ordinary resource updates working',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG');
+  doc.AddAttributeDefinitionToDocument(attribute);
+  attribute.Layer=new Layer('RegisteredLayer');attribute.Linetype=new Linetype('RegisteredLinetype');
+  attribute.Style=new TextStyle('RegisteredStyle','txt.shx');
+  for(const [table,name] of [[doc.Layers,'RegisteredLayer'],[doc.Linetypes,'RegisteredLinetype'],[doc.TextStyles,'RegisteredStyle']])
+    assert.equal(hasAttributeReference(table,name,attribute),true);
+  const handle=attribute.Handle;
+  assert.equal(doc.RemoveAttributeDefinitionFromDocument(attribute),true);
+  assert.equal(doc.GetObjectByHandle(handle),null);assert.equal(attribute.Handle,null);assert.equal(attribute.Owner,null);
+  for(const [table,name] of [[doc.Layers,'RegisteredLayer'],[doc.Linetypes,'RegisteredLinetype'],[doc.TextStyles,'RegisteredStyle']])
+    assert.equal(hasAttributeReference(table,name,attribute),false);
+  attribute.Layer=new Layer('DetachedLayer');attribute.Linetype=new Linetype('DetachedLinetype');attribute.Style=new TextStyle('DetachedStyle','txt.shx');
+  assert.equal(doc.Layers.get_Item('DetachedLayer'),null);assert.equal(doc.Linetypes.get_Item('DetachedLinetype'),null);assert.equal(doc.TextStyles.get_Item('DetachedStyle'),null);
+});
+
+test('ATTRDEF removal observers retain layer/linetype listeners after style detachment',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG');
+  doc.AddAttributeDefinitionToDocument(attribute);
+  const handle=attribute.Handle;
+  let observations=0;
+  doc.AddedObjects.RemoveItem.Add((_,e)=>{
+    if(e.Item.Value!==attribute)return;
+    observations++;assert.equal(attribute.Handle,handle);assert.equal(doc.GetObjectByHandle(handle),null);
+    attribute.Style=new TextStyle('RemovalStyle','txt.shx');
+    attribute.Layer=new Layer('RemovalLayer');attribute.Linetype=new Linetype('RemovalLinetype');
+  });
+  assert.equal(doc.RemoveAttributeDefinitionFromDocument(attribute),true);assert.equal(observations,1);
+  assert.equal(doc.TextStyles.get_Item('RemovalStyle'),null);
+  assert.equal(attribute.Layer,doc.Layers.get_Item('RemovalLayer'));
+  assert.equal(attribute.Linetype,doc.Linetypes.get_Item('RemovalLinetype'));
+  assert.equal(hasAttributeReference(doc.Layers,'RemovalLayer',attribute),true);
+  assert.equal(hasAttributeReference(doc.Linetypes,'RemovalLinetype',attribute),true);
+  attribute.Layer=new Layer('AfterRemovalLayer');attribute.Linetype=new Linetype('AfterRemovalLinetype');
+  assert.equal(doc.Layers.get_Item('AfterRemovalLayer'),null);assert.equal(doc.Linetypes.get_Item('AfterRemovalLinetype'),null);
+});
+
+test('ATTRDEF throwing removal observer preserves the native partial teardown state',()=>{
+  const doc=new DxfDocument(),attribute=new AttributeDefinition('TAG'),failure=new Error('remove observer');
+  doc.AddAttributeDefinitionToDocument(attribute);
+  const handle=attribute.Handle;
+  doc.AddedObjects.RemoveItem.Add((_,e)=>{if(e.Item.Value===attribute)throw failure;});
+  assert.throws(()=>doc.RemoveAttributeDefinitionFromDocument(attribute),error=>error===failure);
+  assert.equal(attribute.Handle,handle);assert.equal(doc.GetObjectByHandle(handle),null);
+  attribute.Style=new TextStyle('AfterRemoveFailureStyle','txt.shx');
+  attribute.Layer=new Layer('AfterRemoveFailureLayer');attribute.Linetype=new Linetype('AfterRemoveFailureLinetype');
+  assert.equal(doc.TextStyles.get_Item('AfterRemoveFailureStyle'),null);
+  assert.equal(attribute.Layer,doc.Layers.get_Item('AfterRemoveFailureLayer'));
+  assert.equal(attribute.Linetype,doc.Linetypes.get_Item('AfterRemoveFailureLinetype'));
+});
+
+test('registered listener selective removal removes one last subscription and preserves other owners',()=>{
+  const owner={},otherOwner={},item={Changed:new EventHook(),Other:new EventHook()},events=[];
+  item.Changed.Add(()=>events.push('external'));
+  Listen(owner,item,'Changed',()=>events.push('first'));
+  Listen(otherOwner,item,'Changed',()=>events.push('other-owner'));
+  Listen(owner,item,'Changed',()=>events.push('last'));
+  Listen(owner,item,'Other',()=>events.push('other-event'));
+  Unlisten(owner,item,'Changed');Unlisten(owner,item,'Missing');
+  item.Changed.Invoke(item,{});item.Other.Invoke(item,{});
+  assert.deepEqual(events,['external','first','other-owner','other-event']);
+  events.length=0;Unlisten(owner,item);item.Changed.Invoke(item,{});item.Other.Invoke(item,{});
+  assert.deepEqual(events,['external','other-owner']);
+  events.length=0;Unlisten(otherOwner,item,'Changed');Unlisten(otherOwner,item,'Changed');item.Changed.Invoke(item,{});
+  assert.deepEqual(events,['external']);
+});
+
+test('registered listener selective removal preserves an in-flight multicast snapshot',()=>{
+  const owner={},item={Changed:new EventHook()},events=[];
+  Listen(owner,item,'Changed',()=>{events.push('first');Unlisten(owner,item,'Changed');});
+  Listen(owner,item,'Changed',()=>events.push('last'));
+  item.Changed.Invoke(item,{});assert.deepEqual(events,['first','last']);
+  events.length=0;item.Changed.Invoke(item,{});assert.deepEqual(events,['first']);
+  events.length=0;item.Changed.Invoke(item,{});assert.deepEqual(events,[]);
 });

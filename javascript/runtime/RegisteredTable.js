@@ -9,10 +9,24 @@ export function Listen(owner, item, event, handler) {
   let hooks = items.get(item); if (!hooks) items.set(item, hooks = []);
   item[event].Add(handler); hooks.push([event, handler]);
 }
-export function Unlisten(owner, item) {
-  const hooks = subscriptions.get(owner)?.get(item) ?? [];
-  for (const [event, handler] of hooks) item[event].Remove(handler);
-  subscriptions.get(owner)?.delete(item);
+// An event-specific removal mirrors one C# -=, including duplicate subscriptions.
+// Omitting event retains the existing whole-item teardown behavior.
+export function Unlisten(owner, item, event) {
+  const items = subscriptions.get(owner), hooks = items?.get(item);
+  if (!hooks) return;
+  if (event !== undefined) {
+    for (let index = hooks.length - 1; index >= 0; index--) {
+      const [name, handler] = hooks[index];
+      if (name !== event) continue;
+      item[name].Remove(handler);
+      hooks.splice(index, 1);
+      if (hooks.length === 0) items.delete(item);
+      return;
+    }
+    return;
+  }
+  for (const [name, handler] of hooks) item[name].Remove(handler);
+  items.delete(item);
 }
 export function BindResource(owner, item, property, table, assignHandle = true) {
   if (item[property] === null) return;
