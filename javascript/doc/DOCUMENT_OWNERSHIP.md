@@ -143,63 +143,6 @@ installed barrel and standalone imports. A read-only GitHub workflow tests Ubunt
 22.04 and Windows 2022, each in Debug and Release, including the exact corpus,
 41 focused tests and 61 original erasure cases.
 
-### Completed local results for 6665f8c
-
-SDK 8.0.425, .NET 8.0.31, Node 22.16.0, Debian 13 x64, September 22, 2026:
-
-| Check | Observed result |
-| --- | --- |
-| Ownership differential, Debug and Release | Each: 188 scenarios / 8,130 operations; zero mismatches or unavailable native observations |
-| Full unchanged C# suite | Each configuration: 35,309 passed, zero failed |
-| Full original JavaScript suite | 2,881 passed; no unexpected original identities |
-| Supplemental JavaScript tests | 867 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; **487 files** |
-| Source-derived foundations/dimensions | Exact regeneration passed |
-| Release inline Chromium 144.0.7559.96 | All 140,719 comparisons executed; no page errors, unavailable source observations or new ownership mismatches; 83 previous-category failures remain |
-| HTTP-origin Chromium | Failed: ERR_BLOCKED_BY_ADMINISTRATOR during local-origin navigation |
-| Full-port verification, both configurations | Failed; missing, stale and failing categories retained |
-
-The package report records 487 files. The executable commit message's 488-file
-figure was a transcription error, not a different successful package run.
-
-Runtime fingerprint:
-`0ef1e9301168259bc0beead91465220a7c19c932680c676cf782bb7037e6d369`.
-POSIX verifier:
-`40f0048ac869afcbe2c05e4323a64e9f0d1a1e1cd34e50f3a043727846f9d639`.
-Source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-From `javascript/`, select the pinned source and toolchain, then run:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs geometry
-npm run test:document-ownership
-npm test
-npm run test:unit
-npm run test:package
-node tools/browser-corpus.mjs
-python tools/browser-inline-check.py
-npm run verify:complete
-```
-
-### Completed hosted ownership matrix
-
-[Run 35780494490](https://github.com/wieslawsoltes/netDxf/actions/runs/35780494490)
-at `6665f8c` passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each ran 188 scenarios / 8,130 exact operations, 41 focused supplemental tests,
-and 61 filtered original erasure cases. All four artifact ZIPs were downloaded,
-hash-checked against GitHub's digests and inspected.
-
-The [hosted receipt](document-ownership-hosted-6665f8c.json) retains the actual
-ownership result documents, original-test metadata, counts and file hashes.
-The full original-test result documents remain in the hash-identified archives;
-the filtered run is not relabeled as the full original suite. Runtime fingerprints
-match across all four profiles. The existing host-path sort produces Windows
-verifier `fb44c0934073d8311e0a8b417d70b9b7877c614fd81e05051568e681f597e071`;
-the actual reports are retained without rewriting that platform-specific value.
-Passing focused jobs do not qualify unrelated full-port categories.
-
 ## Remaining scope and ledger
 
 **358/510 library mirrors (152 missing); 54/193 conformance-file mirrors (139
@@ -219,3 +162,5 @@ rerun against this exact executable tree remain unavailable or stale, not green.
 Debug browser, broad numeric/platform/filesystem guarantees and performance
 acceptance are also incomplete. No source/fixture change, tolerance, expected-
 failure waiver, merge, force push or npm publication was used. PR #98 stays draft.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/DOCUMENT_OWNERSHIP.md). Current published scope is maintained in the [README](../README.md).

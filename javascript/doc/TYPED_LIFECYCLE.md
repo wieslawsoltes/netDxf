@@ -4,8 +4,6 @@
 
 This increment ports the pinned `DxfObject`, `DxfObjectReference`, `XData`, `Collections/XDataDictionary`, `Tables/TableObject`, `Tables/TableObjectChangedEventArgs`, and both `Tables/ApplicationRegistry` partial source files at the original paths. It does not turn raw records into a replacement for the not-yet-ported typed document engine.
 
-Before this increment, the remote branch had already reconciled the saved foundations work. The retained `recovery/foundations-fb10b22.patch.xz` decompresses to SHA-256 `7773e68f1eadcb236be68544e0bf1043edd3fd8679cb9c937db8f56549d7eef1`, identical to the original saved cumulative patch. The newer generated geometry remains canonical; no prior source or recovery data is discarded here.
-
 ## Semantics
 
 DxfObject forwards registry-add/remove notifications with multicast snapshot ordering and preserves nullable handle/owner/extension metadata and the persistent reactor list. Internal Int64 handle assignment uses BigInt, including unchecked wraparound and two's-complement hexadecimal formatting.

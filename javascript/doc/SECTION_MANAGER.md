@@ -107,63 +107,6 @@ regressions and the full mirrored original JavaScript suite.
 No original SECTION_MANAGER case is shortened to omit typed Save/Load. The new
 25 tests are supplemental and do not increase original-case identity coverage.
 
-## Completed source-bound results
-
-SDK 8.0.425 / .NET 8.0.31, Node 22.16.0, local Linux x64,
-September 23, 2026. These results qualify the executable tree above, not all
-subsequent commits or all behavior of the incomplete port.
-
-| Check | Observed result |
-| --- | --- |
-| Manager, Debug and Release | Each: 174 scenarios / 5,406 operations, zero mismatches or unavailable native observations |
-| Retained polylines, both configurations | Each: 181 scenarios / 5,419 operations, zero mismatches |
-| Existing document ownership, both configurations | Each: 188 scenarios / 8,130 operations, zero mismatches |
-| Registered annotations, both configurations | Each: 112 scenarios / 6,633 operations, zero mismatches |
-| Full unchanged C# conformance | Each configuration: 35,309 passed, zero failed |
-| Mirrored original JavaScript suite | 2,905 passed; no unexpected original test identities |
-| Supplemental JavaScript suite | 933 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; 499 files |
-| Source-derived foundations and dimensions | Both exact regeneration checks passed |
-| Release inline Chromium 144.0.7559.96 | All 141,186 comparisons executed; zero new manager failures, page errors or unavailable source observations; 87 previous-category failures remain |
-| HTTP-origin browser | Failed: local navigation returned ERR_BLOCKED_BY_ADMINISTRATOR |
-| Full-port verification | Both configurations failed, retaining missing, stale and failing evidence |
-
-The 87 browser failures comprise 64 entity, 12 concrete-dimension, six classic
-LEADER, four block and one coordinate scenario, unchanged in count from the
-retained-polyline checkpoint. The separately rerun LEADER corpus passes Debug
-but retains six Release NaN-sign operation differences. Release concrete
-dimensions retain 26 operation differences. No numerical workaround, output
-normalization or expected-failure waiver was introduced.
-
-The source-derived verification manifests were regenerated with --check, not
-merely compared by file presence. Other standalone categories not rerun against
-this exact tree remain stale or unavailable. The Debug browser mode and broad
-filesystem/performance qualification are not counted as passing.
-
-### Hosted profiles
-
-[Run 35821034646](https://github.com/wieslawsoltes/netDxf/actions/runs/35821034646)
-at `9cf0351` passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each ran all four independent lifecycle corpora, 107 focused supplemental tests,
-and all 2,905 mirrored original cases. These focused jobs do not qualify every
-original C# case in JavaScript or turn the full-port gate green.
-
-All four ZIPs were downloaded, checked against GitHub's SHA-256 digests and
-inspected. The [hosted receipt](section-manager-hosted-9cf0351.json) retains all
-16 actual differential result documents and the full mirrored-suite metadata,
-counts and hashes. Full original-result arrays remain in the identified archives
-and downloadable validation bundle, not replaced with invented summaries.
-
-Runtime fingerprint:
-`d731191884dbe9a01960b0505d892b80a973400aea4950d1853df378dbec43df`.
-POSIX verifier:
-`ea0d11a4d98b6346d2022f4a2f52baf4171ceb963dbacdab80c018da0d72dcc6`.
-Windows verifier:
-`eaf9bcaf927154ffe9333317c86f3eeb3779040f49d48e82469d222e5dae7a4b`.
-The existing verifier sorts host paths before normalizing separators; both hashes
-were independently reproduced from the same file bytes. Actual hosted reports
-are retained without rewriting their platform-specific hashes.
-
 ## Recovery and remaining scope
 
 The `fae312d6` source archive was restored and its complete tree verified. No
@@ -185,3 +128,5 @@ API remains separate and is not substituted for missing typed transport.
 
 PR #98 remains draft. Original C# sources/tests/fixtures are unchanged; no merge,
 npm publication or failing-test waiver was performed.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/SECTION_MANAGER.md). Current published scope is maintained in the [README](../README.md).

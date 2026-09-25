@@ -1,6 +1,6 @@
 import { CodecCastException } from '../../runtime/CodecValueType.js';
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
-import { InvalidCastException, NullReferenceException } from '../../runtime/Errors.js';
+import { NullReferenceException } from '../../runtime/Errors.js';
 import { DxfGroupCode, DxfTagValueType as T } from './DxfGroupCode.js';
 import { ArgumentNullException, Exception, FormatException, EndOfStreamException } from '../../runtime/Errors.js';
 import { NormalizeHandle } from '../../runtime/NumberFormatting.js';

@@ -169,102 +169,6 @@ The existing four-profile ownership workflow now runs all five lifecycle corpora
 144 focused tests and the complete mirrored original JavaScript suite, including
 the Windows replacement-host prerequisite.
 
-### Completed local evidence at 7b2249b
-
-SDK 8.0.425 / .NET 8.0.31, Node 22.16.0, Debian 13 x64; September 23, 2026.
-
-| Check | Result |
-| --- | --- |
-| TABLESTYLE/CELLSTYLEMAP, Debug and Release | Each: 279 scenarios / 5,829 operations; zero mismatches or unavailable observations |
-| SECTION_MANAGER, both configurations | Each: 174 scenarios / 5,406 operations; zero mismatches |
-| Retained polylines, both configurations | Each: 181 scenarios / 5,419 operations; zero mismatches |
-| Document ownership, both configurations | Each: 188 scenarios / 8,130 operations; zero mismatches |
-| Registered annotations, both configurations | Each: 112 scenarios / 6,633 operations; zero mismatches |
-| Full unchanged original C# suite | 35,309 passed in each configuration; zero failures |
-| Full mirrored original JavaScript suite | 2,907 passed; zero failures or unexpected original identities |
-| Supplemental suite | 970 passed; zero failures, skips or TODOs |
-| Offline-installed package | Passed; 509 files |
-| Source-derived foundations and dimensions | Both exact regeneration checks passed |
-| Release inline Chromium 144.0.7559.96 | All 141,465 comparisons executed; no new table mismatches, page errors or unavailable native observations; 83 other failures remain |
-| HTTP-origin Chromium | Failed: local navigation returned ERR_BLOCKED_BY_ADMINISTRATOR |
-| Full parity gates | Failed; missing work and failed/unavailable evidence remain blocking |
-
-Runtime fingerprint:
-`14ff4a7247c484834afe6b3433c470ac6580481b9a14cb4bb67bdc28779c69b7`.
-POSIX verifier:
-`de653b0a045c0078b7b4d97dfb817f2ccdeabac52d010d9183b90d083b34d5c9`.
-
-### Complete differential-stage refresh
-
-All **43 configured differential stages** were executed in each configuration
-against these executable fingerprints. Release passed **37/43**; the final Debug
-run passed **38/43**. All commands returned normally with status 0 or 1; no
-command timeout or excluded stage was treated as a pass.
-
-The first Debug invocation had no built general `Oracle.dll` and recorded
-transport errors in stages using it. Its command ledger and logs are retained
-separately. After confirming no active oracle remained, the unchanged Debug
-oracle was built and the full 43-stage run repeated. The missing-prerequisite
-attempt is not used as final passing evidence or relabeled as a code mismatch.
-
-Release still reports 26 concrete-dimension, six classic-LEADER, eight block,
-three coordinate and 128 entity operation mismatches. These correspond to
-12, two, four, one and 64 failing scenarios, respectively. Debug retains one
-BezierCurveCubic tangent NaN-sign comparison difference. It also has six
-concrete-dimension, 12 tolerance and four layout/viewport scenarios without a
-native result because the original Debug assertions terminate those processes.
-Those unavailable observations remain blocking, not expected successes.
-
-Both casing stages reject the local native globalization profile before
-performing the pairwise comparison: Debian's observed 1,453 mappings and digest
-`59c5a0ca1a3ad925c36fc1e8b9e69f6daa6e8e94e95b3020accb6eb147d9e011`
-do not match the pinned Ubuntu profile. The precomputed pair count is not a
-count of completed comparisons. No casing tables were regenerated or changed.
-
-Other stages, including raw transport, handles/objects, filesystem, foundations
-and randomized geometry, passed in both final runs. This does not qualify every
-filesystem platform or the unported typed transport. Full gates were rerun after
-the stage refresh and remain failed. Independent high-precision math evidence,
-performance acceptance and Debug-browser evidence remain unavailable.
-
-### Completed hosted matrix
-
-[Run 35826932807](https://github.com/wieslawsoltes/netDxf/actions/runs/35826932807)
-at `7b2249b` passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each executed all five complete lifecycle corpora (**934 scenarios / 31,417
-operations**), 144 focused tests, and all **2,907 mirrored original cases**.
-The Windows bridge prerequisite remained enabled and no affected test was skipped.
-
-All four artifact archives were downloaded, SHA-256 checked against GitHub and
-inspected. The [retained receipt](table-styles-hosted-7b2249b.json) includes all
-20 actual differential result documents plus original-suite metadata, counts
-and file/archive hashes. Full original-result arrays remain in the identified
-archives and the downloadable validation bundle. This is the whole mirrored
-suite, not the still-unported complete 35,309-case C# suite.
-
-Windows verifier:
-`695bfc54fb71c4fb238e27998d5a031a4849282a8274dca616654b585ca8a001`.
-The existing verifier sorts host paths before normalizing separators. Its POSIX
-and Windows fingerprints were independently reproduced from identical source
-bytes; actual reports were not rewritten. These finite focused successes do not
-waive unrelated failed or missing full-port evidence.
-
-From `javascript/`, with the pinned source checkout and toolchain selected:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs oracle
-node tools/dotnet.mjs geometry
-npm run test:table-styles
-npm test
-npm run test:unit
-npm run test:differential
-npm run test:package
-node tools/browser-corpus.mjs
-python tools/browser-inline-check.py
-npm run verify:complete
-```
-
 ## Remaining parity work
 
 The ledger is **375/510 library mirrors (135 missing), 58/193 conformance-file
@@ -285,3 +189,5 @@ increment, and the changed count is not claimed as a numerical fix.
 Debug browser and other unavailable qualification categories remain blocking.
 No original C# or fixture changes, removed comparisons, tolerance, expected-
 failure waiver, merge, force push or npm publication occurred. PR #98 stays draft.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/TABLE_STYLES.md). Current published scope is maintained in the [README](../README.md).

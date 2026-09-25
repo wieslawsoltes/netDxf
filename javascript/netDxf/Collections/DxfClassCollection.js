@@ -1,6 +1,6 @@
 // Copyright (c) Daniel Carvajal. MIT License; see package LICENSE.
 import { DxfClass } from '../DxfClass.js';
-import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException, InvalidOperationException, KeyNotFoundException, RequireInteger } from '../../runtime/Errors.js';
+import { ArgumentException, ArgumentNullException, InvalidOperationException, KeyNotFoundException, RequireInteger } from '../../runtime/Errors.js';
 
 /** Ordered KeyedCollection adapter with independent ordinal DXF and C++ name indexes. */
 export class DxfClassCollection {

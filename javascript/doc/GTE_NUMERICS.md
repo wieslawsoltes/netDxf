@@ -167,35 +167,6 @@ python tools/browser-inline-check.py
 npm run verify:complete
 ```
 
-## Hosted verification
-
-[Run 35911926162](https://github.com/wieslawsoltes/netDxf/actions/runs/35911926162)
-at `0d3e89e` completed on Ubuntu 22.04 and Windows 2022 in Debug and Release.
-**All four jobs failed the exact GTE comparison.** In every profile, source
-regeneration, the 22 focused regressions and all 3,587 mirrored original tests
-passed. Those successes do not change the failed workflow conclusion.
-
-Both Release profiles record 369 observed scenarios / 4,858 operations, twelve
-polynomial operation differences and 32 unavailable native scenarios. Both Debug
-profiles record 363 observed scenarios / 4,800 operations, twelve differences and
-38 unavailable native scenarios. All profiles retain the full 401-scenario /
-5,435-requested-operation requirement. The Windows replacement-host prerequisite
-also completed before running the full mirrored suite.
-
-All four downloaded ZIPs match GitHub's SHA-256 digests. Their complete original
-test identity sets match the local 3,587-case result without duplicates. The
-[committed receipt](gte-hosted-0d3e89e.json) retains report summaries, source and
-runtime fingerprints, actual original-suite metadata, counts and archive/file
-hashes. Complete differential failure documents and original-result arrays remain
-in the identified archives and validation bundle; summaries are not substituted
-for those original documents.
-
-Every profile has the same runtime fingerprint. The Windows report's verification
-fingerprint is `ac1ac930f1e4ed3291e3f7b304612a520228aece318c4dd321766374aeca6203`.
-The existing verifier sorts host paths before separator normalization; the actual
-host-specific hashes are preserved, not rewritten. The final documentation and
-receipt update does not change executable fingerprints.
-
 ## Remaining parity work
 
 Current ledger: **411/510 library mirrors (99 missing)**,
@@ -211,3 +182,5 @@ The full-source compiler probe also remains an experiment, not a working typed-I
 backend. No generated stubs, native process shortcuts, tolerance, expected-failure
 allowlist or dropped comparison is used. Original C# sources/tests and shared
 fixtures are unchanged. PR #98 stays draft; no merge, force push or npm publication.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/GTE_NUMERICS.md). Current published scope is maintained in the [README](../README.md).

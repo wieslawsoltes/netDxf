@@ -8,7 +8,7 @@ import { ValueList } from '../../runtime/ValueList.js';
 import { Copy } from '../../runtime/GeometryRuntime.js';
 import { CheckStoredName } from '../../runtime/CheckedCollection.js';
 import { RequireInertIdentity } from '../../runtime/InertEntity.js';
-import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException, InvalidOperationException, NotSupportedException, RequireInteger } from '../../runtime/Errors.js';
+import { ArgumentException, ArgumentOutOfRangeException, InvalidOperationException, NotSupportedException, RequireInteger } from '../../runtime/Errors.js';
 class SectionVertices extends ValueList {
   #index(index, insert=false) { if (!Number.isInteger(index) || index<0 || index>=this.Count+(insert?1:0)) throw new ArgumentOutOfRangeException('index',index); }
   Add(item) { this.Insert(this.Count,item); }

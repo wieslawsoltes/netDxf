@@ -130,7 +130,7 @@ Hosted run [35702158923](https://github.com/wieslawsoltes/netDxf/actions/runs/35
 at `0b23eed` passed **all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs**.
 Each ran both complete utility corpora and all 22 focused tests. All four ZIPs
 were downloaded, checked against GitHub SHA-256 digests and inspected. The
-[retained receipt](drawing-utilities-hosted-0b23eed.json) includes all eight actual
+[retained receipt](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/drawing-utilities-hosted-0b23eed.json) includes all eight actual
 result documents and their hashes. These jobs qualify only the utility corpus,
 not the broad JavaScript workflow or full source translation.
 
@@ -159,3 +159,5 @@ Typed DxfDocument, registered entity/table/database ownership, complete typed
 reader/writer, remaining public APIs and original tests/examples, cross-platform
 numeric and filesystem guarantees, and performance acceptance remain unfinished.
 PR #98 stays a draft and npm publication remains blocked.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/DRAWING_UTILITIES.md). Current published scope is maintained in the [README](../README.md).

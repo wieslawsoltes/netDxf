@@ -32,16 +32,6 @@ The 665-scenario input corpus contains no expected models. C# and JavaScript sna
 
 The shared test-only model interpreter is split into descriptor/type resolution, snapshots and operations. The C# reflection runner retains its partial-class state and original operations. Existing corpus ordering and source-generated expected results are preserved. The enlarged browser corpus requires **128,754 comparisons**; header comparisons are mandatory in full Node qualification and both browser modes. A dedicated workflow also executes headers on Linux/Windows in Debug and Release.
 
-## Completed local evidence
-
-Both complete, unchanged C# suites pass **35,309 original cases**. All **2,819 mirrored original JavaScript cases**, **649 supplemental tests** and the **394-file offline installed package** pass. No new original C# case identities are counted here: the 28 added tests are supplemental. All **665 / 6,596** header comparisons pass in both Debug and Release. Native source regeneration, fixed foundations, exact randomized geometry and both 30,904-comparison independent development-reference MPFR audits pass.
-
-Release Chromium 144.0.7559.96 executes all **128,754** inline-native-ESM comparisons with no page errors and zero header mismatches. It retains **69 existing failing scenarios**. Debug executes the same **128,754** comparisons with no page errors or header mismatches, retaining five failures: the Bezier result and four unavailable native viewport observations. Local HTTP-origin navigation is blocked by policy and is not treated as a pass or replaced by inline evidence.
-
-The full differential runs retain these existing failures: Release has 128 entity-output observations, eight INSERT observations and three UCS observations; Debug retains one Bezier tangent observation and four unavailable native viewport observations caused by original Debug assertions. The local globalization profile is rejected in both configurations. These remain failures; no allowlist, tolerance or removed case was added. Descriptive benchmark completion is not broad performance acceptance.
-
-The dedicated hosted header workflow passes all four Linux/Windows Debug/Release jobs at code commit c2d3581. [Downloaded hosted evidence and artifact identities](HEADERS_HOSTED.md) records the exact source-bound results. This does not qualify unrelated platform APIs or turn the full-port gate green.
-
 ## Completion ledger and remaining work
 
 **283/510 library mirrors; 52/193 conformance-file mirrors; 2,819/35,309 original cases.** Missing: **227 library paths, 141 conformance paths and 32,490 original cases**. File presence is not exhaustive member/signature/behavioral equivalence. HeaderVariables adds one original-path library mirror; the runtime and test adapters are not additional C# file mirrors.
@@ -72,3 +62,5 @@ Reports are under `artifacts/header-differential/<configuration>/`, `artifacts/c
 Runtime fingerprint: `5a253e79e2675b8635f8f60f82a4eaceedf847da14e58eb425c05bcfa1f63f14`.
 
 POSIX verifier: `35fe90660169c6d8fbcb61bb62636ed7ca439ff8540a4cc8e5220b58b2fbed76`.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/HEADERS.md). Current published scope is maintained in the [README](../README.md).

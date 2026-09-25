@@ -11,27 +11,6 @@ This continuation implements five original-path entity-body codec files and a
 shared XData helper. It does **not** provide complete typed document loading,
 saving, entity dispatch, resource reconstruction or private CAD evaluation.
 
-## Publication and recovery
-
-The available files contained recovery archives, not an unpublished checkout.
-Restoring the published checkpoint reproduced its complete tree
-`a31afdf1e6b3aa09f7b470c24d163c37bd1b52fb` exactly. Existing source, tests,
-fixtures and earlier port work were preserved.
-
-A final remote read discovered `b7a572e`, which removed eighteen branch-specific
-JavaScript workflows while preserving every source and test file. Its complete
-tree `495d3f12d59e24e2983c3a45fd71abb63f930d5a` was reproduced exactly. The
-local commits were reapplied on that tree without restoring a removed workflow;
-the earlier local commits remain on a recovery branch. Runtime and verification
-fingerprints remain identical to the tested `30dfe8e` checkpoint.
-
-The implementation and verification integration are committed locally. GitHub
-accepted an unreferenced partial tree, but blocked the next tree write with an
-indeterminate safety-status result. No branch update or remote commit was made
-in this continuation. The incomplete tree was not published. The accompanying
-format-patch files preserve the complete local changes for review and recovery;
-local reconstruction commit identities differ from the published history.
-
 ## Exported APIs
 
 The existing browser-safe `DxfTransport` namespace and original relative modules
@@ -138,55 +117,6 @@ side effects. Incomplete observation envelopes are failures.
 **31 supplemental tests** were added. No original test identity was added or
 shortened: cases that still require complete typed Load/Save remain missing.
 
-## Completed local verification
-
-SDK 8.0.425 / .NET 8.0.31, Node 22.16.0, Debian 13 x64. All entries below belong
-to the executable local commit above, not to a new hosted workflow run.
-
-| Check | Actual result |
-| --- | --- |
-| New native/JS comparison, Debug | 1,107 scenarios / 3,714 operations; zero mismatches or unavailable observations |
-| New native/JS comparison, Release | 1,107 scenarios / 3,714 operations; zero mismatches or unavailable observations |
-| Full unchanged C# suite | 35,309 passed in each configuration |
-| Complete mirrored original JS subset | 3,619 passed; no unexpected or duplicate identities |
-| Full supplemental suite | 1,184 passed; zero failures, skips or TODOs |
-| Offline-installed package | Passed; 570 files |
-| Foundation, dimension and GTE generation | All three exact regeneration checks passed |
-| Focused Chromium, Debug and Release | Each: 1,107 scenarios / 3,714 operations; zero differences or page errors |
-| Full-parity verification, both configurations | Failed; missing work and unrun evidence remain blocking |
-
-The focused browser run uses real Chromium 144.0.7559.96 and 539 native ESM
-modules, compared with independently recorded C# observations. Its scripts and
-full native observations are included in the validation archive. It is **not**
-the complete 146,991-check browser qualification and does not satisfy that gate.
-
-The new category is wired into the existing browser runner, aggregate verifier
-and installed-package smoke test. The initial codec-workflow edit was discarded
-when preserving the newer upstream workflow deletion; no removed workflow is
-reintroduced. The complete 52-stage aggregate, full browser suites, MPFR/performance
-checks and hosted CI were not rerun for this local checkpoint. Historical results remain tied to their earlier commits.
-An interrupted initial original-test attempt was followed by a complete passing
-rerun; only the completed run supplies the result above.
-
-Runtime fingerprint:
-`1dbbd215e548792f30659c0a4503122233ea65a87084127a96a621a4b8db2994`.
-Verification fingerprint:
-`aa8b544ec031ffd41af69688ccbdd09a7668e0528e04d7c3cdd3032f3ea7b511`.
-Unchanged source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-With the pinned source and toolchain configured, run from `javascript/`:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs geometry
-npm run test:entity-body-io
-npm test
-npm run test:unit
-npm run test:package
-npm run verify:complete
-```
-
 ## Remaining work
 
 The current local ledger is **421/510 library mirrors**, **66/193 original
@@ -200,3 +130,5 @@ conversion and broad numerical/host/performance acceptance remain incomplete.
 Existing numerical, native-assertion/recursion and globalization-profile failures
 are not waived by the focused results here. No original C# source, original test
 or shared fixture changed; there was no merge, force push or npm publication.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/ENTITY_BODY_IO.md). Current published scope is maintained in the [README](../README.md).

@@ -10,23 +10,6 @@ This increment improves the four existing code/value readers and writers. It
 Exact low-level codec behavior and full typed document transport are separate
 qualification categories. The package remains private and PR #98 remains draft.
 
-## Recovery and preserved work
-
-The actual branch head at recovery was `90d5a57`, beyond the stale PR description.
-The earlier opaque-entity/version/header implementation, 77 original header-probe
-and version-analysis regressions, and actual binary-stream cursor fix were already
-published and are preserved. No surviving unpublished checkout or comparison
-harness was found. The new harness was reconstructed, not described as recovery
-of unavailable bytes or qualification of earlier unpublished scenario counts.
-
-Source artifact `10757185914` from run `35873623251` was downloaded and checked:
-SHA-256 `e6612c26b3bca524201f1de914bdb7868e4ce7dac497ff4314c8dd150d6f97f0`.
-Restoring all tracked paths, including ignored tracked fixtures, reproduced the
-published tree `b225116e2494d6b5e3dc3b0becf4e6b9b0dec2a4` exactly.
-Reconstructed local commit identities differ from GitHub commit identities;
-complete file-tree equality was verified before each non-forced branch update.
-Original C# sources, original tests and shared fixtures remain unchanged.
-
 ## Reader corrections
 
 Text parsing now retains the source's exact diagnostic kinds and positions:
@@ -137,79 +120,6 @@ The new read-only workflow uses the pinned toolchains and source reference on
 Ubuntu 22.04 and Windows 2022 in Debug and Release. It retains the optional Windows
 atomic-replacement host build before running the entire mirrored original suite.
 
-## Source-bound local evidence
-
-Executable checkpoint `fc0735f`, September 23, 2026; Node 22.16.0, SDK 8.0.425,
-runtime 8.0.31, Debian 13 x64, Chromium 144.0.7559.96:
-
-| Check | Actual result |
-| --- | --- |
-| Reader/probe comparison, Debug and Release | Each: 913 scenarios / 27,407 executed commands / 35 constructor rejections; zero mismatches |
-| Writer comparison, Debug and Release | Each: 509 scenarios / 5,495 executed commands / five constructor rejections; zero mismatches |
-| Full unchanged C# conformance | 35,309 passed in each configuration |
-| Full mirrored original JavaScript conformance | 3,587 passed; no duplicate or unexpected original identities |
-| Supplemental JavaScript suite | 1,102 passed; zero failures, skips or TODOs |
-| Offline-installed package | Passed; 537 files |
-| Source-derived foundations and dimensions | Both exact regeneration checks passed |
-| Full differential refresh | All 49 stages completed per configuration; Debug 44 pass / five fail, Release 43 pass / six fail |
-| Release inline Chromium | 144,318 checks executed; zero codec mismatches or page errors; 83 prior-category failures |
-| Debug inline Chromium | 144,318 checks executed; zero codec mismatches or page errors; 31 failures, including 22 unavailable native observations |
-| HTTP-origin browser | ERR_BLOCKED_BY_ADMINISTRATOR before executing comparisons |
-| Development-only MPFR reference audit | 30,904 comparisons per configuration; zero failures or 512-/1,024-bit precision disagreements |
-| Existing descriptive benchmark | Completed for 2,000 objects; not release performance acceptance |
-| Full-parity verification | Both configurations remain blocked |
-
-MPFR 4.2.2 validates the separate HighPrecisionMath development reference; it does
-not replace the production .NET comparison, waive NaN-sign differences or become
-a production dependency. The benchmark covers its existing raw/geometry/collection
-operations, not complete typed document or C# speed acceptance. Initial development
-failures and intermediate attempts remain separate from final-tree evidence.
-
-Runtime fingerprint:
-`cf80dcb194e614f18db86baeb73ea78f690202293b4d54dac402bda10cb2fefa`.
-POSIX verifier:
-`5460580565643649d9dd607d5a69e53854857acbf8458ce80841348229fb6654`.
-Source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-From javascript/, with the pinned source checkout and toolchain selected:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs geometry
-npm run test:codec-readers
-npm run test:codec-writers
-npm test
-npm run test:unit
-npm run test:package
-npm run test:differential
-node tools/browser-corpus.mjs
-python tools/browser-inline-check.py
-npm run verify:complete
-```
-
-## Hosted evidence
-
-[Run 35891085971](https://github.com/wieslawsoltes/netDxf/actions/runs/35891085971)
-at `fc0735f` completed successfully on Ubuntu 22.04 and Windows 2022, each in
-Debug and Release. Every job ran both full codec corpora, all 40 focused tests
-and all 3,587 mirrored original cases. The mirrored subset is not all 35,309
-original cases, and this focused workflow is not blanket full-port CI success.
-
-All four ZIPs were downloaded, verified against GitHub SHA-256 digests and
-inspected. The [retained receipt](codec-streams-hosted-fc0735f.json) includes all
-eight actual comparison reports and full mirrored-suite metadata, counts and
-result hashes. The original-result arrays remain in the identified archives and
-validation bundle. Their complete identity sets match the local results and the
-unchanged native suite without duplicate or unexpected identities.
-
-All runtime fingerprints match. The existing verifier sorts host paths before
-normalizing separators; the Windows verifier is
-`7d28dd38821d730bc62303f80f218a02cad0351c461ea5399003b90075148082`.
-Both platform-specific verifier hashes were independently reproduced from the
-same file bytes. Actual reports were not rewritten. Documentation-only changes
-do not alter these executable fingerprints.
-
 ## Remaining parity work
 
 The ledger is **394/510 library source mirrors (116 missing)**,
@@ -241,3 +151,5 @@ No AutoCAD open/AUDIT/save/reopen qualification is claimed.
 
 No original C# source or shared fixture changes, comparison removal, tolerance,
 expected-failure waiver, merge, force push or npm publication occurred.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/CODEC_STREAMS.md). Current published scope is maintained in the [README](../README.md).

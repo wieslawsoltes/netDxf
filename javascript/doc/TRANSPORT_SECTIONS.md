@@ -77,58 +77,6 @@ after all existing browser inputs, and exercised from the offline-installed
 package. Existing reader/writer corpora and the Windows replacement-host build
 remain enabled in the hosted workflow.
 
-## Completed evidence at 688b6d0
-
-September 23, 2026: SDK 8.0.425, .NET 8.0.31, Node 22.16.0, Debian 13 x64,
-Chromium 144.0.7559.96. Original sources, tests and fixtures are unchanged.
-
-| Check | Observed result |
-| --- | --- |
-| Section comparisons, Debug and Release | Each: 1,165 scenarios / 3,473 operations; zero mismatches or unavailable observations |
-| Full unchanged C# suite | 35,309 passed in each configuration |
-| Full mirrored original JavaScript suite | 3,619 passed; no duplicate or unexpected original identities |
-| Supplemental JavaScript suite | 1,153 passed; zero failures, skips or TODOs |
-| Offline-installed package | Passed; 564 files |
-| Foundation, dimension and GTE regeneration | All three exact checks passed |
-| Complete differential refresh | All 51 stages completed per configuration; Debug 45 pass / 6 fail, Release 44 pass / 7 fail |
-| Release inline Chromium | 145,884 checks executed; zero new section-codec mismatches or page errors; 119 failures elsewhere |
-| Full-parity gates | Both configurations fail; incomplete coverage and failed/unavailable categories retained |
-
-The first aggregate attempts lacked the source inventory required by four
-fixture-dependent stages. After generating that unchanged inventory, **all 51
-stages were rerun in both configurations**. Initial logs remain separate; their
-missing-input failures are not relabeled as successful executions. The final
-full-parity reports were regenerated after both complete reruns.
-
-Debug/HTTP-origin browser modes, MPFR and performance were not rerun in this
-checkpoint. Their missing current evidence remains blocking; historical reports
-are not silently reused as current results.
-
-[Hosted run 35921643226](https://github.com/wieslawsoltes/netDxf/actions/runs/35921643226)
-at `688b6d0` passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each ran the new section corpus, both existing codec corpora, **69 focused tests**
-and **all 3,619 mirrored original cases**. Combined coverage is 2,587 scenarios
-and 36,375 executed commands/operations, with the existing 40 constructor
-rejections separately recorded. Rejected constructors do not fabricate command
-results. The mirrored subset is not the full 35,309-case original suite.
-
-All four downloaded archives matched GitHub SHA-256 digests. The
-[committed receipt](transport-sections-hosted-688b6d0.json) retains all twelve
-actual comparison reports and original-suite metadata/counts/hashes. Original
-result identities match the local suite and unchanged C# names without duplicates.
-Original arrays remain in the identified archives and downloadable validation
-bundle. Passing this focused matrix does not qualify the broad failing port.
-
-Runtime fingerprint:
-`e361b74aba74801f7fb2ef6355a3c933ff1a2e7b1b239e393ae749e27c93f3d2`.
-POSIX verifier:
-`8fa110df4ebc10dcc253bd3534586d620bcc90cb584c7f52b5c83f31c012d1ee`.
-Windows verifier:
-`738d6abb5ca67c61545531de4ed9404ebc0173454fde2a5e6f95c024b423916a`.
-Both verifier hashes were independently reproduced from identical source bytes;
-the existing host-path sort explains their difference. Actual reports are not
-rewritten. Documentation changes do not alter these executable fingerprints.
-
 ## Remaining work
 
 **416/510 library mirrors (94 missing), 66/193 original conformance-file mirrors
@@ -153,3 +101,5 @@ conversion, remaining original tests/examples and broad host/numerical/performan
 acceptance remain unfinished. No AutoCAD open/AUDIT/save/reopen fidelity is claimed.
 No original C# or fixture change, merge, force push, expected-failure waiver or
 npm publication occurred. PR #98 remains a draft.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/TRANSPORT_SECTIONS.md). Current published scope is maintained in the [README](../README.md).

@@ -130,84 +130,6 @@ including the standalone module. The existing workflow adds the new corpus and
 tests without removing earlier stages or the optional Windows replacement-host
 build needed by the full mirrored suite.
 
-### Completed local evidence
-
-The following describes the exact executable `198d9e4` tree on Debian 13 x64,
-Node 22.16.0, SDK 8.0.425 / .NET 8.0.31, September 23, 2026:
-
-| Check | Observed result |
-| --- | --- |
-| Geometry differential, Debug and Release | Each: 270 scenarios / 3,966 operations; zero mismatches or unavailable native observations |
-| Five earlier lifecycle corpora, both configurations | All pass: table styles 279/5,829; manager 174/5,406; retained polylines 181/5,419; ownership 188/8,130; annotations 112/6,633 |
-| Full unchanged C# conformance | Each configuration: 35,309 passed, zero failed |
-| Full mirrored original JavaScript conformance | 2,920 passed; no unexpected original identities |
-| Supplemental JavaScript suite | 994 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; 512 files |
-| Source-derived foundations and dimensions | Both exact regeneration checks pass |
-| Complete differential refresh | All 44 stages executed in each configuration; Debug 39 passed / 5 failed; Release 38 passed / 6 failed; no stage timeout |
-| Release inline Chromium 144.0.7559.96 | All 141,735 digest checks executed; no new geometry mismatches, page errors or unavailable native observations; 83 previous-category failures remain |
-
-The first combined local unit/conformance command was interrupted before the
-original suite completed. The complete successful original-suite rerun is separate
-evidence; no interrupted attempt is counted as a passing full run.
-
-Debug inline Chromium also executed all 141,735 digest checks with no page errors
-or new TABLEGEOMETRY mismatches. It retains 31 failing entries: 22 unavailable
-native observations from source assertions, plus eight concrete-dimension digest
-differences and one cubic Bezier comparison. The unavailable observations are
-reported distinctly; their digest checks are not passing native comparisons.
-
-HTTP-origin navigation was attempted separately and failed before test execution
-with ERR_BLOCKED_BY_ADMINISTRATOR. Neither an input count nor the completed
-inline executions is used as evidence of HTTP-origin qualification. Both full-port
-verification commands returned failure and retained all missing or failed
-categories, including unavailable high-precision and benchmark evidence.
-
-### Completed hosted evidence
-
-[Run 35831919148](https://github.com/wieslawsoltes/netDxf/actions/runs/35831919148)
-at `198d9e4` passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each job executed six lifecycle corpora (**1,204 scenarios / 35,383 operations**),
-**168 focused supplemental tests**, and **all 2,920 mirrored original cases**.
-All four ZIP archives were downloaded, checked against GitHub SHA-256 digests and
-inspected; all 24 differential reports show zero failures and complete native
-observations.
-
-The [retained hosted receipt](table-geometry-hosted-198d9e4.json) contains those
-actual result documents plus original-suite metadata, counts and file/archive
-hashes. Complete original-result arrays remain in the hash-identified archives
-and the downloadable validation bundle. The full mirrored suite is not all
-35,309 original C# cases, and these focused jobs do not qualify the broad failing
-JavaScript workflow.
-
-Runtime fingerprint:
-`016b889e41c75f7863c1d17aa3a2b3b790ad23f7fceb2c7109275fa9370cd686`.
-POSIX verifier:
-`8d1fcb4fae05e63318558231c2f7e71e5990031f8e8990c3cbebcccd8baa8c0e`.
-Windows verifier:
-`1c23930faab982c8fa4703ecd0f9d1dd26a53df992248adcfcd7ac9da1bbf8e8`.
-Source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-The verifier's pre-existing host-path sorting explains the platform-specific
-verification hashes. Both were reproduced independently from identical executable
-file bytes; actual reports were retained without rewriting those values.
-
-From javascript/, with the pinned source checkout/toolchain selected:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs geometry
-npm run test:table-geometry
-npm test
-npm run test:unit
-npm run test:differential
-npm run test:package
-node tools/browser-corpus.mjs
-python tools/browser-inline-check.py
-npm run verify:complete
-```
-
 ## Remaining failures and missing parity
 
 The complete differential refresh retains Release differences in concrete
@@ -243,3 +165,5 @@ fidelity. The separate raw API is not a replacement for typed transport.
 Both full-port verification gates remain failing. PR #98 stays a draft and the
 package stays private. No original C#/fixture edit, removed comparison, failure
 allowlist, merge, force push or npm publication was performed.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/TABLE_GEOMETRY.md). Current published scope is maintained in the [README](../README.md).

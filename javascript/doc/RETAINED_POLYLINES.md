@@ -113,65 +113,6 @@ python tools/browser-inline-check.py
 npm run verify:complete
 ```
 
-## Source-bound results for fae312d
-
-Local environment: SDK 8.0.425 / .NET 8.0.31, Node 22.16.0, Linux x64,
-Chromium 144.0.7559.96. Observed September 23, 2026:
-
-| Check | Observed result |
-| --- | --- |
-| Retained registration/topology, Debug and Release | Each: 181 scenarios / 5,419 operations; zero mismatches or unavailable native observations |
-| Existing document ownership, both configurations | Each: 188 scenarios / 8,130 operations; zero mismatches |
-| Existing registered annotations, both configurations | Each: 112 scenarios / 6,633 operations; zero mismatches |
-| Full unchanged C# suite | Each configuration: 35,309 passed, zero failed |
-| Full mirrored original JavaScript suite | 2,905 passed, zero failed or unexpected original identities |
-| Supplemental JavaScript suite | 908 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; 496 files |
-| Source-derived foundations and dimension generation | Both exact regeneration checks passed |
-| Release inline browser | All 141,012 comparisons executed; no page errors, unavailable source observations or new retained-case mismatches; 87 earlier-category failures remain |
-| Classic LEADER, unchanged runtime | Both execute 639 scenarios / 7,221 operations; Debug passes, Release retains six NaN-sign operation differences |
-| Full-port verification, both configurations | Failed; missing or failing evidence is retained |
-
-The first full Debug C# invocation and first inline-browser invocation hit local
-execution time limits. Fresh complete reruns produced the results above; the
-interrupted attempts are not counted as completed evidence. The browser's
-report still has completed=false because it contains mismatches, despite
-executing every required comparison.
-
-A separate diagnostic trial changed Text numeric storage and NaN operand order.
-It removed the six Release LEADER differences but introduced six Debug
-differences. The trial was reverted, not published as a fix. In the two observed
-inputs, native Debug and Release produce different annotation-height NaN sign
-bits. This does not justify waiving exact checks or explain every browser
-failure. The diagnostic patch and observations are retained separately from the
-production source in the validation bundle.
-
-Runtime fingerprint:
-`3bbb0851ba383ff4dccb089aba5898fbe6b42a2c2c3111ced90ca86e82e9a42b`.
-POSIX verification fingerprint:
-`7790ddab32d6540087f0017cd4f6135fd804e2f644223858bb7432746aa504b4`.
-
-## Hosted matrix
-
-[Run 35818908311](https://github.com/wieslawsoltes/netDxf/actions/runs/35818908311)
-at fae312d passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each ran all three independent corpora above, 82 focused tests and all **2,905
-mirrored original JavaScript cases**. That is the full mirrored suite, not the
-full 35,309-case C# suite. Windows retains its required optional atomic-replacement
-host build; no affected test is skipped.
-
-All four result archives were downloaded, verified against GitHub's SHA-256
-digests and inspected. The [hosted receipt](retained-polylines-hosted-fae312d.json)
-contains all 12 actual differential reports and original-test metadata, counts
-and hashes. Full original result arrays remain in the identified archives.
-
-Runtime fingerprints match across all profiles. The existing host-path sort
-produces Windows verification fingerprint
-`f31d61814217624722f37d56e8e61a50390025a48da7507e42262f13e76e68da`.
-It was independently reproduced from the same checked-out file bytes; the actual
-reports were not rewritten. These focused successes do not establish aggregate
-workflow success or complete platform qualification.
-
 ## Remaining parity work
 
 The ledger is **366/510 library mirrors (144 missing)**, **56/193 original
@@ -191,3 +132,5 @@ The inline browser's 87 failures are 64 entity, 12 concrete-dimension, six
 classic-LEADER, four block and one coordinate scenario. They remain blocking.
 No original source/fixture changes, tolerance, expected-failure waiver, merge,
 force push or npm publication occurred. PR #98 stays a draft.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/RETAINED_POLYLINES.md). Current published scope is maintained in the [README](../README.md).

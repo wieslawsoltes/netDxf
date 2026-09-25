@@ -128,52 +128,6 @@ All 1,490 new browser inputs are appended after prior inputs. The focused browse
 report is marked `scope: database-io-only`, `fullSuite: false` and cannot satisfy
 the separate complete browser gates.
 
-### Completed local checks at f1777d4
-
-September 24, 2026; Debian 13 x64, SDK 8.0.425, .NET 8.0.31, Node 22.16.0,
-Chromium 144.0.7559.96. The [receipt](database-io-local-f1777d4.json) contains
-eight actual new/browser/unit/package reports, hashes and statistics for eight
-regression reports, and original-suite metadata and hashes. Complete reports,
-original result arrays and logs are included in the validation archive.
-
-| Check | Actual result |
-| --- | --- |
-| Database payloads, Debug and Release | Each: 1,070 scenarios / 4,701 operations; zero differences or unavailable observations |
-| Physical-source metadata, both configurations | Each: 420 scenarios / 12,322 operations; zero differences or unavailable observations |
-| Focused real Chromium, both configurations | Each: all 1,490 scenario digests match; 588 native ESM modules; zero page errors |
-| Existing reader comparisons, both configurations | 913 scenarios; 27,407 executed commands and 35 constructor rejections per run; zero differences |
-| Previous primitive, entity-body and section comparisons | All three complete corpora pass in both configurations |
-| Full unchanged original C# suite | 35,309 passed in each configuration |
-| Full mirrored original JavaScript subset | 3,619 passed; no duplicate or unexpected identities |
-| Supplemental suite | 1,276 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; 588 files |
-| Foundation, dimension and GTE regeneration | All three exact checks pass |
-| Full-parity verifier | Both configurations fail on incomplete coverage and missing/stale evidence |
-
-Initial local command attempts interrupted before finishing the original JS or
-combined regression runs. All affected checks were rerun completely; only the
-completed final reports provide passing evidence. Initial logs remain separate.
-The reader corpus requests 27,962 commands; commands unreachable after constructor
-rejections are not counted as executed comparisons.
-
-Runtime fingerprint: `0b850a3aefe1037d55e8e60da58b23e7348ccefd84146e8012e515760438c9bb`.
-Verifier fingerprint: `0d087a60bf044ced6a4b6b2d06530e718b7e68d0f86a8b961bd445c674567efc`.
-Source fingerprint: `97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-With the pinned toolchain and source selected, run from javascript/:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs geometry
-npm run test:database-payload
-npm run test:source-metadata
-npm run test:database-browser
-npm test
-npm run test:unit
-npm run test:package
-npm run verify:complete
-```
-
 ## Remaining parity work
 
 Current coverage: **434/510 library mirrors (76 missing)**, **66/193 original
@@ -192,3 +146,5 @@ No AutoCAD open/AUDIT/save/reopen fidelity is claimed.
 No original C#/fixture edits, restored workflows, comparison removal, tolerance,
 expected-failure waiver, merge, force push or npm publication occurred. PR #98
 remains draft.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/DATABASE_PAYLOAD_IO.md). Current published scope is maintained in the [README](../README.md).

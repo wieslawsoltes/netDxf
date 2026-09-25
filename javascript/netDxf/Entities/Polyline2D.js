@@ -17,7 +17,7 @@ import { CopyCurveAppearance } from '../../runtime/CurveGeometry.js';
 import { TransformedNormal } from '../../runtime/EntityGeometry.js';
 import { NurbsEvaluator } from '../../runtime/NurbsEvaluator.js';
 import { DotNetMath as M, MultiplyDouble as mul, Int32 } from '../../runtime/GeometryRuntime.js';
-import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException, NullReferenceException, NotSupportedException, RequireInteger } from '../../runtime/Errors.js';
+import { ArgumentException, ArgumentNullException, NullReferenceException, NotSupportedException, RequireInteger } from '../../runtime/Errors.js';
 import { InstallPolyline2DFidelity } from './Polyline2D.Fidelity.js';
 import { InstallPolyline2DStoredRecords } from './Polyline2D.StoredRecords.js';
 const nonnull=v=>{if(v==null)throw new NullReferenceException();return v;};

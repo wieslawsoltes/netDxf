@@ -8,7 +8,7 @@ import { Matrix3 } from '../Matrix3.js';
 import { MathHelper } from '../MathHelper.js';
 import { Copy, MultiplyDouble } from '../../runtime/GeometryRuntime.js';
 import { ArgumentException } from '../../runtime/Errors.js';
-import { EntityVector3, EntityVertices3, TransformedNormal } from '../../runtime/EntityGeometry.js';
+import { EntityVector3, TransformedNormal } from '../../runtime/EntityGeometry.js';
 export class Point extends EntityObject {
   #position; #rotation=0; Thickness=0;
   constructor(...args) {

@@ -126,53 +126,6 @@ python tools/browser-inline-check.py
 npm run verify:complete
 ```
 
-## Source-bound local results, September 21, 2026
-
-These results describe the executable tree uploaded as `f6ac4dd`, not a claim
-that later hosted jobs passed. SDK 8.0.425 / .NET 8.0.31, Node 22.16.0,
-Linux x64, Chromium 144.0.7559.96:
-
-| Check | Observed result |
-| --- | --- |
-| Dictionary Debug and Release | Each: 427 scenarios; 15,795 executed operations; two constructor rejections; zero mismatches or unavailable native observations |
-| Original unchanged C# conformance | Each configuration: 35,309 passed, zero failed |
-| Ported original JavaScript conformance | 2,820 passed, zero failed |
-| Supplemental JavaScript tests | 750 passed, zero failed/skipped/TODO; includes 24 new dictionary tests |
-| Offline installed runtime package | Passed; 431 files; private, not published |
-| Release inline native-ESM Chromium | Executed all 137,604 comparisons; no page errors or unavailable source observations; zero dictionary mismatches; 75 failures in other scenarios |
-| Full completion gate | Failed; retains missing source/tests and failed or unavailable verification categories |
-
-Runtime fingerprint:
-`322d304d54c8c9bc7748b85c7083d2801049beae04af5df29fc85fb4482e6328`.
-Verification fingerprint:
-`21136aecf13b179ec91226724aa06f16455414280f503a2f0ff403301ce1c20d`.
-Source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-The separate HTTP-served browser mode and all other standalone differential
-categories were not rerun locally for this checkpoint. Their absence is reported,
-not treated as success. Hosted runs and artifacts remain separate evidence.
-
-## Hosted dictionary matrix
-
-GitHub Actions run `35647382493`, attached to `f6ac4dd`, completed successfully
-on Ubuntu 22.04 and Windows 2022 in both Debug and Release. All four jobs passed
-the exact differential and all 24 focused unit tests. Each downloaded result
-archive was checked against its GitHub SHA-256 digest; all reports record 427
-observed scenarios, 15,795 executed operations, two constructor rejections and
-zero failures.
-
-[The retained hosted receipt](observable-dictionaries-hosted-f6ac4dd.json)
-contains the four actual result documents, artifact IDs, archive digests,
-result-file hashes and native environment observations. The runtime fingerprint
-matches across all profiles. The existing verification fingerprint sorts host
-paths before separator normalization; its Windows value is
-`280456b6732357470c70a1d8e7c4380b35bd1807d334221afbbb1dd1cddd0a87`.
-Both host-specific verification hashes were independently reproduced from the
-same checked-out file bytes. The original reports are retained without rewriting
-those hashes. This qualifies this collection corpus on those four profiles,
-not the complete JavaScript port.
-
 ## Remaining scope
 
 This adds two source mirrors, not complete typed document ownership or IO.
@@ -194,3 +147,5 @@ ownership, typed reader/writer and remaining public APIs, original tests and
 examples, exact cross-platform numerics, filesystem guarantees and performance
 qualification. The aggregate, browser and full-port gates remain strict. PR #98
 stays a draft; no merge, force push, npm publication or expected-failure waiver.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/OBSERVABLE_DICTIONARIES.md). Current published scope is maintained in the [README](../README.md).

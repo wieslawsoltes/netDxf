@@ -114,7 +114,7 @@ HELIX module and exercises primitive body transport and CLASS preparation.
 ### Completed local checks at the final executable tree
 
 September 24, 2026; Debian 13 x64, SDK 8.0.425, .NET 8.0.31, Node 22.16.0 and
-Chromium 144.0.7559.96. The [local receipt](primitive-io-local-02017a3.json) retains
+Chromium 144.0.7559.96. The [local receipt](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/primitive-io-local-02017a3.json) retains
 ten actual result reports and hashes/metadata for all three original-suite runs.
 
 | Check | Actual result |
@@ -169,3 +169,5 @@ assertion/recursion and globalization failures are not waived or claimed fixed.
 
 No original C#/fixture edits, restored workflows, force push, merge or npm
 publication occurred. PR #98 remains a draft.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/PRIMITIVE_IO.md). Current published scope is maintained in the [README](../README.md).

@@ -120,79 +120,6 @@ The installed-package smoke test covers both annotation families. The existing
 ownership workflow now runs both ownership corpora, 60 focused tests and the
 entire mirrored original JavaScript suite on Ubuntu/Windows, Debug/Release.
 
-## Completed local results at 361b895
-
-Linux x64, September 22, 2026. These results describe the executable tree above,
-not a claim that every unrelated category or subsequent hosted run passed.
-
-| Check | Observed result |
-| --- | --- |
-| Registered annotations, Debug and Release | Each: 112 scenarios / 6,633 operations; zero mismatches or unavailable native observations |
-| Existing document ownership, both configurations | Each: 188 scenarios / 8,130 operations; zero mismatches |
-| Existing detached multileaders, both configurations | Each: 1,030 scenarios / 8,104 operations; zero mismatches |
-| Full unchanged native C# suite | Each configuration: 35,309 passed, zero failed |
-| Additional Release classic LEADER check | 639 scenarios / 7,221 operations executed; six mismatching operations in two scenarios, no unavailable observations |
-| Full mirrored original JavaScript suite | 2,905 passed; no unexpected original identities |
-| Supplemental JavaScript suite | 886 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; 490 files |
-| Release inline Chromium 144.0.7559.96 | All 140,831 comparisons executed; no page errors, unavailable source observations or new annotation mismatches; 87 failures in other categories |
-| Full-port verification, both configurations | Failed; missing, stale and failed evidence remains blocking |
-
-Runtime fingerprint:
-`26fe9895139fc627b2198ce31705d7237e35b61a008bdc5a2b1bab609319ced3`.
-POSIX verifier:
-`f0d4f5026fe7ac774733fb396afea1f712bb932e2a0e71c27b22fe5c1c6e68c6`.
-Original-source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-The six standalone classic-LEADER operation differences are exact binary64 NaN
-sign differences in the transformed Text annotation height. They are retained
-as failures, not normalized. This observation does not by itself establish the
-cause of the additional browser failures.
-
-The HTTP-origin and Debug browser modes, other standalone differential categories,
-source-generator execution and performance acceptance were not rerun in this
-continuation. Previous source-bound successes do not satisfy fresh evidence for
-this tree. The verifier still checks the pinned source and committed generated
-file hashes, but those checks are not a new generator execution.
-
-The browser failures comprise 64 entity, 12 concrete-dimension, six classic-LEADER,
-four block and one coordinate scenario. This is four more classic-LEADER failures
-than the prior 83-failure checkpoint; those outcomes remain in the report, not
-waived or attributed to a cause without separate investigation.
-
-## Completed hosted matrix and corrected CI prerequisite
-
-[Run 35787377633](https://github.com/wieslawsoltes/netDxf/actions/runs/35787377633)
-at `5451075` passed all four Ubuntu 22.04 / Windows 2022, Debug / Release jobs.
-Each completed both independent corpora (188 / 8,130 ownership and 112 / 6,633
-annotation scenarios/operations), all 60 focused tests, and all **2,905 mirrored
-original JavaScript cases**. This is the full mirrored suite, not the earlier
-61-case erasure filter. It remains a subset of the 35,309-case original C# suite.
-
-The first expanded run at `361b895` passed both differential stages and focused
-tests on Windows, but its full-suite step rejected 37 raw atomic-file operations
-because the workflow had not built the existing optional Windows replacement
-bridge. The safe runtime rejected replacement rather than using a destructive
-fallback. Commit `5451075` adds the same bridge-build prerequisite already used
-by the primary filesystem workflow. No runtime, verifier or test changed; no
-filesystem case was filtered out. All four complete jobs then passed.
-
-All four successful artifact archives and the initial Windows Debug failure
-archive were downloaded, checked against GitHub SHA-256 digests and inspected.
-The [hosted receipt](registered-annotations-hosted-5451075.json) retains all eight
-actual differential reports, full-suite original-test metadata/counts/hashes,
-archive identifiers and the corrected-attempt record. The full original-result
-arrays remain in the hash-identified archives and downloadable validation bundle.
-
-Runtime fingerprints match across the four hosts. The existing verifier's
-host-path sorting produces Windows fingerprint
-`feb7f030011e162c92e7bb2f7ccc248c9b6cfe3793b40293a283a9931c05ecf0`;
-it was independently reproduced from the same source bytes. The actual hosted
-reports are retained without rewriting that platform-specific value. The CI-only
-correction and this documentation do not change executable fingerprints.
-These focused successes do not qualify the failing aggregate or all platforms.
-
 ## Remaining parity work
 
 **361/510 library mirrors (149 missing); 56/193 conformance-file mirrors (137
@@ -206,3 +133,5 @@ and cross-platform numeric/filesystem/performance qualification remain unfinishe
 The original SECTION settings model does not itself generate native CAD section
 geometry. A finite passing annotation corpus is not exhaustive AutoCAD parity.
 PR #98 stays draft; no merge, force push or npm publication was performed.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/REGISTERED_ANNOTATIONS.md). Current published scope is maintained in the [README](../README.md).

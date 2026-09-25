@@ -32,33 +32,6 @@ configuration.ViewAspectRatio = 1.6;
 configuration.NamedUcs = frame;
 ```
 
-## Publication history and corrected delivery status
-
-The production models and original/supplemental tests are published on PR #98,
-branch `codex/javascript-port`, as two non-forced fast-forward commits:
-
-| Commit | Published increment |
-| --- | --- |
-| `4b582712fa97c7f5f2aff59957c6858f9476ea67` | UCS model, orthographic state, internal reference adapter, four original cases and eight supplemental tests |
-| `a4eb7e117a36fb752adc12e153c71bc73b13c6b3` | View, ViewUcs, VPort, live-section metadata, six original cases and fourteen supplemental tests |
-
-Their complete model/test tree is
-`f25da3266c0a3215bab59e0ba41dadfc9d91f415`. A clean export of that exact tree
-passed all **2,569 original JavaScript cases** and **314 supplemental tests**, with
-no failures, skips or TODOs. No original C# source, fixture, generated geometry,
-reference-math implementation or license material was changed.
-
-**Delivery correction:** the complete eleven-file coordinate/view differential,
-browser and mandatory-gate integration was published by
-`62a88b4d2e10cb7f6b1aee97671aa590252cc1aa`. It is no longer local-only and no
-pending coordinate patch is needed. That commit preserved the newer library work
-already on the branch. The 1,020-scenario / 5,365-operation stage remains required.
-
-The earlier handoff's local-only status and coverage numbers below are historical.
-Current source, case counts, fingerprints and local/hosted distinctions are in the
-[HELIX checkpoint](HELIX.md). A previous passing workflow still does not qualify a
-later executable tree; Release's retained coordinate mismatch remains visible.
-
 ## UCS state and transformations
 
 Origins and axes have value-copy semantics. Factories preserve the source's
@@ -127,75 +100,4 @@ names, import dependencies, register SUN/live-section data, or read/write DXF.
 Properties and methods corresponding to C# internal hooks remain implementation
 adapters, not a claim that the missing registered workflows are implemented.
 
-## Historical executable evidence and retained failure
-
-Ten complete original detached test cases were added: three UCS elevation cases,
-one orthographic-origin case, five named-view cases and one VPORT validation case.
-They bring original JavaScript coverage to **2,569**; **314** supplemental tests
-pass. The new 22 supplemental tests do not inflate the original-case ledger.
-Original registered-document and transport cases remain unregistered, not shortened.
-
-The locally retained coordinate differential contains **1,020 scenarios / 5,365
-operations**. **775 named-view/VPORT scenarios / 4,460 operations match in both
-Debug and Release.** All **245 UCS scenarios / 905 operations** match Debug.
-Release retains **three observations of one factory result**:
-`coordinates/normal/115`, combining an infinite normal component with a NaN
-rotation. The unchanged C# Debug and Release builds themselves choose different
-NaN signs for the underlying Matrix3 product; JavaScript matches Debug. Direct
-calls of both `Matrix3.Multiply` and `op_Multiply` reproduced that distinction.
-Finite coordinate scenarios and all new view/validation/reference cases match.
-
-The Release coordinate stage stays failing. It is a newly exposed numerical
-boundary, not an accepted approximation or allowlist. Expected values, every
-previous comparison and full counterexample records remain intact. The earlier
-Bézier Debug NaN-sign and Windows Shape last-bit boundaries remain separate.
-
-The saved integration includes all 1,020 scenarios in both native-browser modes,
-raising its required corpus from 103,199 to **104,219 comparisons**. Source-bound local results
-and hosted results must be reported separately; a queued workflow or a previous
-passing Release checkpoint does not qualify this enlarged corpus. Full C# API,
-registered ownership, platform/performance and native application qualification
-remain unfinished.
-
-## Historical local checkpoint and completion ledger
-
-The unmodified pinned .NET source passed **35,309 original cases in each Debug and
-Release configuration** in this session. Both native-lowering reproduction and
-source-fingerprint validation passed. Original JS case accounting reports zero
-unexpected identities: **2,569/35,309**, leaving **32,740 original cases** missing.
-The source ledger is **200/510 library mirrors** and **34/193 conformance-file
-mirrors**, leaving **310 library files** and **159 conformance files** missing.
-File presence does not establish exhaustive member or behavioral qualification.
-
-The published production files and the saved integration share runtime fingerprint
-`2a2a21df1deb27866b2d35d0712b617c9ef5c3187606f63a967ff61f642def99`.
-The complete **local integration** has POSIX verifier fingerprint
-`c017f367311809ca6a89a590732ca3be8750e32debb0c6f9a1ac6bdc0dc1bcf5`.
-The published model/test subset has a different verifier fingerprint because it
-deliberately omits the new verifier files; do not mix evidence between those trees.
-Documentation changes do not change either executable fingerprint.
-
-Starting archive `javascript-source-checkpoint` from CI run `35315851036`, artifact
-`10535596250`, was SHA-256 verified as
-`0f6916643feb44e55de3a4878940e9feb987ed603c9332735baa80fec1a71679`
-and reproduced original tree `a877b60d83f4a56279f5842282727fa49dedd5fc`.
-Earlier local checkpoint archives contained no additional uncommitted project
-changes to merge. This is recovery of committed source, not a claim to recover
-unavailable edits from a failed session.
-
-All pre-existing local entity, database-model, style, hatch, raw, handle, OBJECTS,
-lifecycle, filesystem, fixed-foundations, randomized-geometry and direct mathematical
-comparison stages still pass in both configurations, apart from the already
-recorded Debug baseline Bézier result. The independent development-only MPFR audit
-passes at both precisions. Offline package installation passes with **285 files**.
-The local globalization profile remains rejected and HTTP-origin navigation returns
-`ERR_BLOCKED_BY_ADMINISTRATOR`; neither result is treated as passing. These host
-limitations do not replace required hosted evidence or permit weakened comparisons.
-
-The local inline Chromium 144 Release run executed **104,219 comparisons** with
-no page errors and retained only `coordinates/coordinates/normal/115`. A failed
-digest is an error, not an accepted approximation. The complete result is retained
-with the independent .NET counterexample. Full typed document construction,
-registration, ownership, typed DXF IO, original examples, runtime profiles and
-performance acceptance remain unfinished. This source publication is not a merge,
-an npm release, or full C# parity.
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/COORDINATE_SYSTEMS.md). Current published scope is maintained in the [README](../README.md).

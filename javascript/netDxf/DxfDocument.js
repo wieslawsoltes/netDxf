@@ -24,7 +24,7 @@ import { InstallDocumentObjects } from './DxfDocument.Objects.js';
 import { InstallDocumentMultiLeader } from './DxfDocument.MultiLeader.js';
 import { InstallDocumentSection } from './DxfDocument.Section.js';
 import { InstallDocumentMetadata, ObjectMetadataMembers } from './DxfDocument.MetadataReferences.js';
-import { ArgumentException, ArgumentNullException, NotSupportedException, NullReferenceException } from '../runtime/Errors.js';
+import { ArgumentException, ArgumentNullException, NullReferenceException } from '../runtime/Errors.js';
 
 const tables=[['VPorts','VPorts'],['Views','Views'],['ApplicationRegistries','ApplicationRegistries'],['Layers','Layers'],['Linetypes','Linetypes'],
   ['TextStyles','TextStyles'],['ShapeStyles','ShapeStyles'],['DimensionStyles','DimensionStyles'],['MlineStyles','MLineStyles'],['UCSs','UCSs'],

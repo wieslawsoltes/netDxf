@@ -13,29 +13,6 @@ pull-request text, workflow or release was modified. The change archive contains
 all three local commits as patches and an independently checked combined diff.
 Full typed document transport and full parity remain unfinished.
 
-## Recovery and preserved published work
-
-The actual PR head was ahead of the stale PR description: `e494c18` already
-contained eighteen retained-record runtime partials, after `c896447`'s output,
-GEODATA and SUN verification. That newer work was preserved rather than reset
-to the older described checkpoint.
-
-No unpublished checkout survived. The source artifact for run 36024087740 was
-downloaded and checked against GitHub's SHA-256 digest:
-`38fbc62537622d1599db5311bd3a835185a6753f839ff73fa9de20b64fa0cf12`.
-Its PR merge archive has newer native sources, so only its current JavaScript
-files were used. Restoring the pinned non-JavaScript tree and existing workflow
-cleanup reproduced the complete published tree
-`4f7368491219193e8bed5a416573e3f503ebc4b4` exactly. No newer merge source was used
-as the behavioral reference.
-
-The prior in-progress 1,619-scenario verifier was not available in that published
-runtime checkpoint. The corpus and observation adapters in this continuation are
-**new reconstruction, not recovered bytes or relabeled earlier results**.
-The synthetic local base commit has the exact remote file tree but a different
-commit identity. Patches apply to the real remote base without those synthetic
-history identities. All eighteen earlier workflow deletions remain preserved.
-
 ## New production modules
 
 Four dedicated original paths are implemented:
@@ -122,56 +99,6 @@ All new browser inputs are appended after existing categories. The separate real
 Chromium report is marked `scope: retained-record-io-only`, `fullSuite: false`;
 it does not satisfy the complete browser gates.
 
-## Completed local results
-
-September 24, 2026: Debian 13 x64, SDK 8.0.425 / .NET 8.0.31, Node 22.16.0,
-Chromium 144.0.7559.96. Results below belong to executable commit `88a5944`.
-The [local receipt](retained-record-io-local-88a5944.json) retains fourteen actual
-reports plus original-suite hashes and metadata. Full arrays and logs are in the
-recovery archive.
-
-| Check | Observed result |
-| --- | --- |
-| New retained/section records, Debug and Release | Each: 2,593 scenarios / 5,909 operations; zero differences or unavailable native observations |
-| Focused Chromium, both profiles | Each: 2,593 matching scenario digests; 619 native ESM modules; zero page errors |
-| Existing SECTION_MANAGER lifecycle, both profiles | Each: 174 scenarios / 5,406 operations; zero differences |
-| Existing database-payload regression, both profiles | Each: 1,070 scenarios / 4,701 operations; zero differences |
-| Existing physical-source metadata, both profiles | Each: 420 scenarios / 12,322 operations; zero differences |
-| Existing stored-dependency regression, both profiles | Each: 738 scenarios / 5,566 operations; zero differences |
-| Full unchanged C# suite | 35,309 passed in each configuration |
-| Complete mirrored original JavaScript subset | 3,619 passed; no duplicate or unexpected identities |
-| Full supplemental suite | 1,370 passed; no failures, skips or TODOs |
-| Offline-installed package | Passed; 616 files |
-| Source generation | Foundation, dimension and GTE exact regeneration checks pass |
-| Full-parity verification | Both profiles fail; missing/stale evidence and incomplete coverage remain blocking |
-
-An initial combined JavaScript test command timed out before completion and was
-rerun fully. Initial Release regression and generator commands overlapped an
-active native build lease and were correctly refused. They were rerun completely
-after the build ended; no lock was bypassed or removed. Preliminary fixtures that
-omitted required record identities were corrected, not used to weaken the reader.
-Only final, completed, fingerprint-matched results supply the passing evidence.
-
-Runtime fingerprint:
-`14dcfa8a8788def0b076176e976089d414f9d1f099474a85e06d221f74a32695`.
-Verifier fingerprint:
-`a7eacea5ed8ed2a672aefe80e85869290b98524d52d4d8eefc1aa735b52ea78e`.
-Native source fingerprint:
-`97bf956b156b644901333ca312556f389cf02b8cbabba3ac16198d7c1b46fb9d`.
-
-From javascript/, with the pinned native source and toolchain configured:
-
-```sh
-export CONFIGURATION=Release # Repeat with Debug.
-node tools/dotnet.mjs geometry
-npm run test:retained-record-io
-npm run test:retained-record-browser
-npm test
-npm run test:unit
-npm run test:package
-npm run verify:complete
-```
-
 ## Remaining scope
 
 Local presence is **462/510 library mirrors (48 missing)** and **66/193 original
@@ -193,3 +120,5 @@ Original C# sources, original tests and shared fixtures are unchanged. No workfl
 was restored, no comparison removed, no failure waived, and no force push, merge
 or npm publication occurred. The new commits remain local until a write-capable
 GitHub route is available.
+
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/RETAINED_RECORD_IO.md). Current published scope is maintained in the [README](../README.md).

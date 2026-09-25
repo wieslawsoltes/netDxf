@@ -64,44 +64,4 @@ The new supplemental unit coverage exercises constructor/value/reference behavio
 
 `npm run test:hatch` compares 363 scenarios and 2,533 operations against the actual pinned production assembly, including all 155 listed support-file patterns, 64 seeded color-state scenarios and 174 expected successful PAT text comparisons. The oracle only wraps the original API and serializes results; expected values never come from JavaScript. Numeric comparisons retain exact double bits. Evidence is written to `artifacts/hatch-differential/<configuration>/results.json`, includes input hashes and code fingerprints, and is a required independent stage in both `test:differential` and `verify`.
 
-## Completed checkpoint evidence — bd1a42f
-
-Implementation commit `bd1a42f9a9692fdb98da71f41a84fea799dc4885` advances `06ecd49f3bd51aecc3a2ea50c134838cdfa01176` without rewriting prior work. The restored starting tree was verified against GitHub tree `4ebf3cdfa689331634cd647a20cea5b261bbc078`; the implementation tree is `be6ebd064a6ff4e4ac5766bf9fca110bc1dbf2ef`. No additional uncommitted files from the earlier session were available. Original C# source and shared fixture bytes remain unchanged.
-
-[CI run 35210680084](https://github.com/wieslawsoltes/netDxf/actions/runs/35210680084) completed the following checks. Debug, Release and Windows artifacts were downloaded, SHA-256 checked and inspected. These results apply to the implementation commit, not merely to a later documentation-triggered rerun.
-
-| Verification | Observed result |
-| --- | --- |
-| Complete pinned .NET suite | 35,309 passed in each Debug and Release configuration |
-| Mirrored original JavaScript cases | 2,017 passed in each configuration; zero unexpected identities |
-| New hatch/PAT differential | 363 scenarios, 2,533 operations and 174 exact PAT text comparisons in each configuration; zero mismatches |
-| Supplemental suite | 110 passed on Linux and Windows; no skipped/TODO cases |
-| Windows native-host integration | 5/5 passed |
-| Original raw/helper atomic-save cases | 82/82 passed on Windows and Linux |
-| Filesystem differential | 1,782 comparisons and 1,686 exact byte comparisons across 399 fixtures on each platform; zero mismatches |
-| Raw / handle / OBJECTS byte comparisons | 8,263 / 1,140 / 1,068, with zero mismatches in each configuration |
-| Detached typed lifecycle | 523 scenarios, 15,563 operations and 256 byte comparisons; zero mismatches in each configuration |
-| Offline package install | Passed; 178 files on Linux, 180 with built Windows host/metadata |
-| Existing real Chromium regression corpus | Release: 6,268 comparisons passed. Debug: the same 6,268 comparisons executed with the existing single Bézier NaN-sign mismatch. No page errors in either configuration. |
-
-The browser regression corpus is not claimed to contain the newly added hatch differential corpus; that new corpus was compared using Node and the real .NET assembly. The portable-import dependency guard is supplemental evidence, not a substitute for a browser differential run of every new API.
-
-Local validation independently passed all 2,017 original JavaScript cases, all 110 supplemental cases, offline package import/roundtrip, and the documentation example. No local .NET SDK was available; the live .NET and browser evidence above comes from CI.
-
-**The overall JavaScript workflow still fails.** The 166 foundation mismatches and 142 randomized-geometry mismatches are unchanged, including their complete counterexample records. Debug additionally retains `BezierCurveCubic/CalculateTangent/double/5` in the baseline geometry and browser checks. No tolerance, expected-failure allowlist or removed comparison hides those results. Windows filesystem and the new hatch/PAT categories pass independently of those remaining failures.
-
-The source ledger is **144/510 library mirrors (366 absent), 2,017/35,309 original cases (33,292 absent), and 22/193 conformance file mirrors (171 absent)**. File presence is not exhaustive member or behavioral qualification. Complete typed HATCH/document IO, entity ownership, the remaining original APIs/tests/examples and full platform/performance qualification remain unfinished. The package remains private and PR #98 remains a draft.
-
-### Retained proof
-
-Runtime fingerprint: `1292fdd20f4fc9c0e9b1827ae0052aabd9d5db4f2fd6ff8f7abb6f3046e41513`.
-
-Verifier fingerprints were independently reproduced from the committed bytes: POSIX `a6e7a77d8f75bea35b0a8fce31811dfff7eda03ca90668ac90004d7e4568207f`; Windows `7ce94c3f38e6e6cd7aa60ecbd4070dc4d1f45f50451a3b7e40589e14fba47268`. The verifier sorts native paths before normalizing separators, which accounts for the platform-specific strings. Documentation-only changes do not change these fingerprints.
-
-Downloaded artifact ZIP hashes:
-
-- Release `10492320978`: `33d3c61e3f0c6afe54cb1b41777c1d3ef8d83b586504a73a7969f5a995b8da6e`.
-- Debug `10492240694`: `4243079110b67b929fbac0c6d0afa676972296f5d65ea46b8e5b837a98ea3c73`.
-- Windows `10492011358`: `cd2e86dd86a414e2fa202188a0822ccc6dc616c7e164a946fed5b55a1ec56b80`.
-
-Recovery input was the exact `06ecd49` source checkpoint artifact `10490821649`, SHA-256 `76e7331a105533b44c7ca04aa53d78092cd9b26b778481c2dbd6687c807ab408`. It restored committed source; it did not reveal additional uncommitted edits.
+Historical execution results and recovery details are available in [the pre-cleanup record](https://github.com/wieslawsoltes/netDxf/blob/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc/HATCH_PATTERNS.md). Current published scope is maintained in the [README](../README.md).

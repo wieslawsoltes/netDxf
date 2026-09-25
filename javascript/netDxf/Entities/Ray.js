@@ -6,9 +6,9 @@ import { Vector2 } from '../Vector2.js';
 import { Vector3 } from '../Vector3.js';
 import { Matrix3 } from '../Matrix3.js';
 import { MathHelper } from '../MathHelper.js';
-import { Copy, MultiplyDouble } from '../../runtime/GeometryRuntime.js';
+import { Copy } from '../../runtime/GeometryRuntime.js';
 import { ArgumentException } from '../../runtime/Errors.js';
-import { EntityVector3, EntityVertices3, TransformedNormal } from '../../runtime/EntityGeometry.js';
+import { EntityVertices3, TransformedNormal } from '../../runtime/EntityGeometry.js';
 export class Ray extends EntityObject {
   #origin; #direction;
   constructor(...args){
