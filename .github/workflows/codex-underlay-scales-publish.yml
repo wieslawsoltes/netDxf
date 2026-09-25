@@ -1,0 +1,57 @@
+name: Publish reviewed underlay scale patch
+on:
+  push:
+    branches: [codex/dxf-underlay-scales-20260925]
+    paths: [.codex-underlay-scales.payload, .github/workflows/codex-underlay-scales-publish.yml]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Apply only the source-bound reviewed patch
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, gzip, hashlib, os, pathlib, shutil, subprocess, tempfile
+          def git(*args, **kwargs):
+              return subprocess.check_output(['git', *args], text=True, **kwargs).strip()
+          base = '2c4764b2f1fd86786dc1335de30fdea5aa2acad5'
+          payload = '.codex-underlay-scales.payload'
+          workflow = '.github/workflows/codex-underlay-scales-publish.yml'
+          assert git('rev-parse', base + '^{tree}') == '3c2db50543e623f66e6fa4b0b2a603130aa3e502'
+          assert set(git('diff', '--name-only', base, 'HEAD').splitlines()) == {payload, workflow}
+          data = pathlib.Path(payload).read_bytes()
+          assert hashlib.sha256(data).hexdigest() == 'e6338c40bcf03aa63909d69a89b06e3ace9104ffdd078881ad81066d90003002', 'Transport hash mismatch'
+          compressed = base64.b64decode(data.strip(), validate=True)
+          assert hashlib.sha256(compressed).hexdigest() == '6c26dec1c5b64111a438c843a6797df59c65fc13f2e3e3d09acd5919078737cf'
+          patch = gzip.decompress(compressed)
+          assert len(patch) == 46450 and hashlib.sha256(patch).hexdigest() == 'b41c2930572fff61de3408a95d653755654a4b84eb782b42b16e0076133690dd'
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'underlay-reviewed.patch'
+          path.write_bytes(patch)
+          subprocess.run(['git','apply','--index','--whitespace=error-all',str(path)],check=True)
+          git('rm',payload)
+          with tempfile.TemporaryDirectory() as directory:
+              index = str(pathlib.Path(directory) / 'index')
+              shutil.copyfile(git('rev-parse','--git-path','index'),index)
+              env = dict(os.environ, GIT_INDEX_FILE=index)
+              git('update-index','--force-remove',workflow,env=env)
+              assert git('write-tree',env=env) == 'a1de4acf9c9752ff8c8b8cd67c6680ec8fa7719f', 'Candidate source tree mismatch'
+          git('config','user.name','OpenAI')
+          git('config','user.email','noreply@openai.com')
+          git('commit','-m','Preserve UNDERLAY scale fidelity and add cross-profile regression qualification')
+          git('push','origin','HEAD:refs/heads/codex/dxf-underlay-scales-20260925')
+          PY
+      - name: Retain rejected transport for byte comparison
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: underlay-scale-transport-diagnostic
+          path: .codex-underlay-scales.payload
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
