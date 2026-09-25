@@ -9,9 +9,12 @@ those differences for arbitrary numeric input.
 ## Contract
 
 The shared text codec uses a portable integer-based converter on these three
-assets. The net6.0/net8.0 assets retain the modern runtime parser. The portable
-implementation is also compiled on modern targets so tests can compare both
-implementations in the same process. Public signatures, other scalar readers,
+assets. On net6.0/net8.0, only tokens of at most 64 characters use the modern
+runtime fast path; longer tokens use the portable converter too. This retains
+the existing runtime path for ordinary G17 numbers without delegating arbitrarily
+long literals or compensated exponents to runtime-specific behavior. The portable
+implementation is compiled on modern targets so tests can compare both selected
+and exact paths in the same process. Public signatures, other scalar readers,
 binary transport, G17 writing, entity admission and version eligibility remain
 unchanged. System.Numerics is an explicit framework reference for net471/net48;
 no third-party package dependency is introduced.
@@ -71,7 +74,9 @@ One source file supplies the full corpus to conformance, ordinary installed
 NuGet consumption and all eight exact-asset/runtime profiles. Each observation
 checks the portable converter, selected converter and actual shared DXF text
 codec, including the following EOF record. Two additional conformance cases
-cover all declared double groups and culture/edge-whitespace behavior. Twelve
+cover all declared double groups and culture/edge-whitespace behavior. The shared
+package/conformance dispatch checks also cover lengths 63, 64 and 65 with exact
+ties, valid/invalid tokens, signed zero/underflow and overflow. Twelve
 version/transport cases independently inject midpoint decimal text into valid
 POINT records and check typed loading, clones, handle preservation, source
 bytes/stream lifetime, following LINE geometry and two resaves. They generate
@@ -92,6 +97,26 @@ The existing two workflows and all previous gates remain. Full conformance is
 .NET8; package profiles exercise the shared cases on selected assemblies, not
 the entire conformance suite on every CLR. Windows Framework updates are
 in-place and do not prove independent original CLR installations.
+
+## Initial hosted regression and correction
+
+The initial .NET8 Linux Release artifact for PR #210 head
+`2f8bd7851f45b80fa2eb33e8fe49a53414bab0c1` (run `36116048494`, artifact
+`10855427608`, SHA-256
+`3424c8cf16c61b82a51ea74d42183adcaae6669db1e127fa33505f26d4796ea8`)
+contains 94,556 results: 94,033 pass and 523 fail. All failures are newly added
+cases: 511 selected-runtime long-literal results and 12 consequent typed source
+loads. The portable assertion runs first and passed every one of the 12,412
+input cases. The exported drawings contain only the 12 source files, not the
+36 required source/output/resave files. This is failed qualification, regardless
+of any conflicting run summary or job-log text. No old case was removed.
+
+The correction selects the portable converter for long tokens on modern targets
+as well, adds threshold checks to conformance and installed-package tests, and
+retains failing observations before assertions with expected/actual-bit
+diagnostics. The initial report omitted failed observations and must not be
+accepted by the independent inventory check. The corrected candidate needs its
+own complete hosted qualification; this paragraph does not claim it has passed.
 
 ## Boundaries and references
 

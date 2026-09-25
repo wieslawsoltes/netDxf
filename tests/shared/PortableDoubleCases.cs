@@ -178,9 +178,14 @@ namespace NetDxf.Qualification
             for (int i = 0; i < rows.Length; i++)
             {
                 var point = document.GetObjectByHandle(seeds[i].Handle) as Point;
-                if (point == null || Hex(unchecked((ulong)BitConverter.DoubleToInt64Bits(point.Position.X))) != Expected(rows[i])
-                    || point.Position.Y != 2 || point.Position.Z != 3)
-                    throw new InvalidOperationException("Decimal typed point: " + rows[i].Id);
+                if (point == null)
+                    throw new InvalidOperationException("Missing decimal POINT handle: " + seeds[i].Handle);
+                string actual = Hex(unchecked((ulong)BitConverter.DoubleToInt64Bits(point.Position.X)));
+                if (actual != Expected(rows[i]) || point.Position.Y != 2 || point.Position.Z != 3)
+                    throw new InvalidOperationException("Decimal typed point: " + rows[i].Id
+                        + " expected=" + Expected(rows[i]) + " actual=" + actual
+                        + " Y=" + point.Position.Y.ToString("R", CultureInfo.InvariantCulture)
+                        + " Z=" + point.Position.Z.ToString("R", CultureInfo.InvariantCulture));
                 var clone = (Point)point.Clone();
                 if (BitConverter.DoubleToInt64Bits(clone.Position.X) != BitConverter.DoubleToInt64Bits(point.Position.X))
                     throw new InvalidOperationException("Decimal clone bits");
@@ -190,8 +195,28 @@ namespace NetDxf.Qualification
                 throw new InvalidOperationException("Decimal following geometry/handle");
         }
 
+        internal static void VerifyDispatch(Assembly assembly)
+        {
+            // Exercise both sides of the short-token fast-path threshold with
+            // valid/invalid tokens, signed underflow, overflow, and exact ties.
+            string[] tokens = { "1", "-0", "-1e-9999", "1e309", "1x", "0\0", "9007199254740993",
+                "1.00000000000000011102230246251565404236316680908203125" };
+            ulong?[] expected = { 0x3ff0000000000000UL, 0x8000000000000000UL,
+                0x8000000000000000UL, null, null, null, 0x4340000000000000UL, 0x3ff0000000000000UL };
+            Parser portable = GetParser(assembly, "TryParsePortable"), selected = GetParser(assembly, "TryParse");
+            foreach (int length in new[] { 63, 64, 65 })
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                var item = new Case("dispatch/" + length + "/" + i, tokens[i].PadLeft(length), expected[i]);
+                if (ParseBits(portable, item.Token) != Expected(item) || ParseBits(selected, item.Token) != Expected(item)
+                    || CodecBits(assembly, item) != Expected(item))
+                    throw new InvalidOperationException("Decimal parser dispatch: " + item.Id);
+            }
+        }
+
         internal static void VerifyInstalled(Assembly assembly)
         {
+            VerifyDispatch(assembly);
             Parser portable = GetParser(assembly, "TryParsePortable"), selected = GetParser(assembly, "TryParse");
             foreach (Case item in All())
             {

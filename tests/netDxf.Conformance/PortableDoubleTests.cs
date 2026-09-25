@@ -20,10 +20,15 @@ internal static partial class Program
                 string? portableBits = PortableDoubleCases.ParseBits(portable, item.Token);
                 string? selectedBits = PortableDoubleCases.ParseBits(selected, item.Token);
                 string? codecBits = PortableDoubleCases.CodecBits(assembly, item);
-                Check(portableBits == expected, "Incorrect portable rounding/admission: " + item.Id);
-                Check(selectedBits == expected, "Incorrect selected rounding/admission: " + item.Id);
-                Check(codecBits == expected, "Incorrect shared DXF codec: " + item.Id);
+                // Keep failing observations too: exported evidence must not
+                // silently omit exactly the rows needed to diagnose a failure.
                 observations.Add(new { id = item.Id, token = item.Token, portableBits, selectedBits, codecBits });
+                Check(portableBits == expected, "Incorrect portable rounding/admission: " + item.Id
+                    + " expected=" + expected + " actual=" + portableBits);
+                Check(selectedBits == expected, "Incorrect selected rounding/admission: " + item.Id
+                    + " expected=" + expected + " actual=" + selectedBits);
+                Check(codecBits == expected, "Incorrect shared DXF codec: " + item.Id
+                    + " expected=" + expected + " actual=" + codecBits);
             });
         if (observations.Count != 0)
             File.WriteAllText(Path.Combine(ArtifactDirectory, "portable-double.json"),
@@ -46,6 +51,7 @@ internal static partial class Program
         });
         Run("portable-double/culture-and-parser-whitespace", () =>
         {
+            PortableDoubleCases.VerifyDispatch(assembly);
             var before = System.Globalization.CultureInfo.CurrentCulture;
             try
             {

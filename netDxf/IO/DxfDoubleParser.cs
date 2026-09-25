@@ -18,11 +18,14 @@ namespace netDxf.IO
         internal static bool TryParse(string text, out double value)
         {
 #if NET6_0_OR_GREATER
-            return text != null && text.IndexOf('\0') < 0
-                ? TryParseModern(text, out value) : Fail(out value);
-#else
-            return TryParsePortable(text, out value);
+            // Keep ordinary short DXF/G17 values on the runtime fast path.
+            // Long literals (including compensated exponents and delayed tails)
+            // must use the bounded exact converter on every target framework.
+            if (text != null && text.Length <= 64)
+                return text.IndexOf('\0') < 0
+                    ? TryParseModern(text, out value) : Fail(out value);
 #endif
+            return TryParsePortable(text, out value);
         }
 
 #if NET6_0_OR_GREATER
