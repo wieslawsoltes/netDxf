@@ -46,10 +46,10 @@ or configurable native rendering tolerance is introduced.
 
 ## Verification design
 
-The new focused suite defines 149 cases: 48 version/transport/container
+The new focused suite defines 150 cases: 48 version/transport/container
 matrices, 24 scalar API cases, 45 refused assignments, five invalid constructor
 cases, 18 physical nonfinite-input cases, eight reflection/Z-retention cases
-and one epsilon-independent storage case. Executed counts belong in the PR
+one epsilon-independent storage case and one all-double-group text-zero spelling case. Executed counts belong in the PR
 qualification evidence, not an assumption made from this definition.
 
 Each document matrix contains 171 references: three definition types, three
@@ -76,6 +76,22 @@ increasing its existing twelve DXF scenarios. It is reused by the ordinary
 consumer and all eight exact-assembly/runtime profiles. The two consolidated
 workflows and every earlier test/checker remain unchanged; the independent
 runner discovers the new verifier automatically.
+
+## Legacy text-parser correction
+
+Initial hosted package execution on net471 and net48 caught retained negative
+zero being lost during the underlay load/clone/identity path. The shared text
+codec now restores the leading minus sign when a successfully parsed finite
+value is zero. Syntax, embedded-NUL and nonfinite checks still run first; no
+malformed token is accepted by this correction. The existing writer already
+emits negative zero explicitly. Both typed and raw readers use this codec.
+
+Regression tests cover signed/unsigned zero spellings with exponents and
+whitespace, neighboring nonzero controls, every double group in conformance,
+and invalid-token refusals. Installed-package execution checks the actual
+selected codec assembly as well as the original unchanged underlay round-trip
+assertion. This fixes sign retention, not general correctly-rounded decimal
+parsing on legacy runtimes. Final-head execution evidence is required.
 
 ## Remaining boundaries
 

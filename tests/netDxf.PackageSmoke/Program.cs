@@ -75,6 +75,24 @@ if (!(orderMatrixA < orderMatrixB) || !(orderMatrixA <= orderMatrixB)
     || !(orderMatrixB > orderMatrixA) || !(orderMatrixB >= orderMatrixA)
     || orderMatrixA <= new netDxf.GTE.GMatrix(2, 1, orderA.Vector))
     throw new InvalidOperationException("Installed matrix ordering/shape contract failed");
+// Execute the actual installed text codec on legacy and modern runtimes. The
+// typed underlay zero round trip below independently exercises the full IO path.
+var signedZeroReaderType = typeof(DxfDocument).Assembly.GetType("netDxf.IO.TextCodeValueReader", true)!;
+foreach (short code in new short[] { 41, 42, 43, 1040, 1041, 1042 })
+foreach (string token in new[] { "-0", "-0.0", "-00.000e+23", " \t-0E-23\t ", "0", "+0.0", " \t000E+23 ", "1", "-1" })
+{
+    using var text = new StringReader($"{code}\n{token}\n0\nEOF\n");
+    object reader = Activator.CreateInstance(signedZeroReaderType, text)!;
+    signedZeroReaderType.GetMethod("Next")!.Invoke(reader, null);
+    double value = (double)signedZeroReaderType.GetMethod("ReadDouble", Type.EmptyTypes)!.Invoke(reader, null)!;
+    double expected = token == "1" ? 1 : token == "-1" ? -1 : token.TrimStart().StartsWith("-", StringComparison.Ordinal)
+        ? BitConverter.Int64BitsToDouble(long.MinValue) : 0;
+    if (BitConverter.DoubleToInt64Bits(value) != BitConverter.DoubleToInt64Bits(expected))
+        throw new InvalidOperationException("Installed text codec lost a signed zero");
+    signedZeroReaderType.GetMethod("Next")!.Invoke(reader, null);
+    if ((string)signedZeroReaderType.GetMethod("ReadString", Type.EmptyTypes)!.Invoke(reader, null)! != "EOF")
+        throw new InvalidOperationException("Installed signed-zero codec crossed a record boundary");
+}
 int count = 0;
 foreach (var version in new[] { DxfVersion.AutoCad2000, DxfVersion.AutoCad2004, DxfVersion.AutoCad2007,
     DxfVersion.AutoCad2010, DxfVersion.AutoCad2013, DxfVersion.AutoCad2018 })

@@ -117,6 +117,23 @@ internal static partial class Program
     }
     private static void RegisterUnderlayScaleTests()
     {
+        Run("underlay-scale/text-zero-spellings", () => {
+            foreach (short code in ExpectedTagTypes().Where(t => t.Value == DxfTagValueType.Double).Select(t => t.Key))
+            foreach (string token in new[] { "-0", "-0.0", "-00.000e+23", " \t-0E-23\t ", "0", "+0.0", " \t000E+23 ", "1", "-1" })
+            {
+                using var stream = new MemoryStream(Encoding.UTF8.GetBytes($"{code}\n{token}\n0\nEOF\n"));
+                object reader = NewCodeReader(stream, false); Invoke(reader, "Next");
+                Equal(code, TagCode(reader), "Signed-zero group boundary");
+                double expected = token == "1" ? 1 : token == "-1" ? -1 : token.TrimStart().StartsWith("-", StringComparison.Ordinal) ? UnderlayNegativeZero : 0;
+                SameDoubleBits(expected, (double)Invoke(reader, "ReadDouble")!, "Signed-zero text spelling");
+                Invoke(reader, "Next"); Equal("EOF", (string)Invoke(reader, "ReadString")!, "Signed-zero following record");
+            }
+            foreach (string token in new[] { "--0", "-0suffix", "-0\0", "-Infinity", "NaN" })
+            {
+                using var stream = new MemoryStream(Encoding.UTF8.GetBytes($"41\n{token}\n0\nEOF\n"));
+                object reader = NewCodeReader(stream, false); Throws<FormatException>(() => Invoke(reader, "Next"));
+            }
+        });
         foreach (DxfVersion version in SupportedVersions) foreach (bool binary in new[] { false, true })
         for (int placement = 0; placement < 4; placement++)
         {
@@ -156,7 +173,8 @@ internal static partial class Program
                 var item = UnderlayScaleSubject(0, 0, 0); byte[]? proxy = s == 0 ? null : s == 1 ? Array.Empty<byte>() : UnderlayProxy;
                 SameDoubleBits(1, item.ScaleZ, "Default scale Z"); item.ProxyGraphics = proxy;
                 item.Scale = new Vector2(v, -v); Check(item.ProxyGraphics == null, "Scale edit cache");
-                item.ScaleZ = v; item.ProxyGraphics = proxy;
+                item.ProxyGraphics = proxy; item.ScaleZ = v;
+                Check(item.ProxyGraphics == null, "Scale Z edit cache"); item.ProxyGraphics = proxy;
                 item.Scale = item.Scale; item.ScaleZ = item.ScaleZ;
                 Check(ImageProxyEqual(proxy, item.ProxyGraphics), "Scale no-op cache");
                 RawLinePointBits(new Vector3(v, -v, v), UnderlayStoredScale((Underlay)item.Clone()));
