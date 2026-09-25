@@ -119,13 +119,17 @@ identity merely to make an output comparison pass.
 ## Historical narratives
 
 The [previous expanded index](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/README.md)
-retains the original chronological navigation. Three superseded narrative
-checkpoints are available unchanged in Git history rather than as current
-missing-feature lists:
+retains the original chronological navigation. Two superseded narrative
+checkpoints are retired from the current tree and remain unchanged in Git history:
 
 - [PR #41 / 13 September](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/checkpoint-2026-09-13.md).
 - [PR #50 / HATCH](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/checkpoint-hatch-2026-09-13.md).
-- [PR #58 / 14 September](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/doc/dxf-conformance/checkpoint-2026-09-14.md).
+
+The [PR #58 / 14 September checkpoint](checkpoint-2026-09-14.md) remains
+unchanged in the current tree because the source-pinned coverage ledger and
+HATCH audit reference it. Its historical missing-feature list is not the current
+project status; retaining it preserves the evidence chain rather than duplicating
+the maintained major-gap report.
 
 Feature contracts, native fixtures, qualification records, the historical
 ledger, upstream notes and licensing material remain. The JavaScript port in
