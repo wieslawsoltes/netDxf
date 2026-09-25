@@ -933,7 +933,7 @@ namespace netDxf.IO
                 {
                     // apply the units scale to the insertion scale (this is for nested blocks)
                     double scale = UnitHelper.ConversionFactor(insert.Owner.Record.Units, insert.Block.Record.Units);
-                    insert.Scale *= scale;
+                    insert.RestoreScale(insert.Scale * scale);
                 }
             }
             foreach (KeyValuePair<Dimension, string> pair in this.nestedDimensions)
@@ -7737,17 +7737,14 @@ namespace netDxf.IO
                         break;
                     case 41:
                         scale.X = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(scale.X)) scale.X = 1.0; // just in case, the insert scale components cannot be zero
                         this.chunk.Next();
                         break;
                     case 42:
                         scale.Y = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(scale.Y)) scale.Y = 1.0; // just in case, the insert scale components cannot be zero
                         this.chunk.Next();
                         break;
                     case 43:
                         scale.Z = this.chunk.ReadDouble();
-                        if (MathHelper.IsZero(scale.Z)) scale.Z = 1.0; // just in case, the insert scale components cannot be zero
                         this.chunk.Next();
                         break;
                     case 70:
@@ -7827,13 +7824,13 @@ namespace netDxf.IO
                 Block = block,
                 Position = wcsBasePoint,
                 Rotation = rotation,
-                Scale = scale,
                 ColumnCount = columns,
                 RowCount = rows,
                 ColumnSpacing = columnSpacing,
                 RowSpacing = rowSpacing,
                 Normal = normal
             };
+            insert.RestoreScale(scale);
             insert.XData.AddRange(xData);
 
             // post process nested inserts
@@ -10859,7 +10856,7 @@ namespace netDxf.IO
                     if (pair.Key is Insert insert)
                     {
                         double scale = UnitHelper.ConversionFactor(this.doc.DrawingVariables.InsUnits, insert.Block.Record.Units);
-                        insert.Scale *= scale;
+                        insert.RestoreScale(insert.Scale * scale);
                     }
 
                     if (pair.Key is AttributeDefinition attDef)
