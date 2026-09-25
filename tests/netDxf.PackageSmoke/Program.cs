@@ -538,6 +538,39 @@ foreach (bool binary in new[] { false, true })
         throw new InvalidOperationException("Installed underlay hydration/no-op lost graphics");
     loadedUnderlay.Fade = 1;
     if (loadedUnderlay.ProxyGraphics != null) throw new InvalidOperationException("Installed underlay appearance edit retained graphics");
+    // Signed and subnormal scales must survive every installed target's IO.
+    loadedUnderlay.Scale = new Vector2(-double.Epsilon, double.Epsilon);
+    loadedUnderlay.ScaleZ = -double.Epsilon;
+    loadedUnderlay.ProxyGraphics = underlayProxy;
+    loadedUnderlay.Scale = loadedUnderlay.Scale; loadedUnderlay.ScaleZ = loadedUnderlay.ScaleZ;
+    if (!(loadedUnderlay.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(underlayProxy))
+        throw new InvalidOperationException("Installed underlay scalar no-op discarded graphics");
+    using var scaleStream = new MemoryStream();
+    if (!underlayCopy.Save(scaleStream,binary)) throw new InvalidOperationException("Underlay scalar package save failed");
+    scaleStream.Position = 0;
+    var scaleCopy = DxfDocument.Load(scaleStream) ?? throw new InvalidOperationException("Underlay scalar package load failed");
+    var scaleItem = scaleCopy.Blocks.SelectMany(b=>b.Entities).OfType<Underlay>().Single();
+    var scaleClone = (Underlay)scaleItem.Clone();
+    if (scaleItem.Scale.X != -double.Epsilon || scaleItem.Scale.Y != double.Epsilon || scaleItem.ScaleZ != -double.Epsilon
+        || scaleClone.Scale.X != scaleItem.Scale.X || scaleClone.ScaleZ != scaleItem.ScaleZ)
+        throw new InvalidOperationException("Installed underlay lost signed/subnormal scalar bits");
+    scaleStream.Position = 0;
+    var rawScale = netDxf.IO.DxfRawDocument.Load(scaleStream);
+    var scaleRecord = rawScale.Sections.SelectMany(s=>s.Records).Single(r=>r.Name=="PDFUNDERLAY");
+    double scaleNegativeZero = BitConverter.Int64BitsToDouble(long.MinValue);
+    rawScale = rawScale.WithRecord(scaleRecord,scaleRecord.Tags.Select(t=>t.Code==41 || t.Code==43
+        ? new netDxf.IO.DxfTag(t.Code,scaleNegativeZero) : t));
+    using var zeroStream = new MemoryStream(); rawScale.Save(zeroStream,binary); zeroStream.Position = 0;
+    var zeroCopy = DxfDocument.Load(zeroStream) ?? throw new InvalidOperationException("Underlay zero package load failed");
+    var zeroItem = zeroCopy.Blocks.SelectMany(b=>b.Entities).OfType<Underlay>().Single();
+    zeroItem = (Underlay)zeroItem.Clone(); zeroItem.TransformBy(Matrix4.Identity);
+    if (BitConverter.DoubleToInt64Bits(zeroItem.Scale.X) != long.MinValue
+        || BitConverter.DoubleToInt64Bits(zeroItem.ScaleZ) != long.MinValue)
+        throw new InvalidOperationException("Installed underlay clone/identity lost retained negative zero");
+    bool scaleRejected = false;
+    try { zeroItem.ScaleZ = double.NaN; } catch (ArgumentOutOfRangeException) { scaleRejected = true; }
+    if (!scaleRejected || BitConverter.DoubleToInt64Bits(zeroItem.ScaleZ) != long.MinValue)
+        throw new InvalidOperationException("Installed underlay invalid scalar assignment changed state");
     count++;
 }
 Console.WriteLine($"PASS: {count} installed-package text/binary round trips; {typeof(DxfDocument).Assembly.Location}");

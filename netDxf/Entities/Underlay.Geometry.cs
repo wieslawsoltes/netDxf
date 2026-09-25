@@ -32,10 +32,11 @@ namespace netDxf.Entities
                 throw new NotSupportedException("The transformed underlay axis does not lie in its stored plane.");
             nextScale = (Math.Abs(sourceScale) * scale) * length;
             FiniteUnderlay(nextScale);
-            // Match the existing public Scale admission and reader/clone path.
-            // Never replace a collapsed or too-small scale with Epsilon.
+            // Retain the transform's existing numerical representability threshold.
+            // Scalar storage admits smaller values; affine generation does not
+            // silently replace a collapsed or too-small result with Epsilon.
             if (nextScale == 0 || MathHelper.IsZero(nextScale))
-                throw new NotSupportedException("The transformed underlay scale cannot be stored by this model.");
+                throw new NotSupportedException("The transformed underlay scale is below the affine representability threshold.");
             double sign = sourceScale < 0 ? -1 : 1;
             return new Vector2(sign * x / length, sign * y / length);
         }
@@ -50,8 +51,6 @@ namespace netDxf.Entities
             }
             FiniteUnderlay(translation); FiniteUnderlay(this.position); FiniteUnderlay(base.Normal);
             FiniteUnderlay(this.rotation); FiniteUnderlay(this.scale.X); FiniteUnderlay(this.scale.Y);
-            if (this.scale.X == 0 || this.scale.Y == 0)
-                throw new NotSupportedException("An underlay requires two nonzero local scales.");
             if (linearIdentity && translation.X == 0 && translation.Y == 0 && translation.Z == 0) return;
 
             Vector3 nextPosition = InfiniteLineTransform.TransformPoint(matrix, this.position, translation);
@@ -60,6 +59,9 @@ namespace netDxf.Entities
                 PrimitiveGeometryMutation.Assign(this, ref this.position, nextPosition);
                 return;
             }
+
+            if (this.scale.X == 0 || this.scale.Y == 0)
+                throw new NotSupportedException("A nonidentity linear underlay transform requires two nonzero local scales.");
 
             // A*n is not generally a transformed plane normal. The shared helper
             // obtains it from the actual plane axes and rejects numerical rank loss.

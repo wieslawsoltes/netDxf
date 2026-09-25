@@ -2046,7 +2046,7 @@ namespace netDxf.IO
 
             this.chunk.Write(41, underlay.Scale.X);
             this.chunk.Write(42, underlay.Scale.Y);
-            this.chunk.Write(43, 1.0);
+            this.chunk.Write(43, underlay.ScaleZ);
 
             this.chunk.Write(50, underlay.Rotation);
 

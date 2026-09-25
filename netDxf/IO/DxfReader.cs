@@ -3931,7 +3931,7 @@ namespace netDxf.IO
         {
             string underlayDefHandle = null;
             Vector3 position = Vector3.Zero;
-            Vector2 scale = new Vector2(1.0);
+            Vector3 scale = new Vector3(1.0);
             double rotation = 0.0;
             Vector3 normal = Vector3.UnitZ;
             UnderlayDisplayFlags displayOptions = UnderlayDisplayFlags.ShowUnderlay;
@@ -3960,25 +3960,15 @@ namespace netDxf.IO
                         this.chunk.Next();
                         break;
                     case 41:
-                        scale.X = Math.Abs(this.chunk.ReadDouble()); // just in case, the underlay scale components must be positive
-                        if (MathHelper.IsZero(scale.X))
-                        {
-                            scale.X = 1.0;
-                        }
+                        scale.X = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 42:
-                        scale.Y = Math.Abs(this.chunk.ReadDouble()); // just in case, the underlay scale components must be positive
-                        if (MathHelper.IsZero(scale.Y))
-                        {
-                            scale.Y = 1.0;
-                        }
+                        scale.Y = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 43:
-                        // the scale Z value has no use
-                        //scale.Z = Math.Abs(this.chunk.ReadDouble()); // just in case, the underlay scale components must be positive
-                        //if (MathHelper.IsZero(scale.Z)) scale.Z = 1.0;
+                        scale.Z = this.chunk.ReadDouble();
                         this.chunk.Next();
                         break;
                     case 50:
@@ -4052,7 +4042,6 @@ namespace netDxf.IO
             Underlay underlay = new Underlay
             {
                 Position = wcsPosition,
-                Scale = scale,
                 Normal = normal,
                 Rotation = rotation,
                 DisplayOptions = displayOptions,
@@ -4061,6 +4050,9 @@ namespace netDxf.IO
                 ClippingBoundary = clippingBoundary
             };
 
+            // Hydration preserves stored scalars, including degenerate finite zero
+            // scales. Public editing admission is intentionally separate.
+            underlay.SetScaleFromDxf(scale);
             underlay.XData.AddRange(xData);
 
             if (string.IsNullOrEmpty(underlayDefHandle) || underlayDefHandle == "0")
