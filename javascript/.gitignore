@@ -4,3 +4,7 @@ node_modules/
 
 native/windows/build/
 native/bin/
+
+# Historical recovery bundles and abandoned compiler experiments are not port inputs.
+/recovery/
+/tools/TranslatorProbe/
