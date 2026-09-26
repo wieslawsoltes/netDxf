@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-10,466/35,309 original test cases across 89/193 original conformance-file paths.
+11,504/35,309 original test cases across 93/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -24,11 +24,14 @@ HATCH gradient packet grammar and active DIMSTYLE HEADER projection are implemen
 HATCH metadata and counted packets are parsed throughout the record, including after
 XData; empty HATCH input is retained for repair and rejected by typed export preflight.
 HATCH pattern-line output preserves source arithmetic grouping and callback-time reads.
+HATCH edge output re-reads scalar/tangent properties between components and snapshots
+foreach vector values; spline fit metadata is covered through transforms and export.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,
 Windows, performance and native AutoCAD qualification remain incomplete.
-The 408 malformed-gradient and 24 forged-polyline-count original cases remain
+The 408 malformed-gradient, 24 forged-polyline-count and 48 edge/spline-count
+allocation original cases remain
 uncounted until their native allocation assertions are ported; functional
 malformed-input checks do not replace those assertions.
 Arc-length dimension roundtrip adjudication and completion-verifier logic also remain.

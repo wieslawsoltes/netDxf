@@ -173,3 +173,80 @@ test('HATCH failed group 53 write never reads that line geometry', () => {
   writer.chunk = { Write(code) { if (code === 53) throw failure; } };
   assert.throws(() => writer.WriteHatch(hatch), error => error === failure); assert.equal(reads, 0);
 });
+
+// The pinned writer reads scalar properties per component, but foreach Vector3
+// locals are value copies. Synchronous output callbacks must observe that split.
+import { FixedArray } from '../../runtime/FixedArray.js';
+import { InvalidOperationException } from '../../runtime/Errors.js';
+function edgeWriter(edge, callback, version = DxfVersion.AutoCad2018) {
+  const writer = new DxfWriter(), tags = []; writer.doc = new DxfDocument(version);
+  writer.chunk = { Write(code, value) { tags.push([code, value]); callback?.(code, value); } };
+  writer.WriteHatchEdge(edge); return tags;
+}
+function scalarEdge(kind) {
+  if (kind === 'Line') return Object.assign(new HatchBoundaryPath.Line(), { Start: new Vector2(1, 2), End: new Vector2(3, 4) });
+  if (kind === 'Arc') return Object.assign(new HatchBoundaryPath.Arc(), { Center: new Vector2(1, 2), Radius: 3, StartAngle: 4, EndAngle: 5 });
+  return Object.assign(new HatchBoundaryPath.Ellipse(), { Center: new Vector2(1, 2), EndMajorAxis: new Vector2(3, 4), MinorRatio: .5, StartAngle: 6, EndAngle: 7 });
+}
+for (const kind of ['Line', 'Arc', 'Ellipse']) {
+  test(`HATCH ${kind} writer re-reads scalar properties after component writes`, () => {
+    const edge = scalarEdge(kind), first = kind === 'Line' ? 'Start' : 'Center';
+    const tags = edgeWriter(edge, code => {
+      if (code === 10) edge[first] = new Vector2(50, 60);
+      if (code === 11) edge[kind === 'Line' ? 'End' : 'EndMajorAxis'] = new Vector2(70, 80);
+    });
+    assert.equal(tags.find(t => t[0] === 10)[1], 1);
+    assert.equal(tags.find(t => t[0] === 20)[1], 60);
+    if (kind !== 'Arc') { assert.equal(tags.find(t => t[0] === 11)[1], 3); assert.equal(tags.find(t => t[0] === 21)[1], 80); }
+  });
+  test(`HATCH ${kind} writer preserves property getter order`, () => {
+    const property = kind === 'Line' ? 'Start' : 'Center', events = [];
+    const edge = new Proxy(scalarEdge(kind), { get(target, key) { if (key === property) events.push('get'); return Reflect.get(target, key, target); } });
+    edgeWriter(edge, code => { if (code === 10 || code === 20) events.push(code); });
+    assert.deepEqual(events, ['get', 10, 'get', 20]);
+  });
+  test(`HATCH ${kind} throwing first coordinate stops later reads`, () => {
+    const property = kind === 'Line' ? 'Start' : 'Center', failure = new Error('coordinate write'), events = [];
+    const edge = new Proxy(scalarEdge(kind), { get(target, key) { if (key === property) events.push('get'); return Reflect.get(target, key, target); } });
+    assert.throws(() => edgeWriter(edge, code => { if (code === 10) { events.push('write'); throw failure; } }), error => error === failure);
+    assert.deepEqual(events, ['get', 'write']);
+  });
+}
+function splineEdge() {
+  const spline = new HatchBoundaryPath.Spline(); spline.Degree = 1;
+  spline.Knots = FixedArray([0, 0, 1, 1]); spline.ControlPoints = FixedArray([new Vector3(1, 2, .5), new Vector3(3, 4, 1)]);
+  return spline;
+}
+for (const kind of ['Polyline', 'Spline']) for (const fixed of [false, true]) {
+  test(`HATCH ${kind} foreach snapshots only the current vector (${fixed ? 'fixed' : 'array'})`, () => {
+    const edge = kind === 'Spline' ? splineEdge() : new HatchBoundaryPath.Polyline(), property = kind === 'Spline' ? 'ControlPoints' : 'Vertexes';
+    const values = [new Vector3(1, 2, .5), new Vector3(3, 4, 1)]; edge[property] = fixed ? FixedArray(values) : values;
+    const array = edge[property]; let first = true;
+    const tags = edgeWriter(edge, code => {
+      if (code === 10 && first) {
+        first = false; array[0].Y = 99; array[0].Z = 7;
+        array[1] = new Vector3(30, 40, 2);
+        edge[property] = [new Vector3(300, 400, 5)];
+      }
+    });
+    assert.deepEqual(tags.filter(t => t[0] === 10 || t[0] === 20 || t[0] === 42), [[10, 1], [20, 2], [42, .5], [10, 30], [20, 40], [42, 2]]);
+    assert.equal(array[0].Y, 99, 'Source callback mutation must not be rolled back.');
+  });
+}
+for (const [property, x, y] of [['StartTangent', 12, 22], ['EndTangent', 13, 23]]) {
+  test(`HATCH spline ${property} re-reads nullable value after X`, () => {
+    const edge = splineEdge(); edge[property] = new Vector2(10, 20);
+    const tags = edgeWriter(edge, code => { if (code === x) edge[property] = new Vector2(30, 40); });
+    assert.equal(tags.find(t => t[0] === x)[1], 10); assert.equal(tags.find(t => t[0] === y)[1], 40);
+  });
+  test(`HATCH spline ${property} cleared after X throws before Y`, () => {
+    const edge = splineEdge(); edge[property] = new Vector2(10, 20); const written = [];
+    assert.throws(() => edgeWriter(edge, code => { written.push(code); if (code === x) edge[property] = null; }), InvalidOperationException);
+    assert.ok(written.includes(x)); assert.ok(!written.includes(y)); assert.equal(edge[property], null);
+  });
+}
+test('HATCH legacy spline output does not inspect fit or tangent properties', () => {
+  const edge = splineEdge();
+  for (const property of ['FitPoints', 'StartTangent', 'EndTangent']) Object.defineProperty(edge, property, { get() { throw new Error('legacy inspected ' + property); } });
+  const tags = edgeWriter(edge, null, DxfVersion.AutoCad2007); assert.ok(!tags.some(t => [97, 11, 21, 12, 22, 13, 23].includes(t[0])));
+});

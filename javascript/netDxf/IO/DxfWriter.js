@@ -3,7 +3,7 @@
 import * as api from '../../index.js';
 import * as io from '../../runtime/DxfTransport.js';
 import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
-import { DotNetMath } from '../../runtime/GeometryRuntime.js';
+import { Copy, DotNetMath } from '../../runtime/GeometryRuntime.js';
 import { TextCodeValueWriter } from './TextCodeValueWriter.js';
 import { BinaryCodeValueWriter } from './BinaryCodeValueWriter.js';
 import { DxfVersionNotSupportedException } from './DxfVersionNotSupportedException.js';
@@ -291,10 +291,53 @@ export class DxfWriter {
       for (const dash of line.DashPattern) this.chunk.Write(49, dash * scale);
     }
   }
-  WriteHatchEdge(edge){const c=this.chunk,type=edge.Type;if(type===0){c.Write(72,1);c.Write(73,edge.IsClosed?1:0);c.Write(93,edge.Vertexes.length);for(const v of edge.Vertexes){writePoint(c,10,v,2);c.Write(42,v.Z);}return;}c.Write(72,type);
-    if(type===1){writePoint(c,10,edge.Start,2);writePoint(c,11,edge.End,2);}else if(type===2||type===3){writePoint(c,10,edge.Center,2);if(type===3)writePoint(c,11,edge.EndMajorAxis,2);c.Write(40,type===2?edge.Radius:edge.MinorRatio);c.Write(50,edge.StartAngle);c.Write(51,edge.EndAngle);c.Write(73,edge.IsCounterclockwise?1:0);}
-    else if(type===4){c.Write(94,edge.Degree);c.Write(73,edge.IsRational?1:0);c.Write(74,edge.IsPeriodic?1:0);c.Write(95,edge.Knots.length);c.Write(96,edge.ControlPoints.length);for(const knot of edge.Knots)c.Write(40,knot);for(const p of edge.ControlPoints){writePoint(c,10,p,2);if(edge.IsRational||p.Z!==1)c.Write(42,p.Z);}if(this.doc.DrawingVariables.AcadVer>=api.DxfVersion.AutoCad2010){c.Write(97,edge.FitPoints.Count);for(const p of edge.FitPoints)writePoint(c,11,p,2);if(edge.StartTangent)writePoint(c,12,edge.StartTangent,2);if(edge.EndTangent)writePoint(c,13,edge.EndTangent,2);}}
-    else throw new NotSupportedException('Unknown HATCH edge type '+type);
+  WriteHatchEdge(edge) {
+    const c = this.chunk, type = edge.Type;
+    if (type === 0) {
+      c.Write(72, 1); c.Write(73, edge.IsClosed ? 1 : 0); c.Write(93, edge.Vertexes.length);
+      for (const value of edge.Vertexes) {
+        // A C# foreach Vector3 is copied before the first component callback.
+        const vertex = Copy(value);
+        c.Write(10, vertex.X); c.Write(20, vertex.Y); c.Write(42, vertex.Z);
+      }
+      return;
+    }
+    c.Write(72, type);
+    if (type === 1) {
+      // Scalar properties, unlike foreach locals, are re-read per component.
+      c.Write(10, edge.Start.X); c.Write(20, edge.Start.Y);
+      c.Write(11, edge.End.X); c.Write(21, edge.End.Y);
+    } else if (type === 2 || type === 3) {
+      c.Write(10, edge.Center.X); c.Write(20, edge.Center.Y);
+      if (type === 3) { c.Write(11, edge.EndMajorAxis.X); c.Write(21, edge.EndMajorAxis.Y); }
+      c.Write(40, type === 2 ? edge.Radius : edge.MinorRatio);
+      c.Write(50, edge.StartAngle); c.Write(51, edge.EndAngle); c.Write(73, edge.IsCounterclockwise ? 1 : 0);
+    } else if (type === 4) {
+      c.Write(94, edge.Degree); c.Write(73, edge.IsRational ? 1 : 0); c.Write(74, edge.IsPeriodic ? 1 : 0);
+      c.Write(95, edge.Knots.length); c.Write(96, edge.ControlPoints.length);
+      for (const knot of edge.Knots) c.Write(40, knot);
+      for (const value of edge.ControlPoints) {
+        const point = Copy(value);
+        c.Write(10, point.X); c.Write(20, point.Y);
+        if (edge.IsRational || point.Z !== 1) c.Write(42, point.Z);
+      }
+      if (this.doc.DrawingVariables.AcadVer >= api.DxfVersion.AutoCad2010) {
+        c.Write(97, edge.FitPoints.Count);
+        for (const value of edge.FitPoints) {
+          const point = Copy(value); c.Write(11, point.X); c.Write(21, point.Y);
+        }
+        const nullableValue = value => {
+          if (value === null) throw new InvalidOperationException('Nullable object must have a value.');
+          return value;
+        };
+        if (edge.StartTangent !== null) {
+          c.Write(12, nullableValue(edge.StartTangent).X); c.Write(22, nullableValue(edge.StartTangent).Y);
+        }
+        if (edge.EndTangent !== null) {
+          c.Write(13, nullableValue(edge.EndTangent).X); c.Write(23, nullableValue(edge.EndTangent).Y);
+        }
+      }
+    } else throw new NotSupportedException('Unknown HATCH edge type ' + type);
   }
 
   WriteDimension(dim){const c=this.chunk;c.Write(100,'AcDbDimension');if(dim.Block)c.Write(2,this.EncodeNonAsciiCharacters(dim.Block.Name));const world=p=>api.MathHelper.Transform(new api.Vector3(p.X,p.Y,dim.Elevation),dim.Normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);writePoint(c,10,world(dim.DefinitionPoint));writePoint(c,11,new api.Vector3(dim.TextReferencePoint.X,dim.TextReferencePoint.Y,dim.Elevation));let flags=dim.DimensionType|32|(dim.TextPositionManuallySet?128:0);if(dim instanceof api.OrdinateDimension){c.Write(51,360-dim.Rotation);if(dim.Axis===api.OrdinateDimensionAxis.X)flags|=64;}c.Write(53,dim.TextRotation);c.Write(70,flags);c.Write(71,dim.AttachmentPoint);c.Write(72,dim.LineSpacingStyle);c.Write(41,dim.LineSpacingFactor);c.Write(1,this.EncodeNonAsciiCharacters(dim.UserText));writePoint(c,210,dim.Normal);c.Write(3,this.EncodeNonAsciiCharacters(dim.Style.Name));this.PrepareDimensionXData(dim);
