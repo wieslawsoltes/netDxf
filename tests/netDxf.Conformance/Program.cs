@@ -68,6 +68,7 @@ internal static partial class Program
         RegisterPolyline2DEditTests();
         RegisterMeshVertexEditTests();
         RegisterMeshTopologyEditTests();
+        RegisterMeshReindexingTests();
         RegisterHatchBulgeExplosionTests();
         RegisterSplineAffineAtomicTests();
         RegisterSplineCountPolicyTests();
