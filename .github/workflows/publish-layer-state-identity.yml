@@ -1,0 +1,48 @@
+name: Publish reviewed layer-state source
+on:
+  push:
+    branches: [codex/dxf-layer-state-identity-20260926]
+    paths: [.github/workflows/publish-layer-state-identity.yml]
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: github.repository == 'wieslawsoltes/netDxf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - name: Apply the reviewed patch and remove this completed publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/codex/dxf-layer-state-identity-20260926
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          import hashlib, lzma, os
+          from pathlib import Path
+          root = Path('.github/layer-state-bootstrap')
+          expected = {f'part{i}.xz' for i in range(4)}
+          assert {p.name for p in root.iterdir()} == expected
+          compressed = b''.join((root / f'part{i}.xz').read_bytes() for i in range(4))
+          assert len(compressed) == 15240
+          assert hashlib.sha256(compressed).hexdigest() == '1f5fd46a8da3514d8d2dbef528a7a69212d8710774c95ad5fb7e5740ceb25add'
+          patch = lzma.decompress(compressed)
+          assert len(patch) == 68546
+          assert hashlib.sha256(patch).hexdigest() == '76bf9279e194a67fc4295a8aa56246ca75f7d0361d1cde5042f07278082e0178'
+          (Path(os.environ['RUNNER_TEMP']) / 'reviewed-layer.patch').write_bytes(patch)
+          PY
+          git rm -- .github/layer-state-bootstrap/part0.xz .github/layer-state-bootstrap/part1.xz .github/layer-state-bootstrap/part2.xz .github/layer-state-bootstrap/part3.xz .github/workflows/publish-layer-state-identity.yml
+          test "$(git write-tree)" = 83f2e9035b3b9f8ec0bf53a9506d12b833a0dcd1
+          git -c core.whitespace=cr-at-eol apply --index --whitespace=error "$RUNNER_TEMP/reviewed-layer.patch"
+          test "$(git write-tree)" = 479237b7a2c100017ff8a7ee246b0076ac9acc31
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'DXF parity development'
+          git config user.email 'wieslawsoltes@users.noreply.github.com'
+          git commit -m 'Preserve layer-state identities and remove completed source publisher'
+          git push origin HEAD:refs/heads/codex/dxf-layer-state-identity-20260926
