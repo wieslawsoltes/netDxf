@@ -3,6 +3,7 @@
 import * as api from '../../index.js';
 import * as io from '../../runtime/DxfTransport.js';
 import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
+import { DotNetMath } from '../../runtime/GeometryRuntime.js';
 import { TextCodeValueWriter } from './TextCodeValueWriter.js';
 import { BinaryCodeValueWriter } from './BinaryCodeValueWriter.js';
 import { DxfVersionNotSupportedException } from './DxfVersionNotSupportedException.js';
@@ -262,11 +263,33 @@ export class DxfWriter {
 
   WriteHatch(hatch){const c=this.chunk,p=hatch.Pattern;c.Write(100,'AcDbHatch');writePoint(c,10,new api.Vector3(0,0,hatch.Elevation));writePoint(c,210,hatch.Normal);c.Write(2,this.EncodeNonAsciiCharacters(p.Name));c.Write(70,p.Fill);c.Write(71,hatch.Associative?1:0);c.Write(91,hatch.BoundaryPaths.Count);
     for(const path of hatch.BoundaryPaths){c.Write(92,path.PathType);if(!(path.PathType&2))c.Write(93,path.Edges.Count);for(const edge of path.Edges)this.WriteHatchEdge(edge);c.Write(97,path.Entities.Count);for(const entity of path.Entities)c.Write(330,entity.Handle);}
-    c.Write(75,p.Style);c.Write(76,p.Type);if(p.Fill===0){c.Write(52,p.Angle);c.Write(41,p.Scale);c.Write(77,p.IsDouble?1:0);c.Write(78,p.LineDefinitions.Count);for(const line of p.LineDefinitions){const angle=line.Angle+p.Angle,origin=api.Vector2.Multiply(p.Scale,api.Vector2.Rotate(line.Origin,p.Angle*api.MathHelper.DegToRad)),delta=api.Vector2.Multiply(p.Scale,api.Vector2.Rotate(line.Delta,angle*api.MathHelper.DegToRad));c.Write(53,angle);c.Write(43,origin.X);c.Write(44,origin.Y);c.Write(45,delta.X);c.Write(46,delta.Y);c.Write(79,line.DashPattern.Count);for(const dash of line.DashPattern)c.Write(49,dash*p.Scale);}}
+    c.Write(75,p.Style);c.Write(76,p.Type);if(p.Fill===0){c.Write(52,p.Angle);c.Write(41,p.Scale);c.Write(77,p.IsDouble?1:0);c.Write(78,p.LineDefinitions.Count);this.WriteHatchPatternDefinitionLines(p);}
     if(hatch.PixelSize!==null)c.Write(47,hatch.PixelSize);c.Write(98,hatch.SeedPoints.Count);for(const seed of hatch.SeedPoints)writePoint(c,10,seed,2);
     const gradient=p instanceof api.HatchGradientPattern;if(gradient&&this.doc.DrawingVariables.AcadVer>api.DxfVersion.AutoCad2000){for(const[code,v]of[[450,1],[451,0],[460,p.Angle*api.MathHelper.DegToRad],[461,p.Shift],[452,p.SingleColor?1:0],[462,p.Tint],[453,2],[463,0]])c.Write(code,v);if(p.Color1AciIndex!==null)c.Write(63,p.Color1AciIndex);c.Write(421,api.AciColor.ToTrueColor(p.Color1));c.Write(463,1);if(p.Color2AciIndex!==null)c.Write(63,p.Color2AciIndex);c.Write(421,api.AciColor.ToTrueColor(p.Color2));c.Write(470,HatchGradientPatternTypeStringValues[p.GradientType]);}
     const written=new Set();for(const app of hatch.XData.AppIds){let records=hatch.XData.get_Item(app).XDataRecord;const key=app.toUpperCase();written.add(key);if(key==='ACAD')records=io.HatchPatternXData.WithOrigin(records,p.Origin);else if(gradient&&key==='GRADIENTCOLOR1ACI')records=io.HatchPatternXData.WithColorIndex(records,p.Color1.Index);else if(gradient&&key==='GRADIENTCOLOR2ACI')records=io.HatchPatternXData.WithColorIndex(records,p.Color2.Index);WriteXDataRecords(c,()=>this.doc.DrawingVariables.AcadVer,app,records);}
     if(!written.has('ACAD'))WriteXDataRecords(c,()=>this.doc.DrawingVariables.AcadVer,'ACAD',io.HatchPatternXData.WithOrigin(null,p.Origin));if(gradient)for(const[n,color]of[[1,p.Color1],[2,p.Color2]])if(!written.has('GRADIENTCOLOR'+n+'ACI'))WriteXDataRecords(c,()=>this.doc.DrawingVariables.AcadVer,'GradientColor'+n+'ACI',io.HatchPatternXData.WithColorIndex(null,color.Index));
+  }
+  WriteHatchPatternDefinitionLines(pattern) {
+    for (const line of pattern.LineDefinitions) {
+      // Capture scale/angle before the callback, but read geometry after it.
+      // Keep the source's product grouping: scaling a rotated vector changes bits.
+      const scale = pattern.Scale, angle = line.Angle + pattern.Angle;
+      this.chunk.Write(53, angle);
+      const sinOrigin = DotNetMath.Sin(pattern.Angle * api.MathHelper.DegToRad);
+      const cosOrigin = DotNetMath.Cos(pattern.Angle * api.MathHelper.DegToRad);
+      const origin = new api.Vector2(
+        cosOrigin * line.Origin.X * scale - sinOrigin * line.Origin.Y * scale,
+        sinOrigin * line.Origin.X * scale + cosOrigin * line.Origin.Y * scale);
+      this.chunk.Write(43, origin.X); this.chunk.Write(44, origin.Y);
+      const sinDelta = DotNetMath.Sin(angle * api.MathHelper.DegToRad);
+      const cosDelta = DotNetMath.Cos(angle * api.MathHelper.DegToRad);
+      const delta = new api.Vector2(
+        cosDelta * line.Delta.X * scale - sinDelta * line.Delta.Y * scale,
+        sinDelta * line.Delta.X * scale + cosDelta * line.Delta.Y * scale);
+      this.chunk.Write(45, delta.X); this.chunk.Write(46, delta.Y);
+      this.chunk.Write(79, line.DashPattern.Count);
+      for (const dash of line.DashPattern) this.chunk.Write(49, dash * scale);
+    }
   }
   WriteHatchEdge(edge){const c=this.chunk,type=edge.Type;if(type===0){c.Write(72,1);c.Write(73,edge.IsClosed?1:0);c.Write(93,edge.Vertexes.length);for(const v of edge.Vertexes){writePoint(c,10,v,2);c.Write(42,v.Z);}return;}c.Write(72,type);
     if(type===1){writePoint(c,10,edge.Start,2);writePoint(c,11,edge.End,2);}else if(type===2||type===3){writePoint(c,10,edge.Center,2);if(type===3)writePoint(c,11,edge.EndMajorAxis,2);c.Write(40,type===2?edge.Radius:edge.MinorRatio);c.Write(50,edge.StartAngle);c.Write(51,edge.EndAngle);c.Write(73,edge.IsCounterclockwise?1:0);}

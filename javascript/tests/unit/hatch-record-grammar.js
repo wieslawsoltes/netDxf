@@ -114,3 +114,62 @@ for (const binary of [false, true]) {
     } finally { input.Dispose(); output.Dispose(); }
   });
 }
+
+// Source-guided writer checks: arithmetic grouping and synchronous callback timing.
+// The shared math shim isolates operation ordering, not independent native math parity.
+import { DxfWriter } from '../../netDxf/IO/DxfWriter.js';
+import { DxfDocument, Hatch, HatchPattern, HatchBoundaryPath, HatchPatternLineDefinition, Vector2, Vector3, MathHelper } from '../../index.js';
+import { DotNetMath } from '../../runtime/GeometryRuntime.js';
+function patternHatch() {
+  const pattern = HatchPattern.Line; pattern.LineDefinitions.Clear(); pattern.Angle = 37; pattern.Scale = .1;
+  const line = new HatchPatternLineDefinition(); line.Angle = 11.5;
+  line.Origin = new Vector2(1.234567890123, -2.345678901234);
+  line.Delta = new Vector2(-3.456789012345, 4.567890123456); line.DashPattern.Add(1.25);
+  pattern.LineDefinitions.Add(line);
+  const poly = new HatchBoundaryPath.Polyline(); poly.IsClosed = true;
+  poly.Vertexes = [new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 1, 0)];
+  return new Hatch(pattern, [new HatchBoundaryPath([poly])], false);
+}
+function sourceCoordinates(point, angle, scale) {
+  const sin = DotNetMath.Sin(angle * MathHelper.DegToRad), cos = DotNetMath.Cos(angle * MathHelper.DegToRad);
+  return [cos * point.X * scale - sin * point.Y * scale, sin * point.X * scale + cos * point.Y * scale];
+}
+for (const version of [13, 14, 15, 16, 17, 18]) for (const binary of [false, true]) {
+  test(`HATCH pattern writer preserves source product grouping (${version}/${binary})`, () => {
+    const hatch = patternHatch(), pattern = hatch.Pattern, line = pattern.LineDefinitions.get_Item(0);
+    const expected = [...sourceCoordinates(line.Origin, pattern.Angle, pattern.Scale),
+      ...sourceCoordinates(line.Delta, line.Angle + pattern.Angle, pattern.Scale)];
+    const doc = new DxfDocument(version), output = new MemoryStream(); doc.Entities.Add(hatch);
+    try {
+      new DxfWriter().Write(output, doc, binary); output.Position = 0;
+      const raw = DxfRawDocument.Load(output), record = Array.from(raw.Sections).flatMap(s => Array.from(s.Records)).find(r => r.Name === 'HATCH');
+      for (const [index, code] of [43, 44, 45, 46].entries())
+        assert.ok(Object.is(Array.from(record.Tags).find(t => t.Code === code).Value, expected[index]), `Group ${code} changed product grouping`);
+    } finally { output.Dispose(); }
+  });
+}
+test('HATCH line output reads geometry after callbacks but captures per-line scale and delta angle', () => {
+  const hatch = patternHatch(), p = hatch.Pattern, line = p.LineDefinitions.get_Item(0), scale = p.Scale, angle = line.Angle + p.Angle;
+  const writer = new DxfWriter(), written = []; writer.doc = new DxfDocument();
+  writer.chunk = { Write(code, value) {
+    written.push([code, value]);
+    if (code === 53) { p.Angle = 90; p.Scale = 4; line.Origin = new Vector2(2, 3); }
+    if (code === 43) { line.Origin = new Vector2(100, 200); line.Delta = new Vector2(5, 6); }
+    if (code === 45) line.Delta = new Vector2(100, 200);
+    if (code === 79) p.Scale = 8;
+  } };
+  writer.WriteHatch(hatch);
+  const values = code => written.find(p => p[0] === code)[1];
+  assert.equal(values(53), angle);
+  const origin = sourceCoordinates(new Vector2(2, 3), 90, scale), delta = sourceCoordinates(new Vector2(5, 6), angle, scale);
+  for (const [code, expected] of [[43, origin[0]], [44, origin[1]], [45, delta[0]], [46, delta[1]], [49, 1.25 * scale]])
+    assert.ok(Object.is(values(code), expected), `Callback-sensitive group ${code}`);
+});
+test('HATCH failed group 53 write never reads that line geometry', () => {
+  const hatch = patternHatch(), line = hatch.Pattern.LineDefinitions.get_Item(0), failure = new Error('writer failure');
+  let reads = 0;
+  for (const property of ['Origin', 'Delta']) Object.defineProperty(line, property, { get() { reads++; return Vector2.Zero; } });
+  const writer = new DxfWriter(); writer.doc = new DxfDocument();
+  writer.chunk = { Write(code) { if (code === 53) throw failure; } };
+  assert.throws(() => writer.WriteHatch(hatch), error => error === failure); assert.equal(reads, 0);
+});
