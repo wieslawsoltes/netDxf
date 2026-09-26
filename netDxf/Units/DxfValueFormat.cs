@@ -78,8 +78,7 @@ namespace netDxf.Units
                     case "ct":
                         if (value != 8) throw new NotSupportedException("Only explicit conversion factor mode 8 is supported.");
                         string scale = ReadBracket(expression, ref i);
-                        if (scale.Trim() != scale || !double.TryParse(scale, NumberStyles.Float, CultureInfo.InvariantCulture, out double factor) ||
-                            double.IsNaN(factor) || double.IsInfinity(factor)) throw new FormatException("Conversion factor must be a finite invariant number.");
+                        if (scale.Trim() != scale || !netDxf.IO.DxfDoubleParser.TryParse(scale, out double factor)) throw new FormatException("Conversion factor must be a finite invariant number.");
                         result.factor = factor; break;
                     case "ds":
                         if (value != 44 && value != 46) throw new NotSupportedException("Decimal separator must be comma or period.");

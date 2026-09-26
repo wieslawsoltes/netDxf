@@ -277,7 +277,7 @@ namespace netDxf.Tables
                         if (this.index < this.text.Length && (this.text[this.index] == '+' || this.text[this.index] == '-')) this.index++;
                         while (this.index < this.text.Length && char.IsDigit(this.text[this.index])) this.index++;
                     }
-                    if (!double.TryParse(this.text.Substring(start, this.index - start), NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || double.IsNaN(number) || double.IsInfinity(number))
+                    if (!netDxf.IO.DxfDoubleParser.TryParse(this.text.Substring(start, this.index - start), out double number))
                         throw new FormatException("Invalid finite formula number.");
                     return new Literal(number);
                 }
