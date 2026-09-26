@@ -214,9 +214,45 @@ namespace NetDxf.Qualification
             }
         }
 
+        // Consumer grammar/length limits remain independent of the low-level DXF token codec.
+        internal static IEnumerable<Case> NumericConsumerCases()
+        {
+            foreach (Case item in All())
+                if (item.Bits.HasValue && item.Token.Length <= 4050
+                    && !item.Token.Any(char.IsWhiteSpace)) yield return item;
+        }
+
+        internal static ulong[] VerifyNumericConsumer(Case item)
+        {
+            ulong expected = item.Bits!.Value;
+            // Formula evaluation deliberately canonicalizes every zero to positive zero.
+            ulong formulaExpected = (expected & 0x7fffffffffffffffUL) == 0 ? 0 : expected;
+            double scalar = netDxf.Tables.DxfTableFormula.ParseScalar("=" + item.Token).EvaluateScalar();
+            double table = netDxf.Tables.DxfTableFormula.Parse("=" + item.Token).Evaluate(1, 1,
+                address => { throw new InvalidOperationException("Literal invoked a table resolver"); });
+            var format = netDxf.Units.DxfValueFormat.Parse("%lu2%pr8%ct8[" + item.Token + "]");
+            double factor = (double)typeof(netDxf.Units.DxfValueFormat)
+                .GetField("factor", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(format)!;
+            if (unchecked((ulong)BitConverter.DoubleToInt64Bits(scalar)) != formulaExpected
+                || unchecked((ulong)BitConverter.DoubleToInt64Bits(table)) != formulaExpected
+                || unchecked((ulong)BitConverter.DoubleToInt64Bits(factor)) != expected)
+                throw new InvalidOperationException("TABLE/FIELD numeric consumer rounding: " + item.Id);
+            // Check the public formatter too; parsing the known binary64 spelling avoids
+            // comparing platform-dependent default double formatting directly.
+            string canonical = BitConverter.Int64BitsToDouble(unchecked((long)expected))
+                .ToString("G17", CultureInfo.InvariantCulture);
+            var reference = netDxf.Units.DxfValueFormat.Parse("%lu2%pr8%ct8[" + canonical + "]");
+            if (format.Format(1.0) != reference.Format(1.0))
+                throw new InvalidOperationException("Conversion-factor display: " + item.Id);
+            return new[] { unchecked((ulong)BitConverter.DoubleToInt64Bits(scalar)),
+                unchecked((ulong)BitConverter.DoubleToInt64Bits(table)),
+                unchecked((ulong)BitConverter.DoubleToInt64Bits(factor)) };
+        }
+
         internal static void VerifyInstalled(Assembly assembly)
         {
             VerifyDispatch(assembly);
+            foreach (Case item in NumericConsumerCases()) VerifyNumericConsumer(item);
             Parser portable = GetParser(assembly, "TryParsePortable"), selected = GetParser(assembly, "TryParse");
             foreach (Case item in All())
             {
