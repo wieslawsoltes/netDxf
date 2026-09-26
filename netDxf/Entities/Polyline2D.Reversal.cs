@@ -7,18 +7,19 @@ namespace netDxf.Entities
 {
     public partial class Polyline2D
     {
-        // Complete admission before Reverse changes list/record order. Vertex setters
-        // are nonvirtual and will receive only these already validated values.
-        private void ValidateReversalVertices()
+        // Complete admission before explicit edits or Reverse change live vertex state.
+        // Vertex setters are nonvirtual and receive only already validated values.
+        private void ValidateVertexEdits(string operation)
         {
             this.ValidateVertexFidelity();
             var identities = new HashSet<Polyline2DVertex>(ReversalVertexComparer.Instance);
             foreach (Polyline2DVertex vertex in this.vertexes)
             {
                 if (!identities.Add(vertex))
-                    throw new InvalidOperationException("Reversal requires distinct vertex objects; shared vertices cannot carry independent reversed segment attributes.");
+                    throw new InvalidOperationException(operation + " requires distinct vertex objects; shared vertices cannot carry independent reversed segment attributes.");
                 if (!LegacyFinite(vertex.Position.X) || !LegacyFinite(vertex.Position.Y) || !LegacyFinite(vertex.Bulge))
-                    throw new InvalidOperationException("Polyline reversal requires finite coordinates and bulges.");
+                    throw new InvalidOperationException(operation == "Reversal" ? "Polyline reversal requires finite coordinates and bulges."
+                        : "Explicit vertex editing requires finite coordinates and bulges.");
             }
         }
 
