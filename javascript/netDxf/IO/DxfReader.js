@@ -238,11 +238,143 @@ export class DxfReader {
       else if(code===40)item.Height=v>0?v:1;else if(code===41)item.RectangleWidth=Math.max(0,v);else if(code===44)item.LineSpacingFactor=v>=.25&&v<=4?v:1;else if(code===71)item.AttachmentPoint=v;else if(code===72)item.DrawingDirection=v;else if(code===73)item.LineSpacingStyle=v;else if(code===7)item.Style=this.Resource('TextStyles',DecodeDxfText(v));chunk.Next();
     }
     item.Position=position;item.Normal=normal;item.Value=DecodeDxfText(parts.join(''));if(explicitDirection){const d=api.MathHelper.Transform(direction,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);rotation=api.Vector2.Angle(new api.Vector2(d.X,d.Y));}item.Rotation=rotation*api.MathHelper.RadToDeg;item.BackgroundFill=background.value;item.Columns=columns.value;item.$definedColumnHeight=definedHeight.value;io.ReadMTextColumnXData(item);return item;}
-  ReadMesh(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),vertices=[],faces=[],edges=[];let at=t.findIndex(t=>t.Code===92);if(at<0)throw new InvalidDataException('MESH is missing its vertex count.');const vertexCount=t[at++].Value;if(!Number.isInteger(vertexCount)||vertexCount<0||vertexCount>(t.length-at)/3)throw new InvalidDataException('Invalid MESH vertex count.');
-    for(let i=0;i<vertexCount;i++){if(t[at]?.Code!==10||t[at+1]?.Code!==20||t[at+2]?.Code!==30)throw new InvalidDataException('Truncated MESH vertex.');vertices.push(new api.Vector3(t[at].Value,t[at+1].Value,t[at+2].Value));at+=3;}
-    if(t[at]?.Code!==93)throw new InvalidDataException('MESH is missing its face-list size.');const end=at+1+t[at].Value;at++;if(end>t.length||end<at)throw new InvalidDataException('Invalid MESH face-list size.');while(at<end){if(t[at].Code!==90)throw new InvalidDataException('Invalid MESH face.');const n=t[at++].Value;if(n<3||at+n>end)throw new InvalidDataException('Invalid MESH face vertex count.');const face=[];for(let i=0;i<n;i++){if(t[at].Code!==90)throw new InvalidDataException('Invalid MESH index.');face.push(t[at++].Value);}faces.push(face);}
-    if(t[at]?.Code===94){const n=t[at++].Value;if(n<0||at+n*2>t.length)throw new InvalidDataException('Invalid MESH edge count.');for(let i=0;i<n;i++){if(t[at]?.Code!==90||t[at+1]?.Code!==90)throw new InvalidDataException('Invalid MESH edge.');edges.push(new api.MeshEdge(t[at++].Value,t[at++].Value));}if(t[at]?.Code!==95||t[at++].Value!==n)throw new InvalidDataException('MESH crease count does not match its edges.');for(let i=0;i<n;i++){if(t[at]?.Code!==140)throw new InvalidDataException('Truncated MESH creases.');edges[i].Crease=t[at++].Value;}}
-    const mesh=new api.Mesh(vertices,faces,edges);mesh.BlendCrease=value(t,72,0)!==0;mesh.SubdivisionLevel=value(t,91,0);readXData(mesh,r.Tags,this.doc);return mesh;}
+  ReadMesh(record) {
+    this.Cursor(record);
+    const c = this.chunk, xdata = [];
+    let vertices = null, faces = null, edges = null;
+    let subdivisionLevel = 0, blendCrease = false, privateDepth = 0;
+    let publicSubclass = true, xdataStarted = false, creaseListRead = false;
+    let versionRead = false, blendRead = false, subdivisionRead = false, overrideRead = false;
+    while (c.Code !== 0) {
+      // Counted readers own their items. Only uncounted group 90 declares
+      // overrides; private packets and post-XData tails are not mesh fields.
+      if (c.Code === 102) {
+        const control = c.ReadString();
+        if (control.startsWith('{')) privateDepth++;
+        else if (control === '}' && privateDepth > 0) privateDepth--;
+        this.ReadNextMeshTag(); continue;
+      }
+      if (privateDepth > 0) { this.ReadNextMeshTag(); continue; }
+      if (c.Code === 100) {
+        publicSubclass = c.ReadString() === 'AcDbSubDMesh';
+        this.ReadNextMeshTag(); continue;
+      }
+      if (c.Code === 1001) xdataStarted = true;
+      else if (!publicSubclass || xdataStarted) { this.ReadNextMeshTag(); continue; }
+      switch (c.Code) {
+        case 10: case 20: case 30: case 140:
+          throw this.MeshReadError(c.Code, 'A mesh list item must belong to its declared counted list.');
+        case 90: {
+          if (overrideRead) throw this.MeshReadError(90, 'The subentity override count is declared more than once.');
+          const count = c.ReadInt();
+          if (count < 0) throw this.MeshReadError(90, 'The subentity override count cannot be negative.');
+          if (count !== 0) throw this.MeshReadError(90, 'Subentity property overrides are not supported.');
+          overrideRead = true; this.ReadNextMeshTag(); break;
+        }
+        case 71:
+          if (versionRead) throw this.MeshReadError(71, 'The mesh version is declared more than once.');
+          versionRead = true; this.ReadNextMeshTag(); break;
+        case 72: {
+          if (blendRead) throw this.MeshReadError(72, 'The blend flag is declared more than once.');
+          blendRead = true;
+          const blend = c.ReadShort();
+          if (blend !== 0 && blend !== 1) throw new InvalidDataException('MESH group 72 (Blend Crease) must be zero or one.');
+          blendCrease = blend === 1; this.ReadNextMeshTag(); break;
+        }
+        case 91:
+          if (subdivisionRead) throw this.MeshReadError(91, 'The subdivision level is declared more than once.');
+          subdivisionRead = true; subdivisionLevel = c.ReadInt();
+          if (subdivisionLevel < 0 || subdivisionLevel > 255)
+            throw this.MeshReadError(91, 'Subdivision level must be between zero and 255.');
+          this.ReadNextMeshTag(); break;
+        case 92: {
+          if (vertices !== null) throw this.MeshReadError(92, 'The vertex count is declared more than once.');
+          const count = c.ReadInt(); this.ReadNextMeshTag(); vertices = this.ReadMeshVertexes(count); break;
+        }
+        case 93: {
+          if (faces !== null) throw this.MeshReadError(93, 'The face-list size is declared more than once.');
+          const size = c.ReadInt(); this.ReadNextMeshTag(); faces = this.ReadMeshFaces(size); break;
+        }
+        case 94: {
+          if (edges !== null) throw this.MeshReadError(94, 'The edge count is declared more than once.');
+          const count = c.ReadInt(); this.ReadNextMeshTag(); edges = this.ReadMeshEdges(count); break;
+        }
+        case 95: {
+          if (creaseListRead) throw this.MeshReadError(95, 'The crease count is declared more than once.');
+          const count = c.ReadInt(); this.ReadNextMeshTag();
+          if (count < 0 || edges === null || count !== edges.length)
+            throw this.MeshReadError(95, 'The crease count must match an existing edge list.');
+          for (const edge of edges) {
+            this.RequireMeshCode(140); edge.Crease = c.ReadDouble(); this.ReadNextMeshTag();
+          }
+          creaseListRead = true; break;
+        }
+        case 1001: xdata.push(ReadXDataRecord(c, this.doc)); break;
+        default: this.ReadNextMeshTag(); break;
+      }
+    }
+    // Indices are checked only after all independently ordered lists are read.
+    if (vertices === null) throw this.MeshReadError(92, 'The vertex list is missing.');
+    if (faces === null) throw this.MeshReadError(93, 'The face list is missing.');
+    for (const face of faces) for (const index of face)
+      if (index >= vertices.length) throw this.MeshReadError(90, 'A face index is outside the vertex list.');
+    for (const edge of edges ?? [])
+      if (edge.StartVertexIndex >= vertices.length || edge.EndVertexIndex >= vertices.length)
+        throw this.MeshReadError(90, 'An edge index is outside the vertex list.');
+    const mesh = new api.Mesh(vertices, faces, edges);
+    mesh.SubdivisionLevel = subdivisionLevel; mesh.BlendCrease = blendCrease;
+    mesh.XData.AddRange(xdata);
+    return mesh;
+  }
+  ReadNextMeshTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  RequireMeshCode(code) {
+    if (this.chunk.Code !== code) throw this.MeshReadError(code, 'Unexpected group ' + this.chunk.Code + ' in a counted list.');
+  }
+  MeshReadError(code, message) {
+    return new InvalidDataException('Invalid MESH group ' + code + ' at position ' + this.chunk.CurrentPosition + ': ' + message);
+  }
+  ReadMeshVertexes(count) {
+    if (count < 0) throw this.MeshReadError(92, 'The vertex count cannot be negative.');
+    const vertices = [];
+    // Grow from complete consumed coordinates, never a declared capacity.
+    for (let i = 0; i < count; i++) {
+      this.RequireMeshCode(10); const x = this.chunk.ReadDouble(); this.ReadNextMeshTag();
+      this.RequireMeshCode(20); const y = this.chunk.ReadDouble(); this.ReadNextMeshTag();
+      this.RequireMeshCode(30); const z = this.chunk.ReadDouble(); this.ReadNextMeshTag();
+      vertices.push(new api.Vector3(x, y, z));
+    }
+    return vertices;
+  }
+  ReadMeshFaces(size) {
+    if (size < 0) throw this.MeshReadError(93, 'The face-list size cannot be negative.');
+    const faces = [];
+    let remaining = size;
+    while (remaining > 0) {
+      this.RequireMeshCode(90); const count = this.chunk.ReadInt();
+      if (count < 3 || count > remaining - 1)
+        throw this.MeshReadError(93, 'Each face needs at least three indices and must fit the declared face-list size.');
+      remaining--; this.ReadNextMeshTag();
+      const indices = [];
+      for (let i = 0; i < count; i++) {
+        this.RequireMeshCode(90); const index = this.chunk.ReadInt();
+        if (index < 0) throw this.MeshReadError(90, 'Face vertex indices cannot be negative.');
+        indices.push(index); remaining--; this.ReadNextMeshTag();
+      }
+      faces.push(indices);
+    }
+    return faces;
+  }
+  ReadMeshEdges(count) {
+    if (count < 0) throw this.MeshReadError(94, 'The edge count cannot be negative.');
+    const edges = [];
+    for (let i = 0; i < count; i++) {
+      this.RequireMeshCode(90); const start = this.chunk.ReadInt(); this.ReadNextMeshTag();
+      this.RequireMeshCode(90); const end = this.chunk.ReadInt();
+      if (start < 0 || end < 0) throw this.MeshReadError(90, 'Edge vertex indices cannot be negative.');
+      this.ReadNextMeshTag(); edges.push(new api.MeshEdge(start, end));
+    }
+    return edges;
+  }
 
   ReadPolyline(r){const tags=publicPayload(r.Tags.slice(r.Envelope.Body)),marker=r.Tags[r.Envelope.Body]?.Value,flags=value(tags,70,0),smooth=value(tags,75,0),normal=point(tags,210,3,api.Vector3.UnitZ),xdata=new api.XDataDictionary();readXData({XData:xdata},r.Tags,this.doc);let result;
     this.Cursor(r);const context=this.Context;

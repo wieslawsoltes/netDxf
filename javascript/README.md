@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-13,535/35,309 original test cases across 101/193 original conformance-file paths.
+14,346/35,309 original test cases across 106/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -33,13 +33,16 @@ HELIX API, wire, authored-geometry/regeneration and periodic SPLINE input suites
 cover independent metadata, cyclic overlap and repeated text/binary roundtrips.
 SPLINE/HELIX serialization snapshots periodic-prefix and foreach fit-point values
 while preserving live ordinary-control and weight reads between output callbacks.
+MESH input uses source-ordered field declarations, private/subclass/XData scoping,
+counted-list parsing and deferred index checks. Original suites cover mesh version
+profiles, mutable-output preflight, blend state and supported override declarations.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,
 Windows, performance and native AutoCAD qualification remain incomplete.
-The 408 malformed-gradient, 24 forged-polyline-count and 48 edge/spline-count
-allocation original cases remain
-uncounted until their native allocation assertions are ported; functional
+The 408 malformed-gradient, 24 forged-polyline-count, 48 edge/spline-count and
+462 mesh allocation-sensitive original cases remain uncounted until their native
+allocation assertions are ported; functional
 malformed-input checks do not replace those assertions.
 Arc-length dimension roundtrip adjudication and completion-verifier logic also remain.
 
