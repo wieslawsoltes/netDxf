@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-11,504/35,309 original test cases across 93/193 original conformance-file paths.
+12,723/35,309 original test cases across 98/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -26,6 +26,9 @@ XData; empty HATCH input is retained for repair and rejected by typed export pre
 HATCH pattern-line output preserves source arithmetic grouping and callback-time reads.
 HATCH edge output re-reads scalar/tangent properties between components and snapshots
 foreach vector values; spline fit metadata is covered through transforms and export.
+HATCH source hydration admits only retained, unambiguous entities in the same block,
+then attaches complete paths with source-order reactor counts. Original affine, conic,
+explicit-pattern and spline-relation suites cover geometry and failure atomicity.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,

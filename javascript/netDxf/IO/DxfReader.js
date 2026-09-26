@@ -339,16 +339,23 @@ export class DxfReader {
     item.Elevation = elevation; item.Normal = normal; item.PixelSize = pixelSize;
     item.SeedPoints.Clear();
     for (const seed of seedPoints ?? []) item.SeedPoints.Add(seed);
-    for (const { path, handles } of boundaries) {
-      item.BoundaryPaths.Add(path);
-      if (handles.length) this.deferred.push(() => {
+    // Hydrate only after physical source entities have been registered. Generated
+    // defaults, ambiguous identities and non-entity objects are not valid sources.
+    // Attach a complete path through the normal handler so duplicate source uses
+    // acquire exactly one reactor per occurrence, as in the pinned reader.
+    this.deferred.push(() => {
+      for (const { path, handles } of boundaries) {
         for (const handle of handles) {
-          const target = this.doc.GetObjectByHandle(handle);
-          if (!target) throw new InvalidDataException('Unresolved HATCH source ' + handle);
-          if (item.Associative) { path.AddContour(target); target.AddReactor(item); }
+          if (!item.Associative)
+            throw new InvalidDataException('HATCH ' + item.Handle + ' has source boundary objects on a non-associative path; this typed combination is not supported.');
+          const target = this.Context.GetObjectBySourceHandle(handle);
+          if (!(target instanceof api.EntityObject) || target === item || target.Owner !== item.Owner)
+            throw new InvalidDataException('HATCH ' + item.Handle + ' source boundary reference ' + handle + ' must identify a retained source entity in the same block.');
+          path.AddContour(target);
         }
-      });
-    }
+        item.BoundaryPaths.Add(path);
+      }
+    });
     item.XData.AddRange(xdata);
     if (item.XData.ContainsAppId('ACAD')) {
       const records = item.XData.get_Item('ACAD').XDataRecord, index = io.HatchPatternXData.FindOrigin(records);

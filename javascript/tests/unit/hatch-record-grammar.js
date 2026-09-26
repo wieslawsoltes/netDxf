@@ -250,3 +250,53 @@ test('HATCH legacy spline output does not inspect fit or tangent properties', ()
   for (const property of ['FitPoints', 'StartTangent', 'EndTangent']) Object.defineProperty(edge, property, { get() { throw new Error('legacy inspected ' + property); } });
   const tags = edgeWriter(edge, null, DxfVersion.AutoCad2007); assert.ok(!tags.some(t => [97, 11, 21, 12, 22, 13, 23].includes(t[0])));
 });
+
+// Source hydration must use the same complete-path addition as the C# reader.
+// Inspect actual failed-reader state, not dependency doubles or returned partial documents.
+import { HatchSourceInput, HatchSourceRaw, HatchSourceRawBytes, HatchSourceRecord } from '../netDxf.Conformance/HatchSourceRelationTests.js';
+for (const binary of [false, true]) {
+  for (const failedPath of [0, 1]) test(`HATCH source hydration commits only preceding complete paths (${binary}, ${failedPath})`, () => {
+    let raw = HatchSourceRaw(HatchSourceInput('producer', DxfVersion.AutoCad2018, binary));
+    const record = HatchSourceRecord(raw, '3A2'), tags = Array.from(record.Tags);
+    const marker = tags.findIndex(t => t.Code === 100 && t.Value === 'AcDbHatch');
+    const refs = tags.flatMap((t, i) => i > marker && t.Code === 330 ? [i] : []);
+    // First path: fail after two valid occurrences. Second path: fail after one.
+    tags[refs[failedPath === 0 ? 2 : 4]] = new DxfTag(330, 'FFFF');
+    raw = raw.WithRecord(record, tags);
+    const reader = new DxfReader(), stream = new MemoryStream(HatchSourceRawBytes(raw, binary));
+    try {
+      assert.throws(() => reader.Read(stream), error => error instanceof InvalidDataException && error.message.includes('HATCH 3A2 source boundary reference FFFF'));
+      const hatch = reader.doc.GetObjectByHandle('3A2'), first = reader.doc.GetObjectByHandle('3A0'), second = reader.doc.GetObjectByHandle('3A1');
+      assert.equal(hatch.BoundaryPaths.Count, failedPath);
+      assert.equal(first.Reactors.Count, failedPath === 0 ? 0 : 2);
+      assert.equal(second.Reactors.Count, failedPath === 0 ? 0 : 1);
+      assert.equal(reader.doc.GetObjectByHandle('3A3').BoundaryPaths.Count, 0);
+      if (failedPath === 1) assert.deepEqual(Array.from(hatch.BoundaryPaths.get_Item(0).Entities, e => e.Handle), ['3A0', '3A0', '3A1']);
+      assert.equal(stream.CanRead, true);
+    } finally { stream.Dispose(); }
+  });
+  test(`HATCH hydration callbacks observe full ordered contours and no doubled reactors (${binary})`, () => {
+    const observations = [];
+    class ObservedReader extends DxfReader {
+      ReadHatch(record) {
+        const hatch = super.ReadHatch(record);
+        hatch.HatchBoundaryPathAdded.Add((sender, e) => {
+          assert.equal(sender, hatch); assert.equal(e.Item.ContainingHatch, hatch);
+          for (const entity of e.Item.Entities) assert.equal(entity.Owner, hatch.Owner);
+          observations.push([hatch.Handle, Array.from(e.Item.Entities, e => e.Handle)]);
+        });
+        return hatch;
+      }
+    }
+    const stream = new MemoryStream(HatchSourceInput('producer', DxfVersion.AutoCad2018, binary));
+    try {
+      const doc = new ObservedReader().Read(stream);
+      assert.deepEqual(observations, [
+        ['3A2', ['3A0', '3A0', '3A1']], ['3A2', ['3A1', '3A0']],
+        ['3A3', ['3A1', '3A0', '3A1']], ['3A3', ['3A0', '3A0']]
+      ]);
+      assert.equal(doc.GetObjectByHandle('3A0').Reactors.Count, 6);
+      assert.equal(doc.GetObjectByHandle('3A1').Reactors.Count, 4);
+    } finally { stream.Dispose(); }
+  });
+}
