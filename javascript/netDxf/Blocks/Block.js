@@ -7,6 +7,8 @@ import { TableObjectChangedEventArgs } from '../Tables/TableObjectChangedEventAr
 import { Layer } from '../Tables/Layer.js';
 import { Vector3 } from '../Vector3.js';
 import { DxfObject } from '../DxfObject.js';
+import { DxfDocument } from '../DxfDocument.js';
+import { GetTypedIOConfiguration } from '../../runtime/TypedDocumentIO.js';
 import { DxfObjectCode } from '../DxfObjectCode.js';
 import { EntityType } from '../Entities/EntityType.js';
 import { Hatch } from '../Entities/Hatch.js';
@@ -94,6 +96,43 @@ export class Block extends TableObject {
     if(signature===prefix+',System.Collections.Generic.IEnumerable<netDxf.Entities.AttributeDefinition>')return select({name:args[0],entities:args[1],attributes:args[2]});
     if(signature===prefix+',System.Collections.Generic.IEnumerable<netDxf.Entities.AttributeDefinition>,bool')return select({name:args[0],entities:args[1],attributes:args[2],checkName:args[3]});
     throw new ArgumentException('Unknown Block constructor signature.','signature');
+  }
+  /** Copy ModelSpace into a detached block, preserving the source's mutation order. */
+  static Create(doc,name){
+    if(doc==null)throw new ArgumentNullException('doc');
+    const model=doc.Layouts.get_Item('Model').AssociatedBlock;
+    RejectOpaqueBlockGeometry(model);
+    const block=new Block(name);block.Origin=doc.DrawingVariables.InsBase;
+    block.Record.Units=doc.DrawingVariables.InsUnits;
+    // This intentionally changes source hatches in the active layout, as C# does.
+    for(const hatch of doc.Entities.Hatches)hatch.UnLinkBoundary();
+    const copies=new Map();
+    for(const entity of model.Entities){const copy=entity.Clone();copies.set(entity,copy);block.Entities.Add(copy);}
+    MText.RelinkClonedColumns(copies);
+    for(const definition of model.AttributeDefinitions.Values)block.AttributeDefinitions.Add(definition.Clone());
+    return block;
+  }
+  /** The second argument selects the source's name or support-folder overload. */
+  static Load(file,nameOrFolders='',supportFolders){
+    const name=arguments.length>=3||typeof nameOrFolders==='string'?nameOrFolders:'';
+    const folders=arguments.length>=3?supportFolders:typeof nameOrFolders==='string'?[]:nameOrFolders;
+    let doc;
+    if(GetTypedIOConfiguration()==='Debug')doc=DxfDocument.LoadFile(file,folders);
+    else{try{doc=DxfDocument.LoadFile(file,folders);}catch{return null;}}
+    // The source catches Load exceptions only. A null return has its own later
+    // failure: missing name dereferences doc; explicit name reaches Create(null).
+    return Block.Create(doc,name==null||name===''?ref(doc).Name:name);
+  }
+  Save(file,version,isBinary=false){
+    RejectOpaqueBlockGeometry(this);
+    const doc=new DxfDocument(version),model=doc.Layouts.get_Item('Model').AssociatedBlock;
+    doc.DrawingVariables.InsBase=this.#origin;doc.DrawingVariables.InsUnits=this.Record.Units;
+    for(const definition of this.#attributes.Values)
+      if(!model.AttributeDefinitions.ContainsTag(definition.Tag))model.AttributeDefinitions.Add(definition.Clone());
+    const copies=new Map();
+    for(const entity of this.#entities){const copy=entity.Clone();copies.set(entity,copy);model.Entities.Add(copy);}
+    MText.RelinkClonedColumns(copies);
+    return doc.SaveFile(file,isBinary);
   }
   get Name(){return super.Name;}
   set Name(value){

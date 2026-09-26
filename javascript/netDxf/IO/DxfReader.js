@@ -2,6 +2,7 @@
 // Typed whole-document import. Physical source identities are kept separate from generated defaults.
 import * as api from '../../index.js';
 import { DotNetMath } from '../../runtime/GeometryRuntime.js';
+import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
 import * as io from '../../runtime/DxfTransport.js';
 import { DxfRawDocument } from './DxfRawDocument.js';
 import { DxfTag } from './DxfTag.js';
@@ -276,9 +277,11 @@ export class DxfReader {
     // Counts delimit the pattern grammar, not an allocation hint. Comments are
     // transport data and do not occupy a scalar/dash/seed slot in the typed view.
     const remaining=this.tags.slice(this.chunk.index,r.End).filter(tag=>tag.Code!==999);
-    let patternAngle=0,patternScale=1,patternLines=null;
+    let patternAngle=0,patternScale=1,patternLines=null,gradient=null;
     while(this.chunk.Code!==0&&this.chunk.Code<1000){
       switch(this.chunk.Code){
+        case 450:case 451:case 452:case 453:case 460:case 461:case 462:case 470:case 463:case 63:case 421:
+          gradient??={Fields:0,Colors:[]};this.ReadHatchGradientData(gradient);break;
         case 52:patternAngle=this.chunk.ReadDouble();this.ReadNextHatchPatternTag();break;
         case 41:patternScale=this.chunk.ReadDouble();if(patternScale<=0)patternScale=1;this.ReadNextHatchPatternTag();break;
         case 75:p.Style=this.chunk.ReadShort();this.ReadNextHatchPatternTag();break;
@@ -293,8 +296,63 @@ export class DxfReader {
     p.Angle=patternAngle;p.Scale=patternScale;
     for(const data of patternLines??[])p.LineDefinitions.Add(this.CreateHatchPatternLine(data,patternScale,patternAngle));
     item.PixelSize=value(remaining,47,null);const seedStart=remaining.findIndex(t=>t.Code===98);item.SeedPoints.Clear();if(seedStart>=0){let at=seedStart+1;const n=remaining[seedStart].Value;if(n<0||n>(remaining.length-at)/2)throw new InvalidDataException('Invalid HATCH seed count.');for(let i=0;i<n;i++){if(remaining[at]?.Code!==10||remaining[at+1]?.Code!==20)throw new InvalidDataException('Incomplete HATCH seed point.');item.SeedPoints.Add(new api.Vector2(remaining[at].Value,remaining[at+1].Value));at+=2;}}
-    if(value(remaining,450,0)===1){const start=remaining.findIndex(t=>t.Code===450),gradient=remaining.slice(start),stops=[];for(let i=0;i<gradient.length;i++)if(gradient[i].Code===463){let end=i+1;while(end<gradient.length&&gradient[end].Code!==463&&gradient[end].Code!==470)end++;const tags=gradient.slice(i,end);stops.push([api.AciColor.FromTrueColor(value(tags,421,0)),value(tags,63,null)]);}if(stops.length!==2)throw new InvalidDataException('HATCH gradient requires two color stops.');const type=Object.entries(HatchGradientPatternTypeStringValues).find(([_,name])=>name===value(gradient,470,'LINEAR'))?.[0];if(type===undefined)throw new InvalidDataException('Unknown HATCH gradient type.');const g=new api.HatchGradientPattern(stops[0][0],stops[1][0],value(gradient,452,0)!==0,value(gradient,462,1),Number(type));g.Style=p.Style;g.Type=p.Type;g.Angle=value(gradient,460,0)*api.MathHelper.RadToDeg;g.Shift=value(gradient,461,0);g.Color1AciIndex=stops[0][1];g.Color2AciIndex=stops[1][1];item.Pattern=g;}
+    if(gradient!==null){const g=this.CreateHatchGradientPattern(gradient);if(g!==null){g.Style=p.Style;g.Type=p.Type;item.Pattern=g;}}
     readXData(item,r.Tags,this.doc);if(item.XData.ContainsAppId('ACAD')){const records=item.XData.get_Item('ACAD').XDataRecord,index=io.HatchPatternXData.FindOrigin(records);if(index>=0)item.Pattern.Origin=new api.Vector2(records.get_Item(index).Value,records.get_Item(index+1).Value);}return item;
+  }
+  // Gradient scalar order is independent of stop order. Counts are constraints,
+  // never allocation sizes, and XData is consumed by the surrounding record reader.
+  ReadHatchGradientData(data){
+    const code=this.chunk.Code,field=code===450?1:code===451?2:code===452?4:code===453?8:
+      code===460?16:code===461?32:code===462?64:code===470?128:0;
+    if(data.Fields&field)throw this.InvalidHatchGradientData('duplicate scalar field');
+    data.Fields|=field;
+    switch(code){
+      case 450:data.Kind=this.chunk.ReadInt();break;
+      case 451:data.Reserved=this.chunk.ReadInt();break;
+      case 452:data.Mode=this.chunk.ReadInt();break;
+      case 453:data.ColorCount=this.chunk.ReadInt();break;
+      case 460:data.Angle=this.chunk.ReadDouble();break;
+      case 461:data.Shift=this.chunk.ReadDouble();break;
+      case 462:data.Tint=this.chunk.ReadDouble();break;
+      case 470:data.Name=this.chunk.ReadString();break;
+      case 463:
+        if(data.Colors.length===2)throw this.InvalidHatchGradientData('more than two group-463 color stops');
+        data.Colors.push({Position:this.chunk.ReadDouble(),Index:null,HasRgb:false,Color:null});break;
+      case 63:case 421:{
+        if(data.Colors.length===0)throw this.InvalidHatchGradientData('color component without a preceding group-463 stop');
+        const color=data.Colors[data.Colors.length-1];
+        if(code===63){
+          if(color.Index!==null)throw this.InvalidHatchGradientData('duplicate ACI component in a color stop');
+          color.Index=this.chunk.ReadShort();
+        }else{
+          if(color.HasRgb)throw this.InvalidHatchGradientData('duplicate RGB component in a color stop');
+          color.Color=api.AciColor.FromTrueColor(this.chunk.ReadInt());color.HasRgb=true;
+        }break;
+      }
+    }
+    this.chunk.Next();
+  }
+  CreateHatchGradientPattern(data){
+    if(data.Fields!==255)throw this.InvalidHatchGradientData('expected exactly one of each group 450, 451, 452, 453, 460, 461, 462 and 470');
+    if(data.Kind!==0&&data.Kind!==1)throw this.InvalidHatchGradientData('group code 450 must be zero or one');
+    if(data.ColorCount!==(data.Kind===0?0:2)||data.Colors.length!==data.ColorCount)
+      throw this.InvalidHatchGradientData('group code 453 must declare zero colors for solid or exactly two gradient stops');
+    if(data.Kind===0)return null;
+    if(data.Reserved!==0)throw this.InvalidHatchGradientData('unsupported reserved value for group code 451');
+    if(data.Mode!==0&&data.Mode!==1)throw this.InvalidHatchGradientData('group code 452 must be zero or one');
+    if(data.Shift<0||data.Shift>1)throw this.InvalidHatchGradientData('group code 461 shift must be between zero and one','shift');
+    if(data.Tint<0||data.Tint>1)throw this.InvalidHatchGradientData('group code 462 tint must be between zero and one','tint');
+    for(let i=0;i<data.Colors.length;i++)if(!data.Colors[i].HasRgb||data.Colors[i].Position!==i)
+      throw this.InvalidHatchGradientData('expected group-463 values zero then one, each with one group-421 RGB value');
+    const type=Object.entries(HatchGradientPatternTypeStringValues).find(([,name])=>OrdinalIgnoreCaseEquals(name,data.Name));
+    if(!type)throw this.InvalidHatchGradientData('unsupported gradient name for group code 470');
+    const result=new api.HatchGradientPattern(data.Colors[0].Color,data.Colors[1].Color,data.Mode===1,data.Tint,Number(type[0]));
+    result.Shift=data.Shift;result.Angle=data.Angle*api.MathHelper.RadToDeg;
+    result.Color1AciIndex=data.Colors[0].Index;result.Color2AciIndex=data.Colors[1].Index;
+    return result;
+  }
+  InvalidHatchGradientData(reason,context='data'){
+    return new InvalidDataException('Invalid HATCH gradient '+context+' at group code '+this.chunk.Code+', position '+this.chunk.CurrentPosition+': '+reason+'.');
   }
   ReadHatchPatternDefinitionLine(numLines){
     if(numLines<0)throw this.InvalidHatchPatternData('negative group-78 line count');

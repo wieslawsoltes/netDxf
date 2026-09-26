@@ -13,7 +13,12 @@ import { BoxedChar } from '../../runtime/BoxedChar.js';
 import { HeaderEnum } from '../../runtime/HeaderBox.js';
 import { Format } from '../../runtime/GeometryRuntime.js';
 import { ArgumentException } from '../../runtime/Errors.js';
-const references = { AciColor, Block, Linetype, TextStyle };
+// Resolve cyclic model imports only when validating an override, not during ESM
+// initialization. This preserves deep Block imports as well as the package entry.
+const references = {
+  get AciColor() { return AciColor; }, get Block() { return Block; },
+  get Linetype() { return Linetype; }, get TextStyle() { return TextStyle; }
+};
 const rules = {
   TickSize: ["double", false, "StoredNonnegative"],
   TextVerticalPosition: ["double", false, "StoredReal"],

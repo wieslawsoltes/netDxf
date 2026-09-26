@@ -50,3 +50,20 @@ export function HatchGradientColorCloneMetadata() {
   Equal(pattern.Shift, copy.Shift, 'Shift clone'); Equal(pattern.Scale, copy.Scale, 'Scale clone');
   Check(copy.SingleColor && copy.IsDouble, 'Clone flags changed.');
 }
+
+// Shared original wire helpers. Their use does not count the unregistered wire cases.
+import { DxfTag } from '../../index.js';
+import { HatchGradientAngleTags } from './HatchGradientAngleTests.js';
+import { Near, SameDoubleBits } from './TestHarness.js';
+export function HatchGradientColorStateTags(version,type,single,tint){
+  const tags=HatchGradientAngleTags(version,type,37);
+  for(const [code,value]of [[452,single?1:0],[462,tint],[461,.375]])tags[tags.findIndex(t=>t.Code===code)]=new DxfTag(code,value);
+  return tags;
+}
+export function AssertGradientColorState(pattern,type,single,tint){
+  Check(pattern instanceof HatchGradientPattern,'Expected gradient pattern');
+  Equal(type,pattern.GradientType,'Gradient kind');Equal(single,pattern.SingleColor,'Authored dialog mode');
+  SameDoubleBits(tint,pattern.Tint,'Exact authored tint');Equal(0x123456,GradientRgb(pattern.Color1),'Authored first RGB stop');
+  Equal(0xABCDEF,GradientRgb(pattern.Color2),'Authored second RGB stop must not be recomputed');
+  Near(37,pattern.Angle,'Retained angle');Equal(.375,pattern.Shift,'Retained continuous shift');
+}

@@ -2,6 +2,7 @@
 // Native JavaScript whole-document writer. Existing partial codecs retain their original paths.
 import * as api from '../../index.js';
 import * as io from '../../runtime/DxfTransport.js';
+import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
 import { TextCodeValueWriter } from './TextCodeValueWriter.js';
 import { BinaryCodeValueWriter } from './BinaryCodeValueWriter.js';
 import { DxfVersionNotSupportedException } from './DxfVersionNotSupportedException.js';
@@ -128,21 +129,70 @@ export class DxfWriter {
     c.Write(code,v);
   }
   WriteActiveDimensionStyleSystemVariables(style){
-    const fields=[['DIMADEC',70,'AngularPrecision'],['DIMASZ',40,'ArrowSize'],['DIMCEN',40,'CenterMarkSize'],
-      ['DIMDEC',70,'LengthPrecision'],['DIMDLE',40,'DimLineExtend'],['DIMDLI',40,'DimBaselineSpacing'],['DIMEXE',40,'ExtLineExtend'],
-      ['DIMEXO',40,'ExtLineOffset'],['DIMFXL',40,'ExtLineFixedLength'],['DIMGAP',40,'TextOffset'],['DIMLFAC',40,'DimScaleLinear'],
-      ['DIMRND',40,'DimRoundoff'],['DIMSCALE',40,'DimScaleOverall'],['DIMTXT',40,'TextHeight'],['DIMTFAC',40,'TextFractionHeightScale'],
-      ['DIMALT',70,'AlternateUnits.Enabled'],['DIMALTD',70,'AlternateUnits.LengthPrecision'],['DIMALTF',40,'AlternateUnits.Multiplier'],
-      ['DIMALTRND',40,'AlternateUnits.Roundoff'],['DIMATFIT',70,'FitOptions'],['DIMAUNIT',70,'DimAngularUnits'],
-      ['DIMLUNIT',70,'DimLengthUnits'],['DIMFRAC',70,'FractionType'],['DIMJUST',70,'TextHorizontalPlacement'],
-      ['DIMTAD',70,'TextVerticalPlacement'],['DIMTMOVE',70,'FitTextMove'],['DIMTDEC',70,'Tolerances.Precision'],
-      ['DIMALTTD',70,'Tolerances.AlternatePrecision'],['DIMTOLJ',70,'Tolerances.VerticalPlacement'],['DIMTP',40,'Tolerances.UpperLimit'],
-      ['DIMTM',40,'Tolerances.LowerLimit'],['DIMSD1',70,'DimLine1Off'],['DIMSD2',70,'DimLine2Off'],['DIMSE1',70,'ExtLine1Off'],
-      ['DIMSE2',70,'ExtLine2Off'],['DIMTIX',70,'FitTextInside'],['DIMTOFL',70,'FitDimLineForce'],['DIMTIH',70,'TextInsideAlign'],
-      ['DIMTOH',70,'TextOutsideAlign'],['DIMFXLON',70,'ExtLineFixed']];
-    for(const [name,code,property]of fields){let v=getProperty(style,property);if(typeof v==='boolean')v=v?1:0;this.chunk.Write(9,'$'+name);this.chunk.Write(code,v);}
-    for(const [name,property] of [['DIMCLRD','DimLineColor'],['DIMCLRE','ExtLineColor'],['DIMCLRT','TextColor']]){this.chunk.Write(9,'$'+name);this.chunk.Write(70,style[property].Index);}
-    for(const [name,property,code]of [['DIMTXSTY','TextStyle',7],['DIMLTYPE','DimLineLinetype',6],['DIMLTEX1','ExtLine1Linetype',6],['DIMLTEX2','ExtLine2Linetype',6]]){this.chunk.Write(9,'$'+name);this.chunk.Write(code,this.EncodeNonAsciiCharacters(style[property].Name));}
+    // Evaluate each property after its group-9 callback, as the C# writer does.
+    const emit=(name,code,read)=>{this.chunk.Write(9,'$'+name);this.chunk.Write(code,read());};
+    const field=(name,code,property)=>emit(name,code,()=>{const v=getProperty(style,property);return typeof v==='boolean'?(v?1:0):v;});
+    const zeros=(settings,prefix='')=>suppression(settings[prefix+'SuppressLinearLeadingZeros'],settings[prefix+'SuppressLinearTrailingZeros'],settings[prefix+'SuppressZeroFeet'],settings[prefix+'SuppressZeroInches']);
+    field('DIMADEC',70,'AngularPrecision');field('DIMALT',70,'AlternateUnits.Enabled');
+    field('DIMALTD',70,'AlternateUnits.LengthPrecision');field('DIMALTF',40,'AlternateUnits.Multiplier');
+    field('DIMALTRND',40,'AlternateUnits.Roundoff');field('DIMALTTD',70,'Tolerances.AlternatePrecision');
+    emit('DIMALTTZ',70,()=>zeros(style.Tolerances,'Alternate'));
+    this.chunk.Write(9,'$DIMALTU');
+    switch(style.AlternateUnits.LengthUnits){
+      case api.LinearUnitType.Scientific:this.chunk.Write(70,1);break;
+      case api.LinearUnitType.Decimal:this.chunk.Write(70,2);break;
+      case api.LinearUnitType.Engineering:this.chunk.Write(70,3);break;
+      case api.LinearUnitType.Architectural:this.chunk.Write(70,style.AlternateUnits.StackUnits?4:6);break;
+      case api.LinearUnitType.Fractional:this.chunk.Write(70,style.AlternateUnits.StackUnits?5:7);break;
+    }
+    emit('DIMALTZ',70,()=>zeros(style.AlternateUnits));
+    // The pinned source deliberately conditions the alternate placeholder on DimPrefix.
+    emit('DIMAPOST',1,()=>{const marker=style.DimPrefix==null||style.DimPrefix===''?'':'[]';return this.EncodeNonAsciiCharacters(style.AlternateUnits.Prefix+marker+style.AlternateUnits.Suffix);});
+    field('DIMATFIT',70,'FitOptions');field('DIMAUNIT',70,'DimAngularUnits');field('DIMASZ',40,'ArrowSize');
+    const angular=(style.SuppressAngularLeadingZeros?1:0)|(style.SuppressAngularTrailingZeros?2:0);
+    emit('DIMAZIN',70,()=>angular);
+    if(style.DimArrow1===null&&style.DimArrow2===null){
+      emit('DIMSAH',70,()=>0);emit('DIMBLK',1,()=>'');
+    }else if(style.DimArrow1===null){
+      emit('DIMSAH',70,()=>1);emit('DIMBLK1',1,()=>'');emit('DIMBLK2',1,()=>this.EncodeNonAsciiCharacters(style.DimArrow2.Name));
+    }else if(style.DimArrow2===null){
+      emit('DIMSAH',70,()=>1);emit('DIMBLK1',1,()=>this.EncodeNonAsciiCharacters(style.DimArrow1.Name));emit('DIMBLK2',1,()=>'');
+    }else if(OrdinalIgnoreCaseEquals(style.DimArrow1.Name,style.DimArrow2.Name)){
+      emit('DIMSAH',70,()=>0);emit('DIMBLK',1,()=>this.EncodeNonAsciiCharacters(style.DimArrow1.Name));
+    }else{
+      emit('DIMSAH',70,()=>1);emit('DIMBLK1',1,()=>this.EncodeNonAsciiCharacters(style.DimArrow1.Name));emit('DIMBLK2',1,()=>this.EncodeNonAsciiCharacters(style.DimArrow2.Name));
+    }
+    emit('DIMLDRBLK',1,()=>style.LeaderArrow===null?'':this.EncodeNonAsciiCharacters(style.LeaderArrow.Name));
+    field('DIMCEN',40,'CenterMarkSize');
+    emit('DIMCLRD',70,()=>style.DimLineColor.Index);emit('DIMCLRE',70,()=>style.ExtLineColor.Index);emit('DIMCLRT',70,()=>style.TextColor.Index);
+    field('DIMDEC',70,'LengthPrecision');field('DIMDLE',40,'DimLineExtend');field('DIMDLI',40,'DimBaselineSpacing');
+    emit('DIMDSEP',70,()=>signed(style.DecimalSeparator.charCodeAt(0)));
+    field('DIMEXE',40,'ExtLineExtend');field('DIMEXO',40,'ExtLineOffset');field('DIMFXLON',70,'ExtLineFixed');field('DIMFXL',40,'ExtLineFixedLength');
+    field('DIMGAP',40,'TextOffset');field('DIMJUST',70,'TextHorizontalPlacement');field('DIMLFAC',40,'DimScaleLinear');
+    field('DIMLUNIT',70,'DimLengthUnits');field('DIMLWD',70,'DimLineLineweight');field('DIMLWE',70,'ExtLineLineweight');
+    emit('DIMPOST',1,()=>{const marker=style.DimPrefix==null||style.DimPrefix===''?'':'<>';return this.EncodeNonAsciiCharacters(style.DimPrefix+marker+style.DimSuffix);});
+    field('DIMRND',40,'DimRoundoff');field('DIMSCALE',40,'DimScaleOverall');
+    field('DIMSD1',70,'DimLine1Off');field('DIMSD2',70,'DimLine2Off');field('DIMSE1',70,'ExtLine1Off');field('DIMSE2',70,'ExtLine2Off');
+    emit('DIMSOXD',70,()=>style.FitDimLineInside?0:1);
+    field('DIMTAD',70,'TextVerticalPlacement');field('DIMTDEC',70,'Tolerances.Precision');field('DIMTFAC',40,'TextFractionHeightScale');
+    if(style.TextFillColor!==null){emit('DIMTFILL',70,()=>2);emit('DIMTFILLCLR',70,()=>style.TextFillColor.Index);}
+    field('DIMTIH',70,'TextInsideAlign');field('DIMTIX',70,'FitTextInside');
+    if(style.Tolerances.DisplayMethod===api.DimensionStyleTolerancesDisplayMethod.Deviation)
+      emit('DIMTM',40,()=>api.MathHelper.IsZero(style.Tolerances.LowerLimit)?api.MathHelper.Epsilon:style.Tolerances.LowerLimit);
+    else field('DIMTM',40,'Tolerances.LowerLimit');
+    field('DIMTMOVE',70,'FitTextMove');field('DIMTOFL',70,'FitDimLineForce');field('DIMTOH',70,'TextOutsideAlign');
+    const mode=style.Tolerances.DisplayMethod,T=api.DimensionStyleTolerancesDisplayMethod;
+    switch(mode){
+      case T.None:emit('DIMTOL',70,()=>0);emit('DIMLIM',70,()=>0);break;
+      case T.Symmetrical:case T.Deviation:emit('DIMTOL',70,()=>1);emit('DIMLIM',70,()=>0);break;
+      case T.Limits:emit('DIMTOL',70,()=>0);emit('DIMLIM',70,()=>1);break;
+    }
+    field('DIMTOLJ',70,'Tolerances.VerticalPlacement');field('DIMTP',40,'Tolerances.UpperLimit');field('DIMTXT',40,'TextHeight');field('DIMTXTDIRECTION',70,'TextDirection');
+    emit('DIMTZIN',70,()=>zeros(style.Tolerances));emit('DIMZIN',70,()=>zeros(style));
+    field('DIMFRAC',70,'FractionType');
+    emit('DIMLTYPE',6,()=>this.EncodeNonAsciiCharacters(style.DimLineLinetype.Name));
+    emit('DIMLTEX1',6,()=>this.EncodeNonAsciiCharacters(style.ExtLine1Linetype.Name));
+    emit('DIMLTEX2',6,()=>this.EncodeNonAsciiCharacters(style.ExtLine2Linetype.Name));
   }
   TableEnvelope(item,subclass,handleCode=5){const c=this.chunk;c.Write(0,item.CodeName);c.Write(handleCode,item.Handle);this.WriteDatabaseMetadata(item);c.Write(330,item.Owner.Handle);c.Write(100,'AcDbSymbolTableRecord');c.Write(100,subclass);}
   WriteTableRecord(code,item){switch(code){case'APPID':return this.WriteApplicationRegistry(item);case'VPORT':return io.WriteVPort(this.chunk,this.doc,item);case'LTYPE':return this.WriteLinetype(item);case'LAYER':return this.WriteLayer(item);case'STYLE':return this.WriteTextStyle(item);case'DIMSTYLE':return this.WriteDimensionStyle(item);case'VIEW':return io.WriteView(this.chunk,this.doc,item);case'UCS':return this.WriteUCS(item);case'BLOCK_RECORD':return this.WriteBlockRecord(item.Record);default:throw new NotSupportedException('Unknown table: '+code);}}
