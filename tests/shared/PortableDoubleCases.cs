@@ -252,6 +252,7 @@ namespace NetDxf.Qualification
         internal static void VerifyInstalled(Assembly assembly)
         {
             VerifyDispatch(assembly);
+            TableAverageCases.VerifyInstalled();
             foreach (Case item in NumericConsumerCases()) VerifyNumericConsumer(item);
             Parser portable = GetParser(assembly, "TryParsePortable"), selected = GetParser(assembly, "TryParse");
             foreach (Case item in All())

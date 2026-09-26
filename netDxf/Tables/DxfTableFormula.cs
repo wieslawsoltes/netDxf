@@ -13,6 +13,9 @@ namespace netDxf.Tables
     /// unary minus. Aggregates, including COUNT, ignore empty/text referenced cells.
     /// COUNT counts numeric results, so referenced formulas are evaluated and cycles still reject. Empty SUM is zero;
     /// empty AVERAGE/MIN/MAX reject. Strings are never parsed as numbers or formulas.
+    /// AVERAGE accumulates resolved binary64 operands exactly and rounds their mean once, nearest/ties-to-even.
+    /// It does not overflow merely because their sum exceeds binary64 range. Other operations retain
+    /// their existing finite-intermediate policy; this is not arbitrary-precision expression arithmetic.
     /// </remarks>
     public sealed class DxfTableFormula
     {
@@ -183,6 +186,7 @@ namespace netDxf.Tables
             internal override object Evaluate(Evaluation context)
             {
                 context.Step(); double sum = 0, correction = 0, extreme = 0; int count = 0;
+                var average = new DxfTableAverageAccumulator();
                 foreach (Node argument in this.arguments)
                 {
                     if (argument is Range range)
@@ -190,23 +194,24 @@ namespace netDxf.Tables
                         context.Check(range.First); context.Check(range.Last);
                         for (int r = range.First.Row; r <= range.Last.Row; r++)
                         for (int c = range.First.Column; c <= range.Last.Column; c++)
-                            this.Accumulate(context.Read(new DxfTableCellAddress(r, c)), true, ref sum, ref correction, ref extreme, ref count);
+                            this.Accumulate(context.Read(new DxfTableCellAddress(r, c)), true, ref sum, ref correction, ref extreme, ref count, ref average);
                     }
-                    else this.Accumulate(argument.Evaluate(context), argument is Reference, ref sum, ref correction, ref extreme, ref count);
+                    else this.Accumulate(argument.Evaluate(context), argument is Reference, ref sum, ref correction, ref extreme, ref count, ref average);
                 }
                 if (this.name == "COUNT") return (double)count;
                 if (this.name == "SUM") return Finite(sum + correction);
                 if (count == 0) throw new InvalidOperationException("An empty aggregate has no numeric result: " + this.name);
-                return this.name == "AVERAGE" ? Finite((sum + correction) / count) : extreme;
+                return this.name == "AVERAGE" ? average.Mean(count) : extreme;
             }
-            private void Accumulate(object value, bool referenced, ref double sum, ref double correction, ref double extreme, ref int count)
+            private void Accumulate(object value, bool referenced, ref double sum, ref double correction, ref double extreme, ref int count, ref DxfTableAverageAccumulator average)
             {
                 if (referenced && (value == null || value is string)) return;
                 double number = Number(value);
                 if (this.name == "COUNT") { count++; return; }
+                if (this.name == "AVERAGE") { average.Add(number); count++; return; }
                 if (count++ == 0) extreme = number;
                 else extreme = this.name == "MIN" ? Math.Min(extreme, number) : Math.Max(extreme, number);
-                if (this.name != "SUM" && this.name != "AVERAGE") return;
+                if (this.name != "SUM") return;
                 // Neumaier compensated accumulation reduces cancellation in numeric ranges.
                 double next = Finite(sum + number);
                 correction = Finite(correction + (Math.Abs(sum) >= Math.Abs(number) ? (sum - next) + number : (number - next) + sum));

@@ -10,6 +10,7 @@ internal static partial class Program
     private static void RegisterPortableDoubleTests()
     {
         RegisterNumericConsumerTests();
+        RegisterTableAverageTests();
         var assembly = typeof(DxfDocument).Assembly;
         var portable = PortableDoubleCases.GetParser(assembly, "TryParsePortable");
         var selected = PortableDoubleCases.GetParser(assembly, "TryParse");
