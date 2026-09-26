@@ -66,6 +66,8 @@ internal static partial class Program
         RegisterInsertGeometryTests();
         RegisterPolyline3DEditTests();
         RegisterPolyline2DEditTests();
+        RegisterMeshVertexEditTests();
+        RegisterMeshTopologyEditTests();
         RegisterHatchBulgeExplosionTests();
         RegisterSplineAffineAtomicTests();
         RegisterSplineCountPolicyTests();
@@ -111,6 +113,7 @@ internal static partial class Program
         RunTableXDataTests();
         RunThumbnailImageTests();
         RegisterMeshEdgeDiagnosticTests();
+        RegisterMeshHeaderMutationTests();
         RegisterVertexAffineReviewTests();
         RegisterMeshDecompositionTests();
         RegisterDirectionAssignmentTests();
