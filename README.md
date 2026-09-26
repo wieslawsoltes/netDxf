@@ -1,202 +1,128 @@
 # netDxf
-netDxf Copyright(C) 2009-2023 Daniel Carvajal, licensed under MIT License
-## Description
-netDxf is a .net library programmed in C# to read and write AutoCAD DXF files. The typed `DxfDocument` API reads and writes the AutoCad2000, AutoCad2004, AutoCad2007, AutoCad2010, AutoCad2013, and AutoCad2018 DXF database families in text and binary format. Feature coverage within each family is partial.
 
-The library is easy to use and I tried to keep the procedures as straightforward as possible, for example you will not need to fill up the table section with layers, styles or line type definitions. The DxfDocument will take care of that every time a new item is added.
+A C# library for reading, creating, editing and writing DXF drawings.
+This repository develops the `netDxf.netstandard` package and its conformance tools.
 
-If you need more information, you can find the official DXF documentation [here](https://help.autodesk.com/view/OARX/2021/ENU/?guid=GUID-235B22E0-A567-4CF6-92D3-38A2306D73F3).
+**Full AutoCAD parity is not yet established.** Typed editing, raw preservation,
+geometric evaluation and native application interoperability are different
+capabilities. Start with the [remaining major gaps](doc/dxf-conformance/remaining-major-gaps.md)
+and the [contract index](doc/dxf-conformance/README.md) for their scope.
 
-Code example:
-
-```c#
-public static void Main()
-{
-	// your DXF file name
-	string file = "sample.dxf";
-
-	// create a new document, by default it will create an AutoCad2000 DXF version
-	DxfDocument doc = new DxfDocument();
-	// an entity
-	Line entity = new Line(new Vector2(5, 5), new Vector2(10, 5));
-	// add your entities here
-	doc.Entities.Add(entity);
-	// save to file
-	doc.Save(file);
-
-	// this check is optional but recommended before loading a DXF file
-	DxfVersion dxfVersion = DxfDocument.CheckDxfFileVersion(file);
-	// Typed DxfDocument admits AutoCad2000 and higher DXF families
-	if (dxfVersion < DxfVersion.AutoCad2000) return;
-	// load file
-	DxfDocument loaded = DxfDocument.Load(file);
-}
-```
-
-## DXF version and feature coverage
-
-See the [current version-by-feature comparison](doc/dxf-conformance/version-feature-matrix.md) and its [machine-readable coverage ledger](doc/dxf-conformance/coverage.json). Each entry distinguishes tested field-level support, partial typed models, known losses, rejected writer profiles and opaque preservation. The comparison is generated and checked in CI; its production commit and evidence are pinned. The [earlier merged checkpoint](doc/dxf-conformance/checkpoint-merged-2026-09-14.md) is retained as the historical PR #75 snapshot; current source and verification are recorded by the comparison and its linked feature notes.
-
-The [PR #95 recovery and editing checkpoint](doc/dxf-conformance/checkpoint-recovery-editing-2026-09-15.md) brings forward [ordinary legacy 2D POLYLINE records](doc/dxf-conformance/polyline2d-records.md), [MESH declaration framing](doc/dxf-conformance/mesh-field-framing.md), and [qualified periodic HATCH conversion and evaluation](doc/dxf-conformance/hatch-periodic-conversion.md). Loaded [TABLESTYLE classic header/row scalars](doc/dxf-conformance/table-style-editing.md) and [CELLSTYLEMAP entry names](doc/dxf-conformance/cell-style-map-editing.md) have explicit atomic editing APIs. These operations preserve their documented source identities and stored packets; they do not add automatic TABLE regeneration or complete style-format interpretation. The [mixed graph tests](doc/dxf-conformance/eleventh-mixed.md) exercise these capabilities together.
-
-The aggregate comparison is pinned to PR #95. Later TABLESTYLE increments add [complete border edits and fixed version-zero headers](doc/dxf-conformance/table-style-borders.md), followed by [stored data/unit editing and explicit row STYLE reassignment](doc/dxf-conformance/table-row-settings.md). The latter note includes a post-PR95 profile comparison. These changes preserve immutable snapshots and guarded dependencies; raw format strings, cross-object style synchronization and table regeneration remain separate work.
-
-Loaded CELLSTYLEMAP entries also expose [nested formatting projections and atomic edits](doc/dxf-conformance/cell-style-format-editing.md): content values and stored format expressions, margins, grid-border values, and explicit STYLE/LTYPE references. Unsupported shapes remain stored without an editing projection. These edits do not regenerate TABLE geometry or synchronize duplicated style data.
-
-[Structural CELLSTYLEMAP authoring](doc/dxf-conformance/cell-map-authoring.md) now supports new maps, complete qualified entry/frame replacement, immutable exported definitions, and explicit STYLE/LTYPE-mapped transfer into R2004–R2018 destination profiles. This scoped transfer does not import resource graphs or synchronize TABLE consumers.
-
-`netDxf.IO.DxfRawDocument` is a separate immutable ordered-tag/record API for R11/R12, R13, R14 and the six modern families above. It supports exact unedited same-transport saves, scoped raw edits, an immutable contextual handle index, selected outgoing traversal and guarded simultaneous remapping of exposed interpreted handles. It does not add historical versions to typed `DxfDocument`, evaluate unknown entities, resolve private dependencies, produce dependency-complete cross-document imports, or provide an automatic fallback inside typed load/save. See [raw preservation](doc/dxf-conformance/raw-document.md), [record editing](doc/dxf-conformance/raw-records.md), [R12 framing](doc/dxf-conformance/raw-r12.md), and [R13/R14 profiles](doc/dxf-conformance/raw-r13-r14.md).
-
-The typed database exposes editable named dictionaries, XRECORD values, default dictionaries, dictionary variables, placeholders, extension dictionaries, and persistent reactors. Graph copying remaps known references and requires explicit mappings for external cross-document targets. See [named-object editing](doc/dxf-conformance/named-object-database.md) for ownership, reserved-entry, clone, and opaque-object limits. The separate [raw object transaction API](doc/dxf-conformance/raw-object-transactions.md) provides immutable staged editing, owned-graph cloning/deletion, and draw-order storage.
-
-[MTEXT columns](doc/dxf-conformance/mtext-columns.md) support legacy linked entities, modern embedded definitions, and documented direct column tags, with explicit storage/version gates and caller-supplied text partitions for conversion. [VPORT configurations](doc/dxf-conformance/vport-records.md) retain physical repeated-name tile records and the current view. [Lightweight polyline integrity](doc/dxf-conformance/lwpolyline-integrity.md) covers vertex packet validation and tapered-segment reversal.
-
-[MULTILEADER contexts and styles](doc/dxf-conformance/multileader-contexts.md) expose nested stored text/block content and exact resource references in the qualified 2007+ profiles. [BODY, REGION and 3DSOLID SAT](doc/dxf-conformance/acis-sat.md) retain inert modeler envelopes through 2010. [STYLE font metadata](doc/dxf-conformance/text-style-fidelity.md), [DIMSTYLE stored settings](doc/dxf-conformance/dimstyle-stored-settings.md), and [standalone and embedded output settings](doc/dxf-conformance/output-settings.md) preserve their documented fields and reference relationships. The [parallel module checkpoint](doc/dxf-conformance/checkpoint-modules-2026-09-14.md) records source pins, combined verification and remaining scope.
-
-[LAYER_FILTER and OBJECT_PTR](doc/dxf-conformance/layer-filter-pointer.md), [SPATIAL_INDEX and inert VBA_PROJECT](doc/dxf-conformance/stored-envelopes.md), and [LIGHTLIST](doc/dxf-conformance/lightlist.md) retain their qualified public fields and database relationships. [Terminal object erasure](doc/dxf-conformance/typed-object-erasure.md) validates incoming references before removing an owned subtree. [APPID lifecycle](doc/dxf-conformance/appid-xdata-lifecycle.md) preserves canonical bindings and independent BLOCK/ENDBLK XData through cloning. [Native MLEADER compatibility](doc/dxf-conformance/mleader-native-inputs.md) preserves absent version and line-color fields and retains private styles opaquely. The [object lifecycle checkpoint](doc/dxf-conformance/checkpoint-lifecycle-2026-09-15.md) records the combined evidence and remaining boundaries.
-
-[Stored TABLE payloads and literal grids](doc/dxf-conformance/stored-tables.md), [DATATABLE cells and ownership](doc/dxf-conformance/datatable.md), and [LAYER_INDEX graphs](doc/dxf-conformance/layer-index.md) preserve their qualified public storage and lifecycle. [Source identity and numeric handle checks](doc/dxf-conformance/source-reference-identity.md) distinguish retained input objects from generated defaults and keep null references separate from document identity. The [table-storage checkpoint](doc/dxf-conformance/checkpoint-table-storage-2026-09-15.md) records 23,879 passing cases per configuration, independent emitted-file checks and the remaining editing/evaluation boundaries.
-
-Both pipelines now offer an explicit [SaveAtomic API](doc/dxf-conformance/atomic-file-save.md) for destination-byte protection through sibling-file staging and replacement. Existing `Save` overloads remain nontransactional. [Handle operations](doc/dxf-conformance/raw-handle-operations.md) reject ambiguous/colliding changes and affected opaque slots, including [embedded-object tails](doc/dxf-conformance/raw-embedded-handle-context.md); this does not infer references hidden in private strings or binary data.
-
-Full AutoCAD DXF capability is not yet achieved. Passing regression tests and preserving opaque records are not a native AutoCAD interoperability certificate. The [conformance guide](doc/dxf-conformance/README.md) records scope, verification commands and remaining work.
-
-[Coordinated cell-style consumer remapping](doc/dxf-conformance/cell-style-consumers.md) now updates qualified TABLECONTENT column, row and cell IDs atomically with their TABLESTYLE-owned CELLSTYLEMAP. Renames, cycles and explicit deletion fallbacks are supported; unqualified consumers reject before publication. This does not regenerate TABLE layout or private rendering caches.
-
-[Addressed table calculations and measured display layout](doc/dxf-conformance/table-calculation-layout.md) add bounded numeric formulas, atomic backing-scalar result updates, explicit cell-format cascades with provenance, and fresh detached display blocks with measured row growth and merged cells. These APIs do not automatically regenerate source TABLE inline/private caches, choose native style precedence, or execute persistent FIELD/date/angle expressions.
-
-The [legacy feature review](doc/dxf-conformance/legacy-feature-review.md) improves existing linear/angular unit formatting, DXF calendar/elapsed precision, palette isolation, ordinary RGB serialization, and ARC/CIRCLE/ELLIPSE affine geometry. It includes explicit finite/representation checks, source-version RGB fallback, immutable failure behavior, and independent world-space/file checks. This broadens the audit beyond TABLE features without claiming complete private-schema or native AutoCAD qualification.
-
-[Explicit FIELD result persistence](doc/dxf-conformance/field-results.md) adds immutable evaluation/cache projections, atomic cached-result batches and bounded child-first host evaluation of loaded FIELD ownership trees. Evaluator code, private data and host text/geometry remain unchanged; this is not automatic native FIELD execution or complete host-cache regeneration.
-
-[The standard FIELD evaluator continuation](doc/dxf-conformance/standard-field-evaluation.md)
-adds opt-in explicit AcVar bindings, bounded numeric AcExpr children, date masks,
-and angular format controls. The compiled C# suite and independent output gates
-were qualified in merged PR #106; see the linked guide and PR for exact source
-and CI evidence. These checks are not native AutoCAD qualification.
-
-[Atomic FIELD text-host updates](doc/dxf-conformance/field-text-hosts.md) optionally publish
-successful root outcomes to qualified TEXT, standalone MTEXT, ATTRIB and ATTDEF hosts
-in the same guarded transaction. Literal escaping, stale-proxy invalidation and
-owner-held attribute metadata are qualified separately from native font/reflow or
-private-cache regeneration. Existing FIELD-result APIs remain cache-only.
-
-[The entity clone audit](doc/dxf-conformance/entity-clone-review.md) corrects lost SOLID/TRACE elevation, SHAPE width, Polyline3D smoothing, LEADER direction and shared LEADER line-color state. Direct and nested clones retain their existing source-record guards; this does not add universal graph import.
-
-[The SOLID/TRACE transform audit](doc/dxf-conformance/planar-entity-transforms.md) derives actual transformed plane normals, preserves signed thickness, rejects unrepresentable/projective input before mutation, and invalidates stale proxies only after successful geometry changes. Its numerical admission limits and six-profile text/binary qualification are explicit; it does not establish every entity transform or native AutoCAD equivalence.
-
-[Finite normal and direction assignment](doc/dxf-conformance/direction-assignment.md) now rejects zero/nonfinite vectors before mutation and accepts very small or large finite directions without normalization overflow. The audit covers inherited entity normals, ATTRIB/ATTDEF normals and RAY/XLINE directions, with independent physical-tag and numerical checks. Public vector utilities, arbitrary transforms and native AutoCAD qualification retain their separate scope.
-
-[RAY/XLINE affine transforms](doc/dxf-conformance/infinite-line-transforms.md) now stage finite geometry atomically, retain representable extreme-scale directions and exact affine-origin cancellations, reject collapsed/projective results, and invalidate stale proxies after changed geometry. Independent Fraction/Decimal and physical-record checks document the numerical and version scope.
-
-[MTEXT Unicode continuation records](doc/dxf-conformance/mtext-unicode-chunks.md) preserve supplementary characters at chunk boundaries, bound UTF-8 value sizes and avoid quadratic chunk assembly. Legacy escape behavior and the scope of native qualification are documented separately.
-
-[Text-entity save preflight](doc/dxf-conformance/entity-text-framing.md) rejects unpaired Unicode and transport-breaking characters before output preparation, with source/destination rollback tests and independent valid-record checks. In-memory setters and unrelated raw/private strings retain their separate contracts.
-
-[MTEXT orientation order](doc/dxf-conformance/mtext-orientation-order.md) now honors later angle/direction declarations without confusing column-height group 50 values with rotation. Existing rotation units are retained; the guide records specification discrepancies and independent input/output checks.
-
-[Filename text preflight](doc/dxf-conformance/text-file-preflight.md) applies the text guard before conventional Save can truncate a destination or change the document path. This is a bounded refusal guarantee; SaveAtomic remains the API for general serialization-failure protection.
-
-[Exact matrix identity arithmetic](doc/dxf-conformance/matrix-identity-review.md) preserves small but real transform terms while retaining the public approximate identity query.
-
-[Scale-safe OCS frames](doc/dxf-conformance/arbitrary-axis-review.md) preserve real small tilts and normalize finite nonzero normals independently of the global epsilon.
-
-[Vector4 component fidelity](doc/dxf-conformance/vector4-components.md) restores four-component array export and correct W-axis distance arithmetic.
-
-[Remaining identity consumers](doc/dxf-conformance/identity-consumers.md) apply exact fast-path admission to Matrix2 and unclipped viewport transformations.
-
-[Open Bézier polygon meshes](doc/dxf-conformance/polygon-mesh-bezier.md) support surface type 8, bounded tensor-product sampling, typed control-net round trips and explicit conversion. Closed surfaces, fitted child-record preservation and native fitting equivalence remain separately scoped.
-
-[Atomic polygon-mesh affine transforms](doc/dxf-conformance/polygon-mesh-affine.md) prepare all control points before mutation, retain representable exact affine cancellations and loaded child identities, reject invalid/projective results, and clear stale parent proxy graphics after changed geometry.
-
-[Single-pass polyface construction](doc/dxf-conformance/polyface-construction.md) accepts one-shot face-index sequences, snapshots reused iterator buffers, and reports empty-face arguments correctly.
-
-[Atomic legacy WCS transforms](doc/dxf-conformance/legacy-vertex-affine.md) extend prepared, exact affine-point handling to 3D polylines and polyface meshes, preserving stored identities on rejection and clearing changed parent proxies.
-
-[3D polyline explosion](doc/dxf-conformance/polyline3d-explosion.md) preserves ordinary appearance and XData, handles detached blocks, and guards unsupported dependencies and generated segment allocations.
-
-[Polyline3D projection](doc/dxf-conformance/polyline-projection.md) preserves ordinary appearance, XData and closure in detached output, with explicit parallel-plane elevation and bounded sampling. The original overload retains zero-elevation projection.
-
-[Spline-to-polyline fidelity](doc/dxf-conformance/spline-polyline-conversion.md) preserves ordinary appearance and XData in detached 2D/3D conversions, supports explicit projection-plane elevation, and bounds generated vertices. The existing sampler and its separate qualification limits remain unchanged.
-
-[Atomic SPLINE affine transforms](doc/dxf-conformance/spline-affine-atomic.md) preserve stored control/fit/tangent geometry without partial publication, reject projective input, and invalidate changed parent proxies. Exact cancellation and source identities are independently checked; native fitting and private-association regeneration remain separate.
-
-[SPLINE knot insertion](doc/dxf-conformance/spline-knot-insertion.md) adds detached, shape-preserving interior refinement with bounded exact homogeneous arithmetic, independent metadata, and explicit source/parameter admission.
-
-[SPLINE subdivision](doc/dxf-conformance/spline-split.md) splits clamped positive-weight nonperiodic control-point definitions without sampled refitting, preserves the original parameter intervals, and retains distinct one-sided endpoints at pre-existing discontinuities.
-
-## Samples and Demos 
-Are contained in the source code.
-Well, at the moment they are just tests for the work in progress.
-## Dependencies and distribution
-
-The signed library targets `netstandard2.0`, `net471`, `net48`, `net6.0`, and `net8.0`. The production project has no third-party package dependency. The .NET 8 SDK runs the conformance harness; independent fixture verification uses the separately installed, development-only ezdxf reader.
-
-## Compiling and verification
+## Install and use
 
 ```sh
-dotnet restore tests/netDxf.Conformance/netDxf.Conformance.csproj
-dotnet run --project tests/netDxf.Conformance -c Debug
-dotnet run --project tests/netDxf.Conformance -c Release
-dotnet build netDxf/netDxf.csproj -f netstandard2.0 -c Release
-python -m pip install -r tools/requirements-independent.txt
-python tools/run_independent_verifiers.py artifacts/conformance
-python tools/generate_dxf_coverage.py --check
-python -m unittest discover -s tests/dxf_coverage -p 'test_*.py'
+dotnet add package netDxf.netstandard
 ```
 
-GitHub Actions runs Debug and Release on Linux and Windows and builds the `netstandard2.0` target. The Linux Release job also runs every checked-in independent verifier, retains per-script logs, and fails on a failed check, timeout, or missing fixture. Verification on .NET 8 does not establish runtime qualification for every legacy framework target.
+The published package may not include unreleased or draft-PR work. To use a
+particular implementation, build the reviewed source revision instead.
 
-Set `DXF_TEST_ARTIFACTS` to separate directories when running configurations concurrently. In environments that restrict compiler build servers, use `dotnet build --disable-build-servers -m:1 -p:UseSharedCompilation=false`, then execute the generated conformance DLL.
-## Development Status 
-See [changelog.txt](https://github.com/haplokuon/netDxf/blob/master/doc/Changelog.txt) or the [wiki page](https://github.com/haplokuon/netDxf/wiki) for information on the latest changes.
-## Supported DXF entities
+```csharp
+using System.IO;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Header;
 
-* 3dFace
-* Arc
-* Body, Region and Solid3D (inert SAT envelopes; DXF 2000–2010)
-* Circle
-* Dimensions (aligned, linear, radial, diametric, 3 point angular, 2 line angular, arc length, and ordinate)
-* Ellipse
-* Hatch (including Gradient patterns)
-* Helix (stored spline and explicit analytic authoring)
-* Image
-* Insert (block references and attributes, dynamic blocks are not supported)
-* Leader
-* Line
-* Light (published parameters; DXF 2007+ export)
-* LwPolyline (light weight polyline)
-* Mesh
-* MLine
-* MText
-* MultiLeader (one stored context; DXF 2007+)
-* OleFrame and Ole2Frame (inert byte and metadata storage)
-* Point
-* Polyline (Polyline2D, Polyline3D, PolyfaceMesh, and PolygonMesh)
-* Ray
-* Shape
-* Solid
-* Spline
-* Text
-* Tolerance
-* Trace
-* Underlay (DGN, DWF, and PDF underlays)
-* Wipeout
-* XLine (aka construction line)
+var document = new DxfDocument(DxfVersion.AutoCad2018);
+document.Entities.Add(new Line(Vector3.Zero, new Vector3(100, 50, 0)));
+document.Entities.Add(new Circle(new Vector3(25, 25, 0), 10));
 
-All entities can be grouped.
-All DXF objects may contain extended data information. 
-Qualified AutoCAD TABLE entities are retained as source-bound `StoredTable` packets with explicit backing-content and geometry edits. Complete TABLE authoring, formula/layout evaluation and automatic regeneration remain outside that storage contract.
-Both simple and complex line types are supported.
-Geometry/modeler evaluation, modern SAB/ACDSDATA and typed SURFACE families remain unimplemented. SAT and raw payload retention do not interpret or validate proprietary geometry.
+if (!document.Save("example.dxf"))
+    throw new IOException("DXF save failed.");
 
-[Supplementary entity clone qualification](doc/dxf-conformance/entity-clone-qualification.md) preserves the original clone-review cases and adds registered/nested source checks, exact leader directions, retained-source guards, and a separate all-profile pair corpus. No additional production cloning behavior is introduced by this qualification task.
+var loaded = DxfDocument.Load("example.dxf")
+    ?? throw new InvalidDataException("DXF load failed.");
+```
 
-[LINE affine geometry review](doc/dxf-conformance/line-affine-review.md) corrects signed thickness, finite affine validation, atomic rejection and stale proxy handling, with exact once-rounded endpoint arithmetic and independent six-profile qualification.
+Check operation results and the relevant validation contract. Some malformed-input
+paths have different Debug exception and Release failure-return behavior. For
+replacement of an existing file, consult the [atomic-save contract](doc/dxf-conformance/atomic-file-save.md)
+rather than assuming every save overload is transactional.
 
-[MESH and 3DFACE affine review](doc/dxf-conformance/vertex-affine-review.md) adds atomic finite transforms, exact WCS coordinate evaluation, source-preserving rejection and changed-geometry proxy invalidation. The task preserves mesh topology and distinguishes the auxiliary normal from geometric face normals.
+## Support boundaries
 
-[Polygon mesh conversion](doc/dxf-conformance/polygon-mesh-conversion.md) now uses consistent surface densities, includes both closure seams, and independently preserves ordinary appearance in detached MESH/3DFACE results.
+| Pipeline | Admitted format families | Important distinction |
+|---|---|---|
+| Typed `DxfDocument` | AutoCAD 2000, 2004, 2007, 2010, 2013 and 2018 DXF families | Individual features have additional read/write and edit restrictions |
+| Raw `DxfRawDocument` | Those six families plus R11/R12, R13 and R14 | Ordered preservation and selected edits are not full typed historical support |
+| Transport | Text and binary DXF in their admitted profiles | Field framing, encoding and version legality are checked separately |
 
-Core CI uses only build/test/package and release workflows; see [CI operations](doc/CI-RELEASE.md).
-[GVector safety](doc/dxf-conformance/gvector-safety.md) documents null-safe arithmetic and scaled normalization qualification.
+The library targets `net471`, `net48`, `netstandard2.0`, `net6.0` and `net8.0`.
+Building a target is not the same as running the complete suite on every runtime
+that can consume it. The [CI/release guide](doc/CI-RELEASE.md) describes the actual
+build, conformance and installed-package matrices.
+
+Supported subsets include common drawing entities, blocks and layouts, named
+objects and references, retained legacy child records, raw records, selected
+FIELD/TABLE operations and geometry algorithms. See the feature contracts rather
+than treating an entity name in an API as an all-feature certificate. Preserved
+proxy or ACIS data is not automatically decoded, evaluated or rendered.
+
+Public mutable collections remain available for compatibility. Direct changes
+can bypass entity notifications; use validated editing methods where provided
+and observe the documented graphics/reference restrictions.
+
+## Build and verify
+
+Use the SDK and Python versions selected by the [core workflow](.github/workflows/ci-build.yml).
+Independent Python checks are development dependencies, not library runtime dependencies.
+
+```sh
+python -m pip install -r tools/requirements-independent.txt
+dotnet restore netDxf/netDxf.csproj
+dotnet build netDxf/netDxf.csproj --no-restore -c Release
+```
+
+For direct conformance and independent-output execution:
+
+```sh
+dotnet run --project tests/netDxf.Conformance -c Release
+python tools/run_independent_verifiers.py artifacts/conformance
+python tools/generate_dxf_coverage.py --check
+```
+
+The source-pinned [coverage ledger](doc/dxf-conformance/coverage.json) and
+[generated comparison](doc/dxf-conformance/version-feature-matrix.md) describe
+their recorded historical snapshot; later PRs retain separate implementation
+and qualification evidence. Test totals and row counts are not completeness percentages.
+
+## Repository guide
+
+| Location | Purpose |
+|---|---|
+| [netDxf](netDxf) | Library source and XML API documentation |
+| [TestDxfDocument](TestDxfDocument) | Sample/test application |
+| [Conformance tests](tests/netDxf.Conformance) | Versioned API and drawing regressions |
+| [Tools](tools) | Independent verifiers, coverage generation and source tooling |
+| [Major-gap report](doc/dxf-conformance/remaining-major-gaps.md) | Prioritized remaining capabilities and acceptance criteria |
+| [Contract index](doc/dxf-conformance/README.md) | Feature-specific behavior, evidence and limits |
+| [CI and release](doc/CI-RELEASE.md) | Source binding, package/runtime qualification and opt-in publication |
+
+## Contribution and release policy
+
+Keep changes reviewable, preserve existing test identities and negative controls,
+and state version/preservation/refusal behavior explicitly. Qualify the final
+source tree, not just a previous head or a passing build summary. When native
+AutoCAD was not executed, say so. Keep original fixture and receipt evidence
+separate from newly constructed checker self-tests.
+
+The repository intentionally keeps two core workflows:
+[build/test/package](.github/workflows/ci-build.yml) and
+[release](.github/workflows/release.yml). Do not add one workflow per feature or
+leave temporary publishing/probe workflows in the reviewed tree. Publication
+remains an explicit, guarded operation; a CI package artifact is not a public release.
+
+The JavaScript port is maintained separately in PR #98 and has its own
+fixed-reference and differential requirements. A C# qualification result does
+not waive those requirements.
+
+## History and license
+
+Feature contracts and PR discussions retain the implementation history. The
+[previous expanded README](https://github.com/wieslawsoltes/netDxf/blob/9e4eb348b607f3fe3d50f5f469a382750befeba7/README.md)
+is available at its immutable baseline; it is not a current missing-feature list.
+The original documentation assets and licensing material remain.
+
+netDxf was originally developed by Daniel Carvajal. This repository and its
+contributors continue that work under the [MIT License](LICENSE). Existing
+copyright notices and third-party licensing material must be preserved.
