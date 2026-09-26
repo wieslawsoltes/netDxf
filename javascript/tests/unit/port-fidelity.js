@@ -75,7 +75,7 @@ for(const configuration of ['Debug','Release'])test(`Block.Load failure boundary
   }
 })));
 test('Block.Create and Save refuse opaque geometry before changing the destination',()=>directory(folder=>{
-  const source=new api.DxfDocument();source.Entities.Add(new api.Line());const text=new TextDecoder().decode(save(source,false)).replace('\r\nLINE\r\n','\r\nCUSTOM_UNKNOWN\r\n');const doc=new DxfReader().Read(new TextEncoder().encode(text));
+  const source=new api.DxfDocument();source.Entities.Add(new api.Line());const original=new TextDecoder().decode(save(source,false)),text=original.replace(/(\r?\n)LINE(\r?\n)/,(_,nl,end)=>nl+'CUSTOM_UNKNOWN'+end);assert.notEqual(text,original);const doc=new DxfReader().Read(new TextEncoder().encode(text));
   assert.throws(()=>api.Block.Create(doc,'Copy'),{name:'NotSupportedException'});const file=path.join(folder,'old.dxf');fs.writeFileSync(file,'original');
   assert.throws(()=>doc.Layouts.get_Item('Model').AssociatedBlock.Save(file,18),{name:'NotSupportedException'});assert.equal(fs.readFileSync(file,'utf8'),'original');
 }));

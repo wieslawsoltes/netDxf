@@ -48,7 +48,7 @@ function snapshot(tags, options, token) {
   }
   return result;
 }
-function indexSections(tags, onError = null) {
+function indexSections(tags, onError = null, typed = false) {
   const sections = []; let start = -1, content = -1, name = null;
   // Typed record parsers may need to diagnose an earlier malformed packet before
   // a later section-framing error. The public raw API always throws immediately.
@@ -56,7 +56,7 @@ function indexSections(tags, onError = null) {
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
     if (Is(tag,0,'EOF')) {
-      if (start >= 0) return fail(new FormatException("DXF EOF occurred before the section's ENDSEC."));
+      if (start >= 0) return fail(typed ? new EndOfStreamException("DXF EOF occurred before the section's ENDSEC.") : new FormatException("DXF EOF occurred before the section's ENDSEC."));
       if (i !== tags.length-1) return fail(new FormatException('DXF tags cannot follow EOF.'));
       return sections;
     }
@@ -156,11 +156,14 @@ function* readTags(bytes,binary,encoding,options,token,legacy) {
     if (c !== 32 && c !== 9 && c !== 13 && c !== 10) throw new FormatException('Unexpected data after text DXF EOF.');
   }
 }
-function findHeader(tags) {
+function findHeader(tags, typed = false) {
   let state = 0, header = null;
   for (const tag of tags) {
     if (tag.Code === 999) { if (header != null) header.push(tag); continue; }
-    if (Is(tag,0,'EOF')) break;
+    if (Is(tag,0,'EOF')) {
+      if (typed && state !== 0) throw new EndOfStreamException("DXF EOF occurred before the section's ENDSEC.");
+      break;
+    }
     if (state === 0) {
       if (!Is(tag,0,'SECTION')) throw new FormatException('Expected SECTION while determining the raw DXF profile.');
       state = 1;
@@ -175,7 +178,7 @@ function findHeader(tags) {
   }
   throw new FormatException('No complete HEADER section was found for the raw DXF profile.');
 }
-function readDocumentInput(stream,options=null,cancellationToken=null) {
+function readDocumentInput(stream,options=null,cancellationToken=null,typed=false) {
   // Keep the original argument-validation order; BufferSource is a documented JS overload.
   if (stream == null) throw new ArgumentNullException('stream');
   options = optionsOrDefault(options);
@@ -185,7 +188,7 @@ function readDocumentInput(stream,options=null,cancellationToken=null) {
     (bytes.length >= 4 && bytes[0] === 0 && bytes[1] === 0 && bytes[2] === 254 && bytes[3] === 255)))
     throw new NotSupportedException('UTF-16/UTF-32 DXF transports are not supported.');
   const bootstrap = new DxfRawOptions(options.MaximumBytes,options.MaximumTags,options.MaximumBytes);
-  const profile = readProfile(findHeader(readTags(bytes,binary,Encoding.Latin1,bootstrap,cancellationToken,legacy)));
+  const profile = readProfile(findHeader(readTags(bytes,binary,Encoding.Latin1,bootstrap,cancellationToken,legacy),typed));
   const version = parseVersion(profile.version);
   if (binary && legacy !== (version < DxfVersion.AutoCad13)) throw new FormatException('Binary DXF group-code framing conflicts with its declared $ACADVER profile.');
   const encoding = resolveEncoding(version,profile.codePage);
@@ -198,9 +201,9 @@ function readDocumentInput(stream,options=null,cancellationToken=null) {
  * caller must throw DeferredError after consuming the preceding complete sections.
  * No partial DxfRawDocument is exposed, and the raw public API stays strict. */
 export function ReadTypedDocumentInput(stream) {
-  const input = readDocumentInput(stream);
+  const input = readDocumentInput(stream,null,null,true);
   let error = null;
-  const sections = indexSections(input.tags, failure => { error = failure; });
+  const sections = indexSections(input.tags, failure => { error = failure; }, true);
   if (error !== null) return {
     Tags: ReadOnlyList(input.tags), Sections: ReadOnlyList(sections),
     Version: input.version, RawDocument: null, DeferredError: error

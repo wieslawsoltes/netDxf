@@ -198,7 +198,25 @@ export class DxfReader {
     }
   }
   ReadManagedObjects(){for(const r of this.Records('OBJECTS')){if(!legacyObjects.has(r.Name))continue;const method={LAYOUT:'ReadLayout',GROUP:'ReadGroup',MLINESTYLE:'ReadMLineStyle',IMAGEDEF:'ReadImageDefinition',RASTERVARIABLES:'ReadRasterVariables',DGNDEFINITION:'ReadUnderlayDefinition',DWFDEFINITION:'ReadUnderlayDefinition',PDFDEFINITION:'ReadUnderlayDefinition',IMAGEDEF_REACTOR:'ReadImageDefinitionReactor'}[r.Name];this[method](r);}}
-  EnsureDefaultObjects(){const doc=this.doc;if(!doc.Layouts.Contains('Model')){const layout=api.Layout.ModelSpace;layout.AssociatedBlock=doc.Blocks.get_Item(api.Block.DefaultModelSpaceName);doc.Layouts.Add(layout);}
+  RecoverUnlinkedLayouts(){
+    // A surviving BLOCK_RECORD layout pointer still requires a layout when its
+    // OBJECTS record was omitted. Reuse that physical block and its identities.
+    const doc=this.doc;
+    for(const record of this.Records('TABLES','BLOCK_RECORD')){
+      const pointer=canonicalHandle(value(subclass(record.Tags,'AcDbBlockTableRecord'),340,''));
+      if(pointer===null||pointer==='0')continue;
+      const block=this.blockByRecordHandle.get(record.Envelope.Handle);
+      if(!block||block.Record.Layout!==null)continue;
+      let layout;
+      if(OrdinalIgnoreCaseEquals(block.Name,api.Block.DefaultModelSpaceName))layout=api.Layout.ModelSpace;
+      else{
+        let counter=1;while(doc.Layouts.Contains('Layout'+counter))counter++;
+        layout=new api.Layout('Layout'+counter);layout.TabOrder=doc.Layouts.Count+1;
+      }
+      layout.AssociatedBlock=block;doc.Layouts.Add(layout);
+    }
+  }
+  EnsureDefaultObjects(){const doc=this.doc;this.RecoverUnlinkedLayouts();if(!doc.Layouts.Contains('Model')){const layout=api.Layout.ModelSpace;layout.AssociatedBlock=doc.Blocks.get_Item(api.Block.DefaultModelSpaceName);doc.Layouts.Add(layout);}
     if(doc.RasterVariables===null)doc.RasterVariables=new api.RasterVariables(doc);if(!doc.MlineStyles.Contains(api.MLineStyle.DefaultName))doc.MlineStyles.Add(api.MLineStyle.Default);}
   ReadEntities(){let block=null;for(const r of this.Records('BLOCKS')){if(r.Name==='BLOCK'){block=this.doc.Blocks.get_Item(decoded(r.Tags,2));continue;}if(r.Name==='ENDBLK'){block=null;continue;}if(!block)throw new InvalidDataException('Entity outside a BLOCK envelope.');this.ReadEntity(r,block);}
     for(const r of this.Records('ENTITIES')){if(this.consumed?.has(r.Start))continue;let block=this.blockByRecordHandle.get(r.Envelope.Owner);if(!block){const paper=value(r.Envelope.Common,67,0)!==0;block=this.doc.Blocks.get_Item(paper?api.Block.DefaultPaperSpaceName:api.Block.DefaultModelSpaceName);if(!block&&paper){const layout=this.doc.Layouts.Add(new api.Layout('Layout1'));block=layout.AssociatedBlock;}}this.ReadEntity(r,block);}}

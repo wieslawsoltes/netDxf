@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-16,505/35,309 original test cases across 114/193 original conformance-file paths.
+18,169/35,309 original test cases across 118/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -44,6 +44,11 @@ Surface-density HEADER import retains the pinned recovery range independently fo
 Layer XData projects the last description/alpha slot, preserves ancillary transparency
 records and source mutation timing, and distinguishes default and stored layer-state zero.
 Original LWPOLYLINE integrity and hexadecimal payload suites are also represented.
+Strict text/binary scalar and framing suites cover numeric boundaries, fragmented
+streams, malformed input and caller ownership. Typed EOF diagnostics remain distinct
+from strict raw framing errors. Missing layout OBJECTS are recovered from retained
+BLOCK_RECORD pointers; typed text output captures the host newline without changing
+raw codec output.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,

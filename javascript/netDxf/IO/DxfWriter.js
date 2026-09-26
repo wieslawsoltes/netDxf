@@ -3,7 +3,7 @@
 import * as api from '../../index.js';
 import * as io from '../../runtime/DxfTransport.js';
 import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
-import { Copy, DotNetMath } from '../../runtime/GeometryRuntime.js';
+import { Copy, DotNetMath, Culture } from '../../runtime/GeometryRuntime.js';
 import { TextCodeValueWriter } from './TextCodeValueWriter.js';
 import { BinaryCodeValueWriter } from './BinaryCodeValueWriter.js';
 import { DxfVersionNotSupportedException } from './DxfVersionNotSupportedException.js';
@@ -60,7 +60,14 @@ export class DxfWriter {
     const dictionaries=this.PrepareDictionaries();
     document.DrawingVariables.HandleSeed=document.NumHandles.toString(16).toUpperCase();
     required(stream,'stream');if(!stream.CanWrite||typeof stream.Write!=='function')throw new ArgumentException('A writable stream is required.','stream');
-    this.chunk=binary?new BinaryCodeValueWriter(stream,false,Encoding.UTF8):new TextCodeValueWriter(stream,Encoding.UTF8);
+    // Typed C# output uses StreamWriter's host newline. Keep the raw codec's
+    // deterministic stream fallback unchanged and capture this writer's newline.
+    if(binary)this.chunk=new BinaryCodeValueWriter(stream,false,Encoding.UTF8);
+    else{
+      const newline=Culture.NewLine,encoding=Encoding.UTF8;
+      const textOutput={WriteLine(value){stream.Write(encoding.GetBytes(String(value??'')+newline));},Flush(){stream.Flush?.();}};
+      this.chunk=new TextCodeValueWriter(textOutput,encoding);
+    }
     const write=this.chunk.Write.bind(this.chunk);this.chunk.Write=(code,value)=>{if(value===undefined)throw new InvalidOperationException('Uninitialized output value for group '+code);return write(code,value);};
     this.activeSection='';this.activeTable='';
     if(!binary)for(const comment of document.Comments)this.WriteComment(comment);

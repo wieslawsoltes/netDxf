@@ -86,10 +86,10 @@ test('typed document restores borrowed stream ownership and current-position inp
   const d=new api.DxfDocument(18);d.Entities.Add(new api.Line());const bytes=write(d,true),stream=new api.MemoryStream();stream.Write(Uint8Array.of(1,2,3),0,3);stream.Write(bytes,0,bytes.length);stream.Position=3;const r=new DxfReader().Read(stream);assert.equal(all(r).length,1);assert.equal(stream.CanRead,true);assert.equal(stream.Position,stream.Length);
 });
 test('typed reader rejects duplicate physical object identities without fabricating a replacement',()=>{
-  const d=new api.DxfDocument(18);d.Entities.Add(new api.Line());d.Entities.Add(new api.Line());const text=new TextDecoder().decode(write(d,false)),[a,b]=all(d);const duplicated=text.replace('\r\n5\r\n'+b.Handle+'\r\n','\r\n5\r\n'+a.Handle+'\r\n');assert.throws(()=>new DxfReader().Read(new TextEncoder().encode(duplicated)));
+  const d=new api.DxfDocument(18);d.Entities.Add(new api.Line());d.Entities.Add(new api.Line());const text=new TextDecoder().decode(write(d,false)),[a,b]=all(d);const duplicated=text.replace(new RegExp('([\\r]?\\n)5\\r?\\n'+b.Handle+'(\\r?\\n)'),(_,nl,end)=>nl+'5'+nl+a.Handle+end);assert.notEqual(duplicated,text);assert.throws(()=>new DxfReader().Read(new TextEncoder().encode(duplicated)));
 });
 test('typed reader does not dispatch inherited JavaScript property names',()=>{
-  const d=new api.DxfDocument(18);d.Entities.Add(new api.Line());const text=new TextDecoder().decode(write(d,false)).replace('\r\nLINE\r\n','\r\nconstructor\r\n');const copy=new DxfReader().Read(new TextEncoder().encode(text));assert.equal(all(copy)[0].constructor,api.DxfOpaqueEntity);assert.equal(all(copy)[0].CodeName,'constructor');
+  const d=new api.DxfDocument(18);d.Entities.Add(new api.Line());const source=new TextDecoder().decode(write(d,false)),text=source.replace(/(\r?\n)LINE(\r?\n)/,(_,nl,end)=>nl+'constructor'+end);assert.notEqual(text,source);const copy=new DxfReader().Read(new TextEncoder().encode(text));assert.equal(all(copy)[0].constructor,api.DxfOpaqueEntity);assert.equal(all(copy)[0].CodeName,'constructor');
 });
 test('typed writer produces ordered sections and rejects invalid nested section state',()=>{
   const d=new api.DxfDocument(18),writer=new DxfWriter(),raw=api.DxfRawDocument.Load(write(d,false));assert.deepEqual([...raw.Sections].map(x=>x.Name),['HEADER','CLASSES','TABLES','BLOCKS','ENTITIES','OBJECTS']);writer.chunk={Write(){}};writer.BeginSection('HEADER');assert.throws(()=>writer.BeginSection('ENTITIES'),{name:'InvalidOperationException'});writer.EndSection();
