@@ -66,8 +66,8 @@ namespace NetDxf.Qualification
             {
                 BulkApply(item, reverse); Check(PacketCount(record) == 4096, "Exact packet boundary not admitted");
                 CacheEquals(null, item.ProxyGraphics);
-                Check((reverse ? vertices.Reverse() : vertices).SequenceEqual(item.Vertexes), "Bulk operation replaced vertex identity");
-                Check((reverse ? records.Reverse() : records).SequenceEqual(item.VertexRecords), "Bulk operation replaced retained identity");
+                Check((reverse ? Enumerable.Reverse(vertices) : vertices).SequenceEqual(item.Vertexes), "Bulk operation replaced vertex identity");
+                Check((reverse ? Enumerable.Reverse(records) : records).SequenceEqual(item.VertexRecords), "Bulk operation replaced retained identity");
                 Check(document.Objects.Validate().Count == 0, "Successful boundary edit left invalid graph");
             }
             Check(ReferenceEquals(list, item.Vertexes) && ReferenceEquals(end, item.EndSequenceRecord), "Bulk operation replaced list or terminator");
@@ -135,7 +135,7 @@ namespace NetDxf.Qualification
                 byte[] bytes = Save(document, stage == 0 ? binary : !binary);
                 if (directory != null) File.WriteAllBytes(Path.Combine(directory, prefix + (stage == 0 ? "-output.dxf" : "-resave.dxf")), bytes);
                 document = Load(bytes); item = (Polyline2D)document.GetObjectByHandle(handle);
-                Check((reverse ? recordIds.Reverse() : recordIds).SequenceEqual(item.VertexRecords.Select(r => r.Handle))
+                Check((reverse ? Enumerable.Reverse(recordIds) : recordIds).SequenceEqual(item.VertexRecords.Select(r => r.Handle))
                     && item.EndSequenceRecord.Handle == endHandle, "Bulk save changed retained identities");
                 CacheEquals(null, item.ProxyGraphics);
                 Check(Equal(item.LegacyDefaultStartWidth, reverse ? 3 : 2) && Equal(item.LegacyDefaultEndWidth, reverse ? 2 : 3), "Inherited defaults lost orientation");
