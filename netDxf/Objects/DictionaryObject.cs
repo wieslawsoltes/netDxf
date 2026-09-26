@@ -51,6 +51,15 @@ namespace netDxf.Objects
 
         #endregion
 
+        // These wrappers are temporary serialization projections. The layer-state child
+        // dictionary has a document-owned identity, just like its parent collection.
+        internal override long AssignHandle(long entityNumber)
+        {
+            if (this.Owner is DictionaryObject parent && parent.Owner is netDxf.Collections.Layers layers)
+                return layers.StateManager.AssignDictionaryProjection(this, entityNumber);
+            return base.AssignHandle(entityNumber);
+        }
+
         #region public properties
 
         /// <summary>

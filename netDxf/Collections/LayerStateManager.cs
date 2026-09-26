@@ -33,7 +33,7 @@ namespace netDxf.Collections
     /// <summary>
     /// Manages the list of layer states in a drawing.
     /// </summary>
-    public class LayerStateManager :
+    public partial class LayerStateManager :
         TableObjects<LayerState>
     {
         #region private fields

@@ -123,6 +123,7 @@ internal static partial class Program
         RegisterDirectionCachedNormalizationTests();
         RegisterInfiniteLineTransformTests();
         RunNamedObjectDatabaseTests();
+        RegisterLayerStateIdentityTests();
         RunTypedContainerTests();
         RunGeoDataTests();
         RegisterMixedModuleIntegrationTests();
