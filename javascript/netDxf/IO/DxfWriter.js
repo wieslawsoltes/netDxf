@@ -199,9 +199,28 @@ export class DxfWriter {
   WriteTableRecord(code,item){switch(code){case'APPID':return this.WriteApplicationRegistry(item);case'VPORT':return io.WriteVPort(this.chunk,this.doc,item);case'LTYPE':return this.WriteLinetype(item);case'LAYER':return this.WriteLayer(item);case'STYLE':return this.WriteTextStyle(item);case'DIMSTYLE':return this.WriteDimensionStyle(item);case'VIEW':return io.WriteView(this.chunk,this.doc,item);case'UCS':return this.WriteUCS(item);case'BLOCK_RECORD':return this.WriteBlockRecord(item.Record);default:throw new NotSupportedException('Unknown table: '+code);}}
   WriteApplicationRegistry(item){this.TableEnvelope(item,'AcDbRegAppTableRecord');this.chunk.Write(2,this.EncodeNonAsciiCharacters(item.Name));this.chunk.Write(70,0);this.WriteXData(item.XData);}
   WriteLayer(layer){const c=this.chunk;this.TableEnvelope(layer,'AcDbLayerTableRecord');c.Write(2,this.EncodeNonAsciiCharacters(layer.Name));c.Write(70,(layer.IsFrozen?1:0)|(layer.IsLocked?4:0));c.Write(62,layer.IsVisible?layer.Color.Index:-layer.Color.Index);if(layer.Color.UseTrueColor)c.Write(420,api.AciColor.ToTrueColor(layer.Color));c.Write(6,this.EncodeNonAsciiCharacters(layer.Linetype.Name));c.Write(290,layer.Plot);c.Write(370,layer.Lineweight);c.Write(390,'0');
-    for(const app of layer.XData.AppIds)if(!['AcCmTransparency','AcAecLayerStandard'].includes(app))WriteXDataRecords(c,()=>this.doc.DrawingVariables.AcadVer,app,layer.XData.get_Item(app).XDataRecord);
-    WriteXDataRecords(c,()=>this.doc.DrawingVariables.AcadVer,'AcCmTransparency',[new api.XDataRecord(1071,api.Transparency.ToAlphaValue(layer.Transparency))]);
-    WriteXDataRecords(c,()=>this.doc.DrawingVariables.AcadVer,'AcAecLayerStandard',[new api.XDataRecord(1000,''),new api.XDataRecord(1000,layer.Description??'')]);}
+    // The pinned writer updates managed slots in the source dictionary before
+    // output. Do not fabricate transparency or discard its ancillary records.
+    if(layer.Description!==null&&layer.Description!=='')DxfWriter.AddLayerDescriptionXData(layer);
+    if(layer.Transparency.Value>=0&&(layer.Transparency.StoredAlphaValue!==null||layer.Transparency.Value>0||
+      (layer.Transparency.HasValueEdit||layer.HasTransparencyAssignment)&&layer.XData.ContainsAppId('AcCmTransparency')))
+      DxfWriter.AddLayerTransparencyXData(layer);
+    this.WriteXData(layer.XData);}
+  static AddLayerDescriptionXData(layer){
+    let data;
+    if(layer.XData.ContainsAppId('AcAecLayerStandard')){data=layer.XData.get_Item('AcAecLayerStandard');data.XDataRecord.Clear();}
+    else{data=new api.XData(new api.ApplicationRegistry('AcAecLayerStandard'));layer.XData.Add(data);}
+    data.XDataRecord.Add(new api.XDataRecord(1000,''));data.XDataRecord.Add(new api.XDataRecord(1000,layer.Description));
+  }
+  static AddLayerTransparencyXData(layer){
+    let data;
+    if(layer.XData.ContainsAppId('AcCmTransparency'))data=layer.XData.get_Item('AcCmTransparency');
+    else{data=new api.XData(new api.ApplicationRegistry('AcCmTransparency'));layer.XData.Add(data);}
+    const alpha=api.Transparency.ToAlphaValue(layer.Transparency),records=data.XDataRecord;
+    let slot=records.Count-1;while(slot>=0&&records.get_Item(slot).Code!==1071)slot--;
+    const replacement=new api.XDataRecord(1071,alpha);
+    if(slot<0)records.Add(replacement);else records.set_Item(slot,replacement);
+  }
   WriteLinetype(line){const c=this.chunk;this.TableEnvelope(line,'AcDbLinetypeTableRecord');c.Write(2,this.EncodeNonAsciiCharacters(line.Name));c.Write(70,0);c.Write(3,this.EncodeNonAsciiCharacters(line.Description));c.Write(72,65);c.Write(73,line.Segments.Count);c.Write(40,line.Length());
     for(const segment of line.Segments){c.Write(49,segment.Length);const complex=segment instanceof api.LinetypeTextSegment||segment instanceof api.LinetypeShapeSegment;
       if(!complex){c.Write(74,0);continue;}const text=segment instanceof api.LinetypeTextSegment;c.Write(74,(text?2:4)|(segment.RotationType===api.LinetypeSegmentRotationType.Absolute?1:0));c.Write(75,text?0:segment.Style.ShapeNumber(segment.Name));c.Write(340,segment.Style.Handle);c.Write(46,segment.Scale);c.Write(50,segment.Rotation);c.Write(44,segment.Offset.X);c.Write(45,segment.Offset.Y);if(text)c.Write(9,this.EncodeNonAsciiCharacters(segment.Text));}

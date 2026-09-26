@@ -92,6 +92,8 @@ export class DxfReader {
         else if(current instanceof HeaderTimeSpan)v=api.DrawingTime.EditingTime(v);
         else if(typeof current==='boolean')v=typeof v==='boolean'?v:v!==0;
         else if(typeof v==='string'&&name!=='$HANDSEED')v=DecodeDxfText(v);
+        // Typed import recovers unsupported surface densities independently of SPLINESEGS.
+        if((name==='$SURFU'||name==='$SURFV')&&(v<2||v>200))v=6;
         variables[property]=v;
       }else {
         if(name.startsWith('$DIM')&&!['$DIMTSZ','$DIMTVP','$DIMUPT'].includes(name)||['$ACADMAINTVER','$INTERFEREOBJVS','$INTERFEREVPVS'].includes(name))continue;
@@ -145,7 +147,12 @@ export class DxfReader {
       if(flags&6){segment.Scale=value(t,46,1);segment.Rotation=value(t,50,0);segment.Offset=point(t,44,2);segment.RotationType=flags&1?api.LinetypeSegmentRotationType.Absolute:api.LinetypeSegmentRotationType.Relative;}item.Segments.Add(segment);i=end;
     }this.Track(item,r);this.doc.Linetypes.Add(item,false);return item;}
   ReadLayer(r){const t=subclass(r.Tags,'AcDbLayerTableRecord'),item=new api.Layer(decoded(t,2),false);const flags=value(t,70,0),color=value(t,62,7);item.IsFrozen=!!(flags&1);item.IsLocked=!!(flags&4);item.IsVisible=color>=0;item.Color=value(t,420)!==null?api.AciColor.FromTrueColor(value(t,420)):api.AciColor.FromCadIndex(Math.abs(color));item.Linetype=this.Resource('Linetypes',decoded(t,6,'Continuous'));item.Plot=value(t,290,true);item.Lineweight=value(t,370,api.Lineweight.Default);this.Track(item,r);
-    for(const data of item.XData.Values){if(data.ApplicationRegistry.Name.toUpperCase()==='ACCMTRANSPARENCY'){const n=Array.from(data.XDataRecord).find(t=>t.Code===1071);if(n)item.Transparency=api.Transparency.FromAlphaValue(n.Value);}if(data.ApplicationRegistry.Name.toUpperCase()==='ACAeCLAYERSTANDARD'.toUpperCase()){const strings=Array.from(data.XDataRecord).filter(t=>t.Code===1000);if(strings.length>1)item.Description=strings[1].Value;}}
+    // Match table-entry postprocessing: the last matching slot is the projection,
+    // while the complete caller-owned XData packet remains present.
+    if(item.XData.ContainsAppId('AcAecLayerStandard'))
+      for(const record of item.XData.get_Item('AcAecLayerStandard').XDataRecord)if(record.Code===1000)item.Description=record.Value;
+    if(item.XData.ContainsAppId('AcCmTransparency'))
+      for(const record of item.XData.get_Item('AcCmTransparency').XDataRecord)if(record.Code===1071)item.Transparency=api.Transparency.FromAlphaValue(record.Value);
     this.doc.Layers.Add(item,false);return item;}
   ReadUCS(r){const t=subclass(r.Tags,'AcDbUCSTableRecord'),item=new api.UCS(decoded(t,2),point(t,10),point(t,11,3,api.Vector3.UnitX),point(t,12,3,api.Vector3.UnitY));item.Flags=value(t,70,0);item.Elevation=value(t,146,0);const type=value(t,79,0),base=value(t,346,null);io.CompleteUcsBase(this.Context,item,type,base);
     for(let i=0;i<t.length;i++)if(t[i].Code===71){let end=i+1;while(end<t.length&&t[end].Code!==71)end++;item.SetOrthographicOrigin(t[i].Value,point(t.slice(i+1,end),13));}this.Track(item,r);this.doc.UCSs.Add(item,false);return item;}
@@ -185,7 +192,7 @@ export class DxfReader {
         const layer=tags[i].Code===330?this.doc.GetObjectByHandle(tags[i].Value):this.doc.Layers.get_Item(DecodeDxfText(tags[i].Value));if(!(layer instanceof api.Layer)){i=end-1;continue;}
         const t=tags.slice(i+1,end),p=new api.LayerStateProperties(layer.Name);p.Flags=value(t,90,p.Flags);p.Color=value(t,92)!==null?api.AciColor.FromTrueColor(value(t,92)):api.AciColor.FromCadIndex(value(t,62,7));p.Lineweight=value(t,370,p.Lineweight);
         const type=this.doc.GetObjectByHandle(value(t,331,''));p.LinetypeName=type instanceof api.Linetype?type.Name:decoded(t,6,api.Linetype.DefaultName);if(!this.doc.Linetypes.Contains(p.LinetypeName))p.LinetypeName=api.Linetype.DefaultName;
-        if(value(t,440)!==null)p.Transparency=api.Transparency.FromAlphaValue(value(t,440));if(!state.Properties.ContainsKey(p.Name))state.Properties.Add(p.Name,p);i=end-1;
+        if(value(t,440)!==null){const alpha=value(t,440);p.Transparency=alpha===0?new api.Transparency(0,alpha):api.Transparency.FromAlphaValue(alpha);}if(!state.Properties.ContainsKey(p.Name))state.Properties.Add(p.Name,p);i=end-1;
       }
       this.Track(state,record);this.doc.Layers.StateManager.Add(state,false);
     }

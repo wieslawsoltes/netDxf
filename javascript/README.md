@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-15,912/35,309 original test cases across 110/193 original conformance-file paths.
+16,505/35,309 original test cases across 114/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -39,13 +39,18 @@ profiles, mutable-output preflight, blend state and supported override declarati
 OLEFRAME/OLE2FRAME original suites cover binary payload retention, optional metadata
 presence, explicit version fields, cloning, inert transform restrictions and
 repeated text/binary saves across model/paper/nested/unused blocks. These suites
-pass the existing implementation; this continuation makes no OLE runtime changes.
+pass the existing OLE implementation.
+Surface-density HEADER import retains the pinned recovery range independently for U/V.
+Layer XData projects the last description/alpha slot, preserves ancillary transparency
+records and source mutation timing, and distinguishes default and stored layer-state zero.
+Original LWPOLYLINE integrity and hexadecimal payload suites are also represented.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,
 Windows, performance and native AutoCAD qualification remain incomplete.
 The 408 malformed-gradient, 24 forged-polyline-count, 48 edge/spline-count and
-462 mesh allocation-sensitive original cases remain uncounted until their native
+462 mesh and 12 LWPOLYLINE integrity allocation-sensitive original cases remain
+uncounted until their native
 allocation assertions are ported; functional
 malformed-input checks do not replace those assertions.
 Arc-length dimension roundtrip adjudication and completion-verifier logic also remain.
