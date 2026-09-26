@@ -4,6 +4,7 @@ import { Spline } from '../netDxf/Entities/Spline.js';
 import { SplineTypeFlags as F } from '../netDxf/Entities/SplineTypeFlags.js';
 import { SplineCreationMethod as M } from '../netDxf/Entities/SplineCreationMethod.js';
 import { Vector3 } from '../netDxf/Vector3.js';
+import { Copy } from './GeometryRuntime.js';
 import { ReadXDataRecord, WriteXData } from './DxfXDataIO.js';
 import { NullReferenceException, InvalidDataException, NotSupportedException, InvalidOperationException, ArgumentOutOfRangeException } from './Errors.js';
 export function ReadSpline(chunk,document,stopAtHelix=false) {
@@ -62,9 +63,11 @@ export function WriteSpline(chunk,version,e,writeXData=true) {
   if(e.EndTangent!==null){chunk.Write(13,tangentValue(e.EndTangent).X);chunk.Write(23,tangentValue(e.EndTangent).Y);chunk.Write(33,tangentValue(e.EndTangent).Z);}
   for(const knot of e.Knots)chunk.Write(40,knot);
   if(e.IsClosedPeriodic)for(let i=0;i<e.Degree;i++) {
-    const p=e.ControlPoints[e.ControlPoints.length-e.Degree+i];chunk.Write(10,p.X);chunk.Write(20,p.Y);chunk.Write(30,p.Z);chunk.Write(41,e.Weights[e.Weights.length-e.Degree+i]);
+    // C# stores this array element in a Vector3 local before calling the writer.
+    const p=Copy(e.ControlPoints[e.ControlPoints.length-e.Degree+i]);chunk.Write(10,p.X);chunk.Write(20,p.Y);chunk.Write(30,p.Z);chunk.Write(41,e.Weights[e.Weights.length-e.Degree+i]);
   }
   for(let i=0;i<e.ControlPoints.length;i++) {chunk.Write(10,e.ControlPoints[i].X);chunk.Write(20,e.ControlPoints[i].Y);chunk.Write(30,e.ControlPoints[i].Z);chunk.Write(41,e.Weights[i]);}
-  for(const p of e.FitPoints) {chunk.Write(11,p.X);chunk.Write(21,p.Y);chunk.Write(31,p.Z);}
+  // foreach copies the current value, but retains the original array enumerator.
+  for(const point of e.FitPoints) {const p=Copy(point);chunk.Write(11,p.X);chunk.Write(21,p.Y);chunk.Write(31,p.Z);}
   if(writeXData)WriteXData(chunk,version,e.XData);
 }

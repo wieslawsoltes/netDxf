@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-12,723/35,309 original test cases across 98/193 original conformance-file paths.
+13,535/35,309 original test cases across 101/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -29,6 +29,10 @@ foreach vector values; spline fit metadata is covered through transforms and exp
 HATCH source hydration admits only retained, unambiguous entities in the same block,
 then attaches complete paths with source-order reactor counts. Original affine, conic,
 explicit-pattern and spline-relation suites cover geometry and failure atomicity.
+HELIX API, wire, authored-geometry/regeneration and periodic SPLINE input suites
+cover independent metadata, cyclic overlap and repeated text/binary roundtrips.
+SPLINE/HELIX serialization snapshots periodic-prefix and foreach fit-point values
+while preserving live ordinary-control and weight reads between output callbacks.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,

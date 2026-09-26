@@ -141,3 +141,69 @@ test('negative periodic spline degree preserves RemoveRange validation before co
     assert.throws(()=>io.ReadSpline(reader(tags),document()),{name:'ArgumentOutOfRangeException',ParamName:'count'});
   }
 });
+
+// Source-guided value semantics from pinned DxfWriter.WriteSpline. These are
+// supplemental regressions; they do not replace original .NET test identities.
+for (const kind of ['Spline', 'Helix']) {
+  const wrap = curve => kind === 'Helix' ? new api.Helix(curve) : curve;
+  const write = (chunk, entity) => io['Write' + kind](chunk, 18, entity);
+  test(kind + ' periodic prefix copies the current vector but reads its weight after coordinate callbacks', () => {
+    const e = wrap(spline(2, true)), tail = e.ControlPoints.length - e.Degree;
+    const first = e.ControlPoints[tail].ToArray(), tags = []; let count = 0;
+    write({Write(code, value) {
+      tags.push([code, value]);
+      if (code === 10 && count++ === 0) {
+        e.ControlPoints[tail].Y = 71; e.ControlPoints[tail].Z = 72;
+        e.ControlPoints[tail + 1].X = 81; e.ControlPoints[tail + 1].Y = 82;
+        e.Weights[tail] = 9;
+      }
+    }}, e);
+    const values = code => tags.filter(([c]) => c === code).map(([,v]) => v);
+    assert.deepEqual([values(10)[0], values(20)[0], values(30)[0]], first);
+    assert.equal(values(41)[0], 9); // weight is not part of the copied vector
+    assert.equal(values(10)[1], 81); assert.equal(values(20)[1], 82);
+    assert.equal(values(20)[e.Degree + tail], 71); // ordinary loop sees live edits
+  });
+  test(kind + ' fit-point iteration copies current value while observing edits to later elements', () => {
+    const e = wrap(new api.Spline([new api.Vector3(1,2,3), new api.Vector3(4,5,6), new api.Vector3(7,8,9)]));
+    e.StartTangent = null; e.EndTangent = null; const tags = []; let count = 0;
+    write({Write(code, value) {
+      tags.push([code, value]);
+      if (code === 11 && count++ === 0) {
+        e.FitPoints[0].Y = 51; e.FitPoints[0].Z = 52;
+        e.FitPoints[1] = new api.Vector3(61,62,63);
+      }
+    }}, e);
+    const values = code => tags.filter(([c]) => c === code).map(([,v]) => v);
+    assert.deepEqual([values(11)[0], values(21)[0], values(31)[0]], [1,2,3]);
+    assert.deepEqual([values(11)[1], values(21)[1], values(31)[1]], [61,62,63]);
+  });
+  test(kind + ' fit-point enumeration keeps the selected array if its property changes', () => {
+    const e = wrap(new api.Spline([new api.Vector3(1,2,3), new api.Vector3(4,5,6), new api.Vector3(7,8,9)]));
+    e.StartTangent = null; e.EndTangent = null; let selected = e.FitPoints, reads = 0, first = true; const tags = [];
+    const proxy = new Proxy(e, {get(target, key) { if (key === 'FitPoints') { reads++; return selected; } return Reflect.get(target, key, target); }});
+    write({Write(code, value) { tags.push([code, value]); if (code === 11 && first) { first = false; selected = [new api.Vector3(91,92,93)]; } }}, proxy);
+    assert.equal(reads, 1);
+    assert.deepEqual(tags.filter(([c]) => c === 11).slice(0,3).map(([,v]) => v), [1,4,7]);
+  });
+  test(kind + ' ordinary controls remain live between component writes', () => {
+    const e = wrap(spline()), tags = []; let first = true;
+    write({Write(code, value) { tags.push([code,value]); if (code === 10 && first) { first = false; e.ControlPoints[0].Y = 81; e.ControlPoints[0].Z = 82; e.Weights[0] = 7; } }}, e);
+    for (const [code, expected] of [[20,81],[30,82],[41,7]]) assert.equal(tags.find(([c]) => c === code)[1], expected);
+  });
+  test(kind + ' a periodic prefix write failure does not read the following vector', () => {
+    const e = wrap(spline(2,true)), tail = e.ControlPoints.length - e.Degree, failure = new Error('periodic output'), tags = []; let nextReads = 0;
+    const points = new Proxy(e.ControlPoints, {get(target,key) { if (key === String(tail + 1)) nextReads++; return Reflect.get(target,key); }});
+    const proxy = new Proxy(e, {get(target,key) { return key === 'ControlPoints' ? points : Reflect.get(target,key,target); }});
+    assert.throws(() => write({Write(code,value) { tags.push([code,value]); if (code === 10) throw failure; }}, proxy), error => error === failure);
+    assert.equal(tags.at(-1)[0], 10); assert.equal(nextReads, 0);
+  });
+  test(kind + ' a fit-point write failure stops before the next iteration', () => {
+    const e = wrap(new api.Spline([new api.Vector3(1,2,3), new api.Vector3(4,5,6), new api.Vector3(7,8,9)]));
+    e.StartTangent = null; e.EndTangent = null; const failure = new Error('fit output'), tags = []; let nextReads = 0;
+    const points = new Proxy(e.FitPoints, {get(target,key) { if (key === '1') nextReads++; return Reflect.get(target,key); }});
+    const proxy = new Proxy(e, {get(target,key) { return key === 'FitPoints' ? points : Reflect.get(target,key,target); }});
+    assert.throws(() => write({Write(code,value) { tags.push([code,value]); if (code === 11) throw failure; }}, proxy), error => error === failure);
+    assert.equal(tags.at(-1)[0], 11); assert.equal(nextReads, 0);
+  });
+}
