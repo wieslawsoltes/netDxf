@@ -52,6 +52,7 @@ namespace netDxf.Entities
             ValidateWidth(width, nameof(width));
             this.ValidateStoredRecordGeometry();
             this.ValidateVertexFidelity();
+            this.ValidateBulkVertexPackets(false, width);
             bool changed = this.constantWidth.HasValue;
             foreach (Polyline2DVertex vertex in this.vertexes)
                 changed |= !vertex.StartWidthOverride.HasValue || !vertex.EndWidthOverride.HasValue ||

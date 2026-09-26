@@ -148,6 +148,8 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the polyline <see cref="Polyline2DVertex">vertex</see> list.
         /// </summary>
+        /// <remarks>Direct list or vertex-object edits cannot notify this entity. Use the explicit
+        /// SetVertex, SetVertexBulge and SetVertexWidths methods for validated, cache-aware edits.</remarks>
         public List<Polyline2DVertex> Vertexes
         {
             get { return this.vertexes; }
@@ -161,6 +163,7 @@ namespace netDxf.Entities
             get { return this.flags.HasFlag(PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM); }
             set
             {
+                PolylineTypeFlags before = this.flags;
                 if (value)
                 {
                     this.flags |= PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM;
@@ -169,6 +172,7 @@ namespace netDxf.Entities
                 {
                     this.flags &= ~PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM;
                 }
+                if (this.flags != before) this.ClearProxyGraphics();
             }
         }
 
@@ -178,7 +182,7 @@ namespace netDxf.Entities
         public double Thickness
         {
             get { return this.thickness; }
-            set { this.thickness = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.thickness, value); }
         }
 
         /// <summary>
@@ -188,7 +192,7 @@ namespace netDxf.Entities
         public double Elevation
         {
             get { return this.elevation; }
-            set { this.elevation = value; }
+            set { PrimitiveGeometryMutation.Assign(this, ref this.elevation, value); }
         }
 
         /// <summary>
@@ -199,6 +203,7 @@ namespace netDxf.Entities
             get { return this.flags.HasFlag(PolylineTypeFlags.ContinuousLinetypePattern); }
             set
             {
+                PolylineTypeFlags before = this.flags;
                 if (value)
                 {
                     this.flags |= PolylineTypeFlags.ContinuousLinetypePattern;
@@ -207,6 +212,7 @@ namespace netDxf.Entities
                 {
                     this.flags &= ~PolylineTypeFlags.ContinuousLinetypePattern;
                 }
+                if (this.flags != before) this.ClearProxyGraphics();
             }
         }
 
@@ -225,6 +231,9 @@ namespace netDxf.Entities
                     throw new ArgumentOutOfRangeException(nameof(value), value, "BezierSurface is a polygon mesh surface, not a polyline curve.");
                 if (this.HasStoredRecords && value != PolylineSmoothType.NoSmooth)
                     throw new NotSupportedException("Smoothing retained legacy 2D records requires complete schema regeneration.");
+                PolylineTypeFlags beforeFlags = this.flags;
+                PolylineSmoothType beforeType = this.smoothType;
+                string beforeCode = this.CodeName;
                 if (value == PolylineSmoothType.NoSmooth)
                 {
                     this.CodeName = this.HasStoredRecords ? DxfObjectCode.Polyline : DxfObjectCode.LwPolyline;
@@ -236,6 +245,7 @@ namespace netDxf.Entities
                     this.flags |= PolylineTypeFlags.SplineFit;
                 }
                 this.smoothType = value;
+                if (beforeFlags != this.flags || beforeType != value || beforeCode != this.CodeName) this.ClearProxyGraphics();
             }
         }
 
@@ -262,12 +272,13 @@ namespace netDxf.Entities
         public void Reverse()
         {
             this.ValidateStoredRecordGeometry();
-            this.ValidateReversalVertices();
+            this.ValidateVertexEdits("Reversal");
             if (this.vertexes.Count < 2)
             {
                 return;
             }
 
+            this.ValidateBulkVertexPackets(true, 0.0);
             this.vertexes.Reverse();
             this.ReverseStoredRecords();
 
