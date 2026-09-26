@@ -1,0 +1,32 @@
+import { userInfo } from 'node:os';
+import { HeaderDateTime, SetHeaderEnvironment } from './runtime/HeaderTime.js';
+SetHeaderEnvironment({UserName:()=>userInfo().username, Now:()=>HeaderDateTime.FromDate(new Date(),2), UtcNow:()=>HeaderDateTime.FromDate(new Date(),1)});
+import { Culture } from './runtime/GeometryRuntime.js';
+import { SetSupportFileSystem } from './runtime/SupportFileSystem.js';
+import { NodeSupportFileSystem } from './runtime/NodeSupportFileSystem.js';
+SetSupportFileSystem(NodeSupportFileSystem);
+import { SetPatternFileSystem } from './runtime/PatternFileSystem.js';
+import { NodePatternFileSystem } from './runtime/NodePatternFileSystem.js';
+SetPatternFileSystem(NodePatternFileSystem);
+Culture.NewLine = NodePatternFileSystem.NewLine;
+// Node-specific entry point. The default/index.js entry remains browser-safe.
+import { SetFileSystemAdapter } from './runtime/FileSystem.js';
+import { NodeFileSystem } from './runtime/NodeFileSystem.js';
+SetFileSystemAdapter(NodeFileSystem);
+export * from './index.js';
+export { FileStream } from './runtime/NodeFileStream.js';
+import { SetSupportFolderHost } from './netDxf/Collections/SupportFolders.js';
+import { SetLayerStateFileHost } from './netDxf/Objects/LayerState.js';
+import { SetLinetypeTableFileHost } from './netDxf/Collections/Linetypes.js';
+import { NodeSupportFolders, NodeLayerStateFiles, DeleteLinetypeFile } from './runtime/NodeDocumentFiles.js';
+SetSupportFolderHost(NodeSupportFolders);
+SetLayerStateFileHost(NodeLayerStateFiles);
+SetLinetypeTableFileHost(DeleteLinetypeFile);
+
+import { SetHeaderProbeFileHost } from './netDxf/IO/DxfReader.HeaderProbe.js';
+import { FileStream as HeaderProbeFileStream } from './runtime/NodeFileStream.js';
+SetHeaderProbeFileHost(file => new HeaderProbeFileStream(file));
+
+import { SetTypedDocumentFileHost } from './runtime/TypedDocumentIO.js';
+import { NodeTypedDocumentFiles } from './runtime/NodeDocumentFiles.js';
+SetTypedDocumentFileHost(NodeTypedDocumentFiles);

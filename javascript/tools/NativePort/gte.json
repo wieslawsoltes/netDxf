@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    "netDxf/GTE/GTE.cs",
+    "netDxf/GTE/GVector.cs",
+    "netDxf/GTE/GMatrix.cs",
+    "netDxf/GTE/LexicoArray2.cs",
+    "netDxf/GTE/GaussianElimination.cs",
+    "netDxf/GTE/BandedMatrix.cs",
+    "netDxf/GTE/RootBisection.cs",
+    "netDxf/GTE/RootsPolynominal.cs",
+    "netDxf/GTE/Integration.cs",
+    "netDxf/GTE/IntrIntervals.cs",
+    "netDxf/GTE/ParametricCurve.cs",
+    "netDxf/GTE/BezierCurve.cs",
+    "netDxf/GTE/BSplineCurve.cs",
+    "netDxf/GTE/NURBSCurve.cs",
+    "netDxf/GTE/BSplineCurveFit.cs",
+    "netDxf/GTE/BSplineSurfaceFit.cs",
+    "netDxf/GTE/BSplineReduction.cs"
+  ]
+}
