@@ -66,9 +66,11 @@ def expected_packets(version, mode):
     a = matrix(mode)
     translation = (7.,-11.,13.) if mode in ('translate','collapse') else (0.,0.,0.)
     proxy = [(160 if version in ('AutoCad2013','AutoCad2018') else 92,4),(310,bytes((2,3,5,7)))] if mode == 'identity' else []
+    # PolygonAffineSubject explicitly assigns DensityU=5 and DensityV=7.
+    # Unfitted grids retain these dormant hints; a zero default is not a reset.
     head = [(0,'POLYLINE'),(100,'AcDbEntity'),(67,0),(8,'POLYGON_AFFINE'),(62,3),
             (6,'ByLayer'),(370,-1),(48,1.75),(60,1)] + proxy + [
-            (100,'AcDbPolygonMesh'),(10,0.),(20,0.),(30,0.),(71,4),(72,4),(73,0),(74,0),
+            (100,'AcDbPolygonMesh'),(10,0.),(20,0.),(30,0.),(71,4),(72,4),(73,5),(74,7),
             (70,16),(75,0),*zip((210,220,230),normal(mode)),(1001,'POLYGON_AFFINE'),(1000,'unchanged')]
     packets = [head]
     # Model uses U-fast controls; DXF VERTEX records are M-major / N-fast.
@@ -163,6 +165,15 @@ def main():
         packets = records(data)
         check = lambda value: check_packets(value,expected)
         check(packets)
+        # Reject the previous data-loss behavior and valid-looking swapped hints,
+        # not just malformed values. All existing packet corruption checks remain.
+        for density_code, wrong_values in ((73, (0, 7)), (74, (0, 5))):
+            slot = next(i for i, tag in enumerate(packets[0]) if tag[0] == density_code)
+            for wrong in wrong_values:
+                changed = list(packets)
+                changed[0] = list(packets[0])
+                changed[0][slot] = (density_code, wrong)
+                controls += rejected(check, changed)
         for r,packet in enumerate(packets):
             controls += rejected(check,packets[:r]+packets[r+1:])
             for n,(code,value) in enumerate(packet):
@@ -173,7 +184,10 @@ def main():
                 controls += rejected(check,changed)
         document = ezdxf.readfile(path)
         require(document.dxfversion == PROFILES[version], 'Profile differs')
-        require(len(document.modelspace().query('POLYLINE')) == 1, 'Placement differs')
+        meshes = list(document.modelspace().query('POLYLINE'))
+        require(len(meshes) == 1, 'Placement differs')
+        require(meshes[0].dxf.m_smooth_density == 5 and meshes[0].dxf.n_smooth_density == 7,
+                'Independent dormant density interpretation differs')
         audit = document.audit()
         require(not audit.errors and not audit.fixes, 'Graph requires repairs')
     print(f'PASS ezdxf {ezdxf.__version__}: {len(inventory)} polygon affine drawings / {len(inventory)*16} exact WCS vertices; '

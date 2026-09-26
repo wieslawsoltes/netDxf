@@ -99,6 +99,7 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets the mesh vertexes.
         /// </summary>
+        /// <remarks>Direct array edits cannot invalidate cached graphics. Use SetVertex for explicit edits.</remarks>
         public Vector3[] Vertexes
         {
             get { return this.vertexes; }
@@ -109,12 +110,23 @@ namespace netDxf.Entities
         /// </summary>
         /// <param name="i0">Index of the vertex in the U direction.</param>
         /// <param name="i1">Index of the vertex in the V direction.</param>
-        /// <param name="vertex">A Vector3.</param>
+        /// <param name="vertex">A finite replacement position.</param>
+        /// <remarks>Out-of-range indices retain the historical no-op behavior. A valid edit preserves
+        /// retained VERTEX identity and metadata, and clears parent proxy graphics only when coordinate
+        /// bits change. Other grid points and surface admission are not modified or revalidated.</remarks>
         public void SetVertex(int i0, int i1, Vector3 vertex)
         {
             if (0 <= i0 && i0 < this.u && 0 <= i1 && i1 < this.v)
             {
-                this.vertexes[i0 + this.u * i1] = vertex;
+                if (double.IsNaN(vertex.X) || double.IsInfinity(vertex.X)
+                    || double.IsNaN(vertex.Y) || double.IsInfinity(vertex.Y)
+                    || double.IsNaN(vertex.Z) || double.IsInfinity(vertex.Z))
+                    throw new ArgumentException("Polygon mesh coordinates must be finite.", nameof(vertex));
+                int index = i0 + this.u * i1;
+                Vector3 previous = this.vertexes[index];
+                if (!PrimitiveGeometryMutation.Assign(ref previous, vertex)) return;
+                this.vertexes[index] = vertex;
+                this.ClearProxyGraphics();
             }
         }
 
@@ -152,7 +164,8 @@ namespace netDxf.Entities
         /// <summary>
         /// Smooth surface U density.
         /// </summary>
-        /// <remarks>Valid values range from 3 to 201.</remarks>
+        /// <remarks>Public assignments require 3 through 201. Ordinary unsmoothed source meshes may
+        /// retain other stored signed-short hints, including the absent-field default zero.</remarks>
         public short DensityU
         {
             get { return this.densityU; }
@@ -162,14 +175,17 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The density value must be between 3 and 201.");
                 }
+                if (this.densityU == value) return;
                 this.densityU = value;
+                this.ClearProxyGraphics();
             }
         }
 
         /// <summary>
         /// Smooth surface V density
         /// </summary>
-        /// <remarks>Valid values range from 3 to 201.</remarks>
+        /// <remarks>Public assignments require 3 through 201. Ordinary unsmoothed source meshes may
+        /// retain other stored signed-short hints, including the absent-field default zero.</remarks>
         public short DensityV
         {
             get { return this.densityV; }
@@ -179,7 +195,9 @@ namespace netDxf.Entities
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The density value must be between 3 and 201.");
                 }
+                if (this.densityV == value) return;
                 this.densityV = value;
+                this.ClearProxyGraphics();
             }
         }
 
@@ -191,6 +209,7 @@ namespace netDxf.Entities
             get { return this.flags.HasFlag(PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM); }
             set
             {
+                PolylineTypeFlags before = this.flags;
                 if (value)
                 {
                     this.flags |= PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM;
@@ -199,6 +218,7 @@ namespace netDxf.Entities
                 {
                     this.flags &= ~PolylineTypeFlags.ClosedPolylineOrClosedPolygonMeshInM;
                 }
+                if (this.flags != before) this.ClearProxyGraphics();
             }
         }
 
@@ -210,6 +230,7 @@ namespace netDxf.Entities
             get { return this.flags.HasFlag(PolylineTypeFlags.ClosedPolygonMeshInN); }
             set
             {
+                PolylineTypeFlags before = this.flags;
                 if (value)
                 {
                     this.flags |= PolylineTypeFlags.ClosedPolygonMeshInN;
@@ -218,6 +239,7 @@ namespace netDxf.Entities
                 {
                     this.flags &= ~PolylineTypeFlags.ClosedPolygonMeshInN;
                 }
+                if (this.flags != before) this.ClearProxyGraphics();
             }
         }
 
@@ -234,6 +256,8 @@ namespace netDxf.Entities
             {
                 if (value != PolylineSmoothType.NoSmooth && value != PolylineSmoothType.Quadratic && value != PolylineSmoothType.Cubic && value != PolylineSmoothType.BezierSurface)
                     throw new ArgumentOutOfRangeException(nameof(value), value, "The polygon mesh surface type must be NoSmooth, Quadratic, Cubic, or BezierSurface.");
+                PolylineTypeFlags beforeFlags = this.flags;
+                PolylineSmoothType beforeType = this.smoothType;
                 if (value == PolylineSmoothType.NoSmooth)
                 {
                     this.flags &= ~PolylineTypeFlags.SplineFit;
@@ -243,6 +267,7 @@ namespace netDxf.Entities
                     this.flags |= PolylineTypeFlags.SplineFit;
                 }
                 this.smoothType = value;
+                if (this.flags != beforeFlags || value != beforeType) this.ClearProxyGraphics();
             }
         }
 
@@ -297,6 +322,14 @@ namespace netDxf.Entities
         {
             get { return this.flags; }
             set { this.flags = value; }
+        }
+
+        // Ordinary mesh source hints are stored signed shorts, not active tessellation counts.
+        // Restore without public authoring-range checks or treating hydration as an edit.
+        internal void RestoreSurfaceDensities(short densityU, short densityV)
+        {
+            this.densityU = densityU;
+            this.densityV = densityV;
         }
 
         // Used before sampling and before writer preprocessing allocates child handles.
