@@ -16,6 +16,7 @@ if (nearTurn != Math.BitDecrement(360.0)) throw new InvalidOperationException("P
 #endif
 // These assertions run against each selected installed package assembly.
 NetDxf.Qualification.PortableDoubleCases.VerifyInstalled(typeof(DxfDocument).Assembly);
+NetDxf.Qualification.LayerStateIdentityCases.VerifyInstalled();
 NetDxf.Qualification.InsertGeometryCases.VerifyInstalled();
 NetDxf.Qualification.Polyline3DEditCases.VerifyInstalled();
 NetDxf.Qualification.Polyline2DEditCases.VerifyInstalled();

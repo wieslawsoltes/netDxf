@@ -341,6 +341,7 @@ namespace netDxf.IO
             this.ResolveSections();
             this.ResolveViewSections();
             this.ResolveOpaqueEntities();
+            this.ValidateLayerStateOwners();
 
             // to play safe we will add the default table objects to the document in case they do not exist,
             // if they already present nothing is overridden
@@ -10992,26 +10993,16 @@ namespace netDxf.IO
                 return;
             }
 
-            DictionaryObject lsDictionary = this.dictionaries[lsMangerDictionary.Entries.Keys.ElementAt(0)];
-            foreach (KeyValuePair<string, string> entry in lsMangerDictionary.Entries)
-            {
-                if (string.Equals(entry.Value, DxfObjectCode.LayerStates))
-                {
-                    lsDictionary = this.dictionaries[entry.Key];
-                }
-            }
-
-            if (lsDictionary == null)
-            {
-                return;
-            }
+            DictionaryObject lsDictionary = this.RestoreLayerStateDictionaries(lsMangerDictionary);
+            if (lsDictionary == null) return;
 
             foreach (KeyValuePair<string, string> entry in lsDictionary.Entries)
             {
-                LayerState layerState = new LayerState(entry.Value);
-                this.doc.Layers.StateManager.Add(layerState);
-
                 XRecord ls = this.xRecords[entry.Key];
+                LayerState layerState = new LayerState(entry.Value) { Handle = ls.Handle };
+                this.doc.Layers.StateManager.Add(layerState, false);
+                layerState.XData.AddRange(this.LayerStateSource(ls.Handle).Object.XData.Values);
+                this.doc.Layers.StateManager.RestoreStateCloning(ls.Handle, ls.Flags);
 
                 using (IEnumerator<XRecordEntry> enumerator = ls.Entries.GetEnumerator())
                 {

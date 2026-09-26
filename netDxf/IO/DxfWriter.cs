@@ -227,21 +227,8 @@ namespace netDxf.IO
             namedObjectDictionary.Entries.Add(imageDefDictionary.Handle, DxfObjectCode.ImageDefDictionary);
             namedObjectDictionary.Entries.Add(this.doc.RasterVariables.Handle, DxfObjectCode.ImageVarsDictionary);
 
-            // Layer states dictionary
-            DictionaryObject layerStatesDictionary = new DictionaryObject(this.doc.Layers)
-            {
-                Handle = this.doc.Layers.StateManager.Handle
-            };
-            dictionaries.Add(layerStatesDictionary);
-
-            DictionaryObject layerStates = new DictionaryObject(layerStatesDictionary);
-            this.doc.NumHandles = layerStates.AssignHandle(this.doc.NumHandles);
-            foreach (LayerState ls in this.doc.Layers.StateManager.Items)
-            {
-                layerStates.Entries.Add(ls.Handle, ls.Name);
-            }
-            dictionaries.Add(layerStates);
-            layerStatesDictionary.Entries.Add(layerStates.Handle, DxfObjectCode.LayerStates);
+            // Keep the collection's two dictionary identities stable between saves.
+            DictionaryObject layerStates = this.doc.Layers.StateManager.PrepareDictionaries(dictionaries);
 
             databaseErrors = this.doc.Objects.Validate();
             if (databaseErrors.Count > 0) throw new InvalidOperationException("Invalid OBJECTS database: " + string.Join("; ", databaseErrors));
@@ -4619,7 +4606,9 @@ namespace netDxf.IO
             foreach (KeyValuePair<string, string> entry in dictionary.Entries)
             {
                 this.chunk.Write(3, this.EncodeNonAsciiCharacters(entry.Value));
-                this.chunk.Write(entry.Value.Equals(DxfObjectCode.LayerStates, StringComparison.InvariantCultureIgnoreCase) ? (short) 360 : (short) 350, entry.Key);
+                bool hardOwner = dictionary.EntryOwnership.TryGetValue(entry.Key, out bool preserved)
+                    ? preserved : entry.Value.Equals(DxfObjectCode.LayerStates, StringComparison.InvariantCultureIgnoreCase);
+                this.chunk.Write(hardOwner ? (short)360 : (short)350, entry.Key);
             }
 
             this.WriteXData(dictionary.XData);
@@ -4848,7 +4837,7 @@ namespace netDxf.IO
             this.chunk.Write(330, ownerHandle);
 
             this.chunk.Write(100, SubclassMarker.XRecord);
-            this.chunk.Write(280, (short) 1); // Duplicate record cloning flag
+            this.chunk.Write(280, (short)this.doc.Layers.StateManager.StateCloning(layerState));
             this.chunk.Write(91, 2047); // unknown code functionality <- 32-bit integer value
             this.chunk.Write(301, this.EncodeNonAsciiCharacters(layerState.Description));
             this.chunk.Write(290, layerState.PaperSpace);
@@ -4858,6 +4847,7 @@ namespace netDxf.IO
             {
                 this.WriteLayerStateProperties(properties);
             }
+            this.WriteXData(layerState.XData);
         }
 
         private void WriteLayerStateProperties(LayerStateProperties properties)

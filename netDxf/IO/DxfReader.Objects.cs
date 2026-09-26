@@ -261,7 +261,8 @@ namespace netDxf.IO
         }
         private void ImportDatabaseObjects()
         {
-            foreach (DatabaseRecord record in this.databaseRecords) this.RecordSourceObject(record.Object, record.SourceIdentity);
+            foreach (DatabaseRecord record in this.databaseRecords)
+                this.RecordSourceObject(this.ManagedLayerStateObject(record.Object.Handle) ?? record.Object, record.SourceIdentity);
             this.ValidateSourceIdentityDeclarations();
             if (this.databaseRecords.Count == 0) { this.ResolveSunReferences(); this.ResolveOutputSettingsReferences(); return; }
             // Reserve source identities before lazily creating the document's temporary root.
@@ -286,16 +287,8 @@ namespace netDxf.IO
             }
             DatabaseRecord root = this.databaseRecords.FirstOrDefault(r => r.Object.Handle == this.namedDictionary?.Handle);
             HashSet<string> managed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (this.layerStateManagerDictionaryHandle != null && this.dictionaries.TryGetValue(this.layerStateManagerDictionaryHandle, out DictionaryObject layerManager))
-            {
-                managed.Add(layerManager.Handle);
-                foreach (string child in layerManager.Entries.Keys)
-                {
-                    managed.Add(child);
-                    if (this.dictionaries.TryGetValue(child, out DictionaryObject states))
-                        foreach (string stateHandle in states.Entries.Keys) managed.Add(stateHandle);
-                }
-            }
+            foreach (DatabaseRecord record in this.databaseRecords)
+                if (this.ManagedLayerStateObject(record.Object.Handle) != null) managed.Add(record.Object.Handle);
             if (root != null) database.ReplaceRoot((DxfDictionary)root.Object);
             foreach (DatabaseRecord record in this.databaseRecords)
             {
@@ -316,7 +309,7 @@ namespace netDxf.IO
                     if (!collection && !(record.Object is DxfXRecord && existing is LayerState)) throw new FormatException("Duplicate database identity: " + record.Object.Handle);
                     // These collections were constructed from the named dictionary's
                     // source handles and intentionally represent its DICTIONARY records.
-                    // LayerState conversions do not preserve source identity.
+                    // Layer-state projections were registered and classified above.
                     if (collection) this.RecordSourceObject(existing, record.SourceIdentity);
                     managed.Add(record.Object.Handle); continue;
                 }
@@ -351,6 +344,13 @@ namespace netDxf.IO
                     if (fallback.Default == null) throw new FormatException("Unresolved dictionary default: " + record.Default);
                 }
                 this.ApplyDatabaseMetadata(item, record.Metadata);
+            }
+            // Managed dictionaries and XRECORD projections retain their source identity and
+            // common metadata even though their payloads use the existing collection writer.
+            foreach (DatabaseRecord record in this.databaseRecords)
+            {
+                DxfObject projection = this.ManagedLayerStateObject(record.Object.Handle);
+                if (projection != null) this.ApplyDatabaseMetadata(projection, record.Metadata);
             }
             foreach (KeyValuePair<string, DatabaseMetadata> pair in this.entityDatabaseMetadata)
             {

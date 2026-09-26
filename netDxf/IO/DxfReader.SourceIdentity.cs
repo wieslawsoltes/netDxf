@@ -28,7 +28,9 @@ namespace netDxf.IO
                 && this.acceptedSourceObjects.TryGetValue(value, out DxfObject accepted)
                 && this.acceptedSourceRecords.TryGetValue(value, out SourceRecordIdentity source)
                 && !source.Ambiguous
-                && accepted is netDxf.Objects.DxfDictionary;
+                && (accepted is netDxf.Objects.DxfDictionary
+                    || ReferenceEquals(accepted, this.doc.Layers.StateManager)
+                    || ReferenceEquals(accepted, this.doc.Layers.StateManager.StoredStatesDictionary));
         }
 
         private SourceRecordIdentity CurrentSourceRecord

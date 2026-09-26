@@ -15,6 +15,7 @@ namespace netDxf.IO
             // This is the first shared file/stream entity preflight entry point.
             // Keep required count validation ahead of any writer preprocessing.
             this.ValidateSplineCounts();
+            this.ValidateLayerStateText();
             foreach (Block block in this.doc.Blocks)
             {
                 foreach (AttributeDefinition definition in block.AttributeDefinitions.Values)

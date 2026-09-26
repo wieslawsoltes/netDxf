@@ -33,7 +33,7 @@ namespace netDxf.Collections
     /// <summary>
     /// Manages the list of layer states in a drawing.
     /// </summary>
-    public class LayerStateManager :
+    public partial class LayerStateManager :
         TableObjects<LayerState>
     {
         #region private fields
@@ -283,6 +283,8 @@ namespace netDxf.Collections
         /// <param name="item"><see cref="LayerState">LayerState</see> to remove from the document.</param>
         /// <returns>True if the LayerState has been successfully removed, or false otherwise.</returns>
         /// <remarks>Reserved LayerState or any other referenced by objects cannot be removed.</remarks>
+        /// <remarks>Exposed incoming database references and an owned extension dictionary
+        /// prevent removal. Private embedded references are not interpreted.</remarks>
         public override bool Remove(LayerState item)
         {
             if (item == null)
@@ -300,11 +302,13 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (this.HasReferences(item))
+            if (this.HasReferences(item) || this.Owner.LayerStateReferencesRemoval(item))
             {
                 return false;
             }
 
+            this.stateEntryHardOwners.Remove(item.Handle);
+            this.stateCloning.Remove(item.Handle);
             this.Owner.AddedObjects.Remove(item.Handle);
             this.References.Remove(item.Name);
             this.List.Remove(item.Name);

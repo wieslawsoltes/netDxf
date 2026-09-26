@@ -53,6 +53,9 @@ namespace netDxf.Objects
 
         #region public properties
 
+        // Optional preserved pointer strengths for legacy managed dictionaries.
+        internal Dictionary<string, bool> EntryOwnership { get; } = new Dictionary<string, bool>();
+
         /// <summary>
         /// Gets the entries dictionary (key: owner entry handle, value: name)
         /// </summary>
