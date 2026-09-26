@@ -23,6 +23,7 @@ namespace netDxf.IO
             internal DatabaseMetadata Metadata = new DatabaseMetadata();
             internal readonly List<Tuple<string, string, bool>> Entries = new List<Tuple<string, string, bool>>();
             internal string Default;
+            internal List<DxfTag> DictionaryTags;
             internal readonly List<string> ContainerReferences = new List<string>();
             internal readonly List<string> SortKeys = new List<string>();
         }
@@ -165,6 +166,7 @@ namespace netDxf.IO
             {
                 DxfDictionary dictionary = codeName == "DICTIONARY" ? new DxfDictionary() : new DxfDictionaryWithDefault();
                 result.Object = dictionary;
+                result.DictionaryTags = tags.Count <= 7 ? tags : null;
                 dictionary.IsHardOwner = false;
                 string pendingName = null;
                 for (int i = payload; i < tags.Count; i++)
@@ -288,6 +290,7 @@ namespace netDxf.IO
             HashSet<string> managed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (this.layerStateManagerDictionaryHandle != null && this.dictionaries.TryGetValue(this.layerStateManagerDictionaryHandle, out DictionaryObject layerManager))
             {
+                this.RestoreEmptyLayerStateIdentities(layerManager);
                 managed.Add(layerManager.Handle);
                 foreach (string child in layerManager.Entries.Keys)
                 {
