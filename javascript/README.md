@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-14,346/35,309 original test cases across 106/193 original conformance-file paths.
+15,912/35,309 original test cases across 110/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -36,6 +36,10 @@ while preserving live ordinary-control and weight reads between output callbacks
 MESH input uses source-ordered field declarations, private/subclass/XData scoping,
 counted-list parsing and deferred index checks. Original suites cover mesh version
 profiles, mutable-output preflight, blend state and supported override declarations.
+OLEFRAME/OLE2FRAME original suites cover binary payload retention, optional metadata
+presence, explicit version fields, cloning, inert transform restrictions and
+repeated text/binary saves across model/paper/nested/unused blocks. These suites
+pass the existing implementation; this continuation makes no OLE runtime changes.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,
