@@ -48,27 +48,30 @@ function snapshot(tags, options, token) {
   }
   return result;
 }
-function indexSections(tags) {
+function indexSections(tags, onError = null) {
   const sections = []; let start = -1, content = -1, name = null;
+  // Typed record parsers may need to diagnose an earlier malformed packet before
+  // a later section-framing error. The public raw API always throws immediately.
+  const fail = error => { if (onError !== null) { onError(error); return sections; } throw error; };
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
     if (Is(tag,0,'EOF')) {
-      if (start >= 0) throw new FormatException("DXF EOF occurred before the section's ENDSEC.");
-      if (i !== tags.length-1) throw new FormatException('DXF tags cannot follow EOF.');
+      if (start >= 0) return fail(new FormatException("DXF EOF occurred before the section's ENDSEC."));
+      if (i !== tags.length-1) return fail(new FormatException('DXF tags cannot follow EOF.'));
       return sections;
     }
     if (tag.Code === 999) continue;
     if (start < 0) {
-      if (!Is(tag,0,'SECTION')) throw new FormatException('Expected a DXF SECTION or EOF outside a section.');
+      if (!Is(tag,0,'SECTION')) return fail(new FormatException('Expected a DXF SECTION or EOF outside a section.'));
       start = i;
     } else if (name == null) {
-      if (tag.Code !== 2 || tag.Value.length === 0) throw new FormatException('A DXF SECTION requires a nonempty group-2 name.');
+      if (tag.Code !== 2 || tag.Value.length === 0) return fail(new FormatException('A DXF SECTION requires a nonempty group-2 name.'));
       name = tag.Value; content = i+1;
     } else if (Is(tag,0,'ENDSEC')) {
       sections.push(new DxfRawSection(name,tags,start,content,i+1)); start = -1; content = -1; name = null;
     }
   }
-  throw new EndOfStreamException('The raw DXF tag sequence is missing its EOF record.');
+  return fail(new EndOfStreamException('The raw DXF tag sequence is missing its EOF record.'));
 }
 function readProfile(tags) {
   let version = null, codePage = null, pending = null, completed = false;
@@ -172,6 +175,40 @@ function findHeader(tags) {
   }
   throw new FormatException('No complete HEADER section was found for the raw DXF profile.');
 }
+function readDocumentInput(stream,options=null,cancellationToken=null) {
+  // Keep the original argument-validation order; BufferSource is a documented JS overload.
+  if (stream == null) throw new ArgumentNullException('stream');
+  options = optionsOrDefault(options);
+  const bytes = readBounded(stream,options.MaximumBytes,cancellationToken), binary = hasBinaryPrefix(bytes);
+  const legacy = binary && bytes.length > 23 && bytes[22] === 0 && bytes[23] !== 0;
+  if (!binary && ((bytes.length >= 2 && ((bytes[0] === 255 && bytes[1] === 254) || (bytes[0] === 254 && bytes[1] === 255))) ||
+    (bytes.length >= 4 && bytes[0] === 0 && bytes[1] === 0 && bytes[2] === 254 && bytes[3] === 255)))
+    throw new NotSupportedException('UTF-16/UTF-32 DXF transports are not supported.');
+  const bootstrap = new DxfRawOptions(options.MaximumBytes,options.MaximumTags,options.MaximumBytes);
+  const profile = readProfile(findHeader(readTags(bytes,binary,Encoding.Latin1,bootstrap,cancellationToken,legacy)));
+  const version = parseVersion(profile.version);
+  if (binary && legacy !== (version < DxfVersion.AutoCad13)) throw new FormatException('Binary DXF group-code framing conflicts with its declared $ACADVER profile.');
+  const encoding = resolveEncoding(version,profile.codePage);
+  if (!binary && utf8Bom(bytes) && encoding.CodePage !== 65001) throw new NotSupportedException('A UTF-8 byte-order mark conflicts with the legacy raw DXF encoding profile.');
+  const tags = snapshot(readTags(bytes,binary,encoding,options,cancellationToken,legacy),options,cancellationToken);
+  return { tags, binary, bytes, options, version };
+}
+
+/** Internal typed-reader adapter. A framing error is never suppressed: the
+ * caller must throw DeferredError after consuming the preceding complete sections.
+ * No partial DxfRawDocument is exposed, and the raw public API stays strict. */
+export function ReadTypedDocumentInput(stream) {
+  const input = readDocumentInput(stream);
+  let error = null;
+  const sections = indexSections(input.tags, failure => { error = failure; });
+  if (error !== null) return {
+    Tags: ReadOnlyList(input.tags), Sections: ReadOnlyList(sections),
+    Version: input.version, RawDocument: null, DeferredError: error
+  };
+  const raw = new DxfRawDocument(input.tags,input.binary,input.bytes,input.options,construct);
+  return { Tags: raw.Tags, Sections: raw.Sections, Version: raw.Version, RawDocument: raw, DeferredError: null };
+}
+
 class LimitedMemoryStream extends MemoryStream {
   #limit;
   constructor(limit) { super(); this.#limit = limit; }
@@ -204,22 +241,8 @@ export class DxfRawDocument {
   get HasOriginalBytes() { return this.#originalBytes != null; }
   get EncodingCodePage() { return this.#encoding.CodePage; }
   static Load(stream,options=null,cancellationToken=null) {
-    // Keep the original argument-validation order; BufferSource is a documented JS overload.
-    if (stream == null) throw new ArgumentNullException('stream');
-    options = optionsOrDefault(options);
-    const bytes = readBounded(stream,options.MaximumBytes,cancellationToken), binary = hasBinaryPrefix(bytes);
-    const legacy = binary && bytes.length > 23 && bytes[22] === 0 && bytes[23] !== 0;
-    if (!binary && ((bytes.length >= 2 && ((bytes[0] === 255 && bytes[1] === 254) || (bytes[0] === 254 && bytes[1] === 255))) ||
-      (bytes.length >= 4 && bytes[0] === 0 && bytes[1] === 0 && bytes[2] === 254 && bytes[3] === 255)))
-      throw new NotSupportedException('UTF-16/UTF-32 DXF transports are not supported.');
-    const bootstrap = new DxfRawOptions(options.MaximumBytes,options.MaximumTags,options.MaximumBytes);
-    const profile = readProfile(findHeader(readTags(bytes,binary,Encoding.Latin1,bootstrap,cancellationToken,legacy)));
-    const version = parseVersion(profile.version);
-    if (binary && legacy !== (version < DxfVersion.AutoCad13)) throw new FormatException('Binary DXF group-code framing conflicts with its declared $ACADVER profile.');
-    const encoding = resolveEncoding(version,profile.codePage);
-    if (!binary && utf8Bom(bytes) && encoding.CodePage !== 65001) throw new NotSupportedException('A UTF-8 byte-order mark conflicts with the legacy raw DXF encoding profile.');
-    const tags = snapshot(readTags(bytes,binary,encoding,options,cancellationToken,legacy),options,cancellationToken);
-    return new DxfRawDocument(tags,binary,bytes,options,construct);
+    const input = readDocumentInput(stream,options,cancellationToken);
+    return new DxfRawDocument(input.tags,input.binary,input.bytes,input.options,construct);
   }
   static Create(tags,binary=false,options=null) {
     options = optionsOrDefault(options);

@@ -4,8 +4,9 @@ import * as api from '../../index.js';
 import { DotNetMath } from '../../runtime/GeometryRuntime.js';
 import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
 import * as io from '../../runtime/DxfTransport.js';
-import { DxfRawDocument } from './DxfRawDocument.js';
+import { ReadTypedDocumentInput } from './DxfRawDocument.js';
 import { DxfTag } from './DxfTag.js';
+import { ReadXDataRecord } from '../../runtime/DxfXDataIO.js';
 import { HatchSplineData } from '../Entities/HatchSplineData.js';
 import { HatchGradientPatternTypeStringValues } from '../Entities/HatchGradientPatternType.js';
 import { ReadVertex } from '../../runtime/FittedPolylineIO.js';
@@ -42,7 +43,7 @@ export class DxfReader {
     this.isBinary=binary.value;
     if(version<api.DxfVersion.AutoCad2000)
       throw new DxfVersionNotSupportedException('DXF file version not supported: '+version,version);
-    const raw=DxfRawDocument.Load(stream);this.RawDocument=raw;
+    const raw=ReadTypedDocumentInput(stream);this.RawDocument=raw.RawDocument;
     if(raw.Version<api.DxfVersion.AutoCad2000)throw new DxfVersionNotSupportedException('DXF file version not supported: '+raw.Version,raw.Version);
     const variables=new api.HeaderVariables();variables.AcadVer=raw.Version;
     if(!(supportFolders instanceof api.SupportFolders))supportFolders=new api.SupportFolders(supportFolders);
@@ -60,6 +61,9 @@ export class DxfReader {
     const classes=Array.from(raw.Sections).find(s=>s.Name==='CLASSES');if(classes){this.chunk=context.Chunk=new DocumentTagReader(this.tags,classes.StartTagIndex+1,this.identities);io.ReadClassDefinitions(context);}
     this.ReadTables();this.ReadBlocks();this.ReadManagedObjects();this.ReadLayerStates();this.EnsureDefaultObjects();
     this.ReadEntities();this.ReadObjects();
+    // Diagnose an incomplete typed packet before a subsequent section error,
+    // but never return a document whose framing failed validation.
+    if(raw.DeferredError!==null)throw raw.DeferredError;
     for(const resolve of this.deferred)resolve();
     // Database import runs its own source-qualified resolver phases before entity references.
     ImportDatabaseObjects(context);io.ResolveUcsReferences(context);io.ResolveViewSections(context);
@@ -269,35 +273,193 @@ export class DxfReader {
   ReadImage(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),definition=this.doc.GetObjectByHandle(value(t,340));if(!(definition instanceof api.ImageDefinition))throw new InvalidDataException('Unresolved IMAGE definition.');const u=point(t,11),v=point(t,12),normal=api.Vector3.Normalize(api.Vector3.CrossProduct(u,v)),factor=api.UnitHelper.ConversionFactor(this.doc.RasterVariables.Units,this.doc.DrawingVariables.InsUnits),item=new api.Image(definition,point(t,10),u.Modulus()*Math.abs(value(t,13,1))/factor,v.Modulus()*Math.abs(value(t,23,1))/factor);item.Normal=normal;const ux=api.MathHelper.Transform(u,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),vy=api.MathHelper.Transform(v,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);item.Uvector=new api.Vector2(ux.X,ux.Y);item.Vvector=new api.Vector2(vy.X,vy.Y);item.DisplayOptions=value(t,70,7);item.Clipping=value(t,280,0)!==0;item.Brightness=value(t,281,50);item.Contrast=value(t,282,50);item.Fade=value(t,283,0);const points=this.ReadPoints(t,14,2).map(p=>new api.Vector2(p.X+.5,p.Y+.5)),type=value(t,71,1);if(type===2&&points.length>1&&api.Vector2.Equals(points[0],points.at(-1)))points.pop();if(points.length)item.ClippingBoundary=type===1?new api.ClippingBoundary(...points):new api.ClippingBoundary(points);readXData(item,r.Tags,this.doc);return item;}
   ReadShape(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),style=this.doc.GetObjectByHandle(value(t,340));if(!(style instanceof api.ShapeStyle))throw new InvalidDataException('Unresolved SHAPE style.');const name=style.ShapeName(value(t,2,0));if(!name)throw new InvalidDataException('Unresolved SHAPE number.');const item=new api.Shape(name,style);item.Normal=point(t,210,3,api.Vector3.UnitZ);item.Position=api.MathHelper.Transform(point(t,10),item.Normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);item.Size=value(t,40,1);item.Rotation=value(t,50,0);item.WidthFactor=value(t,41,1);item.ObliqueAngle=value(t,51,0);item.Thickness=value(t,39,0);readXData(item,r.Tags,this.doc);return item;}
 
-  ReadHatch(r){const t=r.Tags.slice(r.Envelope.Body),p=new api.HatchPattern(decoded(t,2,'SOLID'));p.Fill=value(t,70,1);const item=new api.Hatch(p,value(t,71,0)!==0);item.Elevation=value(t,30,0);item.Normal=point(t,210,3,api.Vector3.UnitZ);this.Cursor(r);while(this.chunk.Code!==91){if(this.chunk.Code===0)throw new InvalidDataException('HATCH path count is missing.');this.chunk.Next();}const paths=this.TakeHatchCount(91);
-    for(let pathIndex=0;pathIndex<paths;pathIndex++){const pathType=this.TakeHatch(92),edges=[];if(pathType&2){const closed={},count={};io.ReadHatchPolylineHeader(this,closed,count);const vertices=[];for(let i=0;i<count.value;i++){const x=this.TakeHatch(10),y=this.TakeHatch(20),bulge=this.chunk.Code===42?this.TakeHatch(42):0;vertices.push(new api.Vector3(x,y,bulge));}edges.push(Object.assign(new api.HatchBoundaryPath.Polyline(),{IsClosed:closed.value,Vertexes:vertices}));}
-      else{const n=this.TakeHatchCount(93);for(let i=0;i<n;i++){const type=this.TakeHatch(72);if(type>=1&&type<=3)edges.push(io.ReadHatchScalarEdge(this,type));else if(type===4){const degree={},rational={},periodic={},knotCount={},controlCount={};io.ReadHatchSplineHeader(this,degree,rational,periodic,knotCount,controlCount);const edge=new api.HatchBoundaryPath.Spline();edge.Degree=degree.value;edge.IsRational=rational.value;edge.IsPeriodic=periodic.value;edge.Knots=Array.from({length:knotCount.value},()=>this.TakeHatch(40));edge.ControlPoints=[];for(let j=0;j<controlCount.value;j++){const x=this.TakeHatch(10),y=this.TakeHatch(20),weight=this.chunk.Code===42?this.TakeHatch(42):1;edge.ControlPoints.push(new api.Vector3(x,y,weight));}if(this.doc.DrawingVariables.AcadVer>=api.DxfVersion.AutoCad2010){const fits=this.TakeHatchCount(97);for(let j=0;j<fits;j++)edge.FitPoints.Add(new api.Vector2(this.TakeHatch(11),this.TakeHatch(21)));if(this.chunk.Code===12)edge.StartTangent=new api.Vector2(this.TakeHatch(12),this.TakeHatch(22));if(this.chunk.Code===13)edge.EndTangent=new api.Vector2(this.TakeHatch(13),this.TakeHatch(23));}HatchSplineData.Validate(edge);edges.push(edge);}else throw new InvalidDataException('Unknown HATCH edge '+type);}}
-      const path=api.HatchBoundaryPath.FromEdges(edges);path.PathType=pathType;item.BoundaryPaths.Add(path);const count=this.TakeHatchCount(97),handles=[];for(let j=0;j<count;j++)handles.push(this.TakeHatch(330));if(handles.length)this.deferred.push(()=>{for(const handle of handles){const target=this.doc.GetObjectByHandle(handle);if(!target)throw new InvalidDataException('Unresolved HATCH source '+handle);if(item.Associative){path.AddContour(target);target.AddReactor(item);}}});
-    }
-    // Counts delimit the pattern grammar, not an allocation hint. Comments are
-    // transport data and do not occupy a scalar/dash/seed slot in the typed view.
-    const remaining=this.tags.slice(this.chunk.index,r.End).filter(tag=>tag.Code!==999);
-    let patternAngle=0,patternScale=1,patternLines=null,gradient=null;
-    while(this.chunk.Code!==0&&this.chunk.Code<1000){
-      switch(this.chunk.Code){
-        case 450:case 451:case 452:case 453:case 460:case 461:case 462:case 470:case 463:case 63:case 421:
-          gradient??={Fields:0,Colors:[]};this.ReadHatchGradientData(gradient);break;
-        case 52:patternAngle=this.chunk.ReadDouble();this.ReadNextHatchPatternTag();break;
-        case 41:patternScale=this.chunk.ReadDouble();if(patternScale<=0)patternScale=1;this.ReadNextHatchPatternTag();break;
-        case 75:p.Style=this.chunk.ReadShort();this.ReadNextHatchPatternTag();break;
-        case 76:p.Type=this.chunk.ReadShort();this.ReadNextHatchPatternTag();break;
-        case 77:{const flag=this.chunk.ReadShort();if(flag!==0&&flag!==1)throw new InvalidDataException('Invalid HATCH double-pattern flag for group code 77 at position '+this.chunk.CurrentPosition+': expected 0 or 1.');p.IsDouble=flag===1;this.ReadNextHatchPatternTag();break;}
-        case 78:if(patternLines!==null)throw this.InvalidHatchPatternData('duplicate group-78 definition list');patternLines=this.ReadHatchPatternDefinitionLine(this.chunk.ReadShort());break;
-        case 53:case 43:case 44:case 45:case 46:case 79:case 49:
+  ReadHatch(record) {
+    // Metadata is record-wide: a counted packet can occur before or after XData.
+    // Each packet consumes only its own grammar; scanning for a suffix loses data.
+    let name = '', fill = api.HatchFillType.SolidFill, elevation = 0;
+    const normal = api.Vector3.UnitZ, xdata = [];
+    let patternAngle = 0, patternScale = 1, patternType = api.HatchType.UserDefined;
+    let patternStyle = api.HatchStyle.Normal, isDouble = false, associative = false;
+    let patternLines = null, gradient = null, boundaries = [], hasBoundaryCount = false;
+    let seedPoints = null, pixelSize = null;
+    this.Cursor(record);
+    while (this.chunk.Code !== 0) {
+      switch (this.chunk.Code) {
+        case 2: name = DecodeDxfText(this.chunk.ReadString()); this.chunk.Next(); break;
+        case 30: elevation = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 210: normal.X = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 220: normal.Y = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 230: normal.Z = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 70: fill = this.chunk.ReadShort(); this.chunk.Next(); break;
+        case 71: if (this.chunk.ReadShort() !== 0) associative = true; this.chunk.Next(); break;
+        case 91:
+          if (hasBoundaryCount) throw this.InvalidHatchPathData('duplicate group-91 boundary list');
+          hasBoundaryCount = true;
+          boundaries = this.ReadHatchBoundaryPaths(this.chunk.ReadInt());
+          break;
+        case 92: case 93:
+          throw this.InvalidHatchPathData('path data outside the declared group-91 boundary list');
+        case 52: patternAngle = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 41:
+          patternScale = this.chunk.ReadDouble();
+          if (patternScale <= 0) patternScale = 1;
+          this.chunk.Next(); break;
+        case 75: patternStyle = this.chunk.ReadShort(); this.chunk.Next(); break;
+        case 76: patternType = this.chunk.ReadShort(); this.chunk.Next(); break;
+        case 77: {
+          const flag = this.chunk.ReadShort();
+          if (flag !== 0 && flag !== 1) throw new InvalidDataException('Invalid HATCH double-pattern flag for group code 77 at position ' + this.chunk.CurrentPosition + ': expected 0 or 1.');
+          isDouble = flag === 1; this.chunk.Next(); break;
+        }
+        case 78:
+          if (patternLines !== null) throw this.InvalidHatchPatternData('duplicate group-78 definition list');
+          patternLines = this.ReadHatchPatternDefinitionLine(this.chunk.ReadShort()); break;
+        case 53: case 43: case 44: case 45: case 46: case 79: case 49:
           throw this.InvalidHatchPatternData('pattern field outside its declared line or dash count');
-        default:this.ReadNextHatchPatternTag();break;
+        case 450: case 451: case 452: case 453: case 460: case 461: case 462: case 470: case 463: case 63: case 421:
+          gradient ??= { Fields: 0, Colors: [] }; this.ReadHatchGradientData(gradient); break;
+        case 47: pixelSize = this.ReadHatchPixelSize(pixelSize); break;
+        case 98:
+          if (seedPoints !== null) throw this.InvalidHatchSeedData('duplicate group-98 list');
+          seedPoints = this.ReadHatchSeedPoints(); break;
+        case 1001: xdata.push(ReadXDataRecord(this.chunk, this.doc)); break;
+        default: this.chunk.Next(); break;
       }
     }
-    p.Angle=patternAngle;p.Scale=patternScale;
-    for(const data of patternLines??[])p.LineDefinitions.Add(this.CreateHatchPatternLine(data,patternScale,patternAngle));
-    item.PixelSize=value(remaining,47,null);const seedStart=remaining.findIndex(t=>t.Code===98);item.SeedPoints.Clear();if(seedStart>=0){let at=seedStart+1;const n=remaining[seedStart].Value;if(n<0||n>(remaining.length-at)/2)throw new InvalidDataException('Invalid HATCH seed count.');for(let i=0;i<n;i++){if(remaining[at]?.Code!==10||remaining[at+1]?.Code!==20)throw new InvalidDataException('Incomplete HATCH seed point.');item.SeedPoints.Add(new api.Vector2(remaining[at].Value,remaining[at+1].Value));at+=2;}}
-    if(gradient!==null){const g=this.CreateHatchGradientPattern(gradient);if(g!==null){g.Style=p.Style;g.Type=p.Type;item.Pattern=g;}}
-    readXData(item,r.Tags,this.doc);if(item.XData.ContainsAppId('ACAD')){const records=item.XData.get_Item('ACAD').XDataRecord,index=io.HatchPatternXData.FindOrigin(records);if(index>=0)item.Pattern.Origin=new api.Vector2(records.get_Item(index).Value,records.get_Item(index+1).Value);}return item;
+    let pattern = gradient === null ? null : this.CreateHatchGradientPattern(gradient);
+    if (pattern === null) pattern = new api.HatchPattern(name);
+    if (!(pattern instanceof api.HatchGradientPattern)) pattern.Angle = patternAngle;
+    pattern.Scale = patternScale; pattern.Type = patternType; pattern.Style = patternStyle;
+    pattern.IsDouble = isDouble; pattern.Fill = fill;
+    for (const data of patternLines ?? []) pattern.LineDefinitions.Add(this.CreateHatchPatternLine(data, patternScale, patternAngle));
+
+    // An empty input remains an editable metadata entity. The writer's existing
+    // boundary preflight rejects export before touching the destination or handles.
+    const item = new api.Hatch(pattern, [], associative);
+    item.Elevation = elevation; item.Normal = normal; item.PixelSize = pixelSize;
+    item.SeedPoints.Clear();
+    for (const seed of seedPoints ?? []) item.SeedPoints.Add(seed);
+    for (const { path, handles } of boundaries) {
+      item.BoundaryPaths.Add(path);
+      if (handles.length) this.deferred.push(() => {
+        for (const handle of handles) {
+          const target = this.doc.GetObjectByHandle(handle);
+          if (!target) throw new InvalidDataException('Unresolved HATCH source ' + handle);
+          if (item.Associative) { path.AddContour(target); target.AddReactor(item); }
+        }
+      });
+    }
+    item.XData.AddRange(xdata);
+    if (item.XData.ContainsAppId('ACAD')) {
+      const records = item.XData.get_Item('ACAD').XDataRecord, index = io.HatchPatternXData.FindOrigin(records);
+      if (index >= 0) pattern.Origin = new api.Vector2(records.get_Item(index).Value, records.get_Item(index + 1).Value);
+    }
+    return item;
+  }
+  ReadHatchBoundaryPaths(count) {
+    if (count < 0) throw this.InvalidHatchPathData('negative group-91 path count');
+    const boundaries = [];
+    this.ReadNextHatchEdgeTag();
+    for (let index = 0; index < count; index++) {
+      if (this.chunk.Code !== 92) throw this.InvalidHatchPathData('expected group code 92 for path ' + index);
+      const pathType = this.chunk.ReadInt(), edges = [];
+      this.ReadNextHatchEdgeTag();
+      if (pathType & 2) {
+        const closed = {}, verticesCount = {};
+        io.ReadHatchPolylineHeader(this, closed, verticesCount);
+        const vertices = [];
+        for (let i = 0; i < verticesCount.value; i++) {
+          this.RequireHatchPolylineCode(10); const x = this.chunk.ReadDouble(); this.ReadNextHatchPolylineTag();
+          this.RequireHatchPolylineCode(20); const y = this.chunk.ReadDouble(); this.ReadNextHatchPolylineTag();
+          let bulge = 0;
+          if (this.chunk.Code === 42) { bulge = this.chunk.ReadDouble(); this.ReadNextHatchPolylineTag(); }
+          vertices.push(new api.Vector3(x, y, bulge));
+        }
+        edges.push(Object.assign(new api.HatchBoundaryPath.Polyline(), { IsClosed: closed.value, Vertexes: vertices }));
+      } else {
+        if (this.chunk.Code !== 93) throw this.InvalidHatchPathData('expected group code 93 after non-polyline path flags');
+        const edgeCount = this.ReadHatchEdgeCount(93);
+        for (let i = 0; i < edgeCount; i++) {
+          this.RequireHatchEdgeCode(72); const type = this.chunk.ReadShort();
+          if (type < 1 || type > 4) throw this.InvalidHatchEdgeData('unsupported edge type ' + type);
+          this.ReadNextHatchEdgeTag();
+          edges.push(type === 4 ? this.ReadHatchSplineEdge() : io.ReadHatchScalarEdge(this, type));
+        }
+      }
+      const handles = [];
+      if (pathType & 2) {
+        const referenceCount = this.ReadHatchPolylineCount(97); this.ReadNextHatchPolylineTag();
+        for (let i = 0; i < referenceCount; i++) {
+          this.RequireHatchPolylineCode(330); handles.push(this.chunk.ReadHex()); this.ReadNextHatchPolylineTag();
+        }
+        if ([10, 20, 42, 72, 73, 93, 97, 330].includes(this.chunk.Code))
+          throw this.InvalidHatchPolylineData('unexpected data after the counted polyline lists');
+      } else {
+        const referenceCount = this.ReadHatchEdgeCount(97);
+        for (let i = 0; i < referenceCount; i++) {
+          this.RequireHatchEdgeCode(330); handles.push(this.chunk.ReadHex()); this.ReadNextHatchEdgeTag();
+        }
+        if ([72, 97, 330].includes(this.chunk.Code)) throw this.InvalidHatchEdgeData('excess edge or source-reference data');
+      }
+      const path = api.HatchBoundaryPath.FromEdges(edges); path.PathType = pathType;
+      // Grow from complete input packets, never from the advertised capacity.
+      boundaries.push({ path, handles });
+    }
+    return boundaries;
+  }
+  ReadHatchSplineEdge() {
+    const degree = {}, rational = {}, periodic = {}, knotCount = {}, controlCount = {};
+    io.ReadHatchSplineHeader(this, degree, rational, periodic, knotCount, controlCount);
+    const knots = [], controls = [];
+    for (let i = 0; i < knotCount.value; i++) knots.push(this.ReadHatchEdgeDouble(40));
+    for (let i = 0; i < controlCount.value; i++) {
+      const point = this.ReadHatchEdgePoint(10, 20), weight = this.chunk.Code === 42 ? this.ReadHatchEdgeDouble(42) : 1;
+      controls.push(new api.Vector3(point.X, point.Y, weight));
+    }
+    const spline = Object.assign(new api.HatchBoundaryPath.Spline(), {
+      Degree: degree.value, IsRational: rational.value, IsPeriodic: periodic.value, Knots: knots, ControlPoints: controls
+    });
+    if (this.doc.DrawingVariables.AcadVer >= api.DxfVersion.AutoCad2010) {
+      const count = this.ReadHatchEdgeCount(97);
+      for (let i = 0; i < count; i++) spline.FitPoints.Add(this.ReadHatchEdgePoint(11, 21));
+      while (this.chunk.Code === 12 || this.chunk.Code === 13) {
+        if (this.chunk.Code === 12) {
+          if (spline.StartTangent !== null) throw this.InvalidHatchEdgeData('duplicate spline start tangent');
+          spline.StartTangent = this.ReadHatchEdgePoint(12, 22);
+        } else {
+          if (spline.EndTangent !== null) throw this.InvalidHatchEdgeData('duplicate spline end tangent');
+          spline.EndTangent = this.ReadHatchEdgePoint(13, 23);
+        }
+      }
+    }
+    try { HatchSplineData.Validate(spline); }
+    catch (error) { if (error instanceof ArgumentException) throw this.InvalidHatchEdgeData(error.message); throw error; }
+    return spline;
+  }
+  ReadHatchSeedPoints() {
+    const count = this.chunk.ReadInt();
+    if (count < 0) throw this.InvalidHatchSeedData('negative group-98 count');
+    const values = [];
+    this.ReadNextHatchSeedTag();
+    for (let i = 0; i < count; i++) {
+      if (this.chunk.Code !== 10) throw this.InvalidHatchSeedData('expected group 10 for seed X');
+      const x = this.chunk.ReadDouble(); this.ReadNextHatchSeedTag();
+      if (this.chunk.Code !== 20) throw this.InvalidHatchSeedData('expected group 20 for seed Y');
+      const y = this.chunk.ReadDouble(); values.push(new api.Vector2(x, y)); this.ReadNextHatchSeedTag();
+    }
+    return values;
+  }
+  ReadNextHatchSeedTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  InvalidHatchSeedData(detail) {
+    return new InvalidDataException('Invalid HATCH seed-point data at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  ReadHatchPixelSize(previous) {
+    const value = this.chunk.ReadDouble();
+    if (previous !== null || value < 0) throw new InvalidDataException('Invalid HATCH pixel size for group code 47 at position ' + this.chunk.CurrentPosition + ': expected one nonnegative value.');
+    this.chunk.Next(); return value;
+  }
+  InvalidHatchPathData(detail) {
+    return new InvalidDataException('Invalid HATCH boundary path list at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
   }
   // Gradient scalar order is independent of stop order. Counts are constraints,
   // never allocation sizes, and XData is consumed by the surrounding record reader.
@@ -390,14 +552,40 @@ export class DxfReader {
   }
   ReadNextHatchPatternTag(){do{this.chunk.Next();}while(this.chunk.Code===999);}
   InvalidHatchPatternData(detail){return new InvalidDataException('Invalid HATCH pattern definition at group code '+this.chunk.Code+', position '+this.chunk.CurrentPosition+': '+detail+'.');}
-  TakeHatch(code){if(this.chunk.Code!==code)throw new InvalidDataException('Expected HATCH group '+code+', got '+this.chunk.Code+'.');const v=this.chunk.Value;this.chunk.Next();return v;}
-  TakeHatchCount(code){const n=this.TakeHatch(code);if(!Number.isInteger(n)||n<0||n>65536||n>this.tags.length-this.chunk.index)throw new InvalidDataException('Invalid HATCH count in group '+code);return n;}
-  InvalidHatchPolylineData(message){return new InvalidDataException('Invalid HATCH polyline: '+message);}
-  InvalidHatchEdgeData(message){return new InvalidDataException('Invalid HATCH edge: '+message);}
-  ReadHatchPolylineCount(code){const n=this.chunk.Value;if(this.chunk.Code!==code||!Number.isInteger(n)||n<0||n>65536||n>this.tags.length-this.chunk.index)throw this.InvalidHatchPolylineData('Invalid vertex count.');return n;}ReadHatchEdgeCount(code){return this.TakeHatchCount(code);}
-  ReadHatchPolylineFlag(code){const n=this.chunk.Value;if(this.chunk.Code!==code||n!==0&&n!==1)throw this.InvalidHatchPolylineData('Expected a binary flag.');return n===1;}ReadHatchEdgeFlag(code){const n=this.TakeHatch(code);if(n!==0&&n!==1)throw this.InvalidHatchEdgeData('Expected a binary flag.');return n===1;}
-  ReadNextHatchPolylineTag(){this.chunk.Next();}ReadNextHatchEdgeTag(){this.chunk.Next();}
-  ReadHatchEdgeDouble(code){const value=this.TakeHatch(code);if(!Number.isFinite(value))throw this.InvalidHatchEdgeData('Nonfinite scalar.');return value;}
+  RequireHatchPolylineCode(code) { if (this.chunk.Code !== code) throw this.InvalidHatchPolylineData('expected group code ' + code); }
+  RequireHatchEdgeCode(code) { if (this.chunk.Code !== code) throw this.InvalidHatchEdgeData('expected group code ' + code); }
+  InvalidHatchPolylineData(detail) {
+    return new InvalidDataException('Invalid HATCH polyline boundary at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  InvalidHatchEdgeData(detail) {
+    return new InvalidDataException('Invalid HATCH edge boundary at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  ReadHatchPolylineCount(code) {
+    this.RequireHatchPolylineCode(code); const count = this.chunk.ReadInt();
+    if (count < 0) throw this.InvalidHatchPolylineData('expected a nonnegative list count');
+    return count;
+  }
+  ReadHatchEdgeCount(code) {
+    this.RequireHatchEdgeCode(code); const count = this.chunk.ReadInt();
+    if (count < 0) throw this.InvalidHatchEdgeData('negative list count');
+    this.ReadNextHatchEdgeTag(); return count;
+  }
+  ReadHatchPolylineFlag(code) {
+    this.RequireHatchPolylineCode(code); const flag = this.chunk.ReadShort();
+    if (flag !== 0 && flag !== 1) throw this.InvalidHatchPolylineData('expected a flag of zero or one');
+    return flag !== 0;
+  }
+  ReadHatchEdgeFlag(code) {
+    this.RequireHatchEdgeCode(code); const flag = this.chunk.ReadShort();
+    if (flag !== 0 && flag !== 1) throw this.InvalidHatchEdgeData('expected a flag of zero or one');
+    this.ReadNextHatchEdgeTag(); return flag !== 0;
+  }
+  ReadNextHatchPolylineTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  ReadNextHatchEdgeTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  ReadHatchEdgeDouble(code) {
+    this.RequireHatchEdgeCode(code); const value = this.chunk.ReadDouble(); this.ReadNextHatchEdgeTag(); return value;
+  }
+  ReadHatchEdgePoint(xCode, yCode) { return new api.Vector2(this.ReadHatchEdgeDouble(xCode), this.ReadHatchEdgeDouble(yCode)); }
 
   ReadDimension(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),flags=value(t,70,0),type=r.Name==='ARC_DIMENSION'?7:flags&15,normal=point(t,210,3,api.Vector3.UnitZ),worldToObject=p=>api.MathHelper.Transform(p,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),xy=p=>new api.Vector2(p.X,p.Y),definition=worldToObject(point(t,10)),ref=code=>xy(worldToObject(point(t,code))),names=['LinearDimension','AlignedDimension','Angular2LineDimension','DiametricDimension','RadialDimension','Angular3PointDimension','OrdinateDimension','ArcLengthDimension'];if(!names[type])throw new InvalidDataException('Unsupported DIMENSION type '+type);const item=new api[names[type]]();item.Normal=normal;item.Elevation=definition.Z;
     if(type===0||type===1){item.FirstReferencePoint=ref(13);item.SecondReferencePoint=ref(14);if(type===0)item.Rotation=value(t,50,0);item.SetDimensionLinePosition(xy(definition));}

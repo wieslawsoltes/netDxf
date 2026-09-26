@@ -15,12 +15,14 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-6,536/35,309 original test cases across 78/193 original conformance-file paths.
+8,858/35,309 original test cases across 84/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
 Whole-document typed Load/Save/SaveAtomic and Block.Create/Load/Save are integrated.
 HATCH gradient packet grammar and active DIMSTYLE HEADER projection are implemented.
+HATCH metadata and counted packets are parsed throughout the record, including after
+XData; empty HATCH input is retained for repair and rejected by typed export preflight.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,

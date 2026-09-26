@@ -32,7 +32,7 @@ export class InvalidCastException extends Exception {}
 export class NullReferenceException extends Exception {}
 export class FormatException extends Exception {}
 export class InvalidDataException extends Exception {}
-export class EndOfStreamException extends Exception {}
+export class EndOfStreamException extends IOException {}
 export class NotSupportedException extends Exception {}
 export class InvalidOperationException extends Exception {}
 export class OperationCanceledException extends Exception {}
