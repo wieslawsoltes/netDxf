@@ -26,3 +26,7 @@ SetLinetypeTableFileHost(DeleteLinetypeFile);
 import { SetHeaderProbeFileHost } from './netDxf/IO/DxfReader.HeaderProbe.js';
 import { FileStream as HeaderProbeFileStream } from './runtime/NodeFileStream.js';
 SetHeaderProbeFileHost(file => new HeaderProbeFileStream(file));
+
+import { SetTypedDocumentFileHost } from './runtime/TypedDocumentIO.js';
+import { NodeTypedDocumentFiles } from './runtime/NodeDocumentFiles.js';
+SetTypedDocumentFileHost(NodeTypedDocumentFiles);

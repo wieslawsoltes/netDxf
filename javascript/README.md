@@ -5,24 +5,24 @@ API names. The package is private and PR #98 remains draft. **Full C# parity is
 not complete.** Production JavaScript does not require .NET, WebAssembly, an
 external DXF engine or a conversion service.
 
-## Published scope
+## Saved continuation scope
 
 The source reference is `3496ab91893a1e4ec9261b4833479f1799149cdc`, recorded in
 `baseline.json`: 510 library paths, 193 original conformance-file paths, 399 DXF
 fixtures and 35,309 original cases. Development tools pin SDK 8.0.425, .NET 8.0.31
 and Node 22.16.0.
 
-The published implementation includes raw text/binary transport, handle operations,
+The saved continuation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
-and section/entity/OBJECTS codecs. It contains 467/510 library-path mirrors and
-3,619/35,309 original test cases. These counts describe source/test presence,
+and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
+5,298/35,309 original test cases. These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
-Whole-document typed Load/Save/SaveAtomic, complete resource reconstruction,
-remaining original tests/examples, general version conversion and private
-TABLE/evaluator behavior still require integration or qualification. Separate
-unpublished continuation bundles are not part of this branch. Numerical, browser,
-Windows, performance and native AutoCAD qualification remain incomplete.
+Whole-document typed Load/Save/SaveAtomic is integrated in this saved continuation.
+Complete original-test coverage, resource fidelity, general version conversion,
+private TABLE/evaluator behavior and independent native comparison remain work.
+This continuation is not published to PR #98. Numerical, browser, Windows,
+performance and native AutoCAD qualification remain incomplete.
 
 ## Usage and verification
 

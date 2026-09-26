@@ -165,3 +165,5 @@ export { GMatrix, GVector, GTE, LexicoArray2, GaussianElimination, BandedMatrix,
   RootsBisection, RootsPolynomial, Integration, TIQueryIntervals, FIQueryIntervals,
   FIQueryIntervalsType, ParametricCurve, BSplineCurve, NURBSCurve, BSplineCurveFit,
   BSplineSurfaceFit, BSplineReduction, BezierCurve as GteBezierCurve } from './runtime/GteExports.js';
+
+export { SetTypedDocumentFileHost, SetTypedIOConfiguration, GetTypedIOConfiguration } from './runtime/TypedDocumentIO.js';

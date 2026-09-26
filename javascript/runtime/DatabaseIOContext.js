@@ -19,8 +19,12 @@ export class DatabaseIOContext extends SourceIdentityContext {
   // Original main-reader state, shared by physical observation and record import.
   databaseRecords=new ReferenceList(); entityDatabaseMetadata=new TableHandleMap();
   managedReactorHandles=new Set(); dictionaries=new GenericDictionary(0,TableNameComparer,'string');
+  opaqueEntities=[];unqualifiedOpaqueClasses=new Set();hasDiscardedAcdsData=false;opaqueEntityTags=0;entityList=new GenericDictionary();
+  polylineRecordTags=0;loadedPolylineRecords=[];loadedPolygonMeshRecords=[];loadedPolyfaceMeshRecords=[];loadedPolyline2DRecords=[];complexLinetypes=[];
+  loadedMLeaders=[];loadedSections=[];
   namedDictionary=null; layerStateManagerDictionaryHandle=null; mleaderReferences=[];
   pendingSectionSettings=new Map();storedSectionManagers=[];
+  ucsReferences=[];ucsBaseReferences=[];loadedViewSections=[];tableEntryXData=new GenericDictionary();
   storedFields=[];storedDimAssocs=[];storedSunStudies=[];storedTableContents=[];storedTableGeometries=[];storedCellStyleMaps=[];tableStyles=[];
   outputShadeReferences=[];geoDataHosts=[];sunReferences=[];
   dataTableReferences=[]; lightListReferences=[]; pendingLayerIndexes=new Map();

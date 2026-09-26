@@ -1,3 +1,14 @@
+import * as HatchPatternValidationTests from './HatchPatternValidationTests.js';
+import * as TypedCommentTests from './TypedCommentTests.js';
+import * as HeaderCommentTests from './HeaderCommentTests.js';
+import * as CustomHeaderUnicodeTests from './CustomHeaderUnicodeTests.js';
+import * as AttributeDefaultValueTests from './AttributeDefaultValueTests.js';
+import * as BinarySentinelTests from './BinarySentinelTests.js';
+import * as OleVersionPresenceApiTests from './OleVersionPresenceApiTests.js';
+import * as BezierKnotTests from './BezierKnotTests.js';
+import * as SplineFlagTests from './SplineFlagTests.js';
+import * as FileStreamLifetimeTests from './FileStreamLifetimeTests.js';
+import { SetTypedIOConfiguration } from '../../runtime/TypedDocumentIO.js';
 import * as ThumbnailImageTests from './ThumbnailImageTests.js';
 import * as BinaryChunkTests from './BinaryChunkTests.js';
 import * as BinaryChunkWriterTests from './BinaryChunkWriterTests.js';
@@ -71,9 +82,10 @@ import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
 
 /** C# partial Program is represented by the same named methods on a single class. */
 export class Program {}
-const modules = { ThumbnailImageTests, BinaryChunkTests, BinaryChunkWriterTests, DoublePrecisionWriterTests, HeaderProbeTests, VersionCompatibilityTests, SunStudyProducerRawTests, EditableTableGeometryTests, EditableTableStyleTests, TableStyleBorderTests, MLeaderTests, SectionLifecycleTests, TypedObjectErasureTests, DimensionStyleParityTests, StoredEnvelopeTests, InsertArrayTests, HatchPixelSizeApiTests, HatchSeedPointApiTests, HatchPeriodicConversionTests, PolygonMeshCardinalityTests, HelixGeometryTests, SplineTangentTransformTests, SplineCloneStateTests, SplineReversalTests, PolylineTopologyTests, LwPolylineFidelityTests, SectionSettingsTests, SectionTests, OleMetadataApiTests, AcisSatTests, LightNameTests, LayerIndexTests, NamedViewTests, VPortApiTests, UcsElevationTests, UcsOrthographicTests, NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+const modules = { HatchPatternValidationTests, TypedCommentTests, HeaderCommentTests, CustomHeaderUnicodeTests, AttributeDefaultValueTests, BinarySentinelTests, OleVersionPresenceApiTests, BezierKnotTests, SplineFlagTests, FileStreamLifetimeTests, ThumbnailImageTests, BinaryChunkTests, BinaryChunkWriterTests, DoublePrecisionWriterTests, HeaderProbeTests, VersionCompatibilityTests, SunStudyProducerRawTests, EditableTableGeometryTests, EditableTableStyleTests, TableStyleBorderTests, MLeaderTests, SectionLifecycleTests, TypedObjectErasureTests, DimensionStyleParityTests, StoredEnvelopeTests, InsertArrayTests, HatchPixelSizeApiTests, HatchSeedPointApiTests, HatchPeriodicConversionTests, PolygonMeshCardinalityTests, HelixGeometryTests, SplineTangentTransformTests, SplineCloneStateTests, SplineReversalTests, PolylineTopologyTests, LwPolylineFidelityTests, SectionSettingsTests, SectionTests, OleMetadataApiTests, AcisSatTests, LightNameTests, LayerIndexTests, NamedViewTests, VPortApiTests, UcsElevationTests, UcsOrthographicTests, NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
 Object.assign(Program, Harness, ...Object.values(modules));
 export async function Main() {
+  SetTypedIOConfiguration(process.env.CONFIGURATION || 'Release');
   const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
   Harness.cases.length = 0;
   for (const [filename, module] of Object.entries(modules))

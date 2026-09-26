@@ -31,3 +31,9 @@ export const NodeLayerStateFiles=Object.freeze({
   Create(file){const stream=new FileStream(file,'Create','Write');return{NewLine:windows?'\r\n':'\n',Write:text=>stream.Write(Encoding.UTF8.GetBytes(text)),Close:()=>stream.Close()};}
 });
 export function DeleteLinetypeFile(file){const name=FullPath(file);try{fs.unlinkSync(name);}catch(error){if(error.code!=='ENOENT')throw FileError(error,name);}}
+
+export const NodeTypedDocumentFiles=Object.freeze({
+  GetFullPath:FullPath,GetDirectoryName:file=>path.dirname(file),
+  GetFileNameWithoutExtension:file=>{const name=path.basename(file),at=name.lastIndexOf('.');return at<0?name:name.slice(0,at);},
+  OpenRead:file=>new FileStream(file,'Open','Read'),Create:file=>new FileStream(file,'Create','Write')
+});

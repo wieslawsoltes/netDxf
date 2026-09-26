@@ -153,3 +153,34 @@
   const output=[];io.WriteDatabaseObject({Write:(c,v)=>output.push([c,v])},document,item);
   if(output[0][1]!=='XRECORD'||output[1][1]!=='C1'||output[2][1]!=='C0'||output.at(-1)[0]!==10)throw new Error('Installed OBJECTS envelope differs.');
 }
+
+// Remaining original-path transport modules run from the installed package alone.
+// This checks packet APIs, not the still-unimplemented whole-document reader/writer.
+{
+  const api=await import('@netdxf/javascript');
+  const {TextCodeValueReader}=await import('@netdxf/javascript/netDxf/IO/TextCodeValueReader.js');
+  const {ReadMTextEmbeddedColumns,WriteMTextColumnDefinition}=await import('@netdxf/javascript/netDxf/IO/DxfMTextColumns.js');
+  const text=new api.MText('Packed columns');text.Columns=new api.MTextColumns();text.Columns.Count=2;text.Columns.Width=10;text.Columns.Gutter=1;
+  const tags=[],writer={Write(code,value){tags.push([code,value]);}};
+  WriteMTextColumnDefinition(writer,new api.DxfDocument(api.DxfVersion.AutoCad2018),text,api.Vector3.UnitX);
+  const reader=new TextCodeValueReader([...tags.slice(1),[0,'EOF']].map(pair=>pair.join('\n')).join('\n')+'\n');reader.Next();
+  const columns=ReadMTextEmbeddedColumns(reader);
+  if(columns.Count!==2||columns.StoredTotalWidth!==21||columns.EmbeddedTextDirection.X!==1||reader.Code!==0)throw new Error('Packed embedded MTEXT column transport failed.');
+  for(const path of ['DxfReader.PolylineRecords','DxfReader.Polyline2DRecords','DxfReader.PolyfaceMeshRecords','DxfReader.PolygonMeshRecords','DxfReader.OpaqueEntity','DxfReader.Section','DxfReader.MultiLeader','DxfClasses']){
+    const module=await import('@netdxf/javascript/netDxf/IO/'+path+'.js');if(!Object.keys(module).length)throw new Error('Empty packed transport module: '+path);
+  }
+}
+
+// Whole-document APIs must be available from the installed package, not only source imports.
+{
+  const { DxfDocument, Line, MemoryStream } = await import('@netdxf/javascript');
+  for (const binary of [false, true]) {
+    const document = new DxfDocument(18), stream = new MemoryStream();
+    document.Entities.Add(new Line());
+    if (!document.Save(stream, binary)) throw new Error('Packed typed Save failed.');
+    stream.Position = 0;
+    const restored = DxfDocument.Load(stream);
+    if (!restored || Array.from(restored.Entities.All).length !== 1 || !stream.CanRead)
+      throw new Error('Packed typed Load failed or disposed caller stream.');
+  }
+}

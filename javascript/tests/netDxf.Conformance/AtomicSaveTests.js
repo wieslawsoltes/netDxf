@@ -1,16 +1,25 @@
-// Port of the raw and internal-writer cases in tests/netDxf.Conformance/AtomicSaveTests.cs.
-// Typed DxfDocument cases are deliberately not registered until the typed engine exists.
+// Complete port of pinned AtomicSaveTests.cs, including typed and filesystem cases.
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { DxfRawDocument, DxfRawOptions, DxfTag, DxfVersion, MemoryStream, FileStream } from '../../node-entry.js';
+import { DxfDocument, Line, Vector3, DxfRawDocument, DxfRawOptions, DxfTag, DxfVersion, MemoryStream, FileStream } from '../../node-entry.js';
 import { DxfAtomicFile } from '../../netDxf/IO/DxfAtomicFile.js';
 import * as E from '../../runtime/Errors.js';
-import { Run, Check, Equal, Throws, SupportedVersions, HeaderVersion, VersionName, BooleanName } from './TestHarness.js';
+import { Run, Check, Equal, SameDoubleBits, Throws, SupportedVersions, HeaderVersion, VersionName, BooleanName } from './TestHarness.js';
+import { FileLifetimeConflictingDocument, CheckLifetimeFileReleased } from './FileStreamLifetimeTests.js';
+import { fileURLToPath } from 'node:url';
 import { SameRawTags } from './RawDocumentTests.js';
 export const AtomicRawVersions = [DxfVersion.AutoCad12, DxfVersion.AutoCad13, DxfVersion.AutoCad14, ...SupportedVersions];
 export const AtomicOriginal = Uint8Array.from({ length: 257 }, (_, i) => i);
 export function RegisterAtomicSaveTests() {
+  for(const v of SupportedVersions)for(const b of [false,true])for(const e of [false,true]) {
+    const suffix=VersionName(v)+'/'+BooleanName(b)+'/'+BooleanName(e);
+    Run('atomic/typed/success/'+suffix,()=>AtomicTypedSuccess(v,b,e));
+    Run('atomic/typed/failure/'+suffix,()=>AtomicTypedFailure(v,b,e));
+    Run('atomic/typed/cancellation/'+suffix,()=>AtomicTypedCancellation(v,b,e));
+  }
+  Run('atomic/open-path-errors',AtomicPathErrors);
+  Run('atomic/symlink-and-readonly',AtomicLinksAndReadOnly);
   for (const v of AtomicRawVersions) for (const b of [false, true]) for (const e of [false, true]) {
     const suffix = `${VersionName(v)}/${BooleanName(b)}/${BooleanName(e)}`;
     Run('atomic/raw/exact/' + suffix, () => AtomicRawExact(v, b, e));
@@ -31,7 +40,7 @@ export function AtomicUnchanged(filename, existing) {
   Equal(existing, fs.existsSync(filename), 'Destination existence changed.');
   if (existing) Equal(AtomicOriginal, new Uint8Array(fs.readFileSync(filename)));
   Check(!fs.readdirSync(path.dirname(filename)).some(f => f.startsWith('.netdxf-') && f.endsWith('.tmp')), 'Staging file leaked.');
-  if (existing) { fs.renameSync(filename, filename + '.released'); fs.renameSync(filename + '.released', filename); }
+  CheckLifetimeFileReleased(filename);
 }
 export function AtomicRawSource(version, binary, invalid = false) {
   const T = (code, value) => new DxfTag(code, value);
@@ -97,3 +106,31 @@ export function AtomicRawBudget() {
     Throws(E.InvalidDataException, () => limited.SaveAtomic(filename)); AtomicUnchanged(filename, true);
   });
 }
+
+export function AtomicTypedSuccess(version,binary,existing){WithAtomicDirectory(file=>{
+  AtomicPrepare(file,existing);const doc=new DxfDocument(version);doc.Comments.Clear();doc.Entities.Add(new Line(new Vector3(1e-20,2,3),new Vector3(4,5,6)));doc.SaveAtomic(file,binary);
+  Equal('Zażółć drawing',doc.Name,'Atomic document name');Equal(path.dirname(file),doc.SupportFolders.WorkingFolder,'Atomic working folder');const loaded=DxfDocument.Load(file);Check(loaded!==null,'Atomic typed reload failed.');Equal(version,loaded.DrawingVariables.AcadVer,'Atomic typed version');
+  const lines=Array.from(loaded.Entities.Lines);Equal(1,lines.length);SameDoubleBits(1e-20,lines[0].StartPoint.X,'Atomic typed geometry');CheckLifetimeFileReleased(file);
+  Check(!fs.readdirSync(path.dirname(file)).some(f=>f.startsWith('.netdxf-')&&f.endsWith('.tmp')),'Success leaked staging file.');
+  const dir=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../artifacts/conformance/fixtures');fs.mkdirSync(dir,{recursive:true});fs.copyFileSync(file,path.join(dir,`atomic-save-${VersionName(version)}-${BooleanName(binary)}-${BooleanName(existing)}.dxf`));
+});}
+export function AtomicTypedFailure(version,binary,existing){WithAtomicDirectory(file=>{
+  AtomicPrepare(file,existing);const doc=FileLifetimeConflictingDocument(version);doc.Name='original name';const folder=doc.SupportFolders.WorkingFolder;
+  Throws(E.InvalidDataException,()=>doc.SaveAtomic(file,binary));Equal('original name',doc.Name,'Failed atomic save changed name');Equal(folder,doc.SupportFolders.WorkingFolder,'Failed atomic save changed working folder');AtomicUnchanged(file,existing);
+});}
+export function AtomicTypedCancellation(version,binary,existing){WithAtomicDirectory(file=>{
+  AtomicPrepare(file,existing);const doc=new DxfDocument(version);doc.Name='not touched';const handles=doc.DrawingVariables.HandleSeed;
+  Throws(E.OperationCanceledException,()=>doc.SaveAtomic(file,binary,{aborted:true}));Equal(handles,doc.DrawingVariables.HandleSeed,'Pre-cancellation allocated handles');Equal('not touched',doc.Name,'Pre-cancellation changed name');AtomicUnchanged(file,existing);
+});}
+export function AtomicPathErrors(){WithAtomicDirectory(file=>{
+  const doc=new DxfDocument();Throws(E.ArgumentNullException,()=>doc.SaveAtomic(null));Throws(E.ArgumentException,()=>doc.SaveAtomic(''));Throws(E.IOException,()=>doc.SaveAtomic(path.dirname(file)));Throws(E.DirectoryNotFoundException,()=>doc.SaveAtomic(path.join(file,'missing','a.dxf')));AtomicUnchanged(file,false);
+});}
+export function AtomicLinksAndReadOnly(){WithAtomicDirectory(file=>{
+  fs.writeFileSync(file,AtomicOriginal);const mode=fs.statSync(file).mode;fs.chmodSync(file,mode&~0o222);
+  try{Throws(E.UnauthorizedAccessException,()=>new DxfDocument().SaveAtomic(file));}finally{fs.chmodSync(file,mode);}
+  AtomicUnchanged(file,true);
+  if(process.platform!=='win32'){
+    const link=file+'.link';fs.symlinkSync(file,link);Throws(E.NotSupportedException,()=>new DxfDocument().SaveAtomic(link));Equal(file,fs.readlinkSync(link),'Atomic save replaced link.');AtomicUnchanged(file,true);
+    fs.unlinkSync(link);fs.symlinkSync(file+'.missing',link);Throws(E.NotSupportedException,()=>new DxfDocument().SaveAtomic(link));Check(!fs.existsSync(file+'.missing'),'Atomic save followed dangling link.');
+  }
+});}
