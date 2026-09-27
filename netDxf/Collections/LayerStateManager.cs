@@ -290,7 +290,9 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            // Name equality is insufficient: a detached clone or a state in another
+            // document must not remove this collection's registered same-named object.
+            if (!ReferenceEquals(item.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }
@@ -300,7 +302,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (this.HasReferences(item))
+            if (this.HasReferences(item) || this.Owner.LayerStateReferencesRemoval(item))
             {
                 return false;
             }

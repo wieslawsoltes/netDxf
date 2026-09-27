@@ -1,6 +1,7 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using netDxf.Objects;
 
 namespace netDxf.Collections
@@ -15,7 +16,7 @@ namespace netDxf.Collections
             { this.Owner = owner; }
         }
         private StatesDictionaryIdentity statesDictionaryIdentity;
-        internal bool HasRetainedEmptyDictionaryIdentity { get; private set; }
+        internal bool HasRetainedDictionaryIdentity { get; private set; }
         internal DxfObject StatesDictionaryObject { get { return this.statesDictionaryIdentity; } }
 
         internal long AssignDictionaryProjection(DictionaryObject projection, long next)
@@ -47,9 +48,9 @@ namespace netDxf.Collections
             return next;
         }
 
-        internal void RestoreEmptyDictionaryIdentities(string extensionHandle, string statesHandle)
+        internal void RestoreDictionaryIdentities(string extensionHandle, string statesHandle)
         {
-            // Called only after physical source-identity validation and exact empty-shape checks.
+            // Called only after physical source-identity validation and exact supported-shape checks.
             string extension = CanonicalDictionaryHandle(extensionHandle);
             string states = CanonicalDictionaryHandle(statesHandle);
             if (extension == states || extension == this.Owner.Layers.Handle || states == this.Owner.Layers.Handle)
@@ -72,7 +73,30 @@ namespace netDxf.Collections
             }
             this.Owner.AddedObjects.Add(states, identity);
             this.statesDictionaryIdentity = identity;
-            this.HasRetainedEmptyDictionaryIdentity = true;
+            this.HasRetainedDictionaryIdentity = true;
+        }
+
+        internal void ValidateLayerStateSourceIdentities(IReadOnlyList<KeyValuePair<LayerState, string>> states)
+        {
+            var handles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var pair in states)
+            {
+                string handle = CanonicalDictionaryHandle(pair.Value);
+                if (!handles.Add(handle) || !ReferenceEquals(pair.Key.Owner, this)
+                    || !ReferenceEquals(this.Owner.GetObjectByHandle(pair.Key.Handle), pair.Key)
+                    || this.Owner.GetObjectByHandle(handle) != null)
+                    throw new FormatException("Layer-state source identity conflicts with its registered projection.");
+            }
+        }
+
+        internal void RestoreLayerStateSourceIdentities(IReadOnlyList<KeyValuePair<LayerState, string>> states)
+        {
+            foreach (var pair in states)
+            {
+                this.Owner.AddedObjects.Remove(pair.Key.Handle);
+                pair.Key.Handle = CanonicalDictionaryHandle(pair.Value);
+                this.Owner.AddedObjects.Add(pair.Key.Handle, pair.Key);
+            }
         }
 
         private static string CanonicalDictionaryHandle(string value)
