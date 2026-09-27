@@ -30,7 +30,7 @@ namespace netDxf.IO
                 && !source.Ambiguous
                 && (accepted is netDxf.Objects.DxfDictionary
                     || (ReferenceEquals(accepted, this.doc.Layers.StateManager)
-                        && this.doc.Layers.StateManager.HasRetainedEmptyDictionaryIdentity));
+                        && this.doc.Layers.StateManager.HasRetainedDictionaryIdentity));
         }
 
         private SourceRecordIdentity CurrentSourceRecord

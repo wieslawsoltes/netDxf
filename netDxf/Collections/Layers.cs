@@ -137,7 +137,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (!this.Contains(item))
+            if (!ReferenceEquals(item.Owner, this) || !ReferenceEquals(this[item.Name], item))
             {
                 return false;
             }

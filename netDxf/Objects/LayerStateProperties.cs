@@ -167,6 +167,9 @@ namespace netDxf.Objects
         /// </summary>
         /// <param name="layer">Layer from which copy the properties.</param>
         /// <param name="options">Layer properties to copy.</param>
+        /// <remarks>Only selected properties are copied. Unselected flags and flags not represented
+        /// by Layer (including viewport flags) retain their stored values. This does not implement
+        /// viewport restoration, resource renaming or a multi-layer transaction.</remarks>
         public void CopyFrom(Layer layer, LayerPropertiesRestoreFlags options)
         {
             if (!string.Equals(this.name, layer.Name, StringComparison.OrdinalIgnoreCase))
@@ -174,7 +177,11 @@ namespace netDxf.Objects
                 throw new ArgumentException("Only a layer with the same name can be copied.", nameof(layer));
             }
 
-            this.flags = LayerPropertiesFlags.None;
+            // Reset only flags selected for capture and represented by Layer. Retain
+            // unselected, viewport-only and unknown stored bits instead of erasing them.
+            const LayerPropertiesFlags supported = LayerPropertiesFlags.Hidden | LayerPropertiesFlags.Frozen
+                | LayerPropertiesFlags.Locked | LayerPropertiesFlags.Plot;
+            this.flags &= ~((LayerPropertiesFlags)options & supported);
 
             if (options.HasFlag(LayerPropertiesRestoreFlags.Hidden))
             {
