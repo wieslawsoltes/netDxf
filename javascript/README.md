@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-19,442/35,309 original test cases across 122/193 original conformance-file paths.
+19,947/35,309 original test cases across 125/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -54,6 +54,11 @@ explicit null handles, orthographic origins, elevation and live-section ownershi
 UCS import preserves ordered scalar updates, validates origin pairs and duplicate
 relationship fields, and distinguishes their private/subclass/XData scope.
 Layer import recovers ByLayer/ByBlock lineweights to Default without relaxing setters.
+Common entity/proxy and table-XData suites cover optional metadata, byte-count
+profiles, independent payload scopes, clone isolation and producer fixtures.
+ATTRIB input validates and completes common fields before decoding text; known
+entity subclass checks retain their contextual diagnostics. The common-data
+assembly-reflection clone case and 24 proxy allocation cases remain unregistered.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,

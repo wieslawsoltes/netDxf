@@ -23,7 +23,7 @@ import { DecodeDxfText } from '../../runtime/DxfStringEncoding.js';
 import { HeaderDateTime, HeaderTimeSpan } from '../../runtime/HeaderTime.js';
 import { UnwrapHeaderNumber } from '../../runtime/HeaderBox.js';
 import { PathFileNameWithoutExtension } from '../../runtime/SupportFileSystem.js';
-import { ArgumentException,ArgumentNullException,FormatException,InvalidDataException,InvalidCastException,NotSupportedException } from '../../runtime/Errors.js';
+import { Exception,ArgumentException,ArgumentNullException,FormatException,InvalidDataException,InvalidCastException,NotSupportedException } from '../../runtime/Errors.js';
 const primitiveReaders=Object.freeze({ARC:'ReadArc',CIRCLE:'ReadCircle',ELLIPSE:'ReadEllipse',LINE:'ReadLine',POINT:'ReadPoint',RAY:'ReadRay',XLINE:'ReadXLine','3DFACE':'ReadFace3D',SOLID:'ReadSolid',TRACE:'ReadTrace',SPLINE:'ReadSpline',LWPOLYLINE:'ReadLwPolyline',HELIX:'ReadHelix',LIGHT:'ReadLight',OLEFRAME:'ReadOleFrame',OLE2FRAME:'ReadOle2Frame'});
 const legacyObjects=new Set(['LAYOUT','GROUP','MLINESTYLE','IMAGEDEF','IMAGEDEF_REACTOR','RASTERVARIABLES','DGNDEFINITION','DWFDEFINITION','PDFDEFINITION']);
 const decoded=(tags,code,fallback='')=>DecodeDxfText(value(tags,code,fallback));
@@ -283,6 +283,7 @@ export class DxfReader {
   ReadEntities(){let block=null;for(const r of this.Records('BLOCKS')){if(r.Name==='BLOCK'){block=this.doc.Blocks.get_Item(decoded(r.Tags,2));continue;}if(r.Name==='ENDBLK'){block=null;continue;}if(!block)throw new InvalidDataException('Entity outside a BLOCK envelope.');this.ReadEntity(r,block);}
     for(const r of this.Records('ENTITIES')){if(this.consumed?.has(r.Start))continue;let block=this.blockByRecordHandle.get(r.Envelope.Owner);if(!block){const paper=value(r.Envelope.Common,67,0)!==0;block=this.doc.Blocks.get_Item(paper?api.Block.DefaultPaperSpaceName:api.Block.DefaultModelSpaceName);if(!block&&paper){const layout=this.doc.Layouts.Add(new api.Layout('Layout1'));block=layout.AssociatedBlock;}}this.ReadEntity(r,block);}}
   ReadEntity(r,block){if(this.consumed?.has(r.Start))return null;let entity;const code=r.Name;
+    if(!io.IsOpaqueEntityCandidate(code))this.ValidateCommonSubclass(r);
     if(Object.hasOwn(primitiveReaders,code))entity=io[primitiveReaders[code]](this.Cursor(r),this.doc);
     else if(['3DSOLID','BODY','REGION'].includes(code))entity=io.ReadAcisEntity(this.Cursor(r),this.doc,code);
     else if(['MULTILEADER','MLEADER'].includes(code))entity=io.ReadMultiLeader(this.ContextWithCursor(r));
@@ -294,6 +295,28 @@ export class DxfReader {
     if(entity==null)return null;this.ApplyCommon(entity,r);this.Track(entity,r,false);
     if(entity instanceof api.Viewport&&entity.Id===1&&block.Record.Layout?.IsPaperSpace){const layout=block.Record.Layout;layout.Viewport=entity;entity.Owner=block;this.doc.AddedObjects.Add(entity.Handle,entity);this.Context.RecordSourceObject(entity,r.Envelope.Source);}
     else block.Entities.Add(entity);return entity;}
+  ValidateCommonSubclass(r){
+    // Known entities enter their body codec only after the common marker. Object
+    // metadata groups can contain private subclass tags and are not this marker.
+    let depth=0,first=-1;
+    for(let i=1;i<r.Tags.length;i++){
+      const tag=r.Tags[i];
+      if(tag.Code===102){if(tag.Value.startsWith('{'))depth++;else if(tag.Value==='}'&&depth>0)depth--;continue;}
+      if(depth===0&&tag.Code===100){first=i;break;}
+    }
+    if(first<0)throw new Exception('Premature end of entity '+r.Name+' definition.');
+    if(r.Tags[first].Value!=='AcDbEntity')throw new InvalidDataException('Expected AcDbEntity common subclass.');
+    const next=r.Tags.findIndex((tag,i)=>i>first&&tag.Code===100);
+    if(next<0)throw new Exception('Premature end of entity '+r.Name+' definition.');
+    if(r.Tags[next].Value==='AcDbEntity'){
+      // The source completes the common packet before diagnosing the duplicate.
+      const cursor=new DocumentTagReader([...r.Tags.slice(first+1,next),new DxfTag(0,'EOF')],0);
+      const common=new io.EntityCommonDataReader();
+      while(cursor.Code!==0){io.ReadEntityCommonData(cursor,this.doc.DrawingVariables.AcadVer,common);cursor.Next();}
+      common.Complete();
+      throw new InvalidDataException('Duplicate AcDbEntity common subclass.');
+    }
+  }
   ContextWithCursor(r){this.Cursor(r);return this.Context;}
   ApplyCommon(entity,r){const t=r.Envelope.Common;if(entity instanceof api.DxfOpaqueEntity)return;entity.Layer=this.Resource('Layers',decoded(t,8,'0'));entity.Linetype=this.Resource('Linetypes',decoded(t,6,'ByLayer'));entity.Color=value(t,420)!==null?api.AciColor.FromTrueColor(value(t,420)):api.AciColor.FromCadIndex(value(t,62,256));entity.Lineweight=value(t,370,api.Lineweight.ByLayer);entity.LinetypeScale=value(t,48,1);entity.IsVisible=value(t,60,0)===0;if(value(t,440)!==null)entity.Transparency=api.Transparency.FromAlphaValue(value(t,440));
     const cursor=new DocumentTagReader([...t,new DxfTag(0,'EOF')],0),common=new io.EntityCommonDataReader();while(cursor.Code!==0){if(!io.ReadEntityCommonData(cursor,this.doc.DrawingVariables.AcadVer,common))cursor.Next();}common.Complete();entity.CommonData.ColorName=common.ColorName;entity.CommonData.ShadowMode=common.ShadowMode;entity.CommonData.ProxyGraphics=common.ProxyGraphics;
@@ -311,7 +334,45 @@ export class DxfReader {
     item.Position=api.MathHelper.Transform(pos,item.Normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);if(attribute){item.Flags=value(t,70,0);if(item instanceof api.AttributeDefinition)item.Prompt=decoded(t,3);}readXData(item,r.Tags,this.doc);return item;}
   ReadText(r){return this.ReadTextFields(r,new api.Text());}
   ReadAttributeDefinition(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body));return this.ReadTextFields(r,new api.AttributeDefinition(decoded(t,2)),true);}
-  ReadAttribute(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),item=new api.Attribute(new api.AttributeDefinition(decoded(t,2)));item.Definition=null;this.ReadTextFields(r,item,true);this.ApplyCommon(item,r);this.Track(item,r,false);return item;}
+  ReadAttribute(r){
+    // ATTRIB is read inside the INSERT sequence, not through an entity codec.
+    // Validate/consume its common subclass before looking at text fields.
+    const chunk=new DocumentTagReader(this.tags,r.Start,this.identities),common=new io.EntityCommonDataReader();
+    let layer=api.Layer.Default,linetype=api.Linetype.ByLayer,color=api.AciColor.ByLayer;
+    let lineweight=api.Lineweight.ByLayer,linetypeScale=1,isVisible=true,transparency=api.Transparency.ByLayer;
+    const premature=()=>{throw new Exception('Premature end of entity ATTRIB definition.');};
+    chunk.Next();
+    while(chunk.Code!==100){if(chunk.Code===0)premature();if(chunk.Code===5)chunk.ReadHex();chunk.Next();}
+    if(chunk.ReadString()!=='AcDbEntity')throw new InvalidDataException('Expected AcDbEntity common subclass for ATTRIB.');
+    chunk.Next();
+    while(chunk.Code!==100){
+      switch(chunk.Code){
+        case 0:premature();break;
+        case 8:layer=this.Resource('Layers',DecodeDxfText(chunk.ReadString()));break;
+        case 6:linetype=this.Resource('Linetypes',DecodeDxfText(chunk.ReadString()));break;
+        case 62:if(!color.UseTrueColor)color=api.AciColor.FromCadIndex(chunk.ReadShort());break;
+        case 420:color=api.AciColor.FromTrueColor(chunk.ReadInt());break;
+        case 440:transparency=api.Transparency.FromAlphaValue(chunk.ReadInt());break;
+        case 370:lineweight=chunk.ReadShort();break;
+        case 48:linetypeScale=chunk.ReadDouble();break;
+        case 60:isVisible=chunk.ReadShort()===0;break;
+        case 430:case 284:case 92:case 160:case 310:
+          io.ReadEntityCommonData(chunk,this.doc.DrawingVariables.AcadVer,common);break;
+      }
+      chunk.Next();
+    }
+    // Payload length failure precedes a duplicate subclass failure in C#.
+    common.Complete();
+    if(chunk.ReadString()==='AcDbEntity')throw new InvalidDataException('Duplicate AcDbEntity common subclass.');
+    const payload={...r,Envelope:{...r.Envelope,Body:chunk.index-r.Start}};
+    const tags=publicPayload(r.Tags.slice(payload.Envelope.Body));
+    const item=api.Attribute.CreateOverload('string',decoded(tags,2));item.Definition=null;
+    this.ReadTextFields(payload,item,true);
+    item.Color=color;item.Layer=layer;item.Linetype=linetype;item.Lineweight=lineweight;
+    item.LinetypeScale=linetypeScale;item.Transparency=transparency;item.IsVisible=isVisible;
+    item.ColorName=common.ColorName;item.ShadowMode=common.ShadowMode;item.ProxyGraphics=common.ProxyGraphics;
+    this.Track(item,r,false);return item;
+  }
   ReadInsert(r,owner){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),block=this.doc.Blocks.get_Item(decoded(t,2));if(!block)throw new InvalidDataException('Unresolved INSERT block: '+decoded(t,2));const attributes=[];
     if(value(t,66,0)!==0){let next=r.End;while(true){const record=this.records.find(row=>row.Start===next&&row.Section===r.Section);if(!record)throw new InvalidDataException('Truncated INSERT attribute sequence.');this.consumed.add(record.Start);next=record.End;if(record.Name==='SEQEND')break;if(record.Name!=='ATTRIB')throw new InvalidDataException('INSERT requires ATTRIB records followed by SEQEND.');attributes.push(this.ReadAttribute(record));}}
     const item=api.Insert.CreateOverload('System.Collections.Generic.List<netDxf.Entities.Attribute>',attributes);item.Block=block;item.Normal=point(t,210,3,api.Vector3.UnitZ);item.Position=api.MathHelper.Transform(point(t,10),item.Normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);item.Rotation=value(t,50,0);
