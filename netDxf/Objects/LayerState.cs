@@ -36,7 +36,7 @@ namespace netDxf.Objects
     /// <summary>
     /// Represents a layer state.
     /// </summary>
-    public class LayerState :
+    public partial class LayerState :
         TableObject
     {
         #region private fields
@@ -480,7 +480,8 @@ namespace netDxf.Objects
             LayerState ls = new LayerState(newName)
             {
                 Description = this.description,
-                CurrentLayer = this.currentLayer
+                CurrentLayer = this.currentLayer,
+                PaperSpace = this.paperSpace
             };
 
             foreach (LayerStateProperties item in this.properties.Values)

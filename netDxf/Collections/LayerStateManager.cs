@@ -244,7 +244,6 @@ namespace netDxf.Collections
 
             layerState.Owner = this;
 
-            layerState.NameChanged += this.Item_NameChanged;
 
             this.Owner.AddedObjects.Add(layerState.Handle, layerState);
 
@@ -314,7 +313,6 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
 
             return true;
         }
@@ -323,20 +321,22 @@ namespace netDxf.Collections
         
         #region Layer events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateStateRename(LayerState state, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
-                throw new ArgumentException("There is already another layer with the same name.");
-            }
+            if (!ReferenceEquals(state.Owner, this) || !ReferenceEquals(this[state.Name], state))
+                throw new InvalidOperationException("Layer-state rename requires its current registered owner.");
+            if (this.List.TryGetValue(newName, out LayerState occupied) && !ReferenceEquals(occupied, state))
+                throw new ArgumentException("There is already another layer state with the same name.", nameof(newName));
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (LayerState) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitStateRename(LayerState state, string newName)
+        {
+            // Keep the existing reference bucket rather than flattening/rebuilding it.
+            DxfObjectReferences references = this.References[state.Name];
+            this.List.Remove(state.Name);
+            this.References.Remove(state.Name);
+            this.List.Add(newName, state);
+            this.References.Add(newName, references);
         }
 
         #endregion
