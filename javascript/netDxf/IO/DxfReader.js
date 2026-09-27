@@ -5,6 +5,7 @@ import { DotNetMath } from '../../runtime/GeometryRuntime.js';
 import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
 import * as io from '../../runtime/DxfTransport.js';
 import { ReadTypedDocumentInput } from './DxfRawDocument.js';
+import { UcsBaseContext } from './DxfReader.UcsBase.js';
 import { DxfTag } from './DxfTag.js';
 import { ReadXDataRecord } from '../../runtime/DxfXDataIO.js';
 import { HatchSplineData } from '../Entities/HatchSplineData.js';
@@ -146,7 +147,7 @@ export class DxfReader {
       else segment=new api.LinetypeSimpleSegment(length);
       if(flags&6){segment.Scale=value(t,46,1);segment.Rotation=value(t,50,0);segment.Offset=point(t,44,2);segment.RotationType=flags&1?api.LinetypeSegmentRotationType.Absolute:api.LinetypeSegmentRotationType.Relative;}item.Segments.Add(segment);i=end;
     }this.Track(item,r);this.doc.Linetypes.Add(item,false);return item;}
-  ReadLayer(r){const t=subclass(r.Tags,'AcDbLayerTableRecord'),item=new api.Layer(decoded(t,2),false);const flags=value(t,70,0),color=value(t,62,7);item.IsFrozen=!!(flags&1);item.IsLocked=!!(flags&4);item.IsVisible=color>=0;item.Color=value(t,420)!==null?api.AciColor.FromTrueColor(value(t,420)):api.AciColor.FromCadIndex(Math.abs(color));item.Linetype=this.Resource('Linetypes',decoded(t,6,'Continuous'));item.Plot=value(t,290,true);item.Lineweight=value(t,370,api.Lineweight.Default);this.Track(item,r);
+  ReadLayer(r){const t=subclass(r.Tags,'AcDbLayerTableRecord'),item=new api.Layer(decoded(t,2),false);const flags=value(t,70,0),color=value(t,62,7);item.IsFrozen=!!(flags&1);item.IsLocked=!!(flags&4);item.IsVisible=color>=0;item.Color=value(t,420)!==null?api.AciColor.FromTrueColor(value(t,420)):api.AciColor.FromCadIndex(Math.abs(color));item.Linetype=this.Resource('Linetypes',decoded(t,6,'Continuous'));item.Plot=value(t,290,true);const lineweight=value(t,370,api.Lineweight.Default);item.Lineweight=lineweight===api.Lineweight.ByLayer||lineweight===api.Lineweight.ByBlock?api.Lineweight.Default:lineweight;this.Track(item,r);
     // Match table-entry postprocessing: the last matching slot is the projection,
     // while the complete caller-owned XData packet remains present.
     if(item.XData.ContainsAppId('AcAecLayerStandard'))
@@ -154,8 +155,69 @@ export class DxfReader {
     if(item.XData.ContainsAppId('AcCmTransparency'))
       for(const record of item.XData.get_Item('AcCmTransparency').XDataRecord)if(record.Code===1071)item.Transparency=api.Transparency.FromAlphaValue(record.Value);
     this.doc.Layers.Add(item,false);return item;}
-  ReadUCS(r){const t=subclass(r.Tags,'AcDbUCSTableRecord'),item=new api.UCS(decoded(t,2),point(t,10),point(t,11,3,api.Vector3.UnitX),point(t,12,3,api.Vector3.UnitY));item.Flags=value(t,70,0);item.Elevation=value(t,146,0);const type=value(t,79,0),base=value(t,346,null);io.CompleteUcsBase(this.Context,item,type,base);
-    for(let i=0;i<t.length;i++)if(t[i].Code===71){let end=i+1;while(end<t.length&&t[end].Code!==71)end++;item.SetOrthographicOrigin(t[i].Value,point(t.slice(i+1,end),13));}this.Track(item,r);this.doc.UCSs.Add(item,false);return item;}
+  ReadUCS(r){
+    const chunk=this.Cursor(r,'AcDbUCSTableRecord'),scope=new UcsBaseContext();
+    const origin=api.Vector3.Zero,xDir=api.Vector3.UnitX,yDir=api.Vector3.UnitY;
+    const relationships=new Set(),origins=new Map(),xdata=[];
+    let name='',flags=0,elevation=0,type=0,baseHandle=null;
+    let originType=0,orthographicOrigin=api.Vector3.Zero,components=0;
+    const completeOrigin=()=>{
+      if(originType===0)return;
+      if(components!==7)throw new InvalidDataException('A UCS orthographic origin pair requires all three coordinate groups 13, 23 and 33.');
+      if(origins.has(originType))throw new InvalidDataException('A UCS record cannot contain duplicate orthographic origin types.');
+      origins.set(originType,orthographicOrigin);
+    };
+    chunk.Next();
+    while(chunk.Code!==0){
+      const code=chunk.Code;scope.Observe(code,chunk.Value);
+      switch(code){
+        case 2:name=DecodeDxfText(chunk.ReadString());break;
+        case 10:origin.X=chunk.ReadDouble();break;case 20:origin.Y=chunk.ReadDouble();break;case 30:origin.Z=chunk.ReadDouble();break;
+        case 11:xDir.X=chunk.ReadDouble();break;case 21:xDir.Y=chunk.ReadDouble();break;case 31:xDir.Z=chunk.ReadDouble();break;
+        case 12:yDir.X=chunk.ReadDouble();break;case 22:yDir.Y=chunk.ReadDouble();break;case 32:yDir.Z=chunk.ReadDouble();break;
+        // Flags are checked record-wide in the pinned source; only 79/346 use the private/subclass/XData scope.
+        case 70:
+          if(relationships.has(70))throw new InvalidDataException('Duplicate UCS flags.');
+          relationships.add(70);flags=chunk.ReadShort();break;
+        case 79:
+          if(scope.IsPublic){
+            if(relationships.has(79))throw new InvalidDataException('Duplicate UCS orthographic view type.');
+            relationships.add(79);type=chunk.ReadShort();
+            if(type<0||type>6)throw new InvalidDataException('Unsupported UCS orthographic view type outside 0 through 6.');
+          }break;
+        case 346:
+          if(scope.IsPublic){
+            if(baseHandle!==null)throw new InvalidDataException('Duplicate UCS base-reference group 346.');
+            // Canonical numeric handles preserve explicit zero separately from an absent field.
+            baseHandle=chunk.ReadHex();
+          }break;
+        case 71:
+          completeOrigin();originType=chunk.ReadShort();
+          if(originType<1||originType>6)throw new InvalidDataException('UCS group 71 must identify an orthographic type in the range 1 through 6.');
+          orthographicOrigin=api.Vector3.Zero;components=0;break;
+        case 13:case 23:case 33:{
+          const bit=code===13?1:code===23?2:4;
+          if(originType===0||(components&bit)!==0)throw new InvalidDataException('UCS orthographic origin coordinates must follow group 71 and occur only once per pair.');
+          const coordinate=chunk.ReadDouble();
+          if(bit===1)orthographicOrigin.X=coordinate;else if(bit===2)orthographicOrigin.Y=coordinate;else orthographicOrigin.Z=coordinate;
+          components|=bit;break;
+        }
+        case 146:elevation=chunk.ReadDouble();break;
+        case 1001:xdata.push(ReadXDataRecord(chunk,null,true));continue;
+        // Native Debug.Assert for orphan XData has no process-abort substitute.
+      }
+      chunk.Next();
+    }
+    completeOrigin();
+    if(!api.TableObject.IsValidName(name)){
+      if(type!==0||baseHandle!==null)throw new InvalidDataException('A UCS base relationship requires a retained, valid UCS name.');
+      return null;
+    }
+    const item=new api.UCS(name,origin,xDir,yDir,false);item.Elevation=elevation;item.Flags=flags;
+    io.CompleteUcsBase(this.Context,item,type,baseHandle);
+    for(const [kind,point]of origins)item.SetOrthographicOrigin(kind,point);
+    this.Track(item,r,false);item.XData.AddRange(xdata);this.doc.UCSs.Add(item,false);return item;
+  }
   Resource(property,name){if(name===null||name==='')name=property==='Layers'?'0':property==='Linetypes'?'ByLayer':'Standard';const table=this.doc[property],existing=table.get_Item(name);if(existing)return existing;let item;
     if(property==='Layers')item=new api.Layer(name,false);else if(property==='Linetypes')item=new api.Linetype(name,'',false);else if(property==='TextStyles')item=new api.TextStyle(name,api.TextStyle.DefaultFont,false);else if(property==='DimensionStyles')item=new api.DimensionStyle(name,false);else throw new InvalidDataException('Missing '+property+' resource: '+name);return table.Add(item);}
   ReadBlocks(){const doc=this.doc,headers=this.Records('BLOCKS','BLOCK'),ends=this.Records('BLOCKS','ENDBLK');

@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-18,169/35,309 original test cases across 118/193 original conformance-file paths.
+19,442/35,309 original test cases across 122/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -49,6 +49,11 @@ streams, malformed input and caller ownership. Typed EOF diagnostics remain dist
 from strict raw framing errors. Missing layout OBJECTS are recovered from retained
 BLOCK_RECORD pointers; typed text output captures the host newline without changing
 raw codec output.
+Original VIEW/VPORT/UCS suites cover repeated viewport records, named/base UCS links,
+explicit null handles, orthographic origins, elevation and live-section ownership.
+UCS import preserves ordered scalar updates, validates origin pairs and duplicate
+relationship fields, and distinguishes their private/subclass/XData scope.
+Layer import recovers ByLayer/ByBlock lineweights to Default without relaxing setters.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,
