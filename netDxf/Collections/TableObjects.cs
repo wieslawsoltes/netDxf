@@ -34,6 +34,10 @@ namespace netDxf.Collections
     /// Represents a list of table objects
     /// </summary>
     /// <typeparam name="T"><see cref="TableObject">TableObject</see>.</typeparam>
+    /// <remarks>Layer-state reference queries return a fresh inventory of currently exposed
+    /// direct reference slots, including custom HEADER pointers (reported against the document).
+    /// Uses counts represented slots; it does not decode private application strings or binary data.
+    /// Invalid exposed handle values reject inspection. This is not a recursive dependency closure.</remarks>
     public abstract class TableObjects<T> :
         DxfObject,
         IEnumerable<T> where T : TableObject
@@ -147,6 +151,8 @@ namespace netDxf.Collections
         /// </returns>
         public bool HasReferences(string name)
         {
+            if (this.list.TryGetValue(name, out T stateItem) && stateItem is netDxf.Objects.LayerState state)
+                return this.Owner.LayerStateReferences(state).Count != 0;
             if (this.list.TryGetValue(name, out T appItem) && appItem is netDxf.Tables.ApplicationRegistry registry)
                 return this.Owner.ApplicationRegistryReferences(registry).Count != 0;
             return !this.references[name].IsEmpty() || (this.list.TryGetValue(name, out T target) && this.Owner.MLeaderReferences(target).Count > 0);
@@ -161,6 +167,7 @@ namespace netDxf.Collections
         /// </returns>
         public bool HasReferences(T item)
         {
+            if (item is netDxf.Objects.LayerState state) return this.Owner.LayerStateReferences(state).Count != 0;
             if (item is netDxf.Tables.ApplicationRegistry registry) return this.Owner.ApplicationRegistryReferences(registry).Count != 0;
             return !this.references[item.Name].IsEmpty() || this.Owner.MLeaderReferences(item).Count > 0;
         }
@@ -176,6 +183,8 @@ namespace netDxf.Collections
         /// </remarks>
         public List<DxfObjectReference> GetReferences(string name)
         {
+            if (this.list.TryGetValue(name, out T stateItem) && stateItem is netDxf.Objects.LayerState state)
+                return this.Owner.LayerStateReferences(state);
             if (this.list.TryGetValue(name, out T appItem) && appItem is netDxf.Tables.ApplicationRegistry registry)
                 return this.Owner.ApplicationRegistryReferences(registry);
             List<DxfObjectReference> result = this.references[name].ToList();
@@ -194,6 +203,7 @@ namespace netDxf.Collections
         /// </remarks>
         public List<DxfObjectReference> GetReferences(T item)
         {
+            if (item is netDxf.Objects.LayerState state) return this.Owner.LayerStateReferences(state);
             if (item is netDxf.Tables.ApplicationRegistry registry) return this.Owner.ApplicationRegistryReferences(registry);
             List<DxfObjectReference> result = this.references[item.Name].ToList();
             this.MergeMLeaderReferences(result, item);

@@ -300,7 +300,7 @@ namespace netDxf.Collections
                 return false;
             }
 
-            if (this.HasReferences(item))
+            if (this.Owner.LayerStateReferencesRemoval(item))
             {
                 return false;
             }

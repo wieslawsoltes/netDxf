@@ -124,6 +124,7 @@ internal static partial class Program
         RegisterInfiniteLineTransformTests();
         RunNamedObjectDatabaseTests();
         RegisterLayerStateIdentityTests();
+        RegisterPopulatedLayerStateIdentityTests();
         RunTypedContainerTests();
         RunGeoDataTests();
         RegisterMixedModuleIntegrationTests();

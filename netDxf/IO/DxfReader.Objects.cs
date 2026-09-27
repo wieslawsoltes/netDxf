@@ -24,6 +24,8 @@ namespace netDxf.IO
             internal readonly List<Tuple<string, string, bool>> Entries = new List<Tuple<string, string, bool>>();
             internal string Default;
             internal List<DxfTag> DictionaryTags;
+            internal bool CanonicalLayerStateDictionary;
+            internal bool CanonicalLayerStateRecord;
             internal readonly List<string> ContainerReferences = new List<string>();
             internal readonly List<string> SortKeys = new List<string>();
         }
@@ -167,6 +169,7 @@ namespace netDxf.IO
                 DxfDictionary dictionary = codeName == "DICTIONARY" ? new DxfDictionary() : new DxfDictionaryWithDefault();
                 result.Object = dictionary;
                 result.DictionaryTags = tags.Count <= 7 ? tags : null;
+                result.CanonicalLayerStateDictionary = codeName == "DICTIONARY" && CanonicalLayerStateDictionary(tags);
                 dictionary.IsHardOwner = false;
                 string pendingName = null;
                 for (int i = payload; i < tags.Count; i++)
@@ -191,6 +194,7 @@ namespace netDxf.IO
             else if (codeName == "XRECORD")
             {
                 DxfXRecord record = new DxfXRecord(); result.Object = record;
+                result.CanonicalLayerStateRecord = CanonicalLayerStateRecord(tags);
                 if (payload < tags.Count && tags[payload].Code == 100 && (string)tags[payload].Value == "AcDbXrecord") payload++;
                 else throw new FormatException("XRECORD requires AcDbXrecord subclass data.");
                 if (payload < tags.Count && tags[payload].Code == 280) record.Cloning = (DictionaryCloningFlags)(short)tags[payload++].Value;
@@ -290,7 +294,7 @@ namespace netDxf.IO
             HashSet<string> managed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (this.layerStateManagerDictionaryHandle != null && this.dictionaries.TryGetValue(this.layerStateManagerDictionaryHandle, out DictionaryObject layerManager))
             {
-                this.RestoreEmptyLayerStateIdentities(layerManager);
+                this.RestoreLayerStateIdentities(layerManager);
                 managed.Add(layerManager.Handle);
                 foreach (string child in layerManager.Entries.Keys)
                 {
