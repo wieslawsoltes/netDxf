@@ -24,6 +24,7 @@ namespace netDxf.IO
             internal readonly List<Tuple<string, string, bool>> Entries = new List<Tuple<string, string, bool>>();
             internal string Default;
             internal List<DxfTag> DictionaryTags;
+            internal bool CanonicalLayerStateHeader;
             internal readonly List<string> ContainerReferences = new List<string>();
             internal readonly List<string> SortKeys = new List<string>();
         }
@@ -166,7 +167,7 @@ namespace netDxf.IO
             {
                 DxfDictionary dictionary = codeName == "DICTIONARY" ? new DxfDictionary() : new DxfDictionaryWithDefault();
                 result.Object = dictionary;
-                result.DictionaryTags = tags.Count <= 7 ? tags : null;
+                result.DictionaryTags = tags.Count <= 5 + 2 * MaximumRetainedLayerStates ? tags : null;
                 dictionary.IsHardOwner = false;
                 string pendingName = null;
                 for (int i = payload; i < tags.Count; i++)
@@ -191,6 +192,7 @@ namespace netDxf.IO
             else if (codeName == "XRECORD")
             {
                 DxfXRecord record = new DxfXRecord(); result.Object = record;
+                result.CanonicalLayerStateHeader = IsCanonicalLayerStateHeader(tags, payload);
                 if (payload < tags.Count && tags[payload].Code == 100 && (string)tags[payload].Value == "AcDbXrecord") payload++;
                 else throw new FormatException("XRECORD requires AcDbXrecord subclass data.");
                 if (payload < tags.Count && tags[payload].Code == 280) record.Cloning = (DictionaryCloningFlags)(short)tags[payload++].Value;

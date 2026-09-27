@@ -18,7 +18,12 @@ namespace netDxf.IO
             var entry = parent.Entries[0];
             if (entry.Item1 != DxfObjectCode.LayerStates || !entry.Item3) return;
             var child = this.databaseRecords.SingleOrDefault(r => r.Object.Handle == entry.Item2);
-            if (child == null || child.Entries.Count != 0) return;
+            if (child == null) return;
+            if (child.Entries.Count != 0)
+            {
+                this.RestorePopulatedLayerStateIdentities(parent, child);
+                return;
+            }
             if (!EmptyLayerDictionaryShape(parent.DictionaryTags, false)
                 || !EmptyLayerDictionaryShape(child.DictionaryTags, true)) return;
             // An absent or payload-only LAYER identity is handled by the existing

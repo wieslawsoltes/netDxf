@@ -10,6 +10,7 @@ internal static partial class Program
 {
     private static void RegisterLayerStateIdentityTests()
     {
+        RegisterPopulatedLayerStateTests();
         foreach (var version in SupportedVersions)
         foreach (bool binary in new[] { false, true })
         {
