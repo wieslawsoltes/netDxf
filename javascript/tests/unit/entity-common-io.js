@@ -70,9 +70,9 @@ for (const binary of [false, true]) {
   test(`ATTRIB checks the first physical subclass rather than hiding it in a control packet / ${binary}`, () => {
     rejects(fixture(binary, (t, c) => { t.splice(c, 0, tag(102, '{PRIVATE'), tag(100, 'NotAcDbEntity'), tag(102, '}')); return t; }), 'Expected AcDbEntity common subclass');
   });
-  test(`ATTRIB empty tag uses the internal tag constructor without weakening ATTDEF validation / ${binary}`, () => {
+  test(`ATTRIB reader discards an empty tag without weakening ATTDEF validation / ${binary}`, () => {
     const raw = fixture(binary, (t, c, b) => t.filter((x, i) => i < b || x.Code !== 2));
-    const a = attribute(load(raw)); assert.equal(a.Tag, ''); assert.equal(a.Value, 'stored'); assert.equal(a.Definition, null);
+    const doc = load(raw); assert.equal(Array.from(doc.Entities.Inserts)[0].Attributes.Count, 0);
     assert.throws(() => new AttributeDefinition(''), ArgumentException);
   });
   test(`ATTRIB accepts a nonduplicate body marker and raw access stays independent / ${binary}`, () => {

@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-19,947/35,309 original test cases across 125/193 original conformance-file paths.
+20,359/35,309 original test cases across 130/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -59,6 +59,12 @@ profiles, independent payload scopes, clone isolation and producer fixtures.
 ATTRIB input validates and completes common fields before decoding text; known
 entity subclass checks retain their contextual diagnostics. The common-data
 assembly-reflection clone case and 24 proxy allocation cases remain unregistered.
+Retained known entities require a nonzero, unrepeated common handle. Underlays with
+absent/null definition references are discarded after body validation, not assigned
+fabricated definitions. ATTRIB bodies preserve ordered fields, stored rotation and
+source width/angle recovery; empty final tags are discarded. Selected DIMSTYLE
+numeric fields recover on import without relaxing public setters. Original LIGHT
+and light-name suites cover persistence, cloning, placement and version refusal.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,

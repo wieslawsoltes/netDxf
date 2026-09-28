@@ -74,3 +74,6 @@ export class Underlay extends EntityObject {
     return this.$finishEntityClone(copy);
   }
 }
+
+// Internal parameterless construction used by the original typed reader.
+export function CreateUnderlayForImport() { return new Underlay(internal); }
