@@ -155,7 +155,8 @@ namespace netDxf.Collections
                 return this.Owner.LayerStateReferences(state).Count != 0;
             if (this.list.TryGetValue(name, out T appItem) && appItem is netDxf.Tables.ApplicationRegistry registry)
                 return this.Owner.ApplicationRegistryReferences(registry).Count != 0;
-            return !this.references[name].IsEmpty() || (this.list.TryGetValue(name, out T target) && this.Owner.MLeaderReferences(target).Count > 0);
+            return !this.references[name].IsEmpty() || (this.list.TryGetValue(name, out T target) && this.Owner.MLeaderReferences(target).Count > 0)
+                || (this.list.TryGetValue(name, out T savedTarget) && this.Owner.LayerStateResourceReferences(savedTarget).Count > 0);
         }
 
         /// <summary>
@@ -169,7 +170,8 @@ namespace netDxf.Collections
         {
             if (item is netDxf.Objects.LayerState state) return this.Owner.LayerStateReferences(state).Count != 0;
             if (item is netDxf.Tables.ApplicationRegistry registry) return this.Owner.ApplicationRegistryReferences(registry).Count != 0;
-            return !this.references[item.Name].IsEmpty() || this.Owner.MLeaderReferences(item).Count > 0;
+            return !this.references[item.Name].IsEmpty() || this.Owner.MLeaderReferences(item).Count > 0
+                || this.Owner.LayerStateResourceReferences(item).Count > 0;
         }
 
         /// <summary>
@@ -212,7 +214,9 @@ namespace netDxf.Collections
 
         private void MergeMLeaderReferences(List<DxfObjectReference> result, T target)
         {
-            foreach(DxfObjectReference reference in this.Owner.MLeaderReferences(target))
+            var additional = this.Owner.MLeaderReferences(target);
+            additional.AddRange(this.Owner.LayerStateResourceReferences(target));
+            foreach(DxfObjectReference reference in additional)
             {
                 int index=result.FindIndex(item=>ReferenceEquals(item.Reference,reference.Reference));
                 if(index<0) result.Add(reference);

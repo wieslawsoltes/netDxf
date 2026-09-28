@@ -146,6 +146,7 @@ namespace netDxf.Entities
         /// <summary>
         /// Gets or sets the polyface mesh <see cref="Vector3">vertexes</see>.
         /// </summary>
+        /// <remarks>Direct array edits cannot invalidate cached graphics. Use SetVertex for validated explicit edits.</remarks>
         public Vector3[] Vertexes
         {
             get { return this.vertexes; }

@@ -10,7 +10,7 @@ namespace netDxf.IO
     {
         private readonly List<PolygonMeshRecord> loadedPolygonMeshRecords = new List<PolygonMeshRecord>();
 
-        private PolygonMesh ReadStoredPolygonMeshSequence(PolylineTypeFlags flags, Vector3 normal, List<XData> xdata, short m, short n)
+        private PolygonMesh ReadStoredPolygonMeshSequence(PolylineTypeFlags flags, Vector3 normal, List<XData> xdata, short m, short n, short densityM, short densityN)
         {
             if (m < 2 || m > 256 || n < 2 || n > 256)
                 throw new System.IO.InvalidDataException("POLYGONMESH groups 71/72 require M and N between 2 and 256.");
@@ -32,6 +32,7 @@ namespace netDxf.IO
                 points[slot] = records[ordinal].Position; slots[slot] = records[ordinal];
             }
             var result = new PolygonMesh(m, n, points) { Flags = flags, Normal = normal };
+            result.RestoreSurfaceDensities(densityM, densityN);
             result.XData.AddRange(xdata); result.SetStoredRecords(this.doc, slots, end);
             return result;
         }

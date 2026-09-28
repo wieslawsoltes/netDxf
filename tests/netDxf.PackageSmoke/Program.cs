@@ -19,6 +19,7 @@ NetDxf.Qualification.PortableDoubleCases.VerifyInstalled(typeof(DxfDocument).Ass
 NetDxf.Qualification.InsertGeometryCases.VerifyInstalled();
 NetDxf.Qualification.Polyline3DEditCases.VerifyInstalled();
 NetDxf.Qualification.Polyline2DEditCases.VerifyInstalled();
+NetDxf.Qualification.LegacyMeshEditCases.VerifyInstalled();
 netDxf.GTE.GVector nullVector = null!;
 var geometryVector = new netDxf.GTE.GVector(new[] { 3.0, 4.0 });
 if (!(nullVector == (netDxf.GTE.GVector)null!) || geometryVector == nullVector || !(geometryVector != nullVector))
@@ -397,7 +398,7 @@ foreach (bool binary in new[] { false, true })
     using var normalStream = new MemoryStream();
     if (!normalDoc.Save(normalStream,binary)) throw new InvalidOperationException("Normal package save failed");
     normalStream.Position = 0;
-    var normalCopy = DxfDocument.Load(normalStream) ?? throw new InvalidOperationException("Normal package reload failed");
+    var normalCopy = DxfDocument.Load(normalStream) ?? throw new InvalidOperationException("Normal package load failed");
     var normalLoadedLine = normalCopy.Entities.Lines.Single();
     if (normalLoadedLine.Normal != Vector3.UnitX
         || !(normalLoadedLine.ProxyGraphics ?? Array.Empty<byte>()).SequenceEqual(normalProxy)
