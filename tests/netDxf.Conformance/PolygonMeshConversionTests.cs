@@ -29,7 +29,13 @@ internal static partial class Program
             var document = new DxfDocument(); document.DrawingVariables.SurfU = setting; document.DrawingVariables.SurfV = (short)(setting + 1);
             if (owned) document.Entities.Add(mesh);
             if (detachedBlock) new netDxf.Blocks.Block("DETACHED_GRID").Entities.Add(mesh);
-            if (explicitDensity) { mesh.DensityU = 5; mesh.DensityV = 7; }
+            if (explicitDensity)
+            {
+                mesh.DensityU = 5; mesh.DensityV = 7;
+                // Seed the conversion-preservation fixture after its final geometry/hint edit.
+                // Explicit edits invalidate stale graphics; conversion must retain these fresh bytes.
+                mesh.ProxyGraphics = new byte[] { 2, 3, 5 };
+            }
             var before = mesh.Vertexes.ToArray(); var owner = mesh.Owner; string handle = mesh.Handle;
             var samples = mesh.MeshVertexes();
             int u = smooth == PolylineSmoothType.NoSmooth ? mesh.U : explicitDensity ? 5 : Math.Max(3, setting + 1);

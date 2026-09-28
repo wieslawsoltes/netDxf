@@ -70,6 +70,7 @@ internal static partial class Program
         RegisterMeshTopologyEditTests();
         RegisterMeshReindexingTests();
         RegisterMeshTopologyCollectionTests();
+        RegisterLegacyMeshEditTests();
         RegisterHatchBulgeExplosionTests();
         RegisterSplineAffineAtomicTests();
         RegisterSplineCountPolicyTests();

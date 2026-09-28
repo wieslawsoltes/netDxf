@@ -8,6 +8,10 @@ namespace netDxf.IO
 {
     internal sealed partial class DxfReader
     {
+        // Scoped retention budgets from PR #224, not general DXF admission limits.
+        private const int MaximumRetainedLayerStates = 4096;
+        private const int MaximumRetainedLayerStateTags = 1048576;
+
         private void RestoreLayerStateIdentities(DictionaryObject projection)
         {
             // Only complete writer-shaped graphs are promoted from the legacy conversion.
@@ -27,22 +31,28 @@ namespace netDxf.IO
                 throw new FormatException("Canonical layer-state dictionaries have inconsistent structural ownership.");
 
             var manager = this.doc.Layers.StateManager;
-            if (child.Entries.Count != manager.Count) return;
+            if (child.Entries.Count != manager.Count || child.Entries.Count > MaximumRetainedLayerStates) return;
             var wanted = new HashSet<string>(child.Entries.Select(e => e.Item2), StringComparer.OrdinalIgnoreCase);
             if (wanted.Count != child.Entries.Count) return; // A converted alias is not a new state.
             var records = new Dictionary<string, DatabaseRecord>(StringComparer.OrdinalIgnoreCase);
             foreach (var record in this.databaseRecords)
                 if (wanted.Contains(record.Object.Handle)) records.Add(record.Object.Handle, record);
+            // The exact entry name, complete collection cardinality and full packet
+            // comparison identify the converted state without a second source map.
+            // Duplicate/case-collapsed names cannot pass this one-to-one validation.
             var replacements = new List<KeyValuePair<LayerState, string>>(wanted.Count);
             var accepted = new List<DatabaseRecord>(wanted.Count);
+            int remainingTags = MaximumRetainedLayerStateTags;
             foreach (var item in child.Entries)
             {
                 // WriteDictionary uses 360 for this reserved name and 350 otherwise.
                 bool hard = string.Equals(item.Item1, DxfObjectCode.LayerStates, StringComparison.InvariantCultureIgnoreCase);
                 if (item.Item3 != hard || !records.TryGetValue(item.Item2, out var record)
                     || !record.CanonicalLayerStateRecord
+                    || !(record.Object is DxfXRecord stateRecord)
                     || !manager.TryGetValue(item.Item1, out var state)
                     || state.Name != item.Item1 || !ReferenceEquals(manager[state.Name], state)
+                    || (remainingTags -= stateRecord.Data.Count) < 0
                     || !this.MatchesLayerStateProjection(record, state)) return;
                 if (!SameLayerDictionaryHandle(record.Metadata.Owner, child.Object.Handle)
                     || record.Metadata.Reactors.Count != 1

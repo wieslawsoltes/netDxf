@@ -12,6 +12,8 @@ internal static partial class Program
     private static void RegisterPopulatedLayerStateIdentityTests()
     {
         RegisterLayerStateMutationTests();
+        RegisterLayerStateReferenceQueryTests();
+        RegisterLayerStateRetentionTests();
         foreach (var version in SupportedVersions)
         foreach (bool binary in new[] { false, true })
         {
