@@ -48,3 +48,13 @@ for(const binary of [false,true])test(`missing OBJECTS recovers several physical
 for(const binary of [false,true])test(`recovery does not turn an ordinary block into a layout / ${binary}`,()=>{
   const input=CreateMinimalDocument(18,binary,true,false,true);try{const copy=new DxfReader().Read(input);assert.equal(copy.Layouts.Count,1);assert.equal(copy.Blocks.get_Item('Component').Record.Layout,null);assert.equal(copy.Layouts.get_Item('Model').AssociatedBlock.Record.Layout,copy.Layouts.get_Item('Model'));}finally{input.Dispose();}
 });
+
+// Future physical records must not silently advance the HEADER allocator before
+// generated collections are created. OBJECTS has a separate, later reservation.
+for(const binary of [false,true])for(const futureSection of ['ENTITIES','OBJECTS','FUTURE_SECTION'])test(`HEADER seed is used before future ${futureSection} identity reservation / ${binary}`,()=>{
+  const input=bytes([...header,[9,'$HANDSEED'],[5,'00008000'],[0,'ENDSEC'],[0,'SECTION'],[2,futureSection],[0,futureSection==='ENTITIES'?'LINE':'ACDBPLACEHOLDER'],[5,'F000'],[100,'AcDbEntity'],[8,'0'],[100,'AcDbLine'],[10,0],[20,0],[30,0],[11,1],[21,1],[31,1],[0,'ENDSEC'],[0,'EOF']],binary),reader=new DxfReader(),stop=new Error('captured allocator phase');
+  reader.InitializeCollections=function(){assert.equal(this.doc.NumHandles,0x8000n);assert.equal(this.doc.DrawingVariables.HandleSeed,'8000');throw stop;};assert.throws(()=>reader.Read(input),e=>e===stop);
+});
+for(const binary of [false,true])test(`absent HEADER seed does not borrow a later source identity / ${binary}`,()=>{
+  const input=bytes([...header,[0,'ENDSEC'],[0,'SECTION'],[2,'ENTITIES'],[0,'LINE'],[5,'F000'],[100,'AcDbEntity'],[8,'0'],[100,'AcDbLine'],[0,'ENDSEC'],[0,'EOF']],binary),reader=new DxfReader(),stop=new Error('captured default allocator phase');reader.InitializeCollections=function(){assert.equal(this.doc.NumHandles,1n);throw stop;};assert.throws(()=>reader.Read(input),e=>e===stop);
+});

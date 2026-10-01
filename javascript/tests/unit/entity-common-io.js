@@ -116,3 +116,43 @@ for (const binary of [false, true]) {
     assert.equal(Array.from(load(raw).Entities.Lines).length, 1);
   });
 }
+
+// ReadEntity common-field phase and resource lookup recovery from the pinned source.
+for(const binary of [false,true]){
+  test(`known entity common scalars retain last-value and true-color precedence / ${binary}`,()=>{
+    const raw=lineFixture(binary,(t,c,b)=>{t.splice(c+1,b-c-1,...[[8,'FIRST_COMMON_LAYER'],[8,'LAST_COMMON_LAYER'],[6,'FIRST_COMMON_TYPE'],[6,'LAST_COMMON_TYPE'],[62,1],[420,0x10203],[62,2],[420,0x40506],[370,25],[370,30],[48,2],[48,3],[60,1],[60,0],[440,0x0200007f],[440,0x020000ff]].map(([c,v])=>tag(c,v)));return t;});
+    const doc=load(raw),line=Array.from(doc.Entities.Lines)[0];assert.equal(line.Layer.Name,'LAST_COMMON_LAYER');assert.equal(line.Linetype.Name,'LAST_COMMON_TYPE');assert.ok(doc.Layers.get_Item('FIRST_COMMON_LAYER'));assert.ok(doc.Linetypes.get_Item('FIRST_COMMON_TYPE'));assert.deepEqual([line.Color.R,line.Color.G,line.Color.B],[4,5,6]);assert.equal(line.Lineweight,30);assert.equal(line.LinetypeScale,3);assert.equal(line.IsVisible,true);assert.equal(line.Transparency.Value,0);
+  });
+  for(const scale of [0,-1,-1e-200])test(`known entity nonpositive linetype scale recovers ${scale} / ${binary}`,()=>{
+    const raw=lineFixture(binary,(t,c,b)=>{t.splice(c+1,b-c-1,tag(8,'0'),tag(48,scale));return t;});assert.equal(Array.from(load(raw).Entities.Lines)[0].LinetypeScale,1);
+  });
+  test(`known entity small positive linetype scale is not rounded to one / ${binary}`,()=>{
+    const raw=lineFixture(binary,(t,c,b)=>{t.splice(c+1,b-c-1,tag(8,'0'),tag(48,1e-200));return t;});assert.equal(Array.from(load(raw).Entities.Lines)[0].LinetypeScale,1e-200);
+  });
+  test(`common resources are processed before malformed body data / ${binary}`,()=>{
+    const reader=new DxfReader(),failure=new Error('body decoding reached'),raw=lineFixture(binary,(t,c,b)=>{t.splice(b+1,0,tag(1001,'INVALID_BODY_APPID'),tag(1000,'payload'));t.splice(c+1,0,tag(8,'EARLY_LAYER'),tag(6,'EARLY_TYPE'));return t;});
+    const original=reader.Cursor;reader.Cursor=function(record,marker){if(record.Name==='LINE'){assert.ok(this.doc.Layers.get_Item('EARLY_LAYER'));assert.ok(this.doc.Linetypes.get_Item('EARLY_TYPE'));throw failure;}return original.call(this,record,marker);};assert.throws(()=>load(raw,reader),e=>e===failure);
+  });
+  test(`common proxy completion fails before body cursor and preserves preceding resources / ${binary}`,()=>{
+    const reader=new DxfReader(),raw=lineFixture(binary,(t,c,b)=>{t.splice(b,0,tag(8,'PROXY_PREFIX_LAYER'),tag(92,2),tag(310,Uint8Array.of(1)));return t;});let body=false;const original=reader.Cursor;reader.Cursor=function(r,m){if(r.Name==='LINE')body=true;return original.call(this,r,m);};
+    assert.throws(()=>load(raw,reader),e=>e instanceof InvalidDataException&&e.message.includes('byte count does not match'));assert.equal(body,false);assert.ok(reader.doc.Layers.get_Item('PROXY_PREFIX_LAYER'));
+  });
+  test(`common resource callback wins over later proxy and duplicate marker errors / ${binary}`,()=>{
+    const reader=new DxfReader(),failure=new Error('common resource callback'),original=reader.Resource,raw=lineFixture(binary,(t,c,b)=>{t.splice(b,0,tag(8,'THROW_COMMON'),tag(92,2),tag(310,Uint8Array.of(1)),tag(100,'AcDbEntity'));return t;});
+    reader.Resource=function(p,n){if(p==='Layers'&&n==='THROW_COMMON')throw failure;return original.call(this,p,n);};assert.throws(()=>load(raw,reader),e=>e===failure);
+  });
+  test(`common incomplete header retains resources consumed before record end / ${binary}`,()=>{
+    const reader=new DxfReader(),raw=lineFixture(binary,(t,c)=>[...t.slice(0,c+1),tag(8,'INCOMPLETE_COMMON'),tag(6,'INCOMPLETE_TYPE')]);assert.throws(()=>load(raw,reader),e=>e.constructor===Exception&&e.message==='Premature end of entity LINE definition.');assert.ok(reader.doc.Layers.get_Item('INCOMPLETE_COMMON'));assert.ok(reader.doc.Linetypes.get_Item('INCOMPLETE_TYPE'));
+  });
+  test(`common setters observe recorded source identity and Layer-Color-Linetype order / ${binary}`,()=>{
+    const reader=new DxfReader(),events=[],apply=reader.ApplyCommon,raw=lineFixture(binary,(t,c,b)=>{t.splice(c+1,b-c-1,tag(8,'SETTER_LAYER'),tag(62,1),tag(6,'SETTER_TYPE'));return t;});
+    reader.ApplyCommon=function(entity,fields){if(entity instanceof Line){entity.LayerChanged.Add(()=>events.push(['layer',entity.Color.Index,entity.Handle!==null&&this.Context.acceptedSourceObjects.get(BigInt('0x'+entity.Handle))===entity]));entity.LinetypeChanged.Add(()=>events.push(['linetype',entity.Color.Index,entity.Handle!==null&&this.Context.acceptedSourceObjects.get(BigInt('0x'+entity.Handle))===entity]));}return apply.call(this,entity,fields);};
+    load(raw,reader);assert.deepEqual(events.slice(0,2),[['layer',256,true],['linetype',1,true]]);
+  });
+  for(const name of ['', 'invalid/name', 'external|name'])test(`common invalid resource reference ${JSON.stringify(name)} recovers to table defaults / ${binary}`,()=>{
+    const raw=lineFixture(binary,(t,c,b)=>{t.splice(c+1,b-c-1,tag(8,name),tag(6,name));return t;}),doc=load(raw),line=Array.from(doc.Entities.Lines)[0];assert.equal(line.Layer.Name,'0');assert.equal(line.Linetype.Name,'Continuous');assert.equal(doc.Layers.Contains(name),false);assert.equal(doc.Linetypes.Contains(name),false);
+  });
+  test(`omitted common resources retain ByLayer rather than reference-name recovery / ${binary}`,()=>{
+    const raw=lineFixture(binary,(t,c,b)=>[...t.slice(0,c+1),...t.slice(b)]),line=Array.from(load(raw).Entities.Lines)[0];assert.equal(line.Layer.Name,'0');assert.equal(line.Linetype.Name,'ByLayer');assert.equal(line.Color.Index,256);
+  });
+}

@@ -15,7 +15,7 @@ and Node 22.16.0.
 The implementation includes raw text/binary transport, handle operations,
 object-store transactions, typed models and document ownership, retained records,
 and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-20,359/35,309 original test cases across 130/193 original conformance-file paths.
+21,612/35,309 original test cases across 136/193 original conformance-file paths.
 These counts describe source/test presence,
 not exhaustive API or behavioral qualification.
 
@@ -65,6 +65,19 @@ fabricated definitions. ATTRIB bodies preserve ordered fields, stored rotation a
 source width/angle recovery; empty final tags are discarded. Selected DIMSTYLE
 numeric fields recover on import without relaxing public setters. Original LIGHT
 and light-name suites cover persistence, cloning, placement and version refusal.
+Complete LIGHTLIST, SUN, GEODATA and DATATABLE original suites cover graph ownership,
+external mappings, reentrant mutation, private-record retention and repeated transport.
+CLASS declaration integration, raster ownership and atomic cross-feature persistence
+suites are also complete. Early generated collections use the declared HEADER handle
+seed rather than reserving future physical identities; OBJECTS retains its separate
+reservation phase. Known-entity common fields are read before body decoding, preserving
+resource registration order, repeated values, true-color precedence and assignment
+callbacks. Invalid resource-reference names recover to table defaults without relaxing
+public setters. These source-guided checks are not independent native qualification.
+TEXT and ATTDEF body input also retains source-order fields, stored aligned rotation,
+missing second-point defaults and exact text-generation flag behavior. Their distinct
+height, width, oblique-angle, default-style and XData registration policies follow the
+pinned reader instead of sharing a one-size-fits-all first-tag projection.
 Complete original-test coverage, resource fidelity, general version conversion,
 private TABLE/evaluator behavior and independent native comparison remain work.
 The cleaned 510-path continuation is published in PR #98. Numerical, browser,
