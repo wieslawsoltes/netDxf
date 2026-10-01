@@ -20,6 +20,7 @@ NetDxf.Qualification.InsertGeometryCases.VerifyInstalled();
 NetDxf.Qualification.Polyline3DEditCases.VerifyInstalled();
 NetDxf.Qualification.Polyline2DEditCases.VerifyInstalled();
 NetDxf.Qualification.LegacyMeshEditCases.VerifyInstalled();
+NetDxf.Qualification.LayerStateTransferCases.VerifyInstalled();
 netDxf.GTE.GVector nullVector = null!;
 var geometryVector = new netDxf.GTE.GVector(new[] { 3.0, 4.0 });
 if (!(nullVector == (netDxf.GTE.GVector)null!) || geometryVector == nullVector || !(geometryVector != nullVector))

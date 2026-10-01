@@ -156,6 +156,9 @@ namespace netDxf.Collections
         /// </summary>
         /// <param name="file">LAS file to import.</param>
         /// <param name="overwrite">Defines if the imported layer state will overwrite any existing one with the same name.</param>
+        /// <exception cref="InvalidOperationException">The existing state cannot be removed for replacement.</exception>
+        /// <remarks>A refused replacement does not restore the old state. This is not a transaction
+        /// for later resource creation, callbacks or restore failures.</remarks>
         public void Import(string file, bool overwrite)
         {
             LayerState ls = LayerState.Load(file);
@@ -168,7 +171,10 @@ namespace netDxf.Collections
             {
                 if (overwrite)
                 {
-                    this.Remove(this.List[ls.Name]);
+                    if (!this.Remove(this.List[ls.Name]))
+                    {
+                        throw new InvalidOperationException("Cannot overwrite a layer state that cannot be removed: " + ls.Name);
+                    }
                     this.Add(ls);
                 }
             }
@@ -185,6 +191,8 @@ namespace netDxf.Collections
         /// </summary>
         /// <param name="file">LAS file to export.</param>
         /// <param name="layerStateName">Layer state name to export.</param>
+        /// <exception cref="System.IO.IOException">The LAS serializer reports an unsuccessful save.</exception>
+        /// <remarks>This legacy operation may truncate the file before failure. Use ExportAtomic to protect its contents.</remarks>
         public void Export(string file, string layerStateName)
         {
             LayerState ls = this.List[layerStateName];
@@ -193,7 +201,10 @@ namespace netDxf.Collections
                 throw new ArgumentException("Invalid layer state name.", nameof(layerStateName));
             }
 
-            ls.Save(file);
+            if (!ls.Save(file))
+            {
+                throw new System.IO.IOException("Failed to export layer state to LAS: " + file);
+            }
         }
 
         /// <summary>
