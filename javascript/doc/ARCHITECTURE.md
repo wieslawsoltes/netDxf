@@ -1,66 +1,94 @@
-# Architecture of the native JavaScript port
+# Architecture
 
-## Contract and boundaries
+## Reference and module boundaries
 
-The source oracle is the fixed C# tree declared in `baseline.json`, not whatever currently happens to be on `netstandard`. A SHA-256 fingerprint covers the Git blob identities and paths under `netDxf`, `tests`, and `TestDxfDocument`, including support files. Roslyn supplies the source/type/member inventory; JavaScript does not infer the C# API with a regular-expression transpiler. Library files retain relative paths and names, changing only `.cs` to `.js`.
+The port targets the immutable C# reference in [`baseline.json`](../baseline.json),
+not the current default branch. Original relative paths are preserved, changing
+`.cs` to `.js`. All mapped paths exist, but an exhaustive public-member and
+behavior audit is still required; current coverage is maintained in the
+[README](../README.md).
 
-The implementation is native JavaScript. The .NET process appears only in `tools/`, where it acts as an independent behavioral oracle compiled directly from the pinned C# files. The portable import graph from `index.js` has no `node:` imports, network requests, native dependencies, generated-code execution, or .NET bridge. The explicit `node-entry.js` imports the isolated `runtime/NodeFileStream.js` and `NodeFileSystem.js` host adapters; portable modules do not import those files. Browser verification exercises those same modules.
+Production DXF processing is native JavaScript. `index.js` is the browser-safe
+entry. `node-entry.js` explicitly installs `NodeFileStream` and `NodeFileSystem`;
+portable modules do not acquire filesystem capability implicitly. The optional
+Windows addon performs filesystem replacement only, not DXF or geometry work.
+.NET appears in development tools as a source inventory/generation host and an
+independent behavioral oracle.
 
-The raw and typed products must remain distinct. `DxfRawDocument` models immutable ordered tags and exact input-byte retention. `DxfRawObjectStore` interprets a qualified subset of OBJECTS schemas and references. Neither is a replacement for the unfinished typed `DxfDocument`, styles/tables/entity-ownership graph, and automatic typed serialization engine. The separate typed-foundation layer now supplies selected geometry and model dependencies; randomized geometry bit equivalence remains unqualified.
+## Runtime and source generation
 
-## Layers
+The runtime supplies synchronous streams, exceptions, collections, encoding,
+formatting, ordinal comparison and explicit value-copy adapters. It is not a
+CLR emulator. Binary64 values use `Number`, Int64/numeric handles use `BigInt`,
+and byte payloads use `Uint8Array` and `DataView`.
 
-**Runtime adapters.** `MemoryStream`, immutable list views, typed exceptions, numeric formatting, encoding, and ordinal casing make the unavoidable language differences explicit. This is a small support layer, not a general CLR emulator. Handles and Int64 use `BigInt`; binary64 uses `Number`; byte data uses `Uint8Array` and `DataView`.
+`tools/NativePort` uses Roslyn semantic information and explicit source selections
+to generate native JavaScript. Manifests record source/output hashes and member
+mappings. Unsupported constructs must fail generation rather than produce empty
+implementations. Generated bodies and handwritten code both require behavioral
+verification. See [language adaptations](LANGUAGE_ADAPTATIONS.md) for overloads,
+operators, generic defaults, events and value types.
 
-**Code/value transport.** The text and binary readers/writers preserve the original type classification, handle kinds, finite-value rules, sentinel checks, legacy group-code framing, and primitive method names. The numeric writer is compared with the actual .NET production writer, not another copy of the same algorithm. Strict legacy code-page tables and Unicode scalar mappings are generated from the pinned runtime, then used without that runtime.
+## Raw and typed document paths
 
-**Raw document.** Loading owns a bounded byte snapshot, resolves the declared version/encoding, and parses ordered immutable tags. Same-transport unedited saving uses retained bytes; edited or cross-transport output uses the native writer. Serialization preflights values and stages the output within the budget before writing to a caller stream. Immutable section/record indexes retain repeated records and unknown sections. A record edit validates snapshot ownership and replaces only its indexed range. Input preservation does not imply typed interpretation of unknown data.
+| Layer | Contract |
+| --- | --- |
+| Code/value streams | Original group-code type classification, strict value parsing, primitive output, stream lifetime and failure state. |
+| `DxfRawDocument` | Immutable ordered tags and record/section indexes, with bounded input-byte retention. Unedited same-transport output can reuse the original bytes; edited or cross-transport output serializes tags. |
+| Raw handle operations | Context-sensitive identity/owner/pointer classification, numeric handle indexes, collision checks and simultaneous remapping. Literal strings and opaque slots are not guessed to be references. |
+| `DxfRawObjectStore` | Schema-qualified stored views and transactions over raw OBJECTS data. Unsupported private schemas remain opaque. |
+| Typed `DxfDocument` | Integrated loading/saving, resource tables, blocks/layouts, entities and registered OBJECTS graphs. It reconstructs typed state rather than promising byte-identical whole-file output. |
+| File hosts | Explicit synchronous path/stream operations and staged atomic save. Host and filesystem guarantees are narrower than the complete System.IO API. |
 
-**Raw handles.** Context-sensitive classification separates object identity, owners, pointers, reactors, extension dictionaries, header values, XData, arbitrary handles, and opaque slots. Dictionaries keyed by exact numeric handles back definition/reference lookups. Iterative traversal and owner-cycle detection avoid recursion on long chains. Simultaneous remapping rejects colliding destinations, unresolved-reference capture, ambiguous identities, affected opaque slots, invalid common framing, and HANDSEED overflow.
+Raw preservation is not typed interpretation. A retained private payload is not
+an implemented evaluator, renderer or native CAD application. Typed self-roundtrips
+can hide matching reader/writer defects and cannot replace native comparisons.
 
-**Raw OBJECTS.** `DxfRawObjectModel.js` contains the same stored-view classes and option types as its C# counterpart. `DxfRawObjectStore.js` discovers schema-qualified views, retains opaque ones, indexes names/handles, and opens transactions. No private schema is guessed. Dictionary names use .NET-compatible ordinal comparison, not locale comparison or JavaScript's expanding uppercase conversion.
+## Typed state and registration
 
-The three C# transaction partial files are mirrored by `DxfRawObjectTransaction.js`, `DxfRawObjectGraph.js`, and `DxfRawObjectCommit.js`. The public transaction holds private state; module-local/internal helpers implement common operations, graph changes, and final commit without exporting mutable state through the package root. Store state is in a private WeakMap. The source document remains immutable.
+`DxfReader.js` coordinates section parsing, declared handle seeds, resources,
+entity admission and deferred references. Source identity is distinct from
+identities created for generated defaults. Dedicated record readers preserve
+child identities for legacy polylines/meshes and INSERT sequences. Individual
+body readers retain different recovery and discard policies; a generic
+first-value extraction must not replace those source-defined rules.
 
-## Typed source lowering and collection layer
+`DxfWriter.js` performs typed preflight and output through original-path codecs.
+Export refusals, version restrictions, property reads, callback order and source
+mutations are part of the contract. Ordinary `Save` is not universally
+side-effect-free or transactional. A failing writer can leave a prefix and
+partially changed source state where the C# implementation does so.
 
-The development-only `NativePort` tool binds the original C# source using Roslyn. Its explicit file selection is lowered to standalone native JavaScript, with no C# interpreter or .NET bridge in the runtime. The source/output manifest retains overload signatures and member mappings. Unsupported constructs stop generation rather than emitting empty implementations. Value-type copying, default initialization, operators, constructor delegation, and indexers have explicit adapters; public API spelling remains PascalCase. Reproduction checks fail on generated-source drift.
+Registered tables canonicalize resource objects and maintain counted references.
+Entities, attribute definitions, INSERT attributes, retained child records and
+OBJECTS payloads have distinct ownership/lifecycle paths. Event handlers may
+observe partial state. Do not combine paths simply because their field names
+look alike. [OBJECTS integration](OBJECT_GRAPH_IO.md) documents graph boundaries.
 
-`ObservableCollection` preserves the original event and enumeration lifecycle. Subscription snapshots allow handlers to add/remove handlers without changing the current invocation; cancelled insertion and replacement preserve the source event order. Sorting uses an iterative-depth-bounded introsort to retain the .NET integer-list ordering, including ties in qualified comparator tests. `DxfClassCollection` maintains ordered items and maps for unique DXF/CPP names. Generic defaults and overload ambiguities are explicit adaptations rather than implicit guesses.
+## Raw transaction guarantees
 
-See [typed foundations and numeric qualification](TYPED_FOUNDATIONS.md). Source-level formula fidelity is not sufficient for exact result bits: a strict randomized corpus currently finds native trigonometric differences. That qualification stays failing and blocks full completion even when the deterministic baseline suite passes.
+Raw transactions retain immutable source snapshots and staged changes. Operation
+savepoints cover staged records, handle reservations, allocator state and root
+identity. Validation or reference failures restore that operation's savepoint.
+Commit validates the resulting sequence and produces a new document; it does not
+mutate the original raw snapshot. Successful commit closes the transaction.
 
-## Transaction guarantees
+Owned-tree cloning/remapping and deletion use known ownership/reference schemas.
+They must not reinterpret arbitrary values or silently clone unsupported private
+ownership. These guarantees apply to the raw transaction API, not every typed
+setter, graph operation or file save.
 
-Each mutating operation takes an internal savepoint covering staged changes, allocated/reserved handles, allocator position, root identity, and output-setting state. Failed argument validation, exhausted budgets, reentrant mutation during enumeration, or schema/reference errors restore that savepoint. A failed operation does not partially consume its handle allocation. Iterators are closed on failure.
+## Performance and verification
 
-`Commit` builds a new tag sequence while preserving untouched tag objects and ordering. It updates relevant class declarations, handle seed, and sort-order declarations, and validates changed schemas and references before returning a new document. Failure does not mutate the original document; the staging transaction remains available for repair where the original API allows it. A successful commit closes the transaction. An empty transaction returns its original snapshot.
+The implementation uses shared immutable records, cached indexes, numeric handle
+maps and iterative graph walks. Raw input snapshots, defensive byte copies and
+staged output deliberately consume memory to preserve ownership and destination
+safety. Benchmarks are descriptive unless a separate acceptance budget is met;
+correctness and exact comparisons must not be relaxed for speed.
 
-Owned-tree cloning is iterative and maintains an old-to-new handle map. Known pointers are remapped; arbitrary handles and literal strings are not treated as dependencies. Unsupported private/opaque ownership is rejected rather than silently cloned. Deletion checks external incoming references and affected opaque handle slots. Extension-dictionary control groups, default dictionaries, aliases, and draw-order references have explicit handling. These rules reproduce the pinned raw OBJECTS API, not a claim of complete dependency import for all DXF schemas.
-
-## Performance choices and tradeoffs
-
-Stable object layouts, shared immutable tags, cached indexes, `Map`/`Set` membership, exact `BigInt` keys, little-endian `DataView` reads, and index-based work queues avoid repeated parsing and array-shift costs. Dictionary duplicate-name checks are linear; dictionary name lookup uses a precomputed ordinal key and a map. Pure ASCII comparisons use a fast path before Unicode scalar lookup. Clone and owner traversal are iterative; tests include a 1,200-level owned hierarchy and a 12,000-node owner chain.
-
-Raw input buffering and staged output intentionally trade memory for exact-byte retention, defensive ownership, and destination protection before final copying. Binary chunk getters return defensive copies. Transactions retain source snapshots and staged edits; this is not a streaming typed database. These costs are measured rather than hidden.
-
-The benchmark records environment, warmups, samples, median/p95, input cardinality, and process-level memory observations. It is descriptive. There is no demonstrated “faster than .NET” result, cross-machine ranking, or complete regression budget yet. Performance is not allowed to relax exact output, lifecycle, or malformed-input behavior.
-
-## Verification architecture
-
-Original conformance tests, supplemental JS tests, direct .NET differential tests, browser execution, and package smoke tests are different evidence categories. Their counts are never added together as a fabricated original-suite completion percentage. The case-coverage ledger compares exact original test identities and rejects duplicate, renamed, failing, skipped, or TODO cases.
-
-The JSON-lines oracle preserves float bits, Int64 decimal strings, binary data, section/record positions, schema fields, and operation outcomes. Direct output comparison includes both text and binary byte sequences with no handle renumbering, metadata deletion, tolerances, or rounding. Typed .NET writer/reader controls verify some raw JS output, but do not count as a JavaScript typed API implementation.
-
-Evidence binds both production and verifier file bytes to the results. Oracle crash, malformed response, deadline, nonzero exit, code drift, or incomplete enumeration prevents a successful result. Generated files and shared fixture hashes are checked separately. CI has a passing/failing implemented-scope check and a separate full-port completion check that remains blocked during this partial port.
-
-The baseline geometry and collection corpora are also executed by the browser harness using complete .NET-result digests. The randomized geometry qualification is a separate mandatory job; it retains exact failing inputs and is not normalized into a passing implemented-scope count.
-
-
-## Atomic filesystem host boundary
-
-`DxfRawDocument.AtomicSave.js` mirrors the C# partial file and delegates to `DxfAtomicFile.js`. The latter implements path validation, cancellation checkpoints, sibling staging, real flush, revalidation, publication and cleanup through a captured synchronous host adapter. `node-entry.js` registers the Node host; default browser imports leave filesystem capability unconfigured. Existing caller streams remain owned by callers.
-
-The Node adapter rejects destination symlinks, nonregular files and readonly destinations. It publishes existing destinations with same-directory rename; absent destinations use an exclusive hard-link publication followed by unlinking the staging name, because portable Node does not expose a rename-no-replace primitive. Unsupported publication fails rather than falling back to copying. These are explicit host adaptations, not a general CLR filesystem emulator. See [FILESYSTEM.md](FILESYSTEM.md).
-
-The stateful oracle corpus runs against the canonical NativePort-generated types using exact signature and value-copy adapters. The browser baseline preserves complete original oracle request batches, including static Epsilon mutations, instead of silently resetting state per assertion. Aggregate verification retains all failures and unavailable evidence in its report before failing.
+Original conformance, supplemental tests, native differential comparisons,
+browser execution, package checks and platform/performance checks are separate
+categories. Runtime and verifier fingerprints bind results to executable inputs;
+a historical pass does not qualify changed code. See
+[verification](VERIFICATION.md), [numerics](NUMERICS.md) and
+[filesystem guarantees](FILESYSTEM.md). Full parity remains incomplete.

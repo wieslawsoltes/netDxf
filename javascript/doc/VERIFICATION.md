@@ -20,9 +20,12 @@ Different checks answer different questions:
   Focused browser results do not replace complete HTTP-origin and inline suites.
   Descriptive benchmarks are not performance acceptance.
 
-`tools/verify.mjs` is the executable authority for required categories, counts,
-source inventory, generated-file hashes and evidence freshness. Both implemented
-scope and full parity require all applicable evidence; missing or stale reports,
+`tools/verify.mjs` aggregates required categories, source inventory, generated-file
+hashes and evidence freshness. Its complete-parity decision is unfinished: it
+currently records `fullParityVerified: false` and forces a failing exit for
+`--require-complete`. Implementing that decision requires the missing evidence
+and negative tests; simply removing the forced failure would not establish parity.
+Both implemented scope and full parity require all applicable evidence; missing or stale reports,
 nonzero exits, native assertion/crash failures and unavailable observations remain
 blocking. Do not lower counts, delete comparisons, introduce expected-failure
 waivers or normalize numerical differences to make the gate pass. An original
@@ -114,6 +117,7 @@ to the actual code tested; documentation-only edits are excluded from those hash
 Record incomplete attempts separately from completed reruns. Keep full failures,
 not just passing summaries.
 
-Historical committed run receipts and recovery reports remain accessible in
-[the pre-cleanup tree](https://github.com/wieslawsoltes/netDxf/tree/2593c82490af9bf7f00208e75162ff74707dec04/javascript/doc).
-They are not inputs to the active verifier and do not qualify later source trees.
+Historical per-module reports and execution receipts remain in Git history.
+They are not active verifier inputs and do not qualify later source trees. The
+current source/test scope belongs in the README and PR summary, not duplicated
+checkpoint ledgers throughout the engineering guides.

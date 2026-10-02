@@ -1,126 +1,95 @@
 # netDxf JavaScript port
 
-Native ECMAScript modules preserving the original C# relative paths and PascalCase
-API names. The package is private and PR #98 remains draft. **Full C# parity is
-not complete.** Production JavaScript does not require .NET, WebAssembly, an
-external DXF engine or a conversion service.
+Native ECMAScript modules preserving netDxf's C# relative paths and PascalCase
+API names. **The port is incomplete, the package is private, and PR #98 remains
+draft.** DXF processing runs in JavaScript without .NET, WebAssembly, a conversion
+service, or an external DXF engine. Node filesystem access is an explicit host
+adapter, not a dependency of the browser-safe entry.
 
-## Implementation scope
+## Scope
 
-The source reference is `3496ab91893a1e4ec9261b4833479f1799149cdc`, recorded in
-`baseline.json`: 510 library paths, 193 original conformance-file paths, 399 DXF
-fixtures and 35,309 original cases. Development tools pin SDK 8.0.425, .NET 8.0.31
-and Node 22.16.0.
+[`baseline.json`](baseline.json) pins C# commit
+`3496ab91893a1e4ec9261b4833479f1799149cdc` and the reference toolchain. Against that
+reference, the current source contains **510/510 library-path mirrors**, with
+**21,612/35,309 original cases** in **136/193 original conformance-file paths**.
+File presence does not establish exhaustive API or behavioral parity. There are
+13,697 remaining original cases, including missing cases in present modules.
 
-The implementation includes raw text/binary transport, handle operations,
-object-store transactions, typed models and document ownership, retained records,
-and section/entity/OBJECTS codecs. It contains 510/510 library-path mirrors and
-21,612/35,309 original test cases across 136/193 original conformance-file paths.
-These counts describe source/test presence,
-not exhaustive API or behavioral qualification.
+Implemented areas include raw text/binary transport and handle operations; typed
+`DxfDocument.Load/Save/SaveAtomic` and `Block.Create/Load/Save`; geometry and entity
+models; tables, blocks and layouts; retained child records; HATCH, MESH, OLE,
+MTEXT and annotation transport; and typed/opaque OBJECTS graphs. Individual
+contracts and original tests, not this feature list, define the implemented scope.
 
-Whole-document typed Load/Save/SaveAtomic and Block.Create/Load/Save are integrated.
-HATCH gradient packet grammar and active DIMSTYLE HEADER projection are implemented.
-HATCH metadata and counted packets are parsed throughout the record, including after
-XData; empty HATCH input is retained for repair and rejected by typed export preflight.
-HATCH pattern-line output preserves source arithmetic grouping and callback-time reads.
-HATCH edge output re-reads scalar/tangent properties between components and snapshots
-foreach vector values; spline fit metadata is covered through transforms and export.
-HATCH source hydration admits only retained, unambiguous entities in the same block,
-then attaches complete paths with source-order reactor counts. Original affine, conic,
-explicit-pattern and spline-relation suites cover geometry and failure atomicity.
-HELIX API, wire, authored-geometry/regeneration and periodic SPLINE input suites
-cover independent metadata, cyclic overlap and repeated text/binary roundtrips.
-SPLINE/HELIX serialization snapshots periodic-prefix and foreach fit-point values
-while preserving live ordinary-control and weight reads between output callbacks.
-MESH input uses source-ordered field declarations, private/subclass/XData scoping,
-counted-list parsing and deferred index checks. Original suites cover mesh version
-profiles, mutable-output preflight, blend state and supported override declarations.
-OLEFRAME/OLE2FRAME original suites cover binary payload retention, optional metadata
-presence, explicit version fields, cloning, inert transform restrictions and
-repeated text/binary saves across model/paper/nested/unused blocks. These suites
-pass the existing OLE implementation.
-Surface-density HEADER import retains the pinned recovery range independently for U/V.
-Layer XData projects the last description/alpha slot, preserves ancillary transparency
-records and source mutation timing, and distinguishes default and stored layer-state zero.
-Original LWPOLYLINE integrity and hexadecimal payload suites are also represented.
-Strict text/binary scalar and framing suites cover numeric boundaries, fragmented
-streams, malformed input and caller ownership. Typed EOF diagnostics remain distinct
-from strict raw framing errors. Missing layout OBJECTS are recovered from retained
-BLOCK_RECORD pointers; typed text output captures the host newline without changing
-raw codec output.
-Original VIEW/VPORT/UCS suites cover repeated viewport records, named/base UCS links,
-explicit null handles, orthographic origins, elevation and live-section ownership.
-UCS import preserves ordered scalar updates, validates origin pairs and duplicate
-relationship fields, and distinguishes their private/subclass/XData scope.
-Layer import recovers ByLayer/ByBlock lineweights to Default without relaxing setters.
-Common entity/proxy and table-XData suites cover optional metadata, byte-count
-profiles, independent payload scopes, clone isolation and producer fixtures.
-ATTRIB input validates and completes common fields before decoding text; known
-entity subclass checks retain their contextual diagnostics. The common-data
-assembly-reflection clone case and 24 proxy allocation cases remain unregistered.
-Retained known entities require a nonzero, unrepeated common handle. Underlays with
-absent/null definition references are discarded after body validation, not assigned
-fabricated definitions. ATTRIB bodies preserve ordered fields, stored rotation and
-source width/angle recovery; empty final tags are discarded. Selected DIMSTYLE
-numeric fields recover on import without relaxing public setters. Original LIGHT
-and light-name suites cover persistence, cloning, placement and version refusal.
-Complete LIGHTLIST, SUN, GEODATA and DATATABLE original suites cover graph ownership,
-external mappings, reentrant mutation, private-record retention and repeated transport.
-CLASS declaration integration, raster ownership and atomic cross-feature persistence
-suites are also complete. Early generated collections use the declared HEADER handle
-seed rather than reserving future physical identities; OBJECTS retains its separate
-reservation phase. Known-entity common fields are read before body decoding, preserving
-resource registration order, repeated values, true-color precedence and assignment
-callbacks. Invalid resource-reference names recover to table defaults without relaxing
-public setters. These source-guided checks are not independent native qualification.
-TEXT and ATTDEF body input also retains source-order fields, stored aligned rotation,
-missing second-point defaults and exact text-generation flag behavior. Their distinct
-height, width, oblique-angle, default-style and XData registration policies follow the
-pinned reader instead of sharing a one-size-fits-all first-tag projection.
-Complete original-test coverage, resource fidelity, general version conversion,
-private TABLE/evaluator behavior and independent native comparison remain work.
-The cleaned 510-path continuation is published in PR #98. Numerical, browser,
-Windows, performance and native AutoCAD qualification remain incomplete.
-The 408 malformed-gradient, 24 forged-polyline-count, 48 edge/spline-count and
-462 mesh and 12 LWPOLYLINE integrity allocation-sensitive original cases remain
-uncounted until their native
-allocation assertions are ported; functional
-malformed-input checks do not replace those assertions.
-Arc-length dimension roundtrip adjudication and completion-verifier logic also remain.
+Remaining work includes the original tests and examples, exhaustive public-member
+coverage, native wire/behavior comparisons, version-conversion and private-graph
+qualification, allocation/reflection assertions, numerical/platform acceptance,
+and the unfinished completion decision in `tools/verify.mjs`. AutoCAD fidelity
+and parity with C# changes after the frozen reference are not established.
 
-## Usage and verification
+## Use the source
 
-Import the browser-safe entry from `./index.js` or `@netdxf/javascript` when
-installed locally. The explicit Node host entry is `@netdxf/javascript/node`;
-original-path imports are available under `@netdxf/javascript/netDxf/*`.
+Node 22 or later is required for the development scripts. From the repository's
+`javascript/` directory:
+
+```js
+import { DxfDocument, Line, Vector3, MemoryStream } from './index.js';
+
+const document = new DxfDocument();
+document.Entities.Add(new Line(Vector3.Zero, new Vector3(10, 20, 0)));
+const stream = new MemoryStream();
+try {
+  if (!document.Save(stream, false)) throw new Error('DXF serialization failed.');
+  stream.Position = 0;
+  const loaded = DxfDocument.Load(stream);
+  if (loaded === null) throw new Error('DXF load failed.');
+} finally {
+  stream.Dispose(); // Caller owns the stream.
+}
+```
+
+For a locally installed package, import `@netdxf/javascript`. Original-path
+imports are exposed under `@netdxf/javascript/netDxf/*`. Import
+`@netdxf/javascript/node` to register the synchronous filesystem host; the
+portable entry does not implicitly gain disk access. Existing-file atomic
+replacement on Windows additionally requires the optional built Windows host.
+
+## Validate
 
 ```sh
 cd javascript
 npm test
 npm run test:unit
 npm run test:package
-# With the pinned C# checkout and .NET toolchain available:
+# Requires the exact pinned C# checkout and development toolchain:
 npm run inventory
 npm run test:differential
 npm run verify:complete
 ```
 
-The full-parity gate must remain failing until every required category passes.
-Missing, failed, stale, skipped or unavailable evidence is not success. See
-[verification](doc/VERIFICATION.md) for native builds, source regeneration,
-browser commands and result locations.
+`npm test` runs the complete **currently mirrored subset**, not every original
+C# case. Debug/Release executions and supplemental tests are separate evidence,
+not additional original identities. The full-parity command remains failing;
+missing, stale, filtered, skipped, failed, or unavailable evidence is not success.
+See [verification](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/VERIFICATION.md) for setup, commands and report locations.
 
 ## Engineering references
 
-[Architecture](doc/ARCHITECTURE.md), [language adaptations](doc/LANGUAGE_ADAPTATIONS.md),
-[numerics](doc/NUMERICS.md), [filesystem](doc/FILESYSTEM.md),
-[Windows host](doc/WINDOWS_HOST.md), [codec contracts](doc/CODEC_STREAMS.md),
-and [OBJECTS integration](doc/OBJECT_GRAPH_IO.md) describe implementation boundaries.
-Module-specific contracts remain under `doc/`. Historical recovery narratives and
-run receipts are available in Git history; they are not current verification
-inputs. Fresh reports belong under ignored `artifacts/`, not in source documents.
+[Architecture](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/ARCHITECTURE.md) ·
+[Language/API adaptations](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/LANGUAGE_ADAPTATIONS.md) ·
+[Codec and stream contracts](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/CODEC_STREAMS.md) ·
+[OBJECTS graphs](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/OBJECT_GRAPH_IO.md) ·
+[Numerics](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/NUMERICS.md) ·
+[Globalization](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/GLOBALIZATION.md) ·
+[Filesystem](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/FILESYSTEM.md) ·
+[Windows host](https://github.com/wieslawsoltes/netDxf/blob/codex/javascript-port/javascript/doc/WINDOWS_HOST.md)
 
-Original netDxf is MIT licensed; mathematical adaptations retain LGPL-2.1-or-later
-and GTE retains BSL-1.0. See [third-party notices](THIRD_PARTY_NOTICES.md), retained
-licenses and preferred mathematical sources. Nothing is published to npm.
+Keep generated execution reports in ignored `artifacts/` or external validation
+archives. Historical per-module checkpoint reports remain in Git history; they
+are not verification inputs. Production manifests, fixtures, mathematical source
+files and licenses are required and must not be treated as disposable reports.
+
+Original netDxf is MIT licensed. Mathematical adaptations retain
+LGPL-2.1-or-later, and GTE retains BSL-1.0. See
+[third-party notices](THIRD_PARTY_NOTICES.md) and the retained licenses and
+preferred source files. The package is not published to npm.
