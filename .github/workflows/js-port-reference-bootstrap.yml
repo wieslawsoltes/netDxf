@@ -1,0 +1,52 @@
+name: Pinned JavaScript port reference bootstrap
+on:
+  push:
+    branches: [codex/js-port-reference-bootstrap-20261002]
+permissions:
+  contents: read
+jobs:
+  bootstrap:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 3496ab91893a1e4ec9261b4833479f1799149cdc
+          fetch-depth: 1
+      - name: Fetch and hash-check the exact official .NET SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/port-reference"
+          export OUT="$RUNNER_TEMP/port-reference"
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, urllib.request
+          out = pathlib.Path(os.environ['OUT'])
+          metadata_url = 'https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json'
+          raw = urllib.request.urlopen(metadata_url, timeout=60).read()
+          metadata = json.loads(raw)
+          sdk = next(s for r in metadata['releases'] for s in r.get('sdks', [r.get('sdk', {})]) if s.get('version') == '8.0.425')
+          entry = next(f for f in sdk['files'] if f['rid'] == 'linux-x64' and f['name'].endswith('.tar.gz'))
+          target = out / 'dotnet-sdk-8.0.425-linux-x64.tar.gz'
+          urllib.request.urlretrieve(entry['url'], target)
+          actual = hashlib.sha512(target.read_bytes()).hexdigest()
+          if actual.lower() != entry['hash'].lower():
+              raise RuntimeError('Official SDK SHA-512 mismatch')
+          (out / 'sdk-provenance.json').write_text(json.dumps({'metadataUrl': metadata_url, 'sdk': '8.0.425', 'file': entry, 'actualSha512': actual}, indent=2) + '\n')
+          PY
+      - name: Archive exact pinned source and Git blob inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 3496ab91893a1e4ec9261b4833479f1799149cdc
+          git archive --format=tar.gz --prefix=reference/ HEAD > "$RUNNER_TEMP/port-reference/pinned-source.tar.gz"
+          git ls-tree -r HEAD > "$RUNNER_TEMP/port-reference/git-tree.txt"
+          git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/port-reference/source-identity.txt"
+          cd "$RUNNER_TEMP/port-reference"
+          sha256sum *.tar.gz > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: js-port-pinned-source-and-sdk
+          path: ${{ runner.temp }}/port-reference/
+          compression-level: 0
+          retention-days: 3
