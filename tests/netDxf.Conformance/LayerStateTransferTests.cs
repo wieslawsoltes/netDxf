@@ -5,6 +5,7 @@ internal static partial class Program
 {
     private static void RegisterLayerStateTransferTests()
     {
+        RegisterLayerRenameStateTests();
         foreach (var item in LayerStateTransferCases.All(ArtifactDirectory))
             Run("layer-state-transfer/" + item.Id, item.Test);
     }

@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace netDxf.Collections
 {
-    public sealed class ObservableDictionary<TKey, TValue> :
+    public sealed partial class ObservableDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>
     {
         #region delegates and events
