@@ -13,6 +13,7 @@ internal static partial class Program
     private static void RegisterLayerStateMutationTests()
     {
         RegisterLayerStateLifecycleTests();
+        RegisterLayerStateTransferTests();
         for (int mask = 0; mask < 16; mask++)
         {
             int selected = mask;
