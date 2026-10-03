@@ -140,7 +140,8 @@ internal static partial class Program
         viewport.FrozenLayers.Add(next);
         if (context == "entity") Check(layout.AssociatedBlock.Entities.Remove(viewport), "Viewport removal failed");
         else if (context == "block") Check(document.Blocks.Remove(block!), "Block removal failed");
-        else layout.Viewport = new Viewport();
+        // Match the internal-setter adapter already used by AppIdXDataLifecycleTests.
+        else typeof(Layout).GetProperty(nameof(Layout.Viewport))!.SetValue(layout, new Viewport());
         Check(!next.HasReferences() && document.Layers.Remove(next), "Retired viewport retained a live layer reference");
     }
 
