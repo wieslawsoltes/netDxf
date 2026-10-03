@@ -10,13 +10,17 @@ using netDxf.Tables;
 
 namespace netDxf.IO
 {
-    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE and ordinary 2D/3D POLYLINE.</summary>
+    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE, ordinary 2D/3D POLYLINE and TEXT/STYLE.</summary>
     /// <remarks>
     /// Creates a new model-space primitive drawing, not an implicit downgrade of an entire DxfDocument.
     /// Geometry, indexed entity colors, basic layers and built-in linetypes are supported. Unsupported
     /// entity types, modern attributes and dependency-bearing metadata reject instead of being dropped.
     /// Source objects, handles and owners are not modified. Output identities are newly allocated.
     /// The existing raw codec supplies AC1009 text/binary framing, encoding and bounded serialization.
+    /// TEXT supports all fifteen alignments, OCS placement, rotation, mirroring, width and oblique
+    /// factors, named styles and C0/caret escaping. Font names are stored references, not resolved
+    /// resources. No glyph metrics or rendered appearance are computed. Character encoding follows
+    /// the raw codec (new drawings use Windows-1252). Unsupported data rejects instead of disappearing.
     /// DxfDocument's admitted versions and the lossless raw-preservation API remain unchanged.
     /// </remarks>
     public static partial class DxfR12Codec
@@ -170,7 +174,7 @@ namespace netDxf.IO
                 Type type = entity.GetType();
                 if (type != typeof(Line) && type != typeof(netDxf.Entities.Point) && type != typeof(Circle)
                     && type != typeof(Arc) && type != typeof(Face3D) && type != typeof(Solid) && type != typeof(Trace)
-                    && type != typeof(Polyline2D) && type != typeof(Polyline3D))
+                    && type != typeof(Polyline2D) && type != typeof(Polyline3D) && type != typeof(Text))
                     throw new NotSupportedException("Unsupported R12 primitive type: " + type.FullName);
                 Metadata(entity); Metadata(entity.Linetype);
                 if (entity.Color.UseTrueColor || entity.ColorName != null || entity.ShadowMode.HasValue
@@ -194,7 +198,8 @@ namespace netDxf.IO
                 Vector3 normal = UnitNormal(entity.Normal);
                 this.Tag(0, entity is Polyline2D || entity is Polyline3D ? "POLYLINE" : entity.CodeName); this.Tag(5, (this.nextHandle++).ToString("X", CultureInfo.InvariantCulture));
                 this.Tag(8, layer.Name); this.Tag(6, BuiltinLinetype(entity.Linetype.Name)); this.Tag(62, entity.Color.Index);
-                if (entity is Polyline2D polyline2D) this.Polyline(polyline2D, layer.Name, normal);
+                if (entity is Text text) this.TextEntity(text, normal);
+                else if (entity is Polyline2D polyline2D) this.Polyline(polyline2D, layer.Name, normal);
                 else if (entity is Polyline3D polyline3D) this.Polyline(polyline3D, layer.Name, normal);
                 else if (entity is Line line)
                 { this.Point(10, line.StartPoint); this.Point(11, line.EndPoint); this.Plane(normal, line.Thickness); }
@@ -259,7 +264,7 @@ namespace netDxf.IO
                     this.Add(prefix, 0, "LAYER"); this.Add(prefix, 2, layer.Name); this.Add(prefix, 70, layer.Flags);
                     this.Add(prefix, 62, layer.Color); this.Add(prefix, 6, "CONTINUOUS");
                 }
-                this.Add(prefix, 0, "ENDTAB"); this.Add(prefix, 0, "ENDSEC");
+                this.Add(prefix, 0, "ENDTAB"); this.WriteTextStyles(prefix); this.Add(prefix, 0, "ENDSEC");
                 this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "BLOCKS"); this.Add(prefix, 0, "ENDSEC");
                 this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "ENTITIES");
                 this.Tag(0, "ENDSEC"); this.Tag(0, "EOF");
