@@ -4,10 +4,17 @@ Start with the [remaining major parity gaps](remaining-major-gaps.md) for the
 reviewed baseline, priorities and acceptance criteria. This page indexes the
 implementation contracts; it is not a running copy of every PR description.
 
-**Full AutoCAD parity is not established.** Ordered preservation, typed editing,
-geometric evaluation, coordinated regeneration and native application acceptance
-are different claims. A stored object or a passing round trip does not prove
-that its native behavior is implemented.
+**Full AutoCAD parity is not established.** The active goal is complete DXF
+version, object-model and feature implementation. Ordered preservation, typed
+editing, evaluation and coordinated regeneration are different claims; retaining
+a packet does not implement its behavior.
+
+**Acceptance scope, updated 3 October 2026:** native AutoCAD execution is excluded,
+not a prerequisite for feature completion, merging or release qualification.
+Use documented format rules, reference fixtures, independent readers, exact
+round trips, numeric/geometry oracles and the existing package/runtime checks.
+No existing test, negative control, source pin or workflow is removed by this scope
+change. Old feature notes and receipts retain their historical wording and scope.
 
 ## How to read the evidence
 
@@ -20,8 +27,8 @@ using only a larger suite count or a newer commit label.
 
 Feature documents may also record earlier implementations. Read their source
 pins and subsequent PR corrections before treating a historical limitation or
-normalization policy as current. The new major-gap report separates confirmed
-merged work from pending draft branches; it does not rewrite old test evidence.
+normalization policy as current. The major-gap report separates the active implementation priorities from its
+historical feature-audit baseline; it does not rewrite old test evidence.
 
 | Claim | Required evidence |
 |---|---|
@@ -29,7 +36,7 @@ merged work from pending draft branches; it does not rewrite old test evidence.
 | Wire preservation | Applicable versions/transports, exact records and reference identities |
 | Independent interoperability | Actual exported drawings checked by an independent implementation |
 | Installed-package execution | The loaded assembly hash and the tested runtime/scenarios |
-| Native AutoCAD equivalence | Reproducible native open/AUDIT/regenerate/save/reopen and relevant visual checks |
+| Feature semantics and regeneration | Explicit expected behavior, independent/reference fixtures, dependency propagation and repeated-save checks |
 
 ## Transport, profiles and safe IO
 

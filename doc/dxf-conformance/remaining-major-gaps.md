@@ -1,8 +1,14 @@
 # Remaining major DXF / AutoCAD parity gaps
 
-**Review date:** 25 September 2026. **Reviewed default-branch baseline:**
+**Implementation priorities and acceptance scope updated:** 3 October 2026.
+**Latest reviewed implementation:** PR #229, head
+`269a66060d3824fbf392038642d45174d9e84501`, source tree
+`4d2f66610321d90b98ebd6858ff31b11a2605cf6`.
+
+**Historical detailed feature-audit baseline:** 25 September 2026,
 `9e4eb348b607f3fe3d50f5f469a382750befeba7`, source tree
-`84b11cc47e0adbccae86ea13219be871effc89e4` (merged PR #212).
+`84b11cc47e0adbccae86ea13219be871effc89e4` (PR #212). The scope update is not a
+claim that every feature has been re-audited against the latest implementation.
 
 This is the maintained major-gap report, not a new conformance certificate.
 It reviews the baseline, recent PR boundaries, selected production paths and
@@ -18,13 +24,19 @@ child records, bounded FIELD and TABLE operations, extensive geometry work and
 independent output verification. The remaining gap is not simply a list of
 unrecognized entity names. Much of it lies between **storing data, editing it
 safely, evaluating dependencies, regenerating all affected state, and proving
-native application interoperability**.
+interoperability through independent software checks**.
 
-Full AutoCAD parity is **not established**. The highest-value next work is to
-close current source/CI discrepancies and establish native acceptance evidence;
-complete dependency-aware import/version-conversion and coordinated regeneration;
-and broaden semantic evaluation, historical typed dialects and rendering fidelity.
-These are priorities, not assertions that all their subfeatures are missing.
+Full AutoCAD parity is **not established**. The active target is complete DXF
+format-family coverage, a complete typed object model, and implemented feature
+semantics. **Native AutoCAD execution is out of scope and is not a completion,
+merge or release prerequisite.** Do not spend implementation work on a native
+acceptance harness or hold supported features pending that infrastructure.
+
+Prioritize version codecs, missing typed entities/objects, safe graph operations,
+and coordinated evaluation/regeneration over further acceptance administration.
+Use specification-based expected results, independent-reader fixtures, exact
+round trips, analytic/numeric oracles and existing CI to qualify each increment.
+Preserving unknown data remains valuable but is not semantic implementation.
 No percentage is computed from test totals, file counts or coverage rows.
 
 ### Evidence that must not be conflated
@@ -35,7 +47,7 @@ No percentage is computed from test totals, file counts or coverage rows.
 | A same-library save/load cycle | Internal consistency for the selected input | Agreement with another producer |
 | Physical packets and independent-reader audit | The stated wire, ownership and interpretation checks | Native evaluation or rendering |
 | Loaded-package/runtime receipt | The tested assembly and scenarios on that runtime | Full conformance on every compatible CLR |
-| Native open, AUDIT, regeneration, save and reopen | The observed application/build/profile behavior | All other releases, fonts, enablers or files |
+| Feature-level regression and independent oracles | The specified evaluation/regeneration contract | Untested providers, private schemas or releases |
 
 The historical [coverage ledger](coverage.json) is pinned to 15 September 2026,
 PR #95, rather than the current default branch. Its [generated matrix](version-feature-matrix.md)
@@ -43,26 +55,19 @@ remains useful evidence for that snapshot. Do not silently change its source pin
 or promote its broad rows solely because later PRs added passing tests. Later
 contracts and PR receipts carry their own source identities.
 
-## Recent work: closed versus still pending
+## Implementation checkpoint
 
-Merged #209 preserves signed/tiny/zero/Z UNDERLAY scales. Merged #210 adds
-portable decimal-to-binary64 conversion. Merged #211 adds INSERT affine staging,
-attribute atomicity and registered sequence terminators. Merged #212 adds explicit
-3D-polyline coordinate editing and parent-graphics invalidation. Those are real
-increments, not completion of their entire entity or dependency families.
+The former pending C# work has advanced beyond the historical audit: legacy mesh
+and polyline edits, MESH coordinate/topology operations, TABLE/FIELD numeric
+parsing and AVERAGE, layer-state identities/reference queries and safe lifecycle
+operations have been integrated through PRs #213–#228. PR #229 adds consistent
+layer-name changes across saved snapshots and current-layer references; its
+final-source hosted run 37069664564 passed. These are scoped implementations,
+not completion of their entire entity or dependency families.
 
-At this review, #213 is the separate legacy-mesh editing/density continuation;
-#214 is the separate 2D-polyline and position-batch continuation. Their draft
-source must not be described as part of the baseline above. Qualification must
-use each current head and its actual exported evidence, not a stale PR body,
-job summary, earlier local result or mismatched log. No assertions should be
-relaxed merely to turn a pending run green.
-
-The modern-MESH header fix in #215 is separate again: changing `BlendCrease`
-or `SubdivisionLevel` invalidates stale common graphics; exact no-ops preserve
-them. This does not add subdivision evaluation, native mesh rendering or
-observation of direct edits to vertex/face/edge collections. Its conformance
-tests and independent checker require execution before qualification is claimed.
+Keep new work organized as coherent implementation increments, with tests in the
+existing suites. Do not replace large missing-code workstreams with repeated
+native-acceptance reports, path-count milestones or tiny cache fixes alone.
 
 ## Priority map
 
@@ -72,7 +77,7 @@ These labels order work; they are not severity scores for every family member.
 
 | ID | Priority | Remaining scope | Classification |
 |---|---|---|---|
-| G01 | P0 | Native AutoCAD acceptance with reproducible build/profile evidence | Qualification gap |
+| G01 | P0 | Specification-led, cross-version software conformance | Active acceptance basis; no native execution gate |
 | G02 | P1 | Typed R11/R12, R13, R14 and earlier dialect handling | Missing typed scope; raw subsets exist |
 | G03 | P1 | General, explicit, dependency-aware version conversion | Partial diagnostics and selected conversions |
 | G04 | P0/P1 | Dependency-complete clone/import and graph-wide publication | Guarded subsets; conservative refusals remain |
@@ -84,25 +89,25 @@ These labels order work; they are not severity scores for every family member.
 | G10 | P1 | Mutation notification and cache/dependency coherence | Explicit setters cover subsets; mutable access remains |
 | G11 | P0/P1 | Fuzz/resource/platform/performance qualification at scale | Existing bounds are not exhaustive qualification |
 
-## G01 — Native application acceptance
+## G01 — Specification-led software conformance
 
-The C# and independent-reader suites do not run AutoCAD's evaluators,
-regeneration machinery, modeler or font/layout engine. A native-authored input
-fixture is also not evidence that an edited output was opened, audited and saved
-successfully by the native application.
+Qualify supported functionality without an AutoCAD installation. Each feature
+needs an explicit format/version contract, tests of the actual library, unchanged
+baseline behavior, and independently checked serialized output where applicable.
+Use existing producer/reference fixtures without requiring new native executions.
 
-**Next implementation:** an external, explicitly provisioned acceptance harness
-for available licensed installations. Record product/build, host OS, DXF profile,
-loaded enablers, fonts, locale, source hash, command sequence and output hashes.
-Keep optional native infrastructure separate from the two ordinary repository
-workflows; do not claim an unavailable native runner executed.
+**Acceptance:** correct version-specific group codes and framing, complete
+applicable object fields, stable references/ownership, successful repeated saves,
+exact unaffected metadata, and defined no-op/rejection behavior. Numeric and
+geometry operations use exact or analytic oracles with documented tolerances.
+Independent readers must not silently repair the output to make a check pass.
+Actual tested source and package/runtime evidence must agree.
 
-**Acceptance:** open untouched producer input and edited output; run AUDIT with
-repair behavior recorded; force relevant regeneration/evaluation; save and reopen;
-compare required geometry, ownership, fields, optional values and appearance.
-Record repairs as failures or explicitly reviewed compatibility outcomes, not
-invisible normalization. A second save must expose unstable identities or
-regenerated data. A clean independent-reader audit alone cannot close this item.
+Unknown, stale, filtered, failed or unexecuted evidence is not a passing result.
+The scope change does not remove tests or relax thresholds. Neither a version
+enum nor a passing same-library round trip proves full feature support. Native
+application execution is excluded from this acceptance contract, not marked as
+a completed test. Historical records and the separate JavaScript source pin remain.
 
 ## G02 — Historical typed dialects
 
@@ -110,7 +115,10 @@ regenerated data. A clean independent-reader audit alone cannot close this item.
 admits R11/R12, R13 and R14 for ordered preservation and selected edits. These
 paths are not interchangeable. Raw retention does not imply that every historical
 entity can be constructed, edited and written through the modern typed model.
-Earlier/headerless dialects also need explicit policies.
+Earlier/headerless dialects also need explicit policies. The target includes
+all declared historical families, not only the six currently supported typed
+profiles. Expand R11/R12, R13 and R14 first, then R10/R9 and earlier declared
+families; text/binary support must follow each format's actual transport rules.
 
 **Next implementation:** profile-specific codecs with explicit header, encoding,
 binary framing, section, subclass, entity and object rules. Start with a bounded
@@ -118,7 +126,7 @@ historical typed subset rather than merely widening a version-enum check.
 Preserve unknown packets where promised and reject unsupported typed edits before
 publishing partial output.
 
-**Acceptance:** independent native inputs and newly authored outputs for each
+**Acceptance:** independently sourced reference inputs and newly authored outputs for each
 claimed profile, in both applicable transports, including missing optional
 fields, legacy code pages, child sequences and negative version-legality cases.
 Test raw and typed paths separately. `$ACADVER` values identify format families;
@@ -141,7 +149,7 @@ a loss report is not sufficient.
 
 **Acceptance:** source remains unchanged on rejection; unsupported data cannot
 silently disappear; target references resolve; geometry and optional metadata
-match the declared conversion policy; target-native open/save passes. Include
+match the declared conversion policy; independent target-profile read/audit checks pass. Include
 interactions between TABLE/FIELD/display blocks, named objects, attributes,
 retained sequences and external references, not only isolated entities.
 
@@ -190,7 +198,7 @@ reference/resource budgets; publish them together. Unknown cache layouts must
 cause explicit refusal or a scoped result, not fabricated compatible-looking data.
 
 **Acceptance:** cell, formula, merged-region, style and linked-content edits stay
-consistent across relevant representations after two saves and native regeneration.
+consistent across relevant representations after two saves and library regeneration.
 Late failures or missing fonts/resources cannot leave half-updated state. See
 [calculation/layout](table-calculation-layout.md), [display binding](table-display-binding.md),
 [content editing](table-content-editing.md) and [cell formatting](cell-style-format-editing.md).
@@ -211,14 +219,14 @@ or environment access. Whole literal-host replacement is not arbitrary substring
 FIELD expansion or MTEXT column reflow.
 
 **Next implementation:** provider interfaces with explicit dependency discovery,
-context and side-effect policies; broaden grammar against native examples;
+context and side-effect policies; broaden grammar against documented and reference examples;
 integrate invalidation and re-evaluation with existing forest transactions.
 Do not execute arbitrary text as a provider side effect.
 
-**Acceptance:** native examples per provider/context; cycles, missing properties
-and stale snapshots; exact failure-cache/host policies; unchanged unrelated trees.
-Existing date/unit/culture contracts remain explicit until native equivalence is
-demonstrated. See [standard evaluation](standard-field-evaluation.md),
+**Acceptance:** specification/reference examples per provider/context; cycles,
+missing properties and stale snapshots; exact failure-cache/host policies;
+unchanged unrelated trees. Date/unit/culture contracts and provider dependencies
+remain explicit and independently testable. See [standard evaluation](standard-field-evaluation.md),
 [results](field-results.md), [text hosts](field-text-hosts.md) and Autodesk's
 [field evaluator API](https://help.autodesk.com/cloudhelp/2027/ENU/OARX-RefGuide/files/OARX-RefGuide-AcFdFieldEvaluator__evaluate_AcDbField__int_AcDbDatabase__AcFdFieldResult_.html).
 
@@ -236,8 +244,8 @@ receives a loss report.
 
 **Acceptance:** parameter/context changes, nested references and labels regenerate
 consistently; unsupported actions are identified before mutation; clone/import
-preserves relevant dependencies; native regeneration does not replace the intended
-result unexpectedly. See [INSERT geometry](insert-geometry.md),
+preserves relevant dependencies; library regeneration and repeated serialization
+do not replace or lose the intended result. See [INSERT geometry](insert-geometry.md),
 [containers](typed-containers.md), [MULTILEADER contexts](multileader-contexts.md)
 and [section membership](section-manager-membership.md).
 
@@ -250,13 +258,13 @@ dimension/leader placement, annotation contexts, viewport clipping and plot-styl
 effects. External IMAGE/PDF/DWF/DGN references also need real content interpretation.
 
 **Next implementation:** explicit measurement/rendering providers with deterministic
-inputs and a native comparison corpus. Keep literal text, native controls, FIELD
+inputs and independently specified comparison fixtures. Keep literal text, native controls, FIELD
 expansion and formatting distinct. Define missing-font/resource behavior rather
 than estimating it from string length or dropping external content.
 
 **Acceptance:** positions, extents, line breaks and visual output under specified
 fonts, units, locales, scales and plot settings. Database audits cannot prove
-these properties. Include native producer fixtures, not only helper-built examples.
+these properties. Include independently sourced producer fixtures, not only helper-built examples.
 See [text styles](text-style-fidelity.md), [MTEXT columns](mtext-columns.md),
 [output settings](output-settings.md) and [UNDERLAY geometry](underlay-affine.md).
 
@@ -279,9 +287,9 @@ operation, then implement it without weakening refusal or preservation behavior.
 Separate improved intermediate arithmetic from claims about all degeneracies.
 Application payload semantics need an actual schema/modeler/provider.
 
-**Acceptance:** analytic or native geometry oracles, adversarial numeric inputs,
+**Acceptance:** analytic or independent geometry oracles, adversarial numeric inputs,
 exact unaffected metadata, explicit approximation bounds, repeatable transforms
-and relevant native acceptance. See [MESH preflight](mesh-write-validation.md),
+and independent output interpretation. See [MESH preflight](mesh-write-validation.md),
 [ACIS envelopes](acis-sat.md), [opaque entities](opaque-entities.md) and
 [Autodesk proxy definitions](https://help.autodesk.com/cloudhelp/2022/ENU/OARX-DevGuide/files/GUID-11AEF76F-9638-4322-A7D0-0D628BBB456F.htm).
 
@@ -332,22 +340,38 @@ runtime/performance scope. See [CI/release](../CI-RELEASE.md),
 
 ## Implementation sequence and completion criteria
 
-First qualify pending narrow PRs against their actual heads. Next create native
-acceptance infrastructure and use its failures to prioritize graph closure,
-TABLE orchestration and FIELD/provider work. Expand historical typed profiles
-one claimed subset at a time. Broaden rendering/modeler/annotation engines with
-appropriate providers and fixtures. Isolated cache/geometry fixes remain useful,
-but do not replace the major workstreams above.
+1. **Version codecs and complete typed objects:** expand historical typed input,
+   authoring and output by coherent entity families; cover required fields,
+   defaults, optional presence, encodings, child records and legal version limits.
+   Do not merely widen version admission or substitute opaque envelopes for
+   typed object behavior.
+2. **Graph operations and conversion:** implement dependency-complete clone/import,
+   ownership/pointer/reactor/resource remapping, rename and safe deletion, then
+   source-to-target conversion with explicit loss policies and no silent dropping.
+3. **Feature engines:** complete TABLE structure/styles/formulas/layout/display,
+   FIELD providers/dependencies/results, blocks/attributes, text/dimensions/leaders,
+   annotation/associative behavior, and geometry/subdivision/modeler functionality.
+4. **Performance and robustness throughout:** reduce repeated scans and allocations,
+   preserve bounded processing, and measure realistic large drawings. Keep
+   deterministic behavior, failures, source immutability and reference integrity
+   covered while optimizing.
 
-A gap closes when its API/schema contract is implemented; applicable versions,
-transports and dependency interactions are tested; preservation/refusal behavior
-is checked; independent output tests pass; relevant runtimes are exercised; and
-native evidence exists where native equivalence is the claim. Final reviewed
-source and actual artifacts must agree. No row or case count substitutes for
-this evidence chain.
+A gap closes when its API/schema and feature behavior are implemented, applicable
+versions/transports and dependency interactions are tested, preservation/refusal
+behavior is checked, independent output/oracle tests pass, and relevant runtime
+checks qualify the actual package. Native AutoCAD execution is not required.
+Final reviewed source and actual artifacts must agree. Report unsupported members
+and combinations precisely; a family-level completion claim must cover its whole
+applicable contract, not just representative examples or file presence.
 
-JavaScript PR #98 is a separate project with fixed-reference, original-test and
-differential gates. Neither this report nor a green C# PR waives them.
+The current typed reader/writer's six 2000–2018 families and the raw pipeline's
+additional R11/R12, R13 and R14 profiles are the implemented starting point, not
+the final target. New semantic support must be represented in APIs and executable
+tests before being described as complete.
+
+JavaScript PR #98 remains separate. Its fixed-reference, original-test and .NET
+differential requirements are not AutoCAD native acceptance and are unchanged by
+this scope decision. The C# implementation is the focus of this priority update.
 
 ## Documentation and workflow cleanup
 

@@ -3,10 +3,14 @@
 A C# library for reading, creating, editing and writing DXF drawings.
 This repository develops the `netDxf.netstandard` package and its conformance tools.
 
-**Full AutoCAD parity is not yet established.** Typed editing, raw preservation,
-geometric evaluation and native application interoperability are different
-capabilities. Start with the [remaining major gaps](doc/dxf-conformance/remaining-major-gaps.md)
-and the [contract index](doc/dxf-conformance/README.md) for their scope.
+**The implementation target is complete DXF version, object-model and feature support.**
+Full AutoCAD parity is not yet established. Typed editing, raw preservation,
+feature evaluation and coordinated regeneration are separate capabilities.
+Native AutoCAD execution is outside the development acceptance scope; it is not
+required to complete or merge a feature. Specification-based tests, independent
+readers, exact round trips and the existing build/package checks remain required.
+See the [remaining major gaps](doc/dxf-conformance/remaining-major-gaps.md) and
+[contract index](doc/dxf-conformance/README.md) for current scope and priorities.
 
 ## Install and use
 
@@ -102,9 +106,10 @@ and qualification evidence. Test totals and row counts are not completeness perc
 
 Keep changes reviewable, preserve existing test identities and negative controls,
 and state version/preservation/refusal behavior explicitly. Qualify the final
-source tree, not just a previous head or a passing build summary. When native
-AutoCAD was not executed, say so. Keep original fixture and receipt evidence
-separate from newly constructed checker self-tests.
+source tree, not just a previous head or a passing build summary. Assess supported
+DXF behavior against explicit schemas, independent implementations and regression
+oracles. Keep original fixture and receipt evidence separate from constructed
+checker self-tests; native application testing is not a completion gate.
 
 The repository intentionally keeps two core workflows:
 [build/test/package](.github/workflows/ci-build.yml) and
