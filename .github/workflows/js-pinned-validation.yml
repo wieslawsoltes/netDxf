@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pinned-native-port-validation
-          compression-level: 0
+          compression-level: 6
           retention-days: 7
           path: |
             evidence/
