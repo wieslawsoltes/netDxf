@@ -25,7 +25,8 @@ namespace netDxf.IO
         /// POLYLINE sequences are decoded as typed polylines. Default widths are materialized into
         /// vertex overrides; child handles are checked for uniqueness but remain only in the raw
         /// document. Reauthoring allocates new child identities. Unsupported child metadata and
-        /// fitted/mesh sequences reject. TEXT placement uses its effective alignment anchor; Aligned/Fit
+        /// fitted sequences reject. Polygon and polyface meshes retain grid ordering and signed face
+        /// indices; effective face styling is materialized. TEXT placement uses its effective alignment anchor; Aligned/Fit
         /// derive width and direction from their two OCS points. Unused points, lexical spellings and
         /// font-dependent extents are not preserved in the typed projection. Nonzero TEXT thickness,
         /// undefined nonstandard styles and unknown caret escapes reject. STYLE file references are
@@ -124,7 +125,9 @@ namespace netDxf.IO
                         entity = ReadTextEntity(fields, normal, thickness, styles);
                         break;
                     case "POLYLINE":
-                        entity = ReadPolyline(fields, entities.Records, ref index, layerName, normal, thickness, handles);
+                        entity = (fields.PeekInteger(70, 0) & 80) != 0
+                            ? ReadLegacyMesh(fields, entities.Records, ref index, layerName, color, normal, thickness, handles, layers)
+                            : ReadPolyline(fields, entities.Records, ref index, layerName, normal, thickness, handles);
                         break;
                     case "LINE":
                         entity = new Line(fields.Vector(10, Vector3.Zero, true), fields.Vector(11, Vector3.Zero, true))
@@ -221,6 +224,8 @@ namespace netDxf.IO
             internal double? OptionalNumber(short code)
             { return this.remaining.ContainsKey(code) ? (double?)this.Number(code, 0) : null; }
             internal double Number(short code, double fallback, bool required = false) { return Finite((double)this.Take(code, fallback, required)); }
+            internal short PeekInteger(short code, short fallback)
+            { return this.remaining.TryGetValue(code, out DxfTag tag) ? (short)tag.Value : fallback; }
             internal short Integer(short code, short fallback) { return (short)this.Take(code, fallback, false); }
             internal Vector3 Vector(short code, Vector3 fallback, bool required)
             {
