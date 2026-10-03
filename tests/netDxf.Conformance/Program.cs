@@ -34,6 +34,7 @@ internal static partial class Program
         Run("binary/valid-sentinel-and-string", ValidBinarySentinel);
         RegisterEntityCloneQualificationTests();
         RunAdditionalTests();
+        RegisterR12CodecTests();
         RegisterObservableCollectionInsertTests();
         RegisterMTextUnicodeChunkTests();
         RegisterEntityTextFramingTests();
