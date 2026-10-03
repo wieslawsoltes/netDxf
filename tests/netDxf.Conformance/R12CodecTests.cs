@@ -77,6 +77,7 @@ internal static partial class Program
     {
         Equal(expected.GetType(), actual.GetType(), "Typed R12 entity class");
         Equal(expected.Layer.Name, actual.Layer.Name, "Layer name"); Equal(expected.Layer.Color.Index, actual.Layer.Color.Index, "Layer color");
+        Equal(expected.Layer.IsFrozenInNewViewports, actual.Layer.IsFrozenInNewViewports, "New-viewport frozen layer");
         Equal(expected.Layer.IsFrozen, actual.Layer.IsFrozen, "Frozen layer"); Equal(expected.Layer.IsLocked, actual.Layer.IsLocked, "Locked layer");
         Equal(expected.Color.Index, actual.Color.Index, "Indexed entity color");
         Check(string.Equals(expected.Linetype.Name, actual.Linetype.Name, StringComparison.OrdinalIgnoreCase), "Linetype changed");

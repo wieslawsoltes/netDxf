@@ -60,6 +60,7 @@ namespace netDxf.Tables
         private AciColor color;
         private bool isVisible;
         private bool isFrozen;
+        private bool isFrozenInNewViewports;
         private bool isLocked;
         private bool plot;
         private Linetype linetype;
@@ -193,6 +194,20 @@ namespace netDxf.Tables
         }
 
         /// <summary>
+        /// Gets or sets whether this layer is frozen by default in newly created viewports.
+        /// </summary>
+        /// <remarks>
+        /// The default is false. This is the LAYER group 70 bit 2 setting, independent of
+        /// <see cref="IsFrozen"/> and <see cref="IsVisible"/>. Changing it does not modify
+        /// any existing viewport's FrozenLayers collection.
+        /// </remarks>
+        public bool IsFrozenInNewViewports
+        {
+            get { return this.isFrozenInNewViewports; }
+            set { this.isFrozenInNewViewports = value; }
+        }
+
+        /// <summary>
         /// Gets or sets if the layer is locked.
         /// </summary>
         public bool IsLocked
@@ -301,6 +316,7 @@ namespace netDxf.Tables
                 Color = (AciColor) this.Color.Clone(),
                 IsVisible = this.isVisible,
                 IsFrozen = this.isFrozen,
+                IsFrozenInNewViewports = this.isFrozenInNewViewports,
                 IsLocked = this.isLocked,
                 Plot = this.plot,
                 Linetype = (Linetype) this.Linetype.Clone(),

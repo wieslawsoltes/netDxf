@@ -742,6 +742,7 @@ namespace netDxf.Blocks
         private void Entities_BeforeAddItem(EntityCollection sender, EntityCollectionEventArgs e)
         {
             if (e.Item is Hatch incomingHatch && e.Item.Owner == null) HatchSourceRelations.ValidateOwner(incomingHatch, this);
+            if (e.Item is Viewport viewport && this.Record.Owner != null) viewport.ValidateFrozenLayers(this.Record.Owner.Owner);
             if (e.Item is Section section && this.Record.Owner != null) section.Validate(this.Record.Owner.Owner);
             if (e.Item is MultiLeader multiLeader && e.Item.Owner == null && this.Record.Owner != null) multiLeader.ValidateIncoming(this.Record.Owner.Owner);
             if (e.Item is DxfOpaqueEntity opaque && e.Item.Owner == null) opaque.ValidateIncoming(this.Record.Owner?.Owner, this);

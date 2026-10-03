@@ -838,6 +838,7 @@ namespace netDxf
                 throw new ArgumentNullException(nameof(entity));
             }
 
+            if (entity is Viewport incomingViewport) incomingViewport.ValidateFrozenLayers(this);
             if (entity is MultiLeader multiLeader) multiLeader.ValidateIncoming(this);
             if (entity is Section section) section.Validate(this);
             this.ValidateStoredTableEntityAdoption(entity);
@@ -1043,10 +1044,7 @@ namespace netDxf
                     break;
                 case EntityType.Viewport:
                     Viewport viewport = (Viewport) entity;
-                    for (int i = 0; i < viewport.FrozenLayers.Count; i++)
-                    {
-                        viewport.FrozenLayers[i] = this.layers.Add(viewport.FrozenLayers[i], assignHandle);
-                    }
+                    viewport.CanonicalizeFrozenLayers(this, assignHandle);
                     viewport.ClippingBoundaryAdded += this.Viewport_ClippingBoundaryAdded;
                     viewport.ClippingBoundaryRemoved += this.Viewport_ClippingBoundaryRemoved;
                     break;

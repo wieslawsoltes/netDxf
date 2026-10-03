@@ -149,6 +149,7 @@ namespace netDxf.Collections
                 }
             }
 
+            layout.Viewport?.ValidateFrozenLayers(this.Owner);
             associatedBlock = this.Owner.Blocks.Add(associatedBlock);
 
             layout.AssociatedBlock = associatedBlock;
@@ -157,6 +158,7 @@ namespace netDxf.Collections
 
             if (layout.Viewport != null)
             {
+                layout.Viewport.CanonicalizeFrozenLayers(this.Owner, assignHandle);
                 layout.Viewport.Owner = associatedBlock;
             }
 

@@ -1538,6 +1538,10 @@ namespace netDxf.IO
             {
                 flags = flags | LayerFlags.Frozen;
             }
+            if (layer.IsFrozenInNewViewports)
+            {
+                flags |= LayerFlags.FrozenNewViewports;
+            }
             if (layer.IsLocked)
             {
                 flags = flags | LayerFlags.Locked;

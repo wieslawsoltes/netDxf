@@ -31,6 +31,8 @@ namespace netDxf.IO
     /// external dependencies require another format codec. Redundant total pattern length is
     /// recomputed on output; decoding tolerates producer rounding within 1e-12 relative plus one
     /// binary64 subnormal quantum per term. The informational referenced flag is not retained.
+    /// Layer global freeze, new-viewport freeze default, locking and visibility are retained.
+    /// The informational LAYER referenced flag (64) is accepted without becoming a typed setting.
     /// DxfDocument's admitted versions and the lossless raw-preservation API remain unchanged.
     /// </remarks>
     public static partial class DxfR12Codec
@@ -149,7 +151,8 @@ namespace netDxf.IO
                     throw new NotSupportedException("The layer contains settings outside the supported R12 layer profile.");
                 return new LayerPacket { Name = ResourceName(layer.Name), PatternName = LinetypeName(layer.Linetype.Name),
                     Color = (short)(layer.IsVisible ? layer.Color.Index : -layer.Color.Index),
-                    Flags = (short)((layer.IsFrozen ? 1 : 0) | (layer.IsLocked ? 4 : 0)) };
+                    Flags = (short)((layer.IsFrozen ? 1 : 0) | (layer.IsFrozenInNewViewports ? 2 : 0)
+                        | (layer.IsLocked ? 4 : 0)) };
             }
         }
 

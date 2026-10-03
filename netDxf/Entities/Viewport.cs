@@ -591,31 +591,26 @@ namespace netDxf.Entities
         {
             if (e.Item == null)
             {
-                // the frozen layer list cannot contain null items
-                e.Cancel = true; 
-            }
-            else if (this.Owner != null && e.Item.Owner == null)
-            {
-                // the frozen layer and the viewport must belong to the same document
                 e.Cancel = true;
+                return;
             }
-            else if (this.Owner == null && e.Item.Owner != null)
+
+            // A block can exist without belonging to a document. Compare actual
+            // document owners, not merely whether the entity belongs to a block.
+            DxfDocument document = this.Owner?.Record.Owner?.Owner;
+            if (!ReferenceEquals(document, e.Item.Owner?.Owner))
             {
-                // the frozen layer and the viewport must belong to the same document
                 e.Cancel = true;
+                return;
             }
-            else if (this.Owner != null && e.Item.Owner != null)
+
+            foreach (Layer existing in this.frozenLayers)
             {
-               // the frozen layer and the viewport must belong to the same document
-               if (!ReferenceEquals(this.Owner.Owner.Owner.Owner, e.Item.Owner.Owner))
-               {
-                   e.Cancel = true;
-               }
-            }
-            else if (this.frozenLayers.Contains(e.Item))
-            {
-                // the frozen layer list cannot contain duplicates
-                e.Cancel = true;
+                if (string.Equals(existing.Name, e.Item.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
         }
 
