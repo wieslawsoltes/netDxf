@@ -14,9 +14,9 @@ def edit(path, before, after):
 
 text = 'netDxf/IO/DxfR12Codec.Text.cs'
 edit(text, 'private void TextEntity(Text text, Vector3 normal)', 'private void TextEntity(Text text, Vector3 normal, short verticalCode = 73)')
-edit(text, 'this.Tag(72, horizontal); this.Tag(73, vertical);', 'this.Tag(72, horizontal); this.Tag(verticalCode, vertical);')
+edit(text, 'this.Tag(73, vertical)', 'this.Tag(verticalCode, vertical)')
 edit(text, 'private static Text ReadTextEntity(Fields fields, Vector3 normal, double thickness, Dictionary<string, TextStyle> styles)', 'private static Text ReadTextEntity(Fields fields, Vector3 normal, double thickness, Dictionary<string, TextStyle> styles, short verticalCode = 73)')
-edit(text, 'vertical = fields.Integer(73, 0);', 'vertical = fields.Integer(verticalCode, 0);')
+edit(text, 'fields.Integer(73, 0)', 'fields.Integer(verticalCode, 0)')
 edit('netDxf/Entities/Insert.SequenceEnd.cs', '        internal EndSequence SequenceEnd\n', '        // Codec inspection must not materialize a source-owned sequence record.\n        internal EndSequence ExistingSequenceEnd { get { return this.sequenceEnd; } }\n\n        internal EndSequence SequenceEnd\n')
 
 blocks = 'netDxf/IO/DxfR12Codec.Blocks.cs'
@@ -52,7 +52,6 @@ edit('netDxf/IO/DxfR12Codec.Reader.cs', '                DxfRawRecord record = r
                 }
                 var fields = new Fields(record);''')
 source = (here / 'DxfR12Codec.Attributes.cs').read_text(encoding='utf-8')
-# Bind the payload to the existing helper names and SEQEND constructor contract.
 for before, after in [
     ('EncodeText(value.Prompt)', 'EncodeTextControls(value.Prompt, this.options.MaximumStringLength)'),
     ('DecodeText(fields.Text(3, ""))', 'DecodeTextControls(fields.Text(3, ""))'),
