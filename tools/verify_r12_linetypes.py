@@ -47,7 +47,7 @@ def expected():
 
 def load(path):
     data=path.read_bytes()
-    source=binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('cp1252')))
+    source=binary_tags_loader(data) if data.startswith(b'AutoCAD Binary DXF') else ascii_tags_loader(io.StringIO(data.decode('cp1252'), newline=None))
     return [(t.code,cast_tag_value(t.code,t.value)) for t in source]
 
 
