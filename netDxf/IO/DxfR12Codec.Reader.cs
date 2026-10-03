@@ -25,7 +25,11 @@ namespace netDxf.IO
         /// POLYLINE sequences are decoded as typed polylines. Default widths are materialized into
         /// vertex overrides; child handles are checked for uniqueness but remain only in the raw
         /// document. Reauthoring allocates new child identities. Unsupported child metadata and
-        /// fitted/mesh sequences reject. No external resources are read.
+        /// fitted/mesh sequences reject. TEXT placement uses its effective alignment anchor; Aligned/Fit
+        /// derive width and direction from their two OCS points. Unused points, lexical spellings and
+        /// font-dependent extents are not preserved in the typed projection. Nonzero TEXT thickness,
+        /// undefined nonstandard styles and unknown caret escapes reject. STYLE file references are
+        /// retained without filesystem access. No external resources are read.
         /// </remarks>
         public static IReadOnlyList<EntityObject> ReadEntities(DxfRawDocument document)
         {
@@ -33,6 +37,8 @@ namespace netDxf.IO
             if (document.Version != DxfVersion.AutoCad12)
                 throw new NotSupportedException("This typed primitive codec requires the AC1009 R11/R12 format family.");
             var layers = new Dictionary<string, Layer>(StringComparer.OrdinalIgnoreCase);
+            var styles = new Dictionary<string, TextStyle>(StringComparer.OrdinalIgnoreCase);
+            bool sawStyles = false;
             DxfRawSection entities = null;
             bool sawTables = false;
             foreach (DxfRawSection section in document.Sections)
@@ -52,6 +58,11 @@ namespace netDxf.IO
                     {
                         if (table != null) throw new FormatException("Nested table declarations are invalid.");
                         table = new Fields(record).Text(2, null, true);
+                        if (string.Equals(table, "STYLE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (sawStyles) throw new FormatException("Duplicate STYLE tables are ambiguous.");
+                            sawStyles = true;
+                        }
                     }
                     else if (string.Equals(record.Name, "ENDTAB", StringComparison.OrdinalIgnoreCase))
                     {
@@ -65,6 +76,14 @@ namespace netDxf.IO
                         Layer layer = ReadLayer(record);
                         if (layers.ContainsKey(layer.Name)) throw new FormatException("Duplicate layer names are ambiguous.");
                         layers.Add(layer.Name, layer);
+                    }
+                    else if (string.Equals(record.Name, "STYLE", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!string.Equals(table, "STYLE", StringComparison.OrdinalIgnoreCase))
+                            throw new FormatException("A STYLE record is outside its table.");
+                        TextStyle style = ReadTextStyle(record);
+                        if (styles.ContainsKey(style.Name)) throw new FormatException("Duplicate style names are ambiguous.");
+                        styles.Add(style.Name, style);
                     }
                     else if (string.Equals(record.Name, "LTYPE", StringComparison.OrdinalIgnoreCase))
                     {
@@ -101,6 +120,9 @@ namespace netDxf.IO
                 EntityObject entity;
                 switch (record.Name.ToUpperInvariant())
                 {
+                    case "TEXT":
+                        entity = ReadTextEntity(fields, normal, thickness, styles);
+                        break;
                     case "POLYLINE":
                         entity = ReadPolyline(fields, entities.Records, ref index, layerName, normal, thickness, handles);
                         break;
@@ -195,6 +217,7 @@ namespace netDxf.IO
                 this.remaining.Remove(code); return tag.Value;
             }
             internal string Text(short code, string fallback, bool required = false) { return (string)this.Take(code, fallback, required); }
+            internal bool Has(short code) { return this.remaining.ContainsKey(code); }
             internal double? OptionalNumber(short code)
             { return this.remaining.ContainsKey(code) ? (double?)this.Number(code, 0) : null; }
             internal double Number(short code, double fallback, bool required = false) { return Finite((double)this.Take(code, fallback, required)); }
