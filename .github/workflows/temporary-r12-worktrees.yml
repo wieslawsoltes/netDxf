@@ -77,7 +77,11 @@ jobs:
               git -C "worktree-$part" diff > "evidence/diagnostic-source/$part.diff"
             fi
           done
-          grep -n -E 'vertical|TextEntity|ReadTextEntity' integration/netDxf/IO/DxfR12Codec.Text.cs || true
+          for file in DxfR12Codec.Attributes.cs DxfR12Codec.Text.cs DxfR12Codec.Selection.cs DxfR12SelectionPlan.cs; do
+            if test -f "integration/netDxf/IO/$file"; then
+              nl -ba "integration/netDxf/IO/$file" | tee "evidence/diagnostic-source/$file.txt"
+            fi
+          done
       - name: Retain source changes, worktree identities and actual test evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
