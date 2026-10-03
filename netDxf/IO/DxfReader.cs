@@ -2380,6 +2380,7 @@ namespace netDxf.IO
                 Linetype = linetype,
                 IsVisible = isVisible,
                 IsFrozen = flags.HasFlag(LayerFlags.Frozen),
+                IsFrozenInNewViewports = flags.HasFlag(LayerFlags.FrozenNewViewports),
                 IsLocked = flags.HasFlag(LayerFlags.Locked),
                 Plot = plot,
                 Lineweight = lineweight

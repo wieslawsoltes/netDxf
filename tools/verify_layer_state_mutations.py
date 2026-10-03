@@ -15,8 +15,8 @@ STAGES = ('source', 'output', 'resave')
 def expected_state(handle, owner, mask, changed, layers, linetypes):
     flags = 63
     if changed:
-        # Independent truth table for each of the four supported Boolean properties.
-        for bit, enabled in ((1, False), (2, True), (4, False), (8, False)):
+        # Independent truth table for each of the five supported Boolean properties.
+        for bit, enabled in ((1, False), (2, True), (4, False), (8, False), (16, False)):
             if mask & bit:
                 flags = (flags | bit) if enabled else (flags & ~bit)
     color = 3 if changed and mask & 64 else 1

@@ -78,6 +78,7 @@ namespace netDxf.Objects
             if (layer.IsFrozen) this.flags |= LayerPropertiesFlags.Frozen;
             if (layer.IsLocked) this.flags |= LayerPropertiesFlags.Locked;
             if (layer.Plot) this.flags |= LayerPropertiesFlags.Plot;
+            if (layer.IsFrozenInNewViewports) this.flags |= LayerPropertiesFlags.NewVpFrozen;
             this.linetype = layer.Linetype.Name;
             this.color = (AciColor) layer.Color.Clone();
             this.lineweight = layer.Lineweight;
@@ -168,8 +169,10 @@ namespace netDxf.Objects
         /// <param name="layer">Layer from which copy the properties.</param>
         /// <param name="options">Layer properties to copy.</param>
         /// <remarks>Only selected properties are copied. Unselected flags and flags not represented
-        /// by Layer (including viewport flags) retain their stored values. This does not implement
-        /// viewport restoration, resource renaming or a multi-layer transaction.</remarks>
+        /// by Layer (including the current-viewport frozen flag) retain their stored values.
+        /// NewVpFrozen captures the layer's new-viewport default, not an existing viewport's
+        /// FrozenLayers collection. This does not implement current-viewport restoration,
+        /// resource renaming or a multi-layer transaction.</remarks>
         public void CopyFrom(Layer layer, LayerPropertiesRestoreFlags options)
         {
             if (!string.Equals(this.name, layer.Name, StringComparison.OrdinalIgnoreCase))
@@ -180,7 +183,7 @@ namespace netDxf.Objects
             // Reset only flags selected for capture and represented by Layer. Retain
             // unselected, viewport-only and unknown stored bits instead of erasing them.
             const LayerPropertiesFlags supported = LayerPropertiesFlags.Hidden | LayerPropertiesFlags.Frozen
-                | LayerPropertiesFlags.Locked | LayerPropertiesFlags.Plot;
+                | LayerPropertiesFlags.Locked | LayerPropertiesFlags.Plot | LayerPropertiesFlags.NewVpFrozen;
             this.flags &= ~((LayerPropertiesFlags)options & supported);
 
             if (options.HasFlag(LayerPropertiesRestoreFlags.Hidden))
@@ -198,6 +201,10 @@ namespace netDxf.Objects
             if (options.HasFlag(LayerPropertiesRestoreFlags.Plot))
             {
                 if (layer.Plot) this.flags |= LayerPropertiesFlags.Plot;
+            }
+            if (options.HasFlag(LayerPropertiesRestoreFlags.NewVpFrozen))
+            {
+                if (layer.IsFrozenInNewViewports) this.flags |= LayerPropertiesFlags.NewVpFrozen;
             }
             if (options.HasFlag(LayerPropertiesRestoreFlags.Linetype))
             {
@@ -245,6 +252,10 @@ namespace netDxf.Objects
             {
                 layer.Plot = this.flags.HasFlag(LayerPropertiesFlags.Plot);
             }
+            if (options.HasFlag(LayerPropertiesRestoreFlags.NewVpFrozen))
+            {
+                layer.IsFrozenInNewViewports = this.flags.HasFlag(LayerPropertiesFlags.NewVpFrozen);
+            }
             if (options.HasFlag(LayerPropertiesRestoreFlags.Linetype))
             {
                 Linetype line = null;
@@ -288,6 +299,11 @@ namespace netDxf.Objects
             }
 
             if (layer.IsFrozen != this.flags.HasFlag(LayerPropertiesFlags.Frozen))
+            {
+                return false;
+            }
+
+            if (layer.IsFrozenInNewViewports != this.flags.HasFlag(LayerPropertiesFlags.NewVpFrozen))
             {
                 return false;
             }

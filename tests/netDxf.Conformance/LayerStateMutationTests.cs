@@ -14,11 +14,11 @@ internal static partial class Program
     {
         RegisterLayerStateLifecycleTests();
         RegisterLayerStateTransferTests();
-        for (int mask = 0; mask < 16; mask++)
+        for (int mask = 0; mask < 32; mask++)
         {
             int selected = mask;
             Run("layer-state-mutation/flag-mask/" + mask, () => LsmFlagMask(selected));
-            Run("layer-state-mutation/scalar-mask/" + mask, () => LsmScalarMask(selected));
+            if (mask < 16) Run("layer-state-mutation/scalar-mask/" + mask, () => LsmScalarMask(selected));
         }
         foreach (bool loaded in new[] { false, true })
         foreach (int foreign in new[] { 0, 1, 2, 3 })
@@ -34,6 +34,7 @@ internal static partial class Program
     {
         IsVisible = (flags & 1) == 0, IsFrozen = (flags & 2) != 0,
         IsLocked = (flags & 4) != 0, Plot = (flags & 8) != 0,
+        IsFrozenInNewViewports = (flags & 16) != 0,
         Color = new AciColor(3), Linetype = new Linetype("NEW_DASH"),
         Lineweight = Lineweight.W50, Transparency = new Transparency(25)
     };
@@ -50,13 +51,14 @@ internal static partial class Program
         // flag combination, and a private bit that must never be manufactured/lost.
         foreach (int extra in new[] { 0, 0x4000 })
         for (int before = 0; before < 64; before++)
-        for (int incoming = 0; incoming < 16; incoming++)
+        for (int incoming = 0; incoming < 32; incoming++)
         {
             var layer = LsmLayer(incoming); var properties = LsmProperties(before | extra);
             var color = properties.Color; var alpha = properties.Transparency;
-            properties.CopyFrom(layer, (LayerPropertiesRestoreFlags)(mask | 16 | 32 | 1024 | 0x8000));
+            // NewVpFrozen is now represented; only current-viewport/plot-style/private bits remain unsupported.
+            properties.CopyFrom(layer, (LayerPropertiesRestoreFlags)(mask | 32 | 1024 | 0x8000));
             int expected = before | extra;
-            for (int bit = 1; bit <= 8; bit <<= 1)
+            for (int bit = 1; bit <= 16; bit <<= 1)
                 if ((mask & bit) != 0) expected = (expected & ~bit) | (incoming & bit);
             Equal(expected, (int)properties.Flags, "Unselected stored flag was lost or selected flag not copied");
             Check(ReferenceEquals(color, properties.Color) && ReferenceEquals(alpha, properties.Transparency)
@@ -64,12 +66,12 @@ internal static partial class Program
                 "Flag-only capture changed nonflag values");
             properties.CopyFrom(layer, (LayerPropertiesRestoreFlags)mask);
             Equal(expected, (int)properties.Flags, "Repeated selective capture changed flags");
-            var target = LsmLayer(15 ^ incoming);
+            var target = LsmLayer(31 ^ incoming);
             properties.CopyTo(target, LayerPropertiesRestoreFlags.Hidden | LayerPropertiesRestoreFlags.Frozen
-                | LayerPropertiesRestoreFlags.Locked | LayerPropertiesRestoreFlags.Plot);
+                | LayerPropertiesRestoreFlags.Locked | LayerPropertiesRestoreFlags.Plot | LayerPropertiesRestoreFlags.NewVpFrozen);
             int restored = (!target.IsVisible ? 1 : 0) | (target.IsFrozen ? 2 : 0)
-                | (target.IsLocked ? 4 : 0) | (target.Plot ? 8 : 0);
-            Equal(expected & 15, restored, "Restore no longer reflects stored flags");
+                | (target.IsLocked ? 4 : 0) | (target.Plot ? 8 : 0) | (target.IsFrozenInNewViewports ? 16 : 0);
+            Equal(expected & 31, restored, "Restore no longer reflects stored flags");
         }
     }
 
@@ -145,7 +147,7 @@ internal static partial class Program
         var p = state.Properties["Walls"];
         int expected = 63;
         if (changed)
-            for (int bit = 1; bit <= 8; bit <<= 1)
+            for (int bit = 1; bit <= 16; bit <<= 1)
                 if ((mask & bit) != 0) expected = (expected & ~bit) | (2 & bit);
         Equal(expected, (int)p.Flags, "Stored selective update flags");
         Equal((short)(changed && (mask & 64) != 0 ? 3 : 1), p.Color.Index, "Stored selective color");

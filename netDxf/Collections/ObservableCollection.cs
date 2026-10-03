@@ -175,6 +175,14 @@ namespace netDxf.Collections
 
         #endregion
 
+        // Document adoption replaces a detached resource by its canonical identity.
+        // This is not a user collection mutation: keep the list and subscriptions
+        // intact, and do not invoke cancellable public collection callbacks.
+        internal void SetCanonicalItem(int index, T item)
+        {
+            this.innerArray[index] = item;
+        }
+
         #region public methods
 
         /// <summary>

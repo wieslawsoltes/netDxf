@@ -35,6 +35,8 @@ internal static partial class Program
         RegisterEntityCloneQualificationTests();
         RunAdditionalTests();
         RegisterR12CodecTests();
+        RegisterLayerViewportDefaultTests();
+        RegisterViewportFrozenLayerTests();
         RegisterObservableCollectionInsertTests();
         RegisterMTextUnicodeChunkTests();
         RegisterEntityTextFramingTests();

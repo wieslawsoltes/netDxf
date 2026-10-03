@@ -62,7 +62,8 @@ namespace netDxf.Objects
         /// Freeze layer in newly created viewports.
         /// </summary>
         /// <remarks>
-        /// Not implemented. To freeze a layer in a viewport add it to its FrozenLayers list.
+        /// Corresponds to Layer.IsFrozenInNewViewports. Capturing or restoring this flag
+        /// does not modify the FrozenLayers collection of any existing viewport.
         /// </remarks>
         NewVpFrozen = 16,
 

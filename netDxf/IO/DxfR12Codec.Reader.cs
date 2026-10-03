@@ -181,11 +181,14 @@ namespace netDxf.IO
             string name = ResourceName(fields.Text(2, null, true)); fields.Identity();
             short flags = fields.Integer(70, 0), color = fields.Integer(62, 7);
             Linetype linetype = ResolveLinetype(fields.Text(6, "CONTINUOUS"), patterns, true);
-            if ((flags & ~5) != 0 || color == 0 || color < -255 || color > 255)
+            // Bits 1, 2 and 4 are layer settings. Bit 64 is informational (referenced)
+            // and need not be retained; external-reference and unknown flags still reject.
+            if ((flags & ~(1 | 2 | 4 | 64)) != 0 || color == 0 || color < -255 || color > 255)
                 throw new NotSupportedException("Unsupported R12 layer flags or color.");
             fields.Finish();
             return new Layer(name) { Color = AciColor.FromCadIndex((short)Math.Abs(color)), IsVisible = color > 0,
-                IsFrozen = (flags & 1) != 0, IsLocked = (flags & 4) != 0, Linetype = linetype };
+                IsFrozen = (flags & 1) != 0, IsFrozenInNewViewports = (flags & 2) != 0,
+                IsLocked = (flags & 4) != 0, Linetype = linetype };
         }
 
         private sealed class Fields
