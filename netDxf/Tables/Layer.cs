@@ -32,7 +32,7 @@ namespace netDxf.Tables
     /// <summary>
     /// Represents a layer.
     /// </summary>
-    public class Layer :
+    public partial class Layer :
         TableObject
     {
         #region delegates and events

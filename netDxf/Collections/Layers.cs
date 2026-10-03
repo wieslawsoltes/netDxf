@@ -104,7 +104,6 @@ namespace netDxf.Collections
 
             layer.Owner = this;
 
-            layer.NameChanged += this.Item_NameChanged;
             layer.LinetypeChanged += this.LayerLinetypeChanged;
 
             Debug.Assert(!string.IsNullOrEmpty(layer.Handle), "The layer handle cannot be null or empty.");
@@ -160,7 +159,6 @@ namespace netDxf.Collections
             item.Handle = null;
             item.Owner = null;
 
-            item.NameChanged -= this.Item_NameChanged;
             item.LinetypeChanged -= this.LayerLinetypeChanged;
 
             return true;
@@ -170,20 +168,21 @@ namespace netDxf.Collections
 
         #region Layer events
 
-        private void Item_NameChanged(TableObject sender, TableObjectChangedEventArgs<string> e)
+        internal void ValidateLayerRename(Layer layer, string newName)
         {
-            if (this.Contains(e.NewValue))
-            {
-                throw new ArgumentException("There is already another layer with the same name.");
-            }
+            if (!ReferenceEquals(layer.Owner, this) || !ReferenceEquals(this[layer.Name], layer))
+                throw new InvalidOperationException("Layer rename requires its current registered owner.");
+            if (this.List.TryGetValue(newName, out Layer occupied) && !ReferenceEquals(occupied, layer))
+                throw new ArgumentException("There is already another layer with the same name.", nameof(newName));
+        }
 
-            this.List.Remove(sender.Name);
-            this.List.Add(e.NewValue, (Layer) sender);
-
-            List<DxfObjectReference> refs = this.GetReferences(sender.Name);
-            this.References.Remove(sender.Name);
-            this.References.Add(e.NewValue, new DxfObjectReferences());
-            this.References[e.NewValue].Add(refs);
+        internal void CommitLayerRename(Layer layer, string newName)
+        {
+            DxfObjectReferences references = this.References[layer.Name];
+            this.List.Remove(layer.Name);
+            this.References.Remove(layer.Name);
+            this.List.Add(newName, layer);
+            this.References.Add(newName, references);
         }
 
         private void LayerLinetypeChanged(TableObject sender, TableObjectChangedEventArgs<Linetype> e)

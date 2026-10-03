@@ -31,12 +31,12 @@ namespace netDxf.Objects
     /// <summary>
     /// Represents the state of the properties of a layer.
     /// </summary>
-    public class LayerStateProperties :
+    public partial class LayerStateProperties :
         ICloneable
     {
         #region private fields
 
-        private readonly string name;
+        private string name;
         private LayerPropertiesFlags flags;
         private string linetype;
         private AciColor color;
