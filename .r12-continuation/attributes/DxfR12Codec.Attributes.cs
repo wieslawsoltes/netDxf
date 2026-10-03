@@ -29,9 +29,18 @@ namespace netDxf.IO
             return (short)flags;
         }
 
+        private static void AttributeCommonFields(CommonEntityData data)
+        {
+            if (data.ColorName != null || data.ShadowMode.HasValue || data.LineTypeFlags.HasValue
+                || data.PlotStyleFlags.HasValue || data.MaterialFlags.HasValue || data.HasFullVisualStyle.HasValue
+                || data.HasFaceVisualStyle.HasValue || data.HasEdgeVisualStyle.HasValue || data.ProxyGraphics != null)
+                throw new NotSupportedException("Stored modern attribute common fields require a different interchange profile.");
+        }
+
         private static Text AttributeText(AttributeDefinition value)
         {
-            var text = new Text(value.Value, value.Position, value.Height, value.Style)
+            AttributeCommonFields(value.CommonData);
+            return new Text(value.Value, value.Position, value.Height, value.Style)
             {
                 Normal = value.Normal, Width = value.Width, WidthFactor = value.WidthFactor,
                 ObliqueAngle = value.ObliqueAngle, Rotation = value.Rotation, Alignment = value.Alignment,
@@ -40,15 +49,12 @@ namespace netDxf.IO
                 Lineweight = value.Lineweight, Transparency = value.Transparency,
                 LinetypeScale = value.LinetypeScale, IsVisible = value.IsVisible
             };
-            if (value.CommonData.ProxyGraphics != null)
-                throw new NotSupportedException("Attribute proxy graphics require a different interchange profile.");
-            value.CommonData.CopyTo(text.CommonData);
-            return text;
         }
 
         private static Text AttributeText(Attribute value)
         {
-            var text = new Text(value.Value, value.Position, value.Height, value.Style)
+            AttributeCommonFields(value.CommonData);
+            return new Text(value.Value, value.Position, value.Height, value.Style)
             {
                 Normal = value.Normal, Width = value.Width, WidthFactor = value.WidthFactor,
                 ObliqueAngle = value.ObliqueAngle, Rotation = value.Rotation, Alignment = value.Alignment,
@@ -57,10 +63,6 @@ namespace netDxf.IO
                 Lineweight = value.Lineweight, Transparency = value.Transparency,
                 LinetypeScale = value.LinetypeScale, IsVisible = value.IsVisible
             };
-            if (value.CommonData.ProxyGraphics != null)
-                throw new NotSupportedException("Attribute proxy graphics require a different interchange profile.");
-            value.CommonData.CopyTo(text.CommonData);
-            return text;
         }
 
         private sealed partial class PrimitiveWriter
