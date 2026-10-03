@@ -13,9 +13,9 @@ namespace netDxf.IO
     {
         /// <summary>Reads supported R12 model-space primitives into the existing typed entity classes.</summary>
         /// <param name="document">An immutable AC1009 raw document.</param>
-        /// <returns>Detached entities in ENTITIES order, sharing decoded layer objects by name.</returns>
+        /// <returns>Detached entities in ENTITIES order, sharing decoded layer, linetype and style objects by name.</returns>
         /// <remarks>
-        /// This explicitly selects ENTITIES and their basic layer settings; it is not whole-document
+        /// This explicitly selects ENTITIES and their supported resources; it is not whole-document
         /// conversion. It does not expand blocks or interpret unrelated sections/HEADER settings.
         /// Unsupported entities, paper-space records, application data, unknown entity fields and
         /// ambiguous fields reject the entire selection. The raw source remains unchanged and retains
@@ -30,13 +30,16 @@ namespace netDxf.IO
         /// derive width and direction from their two OCS points. Unused points, lexical spellings and
         /// font-dependent extents are not preserved in the typed projection. Nonzero TEXT thickness,
         /// undefined nonstandard styles and unknown caret escapes reject. STYLE file references are
-        /// retained without filesystem access. No external resources are read.
+        /// retained without filesystem access. Simple LTYPE resources resolve independently of table
+        /// order; missing custom patterns, conflicting declarations and complex elements reject.
+        /// No external resources are read.
         /// </remarks>
         public static IReadOnlyList<EntityObject> ReadEntities(DxfRawDocument document)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
             if (document.Version != DxfVersion.AutoCad12)
                 throw new NotSupportedException("This typed primitive codec requires the AC1009 R11/R12 format family.");
+            var patterns = ReadLinetypes(document);
             var layers = new Dictionary<string, Layer>(StringComparer.OrdinalIgnoreCase);
             var styles = new Dictionary<string, TextStyle>(StringComparer.OrdinalIgnoreCase);
             bool sawStyles = false;
@@ -74,7 +77,7 @@ namespace netDxf.IO
                     {
                         if (!string.Equals(table, "LAYER", StringComparison.OrdinalIgnoreCase))
                             throw new FormatException("A LAYER record is outside its table.");
-                        Layer layer = ReadLayer(record);
+                        Layer layer = ReadLayer(record, patterns);
                         if (layers.ContainsKey(layer.Name)) throw new FormatException("Duplicate layer names are ambiguous.");
                         layers.Add(layer.Name, layer);
                     }
@@ -86,19 +89,8 @@ namespace netDxf.IO
                         if (styles.ContainsKey(style.Name)) throw new FormatException("Duplicate style names are ambiguous.");
                         styles.Add(style.Name, style);
                     }
-                    else if (string.Equals(record.Name, "LTYPE", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var fields = new Fields(record);
-                        string name = fields.Text(2, null, true);
-                        if (!string.Equals(name, "CONTINUOUS", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(name, "BYLAYER", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(name, "BYBLOCK", StringComparison.OrdinalIgnoreCase)) continue;
-                        fields.Identity(); fields.Text(3, "");
-                        if (fields.Integer(70, 0) != 0 || fields.Integer(72, 65) != 65
-                            || fields.Integer(73, 0) != 0 || fields.Number(40, 0) != 0)
-                            throw new NotSupportedException("A built-in linetype has unsupported pattern data.");
-                        fields.Finish();
-                    }
+                    // LTYPE records, including repeated group49 elements and framing,
+                    // were validated in the resource pass before resolving any layer.
                 }
                 if (table != null) throw new FormatException("Missing ENDTAB.");
             }
@@ -112,7 +104,7 @@ namespace netDxf.IO
                 string handle = fields.Identity();
                 if (handle != null && !handles.Add(handle)) throw new FormatException("Duplicate entity identities are ambiguous.");
                 string layerName = ResourceName(fields.Text(8, "0"));
-                string linetype = BuiltinLinetype(fields.Text(6, "BYLAYER"));
+                Linetype linetype = ResolveLinetype(fields.Text(6, "BYLAYER"), patterns);
                 short color = fields.Integer(62, 256);
                 if (color < 0 || color > 256) throw new NotSupportedException("Unsupported entity color index.");
                 if (fields.Integer(67, 0) != 0) throw new NotSupportedException("Paper-space selection requires layout-aware import.");
@@ -174,31 +166,33 @@ namespace netDxf.IO
                     layer = new Layer(layerName); layers.Add(layerName, layer);
                 }
                 entity.Layer = layer;
-                entity.Linetype = linetype == "BYLAYER" ? Linetype.ByLayer : linetype == "BYBLOCK" ? Linetype.ByBlock : Linetype.Continuous;
+                entity.Linetype = linetype;
                 entity.Color = AciColor.FromCadIndex(color); entity.Handle = handle;
                 result.Add(entity);
             }
+            // Canonicalize default linetypes of implicit layers, including face-only layers.
+            foreach (Layer layer in layers.Values) layer.Linetype = ResolveLinetype(layer.Linetype.Name, patterns, true);
             return new ReadOnlyCollection<EntityObject>(result);
         }
 
-        private static Layer ReadLayer(DxfRawRecord record)
+        private static Layer ReadLayer(DxfRawRecord record, Dictionary<string, Linetype> patterns)
         {
             var fields = new Fields(record);
             string name = ResourceName(fields.Text(2, null, true)); fields.Identity();
             short flags = fields.Integer(70, 0), color = fields.Integer(62, 7);
-            if ((flags & ~5) != 0 || color == 0 || color < -255 || color > 255
-                || BuiltinLinetype(fields.Text(6, "CONTINUOUS")) != "CONTINUOUS")
-                throw new NotSupportedException("Unsupported R12 layer flags, color or linetype.");
+            Linetype linetype = ResolveLinetype(fields.Text(6, "CONTINUOUS"), patterns, true);
+            if ((flags & ~5) != 0 || color == 0 || color < -255 || color > 255)
+                throw new NotSupportedException("Unsupported R12 layer flags or color.");
             fields.Finish();
             return new Layer(name) { Color = AciColor.FromCadIndex((short)Math.Abs(color)), IsVisible = color > 0,
-                IsFrozen = (flags & 1) != 0, IsLocked = (flags & 4) != 0 };
+                IsFrozen = (flags & 1) != 0, IsLocked = (flags & 4) != 0, Linetype = linetype };
         }
 
         private sealed class Fields
         {
             private readonly Dictionary<short, DxfTag> remaining = new Dictionary<short, DxfTag>();
             private readonly string name;
-            internal Fields(DxfRawRecord record)
+            internal Fields(DxfRawRecord record, List<double> pattern = null)
             {
                 this.name = record.Name;
                 if (record.MarkerCode != 0) throw new FormatException("An entity or table record must use group 0.");
@@ -206,6 +200,11 @@ namespace netDxf.IO
                 {
                     DxfTag tag = record.Tags[i];
                     if (tag.Code == 999) continue;
+                    if (pattern != null && tag.Code == 49)
+                    {
+                        if (pattern.Count == short.MaxValue) throw new FormatException("R12 linetype element count exceeds its field range.");
+                        pattern.Add(Finite((double)tag.Value)); continue;
+                    }
                     if (this.remaining.ContainsKey(tag.Code)) throw new FormatException("Repeated field in " + this.name + ": " + tag.Code);
                     this.remaining.Add(tag.Code, tag);
                 }

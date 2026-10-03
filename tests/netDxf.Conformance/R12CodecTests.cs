@@ -13,6 +13,7 @@ internal static partial class Program
         RegisterR12PolylineTests();
         RegisterR12TextTests();
         RegisterR12MeshTests();
+        RegisterR12LinetypeTests();
         foreach (bool binary in new[] { false, true })
         {
             bool b = binary;
@@ -192,7 +193,8 @@ internal static partial class Program
             case 9: entity.Layer.Plot=false; break;
             case 10: entity.Layer.Description="Do not silently lose"; break;
             case 11: entity.Layer=new Layer(new string('A',32)); break;
-            case 12: entity.Linetype=new Linetype("CUSTOM"); break;
+            // Simple named patterns are now supported; complex R13+ content must still reject.
+            case 12: entity.Linetype=new Linetype("CUSTOM",new[]{new LinetypeTextSegment("X",TextStyle.Default,1)}); break;
             case 13: entity.XData.Add(new XData(new ApplicationRegistry("APP"))); break;
         }
         using var output = new MemoryStream(); output.WriteByte(123); output.Position=0;
