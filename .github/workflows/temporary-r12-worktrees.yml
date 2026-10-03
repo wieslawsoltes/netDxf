@@ -53,11 +53,11 @@ jobs:
         run: |
           set -euo pipefail
           dotnet build tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release -p:NuGetAudit=false 2>&1 | tee ../evidence/build.log
-      - name: Execute focused new regressions
+      - name: Execute all R12 regressions including both new worktrees
         working-directory: integration
         shell: bash
         env:
-          DXF_TEST_FILTER: r12-blocks/
+          DXF_TEST_FILTER: r12
           DXF_TEST_ARTIFACTS: ${{ github.workspace }}/evidence/fixtures
         run: |
           set -euo pipefail
