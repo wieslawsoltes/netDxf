@@ -10,7 +10,7 @@ using netDxf.Tables;
 
 namespace netDxf.IO
 {
-    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE, ordinary 2D/3D POLYLINE and TEXT/STYLE.</summary>
+    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE, ordinary 2D/3D POLYLINE, polygon/polyface meshes and TEXT/STYLE.</summary>
     /// <remarks>
     /// Creates a new model-space primitive drawing, not an implicit downgrade of an entire DxfDocument.
     /// Geometry, indexed entity colors, basic layers and built-in linetypes are supported. Unsupported
@@ -21,6 +21,11 @@ namespace netDxf.IO
     /// factors, named styles and C0/caret escaping. Font names are stored references, not resolved
     /// resources. No glyph metrics or rendered appearance are computed. Character encoding follows
     /// the raw codec (new drawings use Windows-1252). Unsupported data rejects instead of disappearing.
+    /// Ordinary polygon grids and indexed polyfaces use classic VERTEX/SEQEND chains. Grid order,
+    /// U/V closure, stored density hints, signed face indices and effective face colors/layers are
+    /// preserved. Polyface count hints are advisory; forward/interleaved faces are supported. New
+    /// output groups coordinates before faces. Face styling is materialized and ignored face-point
+    /// coordinates are discarded. Retained child metadata and fitted-surface sequences reject.
     /// DxfDocument's admitted versions and the lossless raw-preservation API remain unchanged.
     /// </remarks>
     public static partial class DxfR12Codec
@@ -174,7 +179,8 @@ namespace netDxf.IO
                 Type type = entity.GetType();
                 if (type != typeof(Line) && type != typeof(netDxf.Entities.Point) && type != typeof(Circle)
                     && type != typeof(Arc) && type != typeof(Face3D) && type != typeof(Solid) && type != typeof(Trace)
-                    && type != typeof(Polyline2D) && type != typeof(Polyline3D) && type != typeof(Text))
+                    && type != typeof(Polyline2D) && type != typeof(Polyline3D) && type != typeof(Text)
+                    && type != typeof(PolygonMesh) && type != typeof(PolyfaceMesh))
                     throw new NotSupportedException("Unsupported R12 primitive type: " + type.FullName);
                 Metadata(entity); Metadata(entity.Linetype);
                 if (entity.Color.UseTrueColor || entity.ColorName != null || entity.ShadowMode.HasValue
@@ -183,24 +189,15 @@ namespace netDxf.IO
                     || !entity.Transparency.IsByLayer || entity.Transparency.StoredAlphaValue.HasValue
                     || entity.Linetype.Segments.Count != 0)
                     throw new NotSupportedException("The primitive has attributes that cannot be represented by this R12 codec.");
-                LayerPacket layer = LayerPacket.Capture(entity.Layer);
-                if (this.layers.TryGetValue(layer.Name, out LayerPacket existing))
-                {
-                    if (existing.Color != layer.Color || existing.Flags != layer.Flags)
-                        throw new InvalidOperationException("Conflicting same-named R12 layer definitions.");
-                    layer = existing;
-                }
-                else
-                {
-                    if (this.layers.Count == short.MaxValue) throw new NotSupportedException("R12 layer-table count limit exceeded.");
-                    this.layers.Add(layer.Name, layer); this.orderedLayers.Add(layer);
-                }
+                LayerPacket layer = this.RegisterLayer(entity.Layer);
                 Vector3 normal = UnitNormal(entity.Normal);
                 this.Tag(0, entity is Polyline2D || entity is Polyline3D ? "POLYLINE" : entity.CodeName); this.Tag(5, (this.nextHandle++).ToString("X", CultureInfo.InvariantCulture));
                 this.Tag(8, layer.Name); this.Tag(6, BuiltinLinetype(entity.Linetype.Name)); this.Tag(62, entity.Color.Index);
                 if (entity is Text text) this.TextEntity(text, normal);
                 else if (entity is Polyline2D polyline2D) this.Polyline(polyline2D, layer.Name, normal);
                 else if (entity is Polyline3D polyline3D) this.Polyline(polyline3D, layer.Name, normal);
+                else if (entity is PolygonMesh polygon) this.Polygon(polygon, layer.Name, normal);
+                else if (entity is PolyfaceMesh polyface) this.Polyface(polyface, layer.Name, normal);
                 else if (entity is Line line)
                 { this.Point(10, line.StartPoint); this.Point(11, line.EndPoint); this.Plane(normal, line.Thickness); }
                 else if (entity is netDxf.Entities.Point point)

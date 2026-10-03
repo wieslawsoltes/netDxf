@@ -12,6 +12,7 @@ internal static partial class Program
     {
         RegisterR12PolylineTests();
         RegisterR12TextTests();
+        RegisterR12MeshTests();
         foreach (bool binary in new[] { false, true })
         {
             bool b = binary;
