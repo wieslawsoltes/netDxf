@@ -10,6 +10,7 @@ internal static partial class Program
 {
     private static void RegisterR12CodecTests()
     {
+        RegisterR12PolylineTests();
         foreach (bool binary in new[] { false, true })
         {
             bool b = binary;

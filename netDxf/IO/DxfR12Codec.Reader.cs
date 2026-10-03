@@ -21,7 +21,11 @@ namespace netDxf.IO
         /// ambiguous fields reject the entire selection. The raw source remains unchanged and retains
         /// every unselected record. Optional entity handles are retained on the detached objects but
         /// are newly assigned when Create authors a new drawing. Normal directions are normalized;
-        /// OCS circle/arc centers are converted to world coordinates. No external resources are read.
+        /// OCS circle/arc centers are converted to world coordinates. Ordinary unsmoothed 2D and 3D
+        /// POLYLINE sequences are decoded as typed polylines. Default widths are materialized into
+        /// vertex overrides; child handles are checked for uniqueness but remain only in the raw
+        /// document. Reauthoring allocates new child identities. Unsupported child metadata and
+        /// fitted/mesh sequences reject. No external resources are read.
         /// </remarks>
         public static IReadOnlyList<EntityObject> ReadEntities(DxfRawDocument document)
         {
@@ -81,8 +85,9 @@ namespace netDxf.IO
             if (entities == null) throw new FormatException("R12 primitive reading requires an ENTITIES section.");
             var result = new List<EntityObject>();
             var handles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (DxfRawRecord record in entities.Records)
+            for (int index = 0; index < entities.Records.Count; index++)
             {
+                DxfRawRecord record = entities.Records[index];
                 var fields = new Fields(record);
                 string handle = fields.Identity();
                 if (handle != null && !handles.Add(handle)) throw new FormatException("Duplicate entity identities are ambiguous.");
@@ -96,6 +101,9 @@ namespace netDxf.IO
                 EntityObject entity;
                 switch (record.Name.ToUpperInvariant())
                 {
+                    case "POLYLINE":
+                        entity = ReadPolyline(fields, entities.Records, ref index, layerName, normal, thickness, handles);
+                        break;
                     case "LINE":
                         entity = new Line(fields.Vector(10, Vector3.Zero, true), fields.Vector(11, Vector3.Zero, true))
                             { Thickness = thickness, Normal = normal };
@@ -187,6 +195,8 @@ namespace netDxf.IO
                 this.remaining.Remove(code); return tag.Value;
             }
             internal string Text(short code, string fallback, bool required = false) { return (string)this.Take(code, fallback, required); }
+            internal double? OptionalNumber(short code)
+            { return this.remaining.ContainsKey(code) ? (double?)this.Number(code, 0) : null; }
             internal double Number(short code, double fallback, bool required = false) { return Finite((double)this.Take(code, fallback, required)); }
             internal short Integer(short code, short fallback) { return (short)this.Take(code, fallback, false); }
             internal Vector3 Vector(short code, Vector3 fallback, bool required)
