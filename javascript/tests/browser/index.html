@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>netDxf native JavaScript verification</title>
+<body><h1>netDxf native API browser verification</h1><pre id="status">Running…</pre>
+<script type="module">
+import { runBrowserCorpus } from '../../tools/browser-runner.mjs';
+try {
+  const response=await fetch('../../artifacts/browser/corpus.json');
+  if(!response.ok)throw new Error('Missing pinned browser corpus.');
+  const corpus=await response.json(),native=await (await fetch('../../native-port-manifest.json')).json();
+  window.testResults=await runBrowserCorpus(corpus,native,{onProgress:report=>{
+    document.querySelector('#status').textContent=`${report.comparisons} comparisons; ${report.failures.length} failures`;
+  }});
+} catch(error) { window.testResults={completed:false,failures:[],comparisons:0,fatal:String(error.stack||error)}; }
+document.querySelector('#status').textContent=JSON.stringify(window.testResults,null,2);
+</script></body></html>

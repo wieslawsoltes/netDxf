@@ -1,0 +1,201 @@
+import * as SupportFolderLookupTests from './SupportFolderLookupTests.js';
+import * as NumericHandleTests from './NumericHandleTests.js';
+import * as PrivateXRecordTests from './PrivateXRecordTests.js';
+import * as RawObjectStoreTests from './RawObjectStoreTests.js';
+import * as OutputSettingsTests from './OutputSettingsTests.js';
+import * as OpaqueEntityTests from './OpaqueEntityTests.js';
+import * as OpaqueEntityBoundaryTests from './OpaqueEntityBoundaryTests.js';
+import * as SectionManagerTests from './SectionManagerTests.js';
+import * as SectionManagerMembershipTests from './SectionManagerMembershipTests.js';
+import * as SectionManagerLifecycleTests from './SectionManagerLifecycleTests.js';
+import * as SectionProducerTests from './SectionProducerTests.js';
+import * as CompositeTableOwnershipTests from './CompositeTableOwnershipTests.js';
+import * as DataTableTests from './DataTableTests.js';
+import * as GeoDataTests from './GeoDataTests.js';
+import * as RasterOwnershipTests from './RasterOwnershipTests.js';
+import * as CrossFeaturePersistenceTests from './CrossFeaturePersistenceTests.js';
+import * as SunTests from './SunTests.js';
+import * as LightListTests from './LightListTests.js';
+import * as LightTests from './LightTests.js';
+import * as EntitySourceIdentityTests from './EntitySourceIdentityTests.js';
+import * as SourceIdentityMetadataTests from './SourceIdentityMetadataTests.js';
+import * as SourceReferenceIdentityTests from './SourceReferenceIdentityTests.js';
+import * as SourceAmbiguityTests from './SourceAmbiguityTests.js';
+import * as CommonEntityDataTests from './CommonEntityDataTests.js';
+import * as CommonProxy160Tests from './CommonProxy160Tests.js';
+import * as TableXDataTests from './TableXDataTests.js';
+import * as VPortWireTests from './VPortWireTests.js';
+import * as ViewUcsTests from './ViewUcsTests.js';
+import * as UcsBaseTests from './UcsBaseTests.js';
+import * as ViewLiveSectionTests from './ViewLiveSectionTests.js';
+import * as StrictTextValueTests from './StrictTextValueTests.js';
+import * as StrictBinaryValueTests from './StrictBinaryValueTests.js';
+import * as TextFramingTests from './TextFramingTests.js';
+import * as MinimalDocumentTests from './MinimalDocumentTests.js';
+import * as LwPolylineIntegrityTests from './LwPolylineIntegrityTests.js';
+import * as SurfaceDensityHeaderTests from './SurfaceDensityHeaderTests.js';
+import * as TextHexTests from './TextHexTests.js';
+import * as TransparencyBoundaryTests from './TransparencyBoundaryTests.js';
+import * as Ole2FrameTests from './Ole2FrameTests.js';
+import * as OleFrameTests from './OleFrameTests.js';
+import * as OleMetadataTests from './OleMetadataTests.js';
+import * as OleVersionPresenceTests from './OleVersionPresenceTests.js';
+import * as MeshVersionTests from './MeshVersionTests.js';
+import * as MeshWriteValidationTests from './MeshWriteValidationTests.js';
+import * as MeshReadValidationTests from './MeshReadValidationTests.js';
+import * as MeshOverrideDeclarationTests from './MeshOverrideDeclarationTests.js';
+import * as MeshFieldFramingTests from './MeshFieldFramingTests.js';
+import * as HelixWireTests from './HelixWireTests.js';
+import * as HelixApiTests from './HelixApiTests.js';
+import * as SplinePeriodicInputTests from './SplinePeriodicInputTests.js';
+import * as HatchSourceRelationTests from './HatchSourceRelationTests.js';
+import * as HatchPatternAffineTests from './HatchPatternAffineTests.js';
+import * as HatchConicAffineTests from './HatchConicAffineTests.js';
+import * as HatchSplineRelationTests from './HatchSplineRelationTests.js';
+import * as HatchAffineTests from './HatchAffineTests.js';
+import * as HatchSplineFitApiTests from './HatchSplineFitApiTests.js';
+import * as HatchEdgeDispatchTests from './HatchEdgeDispatchTests.js';
+import * as HatchScalarOrderTests from './HatchScalarOrderTests.js';
+import * as HatchSplineFitTests from './HatchSplineFitTests.js';
+import * as HatchPolylineClosureTests from './HatchPolylineClosureTests.js';
+import * as HatchBoundaryFlagsTests from './HatchBoundaryFlagsTests.js';
+import * as HatchPatternOrderTests from './HatchPatternOrderTests.js';
+import * as HatchXDataPreservationTests from './HatchXDataPreservationTests.js';
+import * as HatchPolylineInputTests from './HatchPolylineInputTests.js';
+import * as HatchSeedPointTests from './HatchSeedPointTests.js';
+import * as HatchPixelSizeTests from './HatchPixelSizeTests.js';
+import * as HatchGradientAciTests from './HatchGradientAciTests.js';
+import * as HatchGradientShiftTests from './HatchGradientShiftTests.js';
+import * as HatchPathCountTests from './HatchPathCountTests.js';
+import * as EmptyHatchTests from './EmptyHatchTests.js';
+import * as HatchGradientPacketTests from './HatchGradientPacketTests.js';
+import * as HatchGradientAngleTests from './HatchGradientAngleTests.js';
+import * as HatchPatternValidationTests from './HatchPatternValidationTests.js';
+import * as TypedCommentTests from './TypedCommentTests.js';
+import * as HeaderCommentTests from './HeaderCommentTests.js';
+import * as CustomHeaderUnicodeTests from './CustomHeaderUnicodeTests.js';
+import * as AttributeDefaultValueTests from './AttributeDefaultValueTests.js';
+import * as BinarySentinelTests from './BinarySentinelTests.js';
+import * as OleVersionPresenceApiTests from './OleVersionPresenceApiTests.js';
+import * as BezierKnotTests from './BezierKnotTests.js';
+import * as SplineFlagTests from './SplineFlagTests.js';
+import * as FileStreamLifetimeTests from './FileStreamLifetimeTests.js';
+import { SetTypedIOConfiguration } from '../../runtime/TypedDocumentIO.js';
+import * as ThumbnailImageTests from './ThumbnailImageTests.js';
+import * as BinaryChunkTests from './BinaryChunkTests.js';
+import * as BinaryChunkWriterTests from './BinaryChunkWriterTests.js';
+import * as DoublePrecisionWriterTests from './DoublePrecisionWriterTests.js';
+import * as HeaderProbeTests from './HeaderProbeTests.js';
+import * as VersionCompatibilityTests from './VersionCompatibilityTests.js';
+import * as SunStudyProducerRawTests from './SunStudyProducerRawTests.js';
+import * as EditableTableGeometryTests from './EditableTableGeometryTests.js';
+import * as EditableTableStyleTests from './EditableTableStyleTests.js';
+import * as TableStyleBorderTests from './TableStyleBorderTests.js';
+import * as MLeaderTests from './MLeaderTests.js';
+import * as SectionLifecycleTests from './SectionLifecycleTests.js';
+import * as TypedObjectErasureTests from './TypedObjectErasureTests.js';
+import * as DimensionStyleParityTests from './DimensionStyleParityTests.js';
+import * as StoredEnvelopeTests from './StoredEnvelopeTests.js';
+import * as InsertArrayTests from './InsertArrayTests.js';
+import * as HatchPixelSizeApiTests from './HatchPixelSizeApiTests.js';
+import * as HatchSeedPointApiTests from './HatchSeedPointApiTests.js';
+import * as HatchPeriodicConversionTests from './HatchPeriodicConversionTests.js';
+import * as PolygonMeshCardinalityTests from './PolygonMeshCardinalityTests.js';
+import * as HelixGeometryTests from './HelixGeometryTests.js';
+import * as SplineTangentTransformTests from './SplineTangentTransformTests.js';
+import * as SplineCloneStateTests from './SplineCloneStateTests.js';
+import * as SplineReversalTests from './SplineReversalTests.js';
+import * as PolylineTopologyTests from './PolylineTopologyTests.js';
+import * as LwPolylineFidelityTests from './LwPolylineFidelityTests.js';
+import * as SectionSettingsTests from './SectionSettingsTests.js';
+import * as SectionTests from './SectionTests.js';
+import * as OleMetadataApiTests from './OleMetadataApiTests.js';
+import * as AcisSatTests from './AcisSatTests.js';
+import * as LightNameTests from './LightNameTests.js';
+import * as LayerIndexTests from './LayerIndexTests.js';
+import * as NamedViewTests from './NamedViewTests.js';
+import * as VPortApiTests from './VPortApiTests.js';
+import * as UcsElevationTests from './UcsElevationTests.js';
+import * as UcsOrthographicTests from './UcsOrthographicTests.js';
+import * as NamedObjectDatabaseTests from './NamedObjectDatabaseTests.js';
+import * as PolyfaceGrammarTests from './PolyfaceGrammarTests.js';
+import * as MTextBackgroundTests from './MTextBackgroundTests.js';
+import * as MTextColumnTests from './MTextColumnTests.js';
+import * as MTextCloneDirectionTests from './MTextCloneDirectionTests.js';
+import * as MeshBlendCreaseTests from './MeshBlendCreaseTests.js';
+import * as TransparencyStoredTests from './TransparencyStoredTests.js';
+import * as TextStyleFidelityTests from './TextStyleFidelityTests.js';
+import * as HatchGradientAciApiTests from './HatchGradientAciApiTests.js';
+import * as HatchGradientShiftApiTests from './HatchGradientShiftApiTests.js';
+import * as HatchGradientColorStateTests from './HatchGradientColorStateTests.js';
+import * as HatchDoublePatternTests from './HatchDoublePatternTests.js';
+import * as XDataCloneTests from './XDataCloneTests.js';
+import * as AppIdXDataLifecycleTests from './AppIdXDataLifecycleTests.js';
+import * as InternalMetadataCopyTests from './InternalMetadataCopyTests.js';
+import * as AtomicSaveTests from './AtomicSaveTests.js';
+import * as RawDimensionStyleNameTests from './RawDimensionStyleNameTests.js';
+import * as RawDocumentBoundaryTests from './RawDocumentBoundaryTests.js';
+import * as RawLegacyProfileTests from './RawLegacyProfileTests.js';
+import * as RawR12Tests from './RawR12Tests.js';
+import { runtimeFingerprint, verificationFingerprint } from '../../tools/evidence.mjs';
+import { sourceRoot } from '../../tools/dotnet.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as RawObjectBoundaryTests from './RawObjectBoundaryTests.js';
+import * as RawRecordTests from './RawRecordTests.js';
+import * as ObservableCollectionInsertTests from './ObservableCollectionInsertTests.js';
+import * as ClassDefinitionTests from './ClassDefinitionTests.js';
+import * as Harness from './TestHarness.js';
+import * as RawTagTests from './RawTagTests.js';
+import * as RawDocumentTests from './RawDocumentTests.js';
+import * as RawHandleIndexTests from './RawHandleIndexTests.js';
+import * as RawHandleOperationsTests from './RawHandleOperationsTests.js';
+import * as RawEmbeddedHandleTests from './RawEmbeddedHandleTests.js';
+
+/** C# partial Program is represented by the same named methods on a single class. */
+export class Program {}
+const modules = {
+  SupportFolderLookupTests,
+  NumericHandleTests, PrivateXRecordTests, RawObjectStoreTests, OutputSettingsTests, OpaqueEntityTests, OpaqueEntityBoundaryTests,
+  SectionManagerTests, SectionManagerMembershipTests, SectionManagerLifecycleTests, SectionProducerTests, CompositeTableOwnershipTests, DataTableTests, GeoDataTests, RasterOwnershipTests, CrossFeaturePersistenceTests, SunTests, LightListTests, LightTests, EntitySourceIdentityTests, SourceIdentityMetadataTests, SourceReferenceIdentityTests, SourceAmbiguityTests, CommonEntityDataTests, CommonProxy160Tests, TableXDataTests, VPortWireTests, ViewUcsTests, UcsBaseTests, ViewLiveSectionTests, StrictTextValueTests, StrictBinaryValueTests, TextFramingTests, MinimalDocumentTests, LwPolylineIntegrityTests, SurfaceDensityHeaderTests, TextHexTests, TransparencyBoundaryTests, Ole2FrameTests, OleFrameTests, OleMetadataTests, OleVersionPresenceTests, MeshVersionTests, MeshWriteValidationTests, MeshReadValidationTests, MeshOverrideDeclarationTests, MeshFieldFramingTests, HelixWireTests, HelixApiTests, SplinePeriodicInputTests, HatchSourceRelationTests, HatchPatternAffineTests, HatchConicAffineTests, HatchSplineRelationTests, HatchAffineTests, HatchSplineFitApiTests, HatchEdgeDispatchTests, HatchScalarOrderTests, HatchSplineFitTests, HatchPolylineClosureTests, HatchBoundaryFlagsTests, HatchPatternOrderTests, HatchXDataPreservationTests, HatchPolylineInputTests, HatchSeedPointTests, HatchPixelSizeTests, HatchGradientAciTests, HatchGradientShiftTests, HatchPathCountTests, EmptyHatchTests, HatchGradientPacketTests, HatchGradientAngleTests, HatchPatternValidationTests, TypedCommentTests, HeaderCommentTests, CustomHeaderUnicodeTests, AttributeDefaultValueTests, BinarySentinelTests, OleVersionPresenceApiTests, BezierKnotTests, SplineFlagTests, FileStreamLifetimeTests, ThumbnailImageTests, BinaryChunkTests, BinaryChunkWriterTests, DoublePrecisionWriterTests, HeaderProbeTests, VersionCompatibilityTests, SunStudyProducerRawTests, EditableTableGeometryTests, EditableTableStyleTests, TableStyleBorderTests, MLeaderTests, SectionLifecycleTests, TypedObjectErasureTests, DimensionStyleParityTests, StoredEnvelopeTests, InsertArrayTests, HatchPixelSizeApiTests, HatchSeedPointApiTests, HatchPeriodicConversionTests, PolygonMeshCardinalityTests, HelixGeometryTests, SplineTangentTransformTests, SplineCloneStateTests, SplineReversalTests, PolylineTopologyTests, LwPolylineFidelityTests, SectionSettingsTests, SectionTests, OleMetadataApiTests, AcisSatTests, LightNameTests, LayerIndexTests, NamedViewTests, VPortApiTests, UcsElevationTests, UcsOrthographicTests, NamedObjectDatabaseTests, PolyfaceGrammarTests, MTextBackgroundTests, MTextColumnTests, MTextCloneDirectionTests, MeshBlendCreaseTests, TransparencyStoredTests, TextStyleFidelityTests, HatchGradientAciApiTests, HatchGradientShiftApiTests, HatchGradientColorStateTests, HatchDoublePatternTests, XDataCloneTests, AppIdXDataLifecycleTests, InternalMetadataCopyTests, AtomicSaveTests, RawDimensionStyleNameTests, RawDocumentBoundaryTests, RawLegacyProfileTests, RawR12Tests, ClassDefinitionTests, ObservableCollectionInsertTests, RawRecordTests, RawObjectBoundaryTests, RawTagTests, RawDocumentTests, RawHandleIndexTests, RawHandleOperationsTests, RawEmbeddedHandleTests };
+Object.assign(Program, Harness, ...Object.values(modules));
+export async function Main() {
+  // Original cases resolve fixture and support paths from the repository root.
+  // Keep CLI/npm/programmatic entry independent of the caller's working directory.
+  const previousDirectory = process.cwd();
+  process.chdir(sourceRoot);
+  try { return await RunConformance(); }
+  finally { process.chdir(previousDirectory); }
+}
+async function RunConformance() {
+  SetTypedIOConfiguration(process.env.CONFIGURATION || 'Release');
+  const proof = { runtimeFingerprint: runtimeFingerprint(), verificationFingerprint: verificationFingerprint() };
+  Harness.cases.length = 0;
+  for (const [filename, module] of Object.entries(modules))
+    Harness.WithSource(`tests/netDxf.Conformance/${filename}.cs`, () => module[`Register${filename}`]());
+  const filter = process.env.DXF_TEST_FILTER || '';
+  const selected = Harness.cases.filter(test => test.name.startsWith(filter));
+  if (!selected.length) throw new Error('No JavaScript conformance tests matched DXF_TEST_FILTER=' + filter);
+  const results = [];
+  for (const test of selected) {
+    try {
+      await test.action(); results.push({ name: test.name, source: test.source, passed: true, error: null });
+      if (process.env.DXF_TEST_VERBOSE) console.log('PASS ' + test.name);
+    } catch (error) {
+      results.push({ name: test.name, source: test.source, passed: false, error: error.stack });
+      console.error(`FAIL ${test.name}: ${error.stack}`);
+    }
+  }
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+  const output = path.resolve(process.env.DXF_JS_TEST_ARTIFACTS || path.join(root, 'artifacts', 'conformance'));
+  fs.mkdirSync(output, { recursive: true });
+  fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify(results, null, 2) + '\n');
+  if (proof.runtimeFingerprint !== runtimeFingerprint() || proof.verificationFingerprint !== verificationFingerprint()) throw new Error('Code changed during conformance tests.');
+  fs.writeFileSync(path.join(output, 'metadata.json'), JSON.stringify({ ...proof, fullSuite: !filter, filter: filter || null }, null, 2) + '\n');
+  const failed = results.filter(result => !result.passed).length;
+  console.log(`JavaScript conformance: ${results.length - failed} passed; ${failed} failed. This is a partial port, not the full .NET suite.`);
+  return failed ? 1 : 0;
+}
+Program.Main = Main;
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = await Main();

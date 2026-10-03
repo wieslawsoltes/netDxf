@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    "netDxf/Entities/AlignedDimension.cs",
+    "netDxf/Entities/LinearDimension.cs",
+    "netDxf/Entities/Angular2LineDimension.cs",
+    "netDxf/Entities/Angular3PointDimension.cs",
+    "netDxf/Entities/ArcLengthDimension.cs",
+    "netDxf/Entities/DiametricDimension.cs",
+    "netDxf/Entities/RadialDimension.cs",
+    "netDxf/Entities/OrdinateDimension.cs",
+    "netDxf/Entities/DimensionBlock.cs"
+  ]
+}

@@ -1,0 +1,22 @@
+// Original numerical namespace, avoiding the outer netDxf.BezierCurve name collision.
+export { GTE } from '../netDxf/GTE/GTE.js';
+export { GVector } from '../netDxf/GTE/GVector.js';
+export { GMatrix } from '../netDxf/GTE/GMatrix.js';
+export { LexicoArray2 } from '../netDxf/GTE/LexicoArray2.js';
+export { GaussianElimination } from '../netDxf/GTE/GaussianElimination.js';
+export { BandedMatrix } from '../netDxf/GTE/BandedMatrix.js';
+export { RootsBisection } from '../netDxf/GTE/RootBisection.js';
+export { RootsPolynomial } from '../netDxf/GTE/RootsPolynominal.js';
+export { Integration } from '../netDxf/GTE/Integration.js';
+export { TIQueryIntervals, FIQueryIntervals, FIQueryIntervalsType } from '../netDxf/GTE/IntrIntervals.js';
+export { ParametricCurve } from '../netDxf/GTE/ParametricCurve.js';
+export { BezierCurve } from '../netDxf/GTE/BezierCurve.js';
+export { BSplineCurve } from '../netDxf/GTE/BSplineCurve.js';
+export { NURBSCurve } from '../netDxf/GTE/NURBSCurve.js';
+export { BSplineCurveFit } from '../netDxf/GTE/BSplineCurveFit.js';
+export { BSplineSurfaceFit } from '../netDxf/GTE/BSplineSurfaceFit.js';
+export { BSplineReduction } from '../netDxf/GTE/BSplineReduction.js';
+export { BasisFunctionInput, BasisFunction, UniqueKnot } from '../netDxf/GTE/BasisFunction.js';
+export { ParametricSurface } from '../netDxf/GTE/ParametricSurface.js';
+export { BSplineSurface } from '../netDxf/GTE/BSplineSurface.js';
+export { NURBSSurface } from '../netDxf/GTE/NURBSSurface.js';
