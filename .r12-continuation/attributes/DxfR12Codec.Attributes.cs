@@ -31,9 +31,7 @@ namespace netDxf.IO
 
         private static void AttributeCommonFields(CommonEntityData data)
         {
-            if (data.ColorName != null || data.ShadowMode.HasValue || data.LineTypeFlags.HasValue
-                || data.PlotStyleFlags.HasValue || data.MaterialFlags.HasValue || data.HasFullVisualStyle.HasValue
-                || data.HasFaceVisualStyle.HasValue || data.HasEdgeVisualStyle.HasValue || data.ProxyGraphics != null)
+            if (data.ColorName != null || data.ShadowMode.HasValue || data.ProxyGraphics != null)
                 throw new NotSupportedException("Stored modern attribute common fields require a different interchange profile.");
         }
 
