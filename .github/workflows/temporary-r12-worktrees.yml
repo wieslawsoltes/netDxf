@@ -1,0 +1,71 @@
+name: Temporary R12 worktree validation
+on:
+  push:
+    branches: [codex/stage-r12-graphs-20261004]
+    paths: [.github/workflows/temporary-r12-worktrees.yml]
+permissions:
+  contents: read
+jobs:
+  worktrees:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/stage-r12-graphs-20261004'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: stage
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 644d83f094375b44c6413a5cfe055e88ef60b154
+          path: integration
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 8.0.x
+      - name: Apply independently committed worktree increments
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C integration rev-parse HEAD^{tree})" = ccca58f4fb372f7068ae3294ca6724e481d56af2
+          git -C integration config core.autocrlf false
+          git -C integration config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+          git -C integration config user.name 'github-actions[bot]'
+          git -C integration config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          mkdir -p evidence
+          for part in blocks attributes conversion; do
+            script="$GITHUB_WORKSPACE/stage/.r12-continuation/$part/apply.py"
+            if test -f "$script"; then
+              git -C integration worktree add -b "worktree-$part" "$GITHUB_WORKSPACE/worktree-$part" HEAD
+              python3 "$script" "$GITHUB_WORKSPACE/worktree-$part"
+              git -C "worktree-$part" add -A
+              git -C "worktree-$part" diff --cached --check
+              git -C "worktree-$part" commit -m "Implement R12 $part continuation with regression coverage"
+              git -C integration cherry-pick "worktree-$part"
+            fi
+          done
+          git -C integration worktree list --porcelain > evidence/worktrees.txt
+          git -C integration diff --binary 644d83f094375b44c6413a5cfe055e88ef60b154 > evidence/continuation.patch
+          git -C integration rev-parse HEAD HEAD^{tree} > evidence/source-identity.txt
+      - name: Build combined source
+        working-directory: integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release -p:NuGetAudit=false 2>&1 | tee ../evidence/build.log
+      - name: Execute focused new regressions
+        working-directory: integration
+        shell: bash
+        env:
+          DXF_TEST_FILTER: r12-blocks/
+          DXF_TEST_ARTIFACTS: ${{ github.workspace }}/evidence/fixtures
+        run: |
+          set -euo pipefail
+          dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build 2>&1 | tee ../evidence/conformance.log
+      - name: Retain source changes, worktree identities and actual test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r12-worktree-preflight
+          path: evidence
+          retention-days: 7
