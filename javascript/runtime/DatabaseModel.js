@@ -1,4 +1,4 @@
-import { ArgumentException, ArgumentOutOfRangeException } from './Errors.js';
+import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException, NotSupportedException } from './Errors.js';
 import { Copy } from './GeometryRuntime.js';
 import { OrdinalIgnoreCaseKey } from './Collections.js';
 
@@ -21,11 +21,29 @@ export function RegisterDatabaseModel(name, type) {
 }
 export const IsDatabaseModel = (value, name) => types.has(name) && value instanceof types.get(name);
 
-/** ReadOnlyCollection over a version-checked List; contained object references remain live. */
+// One shared IList mutation contract; rejecting invalid arguments must not read
+// or mutate the backing collection before reporting that the view is read-only.
+function RejectReadOnlyMutation() { throw new NotSupportedException('Collection is read-only.'); }
+
+/** ReadOnlyCollection over a version-checked List; contained references stay live.
+ * Indexed access and copy validation are delegated to the original list adapter.
+ */
 export function ReadOnlyReferenceView(list) {
-  return Object.freeze({ get Count() { return list.Count; }, get length() { return list.Count; },
-    get_Item(index) { return list.get_Item(index); }, GetEnumerator() { return list.GetEnumerator(); },
-    [Symbol.iterator]() { return list[Symbol.iterator](); } });
+  if (list == null) throw new ArgumentNullException('list');
+  return Object.freeze({
+    get Count() { return list.Count; }, get length() { return list.Count; },
+    IsReadOnly: true, IsFixedSize: true, IsSynchronized: false,
+    get SyncRoot() { return list.SyncRoot ?? list; },
+    get_Item(index) { return list.get_Item(index); },
+    Contains(value) { return list.Contains(value); },
+    IndexOf(value) { return list.IndexOf(value); },
+    CopyTo(array, index = 0) { return list.CopyTo(array, index); },
+    GetEnumerator() { return list.GetEnumerator(); },
+    [Symbol.iterator]() { return list[Symbol.iterator](); },
+    Add: RejectReadOnlyMutation, Clear: RejectReadOnlyMutation,
+    Insert: RejectReadOnlyMutation, Remove: RejectReadOnlyMutation,
+    RemoveAt: RejectReadOnlyMutation, set_Item: RejectReadOnlyMutation
+  });
 }
 /** Immutable snapshot with value-copy semantics for boxed coordinate cells. */
 export function ImmutableCellView(values) {

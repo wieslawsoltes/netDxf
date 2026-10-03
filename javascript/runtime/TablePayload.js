@@ -4,14 +4,9 @@ import { ReferenceList } from './ReferenceList.js';
 import { ReadOnlyReferenceView } from './DatabaseModel.js';
 import { TrimDotNet } from './InvariantFloat.js';
 import { DxfHandleKind } from '../netDxf/IO/DxfGroupCode.js';
-import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException,NotSupportedException } from './Errors.js';
+import { ArgumentException, ArgumentNullException, ArgumentOutOfRangeException } from './Errors.js';
 export const MaximumEditedStringLength = 1048576;
-export function TableSnapshot(values) {
-  const list=new ReferenceList(values),reject=()=>{throw new NotSupportedException('Collection is read-only.');};
-  return Object.freeze({...ReadOnlyReferenceView(list),get Count(){return list.Count;},get length(){return list.Count;},IsReadOnly:true,
-    Contains:value=>list.Contains(value),IndexOf:value=>list.IndexOf(value),CopyTo:(array,index=0)=>list.CopyTo(array,index),
-    set_Item:reject,Add:reject,Insert:reject,Remove:reject,RemoveAt:reject,Clear:reject});
-}
+export function TableSnapshot(values) { return ReadOnlyReferenceView(new ReferenceList(values)); }
 export const IsTableReference = tag => [DxfHandleKind.SoftPointer,DxfHandleKind.HardPointer,DxfHandleKind.SoftOwner,DxfHandleKind.HardOwner].includes(tag.HandleKind);
 export function ValidTableUtf16(text) {
   for(let i=0;i<text.length;i++) {

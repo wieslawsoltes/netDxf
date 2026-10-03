@@ -33,7 +33,7 @@ test('stored names retain spelling, duplicates, whitespace and valid Unicode but
 test('index entries own distinct buffers, derive counts and expose immutable names',()=>{
   const i=new DxfLayerIndex(),a=new DxfIdBuffer(),b=new DxfIdBuffer(),e=entry('A',a);
   i.SetEntries([e,entry('A',b)]);assert.equal(a.Owner,i);assert.equal(b.Owner,i);a.References.AddRange([null,a,null]);assert.equal(e.Count,3);
-  assert.throws(()=>{e.LayerName='B';},TypeError);assert.equal(i.Entries.set_Item,undefined);
+  assert.throws(()=>{e.LayerName='B';},TypeError);assert.throws(()=>i.Entries.set_Item(0,entry('changed',new DxfIdBuffer())),{name:'NotSupportedException'});assert.equal(i.Entries.get_Item(0),e);
   assert.deepEqual([...i.DeclaredOwnedObjects],[a,b]);assert.deepEqual([...i.DatabaseReferences],[a,b]);
 });
 test('replacement validates entire enumeration before releasing any existing owner',()=>{

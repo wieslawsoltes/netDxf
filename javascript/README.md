@@ -11,15 +11,21 @@ adapter, not a dependency of the browser-safe entry.
 [`baseline.json`](baseline.json) pins C# commit
 `3496ab91893a1e4ec9261b4833479f1799149cdc` and the reference toolchain. Against that
 reference, the current source contains **510/510 library-path mirrors**, with
-**21,612/35,309 original cases** in **136/193 original conformance-file paths**.
+**22,081/35,309 original cases** in **141/193 original conformance-file paths**.
 File presence does not establish exhaustive API or behavioral parity. There are
-13,697 remaining original cases, including missing cases in present modules.
+13,228 remaining original cases, including missing cases in present modules.
 
 Implemented areas include raw text/binary transport and handle operations; typed
 `DxfDocument.Load/Save/SaveAtomic` and `Block.Create/Load/Save`; geometry and entity
 models; tables, blocks and layouts; retained child records; HATCH, MESH, OLE,
 MTEXT and annotation transport; and typed/opaque OBJECTS graphs. Individual
 contracts and original tests, not this feature list, define the implemented scope.
+
+Read-only database/dependency/TABLE views expose collection flags, lookup and
+copy operations, and reject mutations with `NotSupportedException`. SECTION,
+manager membership/lifecycle, producer and composite TABLE ownership tests are
+registered. The manager's 32 constructor-reflection schema cases remain unported;
+functional test coverage is not a substitute for their original reflection assertion.
 
 Remaining work includes the original tests and examples, exhaustive public-member
 coverage, native wire/behavior comparisons, version-conversion and private-graph

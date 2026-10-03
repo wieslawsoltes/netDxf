@@ -41,7 +41,7 @@ test('dictionary cycles, duplicates and erased attachment fail before mutation',
   assert.equal(root.Remove('child'),true);assert.equal(child.Owner,root);
 });
 test('dictionary read-only entry lists are live and version-check enumerators',()=>{
-  const d=new DxfDictionary(),view=d.Entries;assert.equal(view.Add,undefined);d.Add('a',new DxfPlaceholder());assert.equal(view.Count,1);
+  const d=new DxfDictionary(),view=d.Entries;assert.throws(()=>view.Add(null),NotSupportedException);assert.equal(view.Count,0);d.Add('a',new DxfPlaceholder());assert.equal(view.Count,1);
   const entry=view.get_Item(0);assert.throws(()=>{entry.Name='mutated';},TypeError);const iterator=view.GetEnumerator();assert.equal(iterator.MoveNext(),true);
   d.Add('b',new DxfPlaceholder());assert.throws(()=>iterator.MoveNext(),InvalidOperationException);
   d.Cloning=4;const shell=d.CloneShell();assert.equal(shell.Count,0);assert.equal(shell.Cloning,4);assert.equal(d.Count,2);

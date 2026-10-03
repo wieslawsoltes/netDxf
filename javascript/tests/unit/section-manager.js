@@ -23,7 +23,7 @@ test('packet replacement retains immutable historical containers and live sectio
   const {doc,first,second}=setup(),manager=doc.Objects.CreateSectionManager([first,second,first],true),old=manager.Sections,tags=manager.Tags,seed=doc.NumHandles;
   manager.ReplaceSections([second],false);assert.deepEqual([...old],[first,second,first]);assert.equal(tags.Count,6);assert.equal(manager.Tags.Count,4);
   assert.equal(tags.get_Item(1).Value,1);assert.equal(manager.Tags.get_Item(1).Value,0);assert.equal(doc.NumHandles,seed);
-  first.Name='changed';assert.equal(old.get_Item(0).Name,'changed');assert.equal(typeof old.Add,'undefined');
+  first.Name='changed';assert.equal(old.get_Item(0).Name,'changed');assert.throws(()=>old.Add(second),{name:'NotSupportedException'});assert.deepEqual([...old],[first,second,first]);assert.deepEqual([...manager.Sections],[second]);
 });
 test('members block ordinary section removal until explicit replacement releases them',()=>{
   const {doc,first,second}=setup(),manager=doc.Objects.CreateSectionManager([first,first],true);

@@ -112,7 +112,7 @@ test('plot-settings authoring copies input and wipeout updates retain identity',
 });
 test('database Items snapshots remain read-only and independent of later registrations', () => {
   const document=doc(),items=document.Objects.Items;document.NamedObjects.Add('x',new api.DxfPlaceholder());assert.equal(items.Count,1);assert.equal(document.Objects.Items.Count,2);
-  assert.equal(typeof items.Add,'undefined');
+  assert.throws(()=>items.Add(null),{name:'NotSupportedException'});assert.equal(items.Count,1);assert.equal(document.Objects.Items.Count,2);
 });
 test('document corpus retains every original input and exact operation count on both newline hosts', () => {
   for(const newline of ['\n','\r\n']) {const corpus=documentOwnershipCorpus(newline);assert.deepEqual(corpus,documentOwnershipCorpus(newline));assert.equal(corpus.length,188);assert.equal(new Set(corpus.map(p=>p.name)).size,188);assert.equal(corpus.reduce((n,p)=>n+p.request.steps.length,0),8130);assert.ok(corpus.every(p=>!Object.hasOwn(p,'expected')));}
