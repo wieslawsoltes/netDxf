@@ -54,6 +54,9 @@ export class DxfReader {
     const declarations=new Map();
     for(const section of raw.Sections)for(const source of section.Records){
       const tags=Array.from(source.Tags),record={Name:source.Name,Section:section.Name,Start:source.StartTagIndex,End:source.EndTagIndex,Tags:tags};
+      // A nonempty discarded ACDSDATA record prevents safe opaque-entity output.
+      // Preserve the resolver's source-defined refusal; an empty section is harmless.
+      if(section.Name==='ACDSDATA'&&tags[0]?.Code===0)context.hasDiscardedAcdsData=true;
       record.Envelope=envelope(tags,record.Name);this.records.push(record);this.identities.set(record.Start,record.Envelope.Source);
       const identity=record.Envelope.Source;if(identity.IdentitySeen&&identity.Handle!==0n){context.sourceObjectIdentities.add(identity.Handle);if(declarations.has(identity.Handle)){identity.Ambiguous=true;declarations.get(identity.Handle).Ambiguous=true;}else declarations.set(identity.Handle,identity);}
     }
@@ -1066,10 +1069,21 @@ export class DxfReader {
     if(fields.has(71)||fields.has(72)){const upper=fields.get(47)??item.Style.Tolerances.UpperLimit,lower=fields.get(48)??item.Style.Tolerances.LowerLimit;add('TolerancesDisplayMethod',fields.get(72)?3:fields.get(71)?(upper===lower?1:2):0);}
   }
   ReadObjects(){for(const r of this.Records('OBJECTS')){if(legacyObjects.has(r.Name))continue;this.chunk=this.Context.Chunk=new DocumentTagReader(this.tags,r.Start,this.identities);if(r.Name==='DICTIONARY'||r.Name==='ACDBDICTIONARYWDFLT'){const legacy=ReadDictionaryDatabaseRecord(this.Context);this.Context.dictionaries.Add(legacy.Handle,legacy);if(r===this.rootRecord)this.Context.namedDictionary=legacy;}else ReadDatabaseRecord(this.Context);}}
-  ReadLayout(r){const t=subclass(r.Tags,'AcDbLayout'),name=decoded(t,1,this.dictionaryNames.get(r.Envelope.Handle)??'Layout1'),block=this.blockByRecordHandle.get(canonicalHandle(value(t,330,'')))??this.doc.Blocks.get_Item(name.toUpperCase()==='MODEL'?api.Block.DefaultModelSpaceName:api.Block.DefaultPaperSpaceName);
-    if(!block)throw new InvalidDataException('LAYOUT has no associated BLOCK_RECORD.');const plot=this.ReadPlotSettings(r),layout=api.Layout.CreateOverload('string,netDxf.Blocks.Block,netDxf.Objects.PlotSettings',name,block,plot);const order=value(t,71,0);if(order>0)layout.TabOrder=order;
+  ReadLayout(r){const plot=this.ReadPlotSettings(r),t=subclass(r.Tags,'AcDbLayout'),name=decoded(t,1,this.dictionaryNames.get(r.Envelope.Handle)??'Layout1'),block=this.blockByRecordHandle.get(canonicalHandle(value(t,330,'')))??this.doc.Blocks.get_Item(name.toUpperCase()==='MODEL'?api.Block.DefaultModelSpaceName:api.Block.DefaultPaperSpaceName);
+    if(!block)throw new InvalidDataException('LAYOUT has no associated BLOCK_RECORD.');const layout=api.Layout.CreateOverload('string,netDxf.Blocks.Block,netDxf.Objects.PlotSettings',name,block,plot);const order=value(t,71,0);if(order>0)layout.TabOrder=order;
     for(const[code,key,dim]of[[10,'MinLimit',2],[11,'MaxLimit',2],[12,'BasePoint',3],[14,'MinExtents',3],[15,'MaxExtents',3],[13,'UcsOrigin',3],[16,'UcsXAxis',3],[17,'UcsYAxis',3]])if(value(t,code)!==null)layout[key]=point(t,code,dim);layout.Elevation=value(t,146,0);this.Track(layout,r);this.doc.Layouts.Add(layout,false);return layout;}
-  ReadPlotSettings(r){const t=subclass(r.Tags,'AcDbPlotSettings');if(!t.length)return new api.PlotSettings();const handle={},plot=io.ParsePlotSettings(this.Context,[new DxfTag(100,'AcDbPlotSettings'),...t],handle);this.Context.outputShadeReferences.push([plot,handle.value]);return plot;}
+  ReadPlotSettings(r){
+    const tags=r.Tags,start=tags.findIndex(tag=>tag.Code===100&&tag.Value==='AcDbPlotSettings');
+    if(start<0)return new api.PlotSettings();
+    let end=start+1;
+    while(end<tags.length&&tags[end].Code!==100&&tags[end].Code!==0)end++;
+    // The embedded parser verifies its terminator before interpreting values or
+    // queuing a shade reference. A later AcDbLayout marker cannot repair a wrong one.
+    if(end===tags.length||tags[end].Code!==100||tags[end].Value!=='AcDbLayout')
+      throw new FormatException('Embedded plot settings must be followed by the AcDbLayout subclass.');
+    const handle={},plot=io.ParsePlotSettings(this.Context,tags.slice(start,end).filter(tag=>tag.Code!==999),handle);
+    this.Context.outputShadeReferences.push([plot,handle.value]);return plot;
+  }
   ReadRasterVariables(r){const t=subclass(r.Tags,'AcDbRasterVariables'),item=new api.RasterVariables(this.doc);item.DisplayFrame=value(t,70,1)!==0;item.DisplayQuality=value(t,71,1);item.Units=value(t,72,0);this.Track(item,r);this.doc.RasterVariables=item;return item;}
   ReadMLineStyle(r){const t=subclass(r.Tags,'AcDbMlineStyle'),name=decoded(t,2,this.dictionaryNames.get(r.Envelope.Handle)??'Standard'),elements=[];for(let i=0;i<t.length;i++)if(t[i].Code===49){let end=i+1;while(end<t.length&&t[end].Code!==49)end++;const s=t.slice(i,end);elements.push(new api.MLineStyleElement(t[i].Value,api.AciColor.FromCadIndex(value(s,62,256)),this.Resource('Linetypes',decoded(s,6,'ByLayer'))));}
     const item=new api.MLineStyle(name,elements);item.Description=decoded(t,3);item.Flags=value(t,70,0);item.FillColor=api.AciColor.FromCadIndex(value(t,62,256));item.StartAngle=value(t,51,90);item.EndAngle=value(t,52,90);this.Track(item,r);this.doc.MlineStyles.Add(item,false);return item;}

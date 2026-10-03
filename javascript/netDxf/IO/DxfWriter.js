@@ -53,7 +53,7 @@ export class DxfWriter {
     }
     const errors=Array.from(document.Objects.Validate());if(errors.length)throw new InvalidOperationException('Invalid OBJECTS database: '+errors.join('; '));
     io.ValidateDatabaseTransport(document,binary);
-    const definitions=io.PrepareClassDefinitions(document);io.ValidateOpaqueEntityClasses(document,definitions,binary);
+    const definitions=io.PrepareClassDefinitions(document);io.ValidateOpaqueEntityClasses(document,binary,definitions);
     if(document.Layouts.Count===1)document.Layouts.Add(new api.Layout('Layout1'));
     this.PreprocessEntities();
     for(const name of ['AcCmTransparency','AcAecLayerStandard','GradientColor1ACI','GradientColor2ACI'])document.ApplicationRegistries.Add(new api.ApplicationRegistry(name));
