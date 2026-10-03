@@ -183,11 +183,14 @@ internal static partial class Program
                 LvpCheckEntities(entities, true);
             }
             if (stage == 2) break;
-            if (version == DxfVersion.AutoCad12) raw = DxfR12Codec.Create(entities, transport);
+            // Generate the next stage in its target transport. Text-only comment tags
+            // cannot be reserialized by the raw binary writer without explicit removal.
+            bool nextTransport = stage == 0 ? !binary : binary;
+            if (version == DxfVersion.AutoCad12) raw = DxfR12Codec.Create(entities, nextTransport);
             else
             {
                 using var output = new MemoryStream();
-                Check(document!.Save(output, transport), "Edited layer-default document did not save");
+                Check(document!.Save(output, nextTransport), "Edited layer-default document did not save");
                 raw = LvpLoadRaw(output.ToArray());
             }
         }
