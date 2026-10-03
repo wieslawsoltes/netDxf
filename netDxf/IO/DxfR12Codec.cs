@@ -10,7 +10,7 @@ using netDxf.Tables;
 
 namespace netDxf.IO
 {
-    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID and TRACE.</summary>
+    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE and ordinary 2D/3D POLYLINE.</summary>
     /// <remarks>
     /// Creates a new model-space primitive drawing, not an implicit downgrade of an entire DxfDocument.
     /// Geometry, indexed entity colors, basic layers and built-in linetypes are supported. Unsupported
@@ -140,7 +140,7 @@ namespace netDxf.IO
             }
         }
 
-        private sealed class PrimitiveWriter
+        private sealed partial class PrimitiveWriter
         {
             private readonly DxfRawOptions options;
             private readonly List<DxfTag> body = new List<DxfTag>();
@@ -169,7 +169,8 @@ namespace netDxf.IO
                 if (entity == null) throw new ArgumentException("A primitive cannot be null.");
                 Type type = entity.GetType();
                 if (type != typeof(Line) && type != typeof(netDxf.Entities.Point) && type != typeof(Circle)
-                    && type != typeof(Arc) && type != typeof(Face3D) && type != typeof(Solid) && type != typeof(Trace))
+                    && type != typeof(Arc) && type != typeof(Face3D) && type != typeof(Solid) && type != typeof(Trace)
+                    && type != typeof(Polyline2D) && type != typeof(Polyline3D))
                     throw new NotSupportedException("Unsupported R12 primitive type: " + type.FullName);
                 Metadata(entity); Metadata(entity.Linetype);
                 if (entity.Color.UseTrueColor || entity.ColorName != null || entity.ShadowMode.HasValue
@@ -191,9 +192,11 @@ namespace netDxf.IO
                     this.layers.Add(layer.Name, layer); this.orderedLayers.Add(layer);
                 }
                 Vector3 normal = UnitNormal(entity.Normal);
-                this.Tag(0, entity.CodeName); this.Tag(5, (this.nextHandle++).ToString("X", CultureInfo.InvariantCulture));
+                this.Tag(0, entity is Polyline2D || entity is Polyline3D ? "POLYLINE" : entity.CodeName); this.Tag(5, (this.nextHandle++).ToString("X", CultureInfo.InvariantCulture));
                 this.Tag(8, layer.Name); this.Tag(6, BuiltinLinetype(entity.Linetype.Name)); this.Tag(62, entity.Color.Index);
-                if (entity is Line line)
+                if (entity is Polyline2D polyline2D) this.Polyline(polyline2D, layer.Name, normal);
+                else if (entity is Polyline3D polyline3D) this.Polyline(polyline3D, layer.Name, normal);
+                else if (entity is Line line)
                 { this.Point(10, line.StartPoint); this.Point(11, line.EndPoint); this.Plane(normal, line.Thickness); }
                 else if (entity is netDxf.Entities.Point point)
                 {
