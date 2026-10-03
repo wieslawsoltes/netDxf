@@ -15,7 +15,7 @@ def edit(path, before, after):
 text = 'netDxf/IO/DxfR12Codec.Text.cs'
 edit(text, 'private void TextEntity(Text text, Vector3 normal)', 'private void TextEntity(Text text, Vector3 normal, short verticalCode = 73)')
 edit(text, 'this.Tag(73, vertical)', 'this.Tag(verticalCode, vertical)')
-edit(text, 'private static Text ReadTextEntity(Fields fields, Vector3 normal, double thickness, Dictionary<string, TextStyle> styles)', 'private static Text ReadTextEntity(Fields fields, Vector3 normal, double thickness, Dictionary<string, TextStyle> styles, short verticalCode = 73)')
+edit(text, 'Dictionary<string, TextStyle> styles)', 'Dictionary<string, TextStyle> styles, short verticalCode = 73)')
 edit(text, 'fields.Integer(73, 0)', 'fields.Integer(verticalCode, 0)')
 edit('netDxf/Entities/Insert.SequenceEnd.cs', '        internal EndSequence SequenceEnd\n', '        // Codec inspection must not materialize a source-owned sequence record.\n        internal EndSequence ExistingSequenceEnd { get { return this.sequenceEnd; } }\n\n        internal EndSequence SequenceEnd\n')
 
