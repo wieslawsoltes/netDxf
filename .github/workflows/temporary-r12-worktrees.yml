@@ -2,7 +2,12 @@ name: Temporary R12 worktree validation
 on:
   push:
     branches: [codex/stage-r12-graphs-20261004]
-    paths: [.github/workflows/temporary-r12-worktrees.yml]
+    paths:
+      - .github/workflows/temporary-r12-worktrees.yml
+      - .r12-continuation/**
+concurrency:
+  group: temporary-r12-worktrees
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -33,7 +38,7 @@ jobs:
           git -C integration config user.name 'github-actions[bot]'
           git -C integration config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           mkdir -p evidence
-          for part in blocks attributes conversion; do
+          for part in blocks attributes conversion verification; do
             script="$GITHUB_WORKSPACE/stage/.r12-continuation/$part/apply.py"
             if test -f "$script"; then
               git -C integration worktree add -b "worktree-$part" "$GITHUB_WORKSPACE/worktree-$part" HEAD
@@ -53,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           dotnet build tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release -p:NuGetAudit=false 2>&1 | tee ../evidence/build.log
-      - name: Execute all R12 regressions including both new worktrees
+      - name: Execute all R12 regressions
         working-directory: integration
         shell: bash
         env:
@@ -62,6 +67,17 @@ jobs:
         run: |
           set -euo pipefail
           dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build 2>&1 | tee ../evidence/conformance.log
+      - name: Preserve diagnostic source on failure
+        if: failure()
+        shell: bash
+        run: |
+          mkdir -p evidence/diagnostic-source
+          for part in blocks attributes conversion verification; do
+            if test -d "worktree-$part"; then
+              git -C "worktree-$part" diff > "evidence/diagnostic-source/$part.diff"
+            fi
+          done
+          grep -n -E 'vertical|TextEntity|ReadTextEntity' integration/netDxf/IO/DxfR12Codec.Text.cs || true
       - name: Retain source changes, worktree identities and actual test evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
