@@ -1,0 +1,77 @@
+name: Isolated pinned JavaScript port validation
+on:
+  push:
+    branches: ['codex/js-native-validation-20261003']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pinned-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '3496ab91893a1e4ec9261b4833479f1799149cdc'
+          path: reference
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 'ea051b3827ecb47a98dd0bff392a3f4bf157d36f'
+          path: port
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Acquire and verify official frozen SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence "$RUNNER_TEMP/pinned-dotnet"
+          curl --fail --location --retry 3 https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json --output evidence/dotnet-releases.json
+          python3 - <<'PY'
+          import json, pathlib
+          data = json.loads(pathlib.Path('evidence/dotnet-releases.json').read_text())
+          matches = [f for r in data['releases'] for sdk in r.get('sdks', [r.get('sdk', {})]) if sdk.get('version') == '8.0.425' for f in sdk.get('files', []) if f.get('rid') == 'linux-x64' and f.get('url', '').endswith('.tar.gz')]
+          assert matches, 'Pinned SDK absent from official metadata'
+          file = matches[0]
+          assert file['url'].startswith('https://builds.dotnet.microsoft.com/dotnet/'), 'Unexpected SDK origin'
+          pathlib.Path('evidence/sdk-url.txt').write_text(file['url'])
+          pathlib.Path('evidence/sdk-sha512.txt').write_text(file['hash'].lower())
+          PY
+          curl --fail --location --retry 3 "$(cat evidence/sdk-url.txt)" --output evidence/dotnet-sdk-8.0.425-linux-x64.tar.gz
+          python3 - <<'PY'
+          import hashlib, pathlib
+          sdk=pathlib.Path('evidence/dotnet-sdk-8.0.425-linux-x64.tar.gz')
+          assert hashlib.sha512(sdk.read_bytes()).hexdigest() == pathlib.Path('evidence/sdk-sha512.txt').read_text().strip(), 'SDK SHA-512 mismatch'
+          PY
+          tar -xzf evidence/dotnet-sdk-8.0.425-linux-x64.tar.gz -C "$RUNNER_TEMP/pinned-dotnet"
+          echo "DOTNET_ROOT=$RUNNER_TEMP/pinned-dotnet" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/pinned-dotnet" >> "$GITHUB_PATH"
+          echo "NETDXF_SOURCE_ROOT=$GITHUB_WORKSPACE/reference" >> "$GITHUB_ENV"
+          git -C reference archive --format=tar.gz --output="$GITHUB_WORKSPACE/evidence/pinned-source.tar.gz" HEAD
+          git -C reference rev-parse HEAD > evidence/source-ref.txt
+      - name: Inventory exact pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet --info > evidence/dotnet-info.txt
+          node port/javascript/tools/dotnet.mjs inventory
+          cp port/javascript/artifacts/inventory/source-inventory.json evidence/
+      - name: Run complete pinned native original suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          for config in Release Debug; do
+            CONFIGURATION="$config" DXF_TEST_ARTIFACTS="$GITHUB_WORKSPACE/evidence/native-$config" node port/javascript/tools/dotnet.mjs conformance
+          done
+      - name: Retain reproducible pinned toolchain and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinned-native-port-validation
+          compression-level: 0
+          retention-days: 7
+          path: |
+            evidence/
+            port/javascript/artifacts/oracle/
