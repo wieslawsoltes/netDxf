@@ -27,7 +27,7 @@ def expected():
             (0,'SECTION'), (2,'TABLES'), (0,'TABLE'), (2,'LTYPE'), (70,4)]
     for name, (description, pattern) in PATTERNS.items():
         tags += [(0,'LTYPE'), (2,name), (70,0), (3,description), (72,65),
-                 (73,len(pattern)), (40,sum(abs(v) for v in pattern))]
+                 (73,len(pattern)), (40,float(sum(abs(v) for v in pattern)))]
         tags += [(49,value) for value in pattern]
     tags += [(0,'ENDTAB'), (0,'TABLE'), (2,'LAYER'), (70,3)]
     for name, color, pattern in (('0',7,'CONTINUOUS'), ('STROKES',2,'DASH'), ('FACES',3,'DOT')):
