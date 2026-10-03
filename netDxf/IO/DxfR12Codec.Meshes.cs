@@ -13,9 +13,11 @@ namespace netDxf.IO
             private LayerPacket RegisterLayer(Layer value)
             {
                 LayerPacket layer = LayerPacket.Capture(value);
+                layer.PatternName = this.RegisterLinetype(value.Linetype, true);
                 if (this.layers.TryGetValue(layer.Name, out LayerPacket existing))
                 {
-                    if (existing.Color != layer.Color || existing.Flags != layer.Flags)
+                    if (existing.Color != layer.Color || existing.Flags != layer.Flags
+                        || !string.Equals(existing.PatternName, layer.PatternName, StringComparison.OrdinalIgnoreCase))
                         throw new InvalidOperationException("Conflicting same-named R12 layer definitions.");
                     return existing;
                 }

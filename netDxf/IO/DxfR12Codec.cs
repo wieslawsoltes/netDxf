@@ -13,7 +13,7 @@ namespace netDxf.IO
     /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE, ordinary 2D/3D POLYLINE, polygon/polyface meshes and TEXT/STYLE.</summary>
     /// <remarks>
     /// Creates a new model-space primitive drawing, not an implicit downgrade of an entire DxfDocument.
-    /// Geometry, indexed entity colors, basic layers and built-in linetypes are supported. Unsupported
+    /// Geometry, indexed entity colors, basic layers and simple dash/dot/gap linetypes are supported. Unsupported
     /// entity types, modern attributes and dependency-bearing metadata reject instead of being dropped.
     /// Source objects, handles and owners are not modified. Output identities are newly allocated.
     /// The existing raw codec supplies AC1009 text/binary framing, encoding and bounded serialization.
@@ -26,6 +26,11 @@ namespace netDxf.IO
     /// preserved. Polyface count hints are advisory; forward/interleaved faces are supported. New
     /// output groups coordinates before faces. Face styling is materialized and ignored face-point
     /// coordinates are discarded. Retained child metadata and fitted-surface sequences reject.
+    /// Simple LTYPE definitions preserve signed element values and descriptions, share decoded
+    /// references by name, and reject inconsistent definitions. Embedded text/shape patterns and
+    /// external dependencies require another format codec. Redundant total pattern length is
+    /// recomputed on output; decoding tolerates producer rounding within 1e-12 relative plus one
+    /// binary64 subnormal quantum per term. The informational referenced flag is not retained.
     /// DxfDocument's admitted versions and the lossless raw-preservation API remain unchanged.
     /// </remarks>
     public static partial class DxfR12Codec
@@ -91,7 +96,7 @@ namespace netDxf.IO
             if (string.Equals(name, "ByLayer", StringComparison.OrdinalIgnoreCase)) return "BYLAYER";
             if (string.Equals(name, "ByBlock", StringComparison.OrdinalIgnoreCase)) return "BYBLOCK";
             if (string.Equals(name, "Continuous", StringComparison.OrdinalIgnoreCase)) return "CONTINUOUS";
-            throw new NotSupportedException("Custom linetypes require a complete R12 linetype-table codec.");
+            throw new NotSupportedException("A child record requires the supported built-in linetype selection.");
         }
 
         private static double Finite(double value)
@@ -132,7 +137,7 @@ namespace netDxf.IO
 
         private sealed class LayerPacket
         {
-            internal string Name;
+            internal string Name, PatternName;
             internal short Color, Flags;
             internal static LayerPacket Capture(Layer layer)
             {
@@ -140,10 +145,9 @@ namespace netDxf.IO
                 Metadata(layer); Metadata(layer.Linetype);
                 if (layer.Color.UseTrueColor || !layer.Plot || layer.Lineweight != Lineweight.Default
                     || layer.Transparency.Value != 0 || layer.Transparency.StoredAlphaValue.HasValue
-                    || layer.Description.Length != 0 || BuiltinLinetype(layer.Linetype.Name) != "CONTINUOUS"
-                    || layer.Linetype.Segments.Count != 0)
+                    || layer.Description.Length != 0)
                     throw new NotSupportedException("The layer contains settings outside the supported R12 layer profile.");
-                return new LayerPacket { Name = ResourceName(layer.Name),
+                return new LayerPacket { Name = ResourceName(layer.Name), PatternName = LinetypeName(layer.Linetype.Name),
                     Color = (short)(layer.IsVisible ? layer.Color.Index : -layer.Color.Index),
                     Flags = (short)((layer.IsFrozen ? 1 : 0) | (layer.IsLocked ? 4 : 0)) };
             }
@@ -186,13 +190,13 @@ namespace netDxf.IO
                 if (entity.Color.UseTrueColor || entity.ColorName != null || entity.ShadowMode.HasValue
                     || entity.CommonData.ProxyGraphics != null || entity.Reactors.Count != 0
                     || !entity.IsVisible || entity.Lineweight != Lineweight.ByLayer || entity.LinetypeScale != 1
-                    || !entity.Transparency.IsByLayer || entity.Transparency.StoredAlphaValue.HasValue
-                    || entity.Linetype.Segments.Count != 0)
+                    || !entity.Transparency.IsByLayer || entity.Transparency.StoredAlphaValue.HasValue)
                     throw new NotSupportedException("The primitive has attributes that cannot be represented by this R12 codec.");
                 LayerPacket layer = this.RegisterLayer(entity.Layer);
+                string linetype = this.RegisterLinetype(entity.Linetype);
                 Vector3 normal = UnitNormal(entity.Normal);
                 this.Tag(0, entity is Polyline2D || entity is Polyline3D ? "POLYLINE" : entity.CodeName); this.Tag(5, (this.nextHandle++).ToString("X", CultureInfo.InvariantCulture));
-                this.Tag(8, layer.Name); this.Tag(6, BuiltinLinetype(entity.Linetype.Name)); this.Tag(62, entity.Color.Index);
+                this.Tag(8, layer.Name); this.Tag(6, linetype); this.Tag(62, entity.Color.Index);
                 if (entity is Text text) this.TextEntity(text, normal);
                 else if (entity is Polyline2D polyline2D) this.Polyline(polyline2D, layer.Name, normal);
                 else if (entity is Polyline3D polyline3D) this.Polyline(polyline3D, layer.Name, normal);
@@ -251,15 +255,13 @@ namespace netDxf.IO
                 this.Add(prefix, 9, "$DWGCODEPAGE"); this.Add(prefix, 3, "ANSI_1252");
                 this.Add(prefix, 9, "$HANDSEED"); this.Add(prefix, 5, this.nextHandle.ToString("X", CultureInfo.InvariantCulture));
                 this.Add(prefix, 0, "ENDSEC"); this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "TABLES");
-                this.Add(prefix, 0, "TABLE"); this.Add(prefix, 2, "LTYPE"); this.Add(prefix, 70, (short)1);
-                this.Add(prefix, 0, "LTYPE"); this.Add(prefix, 2, "CONTINUOUS"); this.Add(prefix, 70, (short)0);
-                this.Add(prefix, 3, "Solid line"); this.Add(prefix, 72, (short)65); this.Add(prefix, 73, (short)0); this.Add(prefix, 40, 0.0);
-                this.Add(prefix, 0, "ENDTAB"); this.Add(prefix, 0, "TABLE"); this.Add(prefix, 2, "LAYER");
+                this.WriteLinetypes(prefix);
+                this.Add(prefix, 0, "TABLE"); this.Add(prefix, 2, "LAYER");
                 this.Add(prefix, 70, (short)this.orderedLayers.Count);
                 foreach (LayerPacket layer in this.orderedLayers)
                 {
                     this.Add(prefix, 0, "LAYER"); this.Add(prefix, 2, layer.Name); this.Add(prefix, 70, layer.Flags);
-                    this.Add(prefix, 62, layer.Color); this.Add(prefix, 6, "CONTINUOUS");
+                    this.Add(prefix, 62, layer.Color); this.Add(prefix, 6, layer.PatternName);
                 }
                 this.Add(prefix, 0, "ENDTAB"); this.WriteTextStyles(prefix); this.Add(prefix, 0, "ENDSEC");
                 this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "BLOCKS"); this.Add(prefix, 0, "ENDSEC");
