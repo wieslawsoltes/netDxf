@@ -11,9 +11,9 @@ adapter, not a dependency of the browser-safe entry.
 [`baseline.json`](baseline.json) pins C# commit
 `3496ab91893a1e4ec9261b4833479f1799149cdc` and the reference toolchain. Against that
 reference, the current source contains **510/510 library-path mirrors**, with
-**22,767/35,309 original cases** in **147/193 original conformance-file paths**.
+**22,784/35,309 original cases** in **148/193 original conformance-file paths**.
 File presence does not establish exhaustive API or behavioral parity. There are
-12,542 remaining original cases, including missing cases in present modules.
+12,525 remaining original cases, including missing cases in present modules.
 
 Implemented areas include raw text/binary transport and handle operations; typed
 `DxfDocument.Load/Save/SaveAtomic` and `Block.Create/Load/Save`; geometry and entity
@@ -31,6 +31,9 @@ Opaque-entity output passes the prepared CLASS collection and transport flag in
 the correct order; typed input refuses discarded ACDSDATA when opaque entities
 need raw preservation. Embedded plot settings require their immediate AcDbLayout
 terminator before values or shade references are processed.
+Resource lookup includes 17 original cases; three native observer/concurrency/
+path-oracle cases remain unported. Public opaque-load checks separately verify
+Release null versus Debug exceptions without weakening the raw preservation path.
 
 Remaining work includes the original tests and examples, exhaustive public-member
 coverage, native wire/behavior comparisons, version-conversion and private-graph
