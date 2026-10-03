@@ -13,6 +13,8 @@ permissions:
 jobs:
   worktrees:
     if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/stage-r12-graphs-20261004'
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -24,7 +26,6 @@ jobs:
         with:
           ref: 644d83f094375b44c6413a5cfe055e88ef60b154
           path: integration
-          persist-credentials: false
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
         with:
           dotnet-version: 8.0.x
@@ -43,14 +44,13 @@ jobs:
           mkdir -p evidence
           for part in blocks attributes conversion verification; do
             script="$GITHUB_WORKSPACE/stage/.r12-continuation/$part/apply.py"
-            if test -f "$script"; then
-              git -C integration worktree add -b "worktree-$part" "$GITHUB_WORKSPACE/worktree-$part" HEAD
-              python3 "$script" "$GITHUB_WORKSPACE/worktree-$part"
-              git -C "worktree-$part" add -A
-              git -C "worktree-$part" diff --cached --check
-              git -C "worktree-$part" commit -m "Implement R12 $part continuation with regression coverage"
-              git -C integration cherry-pick "worktree-$part"
-            fi
+            test -f "$script"
+            git -C integration worktree add -b "worktree-$part" "$GITHUB_WORKSPACE/worktree-$part" HEAD
+            python3 "$script" "$GITHUB_WORKSPACE/worktree-$part"
+            git -C "worktree-$part" add -A
+            git -C "worktree-$part" diff --cached --check
+            git -C "worktree-$part" commit -m "Implement R12 $part continuation with regression coverage"
+            git -C integration cherry-pick "worktree-$part"
           done
           git -C integration worktree list --porcelain > evidence/worktrees.txt
           git -C integration diff --binary 644d83f094375b44c6413a5cfe055e88ef60b154 > evidence/continuation.patch
@@ -70,23 +70,53 @@ jobs:
         run: |
           set -euo pipefail
           dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build 2>&1 | tee ../evidence/conformance.log
-      - name: Verify actual CSharp drawings independently
+      - name: Run Python validation and independent drawing checks
         working-directory: integration
         shell: bash
         run: |
           set -euo pipefail
           python -m pip install -r tools/requirements-independent.txt
+          python -m unittest discover -s tests/ci_pipeline -p 'test_*.py' 2>&1 | tee ../evidence/python-pipeline.log
+          python -m unittest discover -s tests/dxf_coverage -p 'test_*.py' 2>&1 | tee ../evidence/python-coverage.log
+          python -m unittest discover -s tests/standard_fields -p 'test_*.py' 2>&1 | tee ../evidence/python-standard-fields.log
+          python -m unittest discover -s tests/field_hosts -p 'test_*.py' 2>&1 | tee ../evidence/python-field-hosts.log
           python tools/verify_r12_selection_graphs.py ../evidence/fixtures 2>&1 | tee ../evidence/independent-graphs.log
-      - name: Preserve diagnostic source on failure
-        if: failure()
+      - name: Publish only the passing clean feature branch
+        working-directory: integration
         shell: bash
         run: |
-          mkdir -p evidence/diagnostic-source
-          for file in DxfR12Codec.Attributes.cs DxfR12Codec.Text.cs DxfR12Codec.Selection.cs DxfR12SelectionPlan.cs; do
-            if test -f "integration/netDxf/IO/$file"; then
-              nl -ba "integration/netDxf/IO/$file" > "evidence/diagnostic-source/$file.txt"
-            fi
-          done
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          test ! -e .r12-continuation
+          test ! -e .github/workflows/temporary-r12-worktrees.yml
+          git diff --exit-code 644d83f094375b44c6413a5cfe055e88ef60b154 -- .github/workflows
+          test -z "$(git ls-remote --heads origin refs/heads/codex/dxf-r12-selection-interchange-20261004)"
+          git push origin HEAD:refs/heads/codex/dxf-r12-selection-interchange-20261004
+          git rev-parse HEAD HEAD^{tree} | tee ../evidence/published-source.txt
+      - name: Package changed sources and reproduction evidence
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, shutil, subprocess
+          root = Path('integration')
+          out = Path('evidence')
+          out.mkdir(exist_ok=True)
+          paths = subprocess.check_output(['git', '-C', str(root), 'diff', '--name-only', '644d83f094375b44c6413a5cfe055e88ef60b154'], text=True).splitlines()
+          for name in paths:
+              source = root / name
+              if source.is_file():
+                  target = out / 'changed-source' / name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copyfile(source, target)
+          (out / 'README.txt').write_text('Incremental R12 selection interchange source and actual hosted preflight evidence.\nApply continuation.patch to baseline 644d83f094375b44c6413a5cfe055e88ef60b154 using git apply --check then git apply.\nThis is not a qualified binary release. Full repository CI remains required.\nNo temporary workflow or staging payload is part of the product patch.\n')
+          entries = []
+          for file in sorted(out.rglob('*')):
+              if file.is_file() and file.name != 'SHA256SUMS.txt':
+                  entries.append(hashlib.sha256(file.read_bytes()).hexdigest() + '  ' + file.relative_to(out).as_posix())
+          (out / 'SHA256SUMS.txt').write_text('\n'.join(entries) + '\n')
+          PY
       - name: Retain source changes, worktree identities and actual test evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
