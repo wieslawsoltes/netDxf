@@ -28,6 +28,9 @@ jobs:
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
         with:
           dotnet-version: 8.0.x
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
       - name: Apply independently committed worktree increments
         shell: bash
         run: |
@@ -67,19 +70,21 @@ jobs:
         run: |
           set -euo pipefail
           dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build 2>&1 | tee ../evidence/conformance.log
+      - name: Verify actual CSharp drawings independently
+        working-directory: integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -r tools/requirements-independent.txt
+          python tools/verify_r12_selection_graphs.py ../evidence/fixtures 2>&1 | tee ../evidence/independent-graphs.log
       - name: Preserve diagnostic source on failure
         if: failure()
         shell: bash
         run: |
           mkdir -p evidence/diagnostic-source
-          for part in blocks attributes conversion verification; do
-            if test -d "worktree-$part"; then
-              git -C "worktree-$part" diff > "evidence/diagnostic-source/$part.diff"
-            fi
-          done
           for file in DxfR12Codec.Attributes.cs DxfR12Codec.Text.cs DxfR12Codec.Selection.cs DxfR12SelectionPlan.cs; do
             if test -f "integration/netDxf/IO/$file"; then
-              nl -ba "integration/netDxf/IO/$file" | tee "evidence/diagnostic-source/$file.txt"
+              nl -ba "integration/netDxf/IO/$file" > "evidence/diagnostic-source/$file.txt"
             fi
           done
       - name: Retain source changes, worktree identities and actual test evidence
