@@ -138,7 +138,7 @@ namespace netDxf.IO
             private readonly Dictionary<string, StylePacket> textStyles = new Dictionary<string, StylePacket>(StringComparer.OrdinalIgnoreCase);
             private readonly List<StylePacket> orderedTextStyles = new List<StylePacket>();
 
-            private void TextEntity(Text text, Vector3 normal)
+            private void TextEntity(Text text, Vector3 normal, short verticalCode = 73)
             {
                 StylePacket style = StylePacket.Capture(text.Style);
                 if (this.textStyles.TryGetValue(style.Name, out StylePacket previous))
@@ -170,7 +170,7 @@ namespace netDxf.IO
                 if (horizontal != 0 || vertical != 0) this.Point(11, second);
                 this.Point(210, normal);
                 this.Tag(71, (short)((text.IsBackward ? 2 : 0) | (text.IsUpsideDown ? 4 : 0)));
-                this.Tag(72, horizontal); this.Tag(73, vertical);
+                this.Tag(72, horizontal); this.Tag(verticalCode, vertical);
             }
 
             private void WriteTextStyles(List<DxfTag> destination)
@@ -195,7 +195,7 @@ namespace netDxf.IO
             }
         }
 
-        private static Text ReadTextEntity(Fields fields, Vector3 normal, double thickness, Dictionary<string, TextStyle> styles)
+        private static Text ReadTextEntity(Fields fields, Vector3 normal, double thickness, Dictionary<string, TextStyle> styles, short verticalCode = 73)
         {
             if (thickness != 0) throw new NotSupportedException("Text does not expose nonzero extrusion thickness; use raw preservation.");
             string value = DecodeTextControls(fields.Text(1, null, true));
@@ -210,7 +210,7 @@ namespace netDxf.IO
             double height = fields.Number(40, 0, true), widthFactor = TextWidthFactor(fields.Number(41, 1));
             double rotation = fields.Number(50, 0), oblique = TextOblique(fields.Number(51, 0));
             if (height <= 0) throw new FormatException("TEXT height must be positive.");
-            short generation = fields.Integer(71, 0), horizontal = fields.Integer(72, 0), vertical = fields.Integer(73, 0);
+            short generation = fields.Integer(71, 0), horizontal = fields.Integer(72, 0), vertical = fields.Integer(verticalCode, 0);
             if ((generation & ~6) != 0) throw new NotSupportedException("Unknown TEXT generation flags.");
             TextAlignment alignment = TextAlignmentValue(horizontal, vertical);
             bool justified = horizontal != 0 || vertical != 0;

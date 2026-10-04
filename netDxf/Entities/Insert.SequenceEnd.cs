@@ -14,6 +14,9 @@ namespace netDxf.Entities
         /// metadata and XData are editable through DxfObject; private SEQEND payloads are not modeled.</remarks>
         public DxfObject EndSequenceRecord { get { return this.SequenceEnd; } }
 
+        // Codec inspection must not materialize a source-owned sequence record.
+        internal EndSequence ExistingSequenceEnd { get { return this.sequenceEnd; } }
+
         internal EndSequence SequenceEnd
         {
             get

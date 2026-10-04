@@ -16,7 +16,9 @@ namespace netDxf.IO
         /// <returns>Detached entities in ENTITIES order, sharing decoded layer, linetype and style objects by name.</returns>
         /// <remarks>
         /// This explicitly selects ENTITIES and their supported resources; it is not whole-document
-        /// conversion. It does not expand blocks or interpret unrelated sections/HEADER settings.
+        /// conversion. Reachable acyclic BLOCK definitions and INSERT arrays retain shared identity without expansion.
+        /// It does not interpret unrelated sections/HEADER settings. Layout/xref blocks and distinct
+        /// same-named source block objects require a separate collision or layout policy.
         /// Unsupported entities, paper-space records, application data, unknown entity fields and
         /// ambiguous fields reject the entire selection. The raw source remains unchanged and retains
         /// every unselected record. Optional entity handles are retained on the detached objects but
@@ -95,11 +97,29 @@ namespace netDxf.IO
                 if (table != null) throw new FormatException("Missing ENDTAB.");
             }
             if (entities == null) throw new FormatException("R12 primitive reading requires an ENTITIES section.");
-            var result = new List<EntityObject>();
             var handles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            for (int index = 0; index < entities.Records.Count; index++)
+            var blocks = new BlockReader(document, patterns, layers, styles, handles);
+            List<EntityObject> result = ReadEntityRecords(entities.Records, patterns, layers, styles, handles, blocks, null);
+            blocks.Complete();
+            // Canonicalize default linetypes of implicit layers, including block/face-only layers.
+            foreach (Layer layer in layers.Values) layer.Linetype = ResolveLinetype(layer.Linetype.Name, patterns, true);
+            return new ReadOnlyCollection<EntityObject>(result);
+        }
+
+        private static List<EntityObject> ReadEntityRecords(IReadOnlyList<DxfRawRecord> records,
+            Dictionary<string, Linetype> patterns, Dictionary<string, Layer> layers,
+            Dictionary<string, TextStyle> styles, HashSet<string> handles, BlockReader blocks, netDxf.Blocks.Block owner)
+        {
+            var result = new List<EntityObject>();
+            for (int index = 0; index < records.Count; index++)
             {
-                DxfRawRecord record = entities.Records[index];
+                DxfRawRecord record = records[index];
+                if (string.Equals(record.Name, "ATTDEF", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (owner == null) throw new NotSupportedException("Attribute definitions require a selected BLOCK owner.");
+                    blocks.ReadDefinition(record, owner);
+                    continue;
+                }
                 var fields = new Fields(record);
                 string handle = fields.Identity();
                 if (handle != null && !handles.Add(handle)) throw new FormatException("Duplicate entity identities are ambiguous.");
@@ -113,13 +133,16 @@ namespace netDxf.IO
                 EntityObject entity;
                 switch (record.Name.ToUpperInvariant())
                 {
+                    case "INSERT":
+                        entity = blocks.ReadInsert(fields, normal, thickness, records, ref index, layerName);
+                        break;
                     case "TEXT":
                         entity = ReadTextEntity(fields, normal, thickness, styles);
                         break;
                     case "POLYLINE":
                         entity = (fields.PeekInteger(70, 0) & 80) != 0
-                            ? ReadLegacyMesh(fields, entities.Records, ref index, layerName, color, normal, thickness, handles, layers)
-                            : ReadPolyline(fields, entities.Records, ref index, layerName, normal, thickness, handles);
+                            ? ReadLegacyMesh(fields, records, ref index, layerName, color, normal, thickness, handles, layers)
+                            : ReadPolyline(fields, records, ref index, layerName, normal, thickness, handles);
                         break;
                     case "LINE":
                         entity = new Line(fields.Vector(10, Vector3.Zero, true), fields.Vector(11, Vector3.Zero, true))
@@ -170,9 +193,7 @@ namespace netDxf.IO
                 entity.Color = AciColor.FromCadIndex(color); entity.Handle = handle;
                 result.Add(entity);
             }
-            // Canonicalize default linetypes of implicit layers, including face-only layers.
-            foreach (Layer layer in layers.Values) layer.Linetype = ResolveLinetype(layer.Linetype.Name, patterns, true);
-            return new ReadOnlyCollection<EntityObject>(result);
+            return result;
         }
 
         private static Layer ReadLayer(DxfRawRecord record, Dictionary<string, Linetype> patterns)

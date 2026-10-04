@@ -49,6 +49,7 @@ rather than assuming every save overload is transactional.
 |---|---|---|
 | Typed `DxfDocument` | AutoCAD 2000, 2004, 2007, 2010, 2013 and 2018 DXF families | Individual features have additional read/write and edit restrictions |
 | Raw `DxfRawDocument` | Those six families plus R11/R12, R13 and R14 | Ordered preservation and selected edits are not full typed historical support |
+| Explicit `DxfR12Codec` / `DxfR12SelectionPlan` | R11/R12 selection interchange; plans can target R12 or the six modern families | A strict selection of supported entities and reachable acyclic blocks, not a whole-document converter |
 | Transport | Text and binary DXF in their admitted profiles | Field framing, encoding and version legality are checked separately |
 
 The library targets `net471`, `net48`, `netstandard2.0`, `net6.0` and `net8.0`.
@@ -61,6 +62,22 @@ objects and references, retained legacy child records, raw records, selected
 FIELD/TABLE operations and geometry algorithms. See the feature contracts rather
 than treating an entity name in an API as an all-feature certificate. Preserved
 proxy or ACIS data is not automatically decoded, evaluated or rendered.
+
+R12 selections now retain shared BLOCK/INSERT graphs, array references, classic
+ATTDEF/ATTRIB fields and SEQEND sequences. `DxfR12SelectionPlan.Prepare(entities)`
+captures an immutable normalized selection; `CreateDocument(version)` creates an
+independent editable graph and `Save(stream, version, binary)` stages output with
+byte/tag/string limits before touching the destination. Modern output protects
+logical controls and literal escape-looking content. Ordinary `DxfDocument.Save`
+retains its separate framing contract.
+
+This profile requires unitless, acyclic blocks and rejects xrefs, unsupported
+entities/metadata, distinct same-named source blocks and modern-only attribute
+fields. Only the exact neutral version-1 DesignCenter block-unit packet is
+projected; arbitrary ACAD XData is not dropped. Original handles, unrelated
+headers/objects/layouts and lexical formatting are not part of selection output.
+R13/R14 typed conversion, pre-R12 typed interchange and general flattening remain
+outside this API. See the XML API contract for cancellation and stream semantics.
 
 Public mutable collections remain available for compatibility. Direct changes
 can bypass entity notifications; use validated editing methods where provided

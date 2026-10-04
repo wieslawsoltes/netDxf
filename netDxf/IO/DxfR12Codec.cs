@@ -10,11 +10,11 @@ using netDxf.Tables;
 
 namespace netDxf.IO
 {
-    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE, ordinary 2D/3D POLYLINE, polygon/polyface meshes and TEXT/STYLE.</summary>
+    /// <summary>Explicit typed R12 interchange for LINE, POINT, CIRCLE, ARC, 3DFACE, SOLID, TRACE, ordinary 2D/3D POLYLINE, polygon/polyface meshes TEXT/STYLE and acyclic BLOCK/INSERT/ATTDEF/ATTRIB graphs.</summary>
     /// <remarks>
-    /// Creates a new model-space primitive drawing, not an implicit downgrade of an entire DxfDocument.
+    /// Creates a new model-space selection drawing, not an implicit downgrade of an entire DxfDocument.
     /// Geometry, indexed entity colors, basic layers and simple dash/dot/gap linetypes are supported. Unsupported
-    /// entity types, modern attributes and dependency-bearing metadata reject instead of being dropped.
+    /// entity types, modern-only attribute fields and dependency-bearing metadata reject instead of being dropped.
     /// Source objects, handles and owners are not modified. Output identities are newly allocated.
     /// The existing raw codec supplies AC1009 text/binary framing, encoding and bounded serialization.
     /// TEXT supports all fifteen alignments, OCS placement, rotation, mirroring, width and oblique
@@ -33,15 +33,19 @@ namespace netDxf.IO
     /// binary64 subnormal quantum per term. The informational referenced flag is not retained.
     /// Layer global freeze, new-viewport freeze default, locking and visibility are retained.
     /// The informational LAYER referenced flag (64) is accepted without becoming a typed setting.
+    /// Reachable acyclic blocks, nested and array INSERTs, ATTDEF/ATTRIB fields and retained
+    /// empty attribute sequences are supported without expansion. Source block units must be
+    /// Unitless. The exact version-1 unitless DesignCenter record is projected to that setting;
+    /// all other block-record metadata rejects. Original raw data is retained only by the caller.
     /// DxfDocument's admitted versions and the lossless raw-preservation API remain unchanged.
     /// </remarks>
     public static partial class DxfR12Codec
     {
-        /// <summary>Creates an immutable R12 drawing from supported typed primitives.</summary>
-        /// <param name="entities">Primitives to copy, in output order; enumeration completes before publication.</param>
+        /// <summary>Creates an immutable R12 drawing from supported typed entities and their reachable blocks.</summary>
+        /// <param name="entities">Entities to copy, in output order; enumeration completes before publication.</param>
         /// <param name="binary">Preferred output transport.</param>
         /// <param name="options">Existing raw tag, byte and string budgets.</param>
-        /// <returns>A new AC1009 raw drawing with typed primitive semantics.</returns>
+        /// <returns>A new AC1009 raw drawing with supported typed selection semantics.</returns>
         public static DxfRawDocument Create(IEnumerable<EntityObject> entities, bool binary = false, DxfRawOptions options = null)
         {
             if (entities == null) throw new ArgumentNullException(nameof(entities));
@@ -50,9 +54,9 @@ namespace netDxf.IO
             return writer.Complete(binary);
         }
 
-        /// <summary>Stages and saves a new R12 primitive drawing without changing source entities.</summary>
+        /// <summary>Stages and saves a new R12 selection drawing without changing source entities.</summary>
         /// <param name="stream">Writable destination left open.</param>
-        /// <param name="entities">Supported primitives.</param>
+        /// <param name="entities">Supported entities.</param>
         /// <param name="binary">Requested output transport.</param>
         /// <param name="options">Raw processing budgets.</param>
         /// <param name="cancellationToken">Checked while enumerating and by raw serialization/copying.</param>
@@ -159,7 +163,7 @@ namespace netDxf.IO
         private sealed partial class PrimitiveWriter
         {
             private readonly DxfRawOptions options;
-            private readonly List<DxfTag> body = new List<DxfTag>();
+            private List<DxfTag> body = new List<DxfTag>();
             private readonly Dictionary<string, LayerPacket> layers = new Dictionary<string, LayerPacket>(StringComparer.OrdinalIgnoreCase);
             private readonly List<LayerPacket> orderedLayers = new List<LayerPacket>();
             private long nextHandle = 256;
@@ -187,7 +191,7 @@ namespace netDxf.IO
                 if (type != typeof(Line) && type != typeof(netDxf.Entities.Point) && type != typeof(Circle)
                     && type != typeof(Arc) && type != typeof(Face3D) && type != typeof(Solid) && type != typeof(Trace)
                     && type != typeof(Polyline2D) && type != typeof(Polyline3D) && type != typeof(Text)
-                    && type != typeof(PolygonMesh) && type != typeof(PolyfaceMesh))
+                    && type != typeof(PolygonMesh) && type != typeof(PolyfaceMesh) && type != typeof(Insert))
                     throw new NotSupportedException("Unsupported R12 primitive type: " + type.FullName);
                 Metadata(entity); Metadata(entity.Linetype);
                 if (entity.Color.UseTrueColor || entity.ColorName != null || entity.ShadowMode.HasValue
@@ -200,7 +204,8 @@ namespace netDxf.IO
                 Vector3 normal = UnitNormal(entity.Normal);
                 this.Tag(0, entity is Polyline2D || entity is Polyline3D ? "POLYLINE" : entity.CodeName); this.Tag(5, (this.nextHandle++).ToString("X", CultureInfo.InvariantCulture));
                 this.Tag(8, layer.Name); this.Tag(6, linetype); this.Tag(62, entity.Color.Index);
-                if (entity is Text text) this.TextEntity(text, normal);
+                if (entity is Insert insert) this.InsertEntity(insert, normal);
+                else if (entity is Text text) this.TextEntity(text, normal);
                 else if (entity is Polyline2D polyline2D) this.Polyline(polyline2D, layer.Name, normal);
                 else if (entity is Polyline3D polyline3D) this.Polyline(polyline3D, layer.Name, normal);
                 else if (entity is PolygonMesh polygon) this.Polygon(polygon, layer.Name, normal);
@@ -247,6 +252,7 @@ namespace netDxf.IO
             }
             internal DxfRawDocument Complete(bool binary)
             {
+                List<DxfTag> blockBody = this.WriteBlocks();
                 if (!this.layers.ContainsKey("0"))
                 {
                     if (this.layers.Count == short.MaxValue) throw new NotSupportedException("R12 layer-table count limit exceeded.");
@@ -267,7 +273,9 @@ namespace netDxf.IO
                     this.Add(prefix, 62, layer.Color); this.Add(prefix, 6, layer.PatternName);
                 }
                 this.Add(prefix, 0, "ENDTAB"); this.WriteTextStyles(prefix); this.Add(prefix, 0, "ENDSEC");
-                this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "BLOCKS"); this.Add(prefix, 0, "ENDSEC");
+                this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "BLOCKS");
+                prefix.AddRange(blockBody); // These tags were already budgeted while captured.
+                this.Add(prefix, 0, "ENDSEC");
                 this.Add(prefix, 0, "SECTION"); this.Add(prefix, 2, "ENTITIES");
                 this.Tag(0, "ENDSEC"); this.Tag(0, "EOF");
                 return DxfRawDocument.Create(Join(prefix, this.body), binary, this.options);

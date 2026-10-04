@@ -14,6 +14,9 @@ internal static partial class Program
         RegisterR12TextTests();
         RegisterR12MeshTests();
         RegisterR12LinetypeTests();
+        RegisterR12BlockTests();
+        RegisterR12AttributeTests();
+        RegisterR12SelectionTests();
         foreach (bool binary in new[] { false, true })
         {
             bool b = binary;
