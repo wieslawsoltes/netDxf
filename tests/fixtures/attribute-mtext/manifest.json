@@ -1,0 +1,90 @@
+{
+  "producer": "ezdxf 1.4.4",
+  "note": "Constructed independently of netDxf, with deliberately distinct fallback and embedded fields. No AutoCAD execution claimed.",
+  "files": [
+    {
+      "file": "independent-attribute-mtext-0-false.dxf",
+      "sha256": "19958eccde404269d3293fd28135032d4e35c89917c729fe60d9671d3912b468",
+      "producer": "ezdxf 1.4.4",
+      "profile": 0,
+      "binary": false
+    },
+    {
+      "file": "independent-attribute-mtext-0-true.dxf",
+      "sha256": "80c604e8a6a0a14d93f68a846881ce1d429431144aae4003a5904de5f8b0effa",
+      "producer": "ezdxf 1.4.4",
+      "profile": 0,
+      "binary": true
+    },
+    {
+      "file": "independent-attribute-mtext-1-false.dxf",
+      "sha256": "c182428f26370d61a5e4772918881dec5a26ca1d124071ba5757e3402476a4ea",
+      "producer": "ezdxf 1.4.4",
+      "profile": 1,
+      "binary": false
+    },
+    {
+      "file": "independent-attribute-mtext-1-true.dxf",
+      "sha256": "565c6ca7de4564ac8b4f2cebef17137f0f3844ba6864fd03443fc8a37abae88f",
+      "producer": "ezdxf 1.4.4",
+      "profile": 1,
+      "binary": true
+    },
+    {
+      "file": "independent-attribute-mtext-2-false.dxf",
+      "sha256": "cc7c9ab8524c952fa2a2488accc1e60e071a5f60f008dae97fb1851c77a40837",
+      "producer": "ezdxf 1.4.4",
+      "profile": 2,
+      "binary": false
+    },
+    {
+      "file": "independent-attribute-mtext-2-true.dxf",
+      "sha256": "55511da469b4089d1b95113078846b4199dceda5dad40233fa18aed0d90fe2af",
+      "producer": "ezdxf 1.4.4",
+      "profile": 2,
+      "binary": true
+    },
+    {
+      "file": "independent-attribute-mtext-3-false.dxf",
+      "sha256": "a3a7c3f79ff0eb29f37603c9d6db0569728ee974942ec6810eb7930b8a734dca",
+      "producer": "ezdxf 1.4.4",
+      "profile": 3,
+      "binary": false
+    },
+    {
+      "file": "independent-attribute-mtext-3-true.dxf",
+      "sha256": "c630104ca3591c51bd19aa890f91b3baa8e5cbf760e2875f6878208e46ab099e",
+      "producer": "ezdxf 1.4.4",
+      "profile": 3,
+      "binary": true
+    },
+    {
+      "file": "independent-attribute-mtext-4-false.dxf",
+      "sha256": "eafe78e30c98d3b414a82cd35f1a5930e06c1c7adf8141bb15fdbb6aaaf8b82b",
+      "producer": "ezdxf 1.4.4",
+      "profile": 4,
+      "binary": false
+    },
+    {
+      "file": "independent-attribute-mtext-4-true.dxf",
+      "sha256": "8083614565189ae6d2db909394c156bd675c2deb9c297d25fd932a431694df43",
+      "producer": "ezdxf 1.4.4",
+      "profile": 4,
+      "binary": true
+    },
+    {
+      "file": "independent-attribute-mtext-5-false.dxf",
+      "sha256": "5208efa4354d9ea2bd25c4d4eec9d07051535909fdb5409f3d292b10e2e5ba23",
+      "producer": "ezdxf 1.4.4",
+      "profile": 5,
+      "binary": false
+    },
+    {
+      "file": "independent-attribute-mtext-5-true.dxf",
+      "sha256": "9efd2209b439ae679302c1aa178c7df6070ba849e7593d6ddaa58953ae439259",
+      "producer": "ezdxf 1.4.4",
+      "profile": 5,
+      "binary": true
+    }
+  ]
+}

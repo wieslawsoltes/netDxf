@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using netDxf.Blocks;
 using netDxf.Collections;
@@ -375,6 +376,19 @@ namespace netDxf.Entities
             Matrix3 transformation = this.GetTransformation();
             Vector3 translation = this.Position - transformation * this.block.Origin;
 
+            if (this.attributes.Any(a => a.HasMText))
+            {
+                var prepared = new Attribute[this.attributes.Count];
+                for (int i = 0; i < prepared.Length; i++)
+                {
+                    Attribute current = this.attributes[i];
+                    if (current.Definition != null)
+                        prepared[i] = current.PrepareDefinitionTransform(current.Definition, transformation, translation);
+                }
+                for (int i = 0; i < prepared.Length; i++)
+                    if (prepared[i] != null && this.attributes[i].CommitInsertTransform(prepared[i])) this.ClearProxyGraphics();
+                return;
+            }
             foreach (Attribute att in this.attributes)
             {
                 AttributeDefinition attDef = att.Definition;
@@ -578,6 +592,15 @@ namespace netDxf.Entities
 
             foreach (Attribute attribute in this.attributes)
             {
+                if (attribute.HasMText)
+                {
+                    MText embedded = attribute.GetMText().ToMText();
+                    embedded.Position += arrayOffset;
+                    embedded.Layer = (Layer)attribute.Layer.Clone(); embedded.Linetype = (Linetype)attribute.Linetype.Clone();
+                    embedded.Color = (AciColor)attribute.Color.Clone(); embedded.Lineweight = attribute.Lineweight;
+                    embedded.Transparency = (Transparency)attribute.Transparency.Clone(); embedded.LinetypeScale = attribute.LinetypeScale;
+                    embedded.IsVisible = attribute.IsVisible; entities.Add(embedded); continue;
+                }
                 // the attributes will be exploded as a Text entity
                 Text text = new Text
                 {
@@ -684,6 +707,13 @@ namespace netDxf.Entities
             foreach (XData data in this.XData.Values)
                 entity.XData.Add((XData) data.Clone());
 
+            for (int i = 0; i < this.attributes.Count; i++)
+            {
+                Attribute source = this.attributes[i];
+                if (source.Definition != null && this.block.AttributeDefinitions.TryGetValue(source.Tag, out AttributeDefinition original)
+                    && ReferenceEquals(original, source.Definition))
+                    entity.attributes[i].Definition = entity.block.AttributeDefinitions[source.Tag];
+            }
             this.CopySequenceEndTo(entity);
             this.CopyCommonDataTo(entity);
             return entity;

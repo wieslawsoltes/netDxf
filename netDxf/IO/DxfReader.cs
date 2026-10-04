@@ -3037,10 +3037,12 @@ namespace netDxf.IO
             bool isUpsideDown = false;
             Vector3 normal = Vector3.UnitZ;
             List<XData> xData = new List<XData>();
+            var attributeText = new AttributeTextReadState(true);
 
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                if (this.TryReadAttributeText(attributeText)) continue;
                 switch (this.chunk.Code)
                 {
                     case 1:
@@ -3202,6 +3204,7 @@ namespace netDxf.IO
                 IsUpsideDown = isUpsideDown
             };
 
+            attDef.TextState = attributeText.Finish();
             attDef.XData.AddRange(xData);
             return attDef;
         }
@@ -3234,6 +3237,7 @@ namespace netDxf.IO
             bool isUpsideDown = false;
             Vector3 normal = Vector3.UnitZ;
             List<XData> xData = new List<XData>();
+            var attributeText = new AttributeTextReadState(false);
 
             // DxfObject codes
             this.chunk.Next();
@@ -3325,6 +3329,7 @@ namespace netDxf.IO
             this.chunk.Next();
             while (this.chunk.Code != 0)
             {
+                if (this.TryReadAttributeText(attributeText)) continue;
                 switch (this.chunk.Code)
                 {
                     case 2:
@@ -3502,6 +3507,7 @@ namespace netDxf.IO
             attribute.ColorName = commonData.ColorName;
             attribute.ShadowMode = commonData.ShadowMode;
             attribute.ProxyGraphics = commonData.ProxyGraphics;
+            attribute.TextState = attributeText.Finish();
             attribute.XData.AddRange(xData);
 
             this.RecordSourceObject(attribute, source);

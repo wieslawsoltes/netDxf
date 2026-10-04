@@ -932,7 +932,8 @@ namespace netDxf
                         this.linetypes.References[attribute.Linetype.Name].Add(attribute);
                         attribute.LinetypeChanged += this.Entity_LinetypeChanged;
 
-                        attribute.Style = this.textStyles.Add(attribute.Style, assignHandle);
+                        this.RegisterAttributeMText(attribute, attribute.TextState, assignHandle);
+            attribute.Style = this.textStyles.Add(attribute.Style, assignHandle);
                         this.textStyles.References[attribute.Style.Name].Add(attribute);
                         attribute.TextStyleChanged += this.Entity_TextStyleChanged;
                     }
@@ -1083,6 +1084,7 @@ namespace netDxf
                 this.NumHandles = attDef.AssignHandle(this.NumHandles);
             }
 
+            this.RegisterAttributeMText(attDef, attDef.TextState, assignHandle);
             attDef.Style = this.textStyles.Add(attDef.Style, assignHandle);
             this.textStyles.References[attDef.Style.Name].Add(attDef);
             attDef.TextStyleChange += this.Entity_TextStyleChanged;
@@ -1179,7 +1181,8 @@ namespace netDxf
                         att.LayerChanged -= this.Entity_LayerChanged;
                         this.linetypes.References[att.Linetype.Name].Remove(att);
                         att.LinetypeChanged -= this.Entity_LinetypeChanged;
-                        this.textStyles.References[att.Style.Name].Remove(att);
+                        this.UnregisterAttributeMText(att, att.TextState);
+            this.textStyles.References[att.Style.Name].Remove(att);
                         att.TextStyleChanged -= this.Entity_TextStyleChanged;
                     }
                     insert.AttributeAdded -= this.Insert_AttributeAdded;
@@ -1298,6 +1301,7 @@ namespace netDxf
 
         internal bool RemoveAttributeDefinitionFromDocument(AttributeDefinition attDef)
         {
+            this.UnregisterAttributeMText(attDef, attDef.TextState);
             this.textStyles.References[attDef.Style.Name].Remove(attDef);
             attDef.TextStyleChange -= this.Entity_TextStyleChanged;
 
@@ -1749,6 +1753,7 @@ namespace netDxf
             this.linetypes.References[e.Item.Linetype.Name].Add(e.Item);
             e.Item.LinetypeChanged += this.Entity_LinetypeChanged;
 
+            this.RegisterAttributeMText(e.Item, e.Item.TextState, true);
             e.Item.Style = this.textStyles.Add(e.Item.Style);
             this.textStyles.References[e.Item.Style.Name].Add(e.Item);
             e.Item.TextStyleChanged += this.Entity_TextStyleChanged;
@@ -1763,6 +1768,7 @@ namespace netDxf
             this.linetypes.References[e.Item.Linetype.Name].Remove(e.Item);
             e.Item.LinetypeChanged -= this.Entity_LinetypeChanged;
 
+            this.UnregisterAttributeMText(e.Item, e.Item.TextState);
             this.textStyles.References[e.Item.Style.Name].Remove(e.Item);
             e.Item.TextStyleChanged -= this.Entity_TextStyleChanged;
         }

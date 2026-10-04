@@ -168,6 +168,8 @@ namespace netDxf.Entities
             this.alignment = definition.Alignment;
             this.isBackward = definition.IsBackward;
             this.isUpsideDown = definition.IsUpsideDown;
+            this.TextState = definition.TextState?.Copy(true);
+            if (this.TextState?.Content != null) this.TextState.Kind = 2;
         }
 
         #endregion
@@ -479,6 +481,7 @@ namespace netDxf.Entities
         /// <remarks>Matrix3 adopts the convention of using column vectors to represent a transformation matrix.</remarks>
         public void TransformBy(Matrix3 transformation, Vector3 translation)
         {
+            AttributeTextState nextText = this.PrepareAttributeTextTransform(transformation, translation);
             bool mirrText;
             if (this.Owner == null)
             {
@@ -650,6 +653,9 @@ namespace netDxf.Entities
             this.Height = newHeight;
             this.WidthFactor = newWidthFactor;
             this.ObliqueAngle = newObliqueAngle;
+            bool textChanged = !ReferenceEquals(this.TextState, nextText);
+            this.TextState = nextText;
+            if (textChanged) this.ClearProxyGraphics();
         }
 
         /// <summary>
@@ -708,6 +714,7 @@ namespace netDxf.Entities
                 entity.XData.Add((XData)data.Clone());
             }
 
+            this.CopyAttributeTextTo(entity);
             this.CopyCommonDataTo(entity);
             return entity;
         }

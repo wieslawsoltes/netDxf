@@ -21,6 +21,7 @@ internal static partial class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         Directory.CreateDirectory(ArtifactDirectory);
+        RegisterAttributeMTextTests();
         foreach (DxfVersion version in SupportedVersions)
         {
             foreach (bool binary in new[] { false, true })
