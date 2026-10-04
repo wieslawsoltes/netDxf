@@ -26,6 +26,7 @@ namespace netDxf.IO
         {
             this.snapshot = snapshot;
             this.options = options;
+            this.DrawingCodePage = DxfR12Codec.SelectionCodePage(snapshot);
             this.RootEntityCount = DxfR12Codec.ReadEntities(snapshot).Count;
             this.BlockCount = snapshot.Sections.SelectMany(s => s.Records).Count(r => r.Name == "BLOCK");
             this.AttributeDefinitionCount = snapshot.Sections.SelectMany(s => s.Records).Count(r => r.Name == "ATTDEF");
@@ -34,6 +35,11 @@ namespace netDxf.IO
 
         /// <summary>Gets the immutable normalized AC1009 selection, not the original full drawing.</summary>
         public DxfRawDocument NormalizedSelection { get { return this.snapshot; } }
+        /// <summary>Gets the selected ANSI_/DOS declaration. An absent input declaration becomes ANSI_1252.</summary>
+        public string DrawingCodePage { get; }
+        /// <summary>Gets the effective encoding of the normalized R12 snapshot.</summary>
+        /// <remarks>Modern output from AutoCAD 2007 onward uses UTF-8 regardless of this legacy hint.</remarks>
+        public int EncodingCodePage { get { return this.snapshot.EncodingCodePage; } }
         /// <summary>Gets the number of selected top-level entities; sequence children are not roots.</summary>
         public int RootEntityCount { get; }
         /// <summary>Gets the number of reachable shared block definitions.</summary>
@@ -43,7 +49,7 @@ namespace netDxf.IO
         /// <summary>Gets the number of stored attribute instances, without array expansion.</summary>
         public int AttributeCount { get; }
 
-        /// <summary>Captures a strict supported entity selection without adopting or changing its source.</summary>
+        /// <summary>Captures a strict supported entity selection using the established Windows-1252 default.</summary>
         public static DxfR12SelectionPlan Prepare(IEnumerable<EntityObject> entities, DxfRawOptions options = null)
         {
             if (entities == null) throw new ArgumentNullException(nameof(entities));
@@ -51,12 +57,36 @@ namespace netDxf.IO
             return new DxfR12SelectionPlan(DxfR12Codec.Create(entities, false, options), options);
         }
 
-        /// <summary>Selects supported ENTITIES and their reachable dependencies from an AC1009 raw drawing.</summary>
+        /// <summary>Selects supported ENTITIES and dependencies while retaining an AC1009 drawing's code page.</summary>
         /// <remarks>Unselected raw content remains in the caller's original immutable document only.</remarks>
         public static DxfR12SelectionPlan Prepare(DxfRawDocument document, DxfRawOptions options = null)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
-            return Prepare(DxfR12Codec.ReadEntities(document), options);
+            return PrepareWithCodePage(DxfR12Codec.ReadEntities(document), DxfR12Codec.SelectionCodePage(document), options);
+        }
+
+        /// <summary>Captures a selection with an explicit numeric ANSI_ or DOS code-page declaration.</summary>
+        /// <remarks>
+        /// A separate method name preserves source compatibility of Prepare(entities, null).
+        /// The existing ASCII symbol-name profile is unchanged. R12 serialization rejects characters
+        /// not representable in this encoding instead of silently replacing or Unicode-escaping them.
+        /// </remarks>
+        public static DxfR12SelectionPlan PrepareWithCodePage(IEnumerable<EntityObject> entities,
+            string drawingCodePage, DxfRawOptions options = null)
+        {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+            options = options ?? new DxfRawOptions();
+            return new DxfR12SelectionPlan(DxfR12Codec.CreateWithCodePage(entities, drawingCodePage, false, options), options);
+        }
+
+        /// <summary>Explicitly selects and reauthors an R12 drawing using a requested output code page.</summary>
+        /// <remarks>The input is decoded before selection. Reencoding changes no logical content or source bytes.</remarks>
+        public static DxfR12SelectionPlan PrepareWithCodePage(DxfRawDocument document,
+            string drawingCodePage, DxfRawOptions options = null)
+        {
+            if (document == null) throw new ArgumentNullException(nameof(document));
+            DxfR12Codec.ValidateSelectionCodePage(drawingCodePage);
+            return PrepareWithCodePage(DxfR12Codec.ReadEntities(document), drawingCodePage, options);
         }
 
         /// <summary>Creates a fresh model-space document in a supported modern database family.</summary>
@@ -64,8 +94,8 @@ namespace netDxf.IO
         /// Supports AutoCAD 2000, 2004, 2007, 2010, 2013 and 2018 families. The destination is a new
         /// unitless drawing, not an existing-document merge. R12 output is available through Save.
         /// Text and attribute values remain logical strings in the returned document. Use this
-        /// plan's Save method for safe control-character and literal-escape output projection;
-        /// DxfDocument.Save retains its own strict framing rules.
+        /// plan's Save method for code-page-aware, safe control-character and literal-escape output;
+        /// DxfDocument.Save retains its own framing and transport contracts.
         /// Cancellation is observed between decoding, resource and graph adoption phases.
         /// </remarks>
         public DxfDocument CreateDocument(DxfVersion version,
@@ -73,7 +103,9 @@ namespace netDxf.IO
         {
             RequireModernVersion(version);
             cancellationToken.ThrowIfCancellationRequested();
-            return DxfR12Codec.CreateSelectionDocument(this.snapshot, version, cancellationToken);
+            DxfDocument document = DxfR12Codec.CreateSelectionDocument(this.snapshot, version, cancellationToken);
+            document.DrawingVariables.KnownValues().Single(v => v.Name == "$DWGCODEPAGE").Value = this.DrawingCodePage;
+            return document;
         }
 
         /// <summary>Stages the complete selected drawing before writing at the destination's current position.</summary>
@@ -81,6 +113,7 @@ namespace netDxf.IO
         /// Supports AC1009 and the six modern families accepted by CreateDocument. Output limits
         /// bound encoded bytes, tag count and decoded strings, not total managed heap. Modern
         /// output transiently uses DXF Unicode escapes for C0 values, literal carets and backslashes.
+        /// The legacy code-page declaration is retained; AutoCAD 2007 and newer output remains UTF-8.
         /// This does not change the snapshot or any previously returned editable document. Cancellation
         /// or validation failure before final copying leaves the destination untouched. IO failure
         /// or cancellation during final copying may leave partial output. The stream remains open;
@@ -98,9 +131,8 @@ namespace netDxf.IO
             {
                 if (version == DxfVersion.AutoCad12)
                 {
-                    // Author directly in the requested transport; never push text comment tags
-                    // into the strict raw binary serializer.
-                    DxfRawDocument output = DxfR12Codec.Create(DxfR12Codec.ReadEntities(this.snapshot), binary, limits);
+                    DxfRawDocument output = DxfR12Codec.CreateWithCodePage(DxfR12Codec.ReadEntities(this.snapshot),
+                        this.DrawingCodePage, binary, limits);
                     output.Save(staged, binary, cancellationToken);
                 }
                 else
@@ -115,7 +147,17 @@ namespace netDxf.IO
                 }
                 cancellationToken.ThrowIfCancellationRequested();
                 staged.Position = 0;
-                DxfRawDocument.Load(staged, limits, cancellationToken); // Enforce tag and string budgets too.
+                DxfRawDocument validated = DxfRawDocument.Load(staged, limits, cancellationToken);
+                // The typed writer may normalize a legacy declaration. Reauthor only this
+                // private output profile, retaining all other tags and enforcing the raw
+                // codec's actual encoding. Never bypass WithTags profile guards on caller data.
+                if (DxfR12Codec.SelectionCodePage(validated) != this.DrawingCodePage)
+                {
+                    DxfRawDocument recoded = DxfR12Codec.SetAuthoredCodePage(validated, this.DrawingCodePage, limits);
+                    staged.SetLength(0);
+                    staged.Position = 0;
+                    recoded.Save(staged, binary, cancellationToken);
+                }
                 staged.Position = 0;
                 var buffer = new byte[65536];
                 int count;
@@ -137,23 +179,57 @@ namespace netDxf.IO
             }
         }
 
-        private sealed class SelectionOutputStream : MemoryStream
+        // Composition ensures modern Span/async Stream overloads route through the
+        // bounded byte-array Write, rather than bypassing MemoryStream overrides.
+        private sealed class SelectionOutputStream : Stream
         {
+            private readonly MemoryStream buffer = new MemoryStream();
             private readonly long maximum;
             private readonly CancellationToken cancellation;
             internal SelectionOutputStream(int maximum, CancellationToken cancellation)
             { this.maximum = maximum; this.cancellation = cancellation; }
+            public override bool CanRead { get { return this.buffer.CanRead; } }
+            public override bool CanSeek { get { return this.buffer.CanSeek; } }
+            public override bool CanWrite { get { return this.buffer.CanWrite; } }
+            public override long Length { get { return this.buffer.Length; } }
+            public override long Position
+            {
+                get { return this.buffer.Position; }
+                set { this.Check(value); this.buffer.Position = value; }
+            }
             private void Check(long end)
             {
                 this.cancellation.ThrowIfCancellationRequested();
                 if (end > this.maximum) throw new InvalidDataException("Selected drawing exceeds the encoded output budget.");
             }
-            public override void Write(byte[] buffer, int offset, int count)
-            { this.Check(this.Position + count); base.Write(buffer, offset, count); }
+            public override void Write(byte[] value, int offset, int count)
+            { this.Check(checked(this.Position + count)); this.buffer.Write(value, offset, count); }
             public override void WriteByte(byte value)
-            { this.Check(this.Position + 1); base.WriteByte(value); }
+            { this.Check(checked(this.Position + 1)); this.buffer.WriteByte(value); }
+            public override int Read(byte[] value, int offset, int count) { return this.buffer.Read(value, offset, count); }
+            public override int ReadByte() { return this.buffer.ReadByte(); }
+            public override void Flush() { this.buffer.Flush(); }
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                long basis;
+                switch (origin)
+                {
+                    case SeekOrigin.Begin: basis = 0; break;
+                    case SeekOrigin.Current: basis = this.Position; break;
+                    case SeekOrigin.End: basis = this.Length; break;
+                    default: throw new ArgumentOutOfRangeException(nameof(origin));
+                }
+                long target = checked(basis + offset);
+                this.Check(target);
+                return this.buffer.Seek(target, SeekOrigin.Begin);
+            }
             public override void SetLength(long value)
-            { this.Check(value); base.SetLength(value); }
+            { this.Check(value); this.buffer.SetLength(value); }
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing) this.buffer.Dispose();
+                base.Dispose(disposing);
+            }
         }
     }
 }
