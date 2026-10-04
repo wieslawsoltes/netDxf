@@ -1,0 +1,73 @@
+name: Temporary code-page worktree verification
+on:
+  push:
+    branches: [codex/verify-codepage-worktrees-20261004]
+    paths: [.github/workflows/temporary-codepage-worktrees.yml]
+permissions:
+  contents: read
+concurrency:
+  group: codepage-worktree-preflight
+  cancel-in-progress: true
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: e5fac8b17b5b169c1c6405dcdba69903ee714be3
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 8.0.x
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Create isolated source, Debug and Release worktrees
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          test "$(git rev-parse HEAD^{tree})" = 714f65045e0e3e78abbed2a63c1e86343d3250f7
+          git worktree add --detach "$RUNNER_TEMP/codepage-Debug" HEAD
+          git worktree add --detach "$RUNNER_TEMP/codepage-Release" HEAD
+          git worktree add --detach "$RUNNER_TEMP/codepage-oracle" HEAD
+          git worktree list --porcelain | tee evidence/worktrees.txt
+          git rev-parse HEAD HEAD^{tree} | tee evidence/source.txt
+      - name: Run focused C# suites concurrently
+        shell: bash
+        run: |
+          set -uo pipefail
+          run_suite() {
+            config="$1"
+            out="$GITHUB_WORKSPACE/evidence/$config"
+            mkdir -p "$out"
+            cd "$RUNNER_TEMP/codepage-$config"
+            DXF_TEST_FILTER=r12-codepage DXF_TEST_ARTIFACTS="$out/fixtures" \
+              dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c "$config" -p:NuGetAudit=false > "$out/console.log" 2>&1
+          }
+          run_suite Debug & debug=$!
+          run_suite Release & release=$!
+          status=0
+          wait "$debug" || status=1
+          wait "$release" || status=1
+          tail -n 35 evidence/Debug/console.log
+          tail -n 35 evidence/Release/console.log
+          exit "$status"
+      - name: Run independent oracle self-tests and actual drawing checks
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -r tools/requirements-independent.txt
+          cd "$RUNNER_TEMP/codepage-oracle"
+          python -m unittest discover -s tests/dxf_coverage -p test_r12_codepages.py 2>&1 | tee "$GITHUB_WORKSPACE/evidence/oracle-self-tests.log"
+          python tools/verify_r12_codepages.py "$GITHUB_WORKSPACE/evidence/Release/fixtures" 2>&1 | tee "$GITHUB_WORKSPACE/evidence/independent-release.log"
+          python tools/verify_r12_codepages.py "$GITHUB_WORKSPACE/evidence/Debug/fixtures" 2>&1 | tee "$GITHUB_WORKSPACE/evidence/independent-debug.log"
+      - name: Retain immutable source and worktree test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: codepage-worktree-preflight
+          path: evidence
+          retention-days: 7
