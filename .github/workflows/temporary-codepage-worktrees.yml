@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: e5fac8b17b5b169c1c6405dcdba69903ee714be3
+          ref: c6f589f4c3b580c7ad6ea29e026128f3836c3cdd
           persist-credentials: false
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
         with:
@@ -28,7 +28,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p evidence
-          test "$(git rev-parse HEAD^{tree})" = 714f65045e0e3e78abbed2a63c1e86343d3250f7
+          test "$(git rev-parse HEAD^{tree})" = 6aa272f6ddc07443821e16f93c54f5f03022ffa7
           git worktree add --detach "$RUNNER_TEMP/codepage-Debug" HEAD
           git worktree add --detach "$RUNNER_TEMP/codepage-Release" HEAD
           git worktree add --detach "$RUNNER_TEMP/codepage-oracle" HEAD
@@ -62,8 +62,46 @@ jobs:
           python -m pip install -r tools/requirements-independent.txt
           cd "$RUNNER_TEMP/codepage-oracle"
           python -m unittest discover -s tests/dxf_coverage -p test_r12_codepages.py 2>&1 | tee "$GITHUB_WORKSPACE/evidence/oracle-self-tests.log"
-          python tools/verify_r12_codepages.py "$GITHUB_WORKSPACE/evidence/Release/fixtures" 2>&1 | tee "$GITHUB_WORKSPACE/evidence/independent-release.log"
-          python tools/verify_r12_codepages.py "$GITHUB_WORKSPACE/evidence/Debug/fixtures" 2>&1 | tee "$GITHUB_WORKSPACE/evidence/independent-debug.log"
+          for config in Release Debug; do
+            python tools/verify_r12_codepages.py "$GITHUB_WORKSPACE/evidence/$config/fixtures" 2>&1 | tee "$GITHUB_WORKSPACE/evidence/independent-$config.log"
+            python tools/verify_r12_dos_conversion.py "$GITHUB_WORKSPACE/evidence/$config/fixtures" 2>&1 | tee "$GITHUB_WORKSPACE/evidence/dos-$config.log"
+          done
+      - name: Package only incremental source and verification evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin 3a20b14ed42110f1d39c6b7ebd27ac91d474cfd3
+          git diff --binary --full-index 3a20b14ed42110f1d39c6b7ebd27ac91d474cfd3 HEAD > evidence/continuation.patch
+          git diff --check 3a20b14ed42110f1d39c6b7ebd27ac91d474cfd3 HEAD
+          python3 - <<'PY'
+          import hashlib, json, shutil, subprocess
+          from pathlib import Path
+          base = '3a20b14ed42110f1d39c6b7ebd27ac91d474cfd3'
+          out = Path('evidence')
+          paths = subprocess.check_output(['git', 'diff', '--name-only', base, 'HEAD'], text=True).splitlines()
+          for name in paths:
+              file = Path(name)
+              if file.suffix not in ('.cs', '.py') or '..' in file.parts:
+                  raise SystemExit('Unexpected incremental source path: ' + name)
+              target = out / 'changed-source' / file
+              target.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(file, target)
+          receipt = {'base': base,
+                     'head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+                     'tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+                     'changed_files': paths,
+                     'scope': 'Incremental source and focused hosted worktree evidence; complete CI qualification is separate.'}
+          (out / 'source-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          (out / 'README.txt').write_text('Apply continuation.patch to base ' + base + ' using git apply --check then git apply.\nThis is an incremental source bundle, not a full checkout or binary release.\nDebug and Release repeat one focused suite; oracle self-tests are not library execution.\nComplete repository CI remains a separate merge gate.\n')
+          checksums = []
+          for file in sorted(out.rglob('*')):
+              if file.is_file() and file.name != 'SHA256SUMS.txt':
+                  checksums.append(hashlib.sha256(file.read_bytes()).hexdigest() + '  ' + file.relative_to(out).as_posix())
+          (out / 'SHA256SUMS.txt').write_text('\n'.join(checksums) + '\n')
+          print(json.dumps(receipt, indent=2))
+          print('Hashed evidence entries:', len(checksums))
+          PY
       - name: Retain immutable source and worktree test evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
