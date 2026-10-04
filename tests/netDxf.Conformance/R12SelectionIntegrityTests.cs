@@ -98,7 +98,7 @@ internal static partial class Program
         // Logical 200 chars and R12 400 chars fit. Modern 1,400-char escaped value must not.
         Throws<InvalidDataException>(() => plan.Save(output, version, binary, new DxfRawOptions(1000000, 100000, 512)));
         Check(output.Position == 1 && output.ToArray().SequenceEqual(new byte[] { 3, 6, 9 }), "Expanded string overflow touched output");
-        Check(before.SequenceEqual(plan.NormalizedSelection.Tags), "Budget refusal mutated plan or closed output");
+        Check(output.CanWrite && before.SequenceEqual(plan.NormalizedSelection.Tags), "Budget refusal mutated plan or closed output");
         using var valid = new MemoryStream(); plan.Save(valid, version, binary, new DxfRawOptions(1000000, 100000, 1400));
         valid.Position = 0; Equal(value, DxfDocument.Load(valid)!.Entities.All.OfType<Text>().Single().Value, "Exact escaped-string budget");
     }
