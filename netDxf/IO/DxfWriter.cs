@@ -4285,76 +4285,91 @@ namespace netDxf.IO
                 case TextAlignment.TopLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 3);
                     break;
                 case TextAlignment.TopCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 3);
                     break;
                 case TextAlignment.TopRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 3);
                     break;
                 case TextAlignment.MiddleLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 2);
                     break;
                 case TextAlignment.MiddleCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 2);
                     break;
                 case TextAlignment.MiddleRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 2);
                     break;
                 case TextAlignment.BottomLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 1);
                     break;
                 case TextAlignment.BottomCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 1);
                     break;
                 case TextAlignment.BottomRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 1);
                     break;
                 case TextAlignment.BaselineLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.BaselineCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.BaselineRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.Aligned:
                     this.chunk.Write(72, (short) 3);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.Middle:
                     this.chunk.Write(72, (short) 4);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.Fit:
                     this.chunk.Write(72, (short) 5);
                     this.chunk.Write(100, SubclassMarker.AttributeDefinition);
+                    this.WriteAttributeTextVersion(def.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
             }
@@ -4363,6 +4378,7 @@ namespace netDxf.IO
             this.chunk.Write(3, this.EncodeNonAsciiCharacters(def.Prompt));
             this.chunk.Write(70, (short) def.Flags);
 
+            this.WriteAttributeTextTail(def.TextState);
             this.WriteXData(def.XData);
         }
 
@@ -4448,76 +4464,91 @@ namespace netDxf.IO
                 case TextAlignment.TopLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 3);
                     break;
                 case TextAlignment.TopCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 3);
                     break;
                 case TextAlignment.TopRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 3);
                     break;
                 case TextAlignment.MiddleLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 2);
                     break;
                 case TextAlignment.MiddleCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 2);
                     break;
                 case TextAlignment.MiddleRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 2);
                     break;
                 case TextAlignment.BottomLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 1);
                     break;
                 case TextAlignment.BottomCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 1);
                     break;
                 case TextAlignment.BottomRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 1);
                     break;
                 case TextAlignment.BaselineLeft:
                     this.chunk.Write(72, (short) 0);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.BaselineCenter:
                     this.chunk.Write(72, (short) 1);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.BaselineRight:
                     this.chunk.Write(72, (short) 2);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.Aligned:
                     this.chunk.Write(72, (short) 3);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.Middle:
                     this.chunk.Write(72, (short) 4);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
                 case TextAlignment.Fit:
                     this.chunk.Write(72, (short) 5);
                     this.chunk.Write(100, SubclassMarker.Attribute);
+                    this.WriteAttributeTextVersion(attrib.TextState);
                     this.chunk.Write(74, (short) 0);
                     break;
             }
@@ -4525,6 +4556,7 @@ namespace netDxf.IO
             this.chunk.Write(2, this.EncodeNonAsciiCharacters(attrib.Tag));
             this.chunk.Write(70, (short) attrib.Flags);
 
+            this.WriteAttributeTextTail(attrib.TextState);
             this.WriteXData(attrib.XData);
         }
 

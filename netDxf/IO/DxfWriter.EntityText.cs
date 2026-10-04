@@ -19,6 +19,7 @@ namespace netDxf.IO
             {
                 foreach (AttributeDefinition definition in block.AttributeDefinitions.Values)
                 {
+                    this.ValidateAttributeText(definition, definition.TextState);
                     this.ValidateEntityTextString(definition.Value, "ATTDEF value");
                     this.ValidateEntityTextString(definition.Prompt, "ATTDEF prompt");
                 }
@@ -31,7 +32,10 @@ namespace netDxf.IO
                     else if (entity is Insert insert)
                     {
                         foreach (netDxf.Entities.Attribute attribute in insert.Attributes)
+                        {
+                            this.ValidateAttributeText(attribute, attribute.TextState);
                             this.ValidateEntityTextString(attribute.Value, "ATTRIB value");
+                        }
                     }
                     else if (entity is Dimension dimension)
                         this.ValidateEntityTextString(dimension.UserText, "DIMENSION user text");

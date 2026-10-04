@@ -84,6 +84,8 @@ namespace netDxf.IO
             {
                 if (value.GetType() != typeof(AttributeDefinition))
                     throw new NotSupportedException("Derived attribute definitions require an explicit projection.");
+                if (value.HasMText || value.TextState?.Auxiliary.Count > 0 || value.IsPositionLocked == true || (value.TextState?.FieldLength ?? 0) != 0)
+                    throw new NotSupportedException("R12 cannot retain embedded attribute MTEXT or auxiliary data. Remove it explicitly before selection export.");
                 Text text = AttributeText(value);
                 this.AttributeHeader(value, text);
                 this.Tag(2, AttributeTag(value.Tag)); this.Tag(3, EncodeTextControls(value.Prompt, this.options.MaximumStringLength));
@@ -101,7 +103,9 @@ namespace netDxf.IO
                     if (value.Definition != null && (!insert.Block.AttributeDefinitions.ContainsTag(value.Tag)
                         || !ReferenceEquals(insert.Block.AttributeDefinitions[value.Tag], value.Definition)))
                         throw new NotSupportedException("An attribute definition must belong to the referenced block.");
-                    Text text = AttributeText(value);
+                    if (value.HasMText || value.TextState?.Auxiliary.Count > 0 || value.IsPositionLocked == true || (value.TextState?.FieldLength ?? 0) != 0)
+                    throw new NotSupportedException("R12 cannot retain embedded attribute MTEXT or auxiliary data. Remove it explicitly before selection export.");
+                Text text = AttributeText(value);
                     this.AttributeHeader(value, text);
                     this.Tag(2, value.Tag); this.Tag(70, AttributeBits(value.Flags)); this.Tag(73, (short)0);
                     this.TextEntity(text, UnitNormal(text.Normal), 74);
