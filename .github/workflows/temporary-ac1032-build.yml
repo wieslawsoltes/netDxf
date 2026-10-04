@@ -1,0 +1,102 @@
+name: Temporary AC1032 multiline worktrees
+on:
+  push:
+    branches: [codex/stage-ac1032-multiline-attributes-20261004]
+    paths: [.github/workflows/temporary-ac1032-build.yml, '.ac1032/**']
+permissions:
+  contents: write
+jobs:
+  integrate:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/codex/stage-ac1032-multiline-attributes-20261004'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: stage
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: f4a8e84d5ab20d014865d6da99927079864bd4a0
+          path: source
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 8.0.x
+      - name: Integrate separate source worktrees
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p receipt
+          git -C source config user.name 'github-actions[bot]'
+          git -C source config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C source config core.autocrlf false
+          git -C source config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for p in Path('source/netDxf').rglob('*.cs'):
+              text=p.read_text(encoding='utf-8-sig')
+              if 'class DatabaseMetadataReader' in text:
+                  i=text.index('class DatabaseMetadataReader'); print('METADATA',p);print(text[i:i+6500])
+          for name in ('Attribute.cs','AttributeDefinition.cs','Attribute.InsertTransform.cs'):
+              p=Path('source/netDxf/Entities',name);lines=p.read_text().splitlines()
+              for i,line in enumerate(lines):
+                  if any(t in line for t in ('InsertTransform(', 'CommonData.CopyFrom', 'target.position', 'public Attribute(AttributeDefinition', 'private readonly bool clearProxy')):
+                      print(name,i+1,'\n'.join(lines[max(0,i-1):i+7]))
+          PY
+          for part in model io lifecycle tests; do
+            git -C source worktree add -b "local/ac1032-$part" "../worktree-$part" f4a8e84d5ab20d014865d6da99927079864bd4a0
+            python3 stage/.ac1032/apply.py "worktree-$part" "$part"
+            git -C "worktree-$part" add netDxf tests
+            git -C "worktree-$part" diff --cached --check
+            git -C "worktree-$part" commit -m "Implement AC1032 multiline attribute $part workstream"
+            git -C source cherry-pick "local/ac1032-$part"
+          done
+          git -C source worktree list | tee receipt/worktrees.txt
+          git -C source diff --check f4a8e84d5ab20d014865d6da99927079864bd4a0
+          git -C source diff --exit-code f4a8e84d5ab20d014865d6da99927079864bd4a0 -- .github/workflows
+          test ! -e source/.ac1032
+          git -C source rev-parse HEAD HEAD^{tree} | tee receipt/source-identity.txt
+          git -C source diff --stat f4a8e84d5ab20d014865d6da99927079864bd4a0 | tee receipt/changed-files.txt
+          git -C source diff --binary f4a8e84d5ab20d014865d6da99927079864bd4a0 > receipt/continuation.patch
+      - name: Build complete conformance source
+        working-directory: source
+        shell: bash
+        run: |
+          dotnet build tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release -p:NuGetAudit=false > ../receipt/build.log 2>&1 || { tail -180 ../receipt/build.log; exit 1; }
+          tail -6 ../receipt/build.log
+      - name: Execute focused multiline regressions
+        working-directory: source
+        env:
+          DXF_TEST_FILTER: attribute-mtext/
+        shell: bash
+        run: |
+          dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build > ../receipt/focused.log 2>&1 || { tail -160 ../receipt/focused.log; exit 1; }
+          tail -90 ../receipt/focused.log
+      - name: Publish new clean feature branch after focused validation
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git ls-remote --heads origin refs/heads/codex/dxf2018-multiline-attributes-20261004)"
+          git push origin HEAD:refs/heads/codex/dxf2018-multiline-attributes-20261004
+          printf 'Published source `%s`; tree `%s`. Focused tests only; final hosted qualification required.\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain execution evidence and source
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p receipt
+          git -C source diff --binary f4a8e84d5ab20d014865d6da99927079864bd4a0 > receipt/working.patch
+          git -C source archive --format=tar.gz -o ../receipt/source.tar.gz HEAD
+          if test -d source/artifacts/conformance; then
+            find source/artifacts/conformance -maxdepth 1 -name 'attribute-mtext-*.dxf' -exec cp '{}' receipt/ \;
+            find source/artifacts/conformance -maxdepth 1 -name '*.json' -exec cp '{}' receipt/ \;
+          fi
+          cd receipt
+          sha256sum * > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ac1032-multiline-worktree-evidence
+          path: receipt
+          retention-days: 7
