@@ -1,8 +1,10 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using netDxf.Entities;
 using netDxf.Header;
@@ -27,6 +29,12 @@ namespace netDxf.IO
             this.snapshot = snapshot;
             this.options = options;
             this.DrawingCodePage = DxfR12Codec.SelectionCodePage(snapshot);
+            // Modern drawings use ANSI_ declarations. DOS encodings map to their
+            // Windows counterpart; the modern writer preserves additional characters
+            // with Unicode escapes rather than substituting replacement characters.
+            this.ModernDrawingCodePage = this.DrawingCodePage.StartsWith("DOS", StringComparison.OrdinalIgnoreCase)
+                ? "ANSI_" + Encoding.GetEncoding(snapshot.EncodingCodePage).WindowsCodePage.ToString(CultureInfo.InvariantCulture)
+                : this.DrawingCodePage;
             this.RootEntityCount = DxfR12Codec.ReadEntities(snapshot).Count;
             this.BlockCount = snapshot.Sections.SelectMany(s => s.Records).Count(r => r.Name == "BLOCK");
             this.AttributeDefinitionCount = snapshot.Sections.SelectMany(s => s.Records).Count(r => r.Name == "ATTDEF");
@@ -35,10 +43,13 @@ namespace netDxf.IO
 
         /// <summary>Gets the immutable normalized AC1009 selection, not the original full drawing.</summary>
         public DxfRawDocument NormalizedSelection { get { return this.snapshot; } }
-        /// <summary>Gets the selected ANSI_/DOS declaration. An absent input declaration becomes ANSI_1252.</summary>
+        /// <summary>Gets the R12 ANSI_/DOS declaration. An absent input declaration becomes ANSI_1252.</summary>
         public string DrawingCodePage { get; }
+        /// <summary>Gets the encoding declaration used in fresh modern documents and modern output.</summary>
+        /// <remarks>DOS aliases map to the encoding's Windows ANSI counterpart. Logical content remains unchanged.</remarks>
+        public string ModernDrawingCodePage { get; }
         /// <summary>Gets the effective encoding of the normalized R12 snapshot.</summary>
-        /// <remarks>Modern output from AutoCAD 2007 onward uses UTF-8 regardless of this legacy hint.</remarks>
+        /// <remarks>Modern output from AutoCAD 2007 onward uses UTF-8 regardless of its legacy hint.</remarks>
         public int EncodingCodePage { get { return this.snapshot.EncodingCodePage; } }
         /// <summary>Gets the number of selected top-level entities; sequence children are not roots.</summary>
         public int RootEntityCount { get; }
@@ -95,7 +106,8 @@ namespace netDxf.IO
         /// unitless drawing, not an existing-document merge. R12 output is available through Save.
         /// Text and attribute values remain logical strings in the returned document. Use this
         /// plan's Save method for code-page-aware, safe control-character and literal-escape output;
-        /// DxfDocument.Save retains its own framing and transport contracts.
+        /// DxfDocument.Save retains its own framing and transport contracts. The modern declaration
+        /// uses ModernDrawingCodePage; R12-only DOS alias spellings stay in the normalized selection.
         /// Cancellation is observed between decoding, resource and graph adoption phases.
         /// </remarks>
         public DxfDocument CreateDocument(DxfVersion version,
@@ -104,7 +116,7 @@ namespace netDxf.IO
             RequireModernVersion(version);
             cancellationToken.ThrowIfCancellationRequested();
             DxfDocument document = DxfR12Codec.CreateSelectionDocument(this.snapshot, version, cancellationToken);
-            document.DrawingVariables.KnownValues().Single(v => v.Name == "$DWGCODEPAGE").Value = this.DrawingCodePage;
+            document.DrawingVariables.KnownValues().Single(v => v.Name == "$DWGCODEPAGE").Value = this.ModernDrawingCodePage;
             return document;
         }
 
@@ -113,7 +125,8 @@ namespace netDxf.IO
         /// Supports AC1009 and the six modern families accepted by CreateDocument. Output limits
         /// bound encoded bytes, tag count and decoded strings, not total managed heap. Modern
         /// output transiently uses DXF Unicode escapes for C0 values, literal carets and backslashes.
-        /// The legacy code-page declaration is retained; AutoCAD 2007 and newer output remains UTF-8.
+        /// R12 retains its declared encoding. Modern output retains ANSI_ declarations or maps DOS
+        /// encodings to their Windows counterparts; AutoCAD 2007 and newer output is always UTF-8.
         /// This does not change the snapshot or any previously returned editable document. Cancellation
         /// or validation failure before final copying leaves the destination untouched. IO failure
         /// or cancellation during final copying may leave partial output. The stream remains open;
@@ -127,12 +140,13 @@ namespace netDxf.IO
             if (version != DxfVersion.AutoCad12) RequireModernVersion(version);
             cancellationToken.ThrowIfCancellationRequested();
             DxfRawOptions limits = outputLimits ?? this.options;
+            string outputCodePage = version == DxfVersion.AutoCad12 ? this.DrawingCodePage : this.ModernDrawingCodePage;
             using (var staged = new SelectionOutputStream(limits.MaximumBytes, cancellationToken))
             {
                 if (version == DxfVersion.AutoCad12)
                 {
                     DxfRawDocument output = DxfR12Codec.CreateWithCodePage(DxfR12Codec.ReadEntities(this.snapshot),
-                        this.DrawingCodePage, binary, limits);
+                        outputCodePage, binary, limits);
                     output.Save(staged, binary, cancellationToken);
                 }
                 else
@@ -148,12 +162,12 @@ namespace netDxf.IO
                 cancellationToken.ThrowIfCancellationRequested();
                 staged.Position = 0;
                 DxfRawDocument validated = DxfRawDocument.Load(staged, limits, cancellationToken);
-                // The typed writer may normalize a legacy declaration. Reauthor only this
-                // private output profile, retaining all other tags and enforcing the raw
-                // codec's actual encoding. Never bypass WithTags profile guards on caller data.
-                if (DxfR12Codec.SelectionCodePage(validated) != this.DrawingCodePage)
+                // Reauthor only this private output profile, retaining every other tag
+                // and enforcing the raw codec's actual encoding. Public raw profile-edit
+                // guards remain unchanged; caller source documents are never rewritten.
+                if (DxfR12Codec.SelectionCodePage(validated) != outputCodePage)
                 {
-                    DxfRawDocument recoded = DxfR12Codec.SetAuthoredCodePage(validated, this.DrawingCodePage, limits);
+                    DxfRawDocument recoded = DxfR12Codec.SetAuthoredCodePage(validated, outputCodePage, limits);
                     staged.SetLength(0);
                     staged.Position = 0;
                     recoded.Save(staged, binary, cancellationToken);
