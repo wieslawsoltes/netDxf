@@ -8,7 +8,35 @@ from ezdxf.lldxf.encoding import decode_dxf_unicode
 from verify_raw_line_geometry import require, reject, audit_signature
 from verify_r12_codepages import VERSIONS, MAGIC, logical, description
 
-PROFILES = {'DOS437': (1252, 'Grüße ╬'), 'DOS850': (1252, 'Café ║'), 'dos932': (932, '日本語')}
+# Expected target pages are specified independently of C# output metadata.
+PROFILES = {
+    'DOS437': (1252, 'Grüße ╬'),
+    'DOS850': (1252, 'Café ║'),
+    'dos932': (932, '日本語'),
+    'DOS720': (1256, 'مرحبا'),
+    'DOS737': (1253, 'Ελληνικά'),
+    'DOS775': (1257, 'Āžu'),
+    'DOS852': (1250, 'Zażółć'),
+    'DOS855': (1252, 'Привет'),
+    'DOS857': (1254, 'İstanbul'),
+    'DOS858': (1252, 'Café €'),
+    'DOS860': (1252, 'Português'),
+    'DOS861': (1252, 'Ísland'),
+    'DOS862': (1255, 'שלום'),
+    'DOS863': (1252, 'Québec'),
+    'DOS864': (1256, 'ﻻ'),
+    'DOS865': (1252, 'Norsk æø'),
+    'DOS866': (1251, 'Привет'),
+    'DOS869': (1253, 'Ελλάδα'),
+    'DOS874': (874, 'ภาษาไทย'),
+    'DOS936': (936, '中文简体'),
+    'DOS949': (949, '한국어'),
+    'DOS950': (950, '繁體中文'),
+    'dos0001250': (1250, 'Zażółć'),
+    'DOS20127': (1252, 'ASCII'),
+    'DOS28591': (1252, 'Café'),
+    'DOS65001': (1252, '日本語'),
+}
 
 
 def inventory(directory):

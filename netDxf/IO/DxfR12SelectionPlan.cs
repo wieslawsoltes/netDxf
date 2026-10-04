@@ -1,10 +1,8 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using netDxf.Entities;
 using netDxf.Header;
@@ -29,12 +27,8 @@ namespace netDxf.IO
             this.snapshot = snapshot;
             this.options = options;
             this.DrawingCodePage = DxfR12Codec.SelectionCodePage(snapshot);
-            // Modern drawings use ANSI_ declarations. DOS encodings map to their
-            // Windows counterpart; the modern writer preserves additional characters
-            // with Unicode escapes rather than substituting replacement characters.
-            this.ModernDrawingCodePage = this.DrawingCodePage.StartsWith("DOS", StringComparison.OrdinalIgnoreCase)
-                ? "ANSI_" + Encoding.GetEncoding(snapshot.EncodingCodePage).WindowsCodePage.ToString(CultureInfo.InvariantCulture)
-                : this.DrawingCodePage;
+            this.ModernDrawingCodePage = DxfR12Codec.ModernSelectionCodePage(
+                this.DrawingCodePage, snapshot.EncodingCodePage);
             this.RootEntityCount = DxfR12Codec.ReadEntities(snapshot).Count;
             this.BlockCount = snapshot.Sections.SelectMany(s => s.Records).Count(r => r.Name == "BLOCK");
             this.AttributeDefinitionCount = snapshot.Sections.SelectMany(s => s.Records).Count(r => r.Name == "ATTDEF");
@@ -46,7 +40,12 @@ namespace netDxf.IO
         /// <summary>Gets the R12 ANSI_/DOS declaration. An absent input declaration becomes ANSI_1252.</summary>
         public string DrawingCodePage { get; }
         /// <summary>Gets the encoding declaration used in fresh modern documents and modern output.</summary>
-        /// <remarks>DOS aliases map to the encoding's Windows ANSI counterpart. Logical content remains unchanged.</remarks>
+        /// <remarks>
+        /// Known OEM aliases map explicitly to their Windows ANSI counterparts. Other numeric DOS
+        /// aliases accepted by the raw codec use ANSI_1252 for modern output. Unicode escapes retain
+        /// characters outside that target; the original R12 declaration and encoding do not change.
+        /// No platform ANSI code page or optional encoding-provider metadata is consulted.
+        /// </remarks>
         public string ModernDrawingCodePage { get; }
         /// <summary>Gets the effective encoding of the normalized R12 snapshot.</summary>
         /// <remarks>Modern output from AutoCAD 2007 onward uses UTF-8 regardless of its legacy hint.</remarks>
@@ -126,7 +125,7 @@ namespace netDxf.IO
         /// bound encoded bytes, tag count and decoded strings, not total managed heap. Modern
         /// output transiently uses DXF Unicode escapes for C0 values, literal carets and backslashes.
         /// R12 retains its declared encoding. Modern output retains ANSI_ declarations or maps DOS
-        /// encodings to their Windows counterparts; AutoCAD 2007 and newer output is always UTF-8.
+        /// encodings using the explicit ModernDrawingCodePage policy; AutoCAD 2007 and newer output is always UTF-8.
         /// This does not change the snapshot or any previously returned editable document. Cancellation
         /// or validation failure before final copying leaves the destination untouched. IO failure
         /// or cancellation during final copying may leave partial output. The stream remains open;
