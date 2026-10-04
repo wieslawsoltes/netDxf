@@ -1,0 +1,41 @@
+name: Temporary AC1032 source inspection
+on:
+  push:
+    branches: [codex/stage-ac1032-multiline-attributes-20261004]
+    paths: [.github/workflows/temporary-ac1032-inspect.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: f4a8e84d5ab20d014865d6da99927079864bd4a0
+          persist-credentials: false
+      - name: List exact integration points
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          print('BASE', subprocess.check_output(['git','rev-parse','HEAD','HEAD^{tree}'], text=True))
+          specs = {
+            'netDxf/IO/DxfReader.cs': ['private AttributeDefinition ReadAttributeDefinition','private Attribute ReadAttribute','private MText ReadMText'],
+            'netDxf/IO/DxfWriter.cs': ['private void WriteAttributeDefinition','private void WriteAttribute','private void WriteMText','Preflight'],
+            'netDxf/DxfDocument.cs': ['AddEntityToDocument','AddAttribute','TextStyleChanged','AttributeDefinition'],
+            'netDxf/Entities/Insert.cs': ['TransformAttributes','Sync','Explode','Clone'],
+            'netDxf/Entities/AttributeDefinition.cs': ['class AttributeDefinition','Clone','TransformBy'],
+            'tests/netDxf.Conformance/Program.cs': ['Register','Run('],
+          }
+          for name, patterns in specs.items():
+            print('\nFILE',name)
+            lines=Path(name).read_text().splitlines()
+            for i,line in enumerate(lines,1):
+              if any(pattern in line for pattern in patterns): print(i,line.strip())
+          print('\nRELATED FILES')
+          for p in Path('netDxf').rglob('*.cs'):
+            if any(s in p.name for s in ('Attribute','MText','TextStyles','MetadataReader','Preflight','Compatibility','Insert.Geometry')):
+              print(p)
+          PY
