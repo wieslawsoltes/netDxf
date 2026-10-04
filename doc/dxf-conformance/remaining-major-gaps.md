@@ -65,6 +65,19 @@ layer-name changes across saved snapshots and current-layer references; its
 final-source hosted run 37069664564 passed. These are scoped implementations,
 not completion of their entire entity or dependency families.
 
+**R12 selection continuation (4 October 2026):** the source now supports reachable
+acyclic BLOCK/INSERT graphs, arrays, ATTDEF/ATTRIB and SEQEND, plus immutable
+selection plans targeting AC1009 or the six modern database families. Iterative
+adoption preserves shared block identity and allocates fresh target handles.
+Plans preserve default resources and protect control/literal-escape content in
+staged output. Only the exact version-1 unitless DesignCenter block record is
+projected; other metadata and nonunitless blocks reject. This advances G02–G04
+for a strict selection profile, not whole-document conversion. R13/R14 and earlier
+typed dialects, xrefs, arbitrary metadata graphs, cycles, collision resolution,
+private caches, flattening and general dependency-aware conversion remain open.
+Final-source execution evidence belongs in the implementation PR; this checkpoint
+does not update the historical coverage ledger or claim a fresh full audit.
+
 Keep new work organized as coherent implementation increments, with tests in the
 existing suites. Do not replace large missing-code workstreams with repeated
 native-acceptance reports, path-count milestones or tiny cache fixes alone.
