@@ -2,7 +2,7 @@ name: Temporary AC1032 multiline worktrees
 on:
   push:
     branches: [codex/stage-ac1032-multiline-attributes-20261004]
-    paths: [.github/workflows/temporary-ac1032-build.yml, '.ac1032/**']
+    paths: [.github/workflows/temporary-ac1032-build.yml, '.ac1032/**', .ac1032-fixes.py]
 permissions:
   contents: write
 jobs:
@@ -31,22 +31,7 @@ jobs:
           git -C source config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git -C source config core.autocrlf false
           git -C source config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          p=Path('stage/.ac1032/apply.py')
-          s=p.read_text().replace("original.decode('utf-8-sig')", "original.decode('utf-8-sig', errors='surrogateescape')").replace('updated.encode()', "updated.encode('utf-8', errors='surrogateescape')")
-          p.write_text(s)
-          for p in Path('source/netDxf').rglob('*.cs'):
-              text=p.read_text(encoding='utf-8-sig', errors='replace')
-              if 'class DatabaseMetadataReader' in text:
-                  i=text.index('class DatabaseMetadataReader'); print('METADATA',p);print(text[i:i+6500])
-          for name in ('Attribute.cs','AttributeDefinition.cs','Attribute.InsertTransform.cs'):
-              p=Path('source/netDxf/Entities',name);lines=p.read_text(errors='replace').splitlines()
-              for i,line in enumerate(lines):
-                  if any(t in line for t in ('InsertTransform(', 'CommonData.CopyFrom', 'target.position', 'public Attribute(AttributeDefinition', 'private readonly bool clearProxy')):
-                      print(name,i+1,'\n'.join(lines[max(0,i-1):i+7]))
-          PY
+          python3 stage/.ac1032-fixes.py
           for part in model io lifecycle tests; do
             git -C source worktree add -b "local/ac1032-$part" "../worktree-$part" f4a8e84d5ab20d014865d6da99927079864bd4a0
             python3 stage/.ac1032/apply.py "worktree-$part" "$part"
@@ -66,7 +51,7 @@ jobs:
         working-directory: source
         shell: bash
         run: |
-          dotnet build tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release -p:NuGetAudit=false > ../receipt/build.log 2>&1 || { tail -180 ../receipt/build.log; exit 1; }
+          dotnet build tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release -p:NuGetAudit=false > ../receipt/build.log 2>&1 || { grep -E 'error |failed|Error\(' ../receipt/build.log | sort -u; exit 1; }
           tail -6 ../receipt/build.log
       - name: Execute focused multiline regressions
         working-directory: source
@@ -74,7 +59,7 @@ jobs:
           DXF_TEST_FILTER: attribute-mtext/
         shell: bash
         run: |
-          dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build > ../receipt/focused.log 2>&1 || { tail -160 ../receipt/focused.log; exit 1; }
+          dotnet run --project tests/netDxf.Conformance/netDxf.Conformance.csproj -c Release --no-build > ../receipt/focused.log 2>&1 || { tail -180 ../receipt/focused.log; exit 1; }
           tail -90 ../receipt/focused.log
       - name: Publish new clean feature branch after focused validation
         working-directory: source
