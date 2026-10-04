@@ -1,0 +1,30 @@
+name: Recover interrupted R12 source
+on:
+  push:
+    branches: [codex/stage-r12-graphs-20261004]
+    paths: [.github/workflows/temporary-recovery-export.yml]
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 2919f127cb2bd27a999dd8a3d1dc17089ceaae1a
+          persist-credentials: false
+      - name: Archive only the pinned staging source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir export
+          git archive --format=tar.gz -o export/r12-staged-source.tar.gz HEAD .r12-continuation
+          git rev-parse HEAD HEAD^{tree} > export/source-identity.txt
+          cd export
+          sha256sum r12-staged-source.tar.gz source-identity.txt > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r12-staged-source-recovery
+          path: export
+          retention-days: 7
