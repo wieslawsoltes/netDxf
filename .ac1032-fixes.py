@@ -3,9 +3,36 @@ from pathlib import Path
 stage = Path(__file__).resolve().parent / '.ac1032'
 p=stage/'apply.py'
 s=p.read_text()
-s=s.replace("'if (this.References[item.Name].Count != 0)'", "'if (this.HasReferences(item))'")
-s=s.replace("'if (this.References[item.Name].Count != 0 || this.Owner.HasEmbeddedAttributeTextStyleReference(item))'", "'if (this.HasReferences(item) || this.Owner.HasEmbeddedAttributeTextStyleReference(item))'")
 s=s.replace('RegisterMTextColumnTests();','RegisterMTextUnicodeChunkTests();')
+a=s.index('    def styles(text):')
+b=s.index("    edit('netDxf/Collections/TextStyles.cs',styles)",a)+len("    edit('netDxf/Collections/TextStyles.cs',styles)")
+s=s[:a]+'''    def table_refs(text):
+        text=replace(text,'|| (this.list.TryGetValue(name, out T viewportTarget) && this.Owner.ViewportLayerReferences(viewportTarget).Count > 0);',
+            '|| (this.list.TryGetValue(name, out T viewportTarget) && this.Owner.ViewportLayerReferences(viewportTarget).Count > 0)\\n                || (this.list.TryGetValue(name, out T embeddedTarget) && this.Owner.HasEmbeddedAttributeTextStyleReference(embeddedTarget));')
+        text=replace(text,'|| this.Owner.ViewportLayerReferences(item).Count > 0;',
+            '|| this.Owner.ViewportLayerReferences(item).Count > 0\\n                || this.Owner.HasEmbeddedAttributeTextStyleReference(item);')
+        return replace(text,'additional.AddRange(this.Owner.ViewportLayerReferences(target));',
+            'additional.AddRange(this.Owner.ViewportLayerReferences(target));\\n            additional.AddRange(this.Owner.AttributeMTextReferences(target));')
+    edit('netDxf/Collections/TableObjects.cs',table_refs)
+'''+s[b:]
+p.write_text(s)
+
+p=stage/'DxfDocument.AttributeMText.cs'
+s=p.read_text().replace('internal bool HasEmbeddedAttributeTextStyleReference(TextStyle style)',
+    'internal bool HasEmbeddedAttributeTextStyleReference(TableObject target)')
+s=s.replace('foreach (var entry in this.EmbeddedAttributeTextEntries())\n                if (ReferenceEquals(entry.Value.Style, style)) return true;',
+    'if (!(target is TextStyle style)) return false;\n            foreach (var entry in this.EmbeddedAttributeTextEntries())\n                if (ReferenceEquals(entry.Value.Style, style)) return true;')
+pos=s.rfind('\n    }')
+s=s[:pos]+'''
+        internal List<DxfObjectReference> AttributeMTextReferences(TableObject target)
+        {
+            var result = new List<DxfObjectReference>();
+            if (!(target is TextStyle style)) return result;
+            foreach (var entry in this.EmbeddedAttributeTextEntries())
+                if (ReferenceEquals(entry.Value.Style, style)) result.Add(new DxfObjectReference(entry.Key, 1));
+            return result;
+        }
+'''+s[pos:]
 p.write_text(s)
 
 p=stage/'AttributeMText.cs'
@@ -23,4 +50,4 @@ s=s.replace('public IReadOnlyList<DxfTag> Tags { get { return this.tags; } }', '
 s=s.replace('new AttributeMText(this.tags.Where(', 'new AttributeMText(this.Tags.Where(')
 s=s.replace('var output = this.tags.Where(', 'var output = this.Tags.Where(')
 p.write_text(s)
-print('Prepared current-base integration and style-rename corrections')
+print('Prepared shared reference collection and rename-safe embedded text')
