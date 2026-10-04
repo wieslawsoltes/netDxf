@@ -34,12 +34,15 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
+          p=Path('stage/.ac1032/apply.py')
+          s=p.read_text().replace("original.decode('utf-8-sig')", "original.decode('utf-8-sig', errors='surrogateescape')").replace('updated.encode()', "updated.encode('utf-8', errors='surrogateescape')")
+          p.write_text(s)
           for p in Path('source/netDxf').rglob('*.cs'):
-              text=p.read_text(encoding='utf-8-sig')
+              text=p.read_text(encoding='utf-8-sig', errors='replace')
               if 'class DatabaseMetadataReader' in text:
                   i=text.index('class DatabaseMetadataReader'); print('METADATA',p);print(text[i:i+6500])
           for name in ('Attribute.cs','AttributeDefinition.cs','Attribute.InsertTransform.cs'):
-              p=Path('source/netDxf/Entities',name);lines=p.read_text().splitlines()
+              p=Path('source/netDxf/Entities',name);lines=p.read_text(errors='replace').splitlines()
               for i,line in enumerate(lines):
                   if any(t in line for t in ('InsertTransform(', 'CommonData.CopyFrom', 'target.position', 'public Attribute(AttributeDefinition', 'private readonly bool clearProxy')):
                       print(name,i+1,'\n'.join(lines[max(0,i-1):i+7]))
