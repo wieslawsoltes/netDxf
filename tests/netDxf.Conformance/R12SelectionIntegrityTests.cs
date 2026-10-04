@@ -11,6 +11,8 @@ internal static partial class Program
 {
     private static void RegisterR12SelectionIntegrityTests()
     {
+        RegisterR12CodePageTests();
+        RegisterR12CodePageAliasTests();
         foreach (DxfVersion version in SupportedVersions)
         {
             foreach (bool binary in new[] { false, true })
