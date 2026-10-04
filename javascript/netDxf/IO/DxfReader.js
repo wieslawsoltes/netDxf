@@ -1,0 +1,1095 @@
+// Copyright (c) Daniel Carvajal and netDxf contributors. MIT License; see package LICENSE.
+// Typed whole-document import. Physical source identities are kept separate from generated defaults.
+import * as api from '../../index.js';
+import { DotNetMath } from '../../runtime/GeometryRuntime.js';
+import { OrdinalIgnoreCaseEquals } from '../../runtime/Collections.js';
+import * as io from '../../runtime/DxfTransport.js';
+import { ReadTypedDocumentInput } from './DxfRawDocument.js';
+import { CreateUnderlayForImport } from '../Entities/Underlay.js';
+import { UcsBaseContext } from './DxfReader.UcsBase.js';
+import { DxfTag } from './DxfTag.js';
+import { ReadXDataRecord } from '../../runtime/DxfXDataIO.js';
+import { HatchSplineData } from '../Entities/HatchSplineData.js';
+import { HatchGradientPatternTypeStringValues } from '../Entities/HatchGradientPatternType.js';
+import { ReadVertex } from '../../runtime/FittedPolylineIO.js';
+import { DxfVersionNotSupportedException } from './DxfVersionNotSupportedException.js';
+import { DatabaseIOContext } from '../../runtime/DatabaseIOContext.js';
+import { ReadDatabaseRecord, ReadDictionaryDatabaseRecord, ImportDatabaseObjects } from './DxfReader.Objects.js';
+import { DocumentTagReader, envelope, canonicalHandle, tableKinds, managedDictionaries,
+  value, lastValue, point, subclass, publicPayload, readXData, dimensionStyleFields,dimensionStyleBooleans,
+  setProperty, getProperty, applySuppression,dimensionOverrideFields,zeroSuppressionGroups,dstyleSections } from '../../runtime/TypedDocumentIO.js';
+import { BoxedScalar } from '../../runtime/BoxedScalar.js';
+import { ReferenceList } from '../../runtime/ReferenceList.js';
+import { DecodeDxfText } from '../../runtime/DxfStringEncoding.js';
+import { HeaderDateTime, HeaderTimeSpan } from '../../runtime/HeaderTime.js';
+import { UnwrapHeaderNumber } from '../../runtime/HeaderBox.js';
+import { PathFileNameWithoutExtension } from '../../runtime/SupportFileSystem.js';
+import { Exception,ArgumentException,ArgumentNullException,FormatException,InvalidDataException,InvalidCastException,NotSupportedException } from '../../runtime/Errors.js';
+const primitiveReaders=Object.freeze({ARC:'ReadArc',CIRCLE:'ReadCircle',ELLIPSE:'ReadEllipse',LINE:'ReadLine',POINT:'ReadPoint',RAY:'ReadRay',XLINE:'ReadXLine','3DFACE':'ReadFace3D',SOLID:'ReadSolid',TRACE:'ReadTrace',SPLINE:'ReadSpline',LWPOLYLINE:'ReadLwPolyline',HELIX:'ReadHelix',LIGHT:'ReadLight',OLEFRAME:'ReadOleFrame',OLE2FRAME:'ReadOle2Frame'});
+const legacyObjects=new Set(['LAYOUT','GROUP','MLINESTYLE','IMAGEDEF','IMAGEDEF_REACTOR','RASTERVARIABLES','DGNDEFINITION','DWFDEFINITION','PDFDEFINITION']);
+const decoded=(tags,code,fallback='')=>DecodeDxfText(value(tags,code,fallback));
+const entries=tags=>{const rows=[];let name=null;for(const t of subclass(tags,'AcDbDictionary')){if(t.Code===3)name=DecodeDxfText(t.Value);else if((t.Code===350||t.Code===360)&&name!==null){rows.push([name,canonicalHandle(t.Value),t.Code===360]);name=null;}}return rows;};
+const resourceNames=Object.freeze({LAYER:'Layers',LTYPE:'Linetypes',STYLE:'TextStyles',DIMSTYLE:'DimensionStyles'});
+
+export class DxfReader {
+  doc=null;chunk=null;Context=null;RawDocument=null;
+  constructor(){this.records=[];this.metadata=new Map();this.identities=new Map();this.blockByRecordHandle=new Map();this.deferred=[];this.storedTables=new ReferenceList();}
+  Read(stream,supportFolders=new api.SupportFolders()) {
+    if(stream==null)throw new ArgumentNullException('stream');
+    // Preserve the byte-buffer convenience overload without weakening stream probing.
+    if(stream instanceof Uint8Array)stream=new api.MemoryStream(stream,false);
+    // The pinned typed reader probes the declared version before raw decoding. In
+    // particular, an AC1009 header in modern binary framing must report the version
+    // exception, not disappear as a Release null after the raw dialect check fails.
+    const binary={value:false},version=api.DxfDocument.CheckDxfFileVersion(stream,binary);
+    this.isBinary=binary.value;
+    if(version<api.DxfVersion.AutoCad2000)
+      throw new DxfVersionNotSupportedException('DXF file version not supported: '+version,version);
+    const raw=ReadTypedDocumentInput(stream);this.RawDocument=raw.RawDocument;
+    if(raw.Version<api.DxfVersion.AutoCad2000)throw new DxfVersionNotSupportedException('DXF file version not supported: '+raw.Version,raw.Version);
+    const variables=new api.HeaderVariables();variables.AcadVer=raw.Version;
+    if(!(supportFolders instanceof api.SupportFolders))supportFolders=new api.SupportFolders(supportFolders);
+    const doc=this.doc=new api.DxfDocument(variables,false,supportFolders),context=this.Context=new DatabaseIOContext(doc);
+    this.tags=Array.from(raw.Tags);this.records=[];this.metadata.clear();this.identities.clear();this.blockByRecordHandle.clear();this.deferred=[];this.storedTables=new ReferenceList();this.consumed=new Set();
+    const declarations=new Map();
+    for(const section of raw.Sections)for(const source of section.Records){
+      const tags=Array.from(source.Tags),record={Name:source.Name,Section:section.Name,Start:source.StartTagIndex,End:source.EndTagIndex,Tags:tags};
+      // A nonempty discarded ACDSDATA record prevents safe opaque-entity output.
+      // Preserve the resolver's source-defined refusal; an empty section is harmless.
+      if(section.Name==='ACDSDATA'&&tags[0]?.Code===0)context.hasDiscardedAcdsData=true;
+      record.Envelope=envelope(tags,record.Name);this.records.push(record);this.identities.set(record.Start,record.Envelope.Source);
+      const identity=record.Envelope.Source;if(identity.IdentitySeen&&identity.Handle!==0n){context.sourceObjectIdentities.add(identity.Handle);if(declarations.has(identity.Handle)){identity.Ambiguous=true;declarations.get(identity.Handle).Ambiguous=true;}else declarations.set(identity.Handle,identity);}
+    }
+    // The source uses the declared HEADER seed for early generated collections.
+    // Reserving later physical identities here would hide source/runtime collisions.
+    // OBJECTS import retains its own later reservation phase.
+    this.ReadHeader();const declared=canonicalHandle(variables.HandleSeed);
+    if(declared!==null)doc.NumHandles=BigInt.asIntN(64,BigInt('0x'+declared));
+    doc.Comments.Clear();for(const t of this.tags){if(t.Code===0&&t.Value==='SECTION')break;if(t.Code===999)doc.Comments.Add(t.Value);}
+    this.InitializeCollections();
+    const classes=Array.from(raw.Sections).find(s=>s.Name==='CLASSES');if(classes){this.chunk=context.Chunk=new DocumentTagReader(this.tags,classes.StartTagIndex+1,this.identities);io.ReadClassDefinitions(context);}
+    this.ReadTables();this.ReadBlocks();this.ReadManagedObjects();this.ReadLayerStates();this.EnsureDefaultObjects();
+    this.ReadEntities();this.ReadObjects();
+    // Diagnose an incomplete typed packet before a subsequent section error,
+    // but never return a document whose framing failed validation.
+    if(raw.DeferredError!==null)throw raw.DeferredError;
+    for(const resolve of this.deferred)resolve();
+    // Database import runs its own source-qualified resolver phases before entity references.
+    ImportDatabaseObjects(context);io.ResolveUcsReferences(context);io.ResolveViewSections(context);
+    io.ResolveMultiLeaderReferences(context);io.ResolveSections(context);io.ResolveStoredTables(this.storedTables);
+    io.ResolveStoredPolylineRecords(context);io.ResolveStoredPolygonMeshRecords(context);io.ResolveStoredPolyfaceMeshRecords(context);io.ResolveStoredPolyline2DRecords(context);
+    io.ResolveMTextColumnLinks(doc);io.ResolveOpaqueEntities(context);
+    context.ValidateSourceIdentityDeclarations();
+    const thumbnail=Array.from(raw.Sections).find(s=>s.Name==='THUMBNAILIMAGE');if(thumbnail){const cursor=new DocumentTagReader(this.tags,thumbnail.StartTagIndex+1,this.identities);doc.ThumbnailImage=io.DxfThumbnailImage.Read(cursor);}
+    doc.Entities.ActiveLayout='Model';return doc;
+  }
+  Records(section,name=null){return this.records.filter(r=>r.Section===section&&(name===null||r.Name===name));}
+  Cursor(record,marker=null){let start=record.Start+record.Envelope.Body;if(marker!==null){const i=record.Tags.findIndex(t=>t.Code===100&&t.Value===marker);if(i<0)throw new InvalidDataException(record.Name+' requires '+marker+'.');start=record.Start+i;}const c=new DocumentTagReader(this.tags,start,this.identities);c.SourceRecord=record.Envelope.Source;this.chunk=this.Context.Chunk=c;return c;}
+  Track(item,record,withXData=true){const env=record.Envelope;if(env.Handle)item.Handle=env.Handle;if(withXData)readXData(item,record.Tags,this.doc);this.Context.RecordSourceObject(item,env.Source);if(item.Handle)this.Context.entityDatabaseMetadata.set(item.Handle,{Owner:env.Owner,Extension:env.Extension,Reactors:env.Reactors});this.metadata.set(item,record);return item;}
+  ReadHeader(){const doc=this.doc,variables=doc.DrawingVariables,properties=new Map(Object.getOwnPropertyNames(api.HeaderVariableCode).filter(key=>typeof api.HeaderVariableCode[key]==='string'&&api.HeaderVariableCode[key].startsWith('$')).map(key=>[api.HeaderVariableCode[key].toUpperCase(),key]));
+    const known=new Map(Array.from(variables.KnownValues(),v=>[v.Name.toUpperCase(),v]));
+    let origin=api.Vector3.Zero,xAxis=api.Vector3.UnitX,yAxis=api.Vector3.UnitY;
+    // Keep raw tags untouched: group 999 is invisible only to semantic HEADER parsing.
+    for(const record of this.Records('HEADER')){const tags=record.Tags.slice(1).filter(tag=>tag.Code!==999),name=record.Name.toUpperCase();if(!tags.length)continue;
+      if(name==='$UCSORG'){origin=point(tags,10);continue;}if(name==='$UCSXDIR'){xAxis=point(tags,10);continue;}if(name==='$UCSYDIR'){yAxis=point(tags,10);continue;}
+      if(name==='$ACADVER')continue;
+      const previous=known.get(name),property=properties.get(name);let v=tags[0].Value;
+      if(previous&&property){const current=UnwrapHeaderNumber(previous.Value);
+        if(current instanceof api.Vector3)v=point(tags,tags[0].Code);
+        else if(current instanceof api.AciColor)v=api.AciColor.FromCadIndex(v);
+        else if(current instanceof HeaderDateTime)v=api.DrawingTime.FromJulianCalendar(v);
+        else if(current instanceof HeaderTimeSpan)v=api.DrawingTime.EditingTime(v);
+        else if(typeof current==='boolean')v=typeof v==='boolean'?v:v!==0;
+        else if(typeof v==='string'&&name!=='$HANDSEED')v=DecodeDxfText(v);
+        // Typed import recovers unsupported surface densities independently of SPLINESEGS.
+        if((name==='$SURFU'||name==='$SURFV')&&(v<2||v>200))v=6;
+        variables[property]=v;
+      }else {
+        if(name.startsWith('$DIM')&&!['$DIMTSZ','$DIMTVP','$DIMUPT'].includes(name)||['$ACADMAINTVER','$INTERFEREOBJVS','$INTERFEREVPVS'].includes(name))continue;
+        let group=tags[0].Code;
+        if(group===10){
+          // The original custom-header representation records dimension (20/30),
+          // while the physical coordinate packet always starts with group 10.
+          const x=tags[0].Value,y=tags[1]?.Value;
+          if(typeof x!=='number'||typeof y!=='number')throw new InvalidCastException('Custom header coordinates require doubles.');
+          if(tags[2]?.Code===30){v=new api.Vector3(x,y,tags[2].Value);group=30;}
+          else{v=new api.Vector2(x,y);group=20;}
+        }else if(typeof v==='string')v=DecodeDxfText(v);
+        else if([2,3,4].includes(tags[0].ValueType))v=new BoxedScalar({2:'Int16',3:'Int32',4:'Int64'}[tags[0].ValueType],v);
+        if(variables.ContainsCustomVariable(record.Name))variables.RemoveCustomVariable(record.Name);
+        variables.AddCustomVariable(new api.HeaderVariable(record.Name,group,v));
+      }
+    }
+    if(!api.Vector3.ArePerpendicular(xAxis,yAxis)){xAxis=api.Vector3.UnitX;yAxis=api.Vector3.UnitY;}variables.CurrentUCS=new api.UCS('Unnamed',origin,xAxis,yAxis);
+  }
+  InitializeCollections(){const doc=this.doc,tableHeaders=new Map(this.Records('TABLES','TABLE').map(r=>[value(r.Tags,2),r]));
+    for(const [code,property,Type]of tableKinds){const record=tableHeaders.get(code),handle=record?.Envelope.Handle??null;doc[property]=code==='VPORT'?new api.VPorts(doc,handle,false):new api[Type](doc,handle);if(record)this.Track(doc[property],record,false);}
+    doc.ShapeStyles=new api.ShapeStyles(doc);
+    const root=this.Records('OBJECTS','DICTIONARY').find(r=>r.Envelope.Owner===null||r.Envelope.Owner==='0'),rootEntries=root?entries(root.Tags):[];this.rootRecord=root??null;this.dictionaryNames=new Map();
+    for(const r of this.Records('OBJECTS','DICTIONARY'))for(const[name,handle]of entries(r.Tags))if(!this.dictionaryNames.has(handle))this.dictionaryNames.set(handle,name);
+    for(const[name,property,Type]of managedDictionaries)doc[property]=new api[Type](doc,rootEntries.find(([n])=>n===name)?.[1]??null);
+    const layerHeader=tableHeaders.get('LAYER');if(layerHeader?.Envelope.Extension){const manager=doc.Layers.StateManager;doc.AddedObjects.Remove(manager.Handle);manager.Handle=layerHeader.Envelope.Extension;doc.AddedObjects.Add(manager.Handle,manager);this.Context.layerStateManagerDictionaryHandle=manager.Handle;}
+    for(const record of tableHeaders.values())readXData(doc[tableKinds.find(([code])=>code===value(record.Tags,2))?.[1]]??doc,record.Tags,doc);
+  }
+  ReadTables(){const doc=this.doc;for(const r of this.Records('TABLES','APPID')){const item=this.Track(new api.ApplicationRegistry(decoded(r.Tags,2),false),r);doc.ApplicationRegistries.Add(item,false);}
+    for(const r of this.Records('TABLES','STYLE'))this.ReadTextStyle(r);
+    for(const r of this.Records('TABLES','LTYPE'))this.ReadLinetype(r);
+    for(const item of [api.Linetype.ByLayer,api.Linetype.ByBlock,api.Linetype.Continuous])if(!doc.Linetypes.Contains(item.Name))doc.Linetypes.Add(item);
+    for(const r of this.Records('TABLES','LAYER'))this.ReadLayer(r);
+    if(!doc.Layers.Contains('0'))doc.Layers.Add(api.Layer.Default);
+    if(!doc.TextStyles.Contains(api.TextStyle.DefaultName))doc.TextStyles.Add(api.TextStyle.Default);
+    if(!doc.ApplicationRegistries.Contains(api.ApplicationRegistry.DefaultName))doc.ApplicationRegistries.Add(api.ApplicationRegistry.Default);
+    for(const r of this.Records('TABLES','UCS'))this.ReadUCS(r);
+    for(const r of this.Records('TABLES','VPORT')){const item=io.ReadVPort(this.Cursor(r,'AcDbViewportTableRecord'),this.Context);this.Track(item,r,false);this.AttachTableXData(item);doc.VPorts.AddRecord(item,false);}
+    doc.VPorts.EnsureActive();
+    for(const r of this.Records('TABLES','VIEW')){const item=io.ReadView(this.Cursor(r,'AcDbViewTableRecord'),this.Context);this.Track(item,r,false);this.AttachTableXData(item);doc.Views.Add(item,false);}
+  }
+  AttachTableXData(item){const out={};if(this.Context.tableEntryXData.TryGetValue(item,out))item.XData.AddRange(out.value);}
+  ReadTextStyle(r){const tags=subclass(r.Tags,'AcDbTextStyleTableRecord'),flags=value(tags,70,0),font=decoded(tags,3),name=decoded(tags,2);let item,table;
+    if(flags&1){item=new api.ShapeStyle(font);table=this.doc.ShapeStyles;item.Size=value(tags,40,0);}else{item=new api.TextStyle(name||api.TextStyle.DefaultName,api.TextStyle.DefaultFont,false);item.SetStoredFontFiles(font,decoded(tags,4));table=this.doc.TextStyles;item.Height=Math.max(0,value(tags,40,0));}
+    item.Flags=flags;item.TextGenerationFlags=value(tags,71,0);item.WidthFactor=value(tags,41,1);item.LastHeight=value(tags,42,null);item.ObliqueAngle=value(tags,50,0);this.Track(item,r);table.Add(item,false);return item;}
+  ReadLinetype(r){const tags=subclass(r.Tags,'AcDbLinetypeTableRecord'),item=new api.Linetype(decoded(tags,2),'',false);item.Description=decoded(tags,3);let i=0;
+    while(i<tags.length){if(tags[i].Code!==49){i++;continue;}let end=i+1;while(end<tags.length&&tags[end].Code!==49)end++;const t=tags.slice(i,end),length=value(t,49,0),flags=value(t,74,0);let segment;
+      if(flags&2){const style=this.doc.GetObjectByHandle(value(t,340,''));segment=new api.LinetypeTextSegment(decoded(t,9),style instanceof api.TextStyle?style:api.TextStyle.Default,length);}
+      else if(flags&4){const style=this.doc.GetObjectByHandle(value(t,340,''));if(!(style instanceof api.ShapeStyle))throw new InvalidDataException('Complex linetype requires its source shape style.');const name=style.ShapeName(value(t,75,0));if(!name){i=end;continue;}segment=new api.LinetypeShapeSegment(name,style,length);}
+      else segment=new api.LinetypeSimpleSegment(length);
+      if(flags&6){segment.Scale=value(t,46,1);segment.Rotation=value(t,50,0);segment.Offset=point(t,44,2);segment.RotationType=flags&1?api.LinetypeSegmentRotationType.Absolute:api.LinetypeSegmentRotationType.Relative;}item.Segments.Add(segment);i=end;
+    }this.Track(item,r);this.doc.Linetypes.Add(item,false);return item;}
+  ReadLayer(r){const t=subclass(r.Tags,'AcDbLayerTableRecord'),item=new api.Layer(decoded(t,2),false);const flags=value(t,70,0),color=value(t,62,7);item.IsFrozen=!!(flags&1);item.IsLocked=!!(flags&4);item.IsVisible=color>=0;item.Color=value(t,420)!==null?api.AciColor.FromTrueColor(value(t,420)):api.AciColor.FromCadIndex(Math.abs(color));item.Linetype=this.Resource('Linetypes',decoded(t,6,'Continuous'));item.Plot=value(t,290,true);const lineweight=value(t,370,api.Lineweight.Default);item.Lineweight=lineweight===api.Lineweight.ByLayer||lineweight===api.Lineweight.ByBlock?api.Lineweight.Default:lineweight;this.Track(item,r);
+    // Match table-entry postprocessing: the last matching slot is the projection,
+    // while the complete caller-owned XData packet remains present.
+    if(item.XData.ContainsAppId('AcAecLayerStandard'))
+      for(const record of item.XData.get_Item('AcAecLayerStandard').XDataRecord)if(record.Code===1000)item.Description=record.Value;
+    if(item.XData.ContainsAppId('AcCmTransparency'))
+      for(const record of item.XData.get_Item('AcCmTransparency').XDataRecord)if(record.Code===1071)item.Transparency=api.Transparency.FromAlphaValue(record.Value);
+    this.doc.Layers.Add(item,false);return item;}
+  ReadUCS(r){
+    const chunk=this.Cursor(r,'AcDbUCSTableRecord'),scope=new UcsBaseContext();
+    const origin=api.Vector3.Zero,xDir=api.Vector3.UnitX,yDir=api.Vector3.UnitY;
+    const relationships=new Set(),origins=new Map(),xdata=[];
+    let name='',flags=0,elevation=0,type=0,baseHandle=null;
+    let originType=0,orthographicOrigin=api.Vector3.Zero,components=0;
+    const completeOrigin=()=>{
+      if(originType===0)return;
+      if(components!==7)throw new InvalidDataException('A UCS orthographic origin pair requires all three coordinate groups 13, 23 and 33.');
+      if(origins.has(originType))throw new InvalidDataException('A UCS record cannot contain duplicate orthographic origin types.');
+      origins.set(originType,orthographicOrigin);
+    };
+    chunk.Next();
+    while(chunk.Code!==0){
+      const code=chunk.Code;scope.Observe(code,chunk.Value);
+      switch(code){
+        case 2:name=DecodeDxfText(chunk.ReadString());break;
+        case 10:origin.X=chunk.ReadDouble();break;case 20:origin.Y=chunk.ReadDouble();break;case 30:origin.Z=chunk.ReadDouble();break;
+        case 11:xDir.X=chunk.ReadDouble();break;case 21:xDir.Y=chunk.ReadDouble();break;case 31:xDir.Z=chunk.ReadDouble();break;
+        case 12:yDir.X=chunk.ReadDouble();break;case 22:yDir.Y=chunk.ReadDouble();break;case 32:yDir.Z=chunk.ReadDouble();break;
+        // Flags are checked record-wide in the pinned source; only 79/346 use the private/subclass/XData scope.
+        case 70:
+          if(relationships.has(70))throw new InvalidDataException('Duplicate UCS flags.');
+          relationships.add(70);flags=chunk.ReadShort();break;
+        case 79:
+          if(scope.IsPublic){
+            if(relationships.has(79))throw new InvalidDataException('Duplicate UCS orthographic view type.');
+            relationships.add(79);type=chunk.ReadShort();
+            if(type<0||type>6)throw new InvalidDataException('Unsupported UCS orthographic view type outside 0 through 6.');
+          }break;
+        case 346:
+          if(scope.IsPublic){
+            if(baseHandle!==null)throw new InvalidDataException('Duplicate UCS base-reference group 346.');
+            // Canonical numeric handles preserve explicit zero separately from an absent field.
+            baseHandle=chunk.ReadHex();
+          }break;
+        case 71:
+          completeOrigin();originType=chunk.ReadShort();
+          if(originType<1||originType>6)throw new InvalidDataException('UCS group 71 must identify an orthographic type in the range 1 through 6.');
+          orthographicOrigin=api.Vector3.Zero;components=0;break;
+        case 13:case 23:case 33:{
+          const bit=code===13?1:code===23?2:4;
+          if(originType===0||(components&bit)!==0)throw new InvalidDataException('UCS orthographic origin coordinates must follow group 71 and occur only once per pair.');
+          const coordinate=chunk.ReadDouble();
+          if(bit===1)orthographicOrigin.X=coordinate;else if(bit===2)orthographicOrigin.Y=coordinate;else orthographicOrigin.Z=coordinate;
+          components|=bit;break;
+        }
+        case 146:elevation=chunk.ReadDouble();break;
+        case 1001:xdata.push(ReadXDataRecord(chunk,null,true));continue;
+        // Native Debug.Assert for orphan XData has no process-abort substitute.
+      }
+      chunk.Next();
+    }
+    completeOrigin();
+    if(!api.TableObject.IsValidName(name)){
+      if(type!==0||baseHandle!==null)throw new InvalidDataException('A UCS base relationship requires a retained, valid UCS name.');
+      return null;
+    }
+    const item=new api.UCS(name,origin,xDir,yDir,false);item.Elevation=elevation;item.Flags=flags;
+    io.CompleteUcsBase(this.Context,item,type,baseHandle);
+    for(const [kind,point]of origins)item.SetOrthographicOrigin(kind,point);
+    this.Track(item,r,false);item.XData.AddRange(xdata);this.doc.UCSs.Add(item,false);return item;
+  }
+  Resource(property,name){
+    // C# resource lookups recover invalid reference names, including external-name
+    // syntax, to the appropriate table default. This does not relax model setters.
+    if(!api.TableObject.IsValidName(name))name=property==='Layers'?api.Layer.DefaultName:property==='Linetypes'?api.Linetype.DefaultName:property==='TextStyles'?api.TextStyle.DefaultName:api.DimensionStyle.DefaultName;
+    const table=this.doc[property],existing=table.get_Item(name);if(existing)return existing;let item;
+    if(property==='Layers')item=new api.Layer(name,false);else if(property==='Linetypes')item=new api.Linetype(name,'',false);else if(property==='TextStyles')item=new api.TextStyle(name,api.TextStyle.DefaultFont,false);else if(property==='DimensionStyles')item=new api.DimensionStyle(name,false);else throw new InvalidDataException('Missing '+property+' resource: '+name);return table.Add(item);}
+  ReadBlocks(){const doc=this.doc,headers=this.Records('BLOCKS','BLOCK'),ends=this.Records('BLOCKS','ENDBLK');
+    const records=this.Records('TABLES','BLOCK_RECORD');for(const header of headers)if(!records.some(r=>decoded(r.Tags,2)===decoded(header.Tags,2)))records.push({Name:'BLOCK_RECORD',Tags:[new DxfTag(0,'BLOCK_RECORD'),new DxfTag(2,decoded(header.Tags,2))],Envelope:{Handle:header.Envelope.Owner,Source:null,Extension:null,Reactors:[],Owner:doc.Blocks.Handle}});
+    for(const r of records){const name=decoded(r.Tags,2),h=headers.find(h=>decoded(h.Tags,2)===name),external=h&&!!(value(subclass(h.Tags,'AcDbBlockBegin'),70,0)&4),block=external?new api.Block(name,decoded(subclass(h.Tags,'AcDbBlockBegin'),1),!!(value(subclass(h.Tags,'AcDbBlockBegin'),70,0)&8)):api.Block.CreateOverload('string,System.Collections.Generic.IEnumerable<netDxf.Entities.EntityObject>,System.Collections.Generic.IEnumerable<netDxf.Entities.AttributeDefinition>,bool',name,null,null,false);
+      block.Record.Handle=r.Envelope.Handle;block.Record.Units=value(r.Tags,70,0);block.Record.AllowExploding=value(r.Tags,280,1)!==0;block.Record.ScaleUniformly=value(r.Tags,281,0)!==0;
+      if(h){const t=subclass(h.Tags,'AcDbBlockBegin');block.Flags=value(t,70,0);block.Origin=point(t,10);block.Description=decoded(t,4);block.Layer=this.Resource('Layers',decoded(h.Envelope.Common,8,'0'));this.Track(block,h);const end=ends.find(e=>e.Start>h.Start&&(!headers.find(next=>next.Start>h.Start&&next.Start<e.Start)));if(end)this.Track(block.End,end);}
+      if(!block.Handle)doc.NumHandles=DxfAssign(block,doc.NumHandles);if(!block.Record.Handle)doc.NumHandles=DxfAssign(block.Record,doc.NumHandles);if(!block.End.Handle)doc.NumHandles=DxfAssign(block.End,doc.NumHandles);
+      this.Track(block.Record,r);doc.Blocks.Add(block,false);this.blockByRecordHandle.set(block.Record.Handle,block);
+    }
+    if(!doc.Blocks.Contains(api.Block.DefaultModelSpaceName)){const block=doc.Blocks.Add(api.Block.ModelSpace);this.blockByRecordHandle.set(block.Record.Handle,block);}
+    for(const r of this.Records('TABLES','DIMSTYLE'))this.ReadDimensionStyle(r);
+    if(!doc.DimensionStyles.Contains(api.DimensionStyle.DefaultName))doc.DimensionStyles.Add(api.DimensionStyle.Default);
+  }
+  ReadDimensionStyle(r){const t=subclass(r.Tags,'AcDbDimStyleTableRecord'),item=new api.DimensionStyle(decoded(t,2),false),defaults=api.DimensionStyle.Default;
+    for(const[code,property,table]of dimensionStyleFields){let v=value(t,code,undefined);if(v===undefined)continue;if(table){if(v==='0')continue;v=table==='Blocks'?this.blockByRecordHandle.get(canonicalHandle(v)):this.doc.GetObjectByHandle(v);if(!v)throw new InvalidDataException('Unresolved DIMSTYLE resource group '+code);}else {
+        if(([40,140,143,146].includes(code)&&v<=0)||([41,42,43,44,46,171,179,271,272,274].includes(code)&&v<0)||
+           (code===144&&api.MathHelper.IsZero(v))||([45,148].includes(code)&&v<0.000001&&!api.MathHelper.IsZero(v,Number.MIN_VALUE)))
+          v=getProperty(defaults,property);
+        if(property==='DecimalSeparator')v=String.fromCharCode(v);
+      }setProperty(item,property,v);}
+    for(const[code,property]of dimensionStyleBooleans){const v=value(t,code,undefined);if(v===undefined)continue;setProperty(item,property,code===294?(v?api.DimensionStyleTextDirection.RightToLeft:api.DimensionStyleTextDirection.LeftToRight):code===175?!v:!!v);}
+    for(const[code,property]of[[176,'DimLineColor'],[177,'ExtLineColor'],[178,'TextColor']])if(value(t,code)!==null)item[property]=api.AciColor.FromCadIndex(value(t,code));
+    const post=decoded(t,3),alt=decoded(t,4),split=post.indexOf('<>'),a=alt.indexOf('[]');item.DimPrefix=split<0?'':post.slice(0,split);item.DimSuffix=split<0?post:post.slice(split+2);item.AlternateUnits.Prefix=a<0?'':alt.slice(0,a);item.AlternateUnits.Suffix=a<0?alt:alt.slice(a+2);
+    const units=value(t,273,2);item.AlternateUnits.LengthUnits=units===6?4:units===7?5:units===8?6:units;item.AlternateUnits.StackUnits=units===4||units===5;
+    item.Tolerances.DisplayMethod=value(t,72,0)?3:value(t,71,0)?(item.Tolerances.LowerLimit===item.Tolerances.UpperLimit?1:2):0;
+    for(const[code,target,prefix]of[[78,item,''],[285,item.AlternateUnits,''],[284,item.Tolerances,''],[286,item.Tolerances,'Alternate']])if(value(t,code)!==null)applySuppression(target,value(t,code),prefix);
+    const az=value(t,79,0);item.SuppressAngularLeadingZeros=!!(az&1);item.SuppressAngularTrailingZeros=!!(az&2);
+    this.Track(item,r);this.doc.DimensionStyles.Add(item,false);return item;}
+  ReadLayerStates(){
+    const manager=this.Records('OBJECTS','DICTIONARY').find(r=>r.Envelope.Handle===this.Context.layerStateManagerDictionaryHandle);if(!manager)return;
+    const children=entries(manager.Tags),handle=(children.find(([name])=>name==='ACAD_LAYERSTATES')??children[0])?.[1];
+    const dictionary=this.Records('OBJECTS','DICTIONARY').find(r=>r.Envelope.Handle===handle);if(!dictionary)return;
+    for(const[name,identity]of entries(dictionary.Tags)){
+      const record=this.Records('OBJECTS','XRECORD').find(r=>r.Envelope.Handle===identity);if(!record)throw new InvalidDataException('Missing layer-state XRECORD '+identity);
+      const tags=subclass(record.Tags,'AcDbXrecord'),state=new api.LayerState(name);state.Description=decoded(tags,301);state.PaperSpace=value(tags,290,false);
+      const current=decoded(tags,302,'0');if(this.doc.Layers.Contains(current))state.CurrentLayer=current;
+      for(let i=0;i<tags.length;i++)if(tags[i].Code===330||tags[i].Code===8){let end=i+1;while(end<tags.length&&tags[end].Code!==330&&tags[end].Code!==8)end++;
+        const layer=tags[i].Code===330?this.doc.GetObjectByHandle(tags[i].Value):this.doc.Layers.get_Item(DecodeDxfText(tags[i].Value));if(!(layer instanceof api.Layer)){i=end-1;continue;}
+        const t=tags.slice(i+1,end),p=new api.LayerStateProperties(layer.Name);p.Flags=value(t,90,p.Flags);p.Color=value(t,92)!==null?api.AciColor.FromTrueColor(value(t,92)):api.AciColor.FromCadIndex(value(t,62,7));p.Lineweight=value(t,370,p.Lineweight);
+        const type=this.doc.GetObjectByHandle(value(t,331,''));p.LinetypeName=type instanceof api.Linetype?type.Name:decoded(t,6,api.Linetype.DefaultName);if(!this.doc.Linetypes.Contains(p.LinetypeName))p.LinetypeName=api.Linetype.DefaultName;
+        if(value(t,440)!==null){const alpha=value(t,440);p.Transparency=alpha===0?new api.Transparency(0,alpha):api.Transparency.FromAlphaValue(alpha);}if(!state.Properties.ContainsKey(p.Name))state.Properties.Add(p.Name,p);i=end-1;
+      }
+      this.Track(state,record);this.doc.Layers.StateManager.Add(state,false);
+    }
+  }
+  ReadManagedObjects(){for(const r of this.Records('OBJECTS')){if(!legacyObjects.has(r.Name))continue;const method={LAYOUT:'ReadLayout',GROUP:'ReadGroup',MLINESTYLE:'ReadMLineStyle',IMAGEDEF:'ReadImageDefinition',RASTERVARIABLES:'ReadRasterVariables',DGNDEFINITION:'ReadUnderlayDefinition',DWFDEFINITION:'ReadUnderlayDefinition',PDFDEFINITION:'ReadUnderlayDefinition',IMAGEDEF_REACTOR:'ReadImageDefinitionReactor'}[r.Name];this[method](r);}}
+  RecoverUnlinkedLayouts(){
+    // A surviving BLOCK_RECORD layout pointer still requires a layout when its
+    // OBJECTS record was omitted. Reuse that physical block and its identities.
+    const doc=this.doc;
+    for(const record of this.Records('TABLES','BLOCK_RECORD')){
+      const pointer=canonicalHandle(value(subclass(record.Tags,'AcDbBlockTableRecord'),340,''));
+      if(pointer===null||pointer==='0')continue;
+      const block=this.blockByRecordHandle.get(record.Envelope.Handle);
+      if(!block||block.Record.Layout!==null)continue;
+      let layout;
+      if(OrdinalIgnoreCaseEquals(block.Name,api.Block.DefaultModelSpaceName))layout=api.Layout.ModelSpace;
+      else{
+        let counter=1;while(doc.Layouts.Contains('Layout'+counter))counter++;
+        layout=new api.Layout('Layout'+counter);layout.TabOrder=doc.Layouts.Count+1;
+      }
+      layout.AssociatedBlock=block;doc.Layouts.Add(layout);
+    }
+  }
+  EnsureDefaultObjects(){const doc=this.doc;this.RecoverUnlinkedLayouts();if(!doc.Layouts.Contains('Model')){const layout=api.Layout.ModelSpace;layout.AssociatedBlock=doc.Blocks.get_Item(api.Block.DefaultModelSpaceName);doc.Layouts.Add(layout);}
+    if(doc.RasterVariables===null)doc.RasterVariables=new api.RasterVariables(doc);if(!doc.MlineStyles.Contains(api.MLineStyle.DefaultName))doc.MlineStyles.Add(api.MLineStyle.Default);}
+  ReadEntities(){let block=null;for(const r of this.Records('BLOCKS')){if(r.Name==='BLOCK'){block=this.doc.Blocks.get_Item(decoded(r.Tags,2));continue;}if(r.Name==='ENDBLK'){block=null;continue;}if(!block)throw new InvalidDataException('Entity outside a BLOCK envelope.');this.ReadEntity(r,block);}
+    for(const r of this.Records('ENTITIES')){if(this.consumed?.has(r.Start))continue;let block=this.blockByRecordHandle.get(r.Envelope.Owner);if(!block){const paper=value(r.Envelope.Common,67,0)!==0;block=this.doc.Blocks.get_Item(paper?api.Block.DefaultPaperSpaceName:api.Block.DefaultModelSpaceName);if(!block&&paper){const layout=this.doc.Layouts.Add(new api.Layout('Layout1'));block=layout.AssociatedBlock;}}this.ReadEntity(r,block);}}
+  ReadEntity(r,block){if(this.consumed?.has(r.Start))return null;let entity;const code=r.Name;
+    const common=io.IsOpaqueEntityCandidate(code)?null:this.ReadEntityCommon(r);
+    if(Object.hasOwn(primitiveReaders,code))entity=io[primitiveReaders[code]](this.Cursor(r),this.doc);
+    else if(['3DSOLID','BODY','REGION'].includes(code))entity=io.ReadAcisEntity(this.Cursor(r),this.doc,code);
+    else if(['MULTILEADER','MLEADER'].includes(code))entity=io.ReadMultiLeader(this.ContextWithCursor(r));
+    else if(['SECTION','SECTIONOBJECT'].includes(code))entity=io.ReadSection(this.ContextWithCursor(r),code);
+    else if(code==='ACAD_TABLE')entity=io.ReadStoredTable(this.Cursor(r),this.doc,this.storedTables);
+    else if(code==='ATTDEF'){entity=this.ReadAttributeDefinition(r);this.ValidateRetainedEntityIdentity(r);this.Track(entity,r,false);this.ApplyCommon(entity,common);block.AttributeDefinitions.Add(entity);return entity;}
+    else {const dispatch=Object.assign(Object.create(null),{TEXT:'ReadText',MTEXT:'ReadMText',INSERT:'ReadInsert',MESH:'ReadMesh',VIEWPORT:'ReadViewport',POLYLINE:'ReadPolyline',HATCH:'ReadHatch',DIMENSION:'ReadDimension',ARC_DIMENSION:'ReadDimension',LEADER:'ReadLeader',TOLERANCE:'ReadTolerance',MLINE:'ReadMLine',IMAGE:'ReadImage',WIPEOUT:'ReadWipeout',SHAPE:'ReadShape',DGNUNDERLAY:'ReadUnderlay',DWFUNDERLAY:'ReadUnderlay',PDFUNDERLAY:'ReadUnderlay'}),method=dispatch[code];
+      if(method){if(typeof this[method]!=='function')throw new NotSupportedException('Typed entity reader is not implemented for '+code);entity=this[method](r,block);}else {this.chunk=this.Context.Chunk=new DocumentTagReader(this.tags,r.Start,this.identities);entity=io.ReadOpaqueEntity(this.Context,r.Section==='BLOCKS');}}
+    if(entity==null)return null;if(!(entity instanceof api.DxfOpaqueEntity))this.ValidateRetainedEntityIdentity(r);this.Track(entity,r,false);this.ApplyCommon(entity,common);
+    if(entity instanceof api.Viewport&&entity.Id===1&&block.Record.Layout?.IsPaperSpace){const layout=block.Record.Layout;layout.Viewport=entity;entity.Owner=block;this.doc.AddedObjects.Add(entity.Handle,entity);this.Context.RecordSourceObject(entity,r.Envelope.Source);}
+    else block.Entities.Add(entity);return entity;}
+  ValidateRetainedEntityIdentity(r){
+    // Check only retained entities, after body admission. Sequence children and
+    // skipped records have separate contracts; generated handles are not input identities.
+    if(!r.Envelope.Handle||r.Envelope.Handle==='0')
+      throw new FormatException('A retained DXF entity requires a nonzero common handle: '+r.Name);
+    let count=0,depth=0;
+    for(const tag of r.Tags.slice(1)){
+      if(tag.Code===102){if(tag.Value.startsWith('{'))depth++;else if(tag.Value==='}'&&depth>0)depth--;continue;}
+      if(depth>0)continue;
+      if(tag.Code===100)break;
+      if(tag.Code===5&&++count>1)throw new FormatException('A retained DXF entity repeats its common handle: '+r.Name);
+    }
+  }
+  ReadEntityCommon(r){
+    // Read the common phase before the body codec. A later malformed body must
+    // not change the order of resource registration or hide common-data errors.
+    let depth=0,first=-1;
+    for(let i=1;i<r.Tags.length;i++){
+      const tag=r.Tags[i];
+      if(tag.Code===102){if(tag.Value.startsWith('{'))depth++;else if(tag.Value==='}'&&depth>0)depth--;continue;}
+      if(depth===0&&tag.Code===100){first=i;break;}
+    }
+    const premature=()=>{throw new Exception('Premature end of entity '+r.Name+' definition.');};
+    if(first<0)premature();
+    if(r.Tags[first].Value!=='AcDbEntity')throw new InvalidDataException('Expected AcDbEntity common subclass.');
+    const chunk=new DocumentTagReader(this.tags,r.Start+first,this.identities),data=new io.EntityCommonDataReader();
+    const fields={Layer:api.Layer.Default,Color:api.AciColor.ByLayer,Linetype:api.Linetype.ByLayer,
+      Lineweight:api.Lineweight.ByLayer,LinetypeScale:1,IsVisible:true,Transparency:api.Transparency.ByLayer,Data:data};
+    chunk.Next();
+    while(chunk.Code!==100){
+      switch(chunk.Code){
+        case 0:premature();break;
+        case 8:fields.Layer=this.Resource('Layers',DecodeDxfText(chunk.ReadString()));break;
+        case 62:if(!fields.Color.UseTrueColor)fields.Color=api.AciColor.FromCadIndex(chunk.ReadShort());break;
+        case 6:fields.Linetype=this.Resource('Linetypes',DecodeDxfText(chunk.ReadString()));break;
+        case 420:fields.Color=api.AciColor.FromTrueColor(chunk.ReadInt());break;
+        case 440:fields.Transparency=api.Transparency.FromAlphaValue(chunk.ReadInt());break;
+        case 370:fields.Lineweight=chunk.ReadShort();break;
+        case 48:{const scale=chunk.ReadDouble();fields.LinetypeScale=scale<=0?1:scale;break;}
+        case 60:fields.IsVisible=chunk.ReadShort()===0;break;
+        case 430:case 284:case 92:case 160:case 310:
+          io.ReadEntityCommonData(chunk,this.doc.DrawingVariables.AcadVer,data);break;
+      }
+      chunk.Next();
+    }
+    data.Complete();
+    if(chunk.ReadString()==='AcDbEntity')throw new InvalidDataException('Duplicate AcDbEntity common subclass.');
+    return fields;
+  }
+  ContextWithCursor(r){this.Cursor(r);return this.Context;}
+  ApplyCommon(entity,fields){
+    if(entity instanceof api.DxfOpaqueEntity)return;
+    // The source records identity before the property assignments and assigns
+    // Layer, Color and Linetype in this order (observable through resource events).
+    entity.Layer=fields.Layer;entity.Color=fields.Color;entity.Linetype=fields.Linetype;
+    entity.Lineweight=fields.Lineweight;entity.LinetypeScale=fields.LinetypeScale;
+    entity.IsVisible=fields.IsVisible;entity.Transparency=fields.Transparency;
+    entity.ColorName=fields.Data.ColorName;entity.ShadowMode=fields.Data.ShadowMode;entity.ProxyGraphics=fields.Data.ProxyGraphics;
+  }
+
+  ReadViewport(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),vp=new api.Viewport(value(t,69,2));
+    for(const[code,key,dim]of[[10,'Center',3],[12,'ViewCenter',2],[13,'SnapBase',2],[14,'SnapSpacing',2],[15,'GridSpacing',2],[16,'ViewDirection',3],[17,'ViewTarget',3],[110,'UcsOrigin',3],[111,'UcsXAxis',3],[112,'UcsYAxis',3]])if(value(t,code)!==null)vp[key]=point(t,code,dim);
+    for(const[code,key]of[[40,'Width'],[41,'Height'],[68,'Stacking'],[42,'LensLength'],[43,'FrontClipPlane'],[44,'BackClipPlane'],[45,'ViewHeight'],[50,'SnapAngle'],[51,'TwistAngle'],[72,'CircleZoomPercent'],[90,'Status']])if(value(t,code)!==null)vp[key]=value(t,code);
+    for(const tag of t)if(tag.Code===331){const layer=this.doc.GetObjectByHandle(tag.Value);if(!(layer instanceof api.Layer))throw new InvalidDataException('Unresolved VIEWPORT frozen layer.');this.deferred.push(()=>vp.FrozenLayers.Add(layer));}
+    if(value(t,340)!==null)this.deferred.push(()=>{const boundary=this.doc.GetObjectByHandle(value(t,340));if(boundary===null)throw new InvalidDataException('Unresolved viewport clipping boundary.');vp.ClippingBoundary=boundary;});
+    if(value(t,361)!==null)this.Context.sunReferences.push([vp,value(t,361)]);readXData(vp,r.Tags,this.doc);return vp;}
+  ReadTextBody(r,definition=false){
+    // TEXT and ATTDEF have different recovery, decoding and registry timing.
+    // Both read the complete body in wire order, not just its first subclass.
+    const chunk=this.Cursor(r),first=api.Vector3.Zero,second=api.Vector3.Zero,normal=api.Vector3.UnitZ,xdata=[];
+    let text='',tag='',prompt='',style=api.TextStyle.Default,height=0,widthFactor=definition?0:1;
+    let rotation=0,oblique=0,flags=0,horizontal=0,vertical=0,backward=false,upsideDown=false;
+    chunk.Next();
+    while(chunk.Code!==0){
+      switch(chunk.Code){
+        case 1:text=definition?DecodeDxfText(chunk.ReadString()):chunk.ReadString();break;
+        case 2:if(definition)tag=DecodeDxfText(chunk.ReadString());break;
+        case 3:if(definition)prompt=DecodeDxfText(chunk.ReadString());break;
+        case 70:if(definition)flags=chunk.ReadShort();break;
+        case 10:first.X=chunk.ReadDouble();break;case 20:first.Y=chunk.ReadDouble();break;case 30:first.Z=chunk.ReadDouble();break;
+        case 11:second.X=chunk.ReadDouble();break;case 21:second.Y=chunk.ReadDouble();break;case 31:second.Z=chunk.ReadDouble();break;
+        case 40:
+          height=chunk.ReadDouble();
+          if(!definition&&height<=0)height=this.doc.DrawingVariables.TextSize;
+          break;
+        case 41:
+          widthFactor=chunk.ReadDouble();
+          // The pinned TEXT reader intentionally uses TEXTSIZE, not 1, here.
+          if(!definition&&(widthFactor<0.01||widthFactor>100))widthFactor=this.doc.DrawingVariables.TextSize;
+          break;
+        case 50:rotation=chunk.ReadDouble();break;
+        case 51:
+          oblique=chunk.ReadDouble();
+          if(definition){oblique=api.MathHelper.NormalizeAngle(oblique);if(oblique>180)oblique-=360;}
+          if(oblique< -85||oblique>85)oblique=0;
+          break;
+        case 7:{
+          let name=DecodeDxfText(chunk.ReadString());
+          if(!definition&&name.length===0)name=this.doc.DrawingVariables.TextStyle;
+          style=this.Resource('TextStyles',name);break;
+        }
+        case 71:{const generation=chunk.ReadShort();if(generation===2||generation===6)backward=true;if(generation===4||generation===6)upsideDown=true;break;}
+        case 72:horizontal=chunk.ReadShort();break;
+        case 73:if(!definition)vertical=chunk.ReadShort();break;
+        case 74:if(definition)vertical=chunk.ReadShort();break;
+        case 210:normal.X=chunk.ReadDouble();break;case 220:normal.Y=chunk.ReadDouble();break;case 230:normal.Z=chunk.ReadDouble();break;
+        // TEXT registers each application immediately; ATTDEF accumulates detached entries.
+        case 1001:xdata.push(ReadXDataRecord(chunk,this.doc,definition));continue;
+      }
+      chunk.Next();
+    }
+    let alignment=api.TextAlignment.BaselineLeft;
+    if(horizontal>=0&&horizontal<=2&&vertical>=1&&vertical<=3)alignment=(3-vertical)*3+horizontal;
+    else if(vertical===0&&horizontal>=1&&horizontal<=5)alignment=9+horizontal;
+    let width=1,position=alignment===api.TextAlignment.BaselineLeft?first:second;
+    if(alignment===api.TextAlignment.Aligned||alignment===api.TextAlignment.Fit){
+      width=api.Vector3.Subtract(second,first).Modulus();if(width<=0)width=1;position=first;
+    }
+    let item;
+    if(definition){
+      item=new api.AttributeDefinition(tag);
+      item.Position=api.MathHelper.Transform(position,normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);
+      item.Normal=normal;item.Alignment=alignment;item.Prompt=prompt;item.Value=text;item.Flags=flags;item.Style=style;
+      item.Height=height;item.Width=width;item.WidthFactor=api.MathHelper.IsZero(widthFactor)?style.WidthFactor:widthFactor;
+      item.ObliqueAngle=oblique;item.Rotation=rotation;item.IsBackward=backward;item.IsUpsideDown=upsideDown;
+    }else{
+      text=DecodeDxfText(text);item=new api.Text();
+      item.Value=text;item.Height=height;item.Width=width;item.WidthFactor=widthFactor;
+      item.Rotation=rotation;item.ObliqueAngle=oblique;item.IsBackward=backward;item.IsUpsideDown=upsideDown;item.Style=style;
+      item.Position=api.MathHelper.Transform(position,normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);
+      item.Normal=normal;item.Alignment=alignment;
+    }
+    item.XData.AddRange(xdata);return item;
+  }
+  ReadText(r){return this.ReadTextBody(r);}
+  ReadAttributeDefinition(r){return this.ReadTextBody(r,true);}
+  ReadAttribute(r){
+    // ATTRIB is read inside the INSERT sequence, not through an entity codec.
+    // Validate/consume its common subclass before looking at text fields.
+    const chunk=new DocumentTagReader(this.tags,r.Start,this.identities),common=new io.EntityCommonDataReader();
+    let layer=api.Layer.Default,linetype=api.Linetype.ByLayer,color=api.AciColor.ByLayer;
+    let lineweight=api.Lineweight.ByLayer,linetypeScale=1,isVisible=true,transparency=api.Transparency.ByLayer;
+    const premature=()=>{throw new Exception('Premature end of entity ATTRIB definition.');};
+    chunk.Next();
+    while(chunk.Code!==100){if(chunk.Code===0)premature();if(chunk.Code===5)chunk.ReadHex();chunk.Next();}
+    if(chunk.ReadString()!=='AcDbEntity')throw new InvalidDataException('Expected AcDbEntity common subclass for ATTRIB.');
+    chunk.Next();
+    while(chunk.Code!==100){
+      switch(chunk.Code){
+        case 0:premature();break;
+        case 8:layer=this.Resource('Layers',DecodeDxfText(chunk.ReadString()));break;
+        case 6:linetype=this.Resource('Linetypes',DecodeDxfText(chunk.ReadString()));break;
+        case 62:if(!color.UseTrueColor)color=api.AciColor.FromCadIndex(chunk.ReadShort());break;
+        case 420:color=api.AciColor.FromTrueColor(chunk.ReadInt());break;
+        case 440:transparency=api.Transparency.FromAlphaValue(chunk.ReadInt());break;
+        case 370:lineweight=chunk.ReadShort();break;
+        case 48:linetypeScale=chunk.ReadDouble();break;
+        case 60:isVisible=chunk.ReadShort()===0;break;
+        case 430:case 284:case 92:case 160:case 310:
+          io.ReadEntityCommonData(chunk,this.doc.DrawingVariables.AcadVer,common);break;
+      }
+      chunk.Next();
+    }
+    // Payload length failure precedes a duplicate subclass failure in C#.
+    common.Complete();
+    if(chunk.ReadString()==='AcDbEntity')throw new InvalidDataException('Duplicate AcDbEntity common subclass.');
+    // Consume the whole text body in source order, including fields after XData.
+    // The pinned reader does not infer Rotation from the two alignment points.
+    let tag='',text='',style=api.TextStyle.Default,height=0,widthFactor=0,rotation=0,oblique=0,flags=0,h=0,v=0;
+    let backward=false,upsideDown=false;
+    const first=api.Vector3.Zero,second=api.Vector3.Zero,normal=api.Vector3.UnitZ,xdata=[];
+    chunk.Next();
+    while(chunk.Code!==0){
+      switch(chunk.Code){
+        case 2:tag=DecodeDxfText(chunk.ReadString());break;
+        case 1:text=DecodeDxfText(chunk.ReadString());break;
+        case 70:flags=chunk.ReadShort();break;
+        case 10:first.X=chunk.ReadDouble();break;case 20:first.Y=chunk.ReadDouble();break;case 30:first.Z=chunk.ReadDouble();break;
+        case 11:second.X=chunk.ReadDouble();break;case 21:second.Y=chunk.ReadDouble();break;case 31:second.Z=chunk.ReadDouble();break;
+        case 7:style=this.Resource('TextStyles',DecodeDxfText(chunk.ReadString()));break;
+        case 40:height=chunk.ReadDouble();break;
+        case 41:widthFactor=chunk.ReadDouble();break;
+        case 50:rotation=chunk.ReadDouble();break;
+        case 51:
+          oblique=api.MathHelper.NormalizeAngle(chunk.ReadDouble());if(oblique>180)oblique-=360;
+          if(oblique< -85||oblique>85)oblique=0;break;
+        case 71:{const generation=chunk.ReadShort();if(generation===2||generation===6)backward=true;if(generation===4||generation===6)upsideDown=true;break;}
+        case 72:h=chunk.ReadShort();break;case 74:v=chunk.ReadShort();break;
+        case 210:normal.X=chunk.ReadDouble();break;case 220:normal.Y=chunk.ReadDouble();break;case 230:normal.Z=chunk.ReadDouble();break;
+        case 1001:xdata.push(ReadXDataRecord(chunk,null,true));continue;
+      }
+      chunk.Next();
+    }
+    let alignment=api.TextAlignment.BaselineLeft;
+    if(h>=0&&h<=2&&v>=1&&v<=3)alignment=(3-v)*3+h;
+    else if(v===0&&h>=1&&h<=5)alignment=9+h;
+    let width=1,position=alignment===api.TextAlignment.BaselineLeft?first:second;
+    if(alignment===api.TextAlignment.Fit||alignment===api.TextAlignment.Aligned){width=api.Vector3.Subtract(second,first).Modulus();if(width<=0)width=1;position=first;}
+    // The internal constructor accepts empty strings, but ReadAttribute explicitly discards them.
+    if(tag.length===0)return null;
+    const item=api.Attribute.CreateOverload('string',tag);
+    item.Color=color;item.Layer=layer;item.Linetype=linetype;item.Lineweight=lineweight;
+    item.LinetypeScale=linetypeScale;item.Transparency=transparency;item.IsVisible=isVisible;item.Definition=null;
+    item.Position=api.MathHelper.Transform(position,normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);
+    item.Normal=normal;item.Alignment=alignment;item.Value=text;item.Flags=flags;item.Style=style;
+    item.Height=height;item.Width=width;item.WidthFactor=api.MathHelper.IsZero(widthFactor)?style.WidthFactor:widthFactor;
+    item.ObliqueAngle=oblique;item.Rotation=rotation;item.IsBackward=backward;item.IsUpsideDown=upsideDown;
+    item.ColorName=common.ColorName;item.ShadowMode=common.ShadowMode;item.ProxyGraphics=common.ProxyGraphics;
+    item.XData.AddRange(xdata);this.Track(item,r,false);return item;
+  }
+  ReadInsert(r,owner){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),block=this.doc.Blocks.get_Item(decoded(t,2));if(!block)throw new InvalidDataException('Unresolved INSERT block: '+decoded(t,2));const attributes=[];
+    if(value(t,66,0)!==0){let next=r.End;while(true){const record=this.records.find(row=>row.Start===next&&row.Section===r.Section);if(!record)throw new InvalidDataException('Truncated INSERT attribute sequence.');this.consumed.add(record.Start);next=record.End;if(record.Name==='SEQEND')break;if(record.Name!=='ATTRIB')throw new InvalidDataException('INSERT requires ATTRIB records followed by SEQEND.');const attribute=this.ReadAttribute(record);if(attribute!==null)attributes.push(attribute);}}
+    const item=api.Insert.CreateOverload('System.Collections.Generic.List<netDxf.Entities.Attribute>',attributes);item.Block=block;item.Normal=point(t,210,3,api.Vector3.UnitZ);item.Position=api.MathHelper.Transform(point(t,10),item.Normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);item.Rotation=value(t,50,0);
+    const factor=api.UnitHelper.ConversionFactor(block.Record.Units,owner.Record.IsForInternalUseOnly?this.doc.DrawingVariables.InsUnits:owner.Record.Units);item.Scale=new api.Vector3(value(t,41,1)/factor,value(t,42,1)/factor,value(t,43,1)/factor);item.ColumnCount=value(t,70,1);item.RowCount=value(t,71,1);item.ColumnSpacing=value(t,44,0);item.RowSpacing=value(t,45,0);readXData(item,r.Tags,this.doc);
+    this.deferred.push(()=>{for(const a of item.Attributes)a.Definition=block.AttributeDefinitions.ContainsTag(a.Tag)?block.AttributeDefinitions.get_Item(a.Tag):null;});return item;}
+  ReadMText(r){const chunk=this.Cursor(r,'AcDbMText'),item=new api.MText(),background={value:null},columns={value:null},definedHeight={value:null},position=api.Vector3.Zero,normal=api.Vector3.UnitZ,direction=api.Vector3.UnitX,parts=[];let explicitDirection=false,rotation=0;chunk.Next();
+    while(chunk.Code!==0){if(io.TryReadMTextColumnTag(chunk,columns,definedHeight))continue;if(io.TryReadMTextBackground(chunk,background)){chunk.Next();continue;}
+      const code=chunk.Code,v=chunk.Value;if(code===1001){readXData(item,r.Tags.slice(chunk.index-r.Start),this.doc);while(chunk.Code!==0)chunk.Next();break;}if(code===101){columns.value=io.ReadMTextEmbeddedColumns(chunk);continue;}
+      if(code===1||code===3)parts.push(v);else if([10,20,30].includes(code))position[code===10?'X':code===20?'Y':'Z']=v;else if([210,220,230].includes(code))normal[code===210?'X':code===220?'Y':'Z']=v;
+      else if([11,21,31].includes(code)){direction[code===11?'X':code===21?'Y':'Z']=v;explicitDirection=true;}else if(code===50){rotation=v;explicitDirection=false;}
+      else if(code===40)item.Height=v>0?v:1;else if(code===41)item.RectangleWidth=Math.max(0,v);else if(code===44)item.LineSpacingFactor=v>=.25&&v<=4?v:1;else if(code===71)item.AttachmentPoint=v;else if(code===72)item.DrawingDirection=v;else if(code===73)item.LineSpacingStyle=v;else if(code===7)item.Style=this.Resource('TextStyles',DecodeDxfText(v));chunk.Next();
+    }
+    item.Position=position;item.Normal=normal;item.Value=DecodeDxfText(parts.join(''));if(explicitDirection){const d=api.MathHelper.Transform(direction,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);rotation=api.Vector2.Angle(new api.Vector2(d.X,d.Y));}item.Rotation=rotation*api.MathHelper.RadToDeg;item.BackgroundFill=background.value;item.Columns=columns.value;item.$definedColumnHeight=definedHeight.value;io.ReadMTextColumnXData(item);return item;}
+  ReadMesh(record) {
+    this.Cursor(record);
+    const c = this.chunk, xdata = [];
+    let vertices = null, faces = null, edges = null;
+    let subdivisionLevel = 0, blendCrease = false, privateDepth = 0;
+    let publicSubclass = true, xdataStarted = false, creaseListRead = false;
+    let versionRead = false, blendRead = false, subdivisionRead = false, overrideRead = false;
+    while (c.Code !== 0) {
+      // Counted readers own their items. Only uncounted group 90 declares
+      // overrides; private packets and post-XData tails are not mesh fields.
+      if (c.Code === 102) {
+        const control = c.ReadString();
+        if (control.startsWith('{')) privateDepth++;
+        else if (control === '}' && privateDepth > 0) privateDepth--;
+        this.ReadNextMeshTag(); continue;
+      }
+      if (privateDepth > 0) { this.ReadNextMeshTag(); continue; }
+      if (c.Code === 100) {
+        publicSubclass = c.ReadString() === 'AcDbSubDMesh';
+        this.ReadNextMeshTag(); continue;
+      }
+      if (c.Code === 1001) xdataStarted = true;
+      else if (!publicSubclass || xdataStarted) { this.ReadNextMeshTag(); continue; }
+      switch (c.Code) {
+        case 10: case 20: case 30: case 140:
+          throw this.MeshReadError(c.Code, 'A mesh list item must belong to its declared counted list.');
+        case 90: {
+          if (overrideRead) throw this.MeshReadError(90, 'The subentity override count is declared more than once.');
+          const count = c.ReadInt();
+          if (count < 0) throw this.MeshReadError(90, 'The subentity override count cannot be negative.');
+          if (count !== 0) throw this.MeshReadError(90, 'Subentity property overrides are not supported.');
+          overrideRead = true; this.ReadNextMeshTag(); break;
+        }
+        case 71:
+          if (versionRead) throw this.MeshReadError(71, 'The mesh version is declared more than once.');
+          versionRead = true; this.ReadNextMeshTag(); break;
+        case 72: {
+          if (blendRead) throw this.MeshReadError(72, 'The blend flag is declared more than once.');
+          blendRead = true;
+          const blend = c.ReadShort();
+          if (blend !== 0 && blend !== 1) throw new InvalidDataException('MESH group 72 (Blend Crease) must be zero or one.');
+          blendCrease = blend === 1; this.ReadNextMeshTag(); break;
+        }
+        case 91:
+          if (subdivisionRead) throw this.MeshReadError(91, 'The subdivision level is declared more than once.');
+          subdivisionRead = true; subdivisionLevel = c.ReadInt();
+          if (subdivisionLevel < 0 || subdivisionLevel > 255)
+            throw this.MeshReadError(91, 'Subdivision level must be between zero and 255.');
+          this.ReadNextMeshTag(); break;
+        case 92: {
+          if (vertices !== null) throw this.MeshReadError(92, 'The vertex count is declared more than once.');
+          const count = c.ReadInt(); this.ReadNextMeshTag(); vertices = this.ReadMeshVertexes(count); break;
+        }
+        case 93: {
+          if (faces !== null) throw this.MeshReadError(93, 'The face-list size is declared more than once.');
+          const size = c.ReadInt(); this.ReadNextMeshTag(); faces = this.ReadMeshFaces(size); break;
+        }
+        case 94: {
+          if (edges !== null) throw this.MeshReadError(94, 'The edge count is declared more than once.');
+          const count = c.ReadInt(); this.ReadNextMeshTag(); edges = this.ReadMeshEdges(count); break;
+        }
+        case 95: {
+          if (creaseListRead) throw this.MeshReadError(95, 'The crease count is declared more than once.');
+          const count = c.ReadInt(); this.ReadNextMeshTag();
+          if (count < 0 || edges === null || count !== edges.length)
+            throw this.MeshReadError(95, 'The crease count must match an existing edge list.');
+          for (const edge of edges) {
+            this.RequireMeshCode(140); edge.Crease = c.ReadDouble(); this.ReadNextMeshTag();
+          }
+          creaseListRead = true; break;
+        }
+        case 1001: xdata.push(ReadXDataRecord(c, this.doc)); break;
+        default: this.ReadNextMeshTag(); break;
+      }
+    }
+    // Indices are checked only after all independently ordered lists are read.
+    if (vertices === null) throw this.MeshReadError(92, 'The vertex list is missing.');
+    if (faces === null) throw this.MeshReadError(93, 'The face list is missing.');
+    for (const face of faces) for (const index of face)
+      if (index >= vertices.length) throw this.MeshReadError(90, 'A face index is outside the vertex list.');
+    for (const edge of edges ?? [])
+      if (edge.StartVertexIndex >= vertices.length || edge.EndVertexIndex >= vertices.length)
+        throw this.MeshReadError(90, 'An edge index is outside the vertex list.');
+    const mesh = new api.Mesh(vertices, faces, edges);
+    mesh.SubdivisionLevel = subdivisionLevel; mesh.BlendCrease = blendCrease;
+    mesh.XData.AddRange(xdata);
+    return mesh;
+  }
+  ReadNextMeshTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  RequireMeshCode(code) {
+    if (this.chunk.Code !== code) throw this.MeshReadError(code, 'Unexpected group ' + this.chunk.Code + ' in a counted list.');
+  }
+  MeshReadError(code, message) {
+    return new InvalidDataException('Invalid MESH group ' + code + ' at position ' + this.chunk.CurrentPosition + ': ' + message);
+  }
+  ReadMeshVertexes(count) {
+    if (count < 0) throw this.MeshReadError(92, 'The vertex count cannot be negative.');
+    const vertices = [];
+    // Grow from complete consumed coordinates, never a declared capacity.
+    for (let i = 0; i < count; i++) {
+      this.RequireMeshCode(10); const x = this.chunk.ReadDouble(); this.ReadNextMeshTag();
+      this.RequireMeshCode(20); const y = this.chunk.ReadDouble(); this.ReadNextMeshTag();
+      this.RequireMeshCode(30); const z = this.chunk.ReadDouble(); this.ReadNextMeshTag();
+      vertices.push(new api.Vector3(x, y, z));
+    }
+    return vertices;
+  }
+  ReadMeshFaces(size) {
+    if (size < 0) throw this.MeshReadError(93, 'The face-list size cannot be negative.');
+    const faces = [];
+    let remaining = size;
+    while (remaining > 0) {
+      this.RequireMeshCode(90); const count = this.chunk.ReadInt();
+      if (count < 3 || count > remaining - 1)
+        throw this.MeshReadError(93, 'Each face needs at least three indices and must fit the declared face-list size.');
+      remaining--; this.ReadNextMeshTag();
+      const indices = [];
+      for (let i = 0; i < count; i++) {
+        this.RequireMeshCode(90); const index = this.chunk.ReadInt();
+        if (index < 0) throw this.MeshReadError(90, 'Face vertex indices cannot be negative.');
+        indices.push(index); remaining--; this.ReadNextMeshTag();
+      }
+      faces.push(indices);
+    }
+    return faces;
+  }
+  ReadMeshEdges(count) {
+    if (count < 0) throw this.MeshReadError(94, 'The edge count cannot be negative.');
+    const edges = [];
+    for (let i = 0; i < count; i++) {
+      this.RequireMeshCode(90); const start = this.chunk.ReadInt(); this.ReadNextMeshTag();
+      this.RequireMeshCode(90); const end = this.chunk.ReadInt();
+      if (start < 0 || end < 0) throw this.MeshReadError(90, 'Edge vertex indices cannot be negative.');
+      this.ReadNextMeshTag(); edges.push(new api.MeshEdge(start, end));
+    }
+    return edges;
+  }
+
+  ReadPolyline(r){const tags=publicPayload(r.Tags.slice(r.Envelope.Body)),marker=r.Tags[r.Envelope.Body]?.Value,flags=value(tags,70,0),smooth=value(tags,75,0),normal=point(tags,210,3,api.Vector3.UnitZ),xdata=new api.XDataDictionary();readXData({XData:xdata},r.Tags,this.doc);let result;
+    this.Cursor(r);const context=this.Context;
+    if(marker==='AcDbPolyFaceMesh')result=io.ReadStoredPolyfaceMesh(context);
+    else if(marker==='AcDb2dPolyline')result=io.ReadStoredPolyline2D(context);
+    else if(marker==='AcDb3dPolyline'||marker==='AcDbPolygonMesh'){
+      while(this.chunk.Code!==0)this.chunk.Next();
+      if(!(flags&6)&&smooth===0)result=marker==='AcDb3dPolyline'?io.ReadStoredPolylineSequence(context,flags,normal,Array.from(xdata.Values)):io.ReadStoredPolygonMeshSequence(context,flags,normal,Array.from(xdata.Values),value(tags,71,0),value(tags,72,0));
+      else {const vertices=[];while(this.chunk.Code===0&&this.chunk.ReadString()==='VERTEX'){if(vertices.length>=65536)throw new InvalidDataException('POLYLINE vertex admission limit exceeded.');vertices.push(ReadVertex(context));}
+        if(this.chunk.Code!==0||this.chunk.ReadString()!=='SEQEND')throw new InvalidDataException('POLYLINE requires SEQEND.');this.chunk.Next();while(this.chunk.Code!==0)this.chunk.Next();const controls=vertices.filter(v=>!(flags&4)||!!(v.Flags&16));
+        if(marker==='AcDb3dPolyline'){result=new api.Polyline3D(controls.map(v=>v.Position),!!(flags&1));result.SmoothType=smooth===8?0:smooth;}
+        else{const u=value(tags,71,0),v=value(tags,72,0),points=[];if(controls.length!==u*v)throw new InvalidDataException('POLYGONMESH control count must equal M*N.');for(let i=0;i<controls.length;i++)points[Math.floor(i/v)+(i%v)*u]=controls[i].Position;result=new api.PolygonMesh(u,v,points);result.SmoothType=smooth===8?0:smooth;if(value(tags,73,0)>0)result.DensityU=value(tags,73);if(value(tags,74,0)>0)result.DensityV=value(tags,74);}
+        result.Flags=flags;result.Normal=normal;result.XData.AddRange(xdata.Values);
+      }
+    }else throw new InvalidDataException('Unsupported POLYLINE subclass '+marker);
+    for(const child of this.records)if(child.Section===r.Section&&child.Start>=r.End&&child.Start<this.chunk.index)this.consumed.add(child.Start);return result;
+  }
+
+  ReadUnderlay(r){
+    const chunk=this.Cursor(r),position=api.Vector3.Zero,normal=api.Vector3.UnitZ,scale=new api.Vector2(1),points=[],xdata=[];
+    let handle=null,rotation=0,display=api.UnderlayDisplayFlags.ShowUnderlay,contrast=100,fade=0,clip=api.Vector2.Zero;
+    chunk.Next();
+    while(chunk.Code!==0){
+      switch(chunk.Code){
+        case 10:position.X=chunk.ReadDouble();break;case 20:position.Y=chunk.ReadDouble();break;case 30:position.Z=chunk.ReadDouble();break;
+        case 41:case 42:{let value=DotNetMath.Abs(chunk.ReadDouble());if(api.MathHelper.IsZero(value))value=1;if(chunk.Code===41)scale.X=value;else scale.Y=value;break;}
+        case 50:rotation=chunk.ReadDouble();break;
+        case 210:normal.X=chunk.ReadDouble();break;case 220:normal.Y=chunk.ReadDouble();break;case 230:normal.Z=chunk.ReadDouble();break;
+        case 340:handle=chunk.ReadHex();break;
+        case 280:display=chunk.ReadShort();break;case 281:contrast=chunk.ReadShort();break;case 282:fade=chunk.ReadShort();break;
+        case 11:clip=new api.Vector2();clip.X=chunk.ReadDouble();break;
+        case 21:clip.Y=chunk.ReadDouble();points.push(new api.Vector2(clip.X,clip.Y));break;
+        case 1001:xdata.push(ReadXDataRecord(chunk,this.doc));continue;
+      }chunk.Next();
+    }
+    const wcs=api.MathHelper.Transform(position,normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);
+    const boundary=points.length<2?null:points.length===2?new api.ClippingBoundary(...points):new api.ClippingBoundary(points);
+    const item=CreateUnderlayForImport();item.Position=wcs;item.Scale=scale;item.Normal=normal;item.Rotation=rotation;
+    item.DisplayOptions=display;item.Contrast=contrast;item.Fade=fade;item.ClippingBoundary=boundary;item.XData.AddRange(xdata);
+    // Construction/metadata errors precede discarding a missing or explicitly null reference.
+    if(handle===null||handle==='0')return null;
+    const definition=this.doc.GetObjectByHandle(handle);
+    if(!(definition instanceof api.UnderlayDefinition))throw new InvalidDataException('Unresolved underlay definition.');
+    item.Definition=definition;return item;
+  }
+  ReadPoints(tags,code,dimension=3){const points=[];for(let i=0;i<tags.length;i++)if(tags[i].Code===code){const stop=tags.findIndex((t,j)=>j>i&&t.Code===code);points.push(point(tags.slice(i,stop<0?tags.length:stop),code,dimension));}return points;}
+  ReadWipeout(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),position=point(t,10),u=point(t,11,3,api.Vector3.UnitX),v=point(t,12,3,api.Vector3.UnitY),normal=api.Vector3.Normalize(api.Vector3.CrossProduct(u,v)),origin=api.MathHelper.Transform(position,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),ux=api.MathHelper.Transform(u,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),vy=api.MathHelper.Transform(v,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),points=this.ReadPoints(t,14,2),type=value(t,71,1);
+    if(type===2&&points.length>1&&api.Vector2.Equals(points[0],points.at(-1)))points.pop();const transformed=points.map(p=>new api.Vector2(origin.X+(p.X+.5)*ux.X+(.5-p.Y)*vy.X,origin.Y+(p.X+.5)*ux.Y+(.5-p.Y)*vy.Y)),boundary=type===1?new api.ClippingBoundary(...transformed):new api.ClippingBoundary(transformed),item=new api.Wipeout(boundary);item.Normal=normal;item.Elevation=origin.Z;readXData(item,r.Tags,this.doc);return item;}
+  ReadTolerance(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),item=api.Tolerance.ParseStringRepresentation(decoded(t,1));item.Position=point(t,10);item.Normal=point(t,210,3,api.Vector3.UnitZ);item.Style=this.Resource('DimensionStyles',decoded(t,3,'Standard'));const direction=api.MathHelper.Transform(point(t,11,3,api.Vector3.UnitX),item.Normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);item.Rotation=api.Vector2.Angle(new api.Vector2(direction.X,direction.Y))*api.MathHelper.RadToDeg;readXData(item,r.Tags,this.doc);this.ReadDimensionOverrides(item);return item;}
+  ReadLeader(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),normal=point(t,210,3,api.Vector3.UnitZ),points=this.ReadPoints(t,10).map(p=>api.MathHelper.Transform(p,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object)),style=this.Resource('DimensionStyles',decoded(t,3,'Standard')),item=new api.Leader(points.map(p=>new api.Vector2(p.X,p.Y)),style,value(t,75,0)!==0);item.Normal=normal;item.Elevation=points[0]?.Z??0;item.ShowArrowhead=value(t,71,1)!==0;item.PathType=value(t,72,0);item.LineColor=api.AciColor.FromCadIndex(value(t,77,256));const direction=api.MathHelper.Transform(point(t,211,3,api.Vector3.UnitX),normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),offset=api.MathHelper.Transform(point(t,213),normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);item.Direction=new api.Vector2(direction.X,direction.Y);item.Offset=new api.Vector2(offset.X,offset.Y);const handle=value(t,340);if(handle)this.deferred.push(()=>{const annotation=this.doc.GetObjectByHandle(handle);if(!annotation)throw new InvalidDataException('Unresolved LEADER annotation.');item.Annotation=annotation;});readXData(item,r.Tags,this.doc);this.ReadDimensionOverrides(item);return item;}
+  ReadMLine(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),normal=point(t,210,3,api.Vector3.UnitZ),style=this.doc.GetObjectByHandle(value(t,340))??this.doc.MlineStyles.get_Item(decoded(t,2,'Standard'));if(!style)throw new InvalidDataException('Unresolved MLINE style.');const item=new api.MLine([],style,value(t,40,1));item.Normal=normal;item.Flags=value(t,71,1);item.Justification=value(t,70,1);const origin=api.MathHelper.Transform(point(t,10),normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);item.Elevation=origin.Z;
+    for(let i=0;i<t.length;i++)if(t[i].Code===11){let end=i+1;while(end<t.length&&t[end].Code!==11)end++;const tags=t.slice(i,end),vectors=[11,12,13].map(code=>{const p=api.MathHelper.Transform(point(tags,code),normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);return new api.Vector2(p.X,p.Y);}),distances=[];for(let n=0;n<tags.length;n++)if(tags[n].Code===74){const count=tags[n].Value;if(count<0||count>tags.length-n-1)throw new InvalidDataException('Invalid MLINE distance count.');const row=new ReferenceList();for(let j=0;j<count;j++){if(tags[++n]?.Code!==41)throw new InvalidDataException('Missing MLINE distance.');row.Add(tags[n].Value);}distances.push(row);}item.Vertexes.Add(new api.MLineVertex(...vectors,distances));i=end-1;}
+    if(value(t,72,item.Vertexes.Count)!==item.Vertexes.Count)throw new InvalidDataException('MLINE vertex count mismatch.');readXData(item,r.Tags,this.doc);return item;}
+  ReadImage(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),definition=this.doc.GetObjectByHandle(value(t,340));if(!(definition instanceof api.ImageDefinition))throw new InvalidDataException('Unresolved IMAGE definition.');const u=point(t,11),v=point(t,12),normal=api.Vector3.Normalize(api.Vector3.CrossProduct(u,v)),factor=api.UnitHelper.ConversionFactor(this.doc.RasterVariables.Units,this.doc.DrawingVariables.InsUnits),item=new api.Image(definition,point(t,10),u.Modulus()*Math.abs(value(t,13,1))/factor,v.Modulus()*Math.abs(value(t,23,1))/factor);item.Normal=normal;const ux=api.MathHelper.Transform(u,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),vy=api.MathHelper.Transform(v,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object);item.Uvector=new api.Vector2(ux.X,ux.Y);item.Vvector=new api.Vector2(vy.X,vy.Y);item.DisplayOptions=value(t,70,7);item.Clipping=value(t,280,0)!==0;item.Brightness=value(t,281,50);item.Contrast=value(t,282,50);item.Fade=value(t,283,0);const points=this.ReadPoints(t,14,2).map(p=>new api.Vector2(p.X+.5,p.Y+.5)),type=value(t,71,1);if(type===2&&points.length>1&&api.Vector2.Equals(points[0],points.at(-1)))points.pop();if(points.length)item.ClippingBoundary=type===1?new api.ClippingBoundary(...points):new api.ClippingBoundary(points);readXData(item,r.Tags,this.doc);return item;}
+  ReadShape(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),style=this.doc.GetObjectByHandle(value(t,340));if(!(style instanceof api.ShapeStyle))throw new InvalidDataException('Unresolved SHAPE style.');const name=style.ShapeName(value(t,2,0));if(!name)throw new InvalidDataException('Unresolved SHAPE number.');const item=new api.Shape(name,style);item.Normal=point(t,210,3,api.Vector3.UnitZ);item.Position=api.MathHelper.Transform(point(t,10),item.Normal,api.CoordinateSystem.Object,api.CoordinateSystem.World);item.Size=value(t,40,1);item.Rotation=value(t,50,0);item.WidthFactor=value(t,41,1);item.ObliqueAngle=value(t,51,0);item.Thickness=value(t,39,0);readXData(item,r.Tags,this.doc);return item;}
+
+  ReadHatch(record) {
+    // Metadata is record-wide: a counted packet can occur before or after XData.
+    // Each packet consumes only its own grammar; scanning for a suffix loses data.
+    let name = '', fill = api.HatchFillType.SolidFill, elevation = 0;
+    const normal = api.Vector3.UnitZ, xdata = [];
+    let patternAngle = 0, patternScale = 1, patternType = api.HatchType.UserDefined;
+    let patternStyle = api.HatchStyle.Normal, isDouble = false, associative = false;
+    let patternLines = null, gradient = null, boundaries = [], hasBoundaryCount = false;
+    let seedPoints = null, pixelSize = null;
+    this.Cursor(record);
+    while (this.chunk.Code !== 0) {
+      switch (this.chunk.Code) {
+        case 2: name = DecodeDxfText(this.chunk.ReadString()); this.chunk.Next(); break;
+        case 30: elevation = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 210: normal.X = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 220: normal.Y = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 230: normal.Z = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 70: fill = this.chunk.ReadShort(); this.chunk.Next(); break;
+        case 71: if (this.chunk.ReadShort() !== 0) associative = true; this.chunk.Next(); break;
+        case 91:
+          if (hasBoundaryCount) throw this.InvalidHatchPathData('duplicate group-91 boundary list');
+          hasBoundaryCount = true;
+          boundaries = this.ReadHatchBoundaryPaths(this.chunk.ReadInt());
+          break;
+        case 92: case 93:
+          throw this.InvalidHatchPathData('path data outside the declared group-91 boundary list');
+        case 52: patternAngle = this.chunk.ReadDouble(); this.chunk.Next(); break;
+        case 41:
+          patternScale = this.chunk.ReadDouble();
+          if (patternScale <= 0) patternScale = 1;
+          this.chunk.Next(); break;
+        case 75: patternStyle = this.chunk.ReadShort(); this.chunk.Next(); break;
+        case 76: patternType = this.chunk.ReadShort(); this.chunk.Next(); break;
+        case 77: {
+          const flag = this.chunk.ReadShort();
+          if (flag !== 0 && flag !== 1) throw new InvalidDataException('Invalid HATCH double-pattern flag for group code 77 at position ' + this.chunk.CurrentPosition + ': expected 0 or 1.');
+          isDouble = flag === 1; this.chunk.Next(); break;
+        }
+        case 78:
+          if (patternLines !== null) throw this.InvalidHatchPatternData('duplicate group-78 definition list');
+          patternLines = this.ReadHatchPatternDefinitionLine(this.chunk.ReadShort()); break;
+        case 53: case 43: case 44: case 45: case 46: case 79: case 49:
+          throw this.InvalidHatchPatternData('pattern field outside its declared line or dash count');
+        case 450: case 451: case 452: case 453: case 460: case 461: case 462: case 470: case 463: case 63: case 421:
+          gradient ??= { Fields: 0, Colors: [] }; this.ReadHatchGradientData(gradient); break;
+        case 47: pixelSize = this.ReadHatchPixelSize(pixelSize); break;
+        case 98:
+          if (seedPoints !== null) throw this.InvalidHatchSeedData('duplicate group-98 list');
+          seedPoints = this.ReadHatchSeedPoints(); break;
+        case 1001: xdata.push(ReadXDataRecord(this.chunk, this.doc)); break;
+        default: this.chunk.Next(); break;
+      }
+    }
+    let pattern = gradient === null ? null : this.CreateHatchGradientPattern(gradient);
+    if (pattern === null) pattern = new api.HatchPattern(name);
+    if (!(pattern instanceof api.HatchGradientPattern)) pattern.Angle = patternAngle;
+    pattern.Scale = patternScale; pattern.Type = patternType; pattern.Style = patternStyle;
+    pattern.IsDouble = isDouble; pattern.Fill = fill;
+    for (const data of patternLines ?? []) pattern.LineDefinitions.Add(this.CreateHatchPatternLine(data, patternScale, patternAngle));
+
+    // An empty input remains an editable metadata entity. The writer's existing
+    // boundary preflight rejects export before touching the destination or handles.
+    const item = new api.Hatch(pattern, [], associative);
+    item.Elevation = elevation; item.Normal = normal; item.PixelSize = pixelSize;
+    item.SeedPoints.Clear();
+    for (const seed of seedPoints ?? []) item.SeedPoints.Add(seed);
+    // Hydrate only after physical source entities have been registered. Generated
+    // defaults, ambiguous identities and non-entity objects are not valid sources.
+    // Attach a complete path through the normal handler so duplicate source uses
+    // acquire exactly one reactor per occurrence, as in the pinned reader.
+    this.deferred.push(() => {
+      for (const { path, handles } of boundaries) {
+        for (const handle of handles) {
+          if (!item.Associative)
+            throw new InvalidDataException('HATCH ' + item.Handle + ' has source boundary objects on a non-associative path; this typed combination is not supported.');
+          const target = this.Context.GetObjectBySourceHandle(handle);
+          if (!(target instanceof api.EntityObject) || target === item || target.Owner !== item.Owner)
+            throw new InvalidDataException('HATCH ' + item.Handle + ' source boundary reference ' + handle + ' must identify a retained source entity in the same block.');
+          path.AddContour(target);
+        }
+        item.BoundaryPaths.Add(path);
+      }
+    });
+    item.XData.AddRange(xdata);
+    if (item.XData.ContainsAppId('ACAD')) {
+      const records = item.XData.get_Item('ACAD').XDataRecord, index = io.HatchPatternXData.FindOrigin(records);
+      if (index >= 0) pattern.Origin = new api.Vector2(records.get_Item(index).Value, records.get_Item(index + 1).Value);
+    }
+    return item;
+  }
+  ReadHatchBoundaryPaths(count) {
+    if (count < 0) throw this.InvalidHatchPathData('negative group-91 path count');
+    const boundaries = [];
+    this.ReadNextHatchEdgeTag();
+    for (let index = 0; index < count; index++) {
+      if (this.chunk.Code !== 92) throw this.InvalidHatchPathData('expected group code 92 for path ' + index);
+      const pathType = this.chunk.ReadInt(), edges = [];
+      this.ReadNextHatchEdgeTag();
+      if (pathType & 2) {
+        const closed = {}, verticesCount = {};
+        io.ReadHatchPolylineHeader(this, closed, verticesCount);
+        const vertices = [];
+        for (let i = 0; i < verticesCount.value; i++) {
+          this.RequireHatchPolylineCode(10); const x = this.chunk.ReadDouble(); this.ReadNextHatchPolylineTag();
+          this.RequireHatchPolylineCode(20); const y = this.chunk.ReadDouble(); this.ReadNextHatchPolylineTag();
+          let bulge = 0;
+          if (this.chunk.Code === 42) { bulge = this.chunk.ReadDouble(); this.ReadNextHatchPolylineTag(); }
+          vertices.push(new api.Vector3(x, y, bulge));
+        }
+        edges.push(Object.assign(new api.HatchBoundaryPath.Polyline(), { IsClosed: closed.value, Vertexes: vertices }));
+      } else {
+        if (this.chunk.Code !== 93) throw this.InvalidHatchPathData('expected group code 93 after non-polyline path flags');
+        const edgeCount = this.ReadHatchEdgeCount(93);
+        for (let i = 0; i < edgeCount; i++) {
+          this.RequireHatchEdgeCode(72); const type = this.chunk.ReadShort();
+          if (type < 1 || type > 4) throw this.InvalidHatchEdgeData('unsupported edge type ' + type);
+          this.ReadNextHatchEdgeTag();
+          edges.push(type === 4 ? this.ReadHatchSplineEdge() : io.ReadHatchScalarEdge(this, type));
+        }
+      }
+      const handles = [];
+      if (pathType & 2) {
+        const referenceCount = this.ReadHatchPolylineCount(97); this.ReadNextHatchPolylineTag();
+        for (let i = 0; i < referenceCount; i++) {
+          this.RequireHatchPolylineCode(330); handles.push(this.chunk.ReadHex()); this.ReadNextHatchPolylineTag();
+        }
+        if ([10, 20, 42, 72, 73, 93, 97, 330].includes(this.chunk.Code))
+          throw this.InvalidHatchPolylineData('unexpected data after the counted polyline lists');
+      } else {
+        const referenceCount = this.ReadHatchEdgeCount(97);
+        for (let i = 0; i < referenceCount; i++) {
+          this.RequireHatchEdgeCode(330); handles.push(this.chunk.ReadHex()); this.ReadNextHatchEdgeTag();
+        }
+        if ([72, 97, 330].includes(this.chunk.Code)) throw this.InvalidHatchEdgeData('excess edge or source-reference data');
+      }
+      const path = api.HatchBoundaryPath.FromEdges(edges); path.PathType = pathType;
+      // Grow from complete input packets, never from the advertised capacity.
+      boundaries.push({ path, handles });
+    }
+    return boundaries;
+  }
+  ReadHatchSplineEdge() {
+    const degree = {}, rational = {}, periodic = {}, knotCount = {}, controlCount = {};
+    io.ReadHatchSplineHeader(this, degree, rational, periodic, knotCount, controlCount);
+    const knots = [], controls = [];
+    for (let i = 0; i < knotCount.value; i++) knots.push(this.ReadHatchEdgeDouble(40));
+    for (let i = 0; i < controlCount.value; i++) {
+      const point = this.ReadHatchEdgePoint(10, 20), weight = this.chunk.Code === 42 ? this.ReadHatchEdgeDouble(42) : 1;
+      controls.push(new api.Vector3(point.X, point.Y, weight));
+    }
+    const spline = Object.assign(new api.HatchBoundaryPath.Spline(), {
+      Degree: degree.value, IsRational: rational.value, IsPeriodic: periodic.value, Knots: knots, ControlPoints: controls
+    });
+    if (this.doc.DrawingVariables.AcadVer >= api.DxfVersion.AutoCad2010) {
+      const count = this.ReadHatchEdgeCount(97);
+      for (let i = 0; i < count; i++) spline.FitPoints.Add(this.ReadHatchEdgePoint(11, 21));
+      while (this.chunk.Code === 12 || this.chunk.Code === 13) {
+        if (this.chunk.Code === 12) {
+          if (spline.StartTangent !== null) throw this.InvalidHatchEdgeData('duplicate spline start tangent');
+          spline.StartTangent = this.ReadHatchEdgePoint(12, 22);
+        } else {
+          if (spline.EndTangent !== null) throw this.InvalidHatchEdgeData('duplicate spline end tangent');
+          spline.EndTangent = this.ReadHatchEdgePoint(13, 23);
+        }
+      }
+    }
+    try { HatchSplineData.Validate(spline); }
+    catch (error) { if (error instanceof ArgumentException) throw this.InvalidHatchEdgeData(error.message); throw error; }
+    return spline;
+  }
+  ReadHatchSeedPoints() {
+    const count = this.chunk.ReadInt();
+    if (count < 0) throw this.InvalidHatchSeedData('negative group-98 count');
+    const values = [];
+    this.ReadNextHatchSeedTag();
+    for (let i = 0; i < count; i++) {
+      if (this.chunk.Code !== 10) throw this.InvalidHatchSeedData('expected group 10 for seed X');
+      const x = this.chunk.ReadDouble(); this.ReadNextHatchSeedTag();
+      if (this.chunk.Code !== 20) throw this.InvalidHatchSeedData('expected group 20 for seed Y');
+      const y = this.chunk.ReadDouble(); values.push(new api.Vector2(x, y)); this.ReadNextHatchSeedTag();
+    }
+    return values;
+  }
+  ReadNextHatchSeedTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  InvalidHatchSeedData(detail) {
+    return new InvalidDataException('Invalid HATCH seed-point data at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  ReadHatchPixelSize(previous) {
+    const value = this.chunk.ReadDouble();
+    if (previous !== null || value < 0) throw new InvalidDataException('Invalid HATCH pixel size for group code 47 at position ' + this.chunk.CurrentPosition + ': expected one nonnegative value.');
+    this.chunk.Next(); return value;
+  }
+  InvalidHatchPathData(detail) {
+    return new InvalidDataException('Invalid HATCH boundary path list at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  // Gradient scalar order is independent of stop order. Counts are constraints,
+  // never allocation sizes, and XData is consumed by the surrounding record reader.
+  ReadHatchGradientData(data){
+    const code=this.chunk.Code,field=code===450?1:code===451?2:code===452?4:code===453?8:
+      code===460?16:code===461?32:code===462?64:code===470?128:0;
+    if(data.Fields&field)throw this.InvalidHatchGradientData('duplicate scalar field');
+    data.Fields|=field;
+    switch(code){
+      case 450:data.Kind=this.chunk.ReadInt();break;
+      case 451:data.Reserved=this.chunk.ReadInt();break;
+      case 452:data.Mode=this.chunk.ReadInt();break;
+      case 453:data.ColorCount=this.chunk.ReadInt();break;
+      case 460:data.Angle=this.chunk.ReadDouble();break;
+      case 461:data.Shift=this.chunk.ReadDouble();break;
+      case 462:data.Tint=this.chunk.ReadDouble();break;
+      case 470:data.Name=this.chunk.ReadString();break;
+      case 463:
+        if(data.Colors.length===2)throw this.InvalidHatchGradientData('more than two group-463 color stops');
+        data.Colors.push({Position:this.chunk.ReadDouble(),Index:null,HasRgb:false,Color:null});break;
+      case 63:case 421:{
+        if(data.Colors.length===0)throw this.InvalidHatchGradientData('color component without a preceding group-463 stop');
+        const color=data.Colors[data.Colors.length-1];
+        if(code===63){
+          if(color.Index!==null)throw this.InvalidHatchGradientData('duplicate ACI component in a color stop');
+          color.Index=this.chunk.ReadShort();
+        }else{
+          if(color.HasRgb)throw this.InvalidHatchGradientData('duplicate RGB component in a color stop');
+          color.Color=api.AciColor.FromTrueColor(this.chunk.ReadInt());color.HasRgb=true;
+        }break;
+      }
+    }
+    this.chunk.Next();
+  }
+  CreateHatchGradientPattern(data){
+    if(data.Fields!==255)throw this.InvalidHatchGradientData('expected exactly one of each group 450, 451, 452, 453, 460, 461, 462 and 470');
+    if(data.Kind!==0&&data.Kind!==1)throw this.InvalidHatchGradientData('group code 450 must be zero or one');
+    if(data.ColorCount!==(data.Kind===0?0:2)||data.Colors.length!==data.ColorCount)
+      throw this.InvalidHatchGradientData('group code 453 must declare zero colors for solid or exactly two gradient stops');
+    if(data.Kind===0)return null;
+    if(data.Reserved!==0)throw this.InvalidHatchGradientData('unsupported reserved value for group code 451');
+    if(data.Mode!==0&&data.Mode!==1)throw this.InvalidHatchGradientData('group code 452 must be zero or one');
+    if(data.Shift<0||data.Shift>1)throw this.InvalidHatchGradientData('group code 461 shift must be between zero and one','shift');
+    if(data.Tint<0||data.Tint>1)throw this.InvalidHatchGradientData('group code 462 tint must be between zero and one','tint');
+    for(let i=0;i<data.Colors.length;i++)if(!data.Colors[i].HasRgb||data.Colors[i].Position!==i)
+      throw this.InvalidHatchGradientData('expected group-463 values zero then one, each with one group-421 RGB value');
+    const type=Object.entries(HatchGradientPatternTypeStringValues).find(([,name])=>OrdinalIgnoreCaseEquals(name,data.Name));
+    if(!type)throw this.InvalidHatchGradientData('unsupported gradient name for group code 470');
+    const result=new api.HatchGradientPattern(data.Colors[0].Color,data.Colors[1].Color,data.Mode===1,data.Tint,Number(type[0]));
+    result.Shift=data.Shift;result.Angle=data.Angle*api.MathHelper.RadToDeg;
+    result.Color1AciIndex=data.Colors[0].Index;result.Color2AciIndex=data.Colors[1].Index;
+    return result;
+  }
+  InvalidHatchGradientData(reason,context='data'){
+    return new InvalidDataException('Invalid HATCH gradient '+context+' at group code '+this.chunk.Code+', position '+this.chunk.CurrentPosition+': '+reason+'.');
+  }
+  ReadHatchPatternDefinitionLine(numLines){
+    if(numLines<0)throw this.InvalidHatchPatternData('negative group-78 line count');
+    const definitions=[];this.ReadNextHatchPatternTag();
+    for(let i=0;i<numLines;i++){
+      if(this.chunk.Code!==53)throw this.InvalidHatchPatternData('expected group 53 to start the next pattern line');
+      const angle=this.chunk.ReadDouble();this.ReadNextHatchPatternTag();
+      const origin=api.Vector2.Zero,delta=api.Vector2.Zero,dashes=[];let fields=0;
+      while(fields!==31){
+        const code=this.chunk.Code,field=code===43?1:code===44?2:code===45?4:code===46?8:code===79?16:0;
+        if(!field)throw this.InvalidHatchPatternData('expected unconsumed line fields 43, 44, 45, 46 and 79');
+        if(fields&field)throw this.InvalidHatchPatternData('duplicate scalar or dash-count field in one pattern line');
+        fields|=field;
+        if(code===79){
+          const count=this.chunk.ReadShort();if(count<0)throw this.InvalidHatchPatternData('negative group-79 dash count');
+          this.ReadNextHatchPatternTag();
+          for(let j=0;j<count;j++){if(this.chunk.Code!==49)throw this.InvalidHatchPatternData('expected group 49 for the next dash length');dashes.push(this.chunk.ReadDouble());this.ReadNextHatchPatternTag();}
+        }else{
+          const target=code===43||code===44?origin:delta;target[code===43||code===45?'X':'Y']=this.chunk.ReadDouble();this.ReadNextHatchPatternTag();
+        }
+      }
+      definitions.push({angle,origin,delta,dashes});
+    }
+    return definitions;
+  }
+  CreateHatchPatternLine(data,scale,patternAngle){
+    // Match the source operation order. Do not normalize the wire angles before
+    // rotating, or divide a completed sum instead of its individual terms.
+    const sinOrigin=DotNetMath.Sin(patternAngle*api.MathHelper.DegToRad),cosOrigin=DotNetMath.Cos(patternAngle*api.MathHelper.DegToRad);
+    const sinDelta=DotNetMath.Sin(data.angle*api.MathHelper.DegToRad),cosDelta=DotNetMath.Cos(data.angle*api.MathHelper.DegToRad);
+    const line=new api.HatchPatternLineDefinition();line.Angle=data.angle-patternAngle;
+    line.Origin=new api.Vector2(cosOrigin*data.origin.X/scale+sinOrigin*data.origin.Y/scale,-sinOrigin*data.origin.X/scale+cosOrigin*data.origin.Y/scale);
+    line.Delta=new api.Vector2(cosDelta*data.delta.X/scale+sinDelta*data.delta.Y/scale,-sinDelta*data.delta.X/scale+cosDelta*data.delta.Y/scale);
+    for(const dash of data.dashes)line.DashPattern.Add(dash/scale);return line;
+  }
+  ReadNextHatchPatternTag(){do{this.chunk.Next();}while(this.chunk.Code===999);}
+  InvalidHatchPatternData(detail){return new InvalidDataException('Invalid HATCH pattern definition at group code '+this.chunk.Code+', position '+this.chunk.CurrentPosition+': '+detail+'.');}
+  RequireHatchPolylineCode(code) { if (this.chunk.Code !== code) throw this.InvalidHatchPolylineData('expected group code ' + code); }
+  RequireHatchEdgeCode(code) { if (this.chunk.Code !== code) throw this.InvalidHatchEdgeData('expected group code ' + code); }
+  InvalidHatchPolylineData(detail) {
+    return new InvalidDataException('Invalid HATCH polyline boundary at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  InvalidHatchEdgeData(detail) {
+    return new InvalidDataException('Invalid HATCH edge boundary at group code ' + this.chunk.Code + ', position ' + this.chunk.CurrentPosition + ': ' + detail + '.');
+  }
+  ReadHatchPolylineCount(code) {
+    this.RequireHatchPolylineCode(code); const count = this.chunk.ReadInt();
+    if (count < 0) throw this.InvalidHatchPolylineData('expected a nonnegative list count');
+    return count;
+  }
+  ReadHatchEdgeCount(code) {
+    this.RequireHatchEdgeCode(code); const count = this.chunk.ReadInt();
+    if (count < 0) throw this.InvalidHatchEdgeData('negative list count');
+    this.ReadNextHatchEdgeTag(); return count;
+  }
+  ReadHatchPolylineFlag(code) {
+    this.RequireHatchPolylineCode(code); const flag = this.chunk.ReadShort();
+    if (flag !== 0 && flag !== 1) throw this.InvalidHatchPolylineData('expected a flag of zero or one');
+    return flag !== 0;
+  }
+  ReadHatchEdgeFlag(code) {
+    this.RequireHatchEdgeCode(code); const flag = this.chunk.ReadShort();
+    if (flag !== 0 && flag !== 1) throw this.InvalidHatchEdgeData('expected a flag of zero or one');
+    this.ReadNextHatchEdgeTag(); return flag !== 0;
+  }
+  ReadNextHatchPolylineTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  ReadNextHatchEdgeTag() { do { this.chunk.Next(); } while (this.chunk.Code === 999); }
+  ReadHatchEdgeDouble(code) {
+    this.RequireHatchEdgeCode(code); const value = this.chunk.ReadDouble(); this.ReadNextHatchEdgeTag(); return value;
+  }
+  ReadHatchEdgePoint(xCode, yCode) { return new api.Vector2(this.ReadHatchEdgeDouble(xCode), this.ReadHatchEdgeDouble(yCode)); }
+
+  ReadDimension(r){const t=publicPayload(r.Tags.slice(r.Envelope.Body)),flags=value(t,70,0),type=r.Name==='ARC_DIMENSION'?7:flags&15,normal=point(t,210,3,api.Vector3.UnitZ),worldToObject=p=>api.MathHelper.Transform(p,normal,api.CoordinateSystem.World,api.CoordinateSystem.Object),xy=p=>new api.Vector2(p.X,p.Y),definition=worldToObject(point(t,10)),ref=code=>xy(worldToObject(point(t,code))),names=['LinearDimension','AlignedDimension','Angular2LineDimension','DiametricDimension','RadialDimension','Angular3PointDimension','OrdinateDimension','ArcLengthDimension'];if(!names[type])throw new InvalidDataException('Unsupported DIMENSION type '+type);const item=new api[names[type]]();item.Normal=normal;item.Elevation=definition.Z;
+    if(type===0||type===1){item.FirstReferencePoint=ref(13);item.SecondReferencePoint=ref(14);if(type===0)item.Rotation=value(t,50,0);item.SetDimensionLinePosition(xy(definition));}
+    else if(type===3||type===4){item.ReferencePoint=ref(15);item.CenterPoint=type===3?api.Vector2.MidPoint(item.ReferencePoint,xy(definition)):xy(definition);item.DefinitionPoint=xy(definition);}
+    else if(type===2){item.StartFirstLine=ref(13);item.EndFirstLine=ref(14);item.StartSecondLine=ref(15);item.EndSecondLine=xy(definition);if(api.Vector2.AreParallel(api.Vector2.Subtract(item.EndFirstLine,item.StartFirstLine),api.Vector2.Subtract(item.EndSecondLine,item.StartSecondLine)))return null;item.SetDimensionLinePosition(point(t,16,2));}
+    else if(type===5){item.StartPoint=ref(13);item.EndPoint=ref(14);item.CenterPoint=ref(15);item.SetDimensionLinePosition(xy(definition));}
+    else if(type===6){item.Origin=xy(definition);item.Rotation=360-value(t,51,0);item.Axis=flags&64?api.OrdinateDimensionAxis.X:api.OrdinateDimensionAxis.Y;item.FeaturePoint=ref(13);item.LeaderEndPoint=ref(14);item.DefinitionPoint=xy(definition);}
+    else{item.CenterPoint=ref(15);const a=ref(13),b=ref(14);item.Radius=api.Vector2.Distance(item.CenterPoint,a);item.StartAngle=api.Vector2.Angle(api.Vector2.Subtract(a,item.CenterPoint))*api.MathHelper.RadToDeg;item.EndAngle=api.Vector2.Angle(api.Vector2.Subtract(b,item.CenterPoint))*api.MathHelper.RadToDeg;item.SetDimensionLinePosition(xy(definition));}
+    item.Style=this.Resource('DimensionStyles',decoded(t,3,'Standard'));const block=decoded(t,2);if(block)item.Block=this.doc.Blocks.get_Item(block);item.TextReferencePoint=point(t,11,2);item.TextPositionManuallySet=!!(flags&128);item.TextRotation=value(t,53,0);item.AttachmentPoint=value(t,71,5);item.LineSpacingStyle=value(t,72,1);const spacing=value(t,41,1);item.LineSpacingFactor=spacing>=.25&&spacing<=4?spacing:1;item.UserText=decoded(t,1);readXData(item,r.Tags,this.doc);this.ReadDimensionOverrides(item);return item;
+  }
+  ReadDimensionOverrides(item){if(!item.XData.ContainsAppId('ACAD'))return;const sections=dstyleSections(item.XData.get_Item('ACAD').XDataRecord),fields=new Map();for(const s of sections){let depth=0;for(let i=0;i<s.Payload.length;i++){const tag=s.Payload[i];if(tag.Code===1002){if(tag.Value==='{')depth++;else depth=Math.max(0,depth-1);}else if(depth===0&&tag.Code===1070&&i+1<s.Payload.length)fields.set(tag.Value,s.Payload[++i].Value);}}
+    const add=(name,v)=>{if(item instanceof api.Tolerance){if(name==='TextHeight')item.TextHeight=v;return;}const type=api.DimensionStyleOverrideType[name];if(type===undefined)throw new InvalidDataException('Unknown typed style override '+name);const entry=new api.DimensionStyleOverride(type,v);if(item.StyleOverrides.ContainsType(type))item.StyleOverrides.set_Item(type,entry);else item.StyleOverrides.Add(entry);};
+    for(const[id,name,kind,table]of dimensionOverrideFields){if(!fields.has(id))continue;let v=fields.get(id);if(kind==='handle'){if(v==='0'&&table==='Blocks')v=null;else{v=table==='Blocks'?this.blockByRecordHandle.get(canonicalHandle(v)):this.doc.GetObjectByHandle(v);if(v==null)throw new InvalidDataException('Unresolved DSTYLE resource '+id);}}else if(kind==='color')v=api.AciColor.FromCadIndex(v);else if(kind==='bool')v=name==='FitDimLineInside'?!v:!!v;else if(kind==='char')v=String.fromCharCode(v);add(name,v);}
+    if(fields.has(69))add('TextFillColor',fields.get(69)===2?api.AciColor.FromCadIndex(fields.get(70)??0):null);
+    for(const[id,prefix,names]of zeroSuppressionGroups)if(fields.has(id)){const state={};applySuppression(state,fields.get(id));for(const n of names)add(prefix+n,state[n]);}
+    if(fields.has(79)){add('SuppressAngularLeadingZeros',!!(fields.get(79)&1));add('SuppressAngularTrailingZeros',!!(fields.get(79)&2));}
+    for(const[id,prefix,separator]of[[3,'Dim','<>'],[4,'AltUnits','[]']])if(fields.has(id)){const text=fields.get(id),at=text.indexOf(separator);add(prefix+'Prefix',at<0?'':text.slice(0,at));add(prefix+'Suffix',at<0?text:text.slice(at+2));}
+    if(fields.has(273)){const units=fields.get(273);add('AltUnitsLengthUnits',units===6?4:units===7?5:units===8?6:units);add('AltUnitsStackedUnits',units===4||units===5);}
+    if(fields.has(71)||fields.has(72)){const upper=fields.get(47)??item.Style.Tolerances.UpperLimit,lower=fields.get(48)??item.Style.Tolerances.LowerLimit;add('TolerancesDisplayMethod',fields.get(72)?3:fields.get(71)?(upper===lower?1:2):0);}
+  }
+  ReadObjects(){for(const r of this.Records('OBJECTS')){if(legacyObjects.has(r.Name))continue;this.chunk=this.Context.Chunk=new DocumentTagReader(this.tags,r.Start,this.identities);if(r.Name==='DICTIONARY'||r.Name==='ACDBDICTIONARYWDFLT'){const legacy=ReadDictionaryDatabaseRecord(this.Context);this.Context.dictionaries.Add(legacy.Handle,legacy);if(r===this.rootRecord)this.Context.namedDictionary=legacy;}else ReadDatabaseRecord(this.Context);}}
+  ReadLayout(r){const plot=this.ReadPlotSettings(r),t=subclass(r.Tags,'AcDbLayout'),name=decoded(t,1,this.dictionaryNames.get(r.Envelope.Handle)??'Layout1'),block=this.blockByRecordHandle.get(canonicalHandle(value(t,330,'')))??this.doc.Blocks.get_Item(name.toUpperCase()==='MODEL'?api.Block.DefaultModelSpaceName:api.Block.DefaultPaperSpaceName);
+    if(!block)throw new InvalidDataException('LAYOUT has no associated BLOCK_RECORD.');const layout=api.Layout.CreateOverload('string,netDxf.Blocks.Block,netDxf.Objects.PlotSettings',name,block,plot);const order=value(t,71,0);if(order>0)layout.TabOrder=order;
+    for(const[code,key,dim]of[[10,'MinLimit',2],[11,'MaxLimit',2],[12,'BasePoint',3],[14,'MinExtents',3],[15,'MaxExtents',3],[13,'UcsOrigin',3],[16,'UcsXAxis',3],[17,'UcsYAxis',3]])if(value(t,code)!==null)layout[key]=point(t,code,dim);layout.Elevation=value(t,146,0);this.Track(layout,r);this.doc.Layouts.Add(layout,false);return layout;}
+  ReadPlotSettings(r){
+    const tags=r.Tags,start=tags.findIndex(tag=>tag.Code===100&&tag.Value==='AcDbPlotSettings');
+    if(start<0)return new api.PlotSettings();
+    let end=start+1;
+    while(end<tags.length&&tags[end].Code!==100&&tags[end].Code!==0)end++;
+    // The embedded parser verifies its terminator before interpreting values or
+    // queuing a shade reference. A later AcDbLayout marker cannot repair a wrong one.
+    if(end===tags.length||tags[end].Code!==100||tags[end].Value!=='AcDbLayout')
+      throw new FormatException('Embedded plot settings must be followed by the AcDbLayout subclass.');
+    const handle={},plot=io.ParsePlotSettings(this.Context,tags.slice(start,end).filter(tag=>tag.Code!==999),handle);
+    this.Context.outputShadeReferences.push([plot,handle.value]);return plot;
+  }
+  ReadRasterVariables(r){const t=subclass(r.Tags,'AcDbRasterVariables'),item=new api.RasterVariables(this.doc);item.DisplayFrame=value(t,70,1)!==0;item.DisplayQuality=value(t,71,1);item.Units=value(t,72,0);this.Track(item,r);this.doc.RasterVariables=item;return item;}
+  ReadMLineStyle(r){const t=subclass(r.Tags,'AcDbMlineStyle'),name=decoded(t,2,this.dictionaryNames.get(r.Envelope.Handle)??'Standard'),elements=[];for(let i=0;i<t.length;i++)if(t[i].Code===49){let end=i+1;while(end<t.length&&t[end].Code!==49)end++;const s=t.slice(i,end);elements.push(new api.MLineStyleElement(t[i].Value,api.AciColor.FromCadIndex(value(s,62,256)),this.Resource('Linetypes',decoded(s,6,'ByLayer'))));}
+    const item=new api.MLineStyle(name,elements);item.Description=decoded(t,3);item.Flags=value(t,70,0);item.FillColor=api.AciColor.FromCadIndex(value(t,62,256));item.StartAngle=value(t,51,90);item.EndAngle=value(t,52,90);this.Track(item,r);this.doc.MlineStyles.Add(item,false);return item;}
+  ReadGroup(r){const t=subclass(r.Tags,'AcDbGroup'),name=this.dictionaryNames.get(r.Envelope.Handle)??('*A'+this.doc.GroupNamesIndex++),item=new api.Group(name);item.Description=decoded(t,300);item.IsSelectable=value(t,71,1)!==0;this.Track(item,r);this.deferred.push(()=>{for(const tag of t)if(tag.Code===340){const target=this.doc.GetObjectByHandle(tag.Value);if(!target)throw new InvalidDataException('Unresolved GROUP entity '+tag.Value);item.Entities.Add(target);}this.doc.Groups.Add(item,false);});return item;}
+  ReadUnderlayDefinition(r){const t=subclass(r.Tags,'AcDbUnderlayDefinition'),name=this.dictionaryNames.get(r.Envelope.Handle)??PathFileNameWithoutExtension(decoded(t,1)),Type={DGNDEFINITION:'UnderlayDgnDefinition',DWFDEFINITION:'UnderlayDwfDefinition',PDFDEFINITION:'UnderlayPdfDefinition'}[r.Name],property={DGNDEFINITION:'UnderlayDgnDefinitions',DWFDEFINITION:'UnderlayDwfDefinitions',PDFDEFINITION:'UnderlayPdfDefinitions'}[r.Name],item=new api[Type](name,decoded(t,1));if(r.Name==='DGNDEFINITION')item.Layout=decoded(t,2,'Model');else if(r.Name==='PDFDEFINITION')item.Page=decoded(t,2,'1');this.Track(item,r);this.doc[property].Add(item,false);return item;}
+  ReadImageDefinition(r){const t=subclass(r.Tags,'AcDbRasterImageDef'),name=this.dictionaryNames.get(r.Envelope.Handle)??PathFileNameWithoutExtension(decoded(t,1)),factor=api.UnitHelper.ConversionFactor(value(t,281,0),api.DrawingUnits.Millimeters),item=new api.ImageDefinition(name,decoded(t,1),value(t,10,1),factor/value(t,11,1),value(t,20,1),factor/value(t,21,1),value(t,281,0));this.Track(item,r);this.doc.ImageDefinitions.Add(item,false);return item;}
+  ReadImageDefinitionReactor(r){if(r.Envelope.Handle)this.Context.managedReactorHandles.add(r.Envelope.Handle);}
+}
+function DxfAssign(item,seed){return api.DxfObject.prototype.AssignHandle.call(item,seed);}

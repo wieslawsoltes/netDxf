@@ -1,0 +1,16 @@
+artifacts/
+node_modules/
+*.tgz
+
+native/windows/build/
+native/bin/
+
+# Historical recovery bundles and abandoned compiler experiments are not port inputs.
+/recovery/
+/tools/TranslatorProbe/
+
+# Generated execution receipts belong in artifacts/ or external validation archives.
+/doc/*-hosted-*.json
+/doc/*-local-*.json
+__pycache__/
+*.pyc

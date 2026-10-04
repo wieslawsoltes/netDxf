@@ -1,0 +1,3072 @@
+{
+  "schemaVersion": 1,
+  "sourceRef": "3496ab91893a1e4ec9261b4833479f1799149cdc",
+  "generator": "tools/NativePort/Program.cs",
+  "files": [
+    {
+      "source": "netDxf/Entities/AlignedDimension.cs",
+      "target": "netDxf/Entities/AlignedDimension.js",
+      "sourceSha256": "51d66e973a90c087debccaf82cfe0224b36f0138d99b71faeb8c0746c3fcdb38",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,netDxf.Vector3",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "normal",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,netDxf.Vector3,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "normal",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "secondPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "secondPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "FirstReferencePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "SecondReferencePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "DimLinePosition",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "Offset",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "SetDimensionLinePosition",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "723779b210c5d4258c445b240debe4d95fe78e62d980b89bb4cd761820f368fb"
+    },
+    {
+      "source": "netDxf/Entities/LinearDimension.cs",
+      "target": "netDxf/Entities/LinearDimension.js",
+      "sourceSha256": "f4b5b7206bee0e7c0257bf819379b9d246d317cae016eb9c6da1640ba678ad5e",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,double,netDxf.Vector3",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "normal",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,double,double,netDxf.Vector3,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "referenceLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "normal",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,double",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "secondPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "secondPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "FirstReferencePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "SecondReferencePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "DimLinePosition",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "Rotation",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Offset",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "SetDimensionLinePosition",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "5b0bbb841eb65efb3803d1c75fcf13de263b966c3b72978bf79d6545ce830004"
+    },
+    {
+      "source": "netDxf/Entities/Angular2LineDimension.cs",
+      "target": "netDxf/Entities/Angular2LineDimension.js",
+      "sourceSha256": "856a08e678bb0cdd0499ac672a9a3287cab664c67779cfc56f578cff4a1d37d0",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,netDxf.Entities.Line,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "secondLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,netDxf.Entities.Line,double,netDxf.Vector3",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "secondLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "normal",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,netDxf.Entities.Line,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "secondLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Line,netDxf.Entities.Line,double,netDxf.Vector3,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "firstLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "secondLine",
+              "type": "netDxf.Entities.Line",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "normal",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,double",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "startFirstLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endFirstLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "startSecondLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endSecondLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "startFirstLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endFirstLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "startSecondLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endSecondLine",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "CenterPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "StartFirstLine",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "EndFirstLine",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "StartSecondLine",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "EndSecondLine",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "ArcDefinitionPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "Offset",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "$SetDimensionLinePosition0",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2,bool",
+          "isStatic": false,
+          "implementation": "$SetDimensionLinePosition1",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "updateRefs",
+              "type": "bool",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "5f401b9eaf52eefc30982da1775098c1080dc4eefcac77c4b676161327df14dc"
+    },
+    {
+      "source": "netDxf/Entities/Angular3PointDimension.cs",
+      "target": "netDxf/Entities/Angular3PointDimension.js",
+      "sourceSha256": "7bf6e480f67d76e30b4eaaeb002e8036f9650ea04b6b4113f4365d22a570e02c",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,double",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "centerPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "startPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "centerPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "startPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "CenterPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "StartPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "EndPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "ArcDefinitionPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "Offset",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "SetDimensionLinePosition",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "16bcf151254c533f2572bb1e61cef707a3a6469ad1eed9087fc5a7fb1aadb333"
+    },
+    {
+      "source": "netDxf/Entities/ArcLengthDimension.cs",
+      "target": "netDxf/Entities/ArcLengthDimension.js",
+      "sourceSha256": "0c8a6b026eb5fb005b4b51549d090948d10005ce07d4793e47e6df8eadbe81fc",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Polyline2DVertex,netDxf.Entities.Polyline2DVertex,double",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "startPoint",
+              "type": "netDxf.Entities.Polyline2DVertex",
+              "refKind": "None"
+            },
+            {
+              "name": "endPoint",
+              "type": "netDxf.Entities.Polyline2DVertex",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,double",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "startPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "bulge",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "startPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "endPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "bulge",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,double,double,double,double",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "center",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "radius",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "startAngle",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "endAngle",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,double,double,double,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor7",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "center",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "radius",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "startAngle",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "endAngle",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "offset",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "CenterPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Radius",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "StartAngle",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "EndAngle",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "ArcDefinitionPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "Offset",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "ArcAngle",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "SetDimensionLinePosition",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "3834b393b2a81abd6ff41b48c1d195d071a5680f9a40c18b35ea1f0c2bebc7f0"
+    },
+    {
+      "source": "netDxf/Entities/DiametricDimension.cs",
+      "target": "netDxf/Entities/DiametricDimension.js",
+      "sourceSha256": "f2c31191518732fe9f25e23407ce0d74c2f9f53fd6743a78e23906882a06af9e",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Circle,double",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "circle",
+              "type": "netDxf.Entities.Circle",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Circle,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "circle",
+              "type": "netDxf.Entities.Circle",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "centerPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "referencePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "centerPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "referencePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "CenterPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "ReferencePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "SetDimensionLinePosition",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "82bf13dec540c059c5c1d1c3fb62ce358af9d755fc5395d2b849d7a5715b695c"
+    },
+    {
+      "source": "netDxf/Entities/RadialDimension.cs",
+      "target": "netDxf/Entities/RadialDimension.js",
+      "sourceSha256": "88bdebc7ded0db2ff038a68b39305b573ccb6af252a6a441a9003af9dabb79a2",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Arc,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "arc",
+              "type": "netDxf.Entities.Arc",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Circle,double",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "circle",
+              "type": "netDxf.Entities.Circle",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Entities.Circle,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "circle",
+              "type": "netDxf.Entities.Circle",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "centerPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "referencePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "centerPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "referencePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "CenterPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "ReferencePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "SetDimensionLinePosition",
+          "signature": "netDxf.Vector2",
+          "isStatic": false,
+          "implementation": "SetDimensionLinePosition",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "point",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "fcc77128680ac52f9e980e2b2a49263e0257296c7b8b174d31450f33ae1ccdfd"
+    },
+    {
+      "source": "netDxf/Entities/OrdinateDimension.cs",
+      "target": "netDxf/Entities/OrdinateDimension.js",
+      "sourceSha256": "46e301802fc3fc883e3d03ac48d96fa1184b8cc511b66fbe1320f413c4768a86",
+      "members": [
+        {
+          "kind": "constructor",
+          "signature": "",
+          "implementation": "$ctor0",
+          "accessibility": "Public",
+          "parameters": []
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2",
+          "implementation": "$ctor1",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "leaderEndPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor2",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "leaderEndPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,netDxf.Entities.OrdinateDimensionAxis,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor3",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "leaderEndPoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "axis",
+              "type": "netDxf.Entities.OrdinateDimensionAxis",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,netDxf.Entities.OrdinateDimensionAxis",
+          "implementation": "$ctor4",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "length",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "axis",
+              "type": "netDxf.Entities.OrdinateDimensionAxis",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,netDxf.Entities.OrdinateDimensionAxis,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor5",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "length",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "axis",
+              "type": "netDxf.Entities.OrdinateDimensionAxis",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,netDxf.Entities.OrdinateDimensionAxis,double",
+          "implementation": "$ctor6",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "length",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "axis",
+              "type": "netDxf.Entities.OrdinateDimensionAxis",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "constructor",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,netDxf.Entities.OrdinateDimensionAxis,double,netDxf.Tables.DimensionStyle",
+          "implementation": "$ctor7",
+          "accessibility": "Public",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "featurePoint",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "length",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "axis",
+              "type": "netDxf.Entities.OrdinateDimensionAxis",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix4",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "inherited": true,
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix4",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "property",
+          "name": "Origin",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "FeaturePoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "LeaderEndPoint",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Vector2",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Rotation",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Axis",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "netDxf.Entities.OrdinateDimensionAxis",
+          "canSet": true
+        },
+        {
+          "kind": "property",
+          "name": "Measurement",
+          "accessibility": "Public",
+          "isStatic": false,
+          "returnType": "double",
+          "canSet": false
+        },
+        {
+          "kind": "Ordinary",
+          "name": "TransformBy",
+          "signature": "netDxf.Matrix3,netDxf.Vector3",
+          "isStatic": false,
+          "implementation": "TransformBy",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "transformation",
+              "type": "netDxf.Matrix3",
+              "refKind": "None"
+            },
+            {
+              "name": "translation",
+              "type": "netDxf.Vector3",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CalculateReferencePoints",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "CalculateReferencePoints",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildBlock",
+          "signature": "string",
+          "isStatic": false,
+          "implementation": "BuildBlock",
+          "accessibility": "Protected",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Clone",
+          "signature": "",
+          "isStatic": false,
+          "implementation": "Clone",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "object",
+          "parameters": []
+        }
+      ],
+      "outputSha256": "43178399c9bd5601a7227d649a9006a6c6ccc79cd9540bb5aefb0135ffdbd5bc"
+    },
+    {
+      "source": "netDxf/Entities/DimensionBlock.cs",
+      "target": "netDxf/Entities/DimensionBlock.js",
+      "sourceSha256": "23dc94c388b2680b93ec443ceb63cfbab195749382e9d949febc6ad716b2d395",
+      "members": [
+        {
+          "kind": "Ordinary",
+          "name": "FormatDimensionText",
+          "signature": "double,netDxf.Entities.DimensionType,string,netDxf.Tables.DimensionStyle,netDxf.Blocks.Block",
+          "isStatic": true,
+          "implementation": "FormatDimensionText",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "System.Collections.Generic.List\u003Cstring\u003E",
+          "parameters": [
+            {
+              "name": "measure",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "dimType",
+              "type": "netDxf.Entities.DimensionType",
+              "refKind": "None"
+            },
+            {
+              "name": "userText",
+              "type": "string",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            },
+            {
+              "name": "owner",
+              "type": "netDxf.Blocks.Block",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "DimensionLine",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "isStatic": true,
+          "implementation": "DimensionLine",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.Line",
+          "parameters": [
+            {
+              "name": "start",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "end",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "DimensionArc",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Vector2,double,double,double,netDxf.Tables.DimensionStyle,out double,out double",
+          "isStatic": true,
+          "implementation": "DimensionArc",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.Arc",
+          "parameters": [
+            {
+              "name": "center",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "start",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "end",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "startAngle",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "endAngle",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "radius",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            },
+            {
+              "name": "e1",
+              "type": "double",
+              "refKind": "Out"
+            },
+            {
+              "name": "e2",
+              "type": "double",
+              "refKind": "Out"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "DimensionRadialLine",
+          "signature": "netDxf.Vector2,netDxf.Vector2,double,short,netDxf.Tables.DimensionStyle",
+          "isStatic": true,
+          "implementation": "DimensionRadialLine",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.Line",
+          "parameters": [
+            {
+              "name": "start",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "end",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "reversed",
+              "type": "short",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "ExtensionLine",
+          "signature": "netDxf.Vector2,netDxf.Vector2,netDxf.Tables.DimensionStyle,netDxf.Tables.Linetype",
+          "isStatic": true,
+          "implementation": "ExtensionLine",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.Line",
+          "parameters": [
+            {
+              "name": "start",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "end",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            },
+            {
+              "name": "linetype",
+              "type": "netDxf.Tables.Linetype",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "StartArrowHead",
+          "signature": "netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "isStatic": true,
+          "implementation": "StartArrowHead",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.EntityObject",
+          "parameters": [
+            {
+              "name": "position",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "EndArrowHead",
+          "signature": "netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "isStatic": true,
+          "implementation": "EndArrowHead",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.EntityObject",
+          "parameters": [
+            {
+              "name": "position",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "DimensionText",
+          "signature": "netDxf.Vector2,netDxf.Entities.MTextAttachmentPoint,double,string,netDxf.Tables.DimensionStyle",
+          "isStatic": true,
+          "implementation": "DimensionText",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Entities.MText",
+          "parameters": [
+            {
+              "name": "position",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "attachmentPoint",
+              "type": "netDxf.Entities.MTextAttachmentPoint",
+              "refKind": "None"
+            },
+            {
+              "name": "rotation",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "text",
+              "type": "string",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "CenterCross",
+          "signature": "netDxf.Vector2,double,netDxf.Tables.DimensionStyle",
+          "isStatic": true,
+          "implementation": "CenterCross",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "System.Collections.Generic.List\u003CnetDxf.Entities.EntityObject\u003E",
+          "parameters": [
+            {
+              "name": "center",
+              "type": "netDxf.Vector2",
+              "refKind": "None"
+            },
+            {
+              "name": "radius",
+              "type": "double",
+              "refKind": "None"
+            },
+            {
+              "name": "style",
+              "type": "netDxf.Tables.DimensionStyle",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "BuildDimensionStyleOverride",
+          "signature": "netDxf.Entities.Dimension",
+          "isStatic": true,
+          "implementation": "BuildDimensionStyleOverride",
+          "accessibility": "Private",
+          "isAbstract": false,
+          "returnType": "netDxf.Tables.DimensionStyle",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.Dimension",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.Dimension",
+          "isStatic": true,
+          "implementation": "$Build0",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.Dimension",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.Dimension,string",
+          "isStatic": true,
+          "implementation": "$Build1",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.Dimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.AlignedDimension,string",
+          "isStatic": true,
+          "implementation": "$Build2",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.AlignedDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.LinearDimension,string",
+          "isStatic": true,
+          "implementation": "$Build3",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.LinearDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.Angular2LineDimension,string",
+          "isStatic": true,
+          "implementation": "$Build4",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.Angular2LineDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.Angular3PointDimension,string",
+          "isStatic": true,
+          "implementation": "$Build5",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.Angular3PointDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.DiametricDimension,string",
+          "isStatic": true,
+          "implementation": "$Build6",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.DiametricDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.RadialDimension,string",
+          "isStatic": true,
+          "implementation": "$Build7",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.RadialDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.OrdinateDimension,string",
+          "isStatic": true,
+          "implementation": "$Build8",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.OrdinateDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        },
+        {
+          "kind": "Ordinary",
+          "name": "Build",
+          "signature": "netDxf.Entities.ArcLengthDimension,string",
+          "isStatic": true,
+          "implementation": "$Build9",
+          "accessibility": "Public",
+          "isAbstract": false,
+          "returnType": "netDxf.Blocks.Block",
+          "parameters": [
+            {
+              "name": "dim",
+              "type": "netDxf.Entities.ArcLengthDimension",
+              "refKind": "None"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "refKind": "None"
+            }
+          ]
+        }
+      ],
+      "outputSha256": "c83e699083b48de5449823826064e52acc393c03051f09008216c6bdb36456d2"
+    }
+  ]
+}

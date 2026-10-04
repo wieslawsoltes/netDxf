@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/bminor/glibc",
+  "ref": "f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2",
+  "profile": "glibc-2.35-dbl64-x86_64-fma-rn",
+  "sourceArchiveSha256": "ab8102ff4efaefad3ed8f587059b4bf250b498ce33dc495bc48b03be96da8317",
+  "files": {
+    "sysdeps/ieee754/dbl-64/e_exp.c": "804c4899d9bfb8c153a13368376cabbff493d28ef4916689d5c4a65de39f56b8",
+    "sysdeps/ieee754/dbl-64/e_exp_data.c": "b66a754f50e1bd6cd628561e8c7924e15ababba07ffe4a6a3e6c2459c8bd2c49",
+    "sysdeps/ieee754/dbl-64/e_log.c": "d9fae4150d9a19e218ea2d3550d563f07454f4ca285a7c3009f12dd5013ac33d",
+    "sysdeps/ieee754/dbl-64/e_log_data.c": "a98e712fe4920b62b59fbb5fa6d605b750a88cdc51481a2e8d4c7e14e4b9444c",
+    "sysdeps/ieee754/dbl-64/math_config.h": "d8976c33defa72d1c55101de6544e18e369ed568e22bbef888917df700266d81",
+    "sysdeps/x86_64/fpu/multiarch/e_exp-fma.c": "460f25e4855aab94257cd438fbce7566a76943bc12c4d236f232ff413e7e6f3c",
+    "sysdeps/x86_64/fpu/multiarch/e_log-fma.c": "0e7601b59b8fcbb7f3fa7b2eed02ed8ac714812d6e08d6125213318ea1801b3a"
+  }
+}

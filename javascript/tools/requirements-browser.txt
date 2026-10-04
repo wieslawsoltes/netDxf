@@ -1,0 +1,2 @@
+# Development-only; production native JavaScript has no Python dependency.
+playwright==1.57.0
