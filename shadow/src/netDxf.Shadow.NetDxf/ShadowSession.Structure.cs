@@ -32,6 +32,7 @@ public sealed partial class ShadowSession
             resolver = new Resolver(Resolve, (value, type) => ConvertValue(value, type, Resolve));
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
             var collections = new List<SourceCollectionPlan>();
+            var methods = new List<SourceMethodPlan>();
             var collectionSources = new HashSet<object>(ReferenceEqualityComparer.Instance);
             var assertions = new List<(ObjectId Id, string Property, ShadowValue Value)>();
             // Preparation allocates only new objects and detached constructor state.
@@ -39,6 +40,7 @@ public sealed partial class ShadowSession
             foreach (var change in patch.Changes.Where(e => e.After is not null))
             {
                 var source = Resolve(change.Id);
+                if (change.Before is { } oldNode && SourceMethodPlan.Create(source, oldNode, change.After!) is { } method) methods.Add(method);
                 foreach (var (name, value) in change.After!.Properties)
                 {
                     if (change.Before is { } previous && ShadowValue.Equivalent(previous[name], value)) continue;
@@ -75,9 +77,11 @@ public sealed partial class ShadowSession
                 foreach (var write in group) write.Accessor.Set(clone, write.After);
             }
             var attempted = 0;
+            var attemptedMethods = 0;
             var touchedCollections = false;
             try
             {
+                foreach (var method in methods) { attemptedMethods++; method.Apply(); }
                 foreach (var write in writes)
                 {
                     attempted++;
@@ -117,6 +121,8 @@ public sealed partial class ShadowSession
                 for (var index = attempted - 1; index >= 0; index--)
                     try { writes[index].Accessor.Set(writes[index].Source, writes[index].Before); }
                     catch (Exception e) { failures.Add(e.GetBaseException()); }
+                for (var index = attemptedMethods - 1; index >= 0; index--)
+                    try { methods[index].Rollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 try
                 {
                     if (!ReferenceEquals(capture.Capture(document, before), before))

@@ -12,6 +12,7 @@ internal sealed class SourceCollectionPlan
     private readonly MethodInfo? add;
     private readonly MethodInfo? remove;
     private readonly IList? list;
+    private readonly Array? array;
     private readonly int prefix;
     private readonly int suffix;
     public object?[] Before { get; }
@@ -20,6 +21,7 @@ internal sealed class SourceCollectionPlan
     private SourceCollectionPlan(object source, Type elementType, object?[] after)
     {
         this.source = source;
+        array = source as Array;
         Before = ((IEnumerable)source).Cast<object?>().ToArray();
         After = after;
         list = source as IList;
@@ -48,7 +50,14 @@ internal sealed class SourceCollectionPlan
 
     public static SourceCollectionPlan? TryCreate(object? source, ShadowValue.Sequence value, Func<ShadowValue, Type, object?> convert)
     {
-        if (source is not IEnumerable || source is string || source.GetType().IsArray) return null;
+        if (source is not IEnumerable || source is string) return null;
+        if (source is Array array)
+        {
+            if (array.Rank != 1 || array.GetLowerBound(0) != 0 || array.Length != value.Items.Length)
+                throw new NotSupportedException("Fixed coordinate arrays require identical cardinality.");
+            var elementType = array.GetType().GetElementType()!;
+            return new(source, elementType, value.Items.Select(item => convert(item, elementType)).ToArray());
+        }
         var type = source.GetType();
         var enumerable = type.GetInterfaces().Append(type).FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
         var element = enumerable?.GetGenericArguments()[0];
@@ -71,22 +80,31 @@ internal sealed class SourceCollectionPlan
     public bool IsNoOp => prefix == Before.Length && prefix == After.Length;
     public void RemoveOld()
     {
+        if (array is not null) return;
         for (var i = Before.Length - suffix - 1; i >= prefix; i--) Remove(i, Before[i]);
     }
     public void AddNew()
     {
+        if (array is not null) { AssignArray(After); return; }
         for (var i = prefix; i < After.Length - suffix; i++) Insert(i, After[i]);
         if (!Matches(After)) throw new InvalidOperationException("The source collection rejected or reordered a requested change.");
     }
     public void ClearForRollback()
     {
+        if (array is not null) return;
         var values = ((IEnumerable)source).Cast<object?>().ToArray();
         for (var i = values.Length - 1; i >= 0; i--) Remove(i, values[i]);
     }
     public void Restore()
     {
+        if (array is not null) { AssignArray(Before); return; }
         for (var i = 0; i < Before.Length; i++) Insert(i, Before[i]);
         if (!Matches(Before)) throw new InvalidOperationException("Collection rollback did not restore its original membership.");
+    }
+    private void AssignArray(object?[] values)
+    {
+        for (var i = 0; i < values.Length; i++) array!.SetValue(values[i], i);
+        if (!Matches(values)) throw new InvalidOperationException("The source array rejected a requested value.");
     }
     private void Remove(int index, object? value)
     {
