@@ -141,6 +141,15 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
 
     private object? Value(ShadowReader source, Type target, int depth)
     {
+        try { return ConvertValue(source, target, depth); }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            throw new InvalidOperationException($"Dimension value {source.Type} -> {target.Name}: {error.Message}", error);
+        }
+    }
+
+    private object? ConvertValue(ShadowReader source, Type target, int depth)
+    {
         Budget(depth);
         if (!source.Exists) return null;
         target = Nullable.GetUnderlyingType(target) ?? target;

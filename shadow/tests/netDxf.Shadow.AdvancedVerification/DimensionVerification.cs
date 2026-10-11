@@ -53,7 +53,13 @@ internal static class DimensionVerification
             {
                 var doc = new DxfDocument { BuildDimensionBlocks = false }; var dimension = (Dimension)prototype.Clone(); doc.Entities.Add(dimension);
                 var store = new ShadowSession(doc); var old = store.Current; var reference = dimension.TextReferencePoint;
+                var direct = new DimensionEntityProjector(); direct.TryProject(old.Read(Id(dimension)), out var projected, out var note);
                 var scene = Builder().Build(old); Valid(scene);
+                if (!scene.Occurrences.Any(o => !o.Geometry.DisplayContours.IsDefaultOrEmpty))
+                    Console.WriteLine(JsonSerializer.Serialize(new { family = dimension.GetType().Name, note,
+                        off1 = dimension.Style.DimLine1Off, off2 = dimension.Style.DimLine2Off,
+                        projected = projected.Components.Select(c => new { c.Key, curves = c.Geometry.DisplayContours.Length, c.Geometry.Filled, text = c.Geometry.Text?.Content }),
+                        diagnostics = scene.Diagnostics.Select(d => d.Message) }));
                 Require(scene.Occurrences.All(o => o.Entity == Id(dimension)), "Generated fragments lost their source identity.");
                 Require(scene.Occurrences.Any(o => o.Geometry.Text is not null), "No dimension label.");
                 Require(scene.Occurrences.Any(o => !o.Geometry.DisplayContours.IsDefaultOrEmpty), "No dimension linework.");
@@ -77,7 +83,11 @@ internal static class DimensionVerification
                 {
                     var a = first.Occurrences[j].Geometry; var b = next.Occurrences[j].Geometry;
                     if (a.Text is { } text) Near(b.Text!.Origin, text.Origin + movement);
-                    if (!a.DisplayContours.IsDefaultOrEmpty) Near(b.DisplayContours[0].Curves[0].Start, a.DisplayContours[0].Curves[0].Start + movement);
+                    if (!a.DisplayContours.IsDefaultOrEmpty)
+                    {
+                        try { Near(b.DisplayContours[0].Curves[0].Start, a.DisplayContours[0].Curves[0].Start + movement); }
+                        catch (Exception error) { throw new InvalidOperationException(dimension.GetType().Name + " fragment " + j + ": " + error.Message, error); }
+                    }
                 }
                 editor.Undo(); Require(Labels(builder.Build(store.Current)) == Labels(first));
             }
@@ -139,7 +149,8 @@ internal static class DimensionVerification
             var doc = new DxfDocument { BuildDimensionBlocks = false }; var dimension = new AlignedDimension(new(0, 0), new(40, 0), 10, Style());
             dimension.Style.AlternateUnits.Enabled = true; dimension.Style.AlternateUnits.Multiplier = 2; dimension.Style.AlternateUnits.Suffix = " ALT";
             dimension.StyleOverrides.Add(new DimensionStyleOverride(DimensionStyleOverrideType.TextColor, AciColor.Red)); doc.Entities.Add(dimension);
-            var store = new ShadowSession(doc); var builder = Builder(); var first = builder.Build(store.Current); Valid(first);
+            var store = new ShadowSession(doc); new DimensionEntityProjector().TryProject(store.Current.Read(Id(dimension)), out _, out _);
+            var builder = Builder(); var first = builder.Build(store.Current); Valid(first);
             Require(first.Occurrences.Where(o => o.Geometry.Text is not null).All(o => (o.Style.Argb & 0xffffff) == 0xff0000));
             var alternate = store.Current.Read(Id(dimension))["Style"]["AlternateUnits"].Id!.Value;
             new EditorSession(store).SetProperty(alternate, "Multiplier", ShadowValue.From(3.0));
@@ -151,7 +162,8 @@ internal static class DimensionVerification
             var line = new Line(new Vector2(-1, -1), new Vector2(0, 0)) { Color = AciColor.ByBlock }; arrow.Entities.Add(line);
             var style = Style(); style.DimArrow1 = arrow; style.DimArrow2 = arrow;
             var dimension = new AlignedDimension(new(0, 0), new(40, 0), 10, style); doc.Entities.Add(dimension);
-            var store = new ShadowSession(doc); var builder = Builder(); var first = builder.Build(store.Current); Valid(first);
+            var store = new ShadowSession(doc); new DimensionEntityProjector().TryProject(store.Current.Read(Id(dimension)), out _, out _);
+            var builder = Builder(); var first = builder.Build(store.Current); Valid(first);
             new EditorSession(store).SetProperty(Id(line), "StartPoint", ShadowValue.From(new Vec3(-6, -8)));
             var next = builder.Build(store.Current); Valid(next);
             Require(next.Occurrences.Where(o => !o.Geometry.DisplayContours.IsDefaultOrEmpty).SelectMany(o => o.Geometry.DisplayContours).SelectMany(c => c.Curves).Any(c => c is LineCurve l && (l.B - l.A).Length >= 9.9), "Arrow edit was not regenerated.");
