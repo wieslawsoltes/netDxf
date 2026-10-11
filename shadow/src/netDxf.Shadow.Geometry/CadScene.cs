@@ -9,17 +9,38 @@ public sealed record CadStyle(uint Argb, double Lineweight, ImmutableArray<doubl
 public sealed record CadContour(ImmutableArray<Curve3> Curves, bool Closed = false);
 public sealed record CadText(string Content, Vec3 Origin, Vec3 XAxis, Vec3 YAxis, double Height,
     string FontFamily, string Alignment, bool Multiline, double Width);
-public sealed record CadImage(string FileName, ImmutableArray<Vec3> Corners);
+public sealed record CadImage(string FileName, ImmutableArray<Vec3> Corners)
+{
+    /// <summary>World-space clipping polygon; empty means the complete image parallelogram.</summary>
+    public ImmutableArray<Vec3> ClipPolygon { get; init; } = [];
+    public bool ClipOutside { get; init; }
+    public double Brightness { get; init; } = 0.5;
+    public double Contrast { get; init; } = 0.5;
+    public double Fade { get; init; }
+    public bool Visible { get; init; } = true;
+}
 public sealed record CadGeometry(ImmutableArray<CadContour> Contours, bool Filled = false,
     CadText? Text = null, CadImage? Image = null)
 {
     public static CadGeometry Empty { get; } = new([]);
+    /// <summary>Optional presentation strokes. Default uses Contours; empty suppresses them.
+    /// Contours always retains the semantic curves consumed by topology and analysis.</summary>
+    public ImmutableArray<CadContour> DisplayContours { get; init; }
+    public ImmutableArray<CadRegion> Regions { get; init; } = [];
     public CadGeometry Transform(Affine3 matrix) => this with
     {
-        Contours = Contours.Select(c => c with { Curves = c.Curves.Select(p => p.Transform(matrix)).ToImmutableArray() }).ToImmutableArray(),
+        Contours = TransformContours(Contours, matrix),
+        DisplayContours = DisplayContours.IsDefault ? default : TransformContours(DisplayContours, matrix),
+        Regions = Regions.Select(region => region.Transform(matrix)).ToImmutableArray(),
         Text = Text is { } text ? text with { Origin = matrix.Point(text.Origin), XAxis = matrix.Direction(text.XAxis), YAxis = matrix.Direction(text.YAxis) } : null,
-        Image = Image is { } image ? image with { Corners = image.Corners.Select(matrix.Point).ToImmutableArray() } : null
+        Image = Image is { } image ? image with
+        {
+            Corners = image.Corners.Select(matrix.Point).ToImmutableArray(),
+            ClipPolygon = image.ClipPolygon.Select(matrix.Point).ToImmutableArray()
+        } : null
     };
+    internal static ImmutableArray<CadContour> TransformContours(ImmutableArray<CadContour> contours, Affine3 matrix)
+        => contours.Select(c => c with { Curves = c.Curves.Select(p => p.Transform(matrix)).ToImmutableArray() }).ToImmutableArray();
 }
 public sealed record CadOccurrence(string Key, ObjectId Entity, ImmutableArray<ObjectId> InsertPath,
     CadStyle Style, CadGeometry Geometry);
@@ -131,7 +152,6 @@ public sealed partial class CadSceneBuilder
                             var instance = matrix * Affine3.Move(entity["Position"].Vector() + offset) * local;
                             var cellKey = key + $"[{row},{column}]/";
                             foreach (var child in block["Entities"].Items) Visit(child, instance, insertPath.Add(id), cellKey, style, layer, depth + 1);
-                            // Attached ATTRIB positions are already in their owning insert's parent coordinate system.
                             foreach (var attribute in entity["Attributes"].Items)
                                 Visit(attribute, matrix * Affine3.Move(offset), insertPath.Add(id), cellKey + "attribute/", style, layer, depth + 1);
                         }
@@ -139,7 +159,6 @@ public sealed partial class CadSceneBuilder
                 finally { activeBlocks.Remove(blockId); }
                 return;
             }
-            // Dimensions carry a generated block in the source database when available.
             if (entity.Type.EndsWith("Dimension", StringComparison.Ordinal) && entity["Block"].Id is { } dimensionBlock)
             {
                 if (!activeBlocks.Add(dimensionBlock)) { diagnostics.Add(new("dimension.cycle", "Cyclic dimension block.", id)); return; }
@@ -175,7 +194,6 @@ public sealed partial class CadSceneBuilder
         {
             if (!color.Exists || color["IsByLayer"].Boolean()) color = layer["Color"];
             argb = 0xff000000u | ((uint)color["R"].Number(228) << 16) | ((uint)color["G"].Number(232) << 8) | (uint)color["B"].Number(239);
-            // ACI 7 follows a dark-background foreground convention in the sample.
             if (!color["UseTrueColor"].Boolean() && color["Index"].Number() == 7) argb = CadStyle.Default.Argb;
         }
         var transparency = entity["Transparency"];
