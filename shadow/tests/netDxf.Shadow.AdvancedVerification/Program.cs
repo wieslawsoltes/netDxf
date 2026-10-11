@@ -5,6 +5,7 @@ StructuralVerification.Register(tests);
 IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 RichTextVerification.Register(tests);
+GalleryVerification.Register(tests);
 var failures = 0;
 foreach (var test in tests)
 {

@@ -1,15 +1,12 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text.Json;
-using netDxf.Blocks;
 using netDxf.Entities;
 using netDxf.Shadow.Editor;
-using netDxf.Shadow.Geometry;
 using netDxf.Shadow.Graph;
 using netDxf.Shadow.NetDxf;
 using netDxf.Shadow.Rendering;
 using netDxf.Shadow.Rendering.SkiaSharp;
-using netDxf.Tables;
 
 namespace netDxf.Shadow.Studio;
 
@@ -22,39 +19,52 @@ public sealed record LayoutRequest(long Revision, string Name);
 public sealed record AddRequest(long Revision, string Kind, double X, double Y);
 
 /// <summary>Single-user host. The libraries themselves do not depend on ASP.NET or this sample.</summary>
-public sealed class Studio : IDisposable
+public sealed partial class Studio : IDisposable
 {
     private readonly object gate = new();
     private ShadowSession session;
     private EditorSession editor;
-    private readonly RenderCompiler compiler = new();
-    private readonly RenderHost renderer = new(new Dictionary<string, Func<IRenderBackend>>
-    { ["skia"] = () => new SkiaRenderBackend(), ["svg"] = () => new SvgRenderBackend() }, "skia");
+    private readonly SkiaTextLayoutEngine textEngine = new();
+    private readonly StudioAssets assets = new();
+    private readonly RenderCompiler compiler;
+    private readonly RenderHost renderer;
     private readonly SortedDictionary<long, ShadowSnapshot> retained = new();
     private string layout = "Model";
     private TopologyGraph? graph;
     private string? graphLayout;
     private double captureMilliseconds;
+    private bool disposed;
 
     public Studio()
     {
-        var timer = Stopwatch.StartNew();
-        session = new(CreateDocument());
-        captureMilliseconds = timer.Elapsed.TotalMilliseconds;
-        editor = new(session);
+        compiler = new(textLayout: textEngine);
+        renderer = new(new Dictionary<string, Func<IRenderBackend>>
+        {
+            ["skia"] = () => new SkiaRenderBackend(assets, textEngine),
+            ["svg"] = () => new SvgRenderBackend(assets)
+        }, "skia");
+        try
+        {
+            var timer = Stopwatch.StartNew(); session = new(CreateDocument());
+            captureMilliseconds = timer.Elapsed.TotalMilliseconds; editor = new(session);
+        }
+        catch { renderer.Dispose(); assets.Dispose(); textEngine.Dispose(); throw; }
     }
-    private RenderScene Scene(ShadowSnapshot? snapshot = null) => compiler.Compile(snapshot ?? session.Current, new(layout));
+    private RenderScene Scene(ShadowSnapshot? snapshot = null)
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        return compiler.Compile(snapshot ?? session.Current, new(layout));
+    }
     private void Check(long revision)
     {
+        ObjectDisposedException.ThrowIf(disposed, this);
         if (session.Current.Revision != revision) throw new ShadowConflictException("The document changed. Refresh before editing.");
     }
     public object State()
     {
         lock (gate)
         {
-            var snapshot = session.Current;
-            var scene = Scene();
-            var state = editor.State;
+            var snapshot = session.Current; var scene = Scene(); var state = editor.State;
             return new
             {
                 snapshot.DocumentId, snapshot.Revision, layout, objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
@@ -82,6 +92,7 @@ public sealed class Studio : IDisposable
     {
         lock (gate)
         {
+            ObjectDisposedException.ThrowIf(disposed, this);
             if (graph is null || graph.Revision != session.Current.Revision || graphLayout != layout)
             { graph = new TopologyBuilder().Build(session.Current, layout, cancellationToken: token); graphLayout = layout; }
             return new
@@ -97,6 +108,7 @@ public sealed class Studio : IDisposable
     {
         lock (gate)
         {
+            ObjectDisposedException.ThrowIf(disposed, this);
             if (!session.Current.Objects.TryGetValue(id, out var node)) throw new ArgumentException("Unknown object.");
             return new { id = id.Value, node.Type, properties = node.Properties.OrderBy(p => p.Key).Select(p => new
             { name = p.Key, value = Display(p.Value), writable = node.WritableProperties.Contains(p.Key) && p.Value is ShadowValue.Atom or ShadowValue.Structure, kind = p.Value.GetType().Name }).ToArray() };
@@ -143,8 +155,7 @@ public sealed class Studio : IDisposable
             Check(request.Revision);
             var id = new ObjectId(request.Id);
             if (!session.Current.Objects.TryGetValue(id, out var node)) throw new ArgumentException("Unknown object.");
-            editor.SetProperty(id, request.Property, ConvertInput(node[request.Property], request.Value));
-            return State();
+            editor.SetProperty(id, request.Property, ConvertInput(node[request.Property], request.Value)); return State();
         }
     }
     private static ShadowValue ConvertInput(ShadowValue before, JsonElement value)
@@ -191,34 +202,26 @@ public sealed class Studio : IDisposable
             {
                 "line" => ("netDxf.Entities.Line", new()
                 {
-                    ["StartPoint"] = ShadowValue.From(position - new Vec3(20, 0)),
-                    ["EndPoint"] = ShadowValue.From(position + new Vec3(20, 0))
+                    ["StartPoint"] = ShadowValue.From(position - new Vec3(20, 0)), ["EndPoint"] = ShadowValue.From(position + new Vec3(20, 0))
                 }),
-                "circle" => ("netDxf.Entities.Circle", new()
-                {
-                    ["Center"] = ShadowValue.From(position), ["Radius"] = ShadowValue.From(12.0)
-                }),
+                "circle" => ("netDxf.Entities.Circle", new() { ["Center"] = ShadowValue.From(position), ["Radius"] = ShadowValue.From(12.0) }),
                 "text" => ("netDxf.Entities.Text", new()
                 {
-                    ["Position"] = ShadowValue.From(position), ["Height"] = ShadowValue.From(5.0),
-                    ["Value"] = ShadowValue.From("Editable DXF text")
+                    ["Position"] = ShadowValue.From(position), ["Height"] = ShadowValue.From(5.0), ["Value"] = ShadowValue.From("Editable DXF text")
                 }),
                 _ => throw new ArgumentException("Unknown entity kind.")
             };
             var id = editor.CreateEntity(specification.Type, specification.Properties, layout);
-            editor.Select(Scene().Items.Where(item => item.Entity == id).Select(item => item.Key));
-            return State();
+            editor.Select(Scene().Items.Where(item => item.Entity == id).Select(item => item.Key)); return State();
         }
     }
     public object Delete(long revision)
     {
         lock (gate)
         {
-            Check(revision);
-            var keys = editor.State.Selection;
+            Check(revision); var keys = editor.State.Selection;
             var ids = Scene().Items.Where(i => keys.Contains(i.Key)).Select(i => i.InsertPath.IsEmpty ? i.Entity : i.InsertPath[0]).Distinct().ToArray();
-            editor.DeleteEntities(ids);
-            return State();
+            editor.DeleteEntities(ids); return State();
         }
     }
     public object SourceDemo(long revision)
@@ -239,8 +242,7 @@ public sealed class Studio : IDisposable
         lock (gate)
         {
             Check(revision); retained[revision] = session.Current;
-            while (retained.Count > 12) retained.Remove(retained.Keys.First());
-            return State();
+            while (retained.Count > 12) retained.Remove(retained.Keys.First()); return State();
         }
     }
     public void Load(Stream stream)
@@ -249,48 +251,28 @@ public sealed class Studio : IDisposable
         var timer = Stopwatch.StartNew(); var next = new ShadowSession(document);
         lock (gate)
         {
-            session = next; editor = new(next); layout = "Model"; graph = null; retained.Clear();
-            captureMilliseconds = timer.Elapsed.TotalMilliseconds;
+            ObjectDisposedException.ThrowIf(disposed, this);
+            session = next; editor = new(next); layout = "Model"; graph = null; retained.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
         }
     }
     public byte[] Save()
     {
-        lock (gate) return session.ReadSource(document =>
+        lock (gate)
         {
-            using var stream = new MemoryStream();
-            if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing.");
-            return stream.ToArray();
-        });
+            ObjectDisposedException.ThrowIf(disposed, this);
+            return session.ReadSource(document =>
+            {
+                using var stream = new MemoryStream();
+                if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing."); return stream.ToArray();
+            });
+        }
     }
-    public void Dispose() => renderer.Dispose();
-
-    private static DxfDocument CreateDocument()
+    public void Dispose()
     {
-        var document = new DxfDocument();
-        var pipe = new Layer("Process piping") { Color = new AciColor((byte)72, (byte)188, (byte)224) };
-        var equipment = new Layer("Equipment") { Color = new AciColor((byte)148, (byte)199, (byte)124) };
-        var annotation = new Layer("Annotations") { Color = new AciColor((byte)205, (byte)211, (byte)225) };
-        foreach (var (a, b) in new[]
+        lock (gate)
         {
-            (new Vector2(-130, 0), new Vector2(-60, 0)), (new Vector2(-60, 0), new Vector2(0, 0)),
-            (new Vector2(0, 0), new Vector2(75, 0)), (new Vector2(75, 0), new Vector2(135, 0)),
-            (new Vector2(-60, 0), new Vector2(-60, 55)), (new Vector2(-60, 55), new Vector2(75, 55)),
-            (new Vector2(75, 55), new Vector2(75, 0)), (new Vector2(0, 0), new Vector2(0, -55))
-        }) document.Entities.Add(new Line(a, b) { Layer = pipe });
-        document.Entities.Add(new Circle(new Vector2(-130, 0), 18) { Layer = equipment });
-        document.Entities.Add(new Circle(new Vector2(135, 0), 18) { Layer = equipment });
-        document.Entities.Add(new Arc(new Vector2(0, -55), 18, 0, 180) { Layer = equipment });
-        document.Entities.Add(new Line(new Vector2(-18, -55), new Vector2(18, -55)) { Layer = equipment });
-        var valve = new Block("Valve");
-        valve.Entities.Add(new Line(new Vector2(-9, -7), new Vector2(9, 7)) { Color = AciColor.ByBlock });
-        valve.Entities.Add(new Line(new Vector2(-9, 7), new Vector2(9, -7)) { Color = AciColor.ByBlock });
-        valve.Entities.Add(new Line(new Vector2(-9, -7), new Vector2(-9, 7)) { Color = AciColor.ByBlock });
-        valve.Entities.Add(new Line(new Vector2(9, -7), new Vector2(9, 7)) { Color = AciColor.ByBlock });
-        document.Entities.Add(new Insert(valve, new Vector2(-30, 0)) { Layer = equipment });
-        document.Entities.Add(new Insert(valve, new Vector2(35, 55)) { Layer = equipment });
-        document.Entities.Add(new Insert(valve, new Vector2(0, -28)) { Rotation = 90, Layer = equipment });
-        foreach (var (text, x, y) in new[] { ("SHADOW / Process loop", -148.0, 87.0), ("P-101", -141.0, -32.0), ("V-102", 122.0, -32.0), ("Supply", -122.0, 9.0), ("Return", 17.0, 65.0), ("Drain", 12.0, -44.0) })
-            document.Entities.Add(new Text(text, new Vector2(x, y), 5) { Layer = annotation });
-        return document;
+            if (disposed) return;
+            disposed = true; renderer.Dispose(); assets.Dispose(); textEngine.Dispose();
+        }
     }
 }
