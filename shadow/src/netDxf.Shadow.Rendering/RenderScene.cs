@@ -9,6 +9,7 @@ public sealed record RenderItem(string Key, ObjectId Entity, ImmutableArray<Obje
     ImmutableArray<RenderContour> Contours, bool Filled, CadText? Text, CadImage? Image, Bounds2 Bounds)
 {
     public ImmutableArray<RenderRegion> Regions { get; init; } = [];
+    public RichTextLayoutResult? TextLayout { get; init; }
 }
 public sealed record RenderScene(Guid DocumentId, long Revision, string Layout, ImmutableArray<RenderItem> Items,
     Bounds2 Bounds, SpatialIndex Index, ImmutableArray<ShadowDiagnostic> Diagnostics);

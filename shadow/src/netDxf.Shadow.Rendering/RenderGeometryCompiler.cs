@@ -4,11 +4,11 @@ using netDxf.Shadow.Geometry;
 namespace netDxf.Shadow.Rendering;
 
 internal sealed record RenderGeometryData(ImmutableArray<RenderContour> Contours,
-    ImmutableArray<RenderRegion> Regions, Bounds2 Bounds);
+    ImmutableArray<RenderRegion> Regions, Bounds2 Bounds, RichTextLayoutResult? TextLayout);
 
 internal static class RenderGeometryCompiler
 {
-    internal static RenderGeometryData Compile(CadGeometry geometry, SamplingOptions sampling)
+    internal static RenderGeometryData Compile(CadGeometry geometry, SamplingOptions sampling, ITextLayoutEngine textEngine)
     {
         var bounds = Bounds2.Empty;
         var points = 0L;
@@ -16,16 +16,18 @@ internal static class RenderGeometryCompiler
         var regions = ImmutableArray.CreateBuilder<RenderRegion>(geometry.Regions.Length);
         foreach (var region in geometry.Regions)
             regions.Add(new(CompileContours(region.Contours), region.FillRule, region.Gradient));
-        if (geometry.Text is { } text)
+        RichTextLayoutResult? textLayout = null;
+        if (geometry.Text is { Height: > 0 } text)
         {
-            var paragraphs = TextLayout.PlainText(text.Content, text.Multiline).Split('\n');
-            var width = Math.Max(text.Width, paragraphs.Select(p => p.Length).DefaultIfEmpty(1).Max() * text.Height * 1.5);
-            var height = text.Height * (paragraphs.Length + 1) * 1.5;
-            foreach (var dx in new[] { -width, width }) foreach (var dy in new[] { -height, height })
-                bounds = bounds.Include(text.Origin + text.XAxis * dx + text.YAxis * dy);
+            textLayout = textEngine.Layout(text);
+            var rectangle = textLayout.Bounds;
+            if (!rectangle.IsEmpty)
+                foreach (var x in new[] { rectangle.MinX, rectangle.MaxX })
+                    foreach (var y in new[] { rectangle.MinY, rectangle.MaxY })
+                        bounds = bounds.Include(text.Origin + text.XAxis * x - text.YAxis * y);
         }
         if (geometry.Image is { Visible: true } image) foreach (var point in image.Corners) bounds = bounds.Include(point);
-        return new(contours, regions.ToImmutable(), bounds);
+        return new(contours, regions.ToImmutable(), bounds, textLayout);
 
         ImmutableArray<RenderContour> CompileContours(ImmutableArray<CadContour> source)
         {
