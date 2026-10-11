@@ -116,11 +116,22 @@ public interface IShadowStore
 }
 
 /// <summary>An isolated immutable editor branch; merging back still requires optimistic validation.</summary>
-public sealed class ShadowMemoryStore(ShadowSnapshot initial) : IShadowStore
+public sealed class ShadowMemoryStore(ShadowSnapshot initial) : IShadowGraphStore
 {
     private readonly object gate = new();
     private ShadowSnapshot current = initial;
     public ShadowSnapshot Current => Volatile.Read(ref current);
+    public ShadowSnapshot Apply(ShadowGraphPatch patch)
+    {
+        ArgumentNullException.ThrowIfNull(patch);
+        lock (gate)
+        {
+            var next = patch.Apply(current);
+            Volatile.Write(ref current, next);
+            return next;
+        }
+    }
+
     public ShadowSnapshot Apply(ShadowEditBatch batch)
     {
         lock (gate)

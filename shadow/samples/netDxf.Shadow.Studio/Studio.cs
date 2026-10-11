@@ -186,15 +186,28 @@ public sealed class Studio : IDisposable
         {
             Check(request.Revision);
             if (!double.IsFinite(request.X) || !double.IsFinite(request.Y)) throw new ArgumentException("Coordinates must be finite.");
-            EntityObject entity = request.Kind switch
+            var position = new Vec3(request.X, request.Y);
+            (string Type, Dictionary<string, ShadowValue> Properties) specification = request.Kind switch
             {
-                "line" => new Line(new Vector2(request.X - 20, request.Y), new Vector2(request.X + 20, request.Y)),
-                "circle" => new Circle(new Vector2(request.X, request.Y), 12),
-                "text" => new Text("Editable DXF text", new Vector2(request.X, request.Y), 5),
+                "line" => ("netDxf.Entities.Line", new()
+                {
+                    ["StartPoint"] = ShadowValue.From(position - new Vec3(20, 0)),
+                    ["EndPoint"] = ShadowValue.From(position + new Vec3(20, 0))
+                }),
+                "circle" => ("netDxf.Entities.Circle", new()
+                {
+                    ["Center"] = ShadowValue.From(position), ["Radius"] = ShadowValue.From(12.0)
+                }),
+                "text" => ("netDxf.Entities.Text", new()
+                {
+                    ["Position"] = ShadowValue.From(position), ["Height"] = ShadowValue.From(5.0),
+                    ["Value"] = ShadowValue.From("Editable DXF text")
+                }),
                 _ => throw new ArgumentException("Unknown entity kind.")
             };
-            session.MutateSource(d => { d.Entities.ActiveLayout = layout; d.Entities.Add(entity); });
-            editor.ResetHistory(true); return State();
+            var id = editor.CreateEntity(specification.Type, specification.Properties, layout);
+            editor.Select(Scene().Items.Where(item => item.Entity == id).Select(item => item.Key));
+            return State();
         }
     }
     public object Delete(long revision)
@@ -204,13 +217,8 @@ public sealed class Studio : IDisposable
             Check(revision);
             var keys = editor.State.Selection;
             var ids = Scene().Items.Where(i => keys.Contains(i.Key)).Select(i => i.InsertPath.IsEmpty ? i.Entity : i.InsertPath[0]).Distinct().ToArray();
-            session.MutateSource(d =>
-            {
-                d.Entities.ActiveLayout = layout;
-                foreach (var id in ids)
-                    if (id.Value.StartsWith("H:", StringComparison.Ordinal) && d.GetObjectByHandle(id.Value[2..]) is EntityObject entity) d.Entities.Remove(entity);
-            });
-            editor.ResetHistory(true); return State();
+            editor.DeleteEntities(ids);
+            return State();
         }
     }
     public object SourceDemo(long revision)

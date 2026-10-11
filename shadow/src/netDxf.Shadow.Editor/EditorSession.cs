@@ -3,7 +3,8 @@ using netDxf.Shadow.Rendering;
 
 namespace netDxf.Shadow.Editor;
 
-public sealed record EditHistoryEntry(string Description, ImmutableArray<ShadowPropertyEdit> Changes);
+public sealed record EditHistoryEntry(string Description, ImmutableArray<ShadowPropertyEdit> Changes,
+    ShadowSnapshot? Before = null, ShadowSnapshot? After = null);
 public sealed record EditorState(long Revision, ImmutableHashSet<string> Selection, int UndoCount, int RedoCount);
 
 /// <summary>Revision-checked editing over a source or an isolated immutable branch.</summary>
@@ -84,6 +85,63 @@ public sealed class EditorSession
         }
     }
 
+    public ShadowSnapshot Execute(string description, ShadowGraphPatch patch)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(description);
+        ArgumentNullException.ThrowIfNull(patch);
+        lock (gate)
+        {
+            EnsureCurrent();
+            if (store is not IShadowGraphStore structural) throw new NotSupportedException("This store does not support structural transactions.");
+            var before = store.Current;
+            var after = structural.Apply(patch);
+            expectedRevision = after.Revision;
+            if (ReferenceEquals(before, after)) return after;
+            undo = undo.Add(new(description, [], before, after));
+            if (undo.Count > historyLimit) undo = undo.RemoveAt(0);
+            redo = ImmutableList<EditHistoryEntry>.Empty;
+            return after;
+        }
+    }
+
+    public ObjectId CreateEntity(string typeName, IEnumerable<KeyValuePair<string, ShadowValue>> properties, string layout = "Model")
+    {
+        lock (gate)
+        {
+            EnsureCurrent();
+            var snapshot = store.Current;
+            var block = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown layout.", nameof(layout));
+            var edit = new ShadowGraphEdit(snapshot);
+            var id = edit.AddEntity(block, typeName, properties);
+            Execute("Create " + typeName[(typeName.LastIndexOf('.') + 1)..], edit.Build());
+            return id;
+        }
+    }
+
+    public ShadowSnapshot DeleteEntities(IEnumerable<ObjectId> entities)
+    {
+        lock (gate)
+        {
+            EnsureCurrent();
+            var edit = new ShadowGraphEdit(store.Current);
+            edit.RemoveEntities(entities);
+            var after = Execute("Delete entities", edit.Build());
+            selection = ImmutableHashSet<string>.Empty;
+            return after;
+        }
+    }
+
+    public ShadowSnapshot ReplaceCollection(ObjectId id, string property, IEnumerable<ShadowValue> values)
+    {
+        lock (gate)
+        {
+            EnsureCurrent();
+            var edit = new ShadowGraphEdit(store.Current);
+            edit.ReplaceSequence(id, property, values);
+            return Execute("Edit " + property, edit.Build());
+        }
+    }
+
     public ShadowSnapshot SetProperty(ObjectId id, string property, ShadowValue value)
     {
         lock (gate)
@@ -121,6 +179,14 @@ public sealed class EditorSession
             EnsureCurrent();
             if (undo.Count == 0) return store.Current;
             var entry = undo[undo.Count - 1];
+            if (entry.Before is not null)
+            {
+                var restored = ((IShadowGraphStore)store).Apply(ShadowGraphPatch.Between(store.Current, entry.Before));
+                expectedRevision = restored.Revision;
+                undo = undo.RemoveAt(undo.Count - 1);
+                redo = redo.Add(entry);
+                return restored;
+            }
             var changes = ImmutableArray.CreateBuilder<ShadowPropertyEdit>(entry.Changes.Length);
             for (var index = entry.Changes.Length - 1; index >= 0; index--)
             {
@@ -142,7 +208,9 @@ public sealed class EditorSession
             EnsureCurrent();
             if (redo.Count == 0) return store.Current;
             var entry = redo[redo.Count - 1];
-            var after = store.Apply(new ShadowEditBatch(store.Current.DocumentId, expectedRevision, entry.Changes));
+            var after = entry.After is not null
+                ? ((IShadowGraphStore)store).Apply(ShadowGraphPatch.Between(store.Current, entry.After))
+                : store.Apply(new ShadowEditBatch(store.Current.DocumentId, expectedRevision, entry.Changes));
             expectedRevision = after.Revision;
             redo = redo.RemoveAt(redo.Count - 1);
             undo = undo.Add(entry);

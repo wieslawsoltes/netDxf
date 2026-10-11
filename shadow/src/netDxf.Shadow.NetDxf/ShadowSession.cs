@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Globalization;
-using System.Reflection;
-
 namespace netDxf.Shadow.NetDxf;
 
 /// <summary>
 /// Single-writer adapter. Current is lock-free and detached. All live-source access must
 /// use this gate, or be externally serialized before Refresh. Dispose is not required.
 /// </summary>
-public sealed class ShadowSession : IShadowStore
+public sealed partial class ShadowSession : IShadowGraphStore
 {
     private readonly object gate = new();
     private readonly DxfDocument document;
@@ -148,63 +144,6 @@ public sealed class ShadowSession : IShadowStore
             ("Text", "Value" or "Position" or "Height" or "Rotation" or "WidthFactor" or "ObliqueAngle" or "IsVisible") => true,
             _ => false
         };
-    }
-
-    private object? ConvertValue(ShadowValue value, Type target)
-    {
-        var nullable = Nullable.GetUnderlyingType(target);
-        if (value is ShadowValue.NullValue)
-        {
-            if (target.IsValueType && nullable is null) throw new ArgumentException($"{target.Name} cannot be null.");
-            return null;
-        }
-        target = nullable ?? target;
-        if (value is ShadowValue.Reference reference)
-        {
-            var source = capture.Source(reference.Id);
-            return target.IsInstanceOfType(source) ? source : throw new ArgumentException("Incompatible source reference.");
-        }
-        if (value is ShadowValue.Atom atom)
-        {
-            if (target.IsEnum) return Enum.Parse(target, atom.Text, false);
-            if (target == typeof(Guid)) return Guid.Parse(atom.Text);
-            if (target == typeof(DateTime)) return DateTime.Parse(atom.Text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-            if (target == typeof(DateTimeOffset)) return DateTimeOffset.Parse(atom.Text, CultureInfo.InvariantCulture);
-            if (target == typeof(TimeSpan)) return TimeSpan.Parse(atom.Text, CultureInfo.InvariantCulture);
-            var result = Convert.ChangeType(atom.Text, target, CultureInfo.InvariantCulture);
-            if (result is double d && !double.IsFinite(d) || result is float f && !float.IsFinite(f))
-                throw new ArgumentException("Edits must contain finite numbers.");
-            return result;
-        }
-        if (value is ShadowValue.Structure structure && target.IsValueType)
-        {
-            double Number(string name) => structure.Fields.TryGetValue(name, out var field) ? Convert.ToDouble(ConvertValue(field, typeof(double)), CultureInfo.InvariantCulture) : 0;
-            if (target == typeof(Vector2)) return new Vector2(Number("X"), Number("Y"));
-            if (target == typeof(Vector3)) return new Vector3(Number("X"), Number("Y"), Number("Z"));
-            var result = Activator.CreateInstance(target)!;
-            foreach (var (name, field) in structure.Fields)
-            {
-                var property = target.GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
-                if (property?.SetMethod?.IsPublic != true) throw new NotSupportedException($"Cannot write {target.Name}.{name}.");
-                property.SetValue(result, ConvertValue(field, property.PropertyType));
-            }
-            return result;
-        }
-        if (value is ShadowValue.Sequence sequence)
-        {
-            var element = target.IsArray ? target.GetElementType() : target.GetInterfaces().Append(target)
-                .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))?.GetGenericArguments()[0];
-            if (element is null) throw new NotSupportedException($"Cannot construct collection {target.Name}.");
-            var array = Array.CreateInstance(element, sequence.Items.Length);
-            for (var i = 0; i < array.Length; i++) array.SetValue(ConvertValue(sequence.Items[i], element), i);
-            if (target.IsArray) return array;
-            var listType = typeof(List<>).MakeGenericType(element);
-            if (!target.IsAssignableFrom(listType)) throw new NotSupportedException($"Collection {target.Name} needs a custom editor.");
-            var list = (IList)Activator.CreateInstance(listType)!;
-            foreach (var item in array) list.Add(item);
-            return list;
-        }
-        throw new NotSupportedException($"Cannot convert {value.GetType().Name} to {target.Name}.");
     }
 
     private ShadowSnapshot Publish(ShadowSnapshot snapshot) { Volatile.Write(ref current, snapshot); return snapshot; }

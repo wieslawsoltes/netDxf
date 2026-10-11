@@ -1,0 +1,59 @@
+using System.Reflection;
+
+namespace netDxf.Shadow.NetDxf;
+
+/// <summary>Explicit construction extension point for source types with special invariants.</summary>
+public interface IShadowObjectResolver
+{
+    object Resolve(ObjectId id);
+    object? Convert(ShadowValue value, Type targetType);
+}
+
+/// <summary>
+/// Constructs only public data-model types from the linked netDxf assembly. It never resolves
+/// arbitrary assemblies, executes user code, or deserializes unrestricted CLR type names.
+/// Applications can register audited factories before attaching the session.
+/// </summary>
+public sealed class ShadowObjectFactories
+{
+    private readonly Dictionary<Type, Func<ShadowObject, IShadowObjectResolver, object>> factories = new();
+    private readonly object gate = new();
+
+    public void Register<T>(Func<ShadowObject, IShadowObjectResolver, T> factory) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        lock (gate) factories[typeof(T)] = (node, resolver) => factory(node, resolver);
+    }
+
+    internal object Create(ShadowObject node, IShadowObjectResolver resolver)
+    {
+        var type = typeof(DxfDocument).Assembly.GetType(node.TypeName, throwOnError: false, ignoreCase: false)
+            ?? throw new NotSupportedException($"Unknown netDxf data-model type {node.TypeName}.");
+        Func<ShadowObject, IShadowObjectResolver, object>? factory;
+        lock (gate) factories.TryGetValue(type, out factory);
+        if (factory is not null) return factory(node, resolver) ?? throw new InvalidOperationException("A source factory returned null.");
+        if (!type.IsClass || type.IsAbstract || !type.IsVisible || type == typeof(DxfDocument) ||
+            !(type.Namespace is "netDxf.Entities" or "netDxf.Blocks" or "netDxf.Tables" or "netDxf.Objects" or "netDxf.Header" or "netDxf.Collections" or "netDxf"))
+            throw new NotSupportedException($"{node.TypeName} is not a constructible source data-model type.");
+        var empty = type.GetConstructor(Type.EmptyTypes);
+        if (empty is not null) return empty.Invoke(null);
+        // Constructor arguments are matched by their semantic property names. This handles
+        // named table records, block references, vertices and other ordinary netDxf objects.
+        foreach (var constructor in type.GetConstructors().OrderBy(c => c.GetParameters().Length))
+        {
+            var parameters = constructor.GetParameters();
+            var values = new object?[parameters.Length];
+            var matched = true;
+            for (var index = 0; index < parameters.Length; index++)
+            {
+                var parameter = parameters[index];
+                var property = node.Properties.FirstOrDefault(p => string.Equals(p.Key, parameter.Name, StringComparison.OrdinalIgnoreCase));
+                if (property.Key is not null) values[index] = resolver.Convert(property.Value, parameter.ParameterType);
+                else if (parameter.HasDefaultValue) values[index] = parameter.DefaultValue;
+                else { matched = false; break; }
+            }
+            if (matched) return constructor.Invoke(values);
+        }
+        throw new NotSupportedException($"{node.TypeName} needs an explicit ShadowObjectFactories registration or additional constructor properties.");
+    }
+}

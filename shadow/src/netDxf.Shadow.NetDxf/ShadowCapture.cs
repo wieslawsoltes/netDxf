@@ -35,6 +35,17 @@ internal sealed class ShadowCapture
 
     public object Source(ObjectId id) => sources.TryGetValue(id, out var source) ? source : throw new ShadowConflictException($"Source object {id} no longer exists.");
 
+    internal Dictionary<ObjectId, object> RetainBindings() => new(sources);
+    internal void Bind(ObjectId id, object value)
+    {
+        if (identities.TryGetValue(value, out var previous))
+        {
+            if (previous.Id != id) throw new ShadowConflictException($"Source object is already bound to {previous.Id}, not {id}.");
+        }
+        else identities.Add(value, new Identity(id));
+        sources[id] = value;
+    }
+
     private ObjectId Identify(object value) => identities.GetValue(value, o =>
     {
         var handle = (o as DxfObject)?.Handle;
