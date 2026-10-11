@@ -21,6 +21,7 @@ public sealed record ShadowSnapshot(Guid DocumentId, long Revision, ObjectId Roo
         if (batch.Edits.IsDefaultOrEmpty) return this;
         var seen = new HashSet<(ObjectId, string)>();
         var builder = Objects.ToBuilder();
+        var changedIds = new HashSet<ObjectId>();
         foreach (var edit in batch.Edits)
         {
             if (!seen.Add((edit.Object, edit.Property))) throw new ArgumentException("Duplicate property edits are not allowed.", nameof(batch));
@@ -29,14 +30,23 @@ public sealed record ShadowSnapshot(Guid DocumentId, long Revision, ObjectId Roo
             if (!ShadowValue.Equivalent(node[edit.Property], edit.Before)) throw new ShadowConflictException($"{edit.Object}.{edit.Property} has changed.");
             foreach (var reference in edit.After.References())
                 if (!Objects.ContainsKey(reference)) throw new ArgumentException($"Dangling reference: {reference}.", nameof(batch));
-            builder[edit.Object] = node with { Properties = node.Properties.SetItem(edit.Property, edit.After) };
+            if (!ShadowValue.Equivalent(node[edit.Property], edit.After))
+            {
+                builder[edit.Object] = node with { Properties = node.Properties.SetItem(edit.Property, edit.After) };
+                changedIds.Add(edit.Object);
+            }
         }
-        return this with { Revision = checked(Revision + 1), Objects = builder.ToImmutable() };
+        if (changedIds.Count == 0) return this;
+        var next = this with { Revision = checked(Revision + 1), Objects = builder.ToImmutable() };
+        ShadowChangeJournal.Record(this, next, [], changedIds, []);
+        return next;
     }
 
     public ShadowDelta Diff(ShadowSnapshot previous)
     {
         if (DocumentId != previous.DocumentId) throw new ArgumentException("Cannot diff unrelated documents.", nameof(previous));
+        if (ReferenceEquals(previous, this)) return new(Revision, Revision, [], [], []);
+        if (ShadowChangeJournal.TryGet(previous, this, out var recorded)) return recorded;
         var changed = ImmutableHashSet.CreateBuilder<ObjectId>();
         var added = ImmutableHashSet.CreateBuilder<ObjectId>();
         var removed = ImmutableHashSet.CreateBuilder<ObjectId>();
@@ -68,9 +78,21 @@ public readonly struct ShadowReader
 {
     public ShadowSnapshot? Snapshot { get; }
     public ShadowValue Value { get; }
-    public ShadowReader(ShadowSnapshot snapshot, ShadowValue value) { Snapshot = snapshot; Value = value; }
+    private readonly IShadowReadObserver? observer;
+    public ShadowReader(ShadowSnapshot snapshot, ShadowValue value, IShadowReadObserver? observer = null)
+    { Snapshot = snapshot; Value = value; this.observer = observer; }
+    public ShadowReader Observe(IShadowReadObserver readObserver) => Snapshot is null ? default : new(Snapshot, Value, readObserver);
     public ObjectId? Id => Value is ShadowValue.Reference r ? r.Id : null;
-    public ShadowObject? Object => Snapshot is not null && Id is { } id ? Snapshot.Objects.GetValueOrDefault(id) : null;
+    public ShadowObject? Object
+    {
+        get
+        {
+            if (Snapshot is null || Id is not { } id) return null;
+            var node = Snapshot.Objects.GetValueOrDefault(id);
+            observer?.Read(id, node);
+            return node;
+        }
+    }
     public bool Exists => Value is not null && Value is not ShadowValue.NullValue;
     public string Type => Object?.Type ?? (Value is ShadowValue.Structure s ? s.TypeName[(s.TypeName.LastIndexOf('.') + 1)..] : string.Empty);
     public string Text => Value is ShadowValue.Atom a ? a.Text : string.Empty;
@@ -83,7 +105,7 @@ public readonly struct ShadowReader
         {
             if (Snapshot is null) return default;
             var value = Object is { } node ? node[key] : Value is ShadowValue.Structure s ? s.Fields.GetValueOrDefault(key, ShadowValue.Null) : ShadowValue.Null;
-            return new(Snapshot, value);
+            return new(Snapshot, value, observer);
         }
     }
     public IEnumerable<ShadowReader> Items
@@ -93,7 +115,7 @@ public readonly struct ShadowReader
             var snapshot = Snapshot;
             if (snapshot is null) yield break;
             var source = Value is ShadowValue.Sequence s ? s : this["$items"].Value as ShadowValue.Sequence;
-            if (source is not null) foreach (var item in source.Items) yield return new(snapshot, item);
+            if (source is not null) foreach (var item in source.Items) yield return new(snapshot, item, observer);
         }
     }
 }
@@ -127,6 +149,10 @@ public sealed class ShadowMemoryStore(ShadowSnapshot initial) : IShadowGraphStor
         lock (gate)
         {
             var next = patch.Apply(current);
+            ShadowChangeJournal.Record(current, next,
+                patch.Changes.Where(e => e.Before is null && e.After is not null).Select(e => e.Id),
+                patch.Changes.Where(e => e.Before is not null && e.After is not null && !ShadowGraphPatch.Equivalent(e.Before, e.After)).Select(e => e.Id),
+                patch.Changes.Where(e => e.Before is not null && e.After is null).Select(e => e.Id));
             Volatile.Write(ref current, next);
             return next;
         }

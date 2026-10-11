@@ -41,10 +41,19 @@ public abstract record ShadowValue
             (Atom a, Atom b) => a.TypeName == b.TypeName && a.Text == b.Text,
             (Reference a, Reference b) => a.Id == b.Id,
             (Fault a, Fault b) => a.Message == b.Message,
-            (Sequence a, Sequence b) => a.Items.Length == b.Items.Length && a.Items.Zip(b.Items).All(p => Equivalent(p.First, p.Second)),
+            (Sequence a, Sequence b) => Equivalent(a.Items, b.Items),
             (Structure a, Structure b) => a.TypeName == b.TypeName && Equivalent(a.Fields, b.Fields),
             _ => false
         };
+    }
+
+    private static bool Equivalent(ImmutableArray<ShadowValue> left, ImmutableArray<ShadowValue> right)
+    {
+        if (left == right) return true;
+        if (left.IsDefault || right.IsDefault || left.Length != right.Length) return false;
+        for (var index = 0; index < left.Length; index++)
+            if (!Equivalent(left[index], right[index])) return false;
+        return true;
     }
 
     public static bool Equivalent(ImmutableDictionary<string, ShadowValue> left, ImmutableDictionary<string, ShadowValue> right)
@@ -58,6 +67,8 @@ public abstract record ShadowValue
 
     public IEnumerable<ObjectId> References()
     {
+        if (this is Reference direct) { yield return direct.Id; yield break; }
+        if (this is not Sequence && this is not Structure) yield break;
         var stack = new Stack<ShadowValue>();
         stack.Push(this);
         while (stack.TryPop(out var value))

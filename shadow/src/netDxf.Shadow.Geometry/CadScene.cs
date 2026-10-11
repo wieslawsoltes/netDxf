@@ -34,22 +34,68 @@ public interface IEntityProjector
 }
 
 /// <summary>Expands occurrences, never clones or mutates a netDxf entity.</summary>
-public sealed class CadSceneBuilder
+public sealed partial class CadSceneBuilder
 {
     private readonly ImmutableArray<IEntityProjector> projectors;
-    public CadSceneBuilder(IEnumerable<IEntityProjector>? extensions = null) => projectors = (extensions ?? []).Append(new StandardEntityProjector()).ToImmutableArray();
+    private readonly ProjectionCache cache;
+    private readonly object buildGate = new();
+    private readonly RootProjectionCache rootCache = new();
+    public SceneBuildStatistics LastBuildStatistics { get { lock (buildGate) return rootCache.Statistics; } }
+    public ProjectionCacheStatistics CacheStatistics => cache.Statistics;
+    public bool IsSnapshotCacheable => projectors.All(p => p is ICacheableEntityProjector);
+    public long ProjectionVersion
+    {
+        get
+        {
+            long value = 17;
+            foreach (var projector in projectors)
+                value = unchecked(value * 31 + ((projector as ICacheableEntityProjector)?.Revision ?? 0));
+            return value;
+        }
+    }
+    public CadSceneBuilder(IEnumerable<IEntityProjector>? extensions = null, ProjectionCacheOptions? cacheOptions = null)
+    {
+        projectors = (extensions ?? []).Append(new StandardProjectionCacheAdapter()).ToImmutableArray();
+        cache = new(cacheOptions ?? new());
+    }
 
     public CadScene Build(ShadowSnapshot snapshot, SceneOptions? options = null, CancellationToken cancellationToken = default)
     {
-        options ??= new();
+        ArgumentNullException.ThrowIfNull(snapshot);
+        lock (buildGate) return BuildCore(snapshot, options ?? new(), cancellationToken);
+    }
+
+    private CadScene BuildCore(ShadowSnapshot snapshot, SceneOptions options, CancellationToken cancellationToken)
+    {
         if (options.MaximumDepth < 1 || options.MaximumOccurrences < 1) throw new ArgumentOutOfRangeException(nameof(options));
         if (!snapshot.Layout(options.Layout).Exists) throw new ArgumentException($"Unknown layout '{options.Layout}'.", nameof(options));
         var output = ImmutableArray.CreateBuilder<CadOccurrence>();
         var diagnostics = snapshot.Diagnostics.ToBuilder();
         var activeBlocks = new HashSet<ObjectId>();
         var visits = 0;
-        foreach (var entity in snapshot.DrawingEntities(options.Layout)) Visit(entity, Affine3.Identity, [], string.Empty, null, default, 0);
-        return new(snapshot.DocumentId, snapshot.Revision, options.Layout, output.ToImmutable(), diagnostics.ToImmutable());
+        var entities = snapshot.Layout(options.Layout)["AssociatedBlock"]["Entities"];
+        var membership = entities.Value is ShadowValue.Sequence ? entities.Value : entities["$items"].Value;
+        var rootTransaction = rootCache.Begin(snapshot, options, ProjectionVersion, membership, IsSnapshotCacheable);
+        ShadowReadSet? rootReads = null;
+        foreach (var entity in entities.Items)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (entity.Id is not { } rootId) continue;
+            if (rootTransaction.TryGet(rootId, out var cached))
+            {
+                visits = checked(visits + cached.Visits);
+                if (visits > options.MaximumOccurrences) throw new InvalidOperationException("Scene occurrence budget exceeded.");
+                output.AddRange(cached.Occurrences); diagnostics.AddRange(cached.Diagnostics);
+                continue;
+            }
+            rootReads = new();
+            var start = output.Count; var issueStart = diagnostics.Count; var startVisits = visits;
+            Visit(entity.Observe(rootReads), Affine3.Identity, [], string.Empty, null, default, 0);
+            rootTransaction.Add(rootId, new(output.Skip(start).ToImmutableArray(), diagnostics.Skip(issueStart).ToImmutableArray(), rootReads.Freeze(), visits - startVisits));
+        }
+        var scene = new CadScene(snapshot.DocumentId, snapshot.Revision, options.Layout, output.ToImmutable(), diagnostics.ToImmutable());
+        rootTransaction.Commit();
+        return scene;
 
         void Visit(ShadowReader entity, Affine3 matrix, ImmutableArray<ObjectId> insertPath, string prefix, CadStyle? inherited, ShadowReader inheritedLayer, int depth)
         {
@@ -105,9 +151,9 @@ public sealed class CadSceneBuilder
             {
                 try
                 {
-                    if (!projector.TryProject(entity, out var geometry, out var diagnostic)) continue;
+                    if (!cache.TryProject(projector, entity, out var geometry, out var diagnostic, rootReads)) continue;
                     if (diagnostic is not null) diagnostics.Add(new("geometry.approximation", diagnostic, id));
-                    output.Add(new(key, id, insertPath, style, geometry.Transform(matrix)));
+                    output.Add(cache.Occurrence(snapshot.DocumentId, key, id, insertPath, style, geometry, matrix));
                     return;
                 }
                 catch (Exception error) when (error is not OperationCanceledException)

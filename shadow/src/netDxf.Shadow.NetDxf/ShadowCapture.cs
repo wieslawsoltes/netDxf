@@ -23,7 +23,9 @@ internal sealed class ShadowCapture
     private HashSet<ObjectId> scheduled = new();
     private ImmutableDictionary<ObjectId, ShadowObject>.Builder nodes = null!;
     private ImmutableArray<ShadowDiagnostic>.Builder diagnostics = null!;
-    private ShadowSnapshot? baseline;
+    private List<ObjectId>? addedSources;
+    private int changedObjects;
+    private HashSet<ObjectId> changedIds = new();
     private bool incremental;
 
     public ShadowCapture(ShadowCaptureOptions options)
@@ -60,17 +62,23 @@ internal sealed class ShadowCapture
         var id = Identify(value);
         if (sources.TryGetValue(id, out var existing) && !ReferenceEquals(existing, value))
             throw new InvalidOperationException($"Duplicate source identity {id}; DXF handles must be unique.");
-        sources[id] = value;
+        if (existing is null)
+        {
+            sources[id] = value;
+            addedSources?.Add(id);
+        }
         if ((!incremental || !nodes.ContainsKey(id)) && scheduled.Add(id)) pending.Enqueue((id, value));
         return new ShadowValue.Reference(id);
     }
 
     public ShadowSnapshot Capture(DxfDocument document, ShadowSnapshot? previous, IReadOnlyCollection<ObjectId>? dirty = null)
     {
-        baseline = previous;
+        changedObjects = 0;
+        changedIds = new();
         incremental = previous is not null && dirty is not null;
         var oldSources = sources;
-        sources = incremental ? new(oldSources) : new();
+        sources = incremental ? oldSources : new();
+        addedSources = incremental ? new() : null;
         pending = new();
         scheduled = new();
         nodes = incremental ? previous!.Objects.ToBuilder() : ImmutableDictionary.CreateBuilder<ObjectId, ShadowObject>();
@@ -92,7 +100,7 @@ internal sealed class ShadowCapture
         {
             while (pending.TryDequeue(out var entry))
             {
-                if (scheduled.Count > options.MaximumObjects) throw new InvalidOperationException("Shadow object budget exceeded.");
+                if (sources.Count > options.MaximumObjects) throw new InvalidOperationException("Shadow object budget exceeded.");
                 var properties = ImmutableDictionary.CreateBuilder<string, ShadowValue>(StringComparer.Ordinal);
                 var writable = ImmutableHashSet.CreateBuilder<string>(StringComparer.Ordinal);
                 foreach (var accessor in SourceAccessors.For(entry.Source.GetType()))
@@ -122,20 +130,33 @@ internal sealed class ShadowCapture
                 var type = entry.Source.GetType().FullName!;
                 if (previous is not null && previous.Objects.TryGetValue(entry.Id, out var old) && old.TypeName == type && ShadowValue.Equivalent(old.Properties, fields))
                     nodes[entry.Id] = old;
-                else nodes[entry.Id] = new(entry.Id, type, kind, fields, writable.ToImmutable());
+                else
+                {
+                    nodes[entry.Id] = new(entry.Id, type, kind, fields, writable.ToImmutable());
+                    changedObjects++; changedIds.Add(entry.Id);
+                }
             }
             var objects = nodes.ToImmutable();
             var issues = diagnostics.ToImmutable();
-            var same = previous is not null && previous.Objects.Count == objects.Count && objects.All(p => previous.Objects.TryGetValue(p.Key, out var old) && ReferenceEquals(old, p.Value)) && previous.Diagnostics.SequenceEqual(issues);
+            var same = previous is not null && previous.Objects.Count == objects.Count && changedObjects == 0 && previous.Diagnostics.SequenceEqual(issues);
             if (same) return previous!;
             var entities = incremental ? previous!.EntityIds : objects.Values.Where(n => n.Kind.HasFlag(ShadowObjectKind.Entity)).Select(n => n.Id).ToImmutableHashSet();
-            return new(documentId, previous is null ? 0 : checked(previous.Revision + 1), root, objects, entities, issues);
+            var next = new ShadowSnapshot(documentId, previous is null ? 0 : checked(previous.Revision + 1), root, objects, entities, issues);
+            if (previous is not null)
+                ShadowChangeJournal.Record(previous, next,
+                    changedIds.Where(id => !previous.Objects.ContainsKey(id)),
+                    changedIds.Where(previous.Objects.ContainsKey),
+                    incremental ? [] : previous.Objects.Keys.Where(id => !objects.ContainsKey(id)));
+            return next;
         }
         catch
         {
+            if (incremental && addedSources is not null)
+                foreach (var id in addedSources) sources.Remove(id);
             sources = oldSources;
             throw;
         }
+        finally { addedSources = null; }
     }
 
     public ShadowValue Preview(object? value)
@@ -152,6 +173,8 @@ internal sealed class ShadowCapture
         if (depth > options.MaximumValueDepth) throw new InvalidOperationException("Shadow value nesting budget exceeded.");
         var type = value.GetType();
         if (value is string text) return ShadowValue.From(text);
+        if (ReferenceEquals(value, StringComparer.Ordinal)) return new ShadowValue.Atom("System.StringComparer", "Ordinal");
+        if (ReferenceEquals(value, StringComparer.OrdinalIgnoreCase)) return new ShadowValue.Atom("System.StringComparer", "OrdinalIgnoreCase");
         if (type.IsEnum || type.IsPrimitive || value is decimal or Guid or DateTime or DateTimeOffset or TimeSpan)
         {
             var representation = value switch
