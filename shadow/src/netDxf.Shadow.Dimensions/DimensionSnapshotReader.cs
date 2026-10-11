@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using netDxf.Blocks;
+using netDxf.Collections;
 using netDxf.Entities;
 using netDxf.Tables;
 
@@ -16,7 +17,7 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
     [
         typeof(AlignedDimension), typeof(LinearDimension), typeof(Angular2LineDimension), typeof(Angular3PointDimension),
         typeof(RadialDimension), typeof(DiametricDimension), typeof(OrdinateDimension), typeof(ArcLengthDimension),
-        typeof(DimensionStyle), typeof(DimensionStyleAlternateUnits), typeof(DimensionStyleTolerances),
+        typeof(DimensionStyle), typeof(DimensionStyleOverrideDictionary), typeof(DimensionStyleAlternateUnits), typeof(DimensionStyleTolerances),
         typeof(AciColor), typeof(Transparency), typeof(TextStyleFontData), typeof(TextStyle), typeof(Layer), typeof(Linetype), typeof(LinetypeSimpleSegment),
         typeof(LinetypeTextSegment), typeof(Block), typeof(Insert), typeof(Line), typeof(Arc), typeof(Circle), typeof(Ellipse),
         typeof(Solid), typeof(Trace), typeof(Face3D), typeof(Text), typeof(MText), typeof(Polyline2D), typeof(Polyline2DVertex),
@@ -30,10 +31,47 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
 
     internal Dimension Read(ShadowReader source)
     {
-        var dimension = Object(source, 0) as Dimension ?? throw new ArgumentException("Expected a dimension.");
-        dimension.TextPositionManuallySet = source["TextPositionManuallySet"].Boolean();
-        dimension.Update(); // Calculates references only: no old generated block is copied.
+        Budget(0);
+        // Construct from independent definition coordinates, not derived points or
+        // the old generated block. Constructor selection must never change with reflection order.
+        var style = (DimensionStyle)Object(source["Style"], 1);
+        Vector2 P(string name) => (Vector2)Value(source[name], typeof(Vector2), 1)!;
+        double N(string name) => (double)Value(source[name], typeof(double), 1)!;
+        Dimension dimension = source.Type switch
+        {
+            "AlignedDimension" => new AlignedDimension(P("FirstReferencePoint"), P("SecondReferencePoint"), N("Offset"), style),
+            "LinearDimension" => new LinearDimension(P("FirstReferencePoint"), P("SecondReferencePoint"), N("Offset"), N("Rotation"), style),
+            "Angular2LineDimension" => new Angular2LineDimension(P("StartFirstLine"), P("EndFirstLine"), P("StartSecondLine"), P("EndSecondLine"), N("Offset"), style),
+            "Angular3PointDimension" => new Angular3PointDimension(P("CenterPoint"), P("StartPoint"), P("EndPoint"), N("Offset"), style),
+            "RadialDimension" => new RadialDimension(P("CenterPoint"), P("ReferencePoint"), style),
+            "DiametricDimension" => new DiametricDimension(P("CenterPoint"), P("ReferencePoint"), style),
+            "OrdinateDimension" => new OrdinateDimension(P("Origin"), P("FeaturePoint"), P("LeaderEndPoint"), EnumValue<OrdinateDimensionAxis>(source["Axis"]), style) { Rotation = N("Rotation") },
+            "ArcLengthDimension" => new ArcLengthDimension(P("CenterPoint"), N("Radius"), N("StartAngle"), N("EndAngle"), N("Offset"), style),
+            _ => throw new NotSupportedException("Unsupported detached dimension definition: " + source.Type)
+        };
+        dimension.Normal = (Vector3)Value(source["Normal"], typeof(Vector3), 1)!;
+        dimension.Elevation = N("Elevation");
+        dimension.UserText = (string)Value(source["UserText"], typeof(string), 1)!;
+        dimension.TextRotation = N("TextRotation");
+        dimension.AttachmentPoint = EnumValue<MTextAttachmentPoint>(source["AttachmentPoint"]);
+        dimension.LineSpacingStyle = EnumValue<MTextLineSpacingStyle>(source["LineSpacingStyle"]);
+        dimension.LineSpacingFactor = N("LineSpacingFactor");
+        CopyOverrides(dimension.StyleOverrides, source["StyleOverrides"], 1);
+        if (source["TextPositionManuallySet"].Boolean()) dimension.TextReferencePoint = P("TextReferencePoint");
+        else dimension.TextPositionManuallySet = false;
+        dimension.Update();
         return dimension;
+    }
+
+    private void CopyOverrides(DimensionStyleOverrideDictionary target, ShadowReader source, int depth)
+    {
+        Budget(depth);
+        foreach (var item in source["Values"].Items)
+        {
+            Budget(depth + 1);
+            target.Add(new DimensionStyleOverride(EnumValue<DimensionStyleOverrideType>(item["Type"]),
+                Value(item["Value"], typeof(object), depth + 1)!));
+        }
     }
 
     private object Object(ShadowReader source, int depth)
@@ -48,6 +86,24 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
         try
         {
             object result;
+            if (type == typeof(DimensionStyleOverrideDictionary))
+            {
+                var overrides = new DimensionStyleOverrideDictionary();
+                copies.Add(node.Id, overrides);
+                CopyOverrides(overrides, source, depth + 1);
+                return overrides;
+            }
+            if (type == typeof(Block))
+            {
+                if (source["IsXRef"].Boolean()) throw new NotSupportedException("External arrow blocks require an explicit resource resolver.");
+                if (source["AttributeDefinitions"]["Values"].Items.Any()) throw new NotSupportedException("Arrow attribute definitions need an explicit materializer.");
+                var block = new Block(source["Name"].Text) { Origin = (Vector3)Value(source["Origin"], typeof(Vector3), depth + 1)! };
+                copies.Add(node.Id, block);
+                foreach (var child in source["Entities"].Items)
+                    block.Entities.Add((EntityObject)Object(child, depth + 1));
+                block.Record.Units = EnumValue<netDxf.Units.DrawingUnits>(source["Record"]["Units"]);
+                return block;
+            }
             if (type == typeof(AciColor))
             {
                 result = source["UseTrueColor"].Boolean()
@@ -117,12 +173,12 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
             if (target is TextStyle && name is "FontFile" or "FontFamilyName" or "FontStyle") continue;
             var value = source[name]; if (!value.Exists) continue;
             Budget(depth);
-            if (target is Dimension dimension && name == "StyleOverrides")
+            if (target is Dimension dimension && name == "StyleOverrides") CopyOverrides(dimension.StyleOverrides, value, depth + 1);
+            else if (property.SetMethod is { IsPublic: true })
             {
-                foreach (var item in value["Values"].Items)
-                    dimension.StyleOverrides.Add(new DimensionStyleOverride(EnumValue<DimensionStyleOverrideType>(item["Type"]), Value(item["Value"], typeof(object), depth + 1)!));
+                try { property.SetValue(target, Value(value, property.PropertyType, depth + 1)); }
+                catch (Exception error) { throw new InvalidOperationException($"{target.GetType().Name}.{name}: {error.Message}", error); }
             }
-            else if (property.SetMethod is { IsPublic: true }) property.SetValue(target, Value(value, property.PropertyType, depth + 1));
             else if (name is "AlternateUnits" or "Tolerances") Populate(property.GetValue(target)!, value, depth + 1);
             else if (name is "Entities" or "Vertexes" or "Segments" or "FitPoints")
             {
