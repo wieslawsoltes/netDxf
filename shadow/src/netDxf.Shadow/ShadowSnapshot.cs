@@ -82,6 +82,8 @@ public readonly struct ShadowReader
     public ShadowReader(ShadowSnapshot snapshot, ShadowValue value, IShadowReadObserver? observer = null)
     { Snapshot = snapshot; Value = value; this.observer = observer; }
     public ShadowReader Observe(IShadowReadObserver readObserver) => Snapshot is null ? default : new(Snapshot, Value, readObserver);
+    /// <summary>Resolve another immutable object without dropping dependency observation.</summary>
+    public ShadowReader Resolve(ObjectId id) => Snapshot is null ? default : new(Snapshot, new ShadowValue.Reference(id), observer);
     public ObjectId? Id => Value is ShadowValue.Reference r ? r.Id : null;
     public ShadowObject? Object
     {

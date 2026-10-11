@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Detached dimension regeneration over immutable shadow snapshots.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
+    <ProjectReference Include="../netDxf.Shadow.Geometry/netDxf.Shadow.Geometry.csproj" />
+  </ItemGroup>
+</Project>

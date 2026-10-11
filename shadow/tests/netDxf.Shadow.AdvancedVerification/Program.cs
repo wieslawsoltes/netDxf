@@ -10,6 +10,7 @@ ViewportVerification.Register(tests);
 ShxVerification.Register(tests);
 ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
+DimensionVerification.Register(tests);
 var failures = 0;
 foreach (var test in tests)
 {

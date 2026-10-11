@@ -33,6 +33,17 @@ public sealed partial class CadSceneBuilder
         return new(argb, width, dash, visible, layer["Name"].Text);
     }
 
+    private static CadStyle ResolveLayerStyle(ShadowReader layer, double globalScale)
+    {
+        var color = layer["Color"];
+        var rgb = (uint)color["R"].Number(228) << 16 | (uint)color["G"].Number(232) << 8 | (uint)color["B"].Number(239);
+        if (!color["UseTrueColor"].Boolean() && color["Index"].Number() == 7) rgb = CadStyle.Default.Argb & 0xffffff;
+        var alpha = (uint)Math.Round(255 * (1 - Math.Clamp(layer["Transparency"]["Value"].Number(), 0, 90) / 100));
+        return new(rgb | alpha << 24, ParseLineweight(layer["Lineweight"].Text),
+            layer["Linetype"]["Segments"].Items.Select(s => s["Length"].Number() * globalScale).ToImmutableArray(),
+            layer["IsVisible"].Boolean(true) && !layer["IsFrozen"].Boolean(), layer["Name"].Text);
+    }
+
     private static double ParseLineweight(string value)
     {
         if (double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var number)) return number >= 0 ? number / 100 : 0.25;

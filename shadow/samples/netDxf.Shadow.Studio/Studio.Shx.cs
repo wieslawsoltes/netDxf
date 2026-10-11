@@ -3,6 +3,7 @@ using netDxf.Entities;
 using netDxf.Objects;
 using netDxf.Tables;
 using netDxf.Shadow.Geometry;
+using netDxf.Shadow.Dimensions;
 using netDxf.Shadow.Rendering;
 using netDxf.Shadow.Rendering.Shx;
 
@@ -13,7 +14,11 @@ public sealed partial class Studio
     private const int MaximumFontBytes = 4 * 1024 * 1024;
     private readonly ShxFontCatalog shxFonts = new(32);
     private readonly Dictionary<long, RenderCompiler> retainedCompilers = new();
-    private RenderCompiler FrozenCompiler() => new(new CadSceneBuilder([new ShxEntityProjector(shxFonts.Current)]), textEngine);
+    private RenderCompiler FrozenCompiler()
+    {
+        var shx = new ShxEntityProjector(shxFonts.Current);
+        return new(new CadSceneBuilder([new DimensionEntityProjector(resources: [shx]), shx]), textEngine);
+    }
 
     /// <summary>Explicit upload only. No path stored in a drawing ever causes a font file to be opened.</summary>
     public object LoadFont(long revision, string fileName, byte[] bytes)

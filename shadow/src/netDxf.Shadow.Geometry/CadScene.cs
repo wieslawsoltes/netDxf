@@ -23,6 +23,8 @@ public sealed record CadGeometry(ImmutableArray<CadContour> Contours, bool Fille
     CadText? Text = null, CadImage? Image = null)
 {
     public static CadGeometry Empty { get; } = new([]);
+    /// <summary>Immutable semantic components, flattened by the scene builder with the parent entity identity.</summary>
+    public ImmutableArray<CadComponent> Components { get; init; } = [];
     /// <summary>Optional presentation strokes. Default uses Contours; empty suppresses them.
     /// Contours always retains the semantic curves consumed by topology and analysis.</summary>
     public ImmutableArray<CadContour> DisplayContours { get; init; }
@@ -30,6 +32,7 @@ public sealed record CadGeometry(ImmutableArray<CadContour> Contours, bool Fille
     public ImmutableArray<CadStrokeGroup> Strokes { get; init; } = [];
     public CadGeometry Transform(Affine3 matrix) => this with
     {
+        Components = Components.Select(part => part with { Geometry = part.Geometry.Transform(matrix) }).ToImmutableArray(),
         Contours = TransformContours(Contours, matrix),
         DisplayContours = DisplayContours.IsDefault ? default : TransformContours(DisplayContours, matrix),
         Regions = Regions.Select(region => region.Transform(matrix)).ToImmutableArray(),

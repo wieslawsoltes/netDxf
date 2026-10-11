@@ -70,20 +70,20 @@ public sealed partial class CadSceneBuilder
                 finally { activeBlocks.Remove(blockId); }
                 return;
             }
-            if (entity.Type.EndsWith("Dimension", StringComparison.Ordinal) && entity["Block"].Id is { } dimensionBlock)
-            {
-                if (!activeBlocks.Add(dimensionBlock)) { diagnostics.Add(new("dimension.cycle", "Cyclic dimension block.", id)); return; }
-                try { foreach (var child in entity["Block"]["Entities"].Items) Visit(child, matrix, insertPath, key + "/", style, layer, depth + 1); }
-                finally { activeBlocks.Remove(dimensionBlock); }
-                return;
-            }
             foreach (var projector in projectors)
             {
                 try
                 {
                     if (!cache.TryProject(projector, entity, out var geometry, out var diagnostic, rootReads)) continue;
                     if (diagnostic is not null) diagnostics.Add(new("geometry.approximation", diagnostic, id));
-                    output.Add(cache.Occurrence(snapshot.DocumentId, key, id, insertPath, style, geometry, matrix));
+                    if (geometry.Components.IsDefaultOrEmpty)
+                        output.Add(cache.Occurrence(snapshot.DocumentId, key, id, insertPath, style, geometry, matrix));
+                    else
+                    {
+                        var components = new List<CadOccurrence>();
+                        Emit(geometry, key, style, 0, components);
+                        output.AddRange(components);
+                    }
                     return;
                 }
                 catch (Exception error) when (error is not OperationCanceledException)
@@ -92,7 +92,35 @@ public sealed partial class CadSceneBuilder
                     return;
                 }
             }
+            if (entity.Type.EndsWith("Dimension", StringComparison.Ordinal) && entity["Block"].Id is { } dimensionBlock)
+            {
+                if (!activeBlocks.Add(dimensionBlock)) { diagnostics.Add(new("dimension.cycle", "Cyclic dimension block.", id)); return; }
+                try { foreach (var child in entity["Block"]["Entities"].Items) Visit(child, matrix, insertPath, key + "/", style, layer, depth + 1); }
+                finally { activeBlocks.Remove(dimensionBlock); }
+                return;
+            }
             diagnostics.Add(new("geometry.unsupported", $"No semantic projector for {entity.Type}; all public source data remains in the snapshot.", id));
+
+            void Emit(CadGeometry geometry, string componentKey, CadStyle componentStyle, int componentDepth, List<CadOccurrence> components)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (componentDepth > options.MaximumDepth) throw new InvalidOperationException("Component nesting budget exceeded.");
+                if (geometry.Components.IsDefaultOrEmpty)
+                {
+                    components.Add(cache.Occurrence(snapshot.DocumentId, componentKey, id, insertPath, componentStyle, geometry, matrix));
+                    return;
+                }
+                if (!geometry.Contours.IsDefaultOrEmpty || geometry.Text is not null || geometry.Image is not null || !geometry.Regions.IsDefaultOrEmpty || !geometry.Strokes.IsDefaultOrEmpty || !geometry.DisplayContours.IsDefaultOrEmpty)
+                    throw new ArgumentException("Composite containers cannot mix component and primitive geometry.");
+                var seen = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var component in geometry.Components)
+                {
+                    if (++visits > options.MaximumOccurrences) throw new InvalidOperationException("Scene occurrence budget exceeded.");
+                    if (string.IsNullOrEmpty(component.Key) || !seen.Add(component.Key)) throw new ArgumentException("Component keys must be nonempty and unique.");
+                    Emit(component.Geometry, componentKey + "/part[" + component.Key.Length + "]:" + component.Key,
+                        component.Style?.Resolve(componentStyle, ResolveLayerStyle(layer, globalScale)) ?? componentStyle, componentDepth + 1, components);
+                }
+            }
         }
     }
 

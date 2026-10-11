@@ -38,6 +38,7 @@ public sealed partial class Studio
         AddAppearanceGallery(document, annotation);
         AddPaperGallery(document, annotation);
         AddShxGallery(document, annotation);
+        AddDimensionGallery(document, annotation);
         return document;
     }
 

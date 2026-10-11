@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using netDxf.Entities;
 using netDxf.Shadow.Editor;
+using netDxf.Shadow.Dimensions;
 using netDxf.Shadow.Geometry;
 using netDxf.Shadow.Rendering.Shx;
 using netDxf.Shadow.Graph;
@@ -42,7 +43,8 @@ public sealed partial class Studio : IDisposable
     public Studio()
     {
         shxFonts.Register("shadow-demo.shx", DemoFont());
-        sceneBuilder = new([new ShxEntityProjector(shxFonts)]);
+        var shxProjector = new ShxEntityProjector(shxFonts);
+        sceneBuilder = new([new DimensionEntityProjector(resources: [shxProjector]), shxProjector]);
         compiler = new(sceneBuilder, textEngine);
         renderer = new(new Dictionary<string, Func<IRenderBackend>>
         {
