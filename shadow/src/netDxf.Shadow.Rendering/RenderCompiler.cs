@@ -64,7 +64,8 @@ public sealed class RenderCompiler
     }
     private static RenderItem CreateItem(CadOccurrence occurrence, RenderGeometryData data) => new(
         occurrence.Key, occurrence.Entity, occurrence.InsertPath, occurrence.Style,
-        data.Contours, occurrence.Geometry.Filled, occurrence.Geometry.Text, occurrence.Geometry.Image, data.Bounds);
+        data.Contours, occurrence.Geometry.Filled, occurrence.Geometry.Text, occurrence.Geometry.Image, data.Bounds)
+        { Regions = data.Regions };
 
     public static RenderScene Compile(CadScene scene, SamplingOptions? sampling = null, CancellationToken cancellationToken = default)
         => CompileCore(scene, sampling ?? new(), static (o, s) => CreateItem(o, RenderGeometryCompiler.Compile(o.Geometry, s)), null, cancellationToken);
@@ -105,27 +106,13 @@ public sealed class RenderCompiler
 
     public static RenderItem? HitTest(RenderScene scene, Vec3 worldPoint, double tolerance)
     {
+        ArgumentNullException.ThrowIfNull(scene);
         if (!worldPoint.IsFinite || !(tolerance > 0) || !double.IsFinite(tolerance)) throw new ArgumentOutOfRangeException(nameof(tolerance));
-        Bounds2 rectangle = new Bounds2(worldPoint.X, worldPoint.Y, worldPoint.X, worldPoint.Y).Inflate(tolerance);
+        var rectangle = new Bounds2(worldPoint.X, worldPoint.Y, worldPoint.X, worldPoint.Y).Inflate(tolerance);
         foreach (var index in scene.Index.Query(rectangle).OrderDescending())
         {
             var item = scene.Items[index];
-            if (!item.Style.Visible) continue;
-            if (item.Text is not null || item.Image is not null) return item;
-            var inside = false;
-            foreach (var contour in item.Contours)
-            {
-                for (var i = 1; i < contour.Points.Length; i++)
-                    if (CurveSampler.DistanceToSegment(worldPoint with { Z = 0 }, contour.Points[i - 1] with { Z = 0 }, contour.Points[i] with { Z = 0 }) <= tolerance) return item;
-                if (!item.Filled || !contour.Closed) continue;
-                var vertices = contour.Points;
-                for (int i = 0, j = vertices.Length - 1; i < vertices.Length; j = i++)
-                {
-                    var a = vertices[i]; var b = vertices[j];
-                    if ((a.Y > worldPoint.Y) != (b.Y > worldPoint.Y) && worldPoint.X < (b.X - a.X) * (worldPoint.Y - a.Y) / (b.Y - a.Y) + a.X) inside = !inside;
-                }
-            }
-            if (inside) return item;
+            if (item.Style.Visible && RenderHitTesting.Contains(item, worldPoint, tolerance)) return item;
         }
         return null;
     }

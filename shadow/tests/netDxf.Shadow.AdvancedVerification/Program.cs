@@ -3,6 +3,7 @@ using System.Diagnostics;
 var tests = new List<(string Name, Action Run)>();
 StructuralVerification.Register(tests);
 IncrementalVerification.Register(tests);
+AppearanceVerification.Register(tests);
 var failures = 0;
 foreach (var test in tests)
 {
