@@ -21,6 +21,35 @@ concurrency:
   group: build-package-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
 jobs:
+  shadow:
+    name: Shadow DOM (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build shadow libraries and integrated Studio
+        run: dotnet build shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Verify snapshot, synchronization, geometry, graph and editor contracts
+        run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Verify structural history, incremental processing, appearance and rich text
+        run: dotnet run --project shadow/tests/netDxf.Shadow.AdvancedVerification/netDxf.Shadow.AdvancedVerification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Retain rendered regression artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: shadow-verification-${{ matrix.os }}
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
   build:
     name: Build all targets (${{ matrix.os }}, ${{ matrix.configuration }})
     strategy:
@@ -276,33 +305,3 @@ jobs:
           path: artifacts/packages/
           if-no-files-found: error
           retention-days: 30
-
-  shadow:
-    name: Shadow DOM (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
-        with:
-          dotnet-version: '8.0.x'
-      - name: Build shadow libraries and integrated Studio
-        run: dotnet build shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
-      - name: Verify snapshot, synchronization, geometry, graph and editor contracts
-        run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
-      - name: Verify structural history, incremental processing, appearance and rich text
-        run: dotnet run --project shadow/tests/netDxf.Shadow.AdvancedVerification/netDxf.Shadow.AdvancedVerification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
-      - name: Retain rendered regression artifacts
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: shadow-verification-${{ matrix.os }}
-          path: artifacts/
-          if-no-files-found: ignore
-          retention-days: 14
