@@ -24,6 +24,7 @@ public readonly record struct Vec3(double X, double Y, double Z = 0)
 /// <summary>Column-vector affine transform; (a * b)(p) applies b before a.</summary>
 public readonly record struct Affine3(Vec3 X, Vec3 Y, Vec3 Z, Vec3 Translation)
 {
+    public bool IsFinite => X.IsFinite && Y.IsFinite && Z.IsFinite && Translation.IsFinite;
     public static Affine3 Identity => new(Vec3.UnitX, Vec3.UnitY, Vec3.UnitZ, Vec3.Zero);
     public Vec3 Point(Vec3 p) => Direction(p) + Translation;
     public Vec3 Direction(Vec3 p) => X * p.X + Y * p.Y + Z * p.Z;
@@ -31,6 +32,24 @@ public readonly record struct Affine3(Vec3 X, Vec3 Y, Vec3 Z, Vec3 Translation)
     public static Affine3 Move(Vec3 p) => Identity with { Translation = p };
     public static Affine3 Scale(Vec3 p) => new(Vec3.UnitX * p.X, Vec3.UnitY * p.Y, Vec3.UnitZ * p.Z, Vec3.Zero);
     public static Affine3 RotateZ(double radians) => new(new(Math.Cos(radians), Math.Sin(radians)), new(-Math.Sin(radians), Math.Cos(radians)), Vec3.UnitZ, Vec3.Zero);
+    /// <summary>Scaled inversion avoids cubic overflow; numerically singular transforms fail explicitly.</summary>
+    public bool TryInverse(out Affine3 inverse, double relativeTolerance = 1e-12)
+    {
+        inverse = default;
+        if (!IsFinite || !double.IsFinite(relativeTolerance) || relativeTolerance < 0) return false;
+        static double Max(Vec3 v) => Math.Max(Math.Abs(v.X), Math.Max(Math.Abs(v.Y), Math.Abs(v.Z)));
+        var scale = Math.Max(Max(X), Math.Max(Max(Y), Max(Z)));
+        if (!(scale > 0)) return false;
+        var x = X / scale; var y = Y / scale; var z = Z / scale;
+        var a = Vec3.Cross(y, z); var b = Vec3.Cross(z, x); var c = Vec3.Cross(x, y);
+        var determinant = Vec3.Dot(x, a);
+        if (!double.IsFinite(determinant) || Math.Abs(determinant) <= relativeTolerance * x.Length * y.Length * z.Length) return false;
+        a = (a / determinant) / scale; b = (b / determinant) / scale; c = (c / determinant) / scale;
+        var linear = new Affine3(new(a.X, b.X, c.X), new(a.Y, b.Y, c.Y), new(a.Z, b.Z, c.Z), Vec3.Zero);
+        inverse = linear with { Translation = linear.Direction(-Translation) };
+        return inverse.IsFinite;
+    }
+
     public static Affine3 ObjectCoordinates(Vec3 normal)
     {
         var z = normal.Normalized;
