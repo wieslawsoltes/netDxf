@@ -6,18 +6,14 @@ namespace netDxf.Shadow.Editor;
 public sealed record EditHistoryEntry(string Description, ImmutableArray<ShadowPropertyEdit> Changes);
 public sealed record EditorState(long Revision, ImmutableHashSet<string> Selection, int UndoCount, int RedoCount);
 
-/// <summary>
-/// Backend- and source-independent editing over IShadowStore. History contains canonical
-/// property values, not live source objects. An external source change invalidates history
-/// until the host explicitly resets it; undo never overwrites an unrelated writer.
-/// </summary>
+/// <summary>Revision-checked editing over a source or an isolated immutable branch.</summary>
 public sealed class EditorSession
 {
     private readonly object gate = new();
     private readonly IShadowStore store;
     private readonly int historyLimit;
-    private ImmutableList<EditHistoryEntry> undo = [];
-    private ImmutableList<EditHistoryEntry> redo = [];
+    private ImmutableList<EditHistoryEntry> undo = ImmutableList<EditHistoryEntry>.Empty;
+    private ImmutableList<EditHistoryEntry> redo = ImmutableList<EditHistoryEntry>.Empty;
     private ImmutableHashSet<string> selection = ImmutableHashSet<string>.Empty;
     private long expectedRevision;
 
@@ -28,15 +24,31 @@ public sealed class EditorSession
         this.historyLimit = historyLimit;
         expectedRevision = store.Current.Revision;
     }
+
     public ShadowSnapshot Snapshot => store.Current;
-    public EditorState State { get { lock (gate) return new(expectedRevision, selection, undo.Count, redo.Count); } }
-    public ImmutableArray<string> UndoDescriptions { get { lock (gate) return undo.Select(e => e.Description).ToImmutableArray(); } }
+    public EditorState State
+    {
+        get { lock (gate) return new EditorState(expectedRevision, selection, undo.Count, redo.Count); }
+    }
+    public ImmutableArray<string> UndoDescriptions
+    {
+        get
+        {
+            lock (gate)
+            {
+                var result = ImmutableArray.CreateBuilder<string>(undo.Count);
+                foreach (var entry in undo) result.Add(entry.Description);
+                return result.MoveToImmutable();
+            }
+        }
+    }
 
     public void Select(IEnumerable<string> keys)
     {
         ArgumentNullException.ThrowIfNull(keys);
         lock (gate) selection = keys.ToImmutableHashSet(StringComparer.Ordinal);
     }
+
     public void ToggleSelection(string key)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
@@ -46,6 +58,7 @@ public sealed class EditorSession
     public ShadowSnapshot Execute(string description, ShadowEditBatch batch)
     {
         ArgumentException.ThrowIfNullOrEmpty(description);
+        ArgumentNullException.ThrowIfNull(batch);
         lock (gate)
         {
             EnsureCurrent();
@@ -53,15 +66,20 @@ public sealed class EditorSession
             var after = store.Apply(batch);
             expectedRevision = after.Revision;
             if (ReferenceEquals(before, after)) return after;
-            var canonical = batch.Edits.Select(edit => edit with
+
+            // Record the source's canonical values after validation/normalization.
+            var canonical = ImmutableArray.CreateBuilder<ShadowPropertyEdit>();
+            foreach (var edit in batch.Edits)
             {
-                Before = before.Objects[edit.Object][edit.Property],
-                After = after.Objects[edit.Object][edit.Property]
-            }).Where(edit => !ShadowValue.Equivalent(edit.Before, edit.After)).ToImmutableArray();
-            if (canonical.IsEmpty) return after;
-            undo = undo.Add(new(description, canonical));
+                var oldValue = before.Objects[edit.Object][edit.Property];
+                var newValue = after.Objects[edit.Object][edit.Property];
+                if (!ShadowValue.Equivalent(oldValue, newValue))
+                    canonical.Add(new ShadowPropertyEdit(edit.Object, edit.Property, oldValue, newValue));
+            }
+            if (canonical.Count == 0) return after;
+            undo = undo.Add(new EditHistoryEntry(description, canonical.ToImmutable()));
             if (undo.Count > historyLimit) undo = undo.RemoveAt(0);
-            redo = [];
+            redo = ImmutableList<EditHistoryEntry>.Empty;
             return after;
         }
     }
@@ -73,7 +91,8 @@ public sealed class EditorSession
             EnsureCurrent();
             var snapshot = store.Current;
             if (!snapshot.Objects.TryGetValue(id, out var node)) throw new ArgumentException("Unknown object.", nameof(id));
-            return Execute($"Set {node.Type}.{property}", ShadowEditBatch.Create(snapshot, new(id, property, node[property], value)));
+            return Execute($"Set {node.Type}.{property}", ShadowEditBatch.Create(snapshot,
+                new ShadowPropertyEdit(id, property, node[property], value)));
         }
     }
 
@@ -85,9 +104,13 @@ public sealed class EditorSession
             var snapshot = store.Current;
             if (scene.DocumentId != snapshot.DocumentId || scene.Revision != snapshot.Revision)
                 throw new ShadowConflictException("Selection belongs to an obsolete rendered snapshot.");
-            var ids = scene.Items.Where(item => selection.Contains(item.Key)).Select(item =>
-                !editBlockDefinition && !item.InsertPath.IsEmpty ? item.InsertPath[0] : item.Entity).Distinct();
-            return Execute("Translate selection", EditOperations.Translate(snapshot, ids, delta));
+            var targets = new HashSet<ObjectId>();
+            foreach (var item in scene.Items)
+            {
+                if (!selection.Contains(item.Key)) continue;
+                targets.Add(!editBlockDefinition && !item.InsertPath.IsEmpty ? item.InsertPath[0] : item.Entity);
+            }
+            return Execute("Translate selection", EditOperations.Translate(snapshot, targets, delta));
         }
     }
 
@@ -96,37 +119,48 @@ public sealed class EditorSession
         lock (gate)
         {
             EnsureCurrent();
-            if (undo.IsEmpty) return store.Current;
-            var entry = undo[^1];
-            var current = store.Current;
-            var changes = entry.Changes.Reverse().Select(e => new ShadowPropertyEdit(e.Object, e.Property, e.After, e.Before)).ToImmutableArray();
-            var after = store.Apply(new(current.DocumentId, expectedRevision, changes));
+            if (undo.Count == 0) return store.Current;
+            var entry = undo[undo.Count - 1];
+            var changes = ImmutableArray.CreateBuilder<ShadowPropertyEdit>(entry.Changes.Length);
+            for (var index = entry.Changes.Length - 1; index >= 0; index--)
+            {
+                var edit = entry.Changes[index];
+                changes.Add(new ShadowPropertyEdit(edit.Object, edit.Property, edit.After, edit.Before));
+            }
+            var after = store.Apply(new ShadowEditBatch(store.Current.DocumentId, expectedRevision, changes.MoveToImmutable()));
             expectedRevision = after.Revision;
-            undo = undo.RemoveAt(undo.Count - 1); redo = redo.Add(entry);
+            undo = undo.RemoveAt(undo.Count - 1);
+            redo = redo.Add(entry);
             return after;
         }
     }
+
     public ShadowSnapshot Redo()
     {
         lock (gate)
         {
             EnsureCurrent();
-            if (redo.IsEmpty) return store.Current;
-            var entry = redo[^1];
-            var after = store.Apply(new(store.Current.DocumentId, expectedRevision, entry.Changes));
+            if (redo.Count == 0) return store.Current;
+            var entry = redo[redo.Count - 1];
+            var after = store.Apply(new ShadowEditBatch(store.Current.DocumentId, expectedRevision, entry.Changes));
             expectedRevision = after.Revision;
-            redo = redo.RemoveAt(redo.Count - 1); undo = undo.Add(entry);
+            redo = redo.RemoveAt(redo.Count - 1);
+            undo = undo.Add(entry);
             return after;
         }
     }
+
     public void ResetHistory(bool clearSelection = false)
     {
         lock (gate)
         {
-            undo = []; redo = []; expectedRevision = store.Current.Revision;
+            undo = ImmutableList<EditHistoryEntry>.Empty;
+            redo = ImmutableList<EditHistoryEntry>.Empty;
+            expectedRevision = store.Current.Revision;
             if (clearSelection) selection = ImmutableHashSet<string>.Empty;
         }
     }
+
     private void EnsureCurrent()
     {
         if (store.Current.Revision != expectedRevision)

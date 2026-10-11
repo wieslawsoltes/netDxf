@@ -3,16 +3,17 @@ using global::SkiaSharp.HarfBuzz;
 
 namespace netDxf.Shadow.Rendering.SkiaSharp;
 
-/// <summary>The resolver returns a borrowed image. It must not fetch untrusted DXF paths without an explicit policy.</summary>
+/// <summary>Returns borrowed images. The host controls trust and resource lifetime.</summary>
 public interface ISkiaImageResolver { SKImage? Resolve(string reference); }
 
-/// <summary>Raster PNG backend plus direct drawing to any caller-owned CPU/GPU SKCanvas.</summary>
+/// <summary>PNG output and direct rendering to caller-owned CPU/GPU canvases.</summary>
 public sealed class SkiaRenderBackend : IRenderBackend
 {
     private sealed record FontEntry(SKTypeface Typeface, SKShaper Shaper) : IDisposable
     {
         public void Dispose() { Shaper.Dispose(); Typeface.Dispose(); }
     }
+
     private readonly object gate = new();
     private readonly Dictionary<string, FontEntry> fonts = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<(RenderScene, Viewport), SKPicture> pictures = new();
@@ -32,7 +33,7 @@ public sealed class SkiaRenderBackend : IRenderBackend
             Draw(surface.Canvas, frame, cancellationToken);
             using var image = surface.Snapshot();
             using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-            return new(encoded.ToArray(), "image/png");
+            return new RenderImage(encoded.ToArray(), "image/png");
         }
     }
 
@@ -43,23 +44,28 @@ public sealed class SkiaRenderBackend : IRenderBackend
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
+            cancellationToken.ThrowIfCancellationRequested();
             canvas.Save();
             try
             {
-                canvas.ClipRect(new(0, 0, frame.Viewport.Width, frame.Viewport.Height));
+                canvas.ClipRect(new SKRect(0, 0, frame.Viewport.Width, frame.Viewport.Height));
                 canvas.Clear(new SKColor(frame.Background));
                 var key = (frame.Scene, frame.Viewport);
                 if (!pictures.TryGetValue(key, out var picture))
                 {
                     using var recorder = new SKPictureRecorder();
-                    var recording = recorder.BeginRecording(new(0, 0, frame.Viewport.Width, frame.Viewport.Height));
+                    var recording = recorder.BeginRecording(new SKRect(0, 0, frame.Viewport.Width, frame.Viewport.Height));
                     foreach (var item in frame.VisibleItems())
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         DrawItem(recording, item, frame, item.Style.Argb);
                     }
                     picture = recorder.EndRecording();
-                    if (pictures.Count >= 4) { foreach (var old in pictures.Values) old.Dispose(); pictures.Clear(); }
+                    if (pictures.Count >= 4)
+                    {
+                        foreach (var old in pictures.Values) old.Dispose();
+                        pictures.Clear();
+                    }
                     pictures[key] = picture;
                 }
                 canvas.DrawPicture(picture);
@@ -73,8 +79,12 @@ public sealed class SkiaRenderBackend : IRenderBackend
 
     private void DrawItem(SKCanvas canvas, RenderItem item, RenderFrame frame, uint color)
     {
-        using var paint = new SKPaint { IsAntialias = true, Color = new(color), Style = SKPaintStyle.Stroke,
-            StrokeWidth = (float)Math.Max(1, item.Style.Lineweight * 96 / 25.4), StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round };
+        using var paint = new SKPaint
+        {
+            IsAntialias = true, Color = new SKColor(color), Style = SKPaintStyle.Stroke,
+            StrokeWidth = (float)Math.Max(1, item.Style.Lineweight * 96 / 25.4),
+            StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round
+        };
         using var path = new SKPath { FillType = SKPathFillType.EvenOdd };
         foreach (var contour in item.Contours)
         {
@@ -86,14 +96,23 @@ public sealed class SkiaRenderBackend : IRenderBackend
             if (contour.Closed) path.Close();
             if (contour.Points.Length == 2 && contour.Points[0] == contour.Points[1])
             {
-                var p = frame.Viewport.ToScreen(contour.Points[0]); canvas.DrawCircle(F(p.X), F(p.Y), Math.Max(1.5f, paint.StrokeWidth), paint);
+                var point = frame.Viewport.ToScreen(contour.Points[0]);
+                canvas.DrawCircle(F(point.X), F(point.Y), Math.Max(1.5f, paint.StrokeWidth), paint);
             }
         }
-        if (item.Filled) { paint.Style = SKPaintStyle.Fill; canvas.DrawPath(path, paint); paint.Style = SKPaintStyle.Stroke; }
+        if (item.Filled)
+        {
+            paint.Style = SKPaintStyle.Fill;
+            canvas.DrawPath(path, paint);
+            paint.Style = SKPaintStyle.Stroke;
+        }
         var intervals = item.Style.Dashes.Select(d => F(Math.Clamp(Math.Abs(d) * frame.Viewport.PixelsPerUnit, 1, 1e8))).ToArray();
         if (intervals.Length % 2 != 0) intervals = intervals.Concat(intervals).ToArray();
         using var dash = intervals.Length >= 2 ? SKPathEffect.CreateDash(intervals, 0) : null;
-        paint.PathEffect = dash; canvas.DrawPath(path, paint); paint.PathEffect = null;
+        paint.PathEffect = dash;
+        canvas.DrawPath(path, paint);
+        paint.PathEffect = null;
+
         if (item.Image is { } reference)
         {
             var image = images?.Resolve(reference.FileName);
@@ -102,8 +121,12 @@ public sealed class SkiaRenderBackend : IRenderBackend
                 var origin = frame.Viewport.ToScreen(reference.Corners[3]);
                 var right = frame.Viewport.ToScreen(reference.Corners[2]);
                 var bottom = frame.Viewport.ToScreen(reference.Corners[0]);
-                var matrix = new SKMatrix { ScaleX = F((right.X - origin.X) / image.Width), SkewY = F((right.Y - origin.Y) / image.Width),
-                    SkewX = F((bottom.X - origin.X) / image.Height), ScaleY = F((bottom.Y - origin.Y) / image.Height), TransX = F(origin.X), TransY = F(origin.Y), Persp2 = 1 };
+                var matrix = new SKMatrix
+                {
+                    ScaleX = F((right.X - origin.X) / image.Width), SkewY = F((right.Y - origin.Y) / image.Width),
+                    SkewX = F((bottom.X - origin.X) / image.Height), ScaleY = F((bottom.Y - origin.Y) / image.Height),
+                    TransX = F(origin.X), TransY = F(origin.Y), Persp2 = 1
+                };
                 canvas.Save();
                 try { canvas.Concat(ref matrix); canvas.DrawImage(image, 0, 0); }
                 finally { canvas.Restore(); }
@@ -113,24 +136,37 @@ public sealed class SkiaRenderBackend : IRenderBackend
                 using var outline = new SKPath();
                 for (var i = 0; i < reference.Corners.Length; i++)
                 {
-                    var p = frame.Viewport.ToScreen(reference.Corners[i]); if (i == 0) outline.MoveTo(F(p.X), F(p.Y)); else outline.LineTo(F(p.X), F(p.Y));
+                    var point = frame.Viewport.ToScreen(reference.Corners[i]);
+                    if (i == 0) outline.MoveTo(F(point.X), F(point.Y)); else outline.LineTo(F(point.X), F(point.Y));
                 }
-                outline.Close(); canvas.DrawPath(outline, paint);
+                outline.Close();
+                canvas.DrawPath(outline, paint);
             }
         }
+
         if (item.Text is not { } text || text.Height <= 0) return;
         var fontEntry = GetFont(text.FontFamily);
         using var font = new SKFont(fontEntry.Typeface, F(text.Height)) { Edging = SKFontEdging.Antialias, Subpixel = true };
+        // This HarfBuzz package exposes shaped measurement through SKPaint. Keep the
+        // compatibility bridge here; consumers and the actual drawing use SKFont.
+#pragma warning disable CS0618
+        using var metricsPaint = new SKPaint { Typeface = fontEntry.Typeface, TextSize = F(text.Height) };
+        double Measure(string value) => fontEntry.Shaper.Shape(value, metricsPaint).Width;
+#pragma warning restore CS0618
         paint.Style = SKPaintStyle.Fill;
         var textOrigin = frame.Viewport.ToScreen(text.Origin);
         var scale = frame.Viewport.PixelsPerUnit;
-        var textMatrix = new SKMatrix { ScaleX = F(text.XAxis.X * scale), SkewY = F(-text.XAxis.Y * scale),
-            SkewX = F(-text.YAxis.X * scale), ScaleY = F(text.YAxis.Y * scale), TransX = F(textOrigin.X), TransY = F(textOrigin.Y), Persp2 = 1 };
+        var textMatrix = new SKMatrix
+        {
+            ScaleX = F(text.XAxis.X * scale), SkewY = F(-text.XAxis.Y * scale),
+            SkewX = F(-text.YAxis.X * scale), ScaleY = F(text.YAxis.Y * scale),
+            TransX = F(textOrigin.X), TransY = F(textOrigin.Y), Persp2 = 1
+        };
         canvas.Save();
         try
         {
             canvas.Concat(ref textMatrix);
-            foreach (var line in TextLayout.Layout(text, s => fontEntry.Shaper.Shape(s, font).Width))
+            foreach (var line in TextLayout.Layout(text, Measure))
                 canvas.DrawShapedText(fontEntry.Shaper, line.Text, F(line.X), F(line.Y), SKTextAlign.Left, font, paint);
         }
         finally { canvas.Restore(); }
@@ -139,23 +175,35 @@ public sealed class SkiaRenderBackend : IRenderBackend
     private FontEntry GetFont(string family)
     {
         if (fonts.TryGetValue(family, out var font)) return font;
-        if (fonts.Count >= 64) { foreach (var old in fonts.Values) old.Dispose(); fonts.Clear(); }
+        if (fonts.Count >= 64)
+        {
+            foreach (var old in fonts.Values) old.Dispose();
+            fonts.Clear();
+        }
         var typeface = SKTypeface.FromFamilyName(family) ?? SKTypeface.FromFamilyName("sans-serif")
-            ?? throw new InvalidOperationException("No usable system font; install fonts or configure a custom text renderer.");
-        font = new(typeface, new SKShaper(typeface)); fonts[family] = font; return font;
+            ?? throw new InvalidOperationException("No usable system font. Install fonts or configure a custom text renderer.");
+        font = new FontEntry(typeface, new SKShaper(typeface));
+        fonts[family] = font;
+        return font;
     }
+
     private static float F(double value)
     {
-        if (!double.IsFinite(value) || Math.Abs(value) > float.MaxValue) throw new ArithmeticException("Geometry exceeds the backend coordinate range.");
+        if (!double.IsFinite(value) || Math.Abs(value) > float.MaxValue)
+            throw new ArithmeticException("Geometry exceeds the backend coordinate range.");
         return (float)value;
     }
+
     public void Dispose()
     {
         lock (gate)
         {
-            if (disposed) return; disposed = true;
-            foreach (var picture in pictures.Values) picture.Dispose(); pictures.Clear();
-            foreach (var font in fonts.Values) font.Dispose(); fonts.Clear();
+            if (disposed) return;
+            disposed = true;
+            foreach (var picture in pictures.Values) picture.Dispose();
+            pictures.Clear();
+            foreach (var font in fonts.Values) font.Dispose();
+            fonts.Clear();
         }
     }
 }
