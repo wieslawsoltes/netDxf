@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Detached immutable DXF shadow object graph and snapshot contracts.</Description></PropertyGroup>
+</Project>
