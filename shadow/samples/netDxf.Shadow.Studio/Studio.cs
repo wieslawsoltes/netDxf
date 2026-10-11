@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Globalization;
 using System.Text.Json;
 using netDxf.Blocks;
 using netDxf.Entities;
@@ -238,7 +237,6 @@ public sealed class Studio : IDisposable
     }
     public void Load(Stream stream)
     {
-        // The DXF reader does not fetch image references. External render resources remain disabled.
         var document = DxfDocument.Load(stream) ?? throw new ArgumentException("netDxf could not read the supplied drawing.");
         var timer = Stopwatch.StartNew(); var next = new ShadowSession(document);
         lock (gate)
@@ -261,9 +259,9 @@ public sealed class Studio : IDisposable
     private static DxfDocument CreateDocument()
     {
         var document = new DxfDocument();
-        var pipe = new Layer("Process piping") { Color = new AciColor(72, 188, 224) };
-        var equipment = new Layer("Equipment") { Color = new AciColor(148, 199, 124) };
-        var annotation = new Layer("Annotations") { Color = new AciColor(205, 211, 225) };
+        var pipe = new Layer("Process piping") { Color = new AciColor((byte)72, (byte)188, (byte)224) };
+        var equipment = new Layer("Equipment") { Color = new AciColor((byte)148, (byte)199, (byte)124) };
+        var annotation = new Layer("Annotations") { Color = new AciColor((byte)205, (byte)211, (byte)225) };
         foreach (var (a, b) in new[]
         {
             (new Vector2(-130, 0), new Vector2(-60, 0)), (new Vector2(-60, 0), new Vector2(0, 0)),
