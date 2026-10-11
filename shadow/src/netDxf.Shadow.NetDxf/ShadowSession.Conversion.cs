@@ -47,9 +47,9 @@ public sealed partial class ShadowSession
             var result = Activator.CreateInstance(target)!;
             foreach (var (name, field) in structure.Fields)
             {
-                var property = target.GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
-                if (property?.SetMethod?.IsPublic != true) throw new NotSupportedException($"Cannot write {target.Name}.{name}.");
-                property.SetValue(result, ConvertValue(field, property.PropertyType, resolve));
+                var accessor = SourceAccessors.For(target).SingleOrDefault(a => a.Name == name && a.CanWrite)
+                    ?? throw new NotSupportedException($"Cannot write {target.Name}.{name}.");
+                accessor.Set(result, ConvertValue(field, accessor.ValueType, resolve));
             }
             return result;
         }

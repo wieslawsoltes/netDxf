@@ -85,14 +85,14 @@ public sealed partial class ShadowSession : IShadowGraphStore
                 var before = accessor.Get(source);
                 if (!ShadowValue.Equivalent(capture.Preview(before), edit.Before))
                     throw new ShadowConflictException($"Source {edit.Object}.{edit.Property} changed outside the session. Refresh first.");
-                writes.Add((source, accessor, before, ConvertValue(edit.After, accessor.Property.PropertyType)));
+                writes.Add((source, accessor, before, ConvertValue(edit.After, accessor.ValueType)));
             }
             // Exercise normal entity/table validation on detached clones when available.
             foreach (var group in writes.GroupBy(w => w.Source, ReferenceEqualityComparer.Instance))
             {
                 if (group.Key is not ICloneable cloneable) continue;
                 var clone = cloneable.Clone();
-                foreach (var write in group) write.Accessor.Property.SetValue(clone, write.After);
+                foreach (var write in group) write.Accessor.Set(clone, write.After);
             }
             var attempted = 0;
             try
@@ -100,7 +100,7 @@ public sealed partial class ShadowSession : IShadowGraphStore
                 foreach (var write in writes)
                 {
                     attempted++;
-                    write.Accessor.Property.SetValue(write.Source, write.After);
+                    write.Accessor.Set(write.Source, write.After);
                 }
                 // Only explicitly audited scalar/coordinate setters may use the fast path.
                 var dirty = batch.Edits.All(IsLocalProperty) ? batch.Edits.Select(e => e.Object).Distinct().ToArray() : null;
@@ -110,7 +110,7 @@ public sealed partial class ShadowSession : IShadowGraphStore
             {
                 var failures = new List<Exception> { error.GetBaseException() };
                 for (var i = attempted - 1; i >= 0; i--)
-                    try { writes[i].Accessor.Property.SetValue(writes[i].Source, writes[i].Before); }
+                    try { writes[i].Accessor.Set(writes[i].Source, writes[i].Before); }
                     catch (Exception rollback) { failures.Add(rollback.GetBaseException()); }
                 try
                 {

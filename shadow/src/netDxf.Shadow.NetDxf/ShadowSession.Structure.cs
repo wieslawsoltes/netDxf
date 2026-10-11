@@ -64,7 +64,7 @@ public sealed partial class ShadowSession
                     }
                     var oldValue = accessor.Get(source);
                     if (ShadowValue.Equivalent(capture.Preview(oldValue), value)) continue;
-                    var newValue = resolver.Convert(value, accessor.Property.PropertyType);
+                    var newValue = resolver.Convert(value, accessor.ValueType);
                     writes.Add((source, accessor, oldValue, newValue));
                 }
             }
@@ -72,7 +72,7 @@ public sealed partial class ShadowSession
             {
                 if (group.Key is not ICloneable cloneable) continue;
                 var clone = cloneable.Clone();
-                foreach (var write in group) write.Accessor.Property.SetValue(clone, write.After);
+                foreach (var write in group) write.Accessor.Set(clone, write.After);
             }
             var attempted = 0;
             var touchedCollections = false;
@@ -81,7 +81,7 @@ public sealed partial class ShadowSession
                 foreach (var write in writes)
                 {
                     attempted++;
-                    write.Accessor.Property.SetValue(write.Source, write.After);
+                    write.Accessor.Set(write.Source, write.After);
                 }
                 // Moving entities across owners must release every old owner first.
                 touchedCollections = collections.Count != 0;
@@ -115,7 +115,7 @@ public sealed partial class ShadowSession
                         try { plan.Restore(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
                 for (var index = attempted - 1; index >= 0; index--)
-                    try { writes[index].Accessor.Property.SetValue(writes[index].Source, writes[index].Before); }
+                    try { writes[index].Accessor.Set(writes[index].Source, writes[index].Before); }
                     catch (Exception e) { failures.Add(e.GetBaseException()); }
                 try
                 {
