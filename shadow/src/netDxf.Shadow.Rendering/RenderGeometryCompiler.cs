@@ -4,7 +4,7 @@ using netDxf.Shadow.Geometry;
 namespace netDxf.Shadow.Rendering;
 
 internal sealed record RenderGeometryData(ImmutableArray<RenderContour> Contours,
-    ImmutableArray<RenderRegion> Regions, Bounds2 Bounds, RichTextLayoutResult? TextLayout);
+    ImmutableArray<RenderRegion> Regions, ImmutableArray<RenderStrokeGroup> Strokes, Bounds2 Bounds, RichTextLayoutResult? TextLayout);
 
 internal static class RenderGeometryCompiler
 {
@@ -15,7 +15,8 @@ internal static class RenderGeometryCompiler
         var contours = CompileContours(geometry.DisplayContours.IsDefault ? geometry.Contours : geometry.DisplayContours);
         var regions = ImmutableArray.CreateBuilder<RenderRegion>(geometry.Regions.Length);
         foreach (var region in geometry.Regions)
-            regions.Add(new(CompileContours(region.Contours), region.FillRule, region.Gradient));
+            regions.Add(new(CompileContours(region.Contours), region.FillRule, region.Gradient) { Argb = region.Argb });
+        var strokes = geometry.Strokes.Select(stroke => new RenderStrokeGroup(CompileContours(stroke.Contours), stroke.Argb)).ToImmutableArray();
         RichTextLayoutResult? textLayout = null;
         if (geometry.Text is { Height: > 0 } text)
         {
@@ -27,7 +28,7 @@ internal static class RenderGeometryCompiler
                         bounds = bounds.Include(text.Origin + text.XAxis * x - text.YAxis * y);
         }
         if (geometry.Image is { Visible: true } image) foreach (var point in image.Corners) bounds = bounds.Include(point);
-        return new(contours, regions.ToImmutable(), bounds, textLayout);
+        return new(contours, regions.ToImmutable(), strokes, bounds, textLayout);
 
         ImmutableArray<RenderContour> CompileContours(ImmutableArray<CadContour> source)
         {

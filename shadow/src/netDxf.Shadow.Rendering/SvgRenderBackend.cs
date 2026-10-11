@@ -36,13 +36,19 @@ public sealed partial class SvgRenderBackend : IRenderBackend
                 var selected = frame.Selection?.Contains(item.Key) == true; var color = selected ? frame.SelectionColor : item.Style.Argb;
                 foreach (var region in item.Regions)
                 {
-                    var fill = Writer.Color(color);
+                    var regionColor = selected ? color : RenderPaint.Resolve(region.Argb, color);
+                    var fill = Writer.Color(regionColor);
                     if (!selected && region.Gradient is { } gradient) fill = "url(#" + writer.Gradient(gradient) + ")";
-                    writer.Path(region.Contours, fill, null, region.FillRule, color, 0);
+                    writer.Path(region.Contours, fill, null, region.FillRule, regionColor, 0);
                 }
                 if (item.Filled) writer.Path(item.Contours, Writer.Color(color), null, CadFillRule.EvenOdd, color, 0);
                 var stroke = Math.Max(1, item.Style.Lineweight * 96 / 25.4); var contours = StrokePattern.GetContours(item);
                 writer.Path(contours, "none", Writer.Color(color), CadFillRule.EvenOdd, color, stroke);
+                foreach (var group in item.Strokes)
+                {
+                    var ink = selected ? color : RenderPaint.Resolve(group.Argb, color);
+                    writer.Path(group.Contours, "none", Writer.Color(ink), CadFillRule.EvenOdd, ink, stroke);
+                }
                 foreach (var contour in contours)
                 {
                     if (contour.Points.Length != 2 || contour.Points[0] != contour.Points[1]) continue;

@@ -20,6 +20,20 @@ internal static partial class ViewportVerification
 {
     private static void RegisterVisibility(List<(string Name, Action Run)> tests)
     {
+        tests.Add(("viewport/front-at-eye ignores authored FRONTZ unless bit sixteen is set", () =>
+        {
+            var (document, view) = Drawing(); view.ViewDirection = new(0, 0, 10);
+            view.Status |= ViewportStatusFlags.FrontClipping; view.FrontClipPlane = 3;
+            document.Entities.Add(new Line(new Vector3(0, 0, 0), new Vector3(10, 0, 20)));
+            var session = new ShadowSession(document); var compiler = new RenderCompiler();
+            var eye = Projected(compiler.Compile(session.Current, new("Sheet"))).Single();
+            Near(eye.Contours[0].Points[^1].X, 5);
+            session.MutateSource(_ => view.Status |= ViewportStatusFlags.FrontClipNotAtEye);
+            var authored = Projected(compiler.Compile(session.Current, new("Sheet"))).Single();
+            Near(authored.Contours[0].Points[^1].X, 1.5);
+            session.MutateSource(_ => view.FrontClipPlane = double.NaN);
+            Require(compiler.Compile(session.Current, new("Sheet")).Diagnostics.Any(d => d.Code == "viewport.unsupported"));
+        }));
         tests.Add(("viewport/off and unsupported perspective views do not fabricate model output", () =>
         {
             var (document, view) = Drawing(); document.Entities.Add(new Line(Vector2.Zero, new Vector2(5, 0)));

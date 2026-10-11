@@ -10,11 +10,12 @@ public sealed partial class SkiaRenderBackend
         foreach (var region in item.Regions)
         {
             using var path = BuildPath(region.Contours, frame.Viewport, region.FillRule);
-            using var shader = !selected && region.Gradient is { } gradient ? GradientShader(gradient, frame.Viewport, paint.Color.Alpha) : null;
-            paint.Style = SKPaintStyle.Fill; paint.Shader = shader;
-            // Shader stops already contain the entity opacity. White prevents applying it twice.
             var color = paint.Color;
-            if (shader is not null) paint.Color = SKColors.White;
+            var ink = selected ? color : new SKColor(RenderPaint.Resolve(region.Argb, (uint)color));
+            using var shader = !selected && region.Gradient is { } gradient ? GradientShader(gradient, frame.Viewport, ink.Alpha) : null;
+            paint.Style = SKPaintStyle.Fill; paint.Shader = shader;
+            // Shader stops already contain the occurrence/run opacity. White prevents applying it twice.
+            paint.Color = shader is not null ? SKColors.White : ink;
             try { canvas.DrawPath(path, paint); }
             finally { paint.Color = color; paint.Shader = null; paint.Style = SKPaintStyle.Stroke; }
         }

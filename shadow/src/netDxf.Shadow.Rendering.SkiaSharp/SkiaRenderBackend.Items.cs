@@ -43,6 +43,13 @@ public sealed partial class SkiaRenderBackend
             using var fill = BuildPath(item.Contours, frame.Viewport, CadFillRule.EvenOdd);
             paint.Style = SKPaintStyle.Fill; canvas.DrawPath(fill, paint); paint.Style = SKPaintStyle.Stroke;
         }
+        foreach (var group in item.Strokes)
+        {
+            using var strokePath = BuildPath(group.Contours, frame.Viewport, CadFillRule.EvenOdd);
+            paint.Color = new SKColor(selected ? color : RenderPaint.Resolve(group.Argb, color));
+            canvas.DrawPath(strokePath, paint);
+        }
+        paint.Color = new SKColor(color);
         var contours = StrokePattern.GetContours(item);
         using (var strokes = BuildPath(contours, frame.Viewport, CadFillRule.EvenOdd)) canvas.DrawPath(strokes, paint);
         foreach (var contour in contours)

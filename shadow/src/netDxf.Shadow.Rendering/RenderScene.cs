@@ -4,11 +4,16 @@ using netDxf.Shadow.Geometry;
 namespace netDxf.Shadow.Rendering;
 
 public sealed record RenderContour(ImmutableArray<Vec3> Points, bool Closed);
-public sealed record RenderRegion(ImmutableArray<RenderContour> Contours, CadFillRule FillRule, CadGradient? Gradient);
+public sealed record RenderRegion(ImmutableArray<RenderContour> Contours, CadFillRule FillRule, CadGradient? Gradient)
+{
+    public uint? Argb { get; init; }
+}
+public sealed record RenderStrokeGroup(ImmutableArray<RenderContour> Contours, uint? Argb = null);
 public sealed record RenderItem(string Key, ObjectId Entity, ImmutableArray<ObjectId> InsertPath, CadStyle Style,
     ImmutableArray<RenderContour> Contours, bool Filled, CadText? Text, CadImage? Image, Bounds2 Bounds)
 {
     public ImmutableArray<RenderRegion> Regions { get; init; } = [];
+    public ImmutableArray<RenderStrokeGroup> Strokes { get; init; } = [];
     public RichTextLayoutResult? TextLayout { get; init; }
     public ImmutableArray<RenderClip> Clips { get; init; } = [];
     public RenderClip? TextClip { get; init; }

@@ -20,7 +20,7 @@ app.Use(async (context, next) =>
     context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'";
     try { await next(); }
     catch (ShadowConflictException error) { context.Response.StatusCode = 409; await context.Response.WriteAsJsonAsync(new { error = error.Message }); }
-    catch (Exception error) when (error is ArgumentException or InvalidOperationException or NotSupportedException or ArithmeticException)
+    catch (Exception error) when (error is ArgumentException or InvalidOperationException or NotSupportedException or ArithmeticException or FormatException)
     { context.Response.StatusCode = 400; await context.Response.WriteAsJsonAsync(new { error = error.Message }); }
 });
 app.UseDefaultFiles();
@@ -51,6 +51,19 @@ app.MapPost("/api/load", async (Studio studio, HttpRequest request, Cancellation
     memory.Position = 0;
     studio.Load(memory);
     return Results.Ok(studio.State());
+});
+app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revision, string name, CancellationToken token) =>
+{
+    const int limit = 4 * 1024 * 1024;
+    if (request.ContentLength > limit) return Results.BadRequest(new { error = "Sample font limit is 4 MiB." });
+    using var memory = new MemoryStream(); var buffer = new byte[32 * 1024];
+    while (true)
+    {
+        var count = await request.Body.ReadAsync(buffer, token); if (count == 0) break;
+        if (memory.Length + count > limit) return Results.BadRequest(new { error = "Sample font limit is 4 MiB." });
+        memory.Write(buffer, 0, count);
+    }
+    return Results.Ok(studio.LoadFont(revision, name, memory.ToArray()));
 });
 app.MapGet("/api/save", (Studio studio) => Results.File(studio.Save(), "application/dxf", "shadow-edited.dxf"));
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));

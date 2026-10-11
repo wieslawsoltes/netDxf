@@ -4,5 +4,6 @@
     <ProjectReference Include="../../src/netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
     <ProjectReference Include="../../src/netDxf.Shadow.Graph/netDxf.Shadow.Graph.csproj" />
     <ProjectReference Include="../../src/netDxf.Shadow.Rendering.SkiaSharp/netDxf.Shadow.Rendering.SkiaSharp.csproj" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Rendering.Shx/netDxf.Shadow.Rendering.Shx.csproj" />
   </ItemGroup>
 </Project>

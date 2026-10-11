@@ -4,10 +4,17 @@ namespace netDxf.Shadow.Geometry;
 
 public enum CadFillRule { EvenOdd, NonZero }
 
+/// <summary>Presentation-only strokes with optional per-run color. Null inherits the occurrence paint.</summary>
+public sealed record CadStrokeGroup(ImmutableArray<CadContour> Contours, uint? Argb = null)
+{
+    public CadStrokeGroup Transform(Affine3 transform) => this with { Contours = CadGeometry.TransformContours(Contours, transform) };
+}
+
 /// <summary>A painted region is independent of the semantic curves used for graph analysis.</summary>
 public sealed record CadRegion(ImmutableArray<CadContour> Contours, CadFillRule FillRule = CadFillRule.EvenOdd,
     CadGradient? Gradient = null)
 {
+    public uint? Argb { get; init; }
     public CadRegion Transform(Affine3 transform) => this with
     {
         Contours = CadGeometry.TransformContours(Contours, transform),

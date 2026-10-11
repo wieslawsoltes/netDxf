@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Text.Json;
 using netDxf.Entities;
 using netDxf.Shadow.Editor;
+using netDxf.Shadow.Geometry;
+using netDxf.Shadow.Rendering.Shx;
 using netDxf.Shadow.Graph;
 using netDxf.Shadow.NetDxf;
 using netDxf.Shadow.Rendering;
@@ -27,6 +29,8 @@ public sealed partial class Studio : IDisposable
     private readonly SkiaTextLayoutEngine textEngine = new();
     private readonly StudioAssets assets = new();
     private readonly RenderCompiler compiler;
+    private readonly CadSceneBuilder sceneBuilder;
+    private long graphFontRevision = -1;
     private readonly RenderHost renderer;
     private readonly SortedDictionary<long, ShadowSnapshot> retained = new();
     private string layout = "Model";
@@ -37,7 +41,9 @@ public sealed partial class Studio : IDisposable
 
     public Studio()
     {
-        compiler = new(textLayout: textEngine);
+        shxFonts.Register("shadow-demo.shx", DemoFont());
+        sceneBuilder = new([new ShxEntityProjector(shxFonts)]);
+        compiler = new(sceneBuilder, textEngine);
         renderer = new(new Dictionary<string, Func<IRenderBackend>>
         {
             ["skia"] = () => new SkiaRenderBackend(assets, textEngine),
@@ -71,7 +77,7 @@ public sealed partial class Studio : IDisposable
                 occurrences = scene.Items.Length, bounds = scene.Bounds.IsEmpty ? new Bounds2(-50, -50, 50, 50) : scene.Bounds,
                 state.UndoCount, state.RedoCount, selection = state.Selection, captureMilliseconds,
                 layouts = snapshot.Layouts.Select(l => l["Name"].Text).ToArray(), backends = renderer.Backends,
-                snapshots = retained.Keys.ToArray(),
+                snapshots = retained.Keys.ToArray(), fonts = shxFonts.Current.Fonts.Keys.Order().ToArray(), fontRevision = shxFonts.Current.Revision,
                 diagnostics = scene.Diagnostics.Take(200).Select(d => new { d.Code, d.Message, id = d.Object?.Value, severity = d.Severity.ToString() }).ToArray(),
                 items = scene.Items.Take(2000).Select(i => new { i.Key, id = i.Entity.Value, type = snapshot.Objects[i.Entity].Type, i.Style.Layer, inserted = !i.InsertPath.IsEmpty }).ToArray()
             };
@@ -82,7 +88,8 @@ public sealed partial class Studio : IDisposable
         lock (gate)
         {
             var snapshot = revision is { } r && retained.TryGetValue(r, out var old) ? old : session.Current;
-            var scene = Scene(snapshot);
+            var scene = revision is { } key && retainedCompilers.TryGetValue(key, out var frozen)
+                ? frozen.Compile(snapshot, new(layout), token) : Scene(snapshot);
             var viewport = cx.HasValue && cy.HasValue && scale.HasValue ? new Viewport(new(cx.Value, cy.Value), scale.Value, width, height) : Viewport.Fit(scene.Bounds, width, height);
             renderer.Swap(backend);
             return renderer.Render(new(scene, viewport, ReferenceEquals(snapshot, session.Current) ? editor.State.Selection : null), token);
@@ -93,8 +100,8 @@ public sealed partial class Studio : IDisposable
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
-            if (graph is null || graph.Revision != session.Current.Revision || graphLayout != layout)
-            { graph = new TopologyBuilder().Build(session.Current, layout, cancellationToken: token); graphLayout = layout; }
+            if (graph is null || graph.Revision != session.Current.Revision || graphLayout != layout || graphFontRevision != shxFonts.Current.Revision)
+            { graph = new TopologyBuilder().Build(sceneBuilder.Build(session.Current, new(layout), token), cancellationToken: token); graphLayout = layout; graphFontRevision = shxFonts.Current.Revision; }
             return new
             {
                 graph.Revision, components = graph.ConnectedComponents().Length, graph.CycleRank,
@@ -241,8 +248,8 @@ public sealed partial class Studio : IDisposable
     {
         lock (gate)
         {
-            Check(revision); retained[revision] = session.Current;
-            while (retained.Count > 12) retained.Remove(retained.Keys.First()); return State();
+            Check(revision); retained[revision] = session.Current; retainedCompilers[revision] = FrozenCompiler();
+            while (retained.Count > 12) { var key = retained.Keys.First(); retained.Remove(key); retainedCompilers.Remove(key); } return State();
         }
     }
     public void Load(Stream stream)
@@ -252,7 +259,7 @@ public sealed partial class Studio : IDisposable
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
-            session = next; editor = new(next); layout = "Model"; graph = null; retained.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
+            session = next; editor = new(next); layout = "Model"; graph = null; retained.Clear(); retainedCompilers.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
         }
     }
     public byte[] Save()

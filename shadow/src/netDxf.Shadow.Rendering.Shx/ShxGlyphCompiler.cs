@@ -4,8 +4,12 @@ using netDxf.Shadow.Geometry;
 namespace netDxf.Shadow.Rendering.Shx;
 
 public sealed record ShxExecutionOptions(int MaximumInstructions = 1_000_000, int MaximumCurves = 200_000,
-    int MaximumCallDepth = 64, int MaximumStackDepth = 256);
-public sealed record ShxGlyph(ImmutableArray<CadContour> Contours, Vec3 Advance, Bounds2 Bounds);
+    int MaximumCallDepth = 64, int MaximumStackDepth = 4);
+public sealed record ShxGlyph(ImmutableArray<CadContour> Contours, Vec3 Advance, Bounds2 Bounds)
+{
+    public int ExecutedInstructions { get; init; }
+    public double ExitScale { get; init; } = 1;
+}
 
 /// <summary>Bounded SHX instruction interpreter emitting analytic, immutable line/circular-arc geometry.</summary>
 public static class ShxGlyphCompiler
@@ -88,6 +92,7 @@ public static class ShxGlyphCompiler
         }
         private void Bulge(int x, int y, int amount)
         {
+            if (x == -128 || y == -128 || amount == -128) throw new FormatException("SHX bulge instructions exclude -128 operands.");
             var target = position + new Vec3(x * scale, y * scale);
             Emit(StandardEntityProjector.Bulge(position, target, amount / 127.0)); position = target; Check();
         }
@@ -95,8 +100,8 @@ public static class ShxGlyphCompiler
         {
             if (!(radius > 0) || !double.IsFinite(radius)) throw new FormatException("SHX arc radius must be finite and positive.");
             var octant = (spec >> 4) & 7; var count = spec & 15; var sign = (spec & 128) == 0 ? 1 : -1;
+            if (count > 7) throw new FormatException("SHX octant count must be 0..7; zero represents eight octants.");
             if (count == 0) count = 8;
-            if (count > 8) throw new FormatException("SHX arc spans more than eight octants.");
             var angle = (octant + sign * startOffset / 256.0) * Math.PI / 4;
             var sweep = sign * (count - 1 + (endOffset - startOffset) / 256.0) * Math.PI / 4;
             if (Math.Abs(sweep) > Math.Tau || Math.Sign(sweep) != sign) throw new FormatException("SHX fractional arc has an invalid sweep.");
@@ -128,6 +133,11 @@ public static class ShxGlyphCompiler
             if (run.Count == 0) return;
             contours.Add(new(run.ToImmutable(), run[0].Start == run[^1].End)); run.Clear();
         }
-        internal ShxGlyph Finish() { Flush(); token.ThrowIfCancellationRequested(); return new(contours.ToImmutable(), position, bounds); }
+        internal ShxGlyph Finish()
+        {
+            Flush(); token.ThrowIfCancellationRequested();
+            if (positions.Count != 0) throw new FormatException("SHX shape leaves saved positions on the stack.");
+            return new(contours.ToImmutable(), position, bounds) { ExecutedInstructions = work, ExitScale = scale };
+        }
     }
 }

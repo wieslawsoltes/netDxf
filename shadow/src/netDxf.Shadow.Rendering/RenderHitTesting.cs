@@ -18,6 +18,7 @@ public static class RenderHitTesting
             if (image.ClipOutside ? !inClip : inClip) return true;
         }
         if (ContoursContain(item.Contours, point, tolerance, item.Filled, CadFillRule.EvenOdd)) return true;
+        if (item.Strokes.Any(stroke => ContoursContain(stroke.Contours, point, tolerance, false, CadFillRule.EvenOdd))) return true;
         return item.Regions.Any(region => ContoursContain(region.Contours, point, tolerance, true, region.FillRule));
     }
 

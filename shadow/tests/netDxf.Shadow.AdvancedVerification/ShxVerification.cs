@@ -8,6 +8,7 @@ internal static partial class ShxVerification
 {
     internal static void Register(List<(string Name, Action Run)> tests)
     {
+        RegisterProjection(tests);
         tests.Add(("shx/ASCII metadata, comments, hex numbers and case-sensitive names", () =>
         {
             var font = ShxFontReader.ReadAscii("; comment\n*0,4,Test\n10,2,2,0\n*65,4,A\n8,5,10,0\n*061,2,a\n020,0");
@@ -94,6 +95,15 @@ internal static partial class ShxVerification
                     Require(rejected, $"Accepted truncated SHX input of length {size}.");
                 }
             }
+        }));
+        tests.Add(("shx/Autodesk stack balance and forbidden bulge/octant operands", () =>
+        {
+            Throws<FormatException>(() => Glyph("5,010,0"));
+            Throws<InvalidOperationException>(() => Glyph("5,5,5,5,5,0"));
+            Throws<FormatException>(() => Glyph("12,-128,0,0,0"));
+            Throws<FormatException>(() => Glyph("13,1,0,-128,0,0,0"));
+            Throws<FormatException>(() => Glyph("10,5,8,0"));
+            Near(Glyph("4,3,010,0").ExitScale, 3);
         }));
         tests.Add(("shx/execution, recursion, input and cancellation budgets", () =>
         {

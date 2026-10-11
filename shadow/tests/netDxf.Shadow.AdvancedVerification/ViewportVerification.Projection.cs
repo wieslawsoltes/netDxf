@@ -82,7 +82,7 @@ internal static partial class ViewportVerification
         tests.Add(("viewport/oblique camera and depth-clipped line segments", () =>
         {
             var (document, view) = Drawing(); view.ViewDirection = new(0, 1, 0);
-            view.Status |= ViewportStatusFlags.FrontClipping | ViewportStatusFlags.BackClipping;
+            view.Status |= ViewportStatusFlags.FrontClipping | ViewportStatusFlags.BackClipping | ViewportStatusFlags.FrontClipNotAtEye;
             view.BackClipPlane = -2; view.FrontClipPlane = 2;
             document.Entities.Add(new Line(new Vector3(0, -10, 0), new Vector3(0, 10, 10)));
             var item = Projected(new RenderCompiler().Compile(new ShadowSession(document).Current, new("Sheet"))).Single();

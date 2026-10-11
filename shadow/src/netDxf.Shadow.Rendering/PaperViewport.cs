@@ -74,9 +74,14 @@ internal sealed record PaperViewport(PaperViewportProjection Projection, RenderC
         var bounds = Bounds2.Empty;
         foreach (var contour in contours) foreach (var point in contour.Points) bounds = bounds.Include(point);
         if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0) throw new ArgumentException("Viewport clip has no area.");
-        var back = HasFlag(entity["Status"], "BackClipping", 4) ? entity["BackClipPlane"].Number() : double.NegativeInfinity;
-        var front = HasFlag(entity["Status"], "FrontClipping", 2) ? entity["FrontClipPlane"].Number() : double.PositiveInfinity;
-        if (double.IsNaN(back) || double.IsNaN(front) || back > front) throw new ArgumentException("Invalid viewport depth clipping interval.");
+        var backOn = HasFlag(entity["Status"], "BackClipping", 4);
+        var frontOn = HasFlag(entity["Status"], "FrontClipping", 2);
+        var back = backOn ? entity["BackClipPlane"].Number() : double.NegativeInfinity;
+        // VIEWMODE bit 16 selects authored FRONTZ; otherwise the front plane passes through the eye.
+        var front = !frontOn ? double.PositiveInfinity : HasFlag(entity["Status"], "FrontClipNotAtEye", 16)
+            ? entity["FrontClipPlane"].Number() : direction.Length;
+        if ((backOn && !double.IsFinite(back)) || (frontOn && !double.IsFinite(front)) || back > front)
+            throw new ArgumentException("Invalid viewport depth clipping interval.");
         return new(new(id, transform, inverse, scale), new(contours, bounds),
             entity["FrozenLayers"].Items.Select(layer => layer["Name"].Text).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase),
             back, front, (int)entity["Stacking"].Number(2));

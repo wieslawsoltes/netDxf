@@ -27,11 +27,13 @@ public sealed record CadGeometry(ImmutableArray<CadContour> Contours, bool Fille
     /// Contours always retains the semantic curves consumed by topology and analysis.</summary>
     public ImmutableArray<CadContour> DisplayContours { get; init; }
     public ImmutableArray<CadRegion> Regions { get; init; } = [];
+    public ImmutableArray<CadStrokeGroup> Strokes { get; init; } = [];
     public CadGeometry Transform(Affine3 matrix) => this with
     {
         Contours = TransformContours(Contours, matrix),
         DisplayContours = DisplayContours.IsDefault ? default : TransformContours(DisplayContours, matrix),
         Regions = Regions.Select(region => region.Transform(matrix)).ToImmutableArray(),
+        Strokes = Strokes.Select(stroke => stroke.Transform(matrix)).ToImmutableArray(),
         Text = Text is { } text ? text with { Origin = matrix.Point(text.Origin), XAxis = matrix.Direction(text.XAxis), YAxis = matrix.Direction(text.YAxis) } : null,
         Image = Image is { } image ? image with
         {

@@ -34,6 +34,9 @@ internal static class PaperItemProjection
         }
         var bounds = Bounds2.Empty;
         Include(contours); foreach (var region in regions) Include(region.Contours);
+        var painted = source.Strokes.Select(stroke => stroke with
+        { Contours = ViewportClipping.ClipLines(Transform(stroke.Contours, matrix), view.Back, view.Front) }).ToImmutableArray();
+        foreach (var stroke in painted) Include(stroke.Contours);
         CadText? text = null; RenderClip? textClip = null;
         if (source.Text is { } originalText && source.TextLayout is { Bounds.IsEmpty: false } layout)
         {
@@ -75,7 +78,7 @@ internal static class PaperItemProjection
             Key = view.Projection.ViewportEntity.Value + "/viewport/" + source.Key,
             SourceToWorld = matrix * source.SourceToWorld, Projection = view.Projection,
             Style = style with { Dashes = [] }, Contours = contours, Filled = false, Regions = regions.ToImmutable(),
-            Text = text, Image = image, TextClip = textClip, ImageClip = imageClip, Clips = [view.Clip], Bounds = bounds
+            Strokes = painted, Text = text, Image = image, TextClip = textClip, ImageClip = imageClip, Clips = [view.Clip], Bounds = bounds
         };
         void Include(ImmutableArray<RenderContour> values)
         { foreach (var contour in values) foreach (var point in contour.Points) bounds = bounds.Include(point); }

@@ -37,6 +37,7 @@ public sealed partial class Studio
             document.Entities.Add(new Text(text, new Vector2(x, y), 5) { Layer = annotation });
         AddAppearanceGallery(document, annotation);
         AddPaperGallery(document, annotation);
+        AddShxGallery(document, annotation);
         return document;
     }
 

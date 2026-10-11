@@ -79,7 +79,7 @@ public sealed partial class RenderCompiler
     {
         var item = new RenderItem(occurrence.Key, occurrence.Entity, occurrence.InsertPath, occurrence.Style,
             data.Contours, occurrence.Geometry.Filled, occurrence.Geometry.Text, occurrence.Geometry.Image, data.Bounds)
-            { Regions = data.Regions, TextLayout = data.TextLayout, SourceToWorld = occurrence.SourceToWorld };
+            { Regions = data.Regions, Strokes = data.Strokes, TextLayout = data.TextLayout, SourceToWorld = occurrence.SourceToWorld };
         // Invalid patterns are diagnosed per entity during compilation, not as a frame-wide backend failure.
         _ = StrokePattern.GetContours(item);
         return item;
