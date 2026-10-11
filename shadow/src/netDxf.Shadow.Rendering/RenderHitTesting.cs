@@ -9,8 +9,9 @@ public static class RenderHitTesting
     {
         if (!point.IsFinite || !(tolerance > 0) || !double.IsFinite(tolerance)) throw new ArgumentOutOfRangeException(nameof(tolerance));
         point = point with { Z = 0 };
-        if (item.Text is not null && item.Bounds.Contains(point)) return true; // conservative text extent, not glyph-accurate
-        if (item.Image is { Visible: true } image && PolygonContains(image.Corners, point, tolerance))
+        if (item.Clips.Any(clip => !ContainsClip(clip, point))) return false;
+        if (item.Text is { } text && (item.TextClip is null || ContainsClip(item.TextClip, point)) && TextContains(item, text, point, tolerance)) return true;
+        if (item.Image is { Visible: true } image && (item.ImageClip is null || ContainsClip(item.ImageClip, point)) && PolygonContains(image.Corners, point, tolerance))
         {
             if (image.ClipPolygon.IsDefaultOrEmpty) return true;
             var inClip = PolygonContains(image.ClipPolygon, point, image.ClipOutside ? 0 : tolerance);
@@ -18,6 +19,20 @@ public static class RenderHitTesting
         }
         if (ContoursContain(item.Contours, point, tolerance, item.Filled, CadFillRule.EvenOdd)) return true;
         return item.Regions.Any(region => ContoursContain(region.Contours, point, tolerance, true, region.FillRule));
+    }
+
+    public static bool ContainsClip(RenderClip clip, Vec3 point)
+        => clip.Bounds.Contains(point) && ContoursContain(clip.Contours, point with { Z = 0 }, 0, true, CadFillRule.EvenOdd);
+
+    private static bool TextContains(RenderItem item, CadText text, Vec3 point, double tolerance)
+    {
+        if (item.TextLayout is not { } layout) return item.Bounds.Contains(point);
+        var x = text.XAxis; var y = -text.YAxis; var p = point - text.Origin;
+        var determinant = x.X * y.Y - x.Y * y.X;
+        if (!double.IsFinite(determinant) || determinant == 0) return false;
+        var local = new Vec3((p.X * y.Y - p.Y * y.X) / determinant, (x.X * p.Y - x.Y * p.X) / determinant);
+        var amount = tolerance * Math.Max(x.Length, y.Length) / Math.Abs(determinant);
+        return layout.Bounds.Inflate(amount).Contains(local);
     }
 
     public static bool PolygonContains(ImmutableArray<Vec3> vertices, Vec3 point, double tolerance = 0)

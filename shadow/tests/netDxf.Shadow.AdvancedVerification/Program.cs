@@ -6,6 +6,7 @@ IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 RichTextVerification.Register(tests);
 GalleryVerification.Register(tests);
+ViewportVerification.Register(tests);
 var failures = 0;
 foreach (var test in tests)
 {

@@ -13,6 +13,7 @@ public sealed partial class SkiaRenderBackend : IRenderBackend
 {
     private readonly object gate = new();
     private readonly Dictionary<(RenderScene, Viewport, long ImageRevision, long FontRevision, uint Background), SKPicture> pictures = new();
+    private readonly Dictionary<(RenderClip, Viewport), SKPath> clipPaths = new();
     private readonly ISkiaImageResolver? images;
     private readonly SkiaTextLayoutEngine textEngine;
     private readonly bool ownsTextEngine;
@@ -77,51 +78,6 @@ public sealed partial class SkiaRenderBackend : IRenderBackend
         }
     }
 
-    private void DrawItem(SKCanvas canvas, RenderItem item, RenderFrame frame, uint color, bool selected)
-    {
-        using var paint = new SKPaint
-        {
-            IsAntialias = true, Color = new SKColor(color), Style = SKPaintStyle.Stroke,
-            StrokeWidth = (float)Math.Max(1, item.Style.Lineweight * 96 / 25.4),
-            StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round
-        };
-        DrawRegions(canvas, item, frame, paint, selected);
-        if (item.Filled)
-        {
-            using var fill = BuildPath(item.Contours, frame.Viewport, CadFillRule.EvenOdd);
-            paint.Style = SKPaintStyle.Fill; canvas.DrawPath(fill, paint); paint.Style = SKPaintStyle.Stroke;
-        }
-        var contours = StrokePattern.GetContours(item);
-        using (var strokes = BuildPath(contours, frame.Viewport, CadFillRule.EvenOdd)) canvas.DrawPath(strokes, paint);
-        foreach (var contour in contours)
-        {
-            if (contour.Points.Length == 2 && contour.Points[0] == contour.Points[1])
-            {
-                var point = frame.Viewport.ToScreen(contour.Points[0]); paint.Style = SKPaintStyle.Fill;
-                canvas.DrawCircle(F(point.X), F(point.Y), Math.Max(0.5f, paint.StrokeWidth / 2), paint); paint.Style = SKPaintStyle.Stroke;
-            }
-        }
-        if (item.Image is { Visible: true } reference) DrawImage(canvas, reference, frame, paint, selected);
-        if (item.Text is { Height: > 0 } text) textEngine.Draw(canvas, text, item.TextLayout ?? textEngine.Layout(text), frame.Viewport, color, selected);
-    }
-    private static SKPath BuildPath(IEnumerable<RenderContour> contours, Viewport viewport, CadFillRule fillRule)
-    {
-        var path = new SKPath { FillType = fillRule == CadFillRule.NonZero ? SKPathFillType.Winding : SKPathFillType.EvenOdd };
-        try
-        {
-            foreach (var contour in contours)
-            {
-                for (var i = 0; i < contour.Points.Length; i++)
-                {
-                    var p = viewport.ToScreen(contour.Points[i]);
-                    if (i == 0) path.MoveTo(F(p.X), F(p.Y)); else path.LineTo(F(p.X), F(p.Y));
-                }
-                if (contour.Closed) path.Close();
-            }
-            return path;
-        }
-        catch { path.Dispose(); throw; }
-    }
     private static float F(double value)
     {
         if (!double.IsFinite(value) || Math.Abs(value) > float.MaxValue) throw new ArithmeticException("Geometry exceeds the backend coordinate range.");
@@ -133,6 +89,7 @@ public sealed partial class SkiaRenderBackend : IRenderBackend
         {
             if (disposed) return;
             disposed = true; foreach (var picture in pictures.Values) picture.Dispose(); pictures.Clear();
+            foreach (var path in clipPaths.Values) path.Dispose(); clipPaths.Clear();
             if (ownsTextEngine) textEngine.Dispose();
         }
     }

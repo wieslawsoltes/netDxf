@@ -23,6 +23,7 @@ public sealed partial class SvgRenderBackend : IRenderBackend
         using (var xml = XmlWriter.Create(stream, new XmlWriterSettings { Encoding = new UTF8Encoding(false), CloseOutput = false, OmitXmlDeclaration = true }))
         {
             var writer = new Writer(frame, xml, images);
+            var clips = new Dictionary<RenderClip, string>(ReferenceEqualityComparer.Instance);
             xml.WriteStartElement("svg", "http://www.w3.org/2000/svg");
             writer.Attribute("width", frame.Viewport.Width); writer.Attribute("height", frame.Viewport.Height);
             xml.WriteAttributeString("viewBox", $"0 0 {frame.Viewport.Width} {frame.Viewport.Height}"); xml.WriteAttributeString("overflow", "hidden");
@@ -31,6 +32,7 @@ public sealed partial class SvgRenderBackend : IRenderBackend
             foreach (var item in frame.VisibleItems())
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                foreach (var clip in item.Clips) BeginClip(clip);
                 var selected = frame.Selection?.Contains(item.Key) == true; var color = selected ? frame.SelectionColor : item.Style.Argb;
                 foreach (var region in item.Regions)
                 {
@@ -48,10 +50,34 @@ public sealed partial class SvgRenderBackend : IRenderBackend
                     xml.WriteStartElement("circle"); writer.Attribute("cx", p.X); writer.Attribute("cy", p.Y); writer.Attribute("r", Math.Max(0.5, stroke / 2));
                     xml.WriteAttributeString("fill", Writer.Color(color)); writer.Attribute("opacity", (color >> 24) / 255.0); xml.WriteEndElement();
                 }
-                if (item.Image is { Visible: true } image) writer.Image(image, selected, color, stroke);
-                if (item.Text is { Height: > 0 } text) writer.Text(text, item.TextLayout ?? ApproximateTextLayoutEngine.Instance.Layout(text), color, selected);
+                if (item.Image is { Visible: true } image)
+                {
+                    if (item.ImageClip is { } clip) BeginClip(clip);
+                    writer.Image(image, selected, color, stroke);
+                    if (item.ImageClip is not null) xml.WriteEndElement();
+                }
+                if (item.Text is { Height: > 0 } text)
+                {
+                    if (item.TextClip is { } clip) BeginClip(clip);
+                    writer.Text(text, item.TextLayout ?? ApproximateTextLayoutEngine.Instance.Layout(text), color, selected);
+                    if (item.TextClip is not null) xml.WriteEndElement();
+                }
+                foreach (var _ in item.Clips) xml.WriteEndElement();
             }
             xml.WriteEndElement();
+            void BeginClip(RenderClip clip)
+            {
+                if (!clips.TryGetValue(clip, out var id))
+                {
+                    id = "shadow-viewport-clip-" + clips.Count; clips.Add(clip, id);
+                    xml.WriteStartElement("defs"); xml.WriteStartElement("clipPath");
+                    xml.WriteAttributeString("id", id); xml.WriteAttributeString("clipPathUnits", "userSpaceOnUse");
+                    xml.WriteAttributeString("clip-rule", "evenodd");
+                    writer.Path(clip.Contours, "#000000", null, CadFillRule.EvenOdd, 0xff000000, 0);
+                    xml.WriteEndElement(); xml.WriteEndElement();
+                }
+                xml.WriteStartElement("g"); xml.WriteAttributeString("clip-path", "url(#" + id + ")");
+            }
         }
         return new(stream.ToArray(), "image/svg+xml");
     }

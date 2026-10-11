@@ -18,6 +18,11 @@ public static class EditOperations
             switch (entity.Type)
             {
                 case "Line": Move(entity, "StartPoint", delta); Move(entity, "EndPoint", delta); break;
+                case "Viewport":
+                    if (entity["ClippingBoundary"].Id is { } boundaryId)
+                        foreach (var edit in Translate(snapshot, [boundaryId], delta).Edits)
+                            changes[(edit.Object, edit.Property)] = edit;
+                    Move(entity, "Center", delta); break;
                 case "Circle": case "Arc": case "Ellipse": Move(entity, "Center", delta); break;
                 case "Text": case "MText": case "Point": case "Insert": case "Attribute": case "AttributeDefinition": case "Image":
                     Move(entity, "Position", delta); break;

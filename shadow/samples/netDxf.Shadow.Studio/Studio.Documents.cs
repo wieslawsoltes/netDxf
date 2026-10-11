@@ -36,6 +36,7 @@ public sealed partial class Studio
         foreach (var (text, x, y) in new[] { ("SHADOW / Process loop", -148.0, 87.0), ("P-101", -141.0, -32.0), ("V-102", 122.0, -32.0), ("Supply", -122.0, 9.0), ("Return", 17.0, 65.0), ("Drain", 12.0, -44.0) })
             document.Entities.Add(new Text(text, new Vector2(x, y), 5) { Layer = annotation });
         AddAppearanceGallery(document, annotation);
+        AddPaperGallery(document, annotation);
         return document;
     }
 

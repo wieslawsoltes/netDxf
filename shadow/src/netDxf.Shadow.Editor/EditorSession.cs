@@ -8,7 +8,7 @@ public sealed record EditHistoryEntry(string Description, ImmutableArray<ShadowP
 public sealed record EditorState(long Revision, ImmutableHashSet<string> Selection, int UndoCount, int RedoCount);
 
 /// <summary>Revision-checked editing over a source or an isolated immutable branch.</summary>
-public sealed class EditorSession
+public sealed partial class EditorSession
 {
     private readonly object gate = new();
     private readonly IShadowStore store;
@@ -162,76 +162,8 @@ public sealed class EditorSession
             var snapshot = store.Current;
             if (scene.DocumentId != snapshot.DocumentId || scene.Revision != snapshot.Revision)
                 throw new ShadowConflictException("Selection belongs to an obsolete rendered snapshot.");
-            var targets = new HashSet<ObjectId>();
-            foreach (var item in scene.Items)
-            {
-                if (!selection.Contains(item.Key)) continue;
-                targets.Add(!editBlockDefinition && !item.InsertPath.IsEmpty ? item.InsertPath[0] : item.Entity);
-            }
-            return Execute("Translate selection", EditOperations.Translate(snapshot, targets, delta));
+            return Execute("Translate selection", SelectionTranslation.Plan(snapshot, scene, selection, delta, editBlockDefinition));
         }
     }
 
-    public ShadowSnapshot Undo()
-    {
-        lock (gate)
-        {
-            EnsureCurrent();
-            if (undo.Count == 0) return store.Current;
-            var entry = undo[undo.Count - 1];
-            if (entry.Before is not null)
-            {
-                var restored = ((IShadowGraphStore)store).Apply(ShadowGraphPatch.Between(store.Current, entry.Before));
-                expectedRevision = restored.Revision;
-                undo = undo.RemoveAt(undo.Count - 1);
-                redo = redo.Add(entry);
-                return restored;
-            }
-            var changes = ImmutableArray.CreateBuilder<ShadowPropertyEdit>(entry.Changes.Length);
-            for (var index = entry.Changes.Length - 1; index >= 0; index--)
-            {
-                var edit = entry.Changes[index];
-                changes.Add(new ShadowPropertyEdit(edit.Object, edit.Property, edit.After, edit.Before));
-            }
-            var after = store.Apply(new ShadowEditBatch(store.Current.DocumentId, expectedRevision, changes.MoveToImmutable()));
-            expectedRevision = after.Revision;
-            undo = undo.RemoveAt(undo.Count - 1);
-            redo = redo.Add(entry);
-            return after;
-        }
-    }
-
-    public ShadowSnapshot Redo()
-    {
-        lock (gate)
-        {
-            EnsureCurrent();
-            if (redo.Count == 0) return store.Current;
-            var entry = redo[redo.Count - 1];
-            var after = entry.After is not null
-                ? ((IShadowGraphStore)store).Apply(ShadowGraphPatch.Between(store.Current, entry.After))
-                : store.Apply(new ShadowEditBatch(store.Current.DocumentId, expectedRevision, entry.Changes));
-            expectedRevision = after.Revision;
-            redo = redo.RemoveAt(redo.Count - 1);
-            undo = undo.Add(entry);
-            return after;
-        }
-    }
-
-    public void ResetHistory(bool clearSelection = false)
-    {
-        lock (gate)
-        {
-            undo = ImmutableList<EditHistoryEntry>.Empty;
-            redo = ImmutableList<EditHistoryEntry>.Empty;
-            expectedRevision = store.Current.Revision;
-            if (clearSelection) selection = ImmutableHashSet<string>.Empty;
-        }
-    }
-
-    private void EnsureCurrent()
-    {
-        if (store.Current.Revision != expectedRevision)
-            throw new ShadowConflictException("The source changed outside this editor. Refresh the view and explicitly reset history before editing.");
-    }
 }

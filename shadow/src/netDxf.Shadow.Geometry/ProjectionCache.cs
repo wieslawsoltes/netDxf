@@ -74,7 +74,7 @@ internal sealed class ProjectionCache
                 occurrences[cacheKey] = previous with { Occurrence = changed };
                 return changed;
             }
-            var result = new CadOccurrence(key, entity, path, style, transform == Affine3.Identity ? local : local.Transform(transform));
+            var result = new CadOccurrence(key, entity, path, style, transform == Affine3.Identity ? local : local.Transform(transform)) { SourceToWorld = transform };
             if (occurrences.Count >= options.MaximumOccurrences) occurrences.Clear();
             occurrences[cacheKey] = new(local, transform, result);
             return result;
@@ -88,7 +88,8 @@ internal sealed class ProjectionCache
 internal sealed class StandardProjectionCacheAdapter : ICacheableEntityProjector
 {
     private readonly StandardEntityProjector projector = new();
+    private readonly ViewportEntityProjector viewports = new();
     public long Revision => 0;
     public bool TryProject(ShadowReader entity, out CadGeometry geometry, out string? diagnostic)
-        => projector.TryProject(entity, out geometry, out diagnostic);
+        => viewports.TryProject(entity, out geometry, out diagnostic) || projector.TryProject(entity, out geometry, out diagnostic);
 }
