@@ -27,7 +27,7 @@ internal static class RichTextVerification
         tests.Add(("text/unicode escapes, literal braces and percent symbols", () =>
         {
             var parsed = RichText.Parse(@"\{\U+03A9\} %%d %%p %%c \U+D83D\U+DE00\~x", true, new("sans-serif", 10));
-            Require(string.Concat(parsed.Inlines.Select(i => i.Text)) == "{Ω} ° ± Ø 😀\u00a0x");
+            Require(string.Concat(parsed.Inlines.Select(i => i.Text)) == "{Ω} ° ± ∅ 😀\u00a0x");
             Require(parsed.Inlines.All(i => i.SourceStart >= 0 && i.SourceLength > 0));
         }));
         tests.Add(("text/stacked fractions and all decoration rules", () =>

@@ -38,7 +38,8 @@ public sealed partial class RenderCompiler
         {
             var cache = snapshots.GetValue(snapshot, _ => new Cache());
             var textRevision = textEngine.Revision;
-            var key = (options, builder.ProjectionVersion, textRevision);
+            var projectionVersion = builder.ProjectionVersion;
+            var key = (options, projectionVersion, textRevision);
             if (builder.IsSnapshotCacheable && cache.Scenes.TryGetValue(key, out var cached)) return cached;
             var scene = builder.Build(snapshot, new SceneOptions(options.Layout), cancellationToken);
             var previousKey = (snapshot.DocumentId, options);
@@ -47,6 +48,7 @@ public sealed partial class RenderCompiler
             if (options.IncludePaperViewports && !string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase))
                 result = paperSpace.Compose(snapshot, result, options, tolerance => Compile(snapshot,
                     options with { Layout = "Model", Tolerance = tolerance, IncludePaperViewports = false }, cancellationToken), cancellationToken);
+            if (builder.ProjectionVersion != projectionVersion) throw new InvalidOperationException("Projection resources changed while compiling. Retry with the current resource revision.");
             if (textEngine.Revision != textRevision) throw new InvalidOperationException("Font services changed while compiling. Retry with the current font revision.");
             if (cache.Scenes.Count >= 8) cache.Scenes.Clear();
             if (builder.IsSnapshotCacheable) cache.Scenes[key] = result;

@@ -69,6 +69,10 @@ public sealed partial class ShxEntityProjector
         ShxGlyph Glyph(ShxFont font, int number)
         {
             if (++work > options.MaximumCharacters * 8L) throw new InvalidOperationException("SHX text measurement work budget exceeded.");
+            var authored = number;
+            if (font.Encoding == ShxEncoding.Legacy)
+                number = number switch { 0xb0 => 256, 0xb1 => 257, 0x2205 => 258, _ => number };
+            if (number == 0xa0 && !font.Symbols.ContainsKey(number) && font.Symbols.ContainsKey(32)) number = 32;
             if (font.Symbols.ContainsKey(number))
             {
                 var glyph = GetGlyph(font, number, ref instructionBudget);
@@ -76,9 +80,8 @@ public sealed partial class ShxEntityProjector
                     throw new NotSupportedException("SHX text glyphs must restore their vector scale; cumulative cross-glyph scaling needs a stateful layout provider.");
                 return glyph;
             }
-            if (number == 0xa0 && font.Symbols.ContainsKey(32)) return GetGlyph(font, 32, ref instructionBudget);
             if (number is 32 or 0xa0) return new([], new(font.CapHeight * .5, 0), Bounds2.Empty);
-            Issue($"Missing SHX glyph U+{number:X4}; an explicit missing-glyph box is drawn."); return Missing(font);
+            Issue($"Missing SHX glyph U+{authored:X4}; an explicit missing-glyph box is drawn."); return Missing(font);
         }
         TextRunMetrics Measure(RichTextStyle style, string content)
         {

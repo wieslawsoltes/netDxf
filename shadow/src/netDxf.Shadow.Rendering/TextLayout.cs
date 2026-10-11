@@ -20,7 +20,7 @@ public static class TextLayout
             if (character == '\r') continue;
             if (character == '%' && index + 2 < source.Length && source[index + 1] == '%')
             {
-                var replacement = char.ToLowerInvariant(source[index + 2]) switch { 'd' => '°', 'p' => '±', 'c' => 'Ø', _ => '\0' };
+                var replacement = char.ToLowerInvariant(source[index + 2]) switch { 'd' => '°', 'p' => '±', 'c' => '∅', _ => '\0' };
                 if (replacement != '\0') { output.Append(replacement); index += 2; continue; }
             }
             if (character == '\\' && index + 1 < source.Length)

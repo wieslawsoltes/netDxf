@@ -29,7 +29,7 @@ Open `http://127.0.0.1:5080`. Studio is an ASP.NET local host with a browser int
 
 Studio combines a drawing explorer, property inspector, camera pan/zoom, selection and dragging, structural/property undo/redo, DXF open/save, topology overlays and metrics, retained snapshot views, and runtime SkiaSharp/SVG switching. Enter commits an inspector value. Middle-button or Space-drag pans; the wheel zooms about the pointer; F fits; arrows nudge; Shift snaps dragging/nudging to 10 units.
 
-The **Model** layout contains a process-loop drawing. Select **Appearance** to inspect tapered polylines, a pattern hatch with an island, a gradient region, clipped/sheared raster data and formatted MTEXT. This is direct layout content, not a demonstration of model-space projection through a paper-space viewport. Add/delete are immutable structural commands and participate in the same history as property changes. The explicit source-mutation demonstration resets stale history.
+The **Model** layout contains a process-loop drawing. Select **Appearance** to inspect tapered polylines, a pattern hatch with an island, a gradient region, clipped/sheared raster data and formatted MTEXT. Select **Paper viewports** for an orthographic model overview and a circular, rotated detail with frozen annotation layers. Select **SHX strokes** for native-independent stroke typography. Use **Load SHX/SHP** to register an explicitly selected resource (4 MiB sample limit); imported `.shp` names become `.shx` aliases. These example glyph instructions are generated in source, not bundled font files. Add/delete are immutable structural commands and participate in the same history as property changes. The explicit source-mutation demonstration resets stale history.
 
 Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler and native backend. The SVG backend consumes the same prepared text layout. Its checkerboard is a generated, explicitly registered in-memory image; opening a drawing never authorizes arbitrary image-path access.
 
@@ -39,14 +39,15 @@ Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler 
 | --- | --- | --- |
 | `netDxf.Shadow` | Detached values, object identity, snapshots, optimistic property batches, immutable graph patches, diffs, reverse references, isolated branches | BCL only |
 | `netDxf.Shadow.NetDxf` | Cached public-model capture, source synchronization, object factories and collection-adoption plans | Core + existing netDxf |
-| `netDxf.Shadow.Geometry` | Double-precision analytic curves, shared block occurrences, styles, presentation regions, hatch scan conversion, persistent BVH | Core |
-| `netDxf.Shadow.Rendering` | Sampled render scenes, signed dash patterns, fill/image picking, rich-text parser/layout, backend contracts, SVG | Geometry |
+| `netDxf.Shadow.Geometry` | Double-precision analytic curves, shared block occurrences, styles, presentation regions/stroke groups, hatch scan conversion, persistent BVH | Core |
+| `netDxf.Shadow.Rendering` | Sampled render scenes, signed dash patterns, fill/stroke/image picking, paper-space composition, rich-text parser/layout, backend contracts, SVG | Geometry |
+| `netDxf.Shadow.Rendering.Shx` | Optional bounded SHX/SHP decoding, analytic glyph VM, immutable resource catalogs, shape/text projection | Rendering; no native dependencies |
 | `netDxf.Shadow.Rendering.SkiaSharp` | PNG/direct canvas output, gradient/image paints, HarfBuzz/native glyph metrics and native resource caches | Rendering + SkiaSharp/HarfBuzz |
 | `netDxf.Shadow.Graph` | Toleranced connectivity, intersection splitting and graph algorithms | Geometry |
 | `netDxf.Shadow.Editor` | Source-independent editing, immutable structural/property history and selection, snapping | Rendering |
 | `netDxf.Shadow.Studio` | Integrated local web sample | Adapter + consumer projects |
 | `netDxf.Shadow.Verification` | Original contracts, integration and capture/read smoke measurements | Sample + libraries |
-| `netDxf.Shadow.AdvancedVerification` | Structural history, incremental processing, appearance, typography and gallery regression tests | Sample + libraries |
+| `netDxf.Shadow.AdvancedVerification` | Structural history, incremental processing, appearance, typography, paper viewports, SHX resources and gallery regression tests | Sample + libraries |
 
 The core does not expose mutable netDxf objects, SKPath, SKPaint, native fonts or mutable arrays. Geometry is a neutral interchange projection, not a required geometry kernel. Other consumers can read the shadow graph directly without using the supplied geometry/render projects.
 
@@ -120,13 +121,13 @@ Console.WriteLine($"Components: {topology.ConnectedComponents().Length}");
 Console.WriteLine($"Retained revision: {retained.Revision}; current: {snapshot.Revision}");
 ```
 
-`new ShadowMemoryStore(snapshot)` creates an isolated branch: its edits do not mutate netDxf. There is no implicit three-way merge; callers must supply a conflict/rebase policy and validate expected values.
+An isolated branch is `new ShadowMemoryStore(snapshot)`. It supports property and graph-patch editing without touching netDxf. There is no automatic three-way merge; callers must choose a conflict policy and validate expected values.
 
-## Incremental processing
+## Incremental processing and performance
 
-`ShadowReadSet` records dependencies read by cacheable projectors, including nested vertex objects and referenced style data. Projection/root/occurrence caches reuse unchanged analytic geometry and block expansions across revisions. A nested definition change invalidates its occurrences; a style-only edit can retain geometry. Custom projectors opt into the cacheability/version contract; untracked extensions bypass snapshot caching rather than producing stale results.
+`ShadowReadSet` records precisely which object properties were read during projection. Local geometry, expanded root occurrences and transformed occurrences can be reused across revisions while their dependencies remain current. Cacheable custom projectors expose an explicit revision; untracked extensions disable snapshot-level reuse rather than silently returning stale output.
 
-`RenderCompiler` reuses sampled geometry and `RenderItem` instances. Stable occurrence order permits persistent BVH refitting; old indexes remain usable by retained scenes. Font revision participates in text cache keys, but font invalidation does not invalidate non-text geometry. Call `SkiaTextLayoutEngine.InvalidateFonts()` when font resolution changes, then recompile. Changes during a compilation are detected and require a retry.
+Render geometry is cached by immutable geometry identity and sampling options. Unchanged occurrences reuse render items. A persistent spatial index is refit for changed bounds when item order is stable, preserving the old index for retained snapshots. Text services carry their own revision; it is part of text cache keys, but font invalidation does not invalidate non-text geometry. Call `SkiaTextLayoutEngine.InvalidateFonts()` when font resolution changes, then recompile. Changes during a compilation are detected and require a retry.
 
 This is not an O(1) end-to-end edit guarantee. Full source capture remains proportional to the public graph/payload, structural adoption may require broader validation, occurrence assembly still visits root entries, and very dense topology can produce many intersections. Tests distinguish geometry rebuilding from unavoidable enumeration.
 
@@ -152,7 +153,7 @@ Gradient paints retain authored RGB stops, transform and shift, with shared dete
 
 `ITextLayoutEngine` supplies font metrics and layout results without putting native resources into snapshots. The portable fallback explicitly diagnoses approximate metrics. `SkiaTextLayoutEngine` uses HarfBuzz shaping, native ascent/descent and positioned glyph ink bounds. The compiler transforms those bounds into world space; decorations/fractions participate. The backend and SVG renderer consume the same immutable positions. SVG can still differ in actual glyph appearance if its browser resolves a different font. Text picking uses the compiled ink-block bounds, not per-glyph outlines.
 
-Fields are displayed literally and never executed. Full paragraph indent/tab-stop/column semantics, indexed colors beyond the currently supported common palette, full bidirectional paragraph itemization, arbitrary font fallback and SHX decoding remain extension work. Unsupported/malformed controls produce diagnostics instead of disappearing silently.
+Fields are displayed literally and never executed. Full paragraph indent/tab-stop/column semantics, indexed colors beyond the currently supported common palette, full bidirectional paragraph itemization, arbitrary font fallback and mixed native/SHX runs remain extension work. Unsupported/malformed controls produce diagnostics instead of disappearing silently.
 
 ## Renderer ownership and image security
 
@@ -168,10 +169,36 @@ Topology uses a packed spatial index, explicit endpoint/curve tolerances, inters
 
 `EditorSession` supports property commands, entity creation/deletion, collection replacement, structural graph patches and unified undo/redo. Canonical snapshots are retained for structural commands. Intervening external source revisions invalidate history and require an explicit reset. Moving an inserted selection targets the outermost insert by default; definition editing changes shared geometry. Unsupported planners/factories fail rather than silently mutating unrelated data.
 
+
+## Paper-space views and stroke resources
+
+`RenderCompileOptions.IncludePaperViewports` defaults to true. For paper layouts,
+the render compiler composes orthographic model views, preserving entity/instance
+identity, camera transforms and shared clipping masks. Frozen layers, front/back
+clipping, global `LtScale` and `PsLtScale` are supported. Rendering and picking use
+the same masks. Paper copies and viewport frames never duplicate semantic graph
+edges. A paper-space drag is mapped back to model/source coordinates; conflicting
+moves of the same source through different views are rejected before mutation.
+See [PaperViewports.md](docs/PaperViewports.md) for camera conventions and limits.
+
+`ShxFontReader` reads SHAPES 1.0/1.1 and UNIFONT 1.0 binaries and textual SHP
+instructions. `ShxGlyphCompiler` emits immutable analytic curves; `ShxEntityProjector`
+uses them for `Shape`, `Text`, `MText` and attributes. Text is projected as
+presentation-only `CadStrokeGroup` geometry with per-run paints and decoration
+regions. Actual SHAPE entities retain semantic curves for graph analysis.
+Skia and SVG consume the same sampled stroke geometry, including in paper views.
+
+External resources are separate from the source snapshot. `ShxFontCatalog.Current`
+is an immutable resource snapshot; pass it to `ShxEntityProjector` to pin font
+content. The Studio pins its SHX font set with each retained source revision, so
+replacing live resources cannot change the old SHX view. There is no implicit
+file/network lookup or font-byte embedding. See [Shx.md](docs/Shx.md) for APIs,
+limits, character mapping and format references.
+
 ## Verification and remaining specialized coverage
 
-The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The current suites contain 18 original tests and 43 advanced tests. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
+The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The current suites contain 18 original tests and 83 advanced tests. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
 
-Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: SHX/custom geometry and ACIS evaluation, complete paragraph/field typography, complex text/shape linetypes and all global scaling semantics, exact miter/gradient/island behavior, model-to-paper viewport projection/clipping, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
+Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: BIGFONT and vertical SHX paragraph layout, custom geometry and ACIS evaluation, complete paragraph/field typography, complex text/shape linetypes and all global scaling semantics, exact miter/gradient/island behavior, perspective viewport projection, complete viewport visual/layer overrides, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
 
 Studio is local and single-user. It binds loopback, checks Host, requires a custom mutation header and does not enable CORS or arbitrary external resources. It is not a hardened untrusted-file service. Apply input/resource limits and an explicit trust policy before hosting it elsewhere.

@@ -3,7 +3,8 @@ using System.Collections.Immutable;
 namespace netDxf.Shadow.Rendering.Shx;
 
 public enum ShxEncoding { Unicode, PackedMultibyte, Shapes, Legacy }
-public enum ShxEmbedding { Allowed, Disallowed, ReadOnly }
+[Flags]
+public enum ShxEmbedding { Allowed = 0, Disallowed = 1, ReadOnly = 2 }
 
 /// <summary>A decoded instruction. Operands have signed displacements and unsigned octant bitfields.</summary>
 public sealed record ShxInstruction(byte Code, ImmutableArray<int> Operands);
@@ -27,7 +28,7 @@ public sealed class ShxFont
     internal ShxFont(string name, int above, int below, int mode, ShxEncoding encoding,
         ShxEmbedding embedding, ImmutableDictionary<int, ShxSymbol> symbols)
     {
-        if (above < 0 || below < 0 || mode is not (0 or 2) || !Enum.IsDefined(encoding) || !Enum.IsDefined(embedding))
+        if (above < 0 || below < 0 || mode is not (0 or 2) || !Enum.IsDefined(encoding) || (embedding & ~(ShxEmbedding.Disallowed | ShxEmbedding.ReadOnly)) != 0)
             throw new FormatException("Invalid SHX font metadata.");
         Name = name; CapHeight = above; Descender = below; SupportsVerticalText = mode == 2;
         Encoding = encoding; Embedding = embedding; Symbols = symbols;

@@ -78,7 +78,7 @@ public static class RichText
             if (c == '%' && index + 2 < source.Length && source[index + 1] == '%')
             {
                 var code = char.ToLowerInvariant(source[index + 2]);
-                var symbol = code switch { 'd' => '°', 'p' => '±', 'c' => 'Ø', '%' => '%', _ => '\0' };
+                var symbol = code switch { 'd' => '°', 'p' => '±', 'c' => '∅', '%' => '%', _ => '\0' };
                 if (symbol != '\0') { Append(symbol.ToString(), start); index += 2; continue; }
                 if (code is 'u' or 'o' or 'k')
                 {

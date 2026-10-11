@@ -14,7 +14,8 @@ public sealed partial class CadSceneBuilder
         var visits = 0;
         var entities = snapshot.Layout(options.Layout)["AssociatedBlock"]["Entities"];
         var membership = entities.Value is ShadowValue.Sequence ? entities.Value : entities["$items"].Value;
-        var rootTransaction = rootCache.Begin(snapshot, options, ProjectionVersion, membership, IsSnapshotCacheable);
+        var projectionVersion = ProjectionVersion;
+        var rootTransaction = rootCache.Begin(snapshot, options, projectionVersion, membership, IsSnapshotCacheable);
         ShadowReadSet? rootReads = null;
         foreach (var entity in entities.Items)
         {
@@ -33,6 +34,8 @@ public sealed partial class CadSceneBuilder
             rootTransaction.Add(rootId, new(output.Skip(start).ToImmutableArray(), diagnostics.Skip(issueStart).ToImmutableArray(), rootReads.Freeze(), visits - startVisits));
         }
         var scene = new CadScene(snapshot.DocumentId, snapshot.Revision, options.Layout, output.ToImmutable(), diagnostics.ToImmutable());
+        if (ProjectionVersion != projectionVersion)
+            throw new InvalidOperationException("Projection resources changed during the build. Retry with the current resource revision.");
         rootTransaction.Commit();
         return scene;
 
