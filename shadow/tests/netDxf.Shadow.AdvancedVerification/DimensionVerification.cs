@@ -41,7 +41,7 @@ internal static class DimensionVerification
         new Angular3PointDimension(new(0, 0), new(40, 0), new(30, 30), 15, style),
         new RadialDimension(new Vector2(0, 0), new Vector2(20, 10), style),
         new DiametricDimension(new Vector2(0, 0), new Vector2(20, 10), style),
-        new OrdinateDimension(new(0, 0), new(30, 10), new(30, 30), OrdinateDimensionAxis.X, style),
+        new OrdinateDimension(new Vector2(0, 0), new Vector2(30, 10), new Vector2(30, 30), OrdinateDimensionAxis.X, style),
         new ArcLengthDimension(new Vector2(0, 0), 20, 0, 70, 25, style)
     ];
     internal static void Register(List<(string Name, Action Run)> tests)
@@ -62,6 +62,26 @@ internal static class DimensionVerification
                 Require(new TopologyBuilder().Build(scene).Edges.Length == 0, "Annotation strokes leaked into semantic topology.");
             }));
         }
+        tests.Add(("dimension/translation preserves placement mode and projected fragments for every family", () =>
+        {
+            foreach (var dimension in Families(Style()))
+            {
+                dimension.Normal = new Vector3(0, 1, 1); dimension.Elevation = 4;
+                var doc = new DxfDocument { BuildDimensionBlocks = false }; doc.Entities.Add(dimension);
+                var store = new ShadowSession(doc); var builder = Builder(); var first = builder.Build(store.Current); Valid(first);
+                var editor = new EditorSession(store); var movement = new Vec3(9, -7, 3);
+                editor.Execute("Move dimension", EditOperations.Translate(store.Current, [Id(dimension)], movement));
+                var next = builder.Build(store.Current); Valid(next); Require(!dimension.TextPositionManuallySet);
+                Require(next.Occurrences.Length == first.Occurrences.Length);
+                for (var j = 0; j < first.Occurrences.Length; j++)
+                {
+                    var a = first.Occurrences[j].Geometry; var b = next.Occurrences[j].Geometry;
+                    if (a.Text is { } text) Near(b.Text!.Origin, text.Origin + movement);
+                    if (!a.DisplayContours.IsDefaultOrEmpty) Near(b.DisplayContours[0].Curves[0].Start, a.DisplayContours[0].Curves[0].Start + movement);
+                }
+                editor.Undo(); Require(Labels(builder.Build(store.Current)) == Labels(first));
+            }
+        }));
         tests.Add(("dimension/branch and source edits regenerate labels without replacing retained geometry", () =>
         {
             var doc = new DxfDocument { BuildDimensionBlocks = false }; var dimension = new AlignedDimension(new(0, 0), new(40, 0), 10, Style()); doc.Entities.Add(dimension);

@@ -23,7 +23,7 @@ public sealed partial class Studio
             new Angular3PointDimension(new(25, 30), new(65, 30), new(45, 65), 26, style),
             new RadialDimension(new Vector2(120, 30), new Vector2(151, 46), style),
             new DiametricDimension(new Vector2(220, 30), new Vector2(248, 44), style),
-            new OrdinateDimension(new(0, -30), new(45, -12), new(45, -45), OrdinateDimensionAxis.X, style),
+            new OrdinateDimension(new Vector2(0, -30), new Vector2(45, -12), new Vector2(45, -45), OrdinateDimensionAxis.X, style),
             new ArcLengthDimension(new Vector2(140, -45), 25, 15, 145, 33, style)
         };
         foreach (var dimension in dimensions)

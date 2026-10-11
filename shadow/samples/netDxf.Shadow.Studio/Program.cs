@@ -35,6 +35,7 @@ app.MapGet("/api/graph", (Studio studio, CancellationToken token) => studio.Grap
 app.MapGet("/api/object/{id}", (Studio studio, string id) => studio.Inspect(new(id)));
 app.MapPost("/api/pick", (Studio studio, PickRequest request) => studio.Pick(request));
 app.MapPost("/api/select", (Studio studio, SelectRequest request) => studio.Select(request));
+app.MapPost("/api/transform", (Studio studio, TransformRequest request) => studio.Transform(request));
 app.MapPost("/api/translate", (Studio studio, MoveRequest request) => studio.Translate(request));
 app.MapPost("/api/property", (Studio studio, PropertyRequest request) => studio.SetProperty(request));
 app.MapPost("/api/history/{operation}", (Studio studio, string operation, RevisionRequest request) => studio.History(operation, request.Revision));

@@ -15,6 +15,11 @@ public static class EditOperations
         {
             var entity = snapshot.Read(id);
             if (!entity.Exists || entity.Object is null) throw new ArgumentException($"Unknown object {id}.", nameof(ids));
+            if (DimensionTranslation.TryPlan(entity, delta, out var dimensionEdits))
+            {
+                foreach (var edit in dimensionEdits) changes[(edit.Object, edit.Property)] = edit;
+                continue;
+            }
             switch (entity.Type)
             {
                 case "Line": Move(entity, "StartPoint", delta); Move(entity, "EndPoint", delta); break;
@@ -24,8 +29,12 @@ public static class EditOperations
                             changes[(edit.Object, edit.Property)] = edit;
                     Move(entity, "Center", delta); break;
                 case "Circle": case "Arc": case "Ellipse": Move(entity, "Center", delta); break;
-                case "Text": case "MText": case "Point": case "Insert": case "Attribute": case "AttributeDefinition": case "Image":
+                case "Text": case "MText": case "Point": case "Attribute": case "AttributeDefinition": case "Image":
                     Move(entity, "Position", delta); break;
+                case "Insert":
+                    Move(entity, "Position", delta);
+                    foreach (var attribute in entity["Attributes"].Items) Move(attribute, "Position", delta);
+                    break;
                 case "Polyline2D":
                     var basis = Affine3.ObjectCoordinates(entity["Normal"].Vector(Vec3.UnitZ));
                     var local = new Vec3(Vec3.Dot(delta, basis.X), Vec3.Dot(delta, basis.Y), Vec3.Dot(delta, basis.Z));

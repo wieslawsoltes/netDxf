@@ -11,6 +11,7 @@ ShxVerification.Register(tests);
 ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
 DimensionVerification.Register(tests);
+StudioTransformVerification.Register(tests);
 var failures = 0;
 foreach (var test in tests)
 {
