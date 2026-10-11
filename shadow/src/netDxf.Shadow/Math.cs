@@ -9,6 +9,7 @@ public readonly record struct Vec3(double X, double Y, double Z = 0)
     public static Vec3 UnitZ => new(0, 0, 1);
     public double Length => Math.Sqrt(X * X + Y * Y + Z * Z);
     public bool IsFinite => double.IsFinite(X) && double.IsFinite(Y) && double.IsFinite(Z);
+    [System.Text.Json.Serialization.JsonIgnore]
     public Vec3 Normalized => Length > 0 ? this / Length : UnitZ;
     public static Vec3 operator +(Vec3 a, Vec3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     public static Vec3 operator -(Vec3 a, Vec3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);

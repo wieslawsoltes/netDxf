@@ -4,9 +4,9 @@ namespace netDxf.Shadow.Rendering;
 
 public readonly record struct Viewport(Vec3 Center, double PixelsPerUnit, int Width, int Height)
 {
-    public Vec3 ToScreen(Vec3 point) => new((point.X - Center.X) * PixelsPerUnit + Width / 2.0, (Center.Y - point.Y) * PixelsPerUnit + Height / 2.0);
-    public Vec3 ToWorld(Vec3 point) => new((point.X - Width / 2.0) / PixelsPerUnit + Center.X, Center.Y - (point.Y - Height / 2.0) / PixelsPerUnit);
-    public Bounds2 WorldBounds => new(Center.X - Width / (2 * PixelsPerUnit), Center.Y - Height / (2 * PixelsPerUnit), Center.X + Width / (2 * PixelsPerUnit), Center.Y + Height / (2 * PixelsPerUnit));
+    public Vec3 ToScreen(Vec3 point) => new Vec3((point.X - Center.X) * PixelsPerUnit + Width / 2.0, (Center.Y - point.Y) * PixelsPerUnit + Height / 2.0);
+    public Vec3 ToWorld(Vec3 point) => new Vec3((point.X - Width / 2.0) / PixelsPerUnit + Center.X, Center.Y - (point.Y - Height / 2.0) / PixelsPerUnit);
+    public Bounds2 WorldBounds => new Bounds2(Center.X - Width / (2 * PixelsPerUnit), Center.Y - Height / (2 * PixelsPerUnit), Center.X + Width / (2 * PixelsPerUnit), Center.Y + Height / (2 * PixelsPerUnit));
     public void Validate()
     {
         if (Width is < 1 or > 16384 || Height is < 1 or > 16384 || (long)Width * Height > 64_000_000 || !Center.IsFinite || !double.IsFinite(PixelsPerUnit) || PixelsPerUnit <= 0)
@@ -14,7 +14,7 @@ public readonly record struct Viewport(Vec3 Center, double PixelsPerUnit, int Wi
     }
     public static Viewport Fit(Bounds2 bounds, int width, int height, double margin = 0.1)
     {
-        if (bounds.IsEmpty) bounds = new(-50, -50, 50, 50);
+        if (bounds.IsEmpty) bounds = new Bounds2(-50, -50, 50, 50);
         var scale = Math.Min(width / Math.Max(bounds.Width, 1), height / Math.Max(bounds.Height, 1)) / (1 + Math.Max(0, margin) * 2);
         var result = new Viewport(bounds.Center, scale, width, height); result.Validate(); return result;
     }

@@ -19,11 +19,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Build shadow adapter
-        run: dotnet build shadow/src/netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj -c Release -p:TargetFrameworks=net8.0
-      - name: Build editor and neutral geometry/rendering
-        run: dotnet build shadow/src/netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj -c Release
-      - name: Build graph analysis
-        run: dotnet build shadow/src/netDxf.Shadow.Graph/netDxf.Shadow.Graph.csproj -c Release
-      - name: Build SkiaSharp backend
-        run: dotnet build shadow/src/netDxf.Shadow.Rendering.SkiaSharp/netDxf.Shadow.Rendering.SkiaSharp.csproj -c Release
+      - name: Build all libraries and integrated Studio
+        run: dotnet build shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -p:TargetFrameworks=net8.0
+      - name: Verify contracts, geometry, topology, editor and renderers
+        run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shadow-verification
+          path: artifacts
+          if-no-files-found: ignore
