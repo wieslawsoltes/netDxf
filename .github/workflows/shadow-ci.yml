@@ -20,12 +20,29 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - name: Build all libraries and integrated Studio
-        run: dotnet build shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -p:TargetFrameworks=net8.0
+        run: dotnet build shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -p:TargetFrameworks=net8.0 -clp:ErrorsOnly
       - name: Verify contracts, geometry, topology, editor and renderers
-        run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0
+        run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: shadow-verification
           path: artifacts
           if-no-files-found: ignore
+      - name: Prepare isolated offline verification workspace
+        if: always() && github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/offline"
+          git archive HEAD | gzip > "$RUNNER_TEMP/offline/source.tar.gz"
+          cd "$DOTNET_ROOT"
+          tar -czf "$RUNNER_TEMP/offline/dotnet.tar.gz" dotnet host/fxr/8.* sdk/8.* shared/Microsoft.NETCore.App/8.* shared/Microsoft.AspNetCore.App/8.* packs/Microsoft.NETCore.App.Ref/8.* packs/Microsoft.AspNetCore.App.Ref/8.* packs/Microsoft.NETCore.App.Host.linux-x64/8.* packs/NETStandard.Library.Ref
+          tar -czf "$RUNNER_TEMP/offline/packages.tar.gz" -C "$HOME/.nuget" packages
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name == 'push'
+        with:
+          name: shadow-offline-verification
+          path: ${{ runner.temp }}/offline
+          compression-level: 0
+          retention-days: 1
