@@ -42,6 +42,50 @@ jobs:
         run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
       - name: Verify structural history, incremental processing, appearance and rich text
         run: dotnet run --project shadow/tests/netDxf.Shadow.AdvancedVerification/netDxf.Shadow.AdvancedVerification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Export public Shadow verification toolchain for offline diagnosis
+        if: always() && runner.os == 'Linux'
+        shell: bash
+        run: |
+          python3 - <<'PYTOOLCHAIN'
+          import json, os, pathlib, subprocess, tarfile
+          sdks = []
+          for line in subprocess.check_output(['dotnet', '--list-sdks'], text=True).splitlines():
+              version, directory = line.split(' [', 1)
+              if version.startswith('8.'):
+                  sdks.append((tuple(map(int, version.split('.'))), version, pathlib.Path(directory[:-1]).parent))
+          _, version, root = max(sdks)
+          archive = pathlib.Path(os.environ['RUNNER_TEMP']) / 'shadow-offline-toolchain.tar.gz'
+          entries = [root / 'dotnet', root / 'sdk' / version]
+          for group in ['host/fxr', 'shared/Microsoft.NETCore.App', 'shared/Microsoft.AspNetCore.App',
+                        'packs/Microsoft.NETCore.App.Ref', 'packs/Microsoft.AspNetCore.App.Ref',
+                        'packs/Microsoft.NETCore.App.Host.linux-x64']:
+              entries.append(max((root / group).glob('8.*'), key=lambda p: tuple(map(int, p.name.split('.')))))
+          entries.extend((root / 'packs/NETStandard.Library.Ref').glob('*'))
+          entries.extend(p for p in [root / 'LICENSE.txt', root / 'ThirdPartyNotices.txt'] if p.exists())
+          assets = json.loads(pathlib.Path('shadow/samples/netDxf.Shadow.Studio/obj/project.assets.json').read_text())
+          def include(info):
+              return None if pathlib.Path(info.name).suffix.lower() in {'.ttf', '.otf', '.woff', '.woff2'} else info
+          with tarfile.open(archive, 'w:gz', compresslevel=1, dereference=True) as tar:
+              for entry in entries:
+                  tar.add(entry, arcname='dotnet/' + str(entry.relative_to(root)), filter=include)
+              for name, item in assets['libraries'].items():
+                  if item['type'] != 'package':
+                      continue
+                  package, package_version = name.lower().split('/')
+                  filename = package + '.' + package_version + '.nupkg'
+                  candidates = [pathlib.Path(folder) / item['path'] / filename for folder in assets['packageFolders']]
+                  nupkg = next(p for p in candidates if p.is_file())
+                  tar.add(nupkg, arcname='feed/' + filename)
+          print('Public SDK/package archive:', archive.stat().st_size, 'bytes; SDK', version)
+          PYTOOLCHAIN
+      - name: Retain temporary offline diagnosis toolchain
+        if: always() && runner.os == 'Linux'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: shadow-offline-toolchain
+          path: ${{ runner.temp }}/shadow-offline-toolchain.tar.gz
+          if-no-files-found: error
+          retention-days: 1
       - name: Retain rendered regression artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
