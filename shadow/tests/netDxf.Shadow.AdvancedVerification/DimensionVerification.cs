@@ -106,7 +106,7 @@ internal static class DimensionVerification
         }));
         tests.Add(("dimension/existing stale generated block is superseded without source mutation", () =>
         {
-            var doc = new DxfDocument(); var dimension = new AlignedDimension(new(0, 0), new(40, 0), 10, Style()); doc.Entities.Add(dimension);
+            var doc = new DxfDocument { BuildDimensionBlocks = true }; var dimension = new AlignedDimension(new(0, 0), new(40, 0), 10, Style()); doc.Entities.Add(dimension);
             var block = dimension.Block; Require(block is not null);
             var store = new ShadowSession(doc); var old = store.Current; var builder = Builder(); var a = builder.Build(old); Valid(a);
             new EditorSession(store).SetProperty(Id(dimension), "SecondReferencePoint", ShadowValue.From(new Vec3(80, 0)));
@@ -191,7 +191,10 @@ internal static class DimensionVerification
             var svg = studio.Render(1400, 920, null, null, null, "svg", null, default);
             Require(png.Bytes.Length > 2000); Require(XDocument.Parse(Encoding.UTF8.GetString(svg.Bytes)).Descendants().Any(e => e.Name.LocalName == "text"));
             var bytes = studio.Save(); studio.Load(new MemoryStream(bytes)); studio.SetLayout(new(State().GetProperty("revision").GetInt64(), "Dimensions"));
-            Require(State().GetProperty("occurrences").GetInt32() == state.GetProperty("occurrences").GetInt32());
+            var reloaded = State();
+            Require(reloaded.GetProperty("occurrences").GetInt32() == state.GetProperty("occurrences").GetInt32(),
+                $"Dimension roundtrip changed occurrences from {state.GetProperty("occurrences")} to {reloaded.GetProperty("occurrences")}. " +
+                $"Before: {state.GetProperty("items")} After: {reloaded.GetProperty("items")} Diagnostics: {reloaded.GetProperty("diagnostics")}");
             Directory.CreateDirectory("artifacts"); File.WriteAllBytes("artifacts/dimension-gallery.png", png.Bytes);
             File.WriteAllBytes("artifacts/dimension-gallery.svg", svg.Bytes); File.WriteAllBytes("artifacts/dimension-gallery.dxf", bytes);
         }));
