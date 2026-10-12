@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>netDxf capture and bidirectional synchronization for immutable shadow snapshots.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow/netDxf.Shadow.csproj" />
+    <ProjectReference Include="../../../netDxf/netDxf.csproj" />
+  </ItemGroup>
+</Project>
