@@ -70,8 +70,11 @@ internal static class DimensionVerification
         }
         tests.Add(("dimension/translation preserves placement mode and projected fragments for every family", () =>
         {
-            foreach (var dimension in Families(Style()))
+            foreach (var prototype in Families(Style()))
             {
+                // Each document must own its resource graph. Reusing the same mutable
+                // style lets table-adoption events from earlier documents corrupt it.
+                var dimension = (Dimension)prototype.Clone();
                 dimension.Normal = new Vector3(0, 1, 1); dimension.Elevation = 4;
                 var doc = new DxfDocument { BuildDimensionBlocks = false }; doc.Entities.Add(dimension);
                 var store = new ShadowSession(doc); var builder = Builder(); var first = builder.Build(store.Current); Valid(first);

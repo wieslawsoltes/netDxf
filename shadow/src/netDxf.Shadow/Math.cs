@@ -7,6 +7,10 @@ public readonly record struct Vec3(double X, double Y, double Z = 0)
     public static Vec3 UnitX => new(1, 0, 0);
     public static Vec3 UnitY => new(0, 1, 0);
     public static Vec3 UnitZ => new(0, 0, 1);
+    // Record-generated formatting would also print Normalized, recursively formatting
+    // another Vec3 forever. Print only the authored coordinates, using stable digits.
+    public override string ToString() => string.Create(System.Globalization.CultureInfo.InvariantCulture,
+        $"Vec3 {{ X = {X:R}, Y = {Y:R}, Z = {Z:R} }}");
     public double Length => Math.Sqrt(X * X + Y * Y + Z * Z);
     public bool IsFinite => double.IsFinite(X) && double.IsFinite(Y) && double.IsFinite(Z);
     [System.Text.Json.Serialization.JsonIgnore]
