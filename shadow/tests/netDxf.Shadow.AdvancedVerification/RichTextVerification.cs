@@ -17,7 +17,7 @@ internal static class RichTextVerification
     {
         tests.Add(("text/scoped styles, relative heights and authored fonts", () =>
         {
-            var parsed = RichText.Parse(@"a{\H2x;\fserif|b1|i1;\c16711680;b{\H0.5x;c}d}e", true, new("sans-serif", 10));
+            var parsed = RichText.Parse(@"a{\H2x;\fserif|b1|i1;\c255;b{\H0.5x;c}d}e", true, new("sans-serif", 10));
             Require(parsed.Inlines.Select(i => i.Text).SequenceEqual(new[] { "a", "b", "c", "d", "e" }));
             Require(parsed.Inlines.Select(i => i.Style.Height).SequenceEqual(new[] { 10.0, 20.0, 10.0, 20.0, 10.0 }));
             Require(parsed.Inlines[1].Style.Bold && parsed.Inlines[1].Style.Italic && parsed.Inlines[1].Style.FontFamily == "serif");
@@ -114,7 +114,7 @@ internal static class RichTextVerification
         tests.Add(("text/shared layout, native/SVG formatting and borrowed engine lifetime", () =>
         {
             using var metrics = new SkiaTextLayoutEngine();
-            var scene = Compile(Text(@"{\fserif|b1|i1;\H1.5x;Rich text}\P\C1;RED \c255;BLUE \Lunderline\l \S1/2; <script>& Ω"), metrics);
+            var scene = Compile(Text(@"{\fserif|b1|i1;\H1.5x;Rich text}\P\C1;RED \c16711680;BLUE \Lunderline\l \S1/2; <script>& Ω"), metrics);
             var frame = new RenderFrame(scene, Camera.Fit(scene.Bounds.Inflate(2), 1000, 320));
             using var host = new RenderHost(new Dictionary<string, Func<IRenderBackend>>
             {

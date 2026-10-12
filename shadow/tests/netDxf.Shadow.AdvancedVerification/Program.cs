@@ -10,6 +10,7 @@ SourcePreparationVerification.Register(tests);
 IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 RichTextVerification.Register(tests);
+MTextColorVerification.Register(tests);
 GalleryVerification.Register(tests);
 ViewportVerification.Register(tests);
 ShxVerification.Register(tests);

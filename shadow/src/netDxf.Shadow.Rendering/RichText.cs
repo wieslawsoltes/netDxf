@@ -164,7 +164,7 @@ public static class RichText
                     if (control == 'c')
                     {
                         if (color is < 0 or > 0xffffff) throw new FormatException("True color is outside the RGB range.");
-                        style = style with { Color = 0xff000000u | (uint)color };
+                        style = style with { Color = MTextColorCodec.DecodeTrueColor(color) };
                     }
                     else if (color is 0 or 256) style = style with { Color = null };
                     else if (IndexedColor(color) is { } rgb) style = style with { Color = rgb };
@@ -219,9 +219,5 @@ public static class RichText
             || !double.IsFinite(style.ObliqueDegrees) || Math.Abs(style.ObliqueDegrees) >= 89)
             throw new ArgumentOutOfRangeException(nameof(style), "Invalid or excessive text size, width, tracking or oblique angle.");
     }
-    private static uint? IndexedColor(int index) => index switch
-    {
-        1 => 0xffff0000, 2 => 0xffffff00, 3 => 0xff00ff00, 4 => 0xff00ffff,
-        5 => 0xff0000ff, 6 => 0xffff00ff, 7 => 0xffffffff, 8 => 0xff808080, 9 => 0xffc0c0c0, _ => null
-    };
+    private static uint? IndexedColor(int index) => MTextColorCodec.ResolveIndexed(index);
 }
