@@ -40,8 +40,8 @@ public sealed partial class ShadowSession : IShadowGraphStore
     public ShadowSnapshot Refresh()
     {
         lock (gate)
+        using (EnterSourceOperation())
         {
-            using var operation = EnterSourceOperation();
             return Publish(capture.Capture(document, current));
         }
     }
@@ -51,8 +51,8 @@ public sealed partial class ShadowSession : IShadowGraphStore
     {
         ArgumentNullException.ThrowIfNull(dirtyObjects);
         lock (gate)
+        using (EnterSourceOperation())
         {
-            using var operation = EnterSourceOperation();
             return Publish(capture.Capture(document, current, dirtyObjects.Distinct().ToArray()));
         }
     }
@@ -72,8 +72,8 @@ public sealed partial class ShadowSession : IShadowGraphStore
     {
         ArgumentNullException.ThrowIfNull(mutation);
         lock (gate)
+        using (EnterSourceOperation())
         {
-            using var operation = EnterSourceOperation();
             try { mutation(document); }
             finally
             {
@@ -88,21 +88,21 @@ public sealed partial class ShadowSession : IShadowGraphStore
     {
         ArgumentNullException.ThrowIfNull(batch);
         lock (gate)
+        using (EnterSourceOperation())
         {
-            using var operation = EnterSourceOperation();
             _ = current.Apply(batch); // Validate the complete immutable transaction before touching source.
             if (batch.Edits.IsDefaultOrEmpty) return current;
             if (SourceValidation == ShadowSourceValidationMode.FullGraph) EnsureSourceCurrent();
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
             foreach (var edit in batch.Edits)
             {
-                var source = capture.Source(edit.Object);
-                var accessor = SourceAccessors.For(source.GetType()).SingleOrDefault(a => a.Name == edit.Property && a.CanWrite)
+                var editedSource = capture.Source(edit.Object);
+                var accessor = SourceAccessors.For(editedSource.GetType()).SingleOrDefault(a => a.Name == edit.Property && a.CanWrite)
                     ?? throw new InvalidOperationException($"{edit.Object}.{edit.Property} is not writable.");
-                var before = accessor.Get(source);
+                var before = accessor.Get(editedSource);
                 if (!ShadowValue.Equivalent(capture.Preview(before), edit.Before))
                     throw new ShadowConflictException($"Source {edit.Object}.{edit.Property} changed outside the session. Refresh first.");
-                writes.Add((source, accessor, before, ConvertValue(edit.After, accessor.ValueType)));
+                writes.Add((editedSource, accessor, before, ConvertValue(edit.After, accessor.ValueType)));
             }
             // Exercise normal entity/table validation on detached clones when available.
             foreach (var group in writes.GroupBy(w => w.Source, ReferenceEqualityComparer.Instance))

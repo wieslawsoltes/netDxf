@@ -15,8 +15,8 @@ public sealed partial class ShadowSession
     {
         ArgumentNullException.ThrowIfNull(patch);
         lock (gate)
+        using (EnterSourceOperation())
         {
-            using var operation = EnterSourceOperation();
             var target = patch.Apply(current);
             if (ReferenceEquals(target, current)) return current;
             // Structural adoption always validates the complete captured graph, including
