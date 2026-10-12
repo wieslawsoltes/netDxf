@@ -28,6 +28,8 @@ public sealed partial class ShadowSession
             Dictionary<ObjectId, object>? historical = null;
             if (patch.HistoricalTarget is { } old) historyBindings.TryGetValue(old, out historical);
             var additions = patch.Changes.Where(e => e.Before is null && e.After is not null).ToDictionary(e => e.Id, e => e.After!);
+            // Undo/redo can restore every binding from history without building an index.
+            Dictionary<ObjectId, List<(ObjectId Owner, SourceAccessor Accessor)>>? ownedReferences = null;
             var constructing = new HashSet<ObjectId>();
             Resolver resolver = null!;
             resolver = new Resolver(Resolve, (value, type) => ConvertValue(value, type, Resolve));
@@ -49,7 +51,7 @@ public sealed partial class ShadowSession
                     // The source allocator is monotonic; undo restores semantic objects,
                     // never rewinds handles that may already have been assigned elsewhere.
                     if (historical is not null && name == "HandleSeed") continue;
-                    var accessor = SourceAccessors.For(source.GetType()).FirstOrDefault(a => a.Name == name);
+                    var accessor = SourceAccessors.Find(source.GetType(), name);
                     if (name == "$items" || accessor is { CanWrite: false } && value is ShadowValue.Sequence)
                     {
                         if (value is not ShadowValue.Sequence sequence) throw new ArgumentException("Collection membership must be a sequence.");
@@ -151,14 +153,12 @@ public sealed partial class ShadowSession
                 {
                     // Read-only owned collections must be bound to the new owner's actual
                     // collection instance, not constructed as an unrelated empty container.
-                    foreach (var parent in additions.Values)
+                    if ((ownedReferences ??= IndexOwnedReferences(additions)).TryGetValue(id, out var candidates))
                     {
-                        foreach (var property in parent.Properties.Where(p => p.Value is ShadowValue.Reference r && r.Id == id))
+                        foreach (var candidate in candidates)
                         {
-                            var parentType = typeof(DxfDocument).Assembly.GetType(parent.TypeName);
-                            var getter = parentType is null ? null : SourceAccessors.For(parentType).FirstOrDefault(a => a.Name == property.Key && !a.CanWrite);
-                            if (getter is null || constructing.Contains(parent.Id)) continue;
-                            var owned = getter.Get(Resolve(parent.Id));
+                            if (constructing.Contains(candidate.Owner)) continue;
+                            var owned = candidate.Accessor.Get(Resolve(candidate.Owner));
                             if (owned is null || owned.GetType().FullName != node.TypeName) continue;
                             bindings[id] = owned; capture.Bind(id, owned); return owned;
                         }
@@ -169,6 +169,38 @@ public sealed partial class ShadowSession
                 finally { constructing.Remove(id); }
             }
         }
+    }
+
+    /// <summary>
+    /// Builds a reverse index for newly created, read-only owned references. The old
+    /// resolver scanned every added node for each addition: O(A * P) property visits,
+    /// where P is the total number of properties across A additions. This preparation
+    /// makes one O(A + P) pass and preserves the old candidate order within each ID.
+    /// Only candidate discovery is linearized; constructors, capture and source
+    /// collection operations retain their own independent costs.
+    /// </summary>
+    private static Dictionary<ObjectId, List<(ObjectId Owner, SourceAccessor Accessor)>> IndexOwnedReferences(
+        IReadOnlyDictionary<ObjectId, ShadowObject> additions)
+    {
+        var result = new Dictionary<ObjectId, List<(ObjectId Owner, SourceAccessor Accessor)>>();
+        foreach (var parent in additions.Values)
+        {
+            var type = typeof(DxfDocument).Assembly.GetType(parent.TypeName);
+            if (type is null) continue;
+            foreach (var (name, value) in parent.Properties)
+            {
+                if (value is not ShadowValue.Reference reference || !additions.ContainsKey(reference.Id)) continue;
+                var accessor = SourceAccessors.Find(type, name);
+                if (accessor is not { CanWrite: false }) continue;
+                if (!result.TryGetValue(reference.Id, out var candidates))
+                {
+                    candidates = new();
+                    result.Add(reference.Id, candidates);
+                }
+                candidates.Add((parent.Id, accessor));
+            }
+        }
+        return result;
     }
 
     private sealed class Resolver(Func<ObjectId, object> resolve, Func<ShadowValue, Type, object?> convert) : IShadowObjectResolver

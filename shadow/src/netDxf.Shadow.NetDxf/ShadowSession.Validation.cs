@@ -6,15 +6,25 @@ public sealed partial class ShadowSession
     // Source callbacks must not publish or start another transaction while a capture,
     // validation, source write, reconciliation or rollback is in progress.
     private bool sourceOperationActive;
+    private int sourceReadDepth;
 
     private SourceOperation EnterSourceOperation()
     {
         EnsureHealthy();
-        if (sourceOperationActive)
+        if (sourceOperationActive || sourceReadDepth != 0)
             throw new InvalidOperationException(
                 "Reentrant source operations are not allowed. Read Current in callbacks and apply further changes after the outer operation returns.");
         sourceOperationActive = true;
         return new SourceOperation(this);
+    }
+
+    private SourceRead EnterSourceRead()
+    {
+        EnsureHealthy();
+        // Reads are deliberately nestable, including inspection inside MutateSource.
+        // The outer monitor remains held, and no callback may open a write operation.
+        sourceReadDepth = checked(sourceReadDepth + 1);
+        return new SourceRead(this);
     }
 
     private void EnsureSourceCurrent()
@@ -32,5 +42,10 @@ public sealed partial class ShadowSession
     private readonly struct SourceOperation(ShadowSession session) : IDisposable
     {
         public void Dispose() => session.sourceOperationActive = false;
+    }
+
+    private readonly struct SourceRead(ShadowSession session) : IDisposable
+    {
+        public void Dispose() => session.sourceReadDepth--;
     }
 }

@@ -1,3 +1,5 @@
+using System.Runtime.ExceptionServices;
+
 namespace netDxf.Shadow.NetDxf;
 
 /// <summary>
@@ -57,10 +59,19 @@ public sealed partial class ShadowSession : IShadowGraphStore
         }
     }
 
+    /// <summary>
+    /// Inspects the serialized live document. Nested reads are supported; starting a
+    /// source operation from a read callback is rejected. The callback must not mutate
+    /// the document directly or retain any mutable source references.
+    /// </summary>
     public T ReadSource<T>(Func<DxfDocument, T> read)
     {
         ArgumentNullException.ThrowIfNull(read);
-        lock (gate) { EnsureHealthy(); return read(document); }
+        lock (gate)
+        {
+            using var readScope = EnterSourceRead();
+            return read(document);
+        }
     }
 
     /// <summary>
@@ -74,12 +85,22 @@ public sealed partial class ShadowSession : IShadowGraphStore
         lock (gate)
         using (EnterSourceOperation())
         {
+            Exception? mutationError = null;
             try { mutation(document); }
-            finally
+            catch (Exception error) { mutationError = error; }
+            try { Publish(capture.Capture(document, current)); }
+            catch (Exception reconciliationError)
             {
-                try { Publish(capture.Capture(document, current)); }
-                catch { faulted = true; throw; }
+                faulted = true;
+                if (mutationError is not null)
+                    throw new AggregateException(
+                        "The source mutation and its reconciliation both failed. This session is fail-stopped; inspect the document and attach a new session.",
+                        mutationError, reconciliationError);
+                throw;
             }
+            // Reconciliation succeeds before the callback's original exception is
+            // rethrown. Preserve its identity and original throw site for diagnostics.
+            if (mutationError is not null) ExceptionDispatchInfo.Capture(mutationError).Throw();
             return current;
         }
     }
@@ -97,8 +118,9 @@ public sealed partial class ShadowSession : IShadowGraphStore
             foreach (var edit in batch.Edits)
             {
                 var editedSource = capture.Source(edit.Object);
-                var accessor = SourceAccessors.For(editedSource.GetType()).SingleOrDefault(a => a.Name == edit.Property && a.CanWrite)
-                    ?? throw new InvalidOperationException($"{edit.Object}.{edit.Property} is not writable.");
+                var accessor = SourceAccessors.Find(editedSource.GetType(), edit.Property);
+                if (accessor is not { CanWrite: true })
+                    throw new InvalidOperationException($"{edit.Object}.{edit.Property} is not writable.");
                 var before = accessor.Get(editedSource);
                 if (!ShadowValue.Equivalent(capture.Preview(before), edit.Before))
                     throw new ShadowConflictException($"Source {edit.Object}.{edit.Property} changed outside the session. Refresh first.");
