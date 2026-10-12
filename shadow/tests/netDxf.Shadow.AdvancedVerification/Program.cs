@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 
 var tests = new List<(string Name, Action Run)>();
 StructuralVerification.Register(tests);
@@ -12,12 +14,44 @@ ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
 DimensionVerification.Register(tests);
 StudioTransformVerification.Register(tests);
+var results = new List<VerificationResult>(tests.Count);
 var failures = 0;
 foreach (var test in tests)
 {
     var timer = Stopwatch.StartNew();
-    try { test.Run(); Console.WriteLine($"PASS {test.Name} ({timer.Elapsed.TotalMilliseconds:F1} ms)"); }
-    catch (Exception error) { failures++; Console.Error.WriteLine($"FAIL {test.Name}\n{error}"); }
+    string? failure = null;
+    try
+    {
+        test.Run();
+        Console.WriteLine($"PASS {test.Name} ({timer.Elapsed.TotalMilliseconds:F1} ms)");
+    }
+    catch (Exception error)
+    {
+        failures++;
+        failure = error.ToString();
+        Console.Error.WriteLine($"FAIL {test.Name}\n{failure}");
+    }
+    results.Add(new(test.Name, failure is null, timer.Elapsed.TotalMilliseconds, failure));
 }
 Console.WriteLine($"Advanced verification: {tests.Count - failures}/{tests.Count} passed.");
+// Keep diagnostic evidence even when a test fails. No assertion is skipped or weakened.
+// The existing workflow uploads artifacts/ with if: always() on every supported OS.
+Directory.CreateDirectory("artifacts");
+File.WriteAllText("artifacts/advanced-verification.json", JsonSerializer.Serialize(new
+{
+    schemaVersion = 1,
+    source = Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    head = Environment.GetEnvironmentVariable("GITHUB_HEAD_REF"),
+    runId = Environment.GetEnvironmentVariable("GITHUB_RUN_ID"),
+    runAttempt = Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT"),
+    framework = RuntimeInformation.FrameworkDescription,
+    os = RuntimeInformation.OSDescription,
+    architecture = RuntimeInformation.ProcessArchitecture.ToString(),
+    total = tests.Count,
+    passed = tests.Count - failures,
+    failed = failures,
+    results
+}, new JsonSerializerOptions { WriteIndented = true }));
 return failures == 0 ? 0 : 1;
+
+internal sealed record VerificationResult(string Name, bool Passed, double ElapsedMilliseconds, string? Error);
