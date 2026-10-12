@@ -16,11 +16,12 @@ public sealed partial class ShadowSession
         ArgumentNullException.ThrowIfNull(patch);
         lock (gate)
         {
-            EnsureHealthy();
+            using var operation = EnterSourceOperation();
             var target = patch.Apply(current);
             if (ReferenceEquals(target, current)) return current;
-            if (!ReferenceEquals(capture.Capture(document, current), current))
-                throw new ShadowConflictException("Source changed outside the session. Refresh before applying a structural transaction.");
+            // Structural adoption always validates the complete captured graph, including
+            // sessions that opt into edited-property validation for scalar batches.
+            EnsureSourceCurrent();
             var before = current;
             var bindings = capture.RetainBindings();
             historyBindings.GetValue(before, _ => bindings);

@@ -4,6 +4,7 @@ using System.Text.Json;
 
 var tests = new List<(string Name, Action Run)>();
 StructuralVerification.Register(tests);
+SourceConsistencyVerification.Register(tests);
 IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 RichTextVerification.Register(tests);

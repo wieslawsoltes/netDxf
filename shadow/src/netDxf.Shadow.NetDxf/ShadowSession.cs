@@ -13,11 +13,27 @@ public sealed partial class ShadowSession : IShadowGraphStore
     private bool faulted;
 
     public ShadowSession(DxfDocument document, ShadowCaptureOptions? options = null)
+        : this(document, options, ShadowSourceValidationMode.FullGraph)
+    {
+    }
+
+    /// <summary>
+    /// Creates a session with an explicit source-consistency policy. EditedProperties
+    /// requires exclusive source ownership and preserves the audited dirty-object path.
+    /// </summary>
+    public ShadowSession(DxfDocument document, ShadowCaptureOptions? options,
+        ShadowSourceValidationMode sourceValidation)
     {
         this.document = document ?? throw new ArgumentNullException(nameof(document));
+        if (sourceValidation is not (ShadowSourceValidationMode.FullGraph or ShadowSourceValidationMode.EditedProperties))
+            throw new ArgumentOutOfRangeException(nameof(sourceValidation));
+        SourceValidation = sourceValidation;
         capture = new(options ?? new());
         current = capture.Capture(document, null);
     }
+
+    /// <summary>The immutable source-validation policy used by property transactions.</summary>
+    public ShadowSourceValidationMode SourceValidation { get; }
 
     public ShadowSnapshot Current => Volatile.Read(ref current);
 
@@ -25,7 +41,7 @@ public sealed partial class ShadowSession : IShadowGraphStore
     {
         lock (gate)
         {
-            EnsureHealthy();
+            using var operation = EnterSourceOperation();
             return Publish(capture.Capture(document, current));
         }
     }
@@ -36,7 +52,7 @@ public sealed partial class ShadowSession : IShadowGraphStore
         ArgumentNullException.ThrowIfNull(dirtyObjects);
         lock (gate)
         {
-            EnsureHealthy();
+            using var operation = EnterSourceOperation();
             return Publish(capture.Capture(document, current, dirtyObjects.Distinct().ToArray()));
         }
     }
@@ -57,7 +73,7 @@ public sealed partial class ShadowSession : IShadowGraphStore
         ArgumentNullException.ThrowIfNull(mutation);
         lock (gate)
         {
-            EnsureHealthy();
+            using var operation = EnterSourceOperation();
             try { mutation(document); }
             finally
             {
@@ -73,9 +89,10 @@ public sealed partial class ShadowSession : IShadowGraphStore
         ArgumentNullException.ThrowIfNull(batch);
         lock (gate)
         {
-            EnsureHealthy();
+            using var operation = EnterSourceOperation();
             _ = current.Apply(batch); // Validate the complete immutable transaction before touching source.
             if (batch.Edits.IsDefaultOrEmpty) return current;
+            if (SourceValidation == ShadowSourceValidationMode.FullGraph) EnsureSourceCurrent();
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
             foreach (var edit in batch.Edits)
             {

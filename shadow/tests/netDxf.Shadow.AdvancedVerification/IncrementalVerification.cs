@@ -88,7 +88,10 @@ internal static class IncrementalVerification
         {
             var doc = new DxfDocument();
             for (var i = 0; i < 10000; i++) doc.Entities.Add(new Line(new Vector2(i, 0), new Vector2(i + 0.5, 0)));
-            var source = new ShadowSession(doc); var builder = new CadSceneBuilder(); var compiler = new RenderCompiler(builder);
+            // This fixture exclusively owns the mutable document after attachment.
+            // Keep the existing allocation/reuse gates on the explicit incremental policy.
+            var source = new ShadowSession(doc, null, ShadowSourceValidationMode.EditedProperties);
+            var builder = new CadSceneBuilder(); var compiler = new RenderCompiler(builder);
             var first = compiler.Compile(source.Current); var id = first.Items[1234].Entity; var editor = new EditorSession(source);
             var allocated = GC.GetAllocatedBytesForCurrentThread(); var timer = Stopwatch.StartNew();
             editor.SetProperty(id, "EndPoint", ShadowValue.From(new Vec3(1234.7, 0)));
@@ -98,7 +101,7 @@ internal static class IncrementalVerification
             Require(compiler.CacheStatistics.GeometryCompilations == before.GeometryCompilations + 1);
             Require(first.Items.Zip(second.Items).Count(p => ReferenceEquals(p.First, p.Second)) == 9999);
             Require(builder.LastBuildStatistics == new SceneBuildStatistics(1, 9999));
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { entities = 10000, scalarEditBytes = bytes, scalarEditMs = editMs, incrementalCompileMs = renderMs, geometryRebuilds = 1, renderItemsReused = 9999 }));
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { sourceValidation = source.SourceValidation.ToString(), entities = 10000, scalarEditBytes = bytes, scalarEditMs = editMs, incrementalCompileMs = renderMs, geometryRebuilds = 1, renderItemsReused = 9999 }));
         }));
     }
     private sealed class ConfigurableProjector : ICacheableEntityProjector
