@@ -11,10 +11,18 @@ public enum TextDecoration { None = 0, Underline = 1, Overline = 2, StrikeThroug
 
 public sealed record RichTextStyle(string FontFamily, double Height, double WidthFactor = 1,
     double Tracking = 1, double ObliqueDegrees = 0, bool Bold = false, bool Italic = false,
-    TextDecoration Decoration = TextDecoration.None, uint? Color = null, int VerticalAlignment = 0);
+    TextDecoration Decoration = TextDecoration.None, uint? Color = null, int VerticalAlignment = 0)
+{
+    public RichTextParagraphStyle Paragraph { get; init; } = RichTextParagraphStyle.Default;
+}
 
 public sealed record RichTextInline(string Text, RichTextStyle Style, int SourceStart, int SourceLength,
-    string? Lower = null, char StackSeparator = '\0');
+    string? Lower = null, char StackSeparator = '\0')
+{
+    // An empty formatting token retains settings for empty paragraphs and controls
+    // appearing after text. It is never measured or sent to a rendering backend.
+    public bool IsParagraphControl { get; init; }
+}
 public sealed record TextFormatDiagnostic(int Offset, string Code, string Message);
 public sealed record RichTextDocument(ImmutableArray<RichTextInline> Inlines, ImmutableArray<TextFormatDiagnostic> Diagnostics);
 public sealed record RichTextParseOptions(int MaximumCharacters = 1_000_000, int MaximumInlines = 100_000, int MaximumDepth = 64);
@@ -44,6 +52,12 @@ public static class RichText
         {
             var start = index; var c = source[index];
             if (c == '\r') continue;
+            if (multiline && c == '^' && index + 1 < source.Length && source[index + 1] is 'I' or 'J' or 'M')
+            {
+                var caret = source[++index];
+                if (caret != 'M') Append(caret == 'I' ? "\t" : "\n", start);
+                continue;
+            }
             if (multiline && c == '{')
             {
                 Flush(index);
@@ -151,7 +165,11 @@ public static class RichText
                     }
                     style = next;
                 }
-                else if (control == 'p') Issue(start, "text.paragraph", "Paragraph-specific tab stops and indents require a paragraph layout extension.");
+                else if (control == 'p')
+                {
+                    style = style with { Paragraph = MTextParagraphControl.Parse(argument, style.Paragraph) };
+                    Add(new("", style, start, terminator + 1 - start) { IsParagraphControl = true });
+                }
                 else if (control == 'A')
                 {
                     var alignment = int.Parse(argument, CultureInfo.InvariantCulture);
@@ -213,6 +231,8 @@ public static class RichText
 
     private static void Validate(RichTextStyle style)
     {
+        ArgumentNullException.ThrowIfNull(style.Paragraph);
+        style.Paragraph.Validate();
         if (!(style.Height > 0) || !double.IsFinite(style.Height) || style.Height > 1e9
             || !(style.WidthFactor > 0) || !double.IsFinite(style.WidthFactor) || style.WidthFactor > 1e4
             || !(style.Tracking > 0) || !double.IsFinite(style.Tracking) || style.Tracking > 10
