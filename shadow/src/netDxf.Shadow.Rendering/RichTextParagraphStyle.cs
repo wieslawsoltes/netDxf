@@ -28,6 +28,31 @@ public sealed record RichTextParagraphStyle
     public double LineSpacingValue { get; init; } = 1;
     public ImmutableArray<ParagraphTabStop> Tabs { get; init; } = [];
 
+    // ImmutableArray's default equality compares backing storage, not values.
+    // Independently parsed paragraphs and property resets must compare semantically.
+    public bool Equals(RichTextParagraphStyle? other)
+    {
+        if (ReferenceEquals(this, other)) return true;
+        return other is not null
+            && FirstLineIndent.Equals(other.FirstLineIndent)
+            && LeftIndent.Equals(other.LeftIndent) && RightIndent.Equals(other.RightIndent)
+            && Alignment == other.Alignment
+            && SpaceBefore.Equals(other.SpaceBefore) && SpaceAfter.Equals(other.SpaceAfter)
+            && LineSpacing == other.LineSpacing && LineSpacingValue.Equals(other.LineSpacingValue)
+            && Tabs.IsDefault == other.Tabs.IsDefault
+            && (Tabs.IsDefault || Tabs.AsSpan().SequenceEqual(other.Tabs.AsSpan()));
+    }
+
+    public override int GetHashCode()
+    {
+        var hash = new HashCode();
+        hash.Add(FirstLineIndent); hash.Add(LeftIndent); hash.Add(RightIndent);
+        hash.Add(Alignment); hash.Add(SpaceBefore); hash.Add(SpaceAfter);
+        hash.Add(LineSpacing); hash.Add(LineSpacingValue); hash.Add(Tabs.IsDefault);
+        if (!Tabs.IsDefault) foreach (var tab in Tabs) hash.Add(tab);
+        return hash.ToHashCode();
+    }
+
     public void Validate()
     {
         if (!double.IsFinite(FirstLineIndent) || Math.Abs(FirstLineIndent) > 10000
