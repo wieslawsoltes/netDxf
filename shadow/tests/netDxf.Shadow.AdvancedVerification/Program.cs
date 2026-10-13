@@ -5,6 +5,7 @@ using System.Text.Json;
 var tests = new List<(string Name, Action Run)>();
 MathVerification.Register(tests);
 StructuralVerification.Register(tests);
+MergeVerification.Register(tests);
 SourceConsistencyVerification.Register(tests);
 SourceBoundaryVerification.Register(tests);
 SourcePreparationVerification.Register(tests);
