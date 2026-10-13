@@ -40,6 +40,7 @@ public sealed partial class Studio
         AddShxGallery(document, annotation);
         AddDimensionGallery(document, annotation);
         AddParagraphGallery(document, annotation);
+        AddHatchIslandGallery(document, annotation);
         return document;
     }
 

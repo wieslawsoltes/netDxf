@@ -10,6 +10,7 @@ SourceBoundaryVerification.Register(tests);
 SourcePreparationVerification.Register(tests);
 IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
+HatchIslandVerification.Register(tests);
 RichTextVerification.Register(tests);
 MTextColorVerification.Register(tests);
 ParagraphControlVerification.Register(tests);
