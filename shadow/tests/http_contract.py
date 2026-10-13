@@ -25,6 +25,7 @@ def run(dotnet: str, configuration: str) -> None:
     if len(candidates) != 1:
         raise RuntimeError(f'Build exactly one {configuration}/net8.0 Studio target first; found {len(candidates)} assemblies.')
     reports = []
+    complete = False
     def passed(name: str) -> None:
         reports.append(name)
         print('PASS http/' + name, flush=True)
@@ -69,7 +70,9 @@ def run(dotnet: str, configuration: str) -> None:
             def notice(stream):
                 fields = {}
                 while True:
-                    line = stream.readline().decode().rstrip('\r\n')
+                    raw_line = stream.readline()
+                    if not raw_line: raise EOFError('SSE stream ended before a complete event.')
+                    line = raw_line.decode().rstrip('\r\n')
                     if not line:
                         if 'data' in fields: return fields['id'], json.loads(fields['data'])
                         continue
@@ -78,6 +81,13 @@ def run(dotnet: str, configuration: str) -> None:
 
             initial = state(); count = initial['entities']
             request('health'); passed('private host startup')
+            for asset in ['/', '/studio.js', '/studio-state.mjs', '/workspaces.css']:
+                with urlopen(base + asset, timeout=15) as response:
+                    payload = response.read()
+                    assert response.status == 200 and payload
+                    if asset.endswith(('.js', '.mjs')): assert 'javascript' in response.headers['Content-Type']
+                    assert "script-src 'self'" in response.headers['Content-Security-Policy']
+            passed('real static module and stylesheet delivery under CSP')
             request('add', {'revision': 0, 'kind': 'line', 'x': 0, 'y': 0}, expected=403)
             request('graph', expected=409)
             request('add', {'revision': 0, 'kind': 'line', 'x': 0, 'y': 0}, expected=409, custom={'X-Shadow-Studio':'1'})
@@ -132,6 +142,7 @@ def run(dotnet: str, configuration: str) -> None:
             reconnect = urlopen(Request(base + '/api/events', headers={'Last-Event-ID': cursor}), timeout=15); streams.append(reconnect)
             _, reset = notice(reconnect)
             assert reset['reset'] and reset['documentId'] == latest['documentId']; passed('SSE reconnect resynchronizes after replacement')
+            complete = True
         finally:
             for stream in streams: stream.close()
             process.terminate()
@@ -141,7 +152,7 @@ def run(dotnet: str, configuration: str) -> None:
             out = ROOT / 'artifacts'; out.mkdir(exist_ok=True)
             (out / 'http-contract-server.log').write_text(log_path.read_text(errors='replace'))
             (out / 'http-contract.json').write_text(json.dumps({'source':os.getenv('GITHUB_SHA'),
-                'configuration':configuration, 'passed':len(reports), 'tests':reports}, indent=2))
+                'configuration':configuration, 'complete':complete, 'passed':len(reports), 'tests':reports}, indent=2))
     print(f'HTTP verification: {len(reports)} passed.')
 
 if __name__ == '__main__':

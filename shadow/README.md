@@ -33,6 +33,8 @@ Select **Hatch islands** for all nine Normal/Outer/Ignore solid, pattern and gra
 
 The **Model** layout contains a process-loop drawing. Select **Appearance** to inspect tapered polylines, a pattern hatch with an island, a gradient region, clipped/sheared raster data and formatted MTEXT. Select **Paper viewports** for an orthographic model overview and a circular, rotated detail with frozen annotation layers. Select **SHX strokes** for native-independent stroke typography. Use **Load SHX/SHP** to register an explicitly selected resource (4 MiB sample limit); imported `.shp` names become `.shx` aliases. These example glyph instructions are generated in source, not bundled font files. Add/delete are immutable structural commands and participate in the same history as property changes. The explicit source-mutation demonstration resets stale history.
 
+The workspace bar creates and switches isolated branches with independent selection, layouts, history, retained snapshots and pinned SHX resources. The merge panel displays field conflicts and renders a clean preview before applying one canonical undo step. Save DXF is a guarded POST: writer housekeeping is reconciled into the shadow snapshot without discarding editor history. Live invalidations use a bounded, coalescing SSE feed; stale document/workspace/view responses are rejected. See [Branches.md](docs/Branches.md).
+
 Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler and native backend. The SVG backend consumes the same prepared text layout. Its checkerboard is a generated, explicitly registered in-memory image; opening a drawing never authorizes arbitrary image-path access.
 
 ## Projects and boundaries
@@ -123,7 +125,7 @@ Console.WriteLine($"Components: {topology.ConnectedComponents().Length}");
 Console.WriteLine($"Retained revision: {retained.Revision}; current: {snapshot.Revision}");
 ```
 
-An isolated branch is `new ShadowMemoryStore(snapshot)`. It supports property and graph-patch editing without touching netDxf. There is no automatic three-way merge; callers must choose a conflict policy and validate expected values.
+An isolated branch is `new ShadowMemoryStore(snapshot)`. It supports property and graph-patch editing without touching netDxf. `ShadowMerge.Plan(ancestor, target, incoming)` performs bounded, conflict-aware three-way reconciliation; `EditorSession.PreviewMerge` and `ApplyMerge` integrate it with canonical source transactions and undo/redo. Ordered sequences remain atomic on competing edits. Callers supply a genuine common ancestor and explicitly choose conflict policies. See [Branches.md](docs/Branches.md) for the core API, Studio branch controls, source-save normalization and request identity contracts.
 
 ## Incremental processing and performance
 
@@ -199,7 +201,7 @@ limits, character mapping and format references.
 
 ## Verification and remaining specialized coverage
 
-The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The current suites contain 18 original tests and 335 advanced tests, including 76 hatch-island cases. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
+The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The current suites contain 18 original tests and 455 advanced tests, including 76 hatch-island, 63 merge, 38 Studio workspace and 19 source-save cases. The same workflow also runs 16 real HTTP/SSE scenarios and 20 browser state-ordering tests. Six optional in-memory Chromium DOM scenarios are provided separately; these are not live browser/server end-to-end tests. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
 
 Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: BIGFONT and vertical SHX paragraph layout, custom geometry and ACIS evaluation, complete paragraph/field typography, complex text/shape linetypes and all global scaling semantics, exact miter/gradient behavior and certified analytic island predicates, perspective viewport projection, complete viewport visual/layer overrides, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
 
