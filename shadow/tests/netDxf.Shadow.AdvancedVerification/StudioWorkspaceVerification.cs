@@ -127,7 +127,7 @@ internal static class StudioWorkspaceVerification
         Add("document replacement expires branches plans and request identities", studio =>
         {
             var saved = studio.Save(); var initial = State(studio); var identity = Identity(initial);
-            studio.Fork(new(0, "Replace")); var id = Text(State(studio), "workspaceId"); var plan = Preview(studio, id, 0);
+            studio.Fork(new(Revision(initial), "Replace")); var id = Text(State(studio), "workspaceId"); var plan = Preview(studio, id, Revision(initial));
             studio.Load(new MemoryStream(saved));
             Require(State(studio).GetProperty("branches").GetArrayLength() == 0 && Guid.Parse(Text(State(studio), "documentId")) != identity.DocumentId);
             Throws<ShadowConflictException>(() => Apply(studio, plan));
@@ -143,6 +143,20 @@ internal static class StudioWorkspaceVerification
             studio.Fork(new(0, "Epoch")); var identity = Identity(State(studio));
             studio.SwitchWorkspace(new(0, "live")); studio.SwitchWorkspace(new(0, identity.WorkspaceId));
             Throws<ShadowConflictException>(() => studio.ExecuteRequest(identity, () => studio.Add(new(0, "line", 0, 0))));
+        });
+        Add("stale load refuses replacement without reading the stream", studio =>
+        {
+            var saved = studio.Save(); var revision = Revision(State(studio));
+            studio.Add(new(revision, "line", 200, 0));
+            using var stream = new MemoryStream(saved);
+            Throws<ShadowConflictException>(() => studio.Load(stream, revision));
+            Require(stream.Position == 0 && State(studio).GetProperty("undoCount").GetInt32() == 1);
+        });
+        Add("current load replaces under the same source gate", studio =>
+        {
+            var saved = studio.Save(); var state = State(studio);
+            studio.Load(new MemoryStream(saved), Revision(state));
+            Require(Text(State(studio), "documentId") != Text(state, "documentId"));
         });
         Add("valid request identity executes under the source gate", studio =>
         {
@@ -210,7 +224,8 @@ internal static class StudioWorkspaceVerification
         });
         Add("feed reports document replacement even when revisions coincide", studio =>
         {
-            var bytes = studio.Save(); using var sub = studio.Subscribe(); Require(sub.Reader.TryRead(out var first));
+            var bytes = studio.Save(); studio.Load(new MemoryStream(bytes));
+            using var sub = studio.Subscribe(); Require(sub.Reader.TryRead(out var first));
             studio.Load(new MemoryStream(bytes)); Require(sub.Reader.TryRead(out var next));
             Require(next!.Revision == first!.Revision && next.DocumentId != first.DocumentId && next.ChangeVersion > first.ChangeVersion);
         });

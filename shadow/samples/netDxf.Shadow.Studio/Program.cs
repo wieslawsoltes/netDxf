@@ -45,13 +45,13 @@ app.MapPost("/api/add", (Studio studio, HttpRequest http, AddRequest request) =>
 app.MapPost("/api/delete", (Studio studio, HttpRequest http, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.Delete(request.Revision)));
 app.MapPost("/api/source-demo", (Studio studio, HttpRequest http, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.SourceDemo(request.Revision)));
 app.MapPost("/api/snapshot", (Studio studio, HttpRequest http, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.Retain(request.Revision)));
-app.MapPost("/api/load", async (Studio studio, HttpRequest request, CancellationToken token) =>
+app.MapPost("/api/load", async (Studio studio, HttpRequest request, long revision, CancellationToken token) =>
 {
     using var memory = new MemoryStream();
     await request.Body.CopyToAsync(memory, token);
     if (memory.Length > 20 * 1024 * 1024) return Results.BadRequest(new { error = "Sample upload limit is 20 MiB." });
     memory.Position = 0;
-    return Results.Ok(StudioHttp.Execute(studio, request, () => { studio.Load(memory); return studio.State(); }));
+    return Results.Ok(StudioHttp.Execute(studio, request, () => { studio.Load(memory, revision); return studio.State(); }));
 });
 app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revision, string name, CancellationToken token) =>
 {
