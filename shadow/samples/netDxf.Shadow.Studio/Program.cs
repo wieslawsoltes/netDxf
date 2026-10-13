@@ -4,7 +4,7 @@ using netDxf.Shadow.Rendering;
 using netDxf.Shadow.Studio;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://127.0.0.1:5080");
+builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://127.0.0.1:5080");
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 20 * 1024 * 1024);
 builder.Services.AddSingleton<Studio>();
 var app = builder.Build();
@@ -66,7 +66,8 @@ app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revisio
     }
     return Results.Ok(StudioHttp.Execute(studio, request, () => studio.LoadFont(revision, name, memory.ToArray())));
 });
-app.MapGet("/api/save", (Studio studio) => Results.File(studio.Save(), "application/dxf", "shadow-edited.dxf"));
+app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest request) =>
+    StudioHttp.Execute(studio, http, () => Results.File(studio.Save(request.Revision), "application/dxf", "shadow-edited.dxf")));
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
 app.MapStudioWorkspaces();
 app.Run();

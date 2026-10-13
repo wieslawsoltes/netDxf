@@ -114,7 +114,7 @@ public sealed partial class Studio : IDisposable
             { graph = new TopologyBuilder().Build((activeBranch?.SceneBuilder ?? sceneBuilder).Build(Current, new(layout), token), cancellationToken: token); graphLayout = layout; graphFontRevision = CurrentFonts.Revision; }
             return new
             {
-                documentId = Current.DocumentId, workspaceId = WorkspaceId, viewVersion, graph.Revision, components = graph.ConnectedComponents().Length, graph.CycleRank,
+                documentId = Current.DocumentId, workspaceId = WorkspaceId, viewVersion, layout, fontRevision = CurrentFonts.Revision, graph.Revision, components = graph.ConnectedComponents().Length, graph.CycleRank,
                 bridges = graph.Bridges().Length, deadEnds = graph.DeadEnds.Count(), junctions = graph.Junctions.Count(),
                 nodes = graph.Nodes.Take(20000).Select(n => new { n.Id, n.Position.X, n.Position.Y, degree = n.Edges.Length }).ToArray(),
                 edges = graph.Edges.Take(30000).Select(e => new { e.A, e.B, e.Occurrence, e.Length }).ToArray()
@@ -275,17 +275,27 @@ public sealed partial class Studio : IDisposable
             PublishChange();
         }
     }
-    public byte[] Save()
+    public byte[] Save(long? revision = null)
     {
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
+            if (revision is { } expected) Check(expected);
             RequireLive();
-            return session.ReadSource(document =>
+            using var stream = new MemoryStream();
+            var before = session.Current;
+            try
             {
-                using var stream = new MemoryStream();
-                if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing."); return stream.ToArray();
-            });
+                liveEditor.SynchronizeSource(() => session.MutateSource(document =>
+                {
+                    if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing.");
+                }));
+                return stream.ToArray();
+            }
+            finally
+            {
+                if (!ReferenceEquals(before, session.Current)) PublishChange();
+            }
         }
     }
     public void Dispose()
