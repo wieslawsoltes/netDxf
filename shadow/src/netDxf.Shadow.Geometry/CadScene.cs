@@ -7,8 +7,14 @@ public sealed record CadStyle(uint Argb, double Lineweight, ImmutableArray<doubl
     public static CadStyle Default { get; } = new(0xffe4e8ef, 0.25, [], true, "0");
 }
 public sealed record CadContour(ImmutableArray<Curve3> Curves, bool Closed = false);
+/// <summary>Entity-level baseline spacing. Factor multiplies a single line (5/3 of the entity height).</summary>
+public sealed record CadLineSpacing(double Factor = 1, bool Exact = false);
 public sealed record CadText(string Content, Vec3 Origin, Vec3 XAxis, Vec3 YAxis, double Height,
-    string FontFamily, string Alignment, bool Multiline, double Width);
+    string FontFamily, string Alignment, bool Multiline, double Width)
+{
+    /// <summary>Null preserves portable legacy spacing; projected MTEXT carries its authored settings.</summary>
+    public CadLineSpacing? LineSpacing { get; init; }
+}
 public sealed record CadImage(string FileName, ImmutableArray<Vec3> Corners)
 {
     /// <summary>World-space clipping polygon; empty means the complete image parallelogram.</summary>

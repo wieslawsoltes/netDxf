@@ -29,6 +29,9 @@ public static partial class RichTextLayout
     private static RichTextLayoutResult ComposeParagraphs(CadText text, RichTextDocument document,
         Func<string, RichTextStyle, Box> plain, Func<RichTextInline, Box> stack, int maximumRuns)
     {
+        if (text.LineSpacing is { } spacing &&
+            (!double.IsFinite(spacing.Factor) || spacing.Factor < 0.25 || spacing.Factor > 4))
+            throw new ArgumentOutOfRangeException(nameof(text), "Entity line spacing factor must be finite and between 0.25 and 4.");
         var paragraphs = new List<Paragraph>();
         var tokens = new List<ParagraphToken>();
         var word = new List<Box>();
@@ -42,19 +45,29 @@ public static partial class RichTextLayout
             {
                 format = inline.Style.Paragraph; assigned = true; continue;
             }
-            if (!assigned) { format = inline.Style.Paragraph; assigned = true; }
-            if (inline.Lower is not null) { AddWord(stack(inline)); continue; }
+            if (inline.Lower is not null)
+            {
+                AssignStyle(inline.Style.Paragraph); AddWord(stack(inline)); continue;
+            }
             var start = 0;
             for (var i = 0; i <= inline.Text.Length; i++)
             {
                 if (i < inline.Text.Length && inline.Text[i] is not (' ' or '\t' or '\n')) continue;
-                if (i > start) AddWord(plain(inline.Text[start..i], inline.Style));
+                if (i > start)
+                {
+                    AssignStyle(inline.Style.Paragraph);
+                    AddWord(plain(inline.Text[start..i], inline.Style));
+                }
                 if (i == inline.Text.Length) break;
+                AssignStyle(inline.Style.Paragraph);
                 CommitWord();
                 switch (inline.Text[i])
                 {
                     case '\n':
-                        FinishParagraph(); format = inline.Style.Paragraph; assigned = true;
+                        FinishParagraph();
+                        // Retain the style for a trailing empty paragraph, but let the
+                        // next actual inline establish its context after a scope exit.
+                        format = inline.Style.Paragraph;
                         break;
                     case '\t': AddToken(new([], 0, Tab: true)); break;
                     default:
@@ -76,14 +89,15 @@ public static partial class RichTextLayout
             var style = paragraph.Style;
             var source = paragraph.Tokens;
             var tabStops = new ParagraphTabIndex(style.Tabs, text.Height);
-            // Measure each tab field once in a reverse pass. No growing-prefix shaping
-            // or scan-to-end work is performed for each individual tab.
+            // Every field is measured once in this reverse pass, independent of how
+            // many tab stops a wide right/center field skips during binary lookup.
             var fields = new double[source.Count];
             var fieldWidth = 0.0;
             for (var i = source.Count - 1; i >= 0; i--)
             {
                 if (source[i].Tab) { fields[i] = fieldWidth; fieldWidth = 0; }
                 else fieldWidth += source[i].Width;
+                if (!double.IsFinite(fieldWidth)) throw new ArgumentException("Tab field width overflowed.");
             }
             var number = 0;
             var row = NewRow();
@@ -99,8 +113,8 @@ public static partial class RichTextLayout
                     row.HasTab = true;
                     if (tab.Alignment != ParagraphTabAlignment.Left)
                     {
-                        // Center/right tab fields are atomic shaping cells. They may
-                        // overflow, but never lose alignment by wrapping their suffix.
+                        // Aligned fields are atomic shaping cells. Overflow is explicit;
+                        // wrapping only their suffix would destroy the tab alignment.
                         while (i + 1 < source.Count && !source[i + 1].Tab) Append(source[++i]);
                     }
                     continue;
@@ -131,9 +145,9 @@ public static partial class RichTextLayout
             }
             void FinishRow(bool end)
             {
-                // Trailing breakable spaces neither move centered/right text nor
-                // participate in justification. Authored nonbreaking spaces survive.
-                while (row.Boxes.Count > 0 && row.Boxes[^1].Box.Space)
+                // Consume separator spaces at a soft wrap only. Authored terminal
+                // spaces remain part of a paragraph's center/right alignment width.
+                while (!end && row.Boxes.Count > 0 && row.Boxes[^1].Box.Space)
                 {
                     row.Cursor = row.Boxes[^1].X; row.Boxes.RemoveAt(row.Boxes.Count - 1);
                 }
@@ -144,35 +158,23 @@ public static partial class RichTextLayout
             }
         }
 
-        var top = 0.0;
         var totalHeight = 0.0;
         ParagraphRow? previous = null;
         foreach (var row in rows)
         {
-            if (previous is null || previous.Paragraph != row.Paragraph)
-            {
-                if (previous is not null) top = previous.Baseline + previous.Descent + text.Height * (0.2 + previous.Style.SpaceAfter);
-                top += row.Style.SpaceBefore * text.Height;
-                row.Baseline = top + row.Ascent;
-            }
+            if (previous is null)
+                row.Baseline = row.Style.SpaceBefore * text.Height + row.Ascent;
             else
             {
-                var natural = 5.0 / 3.0 * Math.Max(previous.NominalHeight, row.NominalHeight);
-                var distance = row.Style.LineSpacing switch
-                {
-                    ParagraphLineSpacing.Exact => row.Style.LineSpacingValue,
-                    ParagraphLineSpacing.AtLeast => Math.Max(natural, row.Style.LineSpacingValue),
-                    ParagraphLineSpacing.Multiple => natural * row.Style.LineSpacingValue,
-                    _ => previous.Descent + row.Ascent + text.Height * 0.2
-                };
-                row.Baseline = previous.Baseline + distance;
+                row.Baseline = previous.Baseline + BaselineDistance(previous, row);
+                if (previous.Paragraph != row.Paragraph)
+                    row.Baseline += (previous.Style.SpaceAfter + row.Style.SpaceBefore) * text.Height;
             }
             var bottom = row.Baseline + row.Descent + (row.End ? row.Style.SpaceAfter * text.Height : 0);
             if (!double.IsFinite(bottom)) throw new ArgumentException("Paragraph line positions overflowed.");
             totalHeight = Math.Max(totalHeight, bottom); previous = row;
         }
         var contentWidth = rows.Max(row => row.Cursor + row.Style.RightIndent * text.Height);
-        // Attachment uses the declared column, even when an unbreakable word overflows.
         var boxWidth = definedWidth ? text.Width : contentWidth;
         var yOrigin = text.Alignment.StartsWith("Top", StringComparison.Ordinal) ? 0 :
             text.Alignment.StartsWith("Middle", StringComparison.Ordinal) || text.Alignment == "Middle" ? -totalHeight / 2 :
@@ -183,9 +185,7 @@ public static partial class RichTextLayout
         var bounds = Bounds2.Empty;
         foreach (var row in rows)
         {
-            var alignedWidth = text.Multiline ? boxWidth : row.Cursor;
-            var xOrigin = text.Alignment.EndsWith("Center", StringComparison.Ordinal) || text.Alignment == "Middle" ? -alignedWidth / 2 :
-                text.Alignment.EndsWith("Right", StringComparison.Ordinal) ? -alignedWidth : 0;
+            var xOrigin = HorizontalOrigin(text.Multiline ? boxWidth : row.Cursor);
             var right = definedWidth ? row.Right : boxWidth - row.Style.RightIndent * text.Height;
             var slack = Math.Max(0, right - row.Cursor);
             var shift = row.Style.Alignment switch { ParagraphAlignment.Center => slack / 2, ParagraphAlignment.Right => slack, _ => 0 };
@@ -225,12 +225,36 @@ public static partial class RichTextLayout
             lines.Add(new(row.Paragraph, row.Number, xOrigin + row.Left + shift,
                 xOrigin + row.Cursor + shift + distributed, yOrigin + row.Baseline, row.End));
         }
+        var layoutX = HorizontalOrigin(boxWidth);
         return new(runs.ToImmutable(), rules.ToImmutable(), bounds, issues.ToImmutable())
         {
             Lines = lines.MoveToImmutable(),
-            LayoutBounds = new(0, yOrigin, boxWidth, yOrigin + totalHeight)
+            LayoutBounds = new(layoutX, yOrigin, layoutX + boxWidth, yOrigin + totalHeight)
         };
 
+        double HorizontalOrigin(double width) =>
+            text.Alignment.EndsWith("Center", StringComparison.Ordinal) || text.Alignment == "Middle" ? -width / 2 :
+            text.Alignment.EndsWith("Right", StringComparison.Ordinal) ? -width : 0;
+
+        double BaselineDistance(ParagraphRow before, ParagraphRow after)
+        {
+            var natural = Math.Max(5.0 / 3.0 * Math.Max(before.NominalHeight, after.NominalHeight), before.Descent + after.Ascent);
+            return after.Style.LineSpacing switch
+            {
+                ParagraphLineSpacing.Exact => after.Style.LineSpacingValue,
+                ParagraphLineSpacing.AtLeast => Math.Max(natural, after.Style.LineSpacingValue),
+                ParagraphLineSpacing.Multiple => natural * after.Style.LineSpacingValue,
+                _ when text.Multiline && text.LineSpacing is { } authored => authored.Exact
+                    ? text.Height * (5.0 / 3.0) * authored.Factor
+                    : Math.Max(natural, text.Height * (5.0 / 3.0) * authored.Factor),
+                _ => before.Descent + after.Ascent + text.Height * 0.2
+            };
+        }
+        void AssignStyle(RichTextParagraphStyle style)
+        {
+            if (assigned) return;
+            format = style; assigned = true;
+        }
         void AddWord(Box box) { word.Add(box); wordWidth += box.Width; }
         void AddToken(ParagraphToken token)
         {
