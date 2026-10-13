@@ -14,6 +14,7 @@ RichTextVerification.Register(tests);
 MTextColorVerification.Register(tests);
 ParagraphControlVerification.Register(tests);
 ParagraphLayoutVerification.Register(tests);
+ParagraphIntegrationVerification.Register(tests);
 GalleryVerification.Register(tests);
 ViewportVerification.Register(tests);
 ShxVerification.Register(tests);
