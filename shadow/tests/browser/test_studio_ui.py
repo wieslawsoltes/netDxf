@@ -62,8 +62,19 @@ def run(executable=None):
         assert download.value.suggested_filename=='shadow-edited.dxf'
         assert p.evaluate("fixture.calls.some(c=>c.path==='save'&&c.method==='POST'&&c.headers['X-Shadow-Studio']==='1')")
         p.close();print('PASS ui/guarded-post-download')
+        p=page();before=p.locator('#drawing').get_attribute('src')
+        p.evaluate("fixture.holds.add('render')")
+        p.locator('#viewport').hover();p.mouse.wheel(0,-180)
+        p.wait_for_function("fixture.held.has('render')")
+        p.locator('#viewport').click(position={'x':100,'y':100})
+        assert not p.evaluate("fixture.calls.some(c=>c.path==='pick')"), 'Picking used a new camera with the old displayed frame.'
+        p.evaluate("fixture.release('render')")
+        p.wait_for_function("old=>document.getElementById('drawing').src!==old",arg=before)
+        p.locator('#viewport').click(position={'x':100,'y':100})
+        p.wait_for_function("fixture.calls.some(c=>c.path==='pick')")
+        p.close();print('PASS ui/camera-changes-fence-picking-until-frame-publication')
         assert not errors,errors
-        browser.close();print('DOM verification: 6 scenarios passed; no page errors.')
+        browser.close();print('DOM verification: 7 scenarios passed; no page errors.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--executable');args=parser.parse_args();run(args.executable)

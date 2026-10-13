@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { StateGate, identityHeaders, sameReceipt, viewKey } from '../../samples/netDxf.Shadow.Studio/wwwroot/studio-state.mjs';
+import { StateGate, identityHeaders, sameReceipt, viewKey, presentationKey } from '../../samples/netDxf.Shadow.Studio/wwwroot/studio-state.mjs';
 
 const state = (changeVersion = 0, extra = {}) => ({ serverId: 'server-a', documentId: 'document-a',
   workspaceId: 'live', viewVersion: 0, revision: 0, layout: 'Model', fontRevision: 0, changeVersion, ...extra });
@@ -50,3 +50,15 @@ test('graph receipt additionally fences layouts and resources', () => {
   assert(sameReceipt(state(), state(), true)); assert(!sameReceipt(state(0, { layout: 'Paper' }), state(), true));
   assert(!sameReceipt(state(0, { fontRevision: 1 }), state(), true));
 });
+
+const camera = { x: 1, y: 2, scale: 3 }, viewport = { w: 600, h: 400 };
+const imageKey = (c = camera, v = viewport, backend = 'skia', snapshot = '', merge = null) =>
+  presentationKey(state(), c, v, backend, snapshot, merge);
+for (const [field, value] of [['x', 9], ['y', 9], ['scale', 9]])
+  test(`display receipt includes camera ${field}`, () => assert.notEqual(imageKey(), imageKey({ ...camera, [field]: value })));
+for (const [field, value] of [['w', 800], ['h', 500]])
+  test(`display receipt includes pixel ${field}`, () => assert.notEqual(imageKey(), imageKey(camera, { ...viewport, [field]: value })));
+test('display receipt includes backend', () => assert.notEqual(imageKey(), imageKey(camera, viewport, 'svg')));
+test('display receipt includes retained revision', () => assert.notEqual(imageKey(), imageKey(camera, viewport, 'skia', '0')));
+test('display receipt includes merge preview', () => assert.notEqual(imageKey(), imageKey(camera, viewport, 'skia', '', 'plan')));
+test('display receipt includes immutable view identity', () => assert.notEqual(imageKey(), presentationKey(state(1), camera, viewport, 'skia')));

@@ -31,6 +31,7 @@
       if(path==='branches') {const id='branch-'+(branches.size+1);branches.set(id,{name:body.name,ancestor:live.revision,snapshot:{...structuredClone(live),selection:[],undoCount:0,redoCount:0}});active=id;view++;}
       else if(path==='workspace') {active=body.id;view++;}
       else if(path==='select') current().selection=[body.key];
+      else if(path==='pick') current().selection=['line:1'];
       else if(path==='add') {current().revision++;current().undoCount++;current().items.push({key:'circle:'+current().revision,id:'S:'+current().revision,type:'Circle',layer:'0',inserted:false});}
       else if(path==='snapshot') snapshots.push(current().revision);
       else if(path==='property') {current().revision++;current().undoCount++;}

@@ -1,4 +1,4 @@
-import { StateGate, identityHeaders, viewKey, sameReceipt } from './studio-state.mjs';
+import { StateGate, identityHeaders, viewKey, sameReceipt, presentationKey } from './studio-state.mjs';
 
 const $ = id => document.getElementById(id);
 const view = $('viewport'), canvas = $('overlay'), ctx = canvas.getContext('2d');
@@ -7,6 +7,7 @@ let state, graph, objectId, drag, space = false, camera = { x: 0, y: 0, scale: 2
 let frame, renderAbort, renderSequence = 0, imageUrl, displayedKey, inspectorSequence = 0, inspectorKey = '';
 let busy = false, refreshFlight, refreshAgain = false, mergePlan, previewId, events, disposed = false;
 const size = () => ({ w: Math.max(1, view.clientWidth), h: Math.max(1, view.clientHeight) });
+const frameKey = () => presentationKey(state, camera, size(), $('backend').value, $('snapshot').value, previewId);
 const readOnly = () => $('snapshot').value !== '' || !!previewId;
 const branch = () => state?.branches.find(b => b.id === $('merge-source').value);
 
@@ -209,11 +210,11 @@ function fitDrawing() {
     scale: Math.min(w / Math.max(1, b.maxX - b.minX), h / Math.max(1, b.maxY - b.minY)) / 1.2 };
   schedule();
 }
-function schedule() { if (disposed) return; overlay(); cancelAnimationFrame(frame); frame = requestAnimationFrame(() => render().catch(notify)); }
+function schedule() { if (disposed) return; renderSequence++; renderAbort?.abort(); overlay(); cancelAnimationFrame(frame); frame = requestAnimationFrame(() => render().catch(notify)); }
 async function render() {
   if (!gate.current(state)) return;
   const captured = state, key = viewKey(captured), { w, h } = size(), request = ++renderSequence;
-  const preview = previewId, snapshot = $('snapshot').value;
+  const preview = previewId, snapshot = $('snapshot').value, paintKey = frameKey();
   renderAbort?.abort(); renderAbort = new AbortController();
   const q = new URLSearchParams({ width: w, height: h, cx: camera.x, cy: camera.y, scale: camera.scale, backend: $('backend').value });
   if (snapshot) q.set('snapshot', snapshot);
@@ -222,13 +223,13 @@ async function render() {
   try {
     const response = await check(await fetch(`api/render?${q}`, { headers: identityHeaders(captured), signal: renderAbort.signal, cache: 'no-store' }));
     const blob = await response.blob();
-    if (request !== renderSequence || !usable(captured, key) || preview !== previewId || snapshot !== $('snapshot').value) return;
+    if (request !== renderSequence || !usable(captured, key) || paintKey !== frameKey()) return;
     const nextUrl = URL.createObjectURL(blob);
     // Decode before replacing the displayed frame. A slow image load cannot overwrite a newer frame.
     const image = new Image(); image.src = nextUrl;
     try { await image.decode(); } catch (error) { URL.revokeObjectURL(nextUrl); throw error; }
-    if (request !== renderSequence || !usable(captured, key)) { URL.revokeObjectURL(nextUrl); return; }
-    const previous = imageUrl; imageUrl = nextUrl; displayedKey = key; $('drawing').src = nextUrl;
+    if (request !== renderSequence || !usable(captured, key) || paintKey !== frameKey()) { URL.revokeObjectURL(nextUrl); return; }
+    const previous = imageUrl; imageUrl = nextUrl; displayedKey = paintKey; $('drawing').src = nextUrl;
     if (previous) URL.revokeObjectURL(previous);
     $('status').textContent = `${$('backend').value} · ${(performance.now() - start).toFixed(0)} ms · ${Math.round(blob.size / 1024)} KiB · ${preview ? 'merge preview' : snapshot ? `retained r${snapshot}` : `${captured.workspaceName} r${captured.revision}`}`;
   } catch (error) { if (error.name !== 'AbortError') throw error; }
@@ -346,7 +347,7 @@ view.onpointerdown = async e => {
   const p = local(e), g = { start: p, last: p, world: world(p), camera: { ...camera }, moved: false, mode: e.button !== 0 || space ? 'pan' : 'pick' };
   drag = g;
   if (g.mode === 'pan' || readOnly()) return;
-  if (displayedKey !== viewKey(state)) { drag = undefined; notify(new Error('The drawing is updating. Pick after the new frame arrives.')); return; }
+  if (displayedKey !== frameKey()) { drag = undefined; notify(new Error('The drawing is updating. Pick after the new frame arrives.')); return; }
   try {
     await action('pick', { x: g.world.x, y: g.world.y, tolerance: 7 / camera.scale, extend: e.ctrlKey || e.metaKey });
     if (drag === g) { g.mode = state.selection.length ? 'move' : 'empty'; g.captured = state; }

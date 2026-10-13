@@ -14,6 +14,12 @@ export function viewKey(state) {
     state.viewVersion, state.revision, state.layout, state.fontRevision, state.changeVersion]) : '';
 }
 
+/** A displayed image also belongs to one camera, pixel extent, backend and preview. */
+export function presentationKey(state, camera, viewport, backend, snapshot = '', merge = null) {
+  return JSON.stringify([viewKey(state), camera.x, camera.y, camera.scale,
+    viewport.w, viewport.h, backend, snapshot, merge]);
+}
+
 export function sameReceipt(receipt, state, graph = false) {
   return !!state && receipt.documentId === state.documentId && receipt.workspaceId === state.workspaceId &&
     receipt.viewVersion === state.viewVersion && receipt.revision === state.revision &&
