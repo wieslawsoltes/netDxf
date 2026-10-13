@@ -89,6 +89,26 @@ public sealed partial class StandardEntityProjector
         var transform = basis * Affine3.Move(new(0, 0, entity["Elevation"].Number()));
         var pattern = entity["Pattern"];
         var geometry = new CadGeometry(local) { DisplayContours = [] };
+        ImmutableArray<CadContour> selected;
+        CadHatchIslandStyle islandStyle;
+        try
+        {
+            islandStyle = pattern["Style"].Text switch
+            {
+                "" or "Normal" or "0" => CadHatchIslandStyle.Normal,
+                "Outer" or "1" => CadHatchIslandStyle.Outer,
+                "Ignore" or "2" => CadHatchIslandStyle.Ignore,
+                var value => throw new ArgumentException($"Unknown hatch island style '{value}'.")
+            };
+            selected = HatchIslandResolver.Select(local, islandStyle);
+        }
+        catch (Exception error) when (error is ArgumentException or ArithmeticException or InvalidOperationException)
+        {
+            // Preserve semantic source boundaries even when presentation is unresolved.
+            // A plausible but incorrect fill is not a safe fallback for Outer/Ignore.
+            diagnostic = "Hatch island presentation was not generated: " + error.Message;
+            return geometry.Transform(transform);
+        }
         if (pattern["GradientType"].Exists)
         {
             var rotation = Affine3.RotateZ(pattern["Angle"].Number() * Degrees);
@@ -106,12 +126,12 @@ public sealed partial class StandardEntityProjector
                 var frame = rotation * Affine3.Move(new(bounds.MinX, bounds.MinY))
                     * Affine3.Scale(new(Math.Max(bounds.Width, 1e-12), Math.Max(bounds.Height, 1e-12), 1));
                 var gradient = new CadGradient(pattern["GradientType"].Text, Rgb(pattern["Color1"]), Rgb(pattern["Color2"]), frame, pattern["Shift"].Number());
-                geometry = geometry with { Regions = [new(local, Gradient: gradient)] };
+                geometry = geometry with { Regions = [new(selected, Gradient: gradient)] };
                 diagnostic = "Gradient uses a normalized analytic display mapping; proprietary AutoCAD gradient transfer functions and shift blending are not pixel-certified.";
             }
         }
         else if (pattern["Fill"].Text == "SolidFill" || string.Equals(pattern["Name"].Text, "SOLID", StringComparison.OrdinalIgnoreCase))
-            geometry = geometry with { Regions = [new(local)] };
+            geometry = geometry with { Regions = [new(selected)] };
         else
         {
             var scale = pattern["Scale"].Number(1);
@@ -131,18 +151,15 @@ public sealed partial class StandardEntityProjector
             }
             if (lines.Count == 0)
             {
-                geometry = geometry with { DisplayContours = local };
+                geometry = geometry with { DisplayContours = selected };
                 diagnostic = "Hatch has no line definitions; boundaries are displayed.";
             }
             else
             {
-                geometry = geometry with { DisplayContours = HatchPatternGenerator.Generate(local, lines.ToImmutable()) };
-                diagnostic = "Pattern hatch clipping uses a 0.01 drawing-unit boundary approximation with even/odd island semantics.";
+                geometry = geometry with { DisplayContours = HatchPatternGenerator.Generate(selected, lines.ToImmutable()) };
+                diagnostic = $"Pattern hatch clipping uses a 0.01 drawing-unit boundary approximation with {islandStyle} island semantics.";
             }
         }
-        var style = pattern["Style"].Text;
-        if (style.Length > 0 && style != "Normal")
-            diagnostic = (diagnostic is null ? "" : diagnostic + " ") + $"Hatch island style {style} currently uses even/odd display.";
         return geometry.Transform(transform);
     }
 
