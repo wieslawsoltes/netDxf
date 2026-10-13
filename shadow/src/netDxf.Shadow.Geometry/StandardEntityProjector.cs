@@ -68,7 +68,12 @@ public sealed partial class StandardEntityProjector : IEntityProjector
                 if (family.Length == 0) family = "sans-serif";
                 var content = entity["Value"].Text;
                 var alignment = entity[multiline ? "AttachmentPoint" : "Alignment"].Text;
-                geometry = new([], Text: new(content, entity["Position"].Vector(), x, y, entity["Height"].Number(1), family, alignment, multiline, entity["RectangleWidth"].Number(entity["Width"].Number())));
+                var text = new CadText(content, entity["Position"].Vector(), x, y, entity["Height"].Number(1), family, alignment, multiline, entity["RectangleWidth"].Number(entity["Width"].Number()))
+                {
+                    LineSpacing = multiline ? new CadLineSpacing(entity["LineSpacingFactor"].Number(1),
+                        entity["LineSpacingStyle"].Text is "Exact" or "Exactly") : null
+                };
+                geometry = new([], Text: text);
                 if (entity["HasMText"].Boolean()) diagnostic = "Embedded multiline attribute metadata is retained; ordinary attribute text is projected.";
                 if (entity["Style"]["FontFile"].Text.EndsWith(".shx", StringComparison.OrdinalIgnoreCase)) diagnostic = "SHX text requires an external font projector; the default backend substitutes a system font.";
                 return true;
