@@ -221,13 +221,13 @@ namespace netDxf.Entities
         }
 
         /// <summary>
-        /// Gets the hatch style.
+        /// Gets or sets the hatch island style (DXF group 75).
         /// </summary>
-        /// <remarks>Only normal style is implemented.</remarks>
+        /// <remarks>Rendering consumers interpret Normal, Outer, and Ignore island styles.</remarks>
         public HatchStyle Style
         {
             get { return this.style; }
-            internal set { this.style = value; }
+            set { this.style = value; }
         }
 
         /// <summary>
