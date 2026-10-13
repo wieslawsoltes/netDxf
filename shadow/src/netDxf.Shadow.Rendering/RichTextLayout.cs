@@ -8,98 +8,32 @@ namespace netDxf.Shadow.Rendering;
 public readonly record struct TextRunMetrics(double Advance, double Ascent, double Descent, Bounds2? GlyphBounds = null);
 public sealed record PositionedTextRun(string Text, RichTextStyle Style, double X, double Y, double Advance);
 public sealed record TextRule(double X1, double Y1, double X2, double Y2, double Thickness, uint? Color);
+public sealed record RichTextLine(int Paragraph, int Line, double Left, double Right, double Baseline, bool IsParagraphEnd);
 public sealed record RichTextLayoutResult(ImmutableArray<PositionedTextRun> Runs, ImmutableArray<TextRule> Rules,
-    Bounds2 Bounds, ImmutableArray<TextFormatDiagnostic> Diagnostics);
+    Bounds2 Bounds, ImmutableArray<TextFormatDiagnostic> Diagnostics)
+{
+    public ImmutableArray<RichTextLine> Lines { get; init; } = [];
+    public Bounds2 LayoutBounds { get; init; } = Bounds2.Empty;
+}
 
-/// <summary>Backend-neutral run layout. Normal runs stay intact for contextual shaping. Explicit
-/// tracking operates on Unicode text elements, not UTF-16 code units. Long unbreakable words
-/// may overflow rather than being split inside a shaping cluster.</summary>
-public static class RichTextLayout
+/// <summary>Backend-neutral paragraph/run layout. Normal words stay intact for contextual
+/// shaping. Tracking uses Unicode text elements. Overlong words and aligned tab fields
+/// overflow instead of being split inside a shaping cluster.</summary>
+public static partial class RichTextLayout
 {
     private sealed record Box(ImmutableArray<PositionedTextRun> Runs, ImmutableArray<TextRule> Rules,
         double Width, double Ascent, double Descent, Bounds2 Bounds, int Alignment, bool Space = false);
-    private sealed record Row(List<Box> Boxes, double Width, double Ascent, double Descent);
 
     public static RichTextLayoutResult Layout(CadText text, Func<RichTextStyle, string, TextRunMetrics> measure,
         int maximumRuns = 200_000)
     {
         ArgumentNullException.ThrowIfNull(text); ArgumentNullException.ThrowIfNull(measure);
         if (maximumRuns < 1) throw new ArgumentOutOfRangeException(nameof(maximumRuns));
+        if (!double.IsFinite(text.Width) || text.Width < 0) throw new ArgumentOutOfRangeException(nameof(text), "Text width must be finite and nonnegative.");
         var document = RichText.Parse(text);
-        var rows = new List<Row>(); var current = new List<Box>(); var word = new List<Box>();
-        var width = 0.0; var wordWidth = 0.0; var measuredRuns = 0; var hasContent = false;
-        var limit = text.Multiline && text.Width > 0 ? text.Width : double.PositiveInfinity;
-        foreach (var inline in document.Inlines)
-        {
-            if (inline.Lower is not null) { AddWord(Stack(inline)); continue; }
-            var start = 0;
-            for (var i = 0; i <= inline.Text.Length; i++)
-            {
-                if (i < inline.Text.Length && inline.Text[i] is not (' ' or '\t' or '\n')) continue;
-                if (i > start) AddWord(Plain(inline.Text[start..i], inline.Style));
-                if (i == inline.Text.Length) break;
-                CommitWord();
-                if (inline.Text[i] == '\n') FinishRow();
-                else
-                {
-                    var box = Plain(inline.Text[i] == '\t' ? "    " : " ", inline.Style) with { Space = true };
-                    current.Add(box); width += box.Width;
-                }
-                start = i + 1;
-            }
-        }
-        CommitWord(); FinishRow();
-        var totalHeight = rows.Sum(row => row.Ascent + row.Descent) + Math.Max(0, rows.Count - 1) * text.Height * 0.2;
-        var contentWidth = rows.Select(row => row.Width).DefaultIfEmpty(0).Max();
-        var boxWidth = text.Multiline && text.Width > 0 ? Math.Max(contentWidth, text.Width) : contentWidth;
-        var top = text.Alignment.StartsWith("Top", StringComparison.Ordinal) ? 0 :
-            text.Alignment.StartsWith("Middle", StringComparison.Ordinal) || text.Alignment == "Middle" ? -totalHeight / 2 :
-            text.Alignment.StartsWith("Bottom", StringComparison.Ordinal) ? -totalHeight : -rows[0].Ascent;
-        var runs = ImmutableArray.CreateBuilder<PositionedTextRun>(); var rules = ImmutableArray.CreateBuilder<TextRule>();
-        var bounds = Bounds2.Empty;
-        foreach (var row in rows)
-        {
-            var alignedWidth = text.Multiline ? boxWidth : row.Width;
-            var x = text.Alignment.EndsWith("Center", StringComparison.Ordinal) || text.Alignment == "Middle" ? -alignedWidth / 2 :
-                text.Alignment.EndsWith("Right", StringComparison.Ordinal) ? -alignedWidth : 0;
-            foreach (var box in row.Boxes)
-            {
-                var baseline = box.Alignment switch
-                {
-                    2 => top + box.Ascent,
-                    1 => top + (row.Ascent + row.Descent - box.Ascent - box.Descent) / 2 + box.Ascent,
-                    _ => top + row.Ascent
-                };
-                foreach (var run in box.Runs)
-                {
-                    if (runs.Count >= maximumRuns) throw new InvalidOperationException("Text layout run budget exceeded.");
-                    runs.Add(run with { X = x + run.X, Y = baseline + run.Y });
-                }
-                foreach (var rule in box.Rules) rules.Add(rule with { X1 = x + rule.X1, X2 = x + rule.X2, Y1 = baseline + rule.Y1, Y2 = baseline + rule.Y2 });
-                bounds = bounds.Union(Translate(box.Bounds, x, baseline)); x += box.Width;
-            }
-            top += row.Ascent + row.Descent + text.Height * 0.2;
-        }
-        return new(runs.ToImmutable(), rules.ToImmutable(), bounds, document.Diagnostics);
+        var measuredRuns = 0;
+        return ComposeParagraphs(text, document, Plain, Stack, maximumRuns);
 
-        void AddWord(Box box) { word.Add(box); wordWidth += box.Width; }
-        void CommitWord()
-        {
-            if (word.Count == 0) return;
-            if (hasContent && width + wordWidth > limit)
-            {
-                while (current.Count > 0 && current[^1].Space) { width -= current[^1].Width; current.RemoveAt(current.Count - 1); }
-                FinishRow();
-            }
-            current.AddRange(word); width += wordWidth; hasContent = true; word.Clear(); wordWidth = 0;
-        }
-        void FinishRow()
-        {
-            if (rows.Count >= maximumRuns) throw new InvalidOperationException("Text row budget exceeded.");
-            var ascent = Math.Max(text.Height * 0.8, current.Select(box => box.Ascent).DefaultIfEmpty(0).Max());
-            var descent = Math.Max(text.Height * 0.2, current.Select(box => box.Descent).DefaultIfEmpty(0).Max());
-            rows.Add(new(current, width, ascent, descent)); current = new(); width = 0; hasContent = false;
-        }
         TextRunMetrics Metrics(RichTextStyle style, string content)
         {
             if (++measuredRuns > maximumRuns) throw new InvalidOperationException("Text measurement budget exceeded.");
@@ -107,6 +41,9 @@ public static class RichTextLayout
             if (!double.IsFinite(metrics.Advance) || !double.IsFinite(metrics.Ascent) || !double.IsFinite(metrics.Descent)
                 || metrics.Advance < 0 || metrics.Ascent < 0 || metrics.Descent < 0)
                 throw new ArgumentException("Text metrics must be finite and nonnegative.", nameof(measure));
+            if (metrics.GlyphBounds is { IsEmpty: false } b &&
+                (!double.IsFinite(b.MinX) || !double.IsFinite(b.MinY) || !double.IsFinite(b.MaxX) || !double.IsFinite(b.MaxY)))
+                throw new ArgumentException("Glyph bounds must be finite.", nameof(measure));
             return metrics;
         }
         Box Plain(string content, RichTextStyle style)
@@ -133,6 +70,8 @@ public static class RichTextLayout
             void AppendRun(string value)
             {
                 var m = Metrics(style, value); var runWidth = m.Advance * style.WidthFactor;
+                if (!double.IsFinite(runWidth) || !double.IsFinite(advance + runWidth))
+                    throw new ArgumentException("Text advance overflowed.", nameof(measure));
                 var rectangle = m.GlyphBounds ?? new Bounds2(0, -m.Ascent, m.Advance, m.Descent);
                 if (!rectangle.IsEmpty)
                 {

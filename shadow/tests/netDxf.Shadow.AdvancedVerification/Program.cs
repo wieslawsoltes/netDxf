@@ -12,6 +12,9 @@ IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 RichTextVerification.Register(tests);
 MTextColorVerification.Register(tests);
+ParagraphControlVerification.Register(tests);
+ParagraphLayoutVerification.Register(tests);
+ParagraphIntegrationVerification.Register(tests);
 GalleryVerification.Register(tests);
 ViewportVerification.Register(tests);
 ShxVerification.Register(tests);
@@ -39,8 +42,6 @@ foreach (var test in tests)
     results.Add(new(test.Name, failure is null, timer.Elapsed.TotalMilliseconds, failure));
 }
 Console.WriteLine($"Advanced verification: {tests.Count - failures}/{tests.Count} passed.");
-// Keep diagnostic evidence even when a test fails. No assertion is skipped or weakened.
-// The existing workflow uploads artifacts/ with if: always() on every supported OS.
 Directory.CreateDirectory("artifacts");
 File.WriteAllText("artifacts/advanced-verification.json", JsonSerializer.Serialize(new
 {
