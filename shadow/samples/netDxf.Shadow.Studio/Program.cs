@@ -4,7 +4,7 @@ using netDxf.Shadow.Rendering;
 using netDxf.Shadow.Studio;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://127.0.0.1:5080");
+builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://127.0.0.1:5080");
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 20 * 1024 * 1024);
 builder.Services.AddSingleton<Studio>();
 var app = builder.Build();
@@ -19,39 +19,39 @@ app.Use(async (context, next) =>
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
     context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'";
     try { await next(); }
-    catch (ShadowConflictException error) { context.Response.StatusCode = 409; await context.Response.WriteAsJsonAsync(new { error = error.Message }); }
-    catch (Exception error) when (error is ArgumentException or InvalidOperationException or NotSupportedException or ArithmeticException or FormatException)
+    catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested) { }
+    catch (ShadowConflictException error) when (!context.Response.HasStarted) { context.Response.StatusCode = 409; await context.Response.WriteAsJsonAsync(new { error = error.Message }); }
+    catch (Exception error) when (!context.Response.HasStarted && error is (ArgumentException or InvalidOperationException or NotSupportedException or ArithmeticException or FormatException))
     { context.Response.StatusCode = 400; await context.Response.WriteAsJsonAsync(new { error = error.Message }); }
 });
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapGet("/api/state", (Studio studio) => studio.State());
-app.MapGet("/api/render", (Studio studio, int width, int height, double? cx, double? cy, double? scale, string? backend, long? snapshot, CancellationToken cancellationToken) =>
+app.MapGet("/api/render", (Studio studio, HttpRequest request, int width, int height, double? cx, double? cy, double? scale, string? backend, long? snapshot, string? merge, CancellationToken cancellationToken) =>
 {
-    var image = studio.Render(width, height, cx, cy, scale, backend ?? "skia", snapshot, cancellationToken);
+    var image = StudioHttp.Execute(studio, request, () => studio.Render(width, height, cx, cy, scale, backend ?? "skia", snapshot, cancellationToken, merge));
     return Results.Bytes(image.Bytes, image.ContentType);
 });
-app.MapGet("/api/graph", (Studio studio, CancellationToken token) => studio.Graph(token));
-app.MapGet("/api/object/{id}", (Studio studio, string id) => studio.Inspect(new(id)));
-app.MapPost("/api/pick", (Studio studio, PickRequest request) => studio.Pick(request));
-app.MapPost("/api/select", (Studio studio, SelectRequest request) => studio.Select(request));
-app.MapPost("/api/transform", (Studio studio, TransformRequest request) => studio.Transform(request));
-app.MapPost("/api/translate", (Studio studio, MoveRequest request) => studio.Translate(request));
-app.MapPost("/api/property", (Studio studio, PropertyRequest request) => studio.SetProperty(request));
-app.MapPost("/api/history/{operation}", (Studio studio, string operation, RevisionRequest request) => studio.History(operation, request.Revision));
-app.MapPost("/api/layout", (Studio studio, LayoutRequest request) => studio.SetLayout(request));
-app.MapPost("/api/add", (Studio studio, AddRequest request) => studio.Add(request));
-app.MapPost("/api/delete", (Studio studio, RevisionRequest request) => studio.Delete(request.Revision));
-app.MapPost("/api/source-demo", (Studio studio, RevisionRequest request) => studio.SourceDemo(request.Revision));
-app.MapPost("/api/snapshot", (Studio studio, RevisionRequest request) => studio.Retain(request.Revision));
-app.MapPost("/api/load", async (Studio studio, HttpRequest request, CancellationToken token) =>
+app.MapGet("/api/graph", (Studio studio, HttpRequest request, CancellationToken token) => StudioHttp.Execute(studio, request, () => studio.Graph(token)));
+app.MapGet("/api/object/{id}", (Studio studio, HttpRequest request, string id) => StudioHttp.Execute(studio, request, () => studio.Inspect(new(id))));
+app.MapPost("/api/pick", (Studio studio, HttpRequest http, PickRequest request) => StudioHttp.Execute(studio, http, () => studio.Pick(request)));
+app.MapPost("/api/select", (Studio studio, HttpRequest http, SelectRequest request) => StudioHttp.Execute(studio, http, () => studio.Select(request)));
+app.MapPost("/api/transform", (Studio studio, HttpRequest http, TransformRequest request) => StudioHttp.Execute(studio, http, () => studio.Transform(request)));
+app.MapPost("/api/translate", (Studio studio, HttpRequest http, MoveRequest request) => StudioHttp.Execute(studio, http, () => studio.Translate(request)));
+app.MapPost("/api/property", (Studio studio, HttpRequest http, PropertyRequest request) => StudioHttp.Execute(studio, http, () => studio.SetProperty(request)));
+app.MapPost("/api/history/{operation}", (Studio studio, HttpRequest http, string operation, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.History(operation, request.Revision)));
+app.MapPost("/api/layout", (Studio studio, HttpRequest http, LayoutRequest request) => StudioHttp.Execute(studio, http, () => studio.SetLayout(request)));
+app.MapPost("/api/add", (Studio studio, HttpRequest http, AddRequest request) => StudioHttp.Execute(studio, http, () => studio.Add(request)));
+app.MapPost("/api/delete", (Studio studio, HttpRequest http, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.Delete(request.Revision)));
+app.MapPost("/api/source-demo", (Studio studio, HttpRequest http, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.SourceDemo(request.Revision)));
+app.MapPost("/api/snapshot", (Studio studio, HttpRequest http, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.Retain(request.Revision)));
+app.MapPost("/api/load", async (Studio studio, HttpRequest request, long revision, CancellationToken token) =>
 {
     using var memory = new MemoryStream();
     await request.Body.CopyToAsync(memory, token);
     if (memory.Length > 20 * 1024 * 1024) return Results.BadRequest(new { error = "Sample upload limit is 20 MiB." });
     memory.Position = 0;
-    studio.Load(memory);
-    return Results.Ok(studio.State());
+    return Results.Ok(StudioHttp.Execute(studio, request, () => { studio.Load(memory, revision); return studio.State(); }));
 });
 app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revision, string name, CancellationToken token) =>
 {
@@ -64,8 +64,10 @@ app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revisio
         if (memory.Length + count > limit) return Results.BadRequest(new { error = "Sample font limit is 4 MiB." });
         memory.Write(buffer, 0, count);
     }
-    return Results.Ok(studio.LoadFont(revision, name, memory.ToArray()));
+    return Results.Ok(StudioHttp.Execute(studio, request, () => studio.LoadFont(revision, name, memory.ToArray())));
 });
-app.MapGet("/api/save", (Studio studio) => Results.File(studio.Save(), "application/dxf", "shadow-edited.dxf"));
+app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest request) =>
+    StudioHttp.Execute(studio, http, () => Results.File(studio.Save(request.Revision), "application/dxf", "shadow-edited.dxf")));
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
+app.MapStudioWorkspaces();
 app.Run();

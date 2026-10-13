@@ -54,6 +54,7 @@ public sealed partial class EditorSession
     {
         lock (gate)
         {
+            if (sourceSynchronization) throw new InvalidOperationException("History cannot be reset during source synchronization.");
             undo = ImmutableList<EditHistoryEntry>.Empty;
             redo = ImmutableList<EditHistoryEntry>.Empty;
             expectedRevision = store.Current.Revision;
@@ -63,6 +64,7 @@ public sealed partial class EditorSession
 
     private void EnsureCurrent()
     {
+        if (sourceSynchronization) throw new InvalidOperationException("Reentrant editor transactions during source synchronization are not allowed.");
         if (store.Current.Revision != expectedRevision)
             throw new ShadowConflictException("The source changed outside this editor. Refresh the view and explicitly reset history before editing.");
     }

@@ -13,10 +13,10 @@ public sealed partial class Studio
 {
     private const int MaximumFontBytes = 4 * 1024 * 1024;
     private readonly ShxFontCatalog shxFonts = new(32);
-    private readonly Dictionary<long, RenderCompiler> retainedCompilers = new();
+    private readonly Dictionary<long, RenderCompiler> liveRetainedCompilers = new();
     private RenderCompiler FrozenCompiler()
     {
-        var shx = new ShxEntityProjector(shxFonts.Current);
+        var shx = new ShxEntityProjector(CurrentFonts);
         return new(new CadSceneBuilder([new DimensionEntityProjector(resources: [shx]), shx]), textEngine);
     }
 
@@ -33,7 +33,7 @@ public sealed partial class Studio
         var font = ascii ? ShxFontReader.ReadAscii(Encoding.Latin1.GetString(bytes), limits) : ShxFontReader.ReadBinary(bytes, limits);
         lock (gate)
         {
-            Check(revision); shxFonts.Register(alias, font); return State();
+            Check(revision); RequireLive(); shxFonts.Register(alias, font); return UpdatedState();
         }
     }
 

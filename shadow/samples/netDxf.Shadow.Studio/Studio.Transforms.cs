@@ -23,7 +23,7 @@ public sealed partial class Studio
             };
             var transform = Affine3.Move(bounds.Center) * local * Affine3.Move(-bounds.Center);
             editor.Transform(scene, transform, request.Definition);
-            return State();
+            return UpdatedState();
         }
     }
 }
