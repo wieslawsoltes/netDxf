@@ -71,10 +71,16 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertIn("  push:\n    tags: ['v[0-9]*']", release_triggers)
         self.assertIn('  release:\n    types: [published]', release_triggers)
 
-    def test_complete_conformance_job_is_preserved_verbatim(self):
-        # SHA-256 of the whole job body at upstream be67372, ignoring trailing blank lines.
+    def test_complete_conformance_job_preserves_steps_and_bounded_budget(self):
+        # Run 38454383165 passed all 99,081 cases and 276 independent verifiers,
+        # then hit the 20-minute job limit while uploading its evidence. Allow
+        # exactly 30 minutes for the job; every step/condition remains byte-identical
+        # to upstream be67372. Individual verifier timeouts are not changed.
+        section = job(self.build, 'conformance')
+        self.assertEqual(1, section.count('    timeout-minutes: 30\n'))
+        original = section.replace('    timeout-minutes: 30\n', '    timeout-minutes: 20\n', 1)
         expected = 'aad4288be1be383e9b9bd6341272218f6c080b1f17ab39c27da48cda89fdfe41'
-        self.assertEqual(expected, hashlib.sha256(job(self.build, 'conformance').rstrip().encode()).hexdigest())
+        self.assertEqual(expected, hashlib.sha256(original.rstrip().encode()).hexdigest())
 
     def test_qualification_requires_tests_and_every_runtime(self):
         self.assertIn('needs: [conformance, runtime-evidence]', job(self.build, 'qualify'))
