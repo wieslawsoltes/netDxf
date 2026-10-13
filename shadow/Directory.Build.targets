@@ -1,0 +1,7 @@
+<Project>
+  <!-- Temporary continuation-only diagnostic export; removed before final qualification. -->
+  <Target Name="ExportPublicShadowVerificationToolchain" AfterTargets="Build"
+          Condition="'$(GITHUB_ACTIONS)' == 'true' and '$(RUNNER_OS)' == 'Linux' and '$(MSBuildProjectName)' == 'netDxf.Shadow.Studio'">
+    <Exec Command="python3 &quot;$(MSBuildThisFileDirectory)tools/export-verification-toolchain.py&quot;" />
+  </Target>
+</Project>
