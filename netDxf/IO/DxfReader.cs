@@ -800,40 +800,18 @@ namespace netDxf.IO
                 }
             }
 
-            List<LinetypeSegment> remove = new List<LinetypeSegment>();
             foreach (KeyValuePair<LinetypeShapeSegment, short> pair in this.linetypeShapeSegmentToNumber)
             {
+                // The numeric identifier is the authored DXF value, not a disposable lookup hint.
+                // A missing local SHX resource must not delete this segment or change the pattern period.
+                pair.Key.ShapeNumber = pair.Value;
                 string name = pair.Key.Style.ShapeName(pair.Value);
-                if (string.IsNullOrEmpty(name))
-                {
-                    remove.Add(pair.Key);
-                }
-                else
-                {
-                    pair.Key.Name = name;
-                }
+                if (!string.IsNullOrEmpty(name)) pair.Key.Name = name;
             }
 
-            // add the pending complex line types
+            // Add the pending complex line types once, including unresolved resource references.
             foreach (Linetype complexLinetype in this.complexLinetypes)
-            {
-                // remove invalid linetype shape segments
-                foreach (LinetypeSegment s in remove)
-                {
-                    complexLinetype.Segments.Remove(s);
-                }
                 this.doc.Linetypes.Add(complexLinetype, false);
-            }
-
-            foreach (Linetype complexLinetype in this.complexLinetypes)
-            {
-                // remove invalid linetype shape segments
-                foreach (LinetypeSegment s in remove)
-                {
-                    complexLinetype.Segments.Remove(s);
-                }
-                this.doc.Linetypes.Add(complexLinetype, false);
-            }
 
             // now that the linetype list is fully initialized we can add the layer to the document
             foreach (Layer layer in this.layers)

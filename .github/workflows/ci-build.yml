@@ -210,13 +210,13 @@ jobs:
           python-version: '3.12'
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
+          name: release-packages
+          path: artifacts/packages/
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
           pattern: runtime-smoke-*
           path: artifacts/runtime-reports/
           merge-multiple: false
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          name: release-packages
-          path: artifacts/packages/
       - name: Reject missing, duplicate, changed or wrong-source runtime evidence
         run: |
           python tools/ci/runtime_assets.py collect
@@ -312,49 +312,3 @@ jobs:
           path: artifacts/packages/
           if-no-files-found: error
           retention-days: 30
-
-  prepare-public-source-blobs:
-    # Temporary transport only: creates two hash-verified source blobs, never commits or moves refs.
-    # Removed before feature qualification; existing test/release jobs remain mandatory.
-    if: github.event_name == 'pull_request' && github.repository == 'wieslawsoltes/netDxf' && github.event.pull_request.number == 244 && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feature/shadow-complex-linetypes'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
-      - name: Store only two exact public source blobs
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import base64, hashlib, json, os, pathlib, urllib.request
-          def blob(data):
-              return hashlib.sha1(b'blob ' + str(len(data)).encode('ascii') + b'\0' + data).hexdigest()
-          edits = [
-              ('netDxf/IO/DxfReader.cs', '96dcc6ff3c6861d9ea9b3ce334d8b501e061d61e', 'a701bd0c488d504d7607e64c1525e7f1d65c8863', 37874, 39148,
-               'Zm9yZWFjaCAoS2V5VmFsdWVQYWlyPExpbmV0eXBlU2hhcGVTZWdtZW50LCBzaG9ydD4gcGFpciBpbiB0aGlzLmxpbmV0eXBlU2hhcGVTZWdtZW50VG9OdW1iZXIpCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIC8vIFRoZSBudW1lcmljIGlkZW50aWZpZXIgaXMgdGhlIGF1dGhvcmVkIERYRiB2YWx1ZSwgbm90IGEgZGlzcG9zYWJsZSBsb29rdXAgaGludC4KICAgICAgICAgICAgICAgIC8vIEEgbWlzc2luZyBsb2NhbCBTSFggcmVzb3VyY2UgbXVzdCBub3QgZGVsZXRlIHRoaXMgc2VnbWVudCBvciBjaGFuZ2UgdGhlIHBhdHRlcm4gcGVyaW9kLgogICAgICAgICAgICAgICAgcGFpci5LZXkuU2hhcGVOdW1iZXIgPSBwYWlyLlZhbHVlOwogICAgICAgICAgICAgICAgc3RyaW5nIG5hbWUgPSBwYWlyLktleS5TdHlsZS5TaGFwZU5hbWUocGFpci5WYWx1ZSk7CiAgICAgICAgICAgICAgICBpZiAoIXN0cmluZy5Jc051bGxPckVtcHR5KG5hbWUpKSBwYWlyLktleS5OYW1lID0gbmFtZTsKICAgICAgICAgICAgfQoKICAgICAgICAgICAgLy8gQWRkIHRoZSBwZW5kaW5nIGNvbXBsZXggbGluZSB0eXBlcyBvbmNlLCBpbmNsdWRpbmcgdW5yZXNvbHZlZCByZXNvdXJjZSByZWZlcmVuY2VzLgogICAgICAgICAgICBmb3JlYWNoIChMaW5ldHlwZSBjb21wbGV4TGluZXR5cGUgaW4gdGhpcy5jb21wbGV4TGluZXR5cGVzKQogICAgICAgICAgICAgICAgdGhpcy5kb2MuTGluZXR5cGVzLkFkZChjb21wbGV4TGluZXR5cGUsIGZhbHNlKTs='),
-              ('netDxf/IO/DxfWriter.cs', '21b165cf7f95d09e28529f10fa26b5da89422a85', '0fd082ab8268578482daaeae2b7eb054c93859d2', 66059, 66059,
-               'aGFwZU51bWJlciA/PyBzaGFwZVNlZ21lbnQuUw=='),
-          ]
-          for path, expected_base, expected_result, start, end, encoded in edits:
-              original = pathlib.Path(path).read_bytes()
-              if blob(original) != expected_base:
-                  raise RuntimeError('Unexpected source identity: ' + path)
-              result = original[:start] + base64.b64decode(encoded, validate=True) + original[end:]
-              if blob(result) != expected_result:
-                  raise RuntimeError('Unexpected result identity: ' + path)
-              request = urllib.request.Request('https://api.github.com/repos/wieslawsoltes/netDxf/git/blobs',
-                  data=json.dumps({'encoding': 'utf-8', 'content': result.decode('utf-8')}).encode('utf-8'),
-                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json',
-                           'Content-Type': 'application/json', 'X-GitHub-Api-Version': '2022-11-28'}, method='POST')
-              with urllib.request.urlopen(request, timeout=45) as response:
-                  stored = json.load(response)['sha']
-              if stored != expected_result:
-                  raise RuntimeError('Stored source identity mismatch: ' + path)
-              print(path, stored, flush=True)
-          PY

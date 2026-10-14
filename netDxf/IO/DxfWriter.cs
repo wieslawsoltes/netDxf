@@ -1500,7 +1500,7 @@ namespace netDxf.IO
                             this.chunk.Write(74, (short)4);
                         }
 
-                        this.chunk.Write(75, shapeSegment.Style.ShapeNumber(shapeSegment.Name));
+                        this.chunk.Write(75, shapeSegment.ShapeNumber ?? shapeSegment.Style.ShapeNumber(shapeSegment.Name));
                         this.chunk.Write(340, shapeSegment.Style.Handle);
                         this.chunk.Write(46, shapeSegment.Scale);
                         this.chunk.Write(50, shapeSegment.Rotation); // the DXF documentation is wrong the rotation value is stored in degrees not radians
