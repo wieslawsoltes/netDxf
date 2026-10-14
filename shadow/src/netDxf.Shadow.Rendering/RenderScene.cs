@@ -20,6 +20,8 @@ public sealed record RenderItem(string Key, ObjectId Entity, ImmutableArray<Obje
     public RenderClip? ImageClip { get; init; }
     public PaperViewportProjection? Projection { get; init; }
     public Affine3 SourceToWorld { get; init; } = Affine3.Identity;
+    /// <summary>Pickable presentation with source identity, excluded from ordinary CAD snapping.</summary>
+    public bool IsPresentationOnly { get; init; }
 }
 public sealed record RenderScene(Guid DocumentId, long Revision, string Layout, ImmutableArray<RenderItem> Items,
     Bounds2 Bounds, SpatialIndex Index, ImmutableArray<ShadowDiagnostic> Diagnostics);

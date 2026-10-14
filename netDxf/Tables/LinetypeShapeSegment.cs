@@ -70,10 +70,8 @@ namespace netDxf.Tables
         /// <param name="name">Shape name of the linetype segment.</param>
         /// <param name="style">File where the shape of the linetype segment is defined.</param>
         /// <remarks>
-        /// The shape must be defined in the .shx shape definitions file.<br />
-        /// The DXF instead of saving the shape name, as the Shape entity or the shape linetype segments definition in a .lin file,
-        /// it stores the shape number. Therefore when saving a DXF file the shape number will be obtained reading the .shp file.<br />
-        /// It is required that the equivalent .shp file to be also present in the same folder or one of the support folders defined in the DxfDocument.
+        /// DXF stores a numeric shape identifier rather than its name. Set <see cref="ShapeNumber"/>
+        /// to save without resolving a local shape file; otherwise the style resolves the name when saving.
         /// </remarks>
         public LinetypeShapeSegment(string name, ShapeStyle style) : this(name, style, 1.0, Vector2.Zero, LinetypeSegmentRotationType.Relative, 0.0, 1.0)
         {
@@ -86,10 +84,7 @@ namespace netDxf.Tables
         /// <param name="style">File where the shape of the linetype segment is defined.</param>
         /// <param name="length">Dash, dot, or space length of the linetype segment.</param>
         /// <remarks>
-        /// The shape must be defined in the .shx shape definitions file.<br />
-        /// The DXF instead of saving the shape name, as the Shape entity or the shape linetype segments definition in a .lin file,
-        /// it stores the shape number. Therefore when saving a DXF file the shape number will be obtained reading the .shp file.<br />
-        /// It is required that the equivalent .shp file to be also present in the same folder or one of the support folders defined in the DxfDocument.
+        /// Set <see cref="ShapeNumber"/> to preserve a numeric reference independently of local shape files.
         /// </remarks>
         public LinetypeShapeSegment(string name, ShapeStyle style, double length) : this(name, style, length, Vector2.Zero, LinetypeSegmentRotationType.Relative, 0.0, 1.0)
         {
@@ -106,12 +101,9 @@ namespace netDxf.Tables
         /// <param name="rotation">Rotation of the shape.</param>
         /// <param name="scale">Scale of the shape.</param>
         /// <remarks>
-        /// The shape must be defined in the .shx shape definitions file.<br />
-        /// The DXF instead of saving the shape name, as the Shape entity or the shape linetype segments definition in a .lin file,
-        /// it stores the shape number. Therefore when saving a DXF file the shape number will be obtained reading the .shp file.<br />
-        /// It is required that the equivalent .shp file to be also present in the same folder or one of the support folders defined in the DxfDocument.
+        /// Set <see cref="ShapeNumber"/> to preserve a numeric reference independently of local shape files.
         /// </remarks>
-        public LinetypeShapeSegment(string name, ShapeStyle style, double length, Vector2 offset, LinetypeSegmentRotationType rotationType, double rotation, double scale) 
+        public LinetypeShapeSegment(string name, ShapeStyle style, double length, Vector2 offset, LinetypeSegmentRotationType rotationType, double rotation, double scale)
             : base(LinetypeSegmentType.Shape, length)
         {
             if (string.IsNullOrEmpty(name))
@@ -131,12 +123,22 @@ namespace netDxf.Tables
         #region public properties
 
         /// <summary>
+        /// Gets or sets the authored DXF group-75 shape identifier, or null to resolve <see cref="Name"/> when saving.
+        /// </summary>
+        /// <remarks>
+        /// A loaded identifier is retained even when the shape resource is unavailable. The signed 16-bit value
+        /// preserves the exact DXF word, including zero. A non-null value is authoritative and is copied by Clone.
+        /// Changing Name or Style does not implicitly discard it; explicitly assign null to resume name lookup.
+        /// This property does not authorize access to any external resource.
+        /// </remarks>
+        public short? ShapeNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the shape.
         /// </summary>
         /// <remarks>
-        /// The shape must be defined in the .shx shape definitions file.<br />
-        /// The DXF instead of saving the shape name, as the Shape entity or the shape linetype segments definition in a .lin file,
-        /// it stores the shape number. Therefore when saving a DXF file the shape number will be obtained reading the .shx file.
+        /// DXF stores a shape number. When <see cref="ShapeNumber"/> is non-null it remains authoritative;
+        /// set it to null to obtain a new numeric identifier from this name on the next save.
         /// </remarks>
         public string Name
         {
@@ -152,11 +154,8 @@ namespace netDxf.Tables
         }
 
         /// <summary>
-        /// Gets the shape style.
+        /// Gets or sets the shape style.
         /// </summary>
-        /// <remarks>
-        /// It is required that the equivalent .shp file to be also present in the same folder or one of the support folders defined in the DxfDocument.
-        /// </remarks>
         public ShapeStyle Style
         {
             get { return this.style; }
@@ -221,7 +220,8 @@ namespace netDxf.Tables
                 Offset = this.offset,
                 RotationType = this.rotationType,
                 Rotation = this.rotation,
-                Scale = this.scale
+                Scale = this.scale,
+                ShapeNumber = this.ShapeNumber
             };
         }
 

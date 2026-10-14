@@ -8,10 +8,17 @@ public sealed record SnapResult(Vec3 Position, double Distance, SnapMode Mode, s
 
 public static class Snapping
 {
-    /// <summary>Snaps to the compiled scene. Curve vertices/midpoints are sampled, not exact analytic extrema.</summary>
+    /// <summary>Snaps to source geometry in the compiled scene, excluding presentation-only decorations.
+    /// Curve vertices/midpoints are sampled, not exact analytic extrema.</summary>
     public static SnapResult? Find(RenderScene scene, Vec3 point, double tolerance, SnapMode mode = SnapMode.All,
         double gridSpacing = 10, IReadOnlySet<string>? excluded = null)
+        => Find(scene, point, tolerance, false, mode, gridSpacing, excluded);
+
+    /// <summary>Explicit opt-in to snapping to presentation-only geometry such as linetype glyph strokes.</summary>
+    public static SnapResult? Find(RenderScene scene, Vec3 point, double tolerance, bool includePresentation,
+        SnapMode mode = SnapMode.All, double gridSpacing = 10, IReadOnlySet<string>? excluded = null)
     {
+        ArgumentNullException.ThrowIfNull(scene);
         if (!point.IsFinite || !double.IsFinite(tolerance) || tolerance <= 0) throw new ArgumentOutOfRangeException(nameof(tolerance));
         SnapResult? best = null;
         void Candidate(Vec3 candidate, SnapMode kind, string? key)
@@ -25,7 +32,7 @@ public static class Snapping
         foreach (var index in scene.Index.Query(box))
         {
             var item = scene.Items[index];
-            if (!item.Style.Visible || excluded?.Contains(item.Key) == true) continue;
+            if (!item.Style.Visible || item.IsPresentationOnly && !includePresentation || excluded?.Contains(item.Key) == true) continue;
             foreach (var contour in item.Contours)
             {
                 if (mode.HasFlag(SnapMode.Vertex)) foreach (var vertex in contour.Points) Candidate(vertex, SnapMode.Vertex, item.Key);
