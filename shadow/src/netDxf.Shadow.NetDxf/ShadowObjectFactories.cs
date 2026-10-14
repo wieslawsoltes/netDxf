@@ -35,6 +35,38 @@ public sealed class ShadowObjectFactories
         if (!type.IsClass || type.IsAbstract || !type.IsVisible || type == typeof(DxfDocument) ||
             !(type.Namespace is "netDxf.Entities" or "netDxf.Blocks" or "netDxf.Tables" or "netDxf.Objects" or "netDxf.Header" or "netDxf.Collections" or "netDxf"))
             throw new NotSupportedException($"{node.TypeName} is not a constructible source data-model type.");
+        // These immutable/compound values cannot be reconstructed by choosing an empty
+        // constructor followed by public setters. In particular RGB and ellipse axes are
+        // read-only, and a control-point spline must not pick the fit-point constructor.
+        if (type == typeof(AciColor))
+        {
+            bool Flag(string name) => node[name] is ShadowValue.Atom a && bool.TryParse(a.Text, out var value) && value;
+            if (Flag("UseTrueColor") || node["R"] is ShadowValue.Atom && node["Index"] is ShadowValue.NullValue)
+                return new AciColor((byte)resolver.Convert(node["R"], typeof(byte))!,
+                    (byte)resolver.Convert(node["G"], typeof(byte))!, (byte)resolver.Convert(node["B"], typeof(byte))!);
+            if (node["Index"] is ShadowValue.Atom)
+                return AciColor.FromCadIndex((short)resolver.Convert(node["Index"], typeof(short))!);
+        }
+        if (type == typeof(Transparency))
+        {
+            if (node["StoredAlphaValue"] is ShadowValue.Atom)
+                return Transparency.FromAlphaValue((int)resolver.Convert(node["StoredAlphaValue"], typeof(int))!);
+            if (node["Value"] is ShadowValue.Atom)
+                return Transparency.FromCadIndex((short)resolver.Convert(node["Value"], typeof(short))!);
+        }
+        if (type == typeof(netDxf.Entities.Ellipse) && node["MajorAxis"] is ShadowValue.Atom && node["MinorAxis"] is ShadowValue.Atom)
+            return new netDxf.Entities.Ellipse(Vector3.Zero, (double)resolver.Convert(node["MajorAxis"], typeof(double))!,
+                (double)resolver.Convert(node["MinorAxis"], typeof(double))!);
+        if (type == typeof(netDxf.Entities.Spline) && node["ControlPoints"] is ShadowValue.Sequence)
+        {
+            var controls = (Vector3[])resolver.Convert(node["ControlPoints"], typeof(Vector3[]))!;
+            var weights = node["Weights"] is ShadowValue.NullValue ? null : (double[])resolver.Convert(node["Weights"], typeof(double[]))!;
+            var degree = node["Degree"] is ShadowValue.NullValue ? (short)3 : (short)resolver.Convert(node["Degree"], typeof(short))!;
+            var periodic = node["IsClosedPeriodic"] is ShadowValue.Atom a && bool.TryParse(a.Text, out var closed) && closed;
+            if (node["Knots"] is ShadowValue.Sequence)
+                return new netDxf.Entities.Spline(controls, weights, (double[])resolver.Convert(node["Knots"], typeof(double[]))!, degree, periodic);
+            return new netDxf.Entities.Spline(controls, weights, degree, periodic);
+        }
         var empty = type.GetConstructor(Type.EmptyTypes);
         if (empty is not null) return empty.Invoke(null);
         // Constructor arguments are matched by their semantic property names. This handles

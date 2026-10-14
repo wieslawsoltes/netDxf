@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
+    <ProjectReference Include="../../src/netDxf.Shadow.Drafting/netDxf.Shadow.Drafting.csproj" />
     <ProjectReference Include="../../src/netDxf.Shadow.Dimensions/netDxf.Shadow.Dimensions.csproj" />
     <ProjectReference Include="../../src/netDxf.Shadow.NetDxf/netDxf.Shadow.NetDxf.csproj" />
     <ProjectReference Include="../../src/netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
