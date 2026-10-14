@@ -6,13 +6,15 @@ namespace netDxf.Shadow.Rendering;
 internal sealed partial class PaperSpaceCompiler
 {
     internal RenderScene Compose(ShadowSnapshot snapshot, RenderScene paper, RenderCompileOptions options,
-        Func<double, double, RenderScene> compileModel, CancellationToken cancellationToken)
+        Func<ShadowSnapshot, double, double, RenderScene> compileModel, CancellationToken cancellationToken)
     {
         var limits = options.PaperSpace ?? throw new ArgumentException("Paper-space budgets must be provided.", nameof(options));
         if (limits.MaximumViewports < 1 || limits.MaximumItems < 1 || limits.MaximumCandidates < 1 ||
             limits.MaximumClipPoints < 4 || limits.MaximumPatternScales < 1)
             throw new ArgumentOutOfRangeException(nameof(options), "Paper-space budgets must be positive.");
         if (paper.Items.Length > limits.MaximumItems) throw new InvalidOperationException("Paper-space item budget exceeded.");
+        var overrides = options.ViewportOverrides;
+        overrides?.Validate(snapshot, cancellationToken);
         var diagnostics = paper.Diagnostics.ToBuilder();
         var active = ReadViews(snapshot, options, limits, diagnostics, cancellationToken);
         if (active.Count == 0) return paper with { Diagnostics = diagnostics.ToImmutable() };
@@ -20,27 +22,32 @@ internal sealed partial class PaperSpaceCompiler
         var tolerance = options.Tolerance / scale;
         if (!(tolerance > 0) || !double.IsFinite(tolerance)) throw new InvalidOperationException("Viewport sampling tolerance is outside the numeric range.");
         var paperLinetypes = snapshot.Document["DrawingVariables"]["PsLtScale"].Number(1) != 0;
-        var factors = new HashSet<double>();
+        var variants = new HashSet<(double Scale, ViewportLayerProfile Profile)>();
         foreach (var view in active)
-        {
-            var factor = paperLinetypes ? 1 / view.Projection.Scale : 1;
-            if (!(factor > 0) || !double.IsFinite(factor)) throw new InvalidOperationException("Viewport linetype scale is outside the numeric range.");
-            if (factors.Add(factor) && factors.Count > limits.MaximumPatternScales)
-                throw new InvalidOperationException("Paper-space distinct linetype scale budget exceeded.");
-        }
-        // Precompensate both stroke periods and glyph dimensions in model space. Projection then
-        // applies its ordinary affine scale exactly once, before any depth/viewport clipping.
-        var models = new Dictionary<double, RenderScene>();
-        var seenDiagnostics = diagnostics.ToHashSet();
-        var result = ImmutableArray.CreateBuilder<RenderItem>(); var candidates = 0;
-        foreach (var view in active.OrderByDescending(v => v.Stacking))
         {
             cancellationToken.ThrowIfCancellationRequested();
             var factor = paperLinetypes ? 1 / view.Projection.Scale : 1;
-            if (!models.TryGetValue(factor, out var model))
+            if (!(factor > 0) || !double.IsFinite(factor)) throw new InvalidOperationException("Viewport linetype scale is outside the numeric range.");
+            var profile = overrides?.For(view.Projection.ViewportEntity) ?? ViewportLayerProfile.Empty;
+            if (variants.Add((factor, profile)) && variants.Count > limits.MaximumPatternScales)
+                throw new InvalidOperationException("Paper-space distinct pattern scale/override profile budget exceeded.");
+        }
+        // Override layers before inherited style resolution and glyph generation. Compiling equivalent
+        // scale/profile pairs once preserves both native/SHX decorations and ByBlock inheritance.
+        var models = new Dictionary<(double Scale, ViewportLayerProfile Profile), RenderScene>();
+        var seenDiagnostics = diagnostics.ToHashSet();
+        var result = ImmutableArray.CreateBuilder<RenderItem>(); var candidates = 0;
+        foreach (var originalView in active.OrderByDescending(v => v.Stacking))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var factor = paperLinetypes ? 1 / originalView.Projection.Scale : 1;
+            var profile = overrides?.For(originalView.Projection.ViewportEntity) ?? ViewportLayerProfile.Empty;
+            var view = overrides?.Thaw(snapshot, originalView, profile) ?? originalView;
+            if (!models.TryGetValue((factor, profile), out var model))
             {
-                model = compileModel(tolerance, factor);
-                models.Add(factor, model);
+                var modelSnapshot = overrides?.CreateView(snapshot, profile, cancellationToken) ?? snapshot;
+                model = compileModel(modelSnapshot, tolerance, factor);
+                models.Add((factor, profile), model);
                 foreach (var diagnostic in model.Diagnostics)
                     if (seenDiagnostics.Add(diagnostic)) diagnostics.Add(diagnostic);
             }
@@ -64,7 +71,6 @@ internal sealed partial class PaperSpaceCompiler
                 }
             }
         }
-        // Paper annotations and viewport frames overlay the projected model views.
         result.AddRange(paper.Items);
         var immutable = result.ToImmutable(); var bounds = Bounds2.Empty;
         foreach (var item in immutable) bounds = bounds.Union(item.Bounds);

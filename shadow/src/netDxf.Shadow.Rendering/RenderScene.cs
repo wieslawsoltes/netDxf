@@ -42,5 +42,8 @@ public sealed record RenderCompileOptions(string Layout = "Model", double Tolera
     public CadLinetypeAlignment LinetypeAlignment { get; init; }
     /// <summary>Model-tab-only annotation context. Paper model views explicitly disable it.</summary>
     public ModelAnnotationContext? ModelAnnotation { get; init; } = ModelAnnotationContext.Default;
+    /// <summary>Document-bound viewport layer appearance, applied before model style resolution.
+    /// Null retains drawing properties. Model-tab compilation ignores this paper-only context.</summary>
+    public ViewportOverrideCatalog? ViewportOverrides { get; init; }
     public PaperSpaceOptions PaperSpace { get; init; } = new();
 }
