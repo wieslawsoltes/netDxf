@@ -11,7 +11,7 @@ public sealed record ShxProjectionOptions(int MaximumCharacters = 100_000, int M
 /// presentation-only and do not become graph edges. No filenames are resolved outside the catalog.</summary>
 public sealed partial class ShxEntityProjector : ICacheableEntityProjector
 {
-    private sealed class GlyphCache { internal readonly Dictionary<int, ShxGlyph> Values = new(); }
+    private sealed class GlyphCache { internal readonly Dictionary<(int Number, bool Vertical), ShxGlyph> Values = new(); }
     private readonly Func<ShxFontSet> readFonts;
     private readonly ShxProjectionOptions options;
     private readonly ConditionalWeakTable<ShxFont, GlyphCache> glyphs = new();
@@ -55,24 +55,27 @@ public sealed partial class ShxEntityProjector : ICacheableEntityProjector
         if (resource is null) return false; // The standard text projector reports missing SHX resource substitution.
         if (!resource.IsFont || resource.Encoding == ShxEncoding.PackedMultibyte)
             throw new NotSupportedException("This SHX resource has no horizontal Unicode/legacy font metrics.");
-        if (entity["Style"]["IsVertical"].Boolean() || entity["Style"]["BigFont"].Text.Length != 0)
-            throw new NotSupportedException("Vertical paragraph flow and BIGFONT character mapping require a specialized layout provider.");
+        if (entity["Style"]["BigFont"].Text.Length != 0)
+            throw new NotSupportedException("BIGFONT character mapping requires a configured mapping provider.");
         if (!new StandardEntityProjector().TryProject(entity, out var projected, out _) || projected.Text is not { } text) return false;
         if (text.Content.Length > options.MaximumCharacters) throw new InvalidOperationException("SHX text character budget exceeded.");
-        geometry = ProjectText(text with { FontFamily = file }, fonts, resource, out diagnostic); return true;
+        geometry = entity["Style"]["IsVertical"].Boolean()
+            ? ProjectVerticalText(text with { FontFamily = file }, fonts, resource, out diagnostic)
+            : ProjectText(text with { FontFamily = file }, fonts, resource, out diagnostic);
+        return true;
     }
 
-    private ShxGlyph GetGlyph(ShxFont font, int number, ref int remainingWork)
+    private ShxGlyph GetGlyph(ShxFont font, int number, ref int remainingWork, bool vertical = false)
     {
         var cache = glyphs.GetValue(font, _ => new());
         lock (cache)
         {
-            if (cache.Values.TryGetValue(number, out var glyph)) return glyph;
+            if (cache.Values.TryGetValue((number, vertical), out var glyph)) return glyph;
             if (remainingWork < 1) throw new InvalidOperationException("SHX glyph compilation work budget exceeded.");
-            glyph = ShxGlyphCompiler.Compile(font, number, options: new(MaximumInstructions: Math.Min(1_000_000, remainingWork), MaximumCurves: options.MaximumCurves));
+            glyph = ShxGlyphCompiler.Compile(font, number, vertical, options: new(MaximumInstructions: Math.Min(1_000_000, remainingWork), MaximumCurves: options.MaximumCurves));
             remainingWork -= glyph.ExecutedInstructions;
             if (cache.Values.Count >= options.MaximumCachedGlyphsPerFont) cache.Values.Clear();
-            cache.Values[number] = glyph; return glyph;
+            cache.Values[(number, vertical)] = glyph; return glyph;
         }
     }
 
