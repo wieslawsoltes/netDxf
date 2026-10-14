@@ -69,5 +69,6 @@ public sealed partial class Studio
         entities.Add(new Text("ABC 0123", new Vector2(0, 32), 8, style) { WidthFactor = 1.3, ObliqueAngle = 15 });
         entities.Add(new MText(@"{\c16744448;ABC} 0123\P\LABC\l  \S1/2;  \S2#3;", new Vector2(0, 15), 6, 180, style));
         entities.Add(new Text("Explicit font resources / native-independent paths / immutable snapshots", new Vector2(0, -22), 2.8) { Layer = annotation });
+        AddLinetypeGallery(document, annotation, style);
     }
 }

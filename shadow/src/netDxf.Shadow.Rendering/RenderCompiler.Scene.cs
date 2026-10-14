@@ -23,7 +23,7 @@ public sealed partial class RenderCompiler
         var items = ImmutableArray.CreateBuilder<RenderItem>(scene.Occurrences.Length);
         var diagnostics = scene.Diagnostics.ToBuilder();
         var total = Bounds2.Empty;
-        var remainingDecorations = linetypes.Options.MaximumScenePlacements;
+        var budget = new LinetypeCompilationBudget(linetypes.Options);
         foreach (var occurrence in scene.Occurrences)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -38,11 +38,7 @@ public sealed partial class RenderCompiler
             if (occurrence.Style.Linetype is null) continue;
             try
             {
-                if (remainingDecorations <= 0) throw new InvalidOperationException("Scene linetype placement budget exceeded.");
-                var expanded = linetypes.Expand(occurrence, item, sampling, cancellationToken);
-                if (expanded.PlannedPlacements > remainingDecorations)
-                { remainingDecorations = 0; throw new InvalidOperationException("Scene linetype placement budget exceeded."); }
-                remainingDecorations -= expanded.PlannedPlacements;
+                var expanded = linetypes.Expand(occurrence, item, sampling, budget, cancellationToken);
                 diagnostics.AddRange(expanded.Diagnostics);
                 // Build the complete group before publication. Failure retains the original stroke, never a partial decoration group.
                 var prepared = new List<RenderItem>(expanded.Occurrences.Length);

@@ -16,6 +16,8 @@ AppearanceVerification.Register(tests);
 LinetypeSourceVerification.Register(tests);
 LinetypePlannerVerification.Register(tests);
 LinetypeRenderingVerification.Register(tests);
+LinetypeStudioVerification.Register(tests);
+LinetypeSnappingVerification.Register(tests);
 HatchIslandVerification.Register(tests);
 RichTextVerification.Register(tests);
 MTextColorVerification.Register(tests);

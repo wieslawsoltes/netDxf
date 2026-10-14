@@ -3,12 +3,16 @@ using netDxf.Shadow.Geometry;
 
 namespace netDxf.Shadow.Rendering;
 
+/// <summary>Planner and expansion quotas. Expansion work counts attempted item, contour, curve and UTF-16
+/// character copies, including failed groups; it is not a byte limit or a wall-clock time guarantee.</summary>
 public sealed record LinetypePlanOptions(int MaximumElements = 4096, int MaximumPlacements = 20_000,
-    int MaximumPoints = 2_000_000, int MaximumTextLength = 100_000, int MaximumScenePlacements = 200_000)
+    int MaximumPoints = 2_000_000, int MaximumTextLength = 100_000, int MaximumScenePlacements = 200_000,
+    int MaximumExpansionWork = 500_000, int MaximumSceneExpansionWork = 2_000_000)
 {
     internal void Validate()
     {
-        if (MaximumElements < 1 || MaximumPlacements < 1 || MaximumPoints < 2 || MaximumTextLength < 1 || MaximumScenePlacements < 1)
+        if (MaximumElements < 1 || MaximumPlacements < 1 || MaximumPoints < 2 || MaximumTextLength < 1 ||
+            MaximumScenePlacements < 1 || MaximumExpansionWork < 1 || MaximumSceneExpansionWork < 1)
             throw new ArgumentOutOfRangeException(nameof(LinetypePlanOptions));
     }
 }
@@ -90,7 +94,7 @@ public static class LinetypePlanner
                 ? events.Select(e => e.Offset == period ? e with { Offset = 0 } : e).OrderBy(e => e.Offset).ThenBy(e => e.Element).ToArray()
                 : events.ToArray();
             var edge = 0;
-            for (var cycle = 0; cycle <= (int)cycleCount; cycle++)
+            for (long cycle = 0; cycle <= (long)cycleCount; cycle++)
             {
                 var cycleStart = cycle * period;
                 foreach (var entry in schedule)

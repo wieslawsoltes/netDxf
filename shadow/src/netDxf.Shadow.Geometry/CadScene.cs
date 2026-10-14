@@ -59,6 +59,8 @@ public sealed record CadOccurrence(string Key, ObjectId Entity, ImmutableArray<O
     CadStyle Style, CadGeometry Geometry)
 {
     public Affine3 SourceToWorld { get; init; } = Affine3.Identity;
+    /// <summary>Marks consumer-generated presentation, such as a linetype symbol. The stock semantic builder does not emit these.</summary>
+    public bool IsPresentationOnly { get; init; }
 }
 public sealed record CadScene(Guid DocumentId, long Revision, string Layout, ImmutableArray<CadOccurrence> Occurrences,
     ImmutableArray<ShadowDiagnostic> Diagnostics);

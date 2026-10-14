@@ -22,6 +22,11 @@ public sealed partial class RenderCompiler
     private readonly object gate = new();
     private readonly Dictionary<(Guid Document, RenderCompileOptions Options), RenderScene> previousScenes = new();
     private long geometryCompilations, itemHits;
+
+    // Retain the original binary constructor signature as well as the extended source-friendly overload.
+    public RenderCompiler(CadSceneBuilder? builder, ITextLayoutEngine? textLayout)
+        : this(builder, textLayout, null, null) { }
+
     public RenderCompiler(CadSceneBuilder? builder = null, ITextLayoutEngine? textLayout = null,
         ILinetypeDecorationProvider? linetypeResources = null, LinetypePlanOptions? linetypeOptions = null)
     {
@@ -86,7 +91,8 @@ public sealed partial class RenderCompiler
     {
         var item = new RenderItem(occurrence.Key, occurrence.Entity, occurrence.InsertPath, occurrence.Style,
             data.Contours, occurrence.Geometry.Filled, occurrence.Geometry.Text, occurrence.Geometry.Image, data.Bounds)
-            { Regions = data.Regions, Strokes = data.Strokes, TextLayout = data.TextLayout, SourceToWorld = occurrence.SourceToWorld };
+            { Regions = data.Regions, Strokes = data.Strokes, TextLayout = data.TextLayout, SourceToWorld = occurrence.SourceToWorld,
+                IsPresentationOnly = occurrence.IsPresentationOnly };
         // Invalid patterns are diagnosed per entity during compilation, not as a frame-wide backend failure.
         _ = StrokePattern.GetContours(item);
         return item;
