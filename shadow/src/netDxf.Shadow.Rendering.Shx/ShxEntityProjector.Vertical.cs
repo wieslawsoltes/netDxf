@@ -8,7 +8,7 @@ public sealed partial class ShxEntityProjector
 {
     /// <summary>Vertical glyph execution is not a rotated horizontal string. Glyph origins and
     /// advances are authored by the SHX VM; paragraph flow uses downwards runs and leftwards columns.</summary>
-    private CadGeometry ProjectVerticalText(CadText text, ShxFontSet fonts, ShxFont fallback, out string? diagnostic)
+    private CadGeometry ProjectVerticalText(CadText text, ShxFontSet fonts, ShxFont fallback, out string? diagnostic, ShxBigFontBinding? bigFont = null)
     {
         if (!fallback.SupportsVerticalText) throw new NotSupportedException("The selected SHX resource does not declare vertical text support.");
         if (text.Content.Length > options.MaximumCharacters) throw new InvalidOperationException("Vertical SHX character budget exceeded.");
@@ -70,6 +70,7 @@ public sealed partial class ShxEntityProjector
         ShxGlyph Glyph(ShxFont font, int number)
         {
             if (++work > options.MaximumCharacters * 8L) throw new InvalidOperationException("Vertical SHX layout work budget exceeded.");
+            if (MappedGlyph(font, bigFont, number, true, ref instructionBudget, Issue) is { } mapped) return mapped;
             var authored = number;
             if (font.Encoding == ShxEncoding.Legacy) number = number switch { 0xb0 => 256, 0xb1 => 257, 0x2205 => 258, _ => number };
             if (number == 0xa0 && !font.Symbols.ContainsKey(number)) number = 32;
@@ -78,8 +79,6 @@ public sealed partial class ShxEntityProjector
                 var glyph = GetGlyph(font, number, ref instructionBudget, vertical: true);
                 if (Math.Abs(glyph.ExitScale - 1) > 1e-12) throw new NotSupportedException("Vertical glyphs must restore vector scale between layout runs.");
                 if (glyph.Advance.Y > 0) throw new NotSupportedException("A vertical glyph advances upward; monotone column composition cannot infer a forward text advance.");
-                // Sideways advances can be represented within a run, but restarting them at formatting
-                // boundaries would be incorrect. Require the standard top-center vertical baseline.
                 if (Math.Abs(glyph.Advance.X) > 1e-10) throw new NotSupportedException("Vertical paragraph glyphs must return to the column baseline before advancing.");
                 return glyph;
             }

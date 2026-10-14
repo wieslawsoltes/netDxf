@@ -11,9 +11,10 @@ public static partial class ShxFontReader
     public static ShxFont ReadBinary(ReadOnlySpan<byte> data, ShxReadOptions? options = null)
     {
         options ??= new(); Validate(options, data.Length);
+        if (data.StartsWith("AutoCAD-86 bigfont 1.0\r\n"u8)) return ReadBigFont(data, options);
         var old = data.StartsWith("AutoCAD-86 shapes 1.0\r\n"u8) || data.StartsWith("AutoCAD-86 shapes 1.1\r\n"u8);
         var unicode = data.StartsWith("AutoCAD-86 unifont 1.0\r\n"u8);
-        if (!old && !unicode) throw new NotSupportedException("Expected SHAPES 1.0/1.1 or UNIFONT 1.0. BIGFONT requires a separate multibyte decoder.");
+        if (!old && !unicode) throw new NotSupportedException("Expected SHAPES 1.0/1.1, UNIFONT 1.0 or BIGFONT 1.0.");
         var reader = new ByteCursor(data[(old ? 23 : 24)..]);
         if (reader.Byte() != 0x1a) throw new FormatException("Missing SHX signature terminator.");
         var symbols = ImmutableDictionary.CreateBuilder<int, ShxSymbol>();

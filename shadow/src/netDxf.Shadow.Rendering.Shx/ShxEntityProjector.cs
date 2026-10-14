@@ -52,16 +52,15 @@ public sealed partial class ShxEntityProjector : ICacheableEntityProjector
         if (entity.Type is not ("Text" or "MText" or "Attribute" or "AttributeDefinition")) return false;
         var file = entity["Style"]["FontFile"].Text;
         var resource = fonts.Resolve(file);
-        if (resource is null) return false; // The standard text projector reports missing SHX resource substitution.
+        if (resource is null) return false;
         if (!resource.IsFont || resource.Encoding == ShxEncoding.PackedMultibyte)
-            throw new NotSupportedException("This SHX resource has no horizontal Unicode/legacy font metrics.");
-        if (entity["Style"]["BigFont"].Text.Length != 0)
-            throw new NotSupportedException("BIGFONT character mapping requires a configured mapping provider.");
+            throw new NotSupportedException("The primary SHX resource must provide Unicode/legacy metrics; BIGFONT is a companion resource.");
+        var vertical = entity["Style"]["IsVertical"].Boolean();
+        var bigFont = BigFont(fonts, entity["Style"]["BigFont"].Text, vertical);
         if (!new StandardEntityProjector().TryProject(entity, out var projected, out _) || projected.Text is not { } text) return false;
         if (text.Content.Length > options.MaximumCharacters) throw new InvalidOperationException("SHX text character budget exceeded.");
-        geometry = entity["Style"]["IsVertical"].Boolean()
-            ? ProjectVerticalText(text with { FontFamily = file }, fonts, resource, out diagnostic)
-            : ProjectText(text with { FontFamily = file }, fonts, resource, out diagnostic);
+        geometry = vertical ? ProjectVerticalText(text with { FontFamily = file }, fonts, resource, out diagnostic, bigFont)
+            : ProjectText(text with { FontFamily = file }, fonts, resource, out diagnostic, bigFont);
         return true;
     }
 
