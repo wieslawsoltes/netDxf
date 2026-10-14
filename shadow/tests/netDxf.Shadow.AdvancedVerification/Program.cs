@@ -5,6 +5,7 @@ using System.Text.Json;
 var tests = new List<(string Name, Action Run)>();
 MathVerification.Register(tests);
 DraftingVerification.Register(tests);
+CadWorkspaceVerification.Register(tests);
 StructuralVerification.Register(tests);
 MergeVerification.Register(tests);
 StudioWorkspaceVerification.Register(tests);
