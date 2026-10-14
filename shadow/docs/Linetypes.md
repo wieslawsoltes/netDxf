@@ -36,7 +36,9 @@ Non-finite values, zero-only periods, singular planes, invalid dimensions and un
 
 ## Rendering and resource APIs
 
-The render compiler expands decorations **after semantic projection**, into separate `RenderItem` instances with unique presentation keys and the original entity, insert path and source-to-world transform. Their bounds participate in the persistent spatial index, their geometry participates in picking, and existing editing maps their selection back to the source. Selecting multiple symbols from one entity does not multiply a translation. Decorations do not enter the semantic `CadScene` consumed by topology, snapping and graph analysis.
+The render compiler expands decorations **after semantic projection**, into separate `RenderItem` instances with unique presentation keys and the original entity, insert path and source-to-world transform. Their bounds participate in the persistent spatial index, their geometry participates in picking, and existing editing maps their selection back to the source. Selecting multiple symbols from one entity does not multiply a translation. Decorations do not enter the semantic `CadScene` consumed by topology and graph analysis.
+
+Generated symbols carry `IsPresentationOnly` on their consumer occurrences and render items. `Snapping.Find` reads the render scene but excludes these items by default. The overload with `includePresentation: true` explicitly enables glyph snapping. Paper-space copies preserve the flag. Picking and source editing remain available in either mode. The original compiler constructor, static compilation and snapping binary signatures are retained alongside the extended overloads.
 
 Ordinary text uses the existing text layout service. `ILinetypeDecorationProvider` allows a host to supply unit-size local geometry and a revision. A provider may handle additional typography; component trees are not accepted as decoration prototypes. Providers must bound their own parsing, glyph compilation and custom curve complexity.
 
@@ -67,7 +69,7 @@ Failure to expand a decoration group leaves its base stroke and an explicit `ren
 
 ## Verification
 
-The existing advanced executable suite contains source round trips across four DXF versions in both ASCII and binary, signed shape-word preservation, immutable capture, planner edge cases, cache/style/resource invalidation, graph isolation, both backends and source-identified picking. Additional Studio and editor checks exercise the gallery, save/reload, duplicate-source selection and undo/redo. Expansion-quota tests use counting curves to verify rejection before geometry copies. All run in the existing cross-platform Shadow jobs; no workflow or existing gate is weakened.
+The existing advanced executable suite contains source round trips across four DXF versions in both ASCII and binary, signed shape-word preservation, immutable capture, planner edge cases, cache/style/resource invalidation, graph isolation, both backends and source-identified picking. Studio, editor and snapping checks exercise the gallery, save/reload, duplicate-source selection, insert/definition transforms, undo/redo and explicit presentation snapping. Expansion-quota tests use counting curves to verify rejection before geometry copies. All run in the existing cross-platform Shadow jobs; no workflow or existing gate is weakened.
 
 ```sh
 dotnet run --project shadow/tests/netDxf.Shadow.AdvancedVerification -c Release -p:TargetFrameworks=net8.0

@@ -1,6 +1,6 @@
 # netDxf immutable shadow DOM
 
-An additive .NET 8 workspace separating the mutable DXF database from persistent, detached snapshots and consumer-specific processing. The existing netDxf target frameworks are preserved. `HatchPattern.Style` now exposes its existing setter publicly so the adapter can edit island modes through the public source API.
+An additive .NET 8 workspace separating the mutable DXF database from persistent, detached snapshots and consumer-specific processing. The existing netDxf target frameworks are preserved. `HatchPattern.Style` now exposes its existing setter publicly so the adapter can edit island modes through the public source API. `LinetypeShapeSegment.ShapeNumber` preserves authored numeric shape references independently of local SHX availability.
 
 ```text
 Mutable netDxf document <-> serialized adapter <-> immutable shadow snapshots
@@ -31,6 +31,8 @@ Studio combines a drawing explorer, property inspector, camera pan/zoom, selecti
 
 Select **Hatch islands** for all nine Normal/Outer/Ignore solid, pattern and gradient combinations; see [HatchIslands.md](docs/HatchIslands.md). Select **Paragraphs** for shared indentation, alignment, tabs and spacing examples; see [Paragraphs.md](docs/Paragraphs.md).
 
+Select **Complex linetypes** for native/SHX text, numeric SHX symbols, relative/absolute/upright orientation, closed paths and curves. Both backends share the same bounded placement plan. Symbols remain pickable for source editing without becoming topology edges or ordinary snap targets. See [Linetypes.md](docs/Linetypes.md) for source preservation, resource providers, work quotas and appearance boundaries.
+
 The **Model** layout contains a process-loop drawing. Select **Appearance** to inspect tapered polylines, a pattern hatch with an island, a gradient region, clipped/sheared raster data and formatted MTEXT. Select **Paper viewports** for an orthographic model overview and a circular, rotated detail with frozen annotation layers. Select **SHX strokes** for native-independent stroke typography. Use **Load SHX/SHP** to register an explicitly selected resource (4 MiB sample limit); imported `.shp` names become `.shx` aliases. These example glyph instructions are generated in source, not bundled font files. Add/delete are immutable structural commands and participate in the same history as property changes. The explicit source-mutation demonstration resets stale history.
 
 The workspace bar creates and switches isolated branches with independent selection, layouts, history, retained snapshots and pinned SHX resources. The merge panel displays field conflicts and renders a clean preview before applying one canonical undo step. Save DXF is a guarded POST: writer housekeeping is reconciled into the shadow snapshot without discarding editor history. Live invalidations use a bounded, coalescing SSE feed; stale document/workspace/view responses are rejected. See [Branches.md](docs/Branches.md).
@@ -44,8 +46,8 @@ Studio shares one host-owned `SkiaTextLayoutEngine` between the render compiler 
 | `netDxf.Shadow` | Detached values, object identity, snapshots, optimistic property batches, immutable graph patches, diffs, reverse references, isolated branches | BCL only |
 | `netDxf.Shadow.NetDxf` | Cached public-model capture, source synchronization, object factories and collection-adoption plans | Core + existing netDxf |
 | `netDxf.Shadow.Geometry` | Double-precision analytic curves, shared block occurrences, styles, presentation regions/stroke groups, hatch scan conversion, persistent BVH | Core |
-| `netDxf.Shadow.Rendering` | Sampled render scenes, signed dash patterns, fill/stroke/image picking, paper-space composition, rich-text parser/layout, backend contracts, SVG | Geometry |
-| `netDxf.Shadow.Rendering.Shx` | Optional bounded SHX/SHP decoding, analytic glyph VM, immutable resource catalogs, shape/text projection | Rendering; no native dependencies |
+| `netDxf.Shadow.Rendering` | Sampled render scenes, signed dash/complex-linetype planning, fill/stroke/image picking, paper-space composition, rich-text parser/layout, backend contracts, SVG | Geometry |
+| `netDxf.Shadow.Rendering.Shx` | Optional bounded SHX/SHP decoding, analytic glyph VM, immutable resource catalogs, entity and linetype shape/text projection | Rendering; no native dependencies |
 | `netDxf.Shadow.Rendering.SkiaSharp` | PNG/direct canvas output, gradient/image paints, HarfBuzz/native glyph metrics and native resource caches | Rendering + SkiaSharp/HarfBuzz |
 | `netDxf.Shadow.Graph` | Toleranced connectivity, intersection splitting and graph algorithms | Geometry |
 | `netDxf.Shadow.Editor` | Source-independent editing, immutable structural/property history and selection, snapping | Rendering |
@@ -141,6 +143,8 @@ The 10,000-entity incremental test checks that one scalar edit rebuilds one geom
 
 `CadGeometry.Contours` retains semantic curves for graph analysis. Optional `DisplayContours` replaces presentation strokes, while `Regions` contains independently painted areas. This prevents a wide polyline's outline from becoming extra connectivity edges and prevents hatch paint segments from replacing its semantic boundary.
 
+Complex linetype symbols are expanded only in the rendering consumer. Their `RenderItem.IsPresentationOnly` flag excludes them from default snapping without blocking source-identified picking and editing. `Snapping.Find(..., includePresentation: true)` explicitly enables glyph snapping. Pattern/style/resource changes invalidate cached symbols independently of semantic topology; see [Linetypes.md](docs/Linetypes.md).
+
 `CadSceneBuilder` expands shared block occurrences with instance keys, OCS, block origins, nested transforms and inherited style. Nonuniform/mirrored transforms preserve analytic ellipses and transform width regions after offset construction. Cycles/depth/occurrence limits are bounded. `IEntityProjector` extends entity conversion without touching capture.
 
 The supplied projections include common line/point/conic entities, bulged polylines, control-point NURBS, text/attributes, faces/meshes, cached dimension blocks, hatch boundaries and raster placements. Variable widths use analytic tapered strips with butt caps and bevel joins. Nonzero fill unions adjacent ribbons; exact CAD miter behavior is not certified.
@@ -179,15 +183,16 @@ Topology uses a packed spatial index, explicit endpoint/curve tolerances, inters
 `RenderCompileOptions.IncludePaperViewports` defaults to true. For paper layouts,
 the render compiler composes orthographic model views, preserving entity/instance
 identity, camera transforms and shared clipping masks. Frozen layers, front/back
-clipping, global `LtScale` and `PsLtScale` are supported. Rendering and picking use
+clipping, global `LtScale` and simple-pattern `PsLtScale` are supported. Rendering and picking use
 the same masks. Paper copies and viewport frames never duplicate semantic graph
 edges. A paper-space drag is mapped back to model/source coordinates; conflicting
 moves of the same source through different views are rejected before mutation.
-See [PaperViewports.md](docs/PaperViewports.md) for camera conventions and limits.
+See [PaperViewports.md](docs/PaperViewports.md) for camera conventions and limits;
+complex-symbol viewport scaling boundaries are described in [Linetypes.md](docs/Linetypes.md).
 
 `ShxFontReader` reads SHAPES 1.0/1.1 and UNIFONT 1.0 binaries and textual SHP
 instructions. `ShxGlyphCompiler` emits immutable analytic curves; `ShxEntityProjector`
-uses them for `Shape`, `Text`, `MText` and attributes. Text is projected as
+uses them for `Shape`, `Text`, `MText`, attributes and complex linetype decorations. Text is projected as
 presentation-only `CadStrokeGroup` geometry with per-run paints and decoration
 regions. Actual SHAPE entities retain semantic curves for graph analysis.
 Skia and SVG consume the same sampled stroke geometry, including in paper views.
@@ -201,8 +206,8 @@ limits, character mapping and format references.
 
 ## Verification and remaining specialized coverage
 
-The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The current suites contain 18 original tests and 455 advanced tests, including 76 hatch-island, 63 merge, 38 Studio workspace and 19 source-save cases. The same workflow also runs 16 real HTTP/SSE scenarios and 29 browser state/presentation-ordering tests. Seven optional in-memory Chromium DOM scenarios are provided separately; these are not live browser/server end-to-end tests. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
+The existing consolidated build workflow runs Shadow verification on Linux, Windows and macOS. It does not add a third workflow or relax the existing release/conformance gates. The suites retain 18 original tests and the advanced snapshot, merge, source-save, appearance, typography, viewport, SHX and incremental-allocation cases. Complex-linetype verification adds source round trips, placement contracts, resource/style invalidation, bounded expansion, graph/snap isolation, editing and gallery save/reload. `artifacts/advanced-verification.json` records the exact source-bound test names, counts and outcomes for each run rather than relying on a manually maintained total. The same workflow also runs 16 real HTTP/SSE scenarios and 29 browser state/presentation-ordering tests. Seven optional in-memory Chromium DOM scenarios are provided separately; these are not live browser/server end-to-end tests. Appearance checks include native image pixels, fill-aware picking, rational boundaries, all gradient display plans, dash phases, typography bounds, cache invalidation, borrowed-resource lifetime, XML escaping, and the gallery's structural edit/save/reload path. CI uploads generated PNG/SVG/DXF artifacts.
 
-Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: BIGFONT and vertical SHX paragraph layout, custom geometry and ACIS evaluation, complete paragraph/field typography, complex text/shape linetypes and all global scaling semantics, exact miter/gradient behavior and certified analytic island predicates, perspective viewport projection, complete viewport visual/layer overrides, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
+Capture coverage, editable-source coverage and render fidelity are separate contracts. Full specialized CAD parity remains unfinished: BIGFONT and vertical SHX paragraph layout, custom geometry and ACIS evaluation, complete paragraph/field typography, complete linetype end fitting and global/viewport scaling semantics, exact miter/gradient behavior and certified analytic island predicates, perspective viewport projection, complete viewport visual/layer overrides, complete dimension regeneration, arbitrary affine edit planners and specialized object factories. Metadata remains in the raw shadow graph even when a default consumer cannot interpret it.
 
 Studio is local and single-user. It binds loopback, checks Host, requires a custom mutation header and does not enable CORS or arbitrary external resources. It is not a hardened untrusted-file service. Apply input/resource limits and an explicit trust policy before hosting it elsewhere.
