@@ -19,6 +19,7 @@ LinetypeContinuityVerification.Register(tests);
 LinetypeScaleVerification.Register(tests);
 LinetypeComponentScaleVerification.Register(tests);
 LinetypePlannerVerification.Register(tests);
+LinetypeTransportVerification.Register(tests);
 LinetypeRenderingVerification.Register(tests);
 LinetypeStudioVerification.Register(tests);
 LinetypeSnappingVerification.Register(tests);
