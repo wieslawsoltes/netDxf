@@ -30,10 +30,12 @@ public sealed partial class ShxEntityProjector : ILinetypeDecorationProvider
             geometry = new CadGeometry(glyph.Contours).Transform(transform);
             return true;
         }
-        if (!font.IsFont || font.Encoding == ShxEncoding.PackedMultibyte || decoration.IsVertical || decoration.BigFont.Length != 0)
+        if (!font.IsFont || font.Encoding == ShxEncoding.PackedMultibyte || decoration.BigFont.Length != 0)
             throw new NotSupportedException("SHX linetype text requires a horizontal Unicode/legacy resource without BIGFONT.");
         if (decoration.Content.Length > options.MaximumCharacters) throw new InvalidOperationException("SHX linetype text character budget exceeded.");
-        geometry = ProjectText(decoration.CreateText() with { FontFamily = decoration.Resource }, fonts, font, out diagnostic);
+        var text = decoration.CreateText() with { FontFamily = decoration.Resource };
+        geometry = decoration.IsVertical ? ProjectVerticalText(text, fonts, font, out diagnostic)
+            : ProjectText(text, fonts, font, out diagnostic);
         return true;
     }
 }
