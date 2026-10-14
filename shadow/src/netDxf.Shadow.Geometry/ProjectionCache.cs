@@ -82,7 +82,7 @@ internal sealed class ProjectionCache
     }
     private static bool Equivalent(CadStyle a, CadStyle b) => a.Argb == b.Argb && a.Lineweight == b.Lineweight &&
         a.Visible == b.Visible && a.Layer == b.Layer && a.Dashes.AsSpan().SequenceEqual(b.Dashes.AsSpan()) &&
-        CadLinetype.Equivalent(a.Linetype, b.Linetype);
+        a.LinetypeAlignment == b.LinetypeAlignment && CadLinetype.Equivalent(a.Linetype, b.Linetype);
 }
 
 // The stock projector is pure and all its dependencies flow through ShadowReader.

@@ -78,7 +78,7 @@ function controls() {
   const stale = !gate.current(state), blocked = busy || stale || readOnly();
   $('undo').disabled = blocked || !state?.undoCount;
   $('redo').disabled = blocked || !state?.redoCount;
-  for (const button of document.querySelectorAll('[data-add], [data-transform], #delete, #retain, #layout')) button.disabled = blocked;
+  for (const button of document.querySelectorAll('[data-add], [data-transform], #delete, #retain, #layout, #linetype-alignment')) button.disabled = blocked;
   $('source-demo').disabled = blocked || state?.workspaceId !== 'live';
   $('save').disabled = blocked || state?.workspaceId !== 'live';
   $('file').disabled = busy || stale;
@@ -123,6 +123,7 @@ function update(value) {
   $('view-name').textContent = `${value.layout} space`;
   $('metrics').textContent = `${value.objects.toLocaleString()} objects · ${value.entities.toLocaleString()} entities · capture ${value.captureMilliseconds.toFixed(1)} ms`;
   optionList('layout', value.layouts.map(n => [n, n]), value.layout);
+  $('linetype-alignment').value = value.linetypeAlignment ?? 'Periodic';
   optionList('workspace', [['Live document', 'live'], ...value.branches.map(b => [`${b.name} · r${b.revision}`, b.id])], value.workspaceId);
   const mergeSource = switchView && value.workspaceId !== 'live' ? value.workspaceId : $('merge-source').value;
   optionList('merge-source', value.branches.map(b => [b.name, b.id]), mergeSource);
@@ -337,6 +338,7 @@ $('fit').onclick = fitDrawing; $('filter').oninput = tree; $('backend').onchange
 $('grid-toggle').onchange = overlay; $('graph-toggle').onchange = () => loadGraph().catch(notify);
 $('snapshot').onchange = () => { clearMerge(); update(state); };
 for (const [id, path] of [['undo', 'history/undo'], ['redo', 'history/redo'], ['delete', 'delete'], ['retain', 'snapshot'], ['source-demo', 'source-demo']]) $(id).onclick = () => action(path).catch(notify);
+$('linetype-alignment').onchange = () => action('linetype-view', { alignment: $('linetype-alignment').value }).catch(notify);
 $('layout').onchange = () => action('layout', { name: $('layout').value }).catch(notify);
 for (const button of document.querySelectorAll('[data-add]')) button.onclick = () => action('add', { kind: button.dataset.add, x: camera.x, y: camera.y }).catch(notify);
 for (const button of document.querySelectorAll('[data-transform]')) button.onclick = () => action('transform', { operation: button.dataset.transform, amount: Number(button.dataset.amount || 1) }).catch(notify);

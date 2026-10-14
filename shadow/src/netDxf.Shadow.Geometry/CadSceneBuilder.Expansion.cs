@@ -8,6 +8,7 @@ public sealed partial class CadSceneBuilder
     {
         if (options.MaximumDepth < 1 || options.MaximumOccurrences < 1 || !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale)) throw new ArgumentOutOfRangeException(nameof(options));
         if (!snapshot.Layout(options.Layout).Exists) throw new ArgumentException($"Unknown layout '{options.Layout}'.", nameof(options));
+        if (!Enum.IsDefined(options.LinetypeAlignment)) throw new ArgumentOutOfRangeException(nameof(options));
         var output = ImmutableArray.CreateBuilder<CadOccurrence>();
         var diagnostics = snapshot.Diagnostics.ToBuilder();
         var activeBlocks = new HashSet<ObjectId>();
@@ -51,6 +52,7 @@ public sealed partial class CadSceneBuilder
             if (!(globalScale > 0) || !double.IsFinite(globalScale))
                 throw new ArgumentException("Effective linetype scale exceeds the numeric range.", nameof(options));
             var style = ResolveStyle(entity, layer, inherited, globalScale);
+            if (style.LinetypeAlignment != options.LinetypeAlignment) style = style with { LinetypeAlignment = options.LinetypeAlignment };
             if (!options.IncludeInvisible && !style.Visible) return;
             var key = prefix + id.Value;
             if (entity.Type == "Insert")
@@ -109,6 +111,8 @@ public sealed partial class CadSceneBuilder
                 if (componentDepth > options.MaximumDepth) throw new InvalidOperationException("Component nesting budget exceeded.");
                 if (geometry.Components.IsDefaultOrEmpty)
                 {
+                    if (componentStyle.LinetypeAlignment != options.LinetypeAlignment)
+                        componentStyle = componentStyle with { LinetypeAlignment = options.LinetypeAlignment };
                     components.Add(cache.Occurrence(snapshot.DocumentId, componentKey, id, insertPath, componentStyle, geometry, matrix));
                     return;
                 }

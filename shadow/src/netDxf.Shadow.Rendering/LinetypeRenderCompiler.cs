@@ -60,7 +60,7 @@ internal sealed class LinetypeRenderCompiler
                 budget.Placements(retained.PlannedPlacements); budget.Work(retained.ExpansionWork);
                 return retained;
             }
-            var placements = LinetypePlanner.Plan(item.Contours, pattern, source.SourceToWorld, Options, token);
+            var placements = LinetypePlanner.Plan(item.Contours, pattern, source.Style.LinetypeAlignment, source.SourceToWorld, Options, token);
             budget.Placements(placements.Length);
             var diagnostics = ImmutableArray.CreateBuilder<ShadowDiagnostic>();
             var prototypes = new Dictionary<int, Prototype>();

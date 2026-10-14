@@ -12,11 +12,16 @@ public static class StrokePattern
     private static readonly ConditionalWeakTable<RenderItem, Entry> cache = new();
     public static ImmutableArray<RenderContour> GetContours(RenderItem item)
         => item.Style.Dashes.IsDefaultOrEmpty ? item.Contours : cache.GetValue(item,
-            static value => new(Apply(value.Contours, value.Style.Dashes))).Contours;
+            static value => new(Apply(value.Contours, value.Style.Dashes, value.Style.LinetypeAlignment))).Contours;
 
     public static ImmutableArray<RenderContour> Apply(ImmutableArray<RenderContour> contours,
         ImmutableArray<double> pattern, int maximumSegments = 200_000)
+        => Apply(contours, pattern, CadLinetypeAlignment.Periodic, maximumSegments);
+
+    public static ImmutableArray<RenderContour> Apply(ImmutableArray<RenderContour> contours,
+        ImmutableArray<double> pattern, CadLinetypeAlignment alignment, int maximumSegments = 200_000)
     {
+        if (!Enum.IsDefined(alignment)) throw new ArgumentOutOfRangeException(nameof(alignment));
         if (pattern.IsDefaultOrEmpty) return contours;
         if (maximumSegments < 1) throw new ArgumentOutOfRangeException(nameof(maximumSegments));
         contours = LinetypePaths.Split(contours);
@@ -31,7 +36,7 @@ public static class StrokePattern
             if (distance[^1] == 0) { result.Add(contour); continue; }
             var remaining = maximumSegments - result.Count;
             if (remaining <= 0) throw new InvalidOperationException("Stroke segment budget exceeded.");
-            var intervals = DashPattern.Clip(0, distance[^1], pattern, maximumSegments: remaining);
+            var intervals = LinetypeFitting.Strokes(distance[^1], pattern, alignment, contour.Closed, remaining);
             var edge = 0;
             foreach (var interval in intervals)
             {

@@ -42,7 +42,7 @@ public sealed partial class RenderCompiler
         cancellationToken.ThrowIfCancellationRequested();
         options ??= new();
         if (!(options.Tolerance > 0) || !double.IsFinite(options.Tolerance) ||
-            !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale)) throw new ArgumentOutOfRangeException(nameof(options));
+            !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale) || !Enum.IsDefined(options.LinetypeAlignment)) throw new ArgumentOutOfRangeException(nameof(options));
         lock (gate)
         {
             var cache = snapshots.GetValue(snapshot, _ => new Cache());
@@ -51,7 +51,7 @@ public sealed partial class RenderCompiler
             var linetypeRevision = linetypes.Revision;
             var key = (options, projectionVersion, textRevision, linetypeRevision);
             if (builder.IsSnapshotCacheable && cache.Scenes.TryGetValue(key, out var cached)) return cached;
-            var scene = builder.Build(snapshot, new SceneOptions(options.Layout) { LinetypeScale = options.LinetypeScale }, cancellationToken);
+            var scene = builder.Build(snapshot, new SceneOptions(options.Layout) { LinetypeScale = options.LinetypeScale, LinetypeAlignment = options.LinetypeAlignment }, cancellationToken);
             var previousKey = (snapshot.DocumentId, options);
             previousScenes.TryGetValue(previousKey, out var previous);
             var result = CompileCore(scene, new(options.Tolerance), (o, s) => CompileCached(o, s, textRevision), previous, linetypes, cancellationToken);

@@ -41,6 +41,7 @@ public sealed partial class Studio
         public CadSceneBuilder SceneBuilder { get; } = sceneBuilder;
         public RenderCompiler Compiler { get; } = compiler;
         public string Layout { get; set; } = layout;
+        public CadLinetypeAlignment LinetypeAlignment { get; set; }
         public SortedDictionary<long, ShadowSnapshot> Retained { get; } = new();
         public Dictionary<long, RenderCompiler> RetainedCompilers { get; } = new();
 
@@ -94,7 +95,7 @@ public sealed partial class Studio
                 throw new ArgumentException("A branch with that name already exists.");
             var id = Guid.NewGuid().ToString("N"); var fonts = shxFonts.Current;
             var services = FrozenServices(fonts);
-            activeBranch = new(id, name, session.Current, fonts, services.Builder, services.Compiler, layout);
+            activeBranch = new(id, name, session.Current, fonts, services.Builder, services.Compiler, layout) { LinetypeAlignment = PatternAlignment };
             branches.Add(id, activeBranch); viewVersion = checked(viewVersion + 1); graph = null;
             return UpdatedState();
         }
