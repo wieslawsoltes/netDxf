@@ -8,6 +8,7 @@ StructuralVerification.Register(tests);
 MergeVerification.Register(tests);
 StudioWorkspaceVerification.Register(tests);
 SourceSaveVerification.Register(tests);
+CustomHeaderVerification.Register(tests);
 SourceConsistencyVerification.Register(tests);
 SourceBoundaryVerification.Register(tests);
 SourcePreparationVerification.Register(tests);
