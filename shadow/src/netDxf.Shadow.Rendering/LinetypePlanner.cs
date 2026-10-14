@@ -9,9 +9,12 @@ public sealed record LinetypePlanOptions(int MaximumElements = 4096, int Maximum
     int MaximumPoints = 2_000_000, int MaximumTextLength = 100_000, int MaximumScenePlacements = 200_000,
     int MaximumExpansionWork = 500_000, int MaximumSceneExpansionWork = 2_000_000)
 {
+    /// <summary>AuthoredPlane preserves the legacy planar contract. ParallelTransport permits spatial paths.</summary>
+    public LinetypeFrameMode FrameMode { get; init; }
+    public bool CloseFrameSeam { get; init; } = true;
     internal void Validate()
     {
-        if (MaximumElements < 1 || MaximumPlacements < 1 || MaximumPoints < 2 || MaximumTextLength < 1 ||
+        if (!Enum.IsDefined(FrameMode) || MaximumElements < 1 || MaximumPlacements < 1 || MaximumPoints < 2 || MaximumTextLength < 1 ||
             MaximumScenePlacements < 1 || MaximumExpansionWork < 1 || MaximumSceneExpansionWork < 1)
             throw new ArgumentOutOfRangeException(nameof(LinetypePlanOptions));
     }
@@ -97,6 +100,8 @@ public static class LinetypePlanner
             if (!(total > 0)) continue;
             var schedule = LinetypeFitting.Events(total, effective, eventElements, alignment, contour.Closed,
                 options.MaximumPlacements - result.Count, cancellationToken);
+            var transported = options.FrameMode == LinetypeFrameMode.ParallelTransport
+                ? LinetypeTransport.Create(points, normal, contour.Closed, options.CloseFrameSeam, options.MaximumPoints, cancellationToken) : null;
             var edge = 0;
             foreach (var entry in schedule)
             {
@@ -108,22 +113,25 @@ public static class LinetypePlanner
                 var t = Math.Clamp((at - distances[edge]) / length, 0, 1);
                 var origin = Point(edge) * (1 - t) + Point(edge + 1) * t;
                 var tangent = Unit(Point(edge + 1) - Point(edge));
-                if (Math.Abs(Dot(tangent, normal)) > 1e-8)
+                if (transported is null && Math.Abs(Dot(tangent, normal)) > 1e-8)
                     throw new NotSupportedException("Complex linetypes currently require paths in the authored entity plane.");
-                var side = Unit(Cross(normal, tangent));
+                var transportedFrame = transported?.At(edge, at, origin);
+                var frameNormal = transportedFrame?.Z ?? normal;
+                var side = transportedFrame?.Y ?? Unit(Cross(normal, tangent));
+                var absoluteFrame = transportedFrame is null ? absolute : Affine3.ObjectCoordinates(frameNormal);
                 var decoration = pattern.Elements[entry.Element].Decoration!;
                 var angle = (decoration.Rotation % 360) * Math.PI / 180;
                 var c = Math.Cos(angle); var s = Math.Sin(angle);
-                var basisX = decoration.RotationType == CadLinetypeRotation.Absolute ? absolute.X : tangent;
-                var basisY = decoration.RotationType == CadLinetypeRotation.Absolute ? absolute.Y : side;
+                var basisX = decoration.RotationType == CadLinetypeRotation.Absolute ? absoluteFrame.X : tangent;
+                var basisY = decoration.RotationType == CadLinetypeRotation.Absolute ? absoluteFrame.Y : side;
                 var x = basisX * c + basisY * s;
                 var y = basisY * c - basisX * s;
                 if (decoration.RotationType == CadLinetypeRotation.Upright &&
-                    (Dot(x, absolute.X) < -1e-12 || Math.Abs(Dot(x, absolute.X)) <= 1e-12 && Dot(x, absolute.Y) < 0))
+                    (Dot(x, absoluteFrame.X) < -1e-12 || Math.Abs(Dot(x, absoluteFrame.X)) <= 1e-12 && Dot(x, absoluteFrame.Y) < 0))
                 { x = x * -1; y = y * -1; }
                 origin += tangent * (decoration.Offset.X * pattern.Scale) + side * (decoration.Offset.Y * pattern.Scale);
                 var size = (decoration.StyleHeight > 0 ? decoration.StyleHeight : 1) * decoration.Scale * pattern.Scale;
-                var frame = new Affine3(x * size, y * size, normal * size, origin);
+                var frame = new Affine3(x * size, y * size, frameNormal * size, origin);
                 if (!origin.IsFinite || !frame.X.IsFinite || !frame.Y.IsFinite)
                     throw new ArgumentException("Linetype placement overflowed.", nameof(pattern));
                 result.Add(new(contourIndex, entry.Element, result.Count, at, decoration, frame));

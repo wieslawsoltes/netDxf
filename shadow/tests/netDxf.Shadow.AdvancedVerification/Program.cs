@@ -37,6 +37,7 @@ ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
 DimensionVerification.Register(tests);
 StudioTransformVerification.Register(tests);
+LinetypeTransportVerification.Register(tests);
 var results = new List<VerificationResult>(tests.Count);
 var failures = 0;
 foreach (var test in tests)
