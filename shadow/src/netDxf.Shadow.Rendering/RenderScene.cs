@@ -38,5 +38,7 @@ public sealed record RenderCompileOptions(string Layout = "Model", double Tolera
     public double LinetypeScale { get; init; } = 1;
     /// <summary>Opt-in endpoint fitting. Periodic retains the original rendering contract.</summary>
     public CadLinetypeAlignment LinetypeAlignment { get; init; }
+    /// <summary>Model-tab-only annotation context. Paper model views explicitly disable it.</summary>
+    public ModelAnnotationContext? ModelAnnotation { get; init; } = ModelAnnotationContext.Default;
     public PaperSpaceOptions PaperSpace { get; init; } = new();
 }
