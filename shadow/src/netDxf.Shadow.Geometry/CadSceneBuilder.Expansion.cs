@@ -6,7 +6,7 @@ public sealed partial class CadSceneBuilder
 {
     private CadScene BuildCore(ShadowSnapshot snapshot, SceneOptions options, CancellationToken cancellationToken)
     {
-        if (options.MaximumDepth < 1 || options.MaximumOccurrences < 1) throw new ArgumentOutOfRangeException(nameof(options));
+        if (options.MaximumDepth < 1 || options.MaximumOccurrences < 1 || !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale)) throw new ArgumentOutOfRangeException(nameof(options));
         if (!snapshot.Layout(options.Layout).Exists) throw new ArgumentException($"Unknown layout '{options.Layout}'.", nameof(options));
         var output = ImmutableArray.CreateBuilder<CadOccurrence>();
         var diagnostics = snapshot.Diagnostics.ToBuilder();
@@ -47,7 +47,9 @@ public sealed partial class CadSceneBuilder
             if (entity.Id is not { } id) return;
             var layer = entity["Layer"];
             if (layer["Name"].Text == "0" && inheritedLayer.Exists) layer = inheritedLayer;
-            var globalScale = snapshot.Document.Observe(rootReads!)["DrawingVariables"]["LtScale"].Number(1);
+            var globalScale = snapshot.Document.Observe(rootReads!)["DrawingVariables"]["LtScale"].Number(1) * options.LinetypeScale;
+            if (!(globalScale > 0) || !double.IsFinite(globalScale))
+                throw new ArgumentException("Effective linetype scale exceeds the numeric range.", nameof(options));
             var style = ResolveStyle(entity, layer, inherited, globalScale);
             if (!options.IncludeInvisible && !style.Visible) return;
             var key = prefix + id.Value;
@@ -118,7 +120,7 @@ public sealed partial class CadSceneBuilder
                     if (++visits > options.MaximumOccurrences) throw new InvalidOperationException("Scene occurrence budget exceeded.");
                     if (string.IsNullOrEmpty(component.Key) || !seen.Add(component.Key)) throw new ArgumentException("Component keys must be nonempty and unique.");
                     Emit(component.Geometry, componentKey + "/part[" + component.Key.Length + "]:" + component.Key,
-                        component.Style?.Resolve(componentStyle, ResolveLayerStyle(layer, globalScale)) ?? componentStyle, componentDepth + 1, components);
+                        component.Style?.Resolve(componentStyle, ResolveLayerStyle(layer, globalScale), options.LinetypeScale) ?? componentStyle, componentDepth + 1, components);
                 }
             }
         }

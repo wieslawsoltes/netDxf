@@ -36,9 +36,18 @@ internal static class RenderGeometryCompiler
             foreach (var contour in source)
             {
                 var vertices = ImmutableArray.CreateBuilder<Vec3>();
+                var breaks = contour.RestartLinetypeAtCurves && contour.Curves.Length > 1
+                    ? ImmutableArray.CreateBuilder<int>() : null;
                 foreach (var curve in contour.Curves)
                 {
                     var sampled = CurveSampler.Sample(curve, sampling);
+                    if (breaks is not null && vertices.Count > 0 && !sampled.IsEmpty)
+                    {
+                        if (Vec3.Distance(vertices[^1], sampled[0]) >= 1e-12)
+                            throw new ArgumentException("Restarted linetype curves must form a connected chain.");
+                        var boundary = vertices.Count - 1;
+                        if (boundary > 0 && (breaks.Count == 0 || breaks[^1] != boundary)) breaks.Add(boundary);
+                    }
                     for (var i = 0; i < sampled.Length; i++)
                     {
                         if (i == 0 && vertices.Count > 0 && Vec3.Distance(vertices[^1], sampled[i]) < 1e-12) continue;
@@ -46,7 +55,9 @@ internal static class RenderGeometryCompiler
                         vertices.Add(sampled[i]); bounds = bounds.Include(sampled[i]);
                     }
                 }
-                result.Add(new(vertices.ToImmutable(), contour.Closed));
+                if (breaks is { Count: > 0 } && breaks[^1] >= vertices.Count - 1) breaks.RemoveAt(breaks.Count - 1);
+                result.Add(new(vertices.ToImmutable(), contour.Closed)
+                    { PatternBreaks = breaks?.ToImmutable() ?? default });
             }
             return result.ToImmutable();
         }

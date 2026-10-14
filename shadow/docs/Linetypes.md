@@ -2,6 +2,8 @@
 
 Select **Complex linetypes** in Studio's layout selector for native text, upright reversed lines, explicit SHX stroke text, numeric SHX shapes, a closed polyline and an arc. The existing inspector, selection, movement, history, retained views, branch workspaces, Skia and SVG backends remain the same. The synthetic SHX instructions are generated in source; no font files are bundled or implicitly loaded.
 
+See [Authored continuity and paper-space scaling](LinetypeContinuityAndScale.md) for per-entity 2D-polyline phase boundaries, unified PSLTSCALE compensation and the distinct-scale work limit.
+
 ## Source preservation is independent of resource availability
 
 `LinetypeShapeSegment.ShapeNumber` is a nullable signed 16-bit authored DXF group-75 word. A non-null value is authoritative, including zero and high-bit values represented as negative shorts. The DXF reader preserves it even when the local shape resource cannot provide a name. The writer uses it without requiring a name lookup. Clone preserves the word and clones the shape style. Unresolved complex segments are no longer deleted on load, so missing resources cannot shorten a linetype's period.
@@ -28,7 +30,7 @@ Occurrence equivalence includes the complete complex metadata, not only dash len
 
 `LinetypePlanner.Plan` consumes sampled `RenderContour` paths and a detached pattern. It returns immutable placements, each with a contour index, element index, stable ordinal, path distance, decoration and affine frame. It does not need netDxf, Skia or a font service.
 
-The distance metric is sampled world-space arc length, matching the existing signed stroke engine. Each decoration is anchored at the **end of its preceding dash/gap**. Phase continues through sampled edges and polyline corners. Independent contours restart the pattern. Duplicate points do not invent tangents. Closed contours include their implicit closing edge and emit their seam only once. At an exact internal vertex, the incoming nonzero edge defines the frame.
+The distance metric is sampled world-space arc length, matching the existing signed stroke engine. Each decoration is anchored at the **end of its preceding dash/gap**. Phase continues through sampled edges. The authored 2D-polyline generation flag determines whether it also continues through authored corners; false restarts at those boundaries. Independent contours restart the pattern. Duplicate points do not invent tangents. Closed contours include their implicit closing edge and emit their seam only once. At an exact internal vertex, the incoming nonzero edge defines the frame.
 
 Segment `Scale` controls glyph size; offsets use the effective linetype scale independently of glyph scale. A positive authored style height multiplies segment scale; zero height uses unit height. Relative rotation follows the tangent, absolute rotation uses the world entity-plane basis, and upright rotation flips the glyph axes when necessary for that basis. Offsets remain tangent-relative when glyphs are flipped. Text width, obliquing, backward and upside-down metadata are carried independently.
 
@@ -79,6 +81,6 @@ node --test shadow/tests/browser/state.test.mjs
 
 ## Fidelity boundaries
 
-This increment is not a claim of complete proprietary CAD appearance. The periodic engine does not implement AutoCAD's A-alignment end fitting, its complete character rotation pivot rules, all PLINEGEN/MSLTSCALE/PSLTSCALE and viewport overrides, or full nonuniform-insert glyph fitting. Upright orientation is supported by detached planning and authored in-memory metadata; this change does not add a distinct upright encoding to the existing DXF writer. Complete BIGFONT/vertical layout and arbitrary nonplanar transport remain specialized provider work. The raw source snapshot retains data that a default consumer cannot interpret.
+This increment is not a claim of complete proprietary CAD appearance. The periodic engine does not implement AutoCAD's A-alignment end fitting, its complete character rotation pivot rules, complete PLINEGEN end fitting, MSLTSCALE/annotation-scale behavior and specialized viewport overrides, or full nonuniform-insert glyph fitting. Upright orientation is supported by detached planning and authored in-memory metadata; this change does not add a distinct upright encoding to the existing DXF writer. Complete BIGFONT/vertical layout and arbitrary nonplanar transport remain specialized provider work. The raw source snapshot retains data that a default consumer cannot interpret.
 
 Reference specifications: Autodesk [LTYPE DXF group codes](https://help.autodesk.com/cloudhelp/2018/ENU/AutoCAD-DXF/files/GUID-F57A316C-94A2-416C-8280-191E34B182AC.htm), [text in custom linetypes](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-FEDCE7EB-4919-43AE-A54E-F3A293DD60CA.htm), and [shapes in custom linetypes](https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-AF0613E6-5C8B-47F0-800C-8B2524BF2015.htm). The existing netDxf reader/writer's degree-valued rotation representation is preserved; this increment does not change the source angle codec.

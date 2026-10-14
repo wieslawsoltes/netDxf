@@ -44,8 +44,17 @@ public sealed partial class Studio
         {
             new Polyline2DVertex(0, 13), new Polyline2DVertex(85, 13),
             new Polyline2DVertex(85, -30), new Polyline2DVertex(0, -30)
-        }, true) { Linetype = shapes });
+        }, true) { Linetype = shapes, LinetypeGeneration = true });
         entities.Add(new Arc(new Vector2(150, -7), 24, 0, 300) { Linetype = absolute });
-        Label("Symbols are editable source occurrences, not extra graph edges. Switch Skia / SVG to compare.", -46);
+        Label("Continuous phase (left) / restart at authored vertices (right)", -48);
+        foreach (var continuous in new[] { true, false })
+        {
+            var x = continuous ? 0 : 110;
+            entities.Add(new Polyline2D(new Polyline2DVertex[]
+            {
+                new(x, -80), new(x + 35, -80), new(x + 35, -62), new(x + 85, -62)
+            }) { Linetype = shapes, LinetypeGeneration = continuous });
+        }
+        Label("Symbols edit their source; the inspector's LinetypeGeneration setting participates in undo.", -98);
     }
 }

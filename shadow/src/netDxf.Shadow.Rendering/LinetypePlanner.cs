@@ -55,6 +55,7 @@ public static class LinetypePlanner
         }
         if (!(period > 0)) throw new ArgumentException("A linetype needs a positive period; zero-length elements alone cannot repeat.", nameof(pattern));
         if (events.Count == 0 || contours.IsDefaultOrEmpty) return [];
+        contours = LinetypePaths.Split(contours, options.MaximumPoints, cancellationToken);
         var source = sourceToWorld ?? Affine3.Identity;
         var localPlane = Affine3.ObjectCoordinates(pattern.Normal == Vec3.Zero ? Vec3.UnitZ : pattern.Normal);
         var normal = Unit(Cross(source.Direction(localPlane.X), source.Direction(localPlane.Y)));

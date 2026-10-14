@@ -12,7 +12,11 @@ public sealed record PaperViewportProjection(ObjectId ViewportEntity, Affine3 Mo
 
 /// <summary>Bounds the amount of work performed while composing multiple model views.</summary>
 public sealed record PaperSpaceOptions(int MaximumViewports = 256, int MaximumItems = 1_000_000,
-    int MaximumCandidates = 4_000_000, int MaximumClipPoints = 262_144);
+    int MaximumCandidates = 4_000_000, int MaximumClipPoints = 262_144)
+{
+    /// <summary>Maximum distinct model linetype scales compiled for one paper scene.</summary>
+    public int MaximumPatternScales { get; init; } = 32;
+}
 
 internal sealed record PaperViewport(PaperViewportProjection Projection, RenderClip Clip,
     ImmutableHashSet<string> FrozenLayers, double Back, double Front, int Stacking)

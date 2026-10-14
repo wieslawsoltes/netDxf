@@ -6,12 +6,12 @@ namespace netDxf.Shadow.Rendering;
 /// <summary>Transports sampled items, paint frames and text metrics into an immutable paper view.</summary>
 internal static class PaperItemProjection
 {
-    internal static RenderItem? Project(RenderItem source, PaperViewport view, bool paperLinetypes)
+    internal static RenderItem? Project(RenderItem source, PaperViewport view)
     {
         var matrix = view.Projection.ModelToPaper;
         var style = source.Style with
         {
-            Dashes = source.Style.Dashes.Select(d => d * (paperLinetypes ? 1 : view.Projection.Scale)).ToImmutableArray()
+            Dashes = source.Style.Dashes.Select(d => d * view.Projection.Scale).ToImmutableArray()
         };
         var raw = source with { Contours = Transform(source.Contours, matrix), Style = style };
         // Resolve dash phase before depth clipping, so a clipped leading segment cannot restart the pattern.
@@ -77,7 +77,7 @@ internal static class PaperItemProjection
         {
             Key = view.Projection.ViewportEntity.Value + "/viewport/" + source.Key,
             SourceToWorld = matrix * source.SourceToWorld, Projection = view.Projection,
-            Style = style with { Dashes = [] }, Contours = contours, Filled = false, Regions = regions.ToImmutable(),
+            Style = style with { Dashes = [], Linetype = null }, Contours = contours, Filled = false, Regions = regions.ToImmutable(),
             Strokes = painted, Text = text, Image = image, TextClip = textClip, ImageClip = imageClip, Clips = [view.Clip], Bounds = bounds
         };
         void Include(ImmutableArray<RenderContour> values)
