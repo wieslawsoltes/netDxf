@@ -25,6 +25,8 @@ public sealed record RenderItem(string Key, ObjectId Entity, ImmutableArray<Obje
     public RenderClip? ImageClip { get; init; }
     public PaperViewportProjection? Projection { get; init; }
     public Affine3 SourceToWorld { get; init; } = Affine3.Identity;
+    /// <summary>Metric frame for signed pattern distances. Identity retains world-space periods.</summary>
+    public Affine3 PatternToWorld { get; init; } = Affine3.Identity;
     /// <summary>Pickable presentation with source identity, excluded from ordinary CAD snapping.</summary>
     public bool IsPresentationOnly { get; init; }
 }

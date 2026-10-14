@@ -12,7 +12,7 @@ public sealed partial class RenderCompiler
         textLayout ??= ApproximateTextLayoutEngine.Instance;
         var linetypes = new LinetypeRenderCompiler(linetypeResources, linetypeOptions);
         var revision = linetypes.Revision;
-        var result = CompileCore(scene, sampling ?? new(), (o, s) => CreateItem(o, RenderGeometryCompiler.Compile(o.Geometry, s, textLayout)), null, linetypes, cancellationToken);
+        var result = CompileCore(scene, sampling ?? new(), (o, s) => CreateItem(o, RenderGeometryCompiler.Compile(o.Geometry, s, textLayout), linetypes.Options.MetricSpace), null, linetypes, cancellationToken);
         if (revision != linetypes.Revision) throw new InvalidOperationException("Linetype resources changed during compilation.");
         return result;
     }

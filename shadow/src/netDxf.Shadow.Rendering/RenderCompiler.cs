@@ -91,17 +91,17 @@ public sealed partial class RenderCompiler
             if (geometry.Values.Count >= 8) geometry.Values.Clear();
             geometry.Values[key] = data;
         }
-        item = CreateItem(occurrence, data);
+        item = CreateItem(occurrence, data, linetypes.Options.MetricSpace);
         if (cache.Values.Count >= 8) cache.Values.Clear();
         cache.Values[key] = item;
         return item;
     }
-    private static RenderItem CreateItem(CadOccurrence occurrence, RenderGeometryData data)
+    private static RenderItem CreateItem(CadOccurrence occurrence, RenderGeometryData data, LinetypeMetricSpace metricSpace = LinetypeMetricSpace.World)
     {
         var item = new RenderItem(occurrence.Key, occurrence.Entity, occurrence.InsertPath, occurrence.Style,
             data.Contours, occurrence.Geometry.Filled, occurrence.Geometry.Text, occurrence.Geometry.Image, data.Bounds)
             { Regions = data.Regions, Strokes = data.Strokes, TextLayout = data.TextLayout, SourceToWorld = occurrence.SourceToWorld,
-                IsPresentationOnly = occurrence.IsPresentationOnly };
+                IsPresentationOnly = occurrence.IsPresentationOnly, PatternToWorld = metricSpace == LinetypeMetricSpace.Definition ? occurrence.SourceToWorld : Affine3.Identity };
         // Invalid patterns are diagnosed per entity during compilation, not as a frame-wide backend failure.
         _ = StrokePattern.GetContours(item);
         return item;

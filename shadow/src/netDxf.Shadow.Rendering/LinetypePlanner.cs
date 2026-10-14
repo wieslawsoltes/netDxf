@@ -11,10 +11,16 @@ public sealed record LinetypePlanOptions(int MaximumElements = 4096, int Maximum
 {
     /// <summary>AuthoredPlane preserves the legacy planar contract. ParallelTransport permits spatial paths.</summary>
     public LinetypeFrameMode FrameMode { get; init; }
+    /// <summary>Definition measures in the source frame and transports complete glyphs afterward.</summary>
+    public LinetypeMetricSpace MetricSpace { get; init; }
+    /// <summary>BaselineOrigin retains existing output; nominal cap center rotates text around half its authored height.</summary>
+    public LinetypeTextRotationPivot TextRotationPivot { get; init; }
+    /// <summary>Optional unit-glyph pivot override, before the symbol frame. Shape insertion points remain unchanged.</summary>
+    public Vec3? TextPivot { get; init; }
     public bool CloseFrameSeam { get; init; } = true;
     internal void Validate()
     {
-        if (!Enum.IsDefined(FrameMode) || MaximumElements < 1 || MaximumPlacements < 1 || MaximumPoints < 2 || MaximumTextLength < 1 ||
+        if (!Enum.IsDefined(FrameMode) || !Enum.IsDefined(MetricSpace) || !Enum.IsDefined(TextRotationPivot) || TextPivot is { IsFinite: false } or { Z: not 0 } || MaximumElements < 1 || MaximumPlacements < 1 || MaximumPoints < 2 || MaximumTextLength < 1 ||
             MaximumScenePlacements < 1 || MaximumExpansionWork < 1 || MaximumSceneExpansionWork < 1)
             throw new ArgumentOutOfRangeException(nameof(LinetypePlanOptions));
     }
@@ -40,6 +46,23 @@ public static class LinetypePlanner
         ArgumentNullException.ThrowIfNull(pattern);
         cancellationToken.ThrowIfCancellationRequested();
         options ??= new(); options.Validate();
+        var instance = sourceToWorld ?? Affine3.Identity;
+        if (options.MetricSpace == LinetypeMetricSpace.Definition && instance != Affine3.Identity)
+        {
+            if (!instance.TryInverse(out var inverse)) throw new ArgumentException("Definition-space linetypes need a nonsingular source transform.");
+            var local = LinetypeCoordinates.Transform(contours, inverse, options.MaximumPoints, cancellationToken);
+            var placements = Plan(local, pattern, alignment, Affine3.Identity,
+                options with { MetricSpace = LinetypeMetricSpace.World }, cancellationToken);
+            var world = ImmutableArray.CreateBuilder<LinetypePlacement>(placements.Length);
+            foreach (var placement in placements)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var frame = instance * placement.Frame;
+                if (!frame.IsFinite) throw new ArithmeticException("Linetype glyph transform exceeds the coordinate range.");
+                world.Add(placement with { Frame = frame });
+            }
+            return world.MoveToImmutable();
+        }
         if (!(pattern.Scale > 0) || !double.IsFinite(pattern.Scale) || !pattern.Normal.IsFinite)
             throw new ArgumentException("Linetype scale and plane must be finite, with positive scale.", nameof(pattern));
         if (pattern.Elements.IsDefaultOrEmpty || pattern.Elements.Length > options.MaximumElements)
@@ -131,6 +154,13 @@ public static class LinetypePlanner
                 { x = x * -1; y = y * -1; }
                 origin += tangent * (decoration.Offset.X * pattern.Scale) + side * (decoration.Offset.Y * pattern.Scale);
                 var size = (decoration.StyleHeight > 0 ? decoration.StyleHeight : 1) * decoration.Scale * pattern.Scale;
+                if (decoration.Kind == CadLinetypeDecorationKind.Text)
+                {
+                    var pivot = options.TextPivot ?? (options.TextRotationPivot == LinetypeTextRotationPivot.NominalCapHeightCenter
+                        ? decoration.CreateText().YAxis * .5 : Vec3.Zero);
+                    // Pivot is fixed in the original tangent frame, even for absolute orientation and upright reversal.
+                    origin += (tangent * pivot.X + side * pivot.Y - x * pivot.X - y * pivot.Y) * size;
+                }
                 var frame = new Affine3(x * size, y * size, frameNormal * size, origin);
                 if (!origin.IsFinite || !frame.X.IsFinite || !frame.Y.IsFinite)
                     throw new ArgumentException("Linetype placement overflowed.", nameof(pattern));

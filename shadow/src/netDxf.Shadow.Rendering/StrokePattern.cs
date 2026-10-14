@@ -12,7 +12,17 @@ public static class StrokePattern
     private static readonly ConditionalWeakTable<RenderItem, Entry> cache = new();
     public static ImmutableArray<RenderContour> GetContours(RenderItem item)
         => item.Style.Dashes.IsDefaultOrEmpty ? item.Contours : cache.GetValue(item,
-            static value => new(Apply(value.Contours, value.Style.Dashes, value.Style.LinetypeAlignment))).Contours;
+            static value => new(Compile(value))).Contours;
+
+    private static ImmutableArray<RenderContour> Compile(RenderItem item)
+    {
+        if (item.PatternToWorld == Affine3.Identity)
+            return Apply(item.Contours, item.Style.Dashes, item.Style.LinetypeAlignment);
+        if (!item.PatternToWorld.TryInverse(out var inverse)) throw new ArgumentException("The linetype metric frame is singular.");
+        var local = LinetypeCoordinates.Transform(item.Contours, inverse);
+        var strokes = Apply(local, item.Style.Dashes, item.Style.LinetypeAlignment);
+        return LinetypeCoordinates.Transform(strokes, item.PatternToWorld);
+    }
 
     public static ImmutableArray<RenderContour> Apply(ImmutableArray<RenderContour> contours,
         ImmutableArray<double> pattern, int maximumSegments = 200_000)
