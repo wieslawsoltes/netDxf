@@ -78,7 +78,7 @@ function controls() {
   const stale = !gate.current(state), blocked = busy || stale || readOnly();
   $('undo').disabled = blocked || !state?.undoCount;
   $('redo').disabled = blocked || !state?.redoCount;
-  for (const button of document.querySelectorAll('[data-add], [data-transform], #delete, #retain, #layout, #linetype-alignment')) button.disabled = blocked;
+  for (const button of document.querySelectorAll('[data-add], [data-transform], #delete, #retain, #layout, #linetype-alignment, #annotation-mode, #annotation-paper, #annotation-drawing, #annotation-apply')) button.disabled = blocked;
   $('source-demo').disabled = blocked || state?.workspaceId !== 'live';
   $('save').disabled = blocked || state?.workspaceId !== 'live';
   $('file').disabled = busy || stale;
@@ -124,6 +124,11 @@ function update(value) {
   $('metrics').textContent = `${value.objects.toLocaleString()} objects · ${value.entities.toLocaleString()} entities · capture ${value.captureMilliseconds.toFixed(1)} ms`;
   optionList('layout', value.layouts.map(n => [n, n]), value.layout);
   $('linetype-alignment').value = value.linetypeAlignment ?? 'Periodic';
+  if ($('annotation-mode')) {
+    $('annotation-mode').value = value.annotationMode ?? 'Drawing';
+    $('annotation-paper').value = value.annotationPaperUnits ?? 1;
+    $('annotation-drawing').value = value.annotationDrawingUnits ?? 1;
+  }
   optionList('workspace', [['Live document', 'live'], ...value.branches.map(b => [`${b.name} · r${b.revision}`, b.id])], value.workspaceId);
   const mergeSource = switchView && value.workspaceId !== 'live' ? value.workspaceId : $('merge-source').value;
   optionList('merge-source', value.branches.map(b => [b.name, b.id]), mergeSource);
@@ -407,3 +412,9 @@ window.addEventListener('pagehide', () => {
 });
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 connect(); refresh().catch(notify);
+
+if ($('annotation-apply')) $('annotation-apply').onclick = () => action('annotation-view', {
+  mode: $('annotation-mode').value,
+  paperUnits: Number($('annotation-paper').value),
+  drawingUnits: Number($('annotation-drawing').value)
+}).catch(notify);

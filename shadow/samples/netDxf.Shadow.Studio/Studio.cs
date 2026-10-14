@@ -78,7 +78,9 @@ public sealed partial class Studio : IDisposable
                 serverId, changeVersion, viewVersion, workspaceId = WorkspaceId, workspaceName = activeBranch?.Name ?? "Live document",
                 sourceRevision = session.Current.Revision, ancestorRevision = activeBranch?.Ancestor.Revision,
                 branches = branches.Values.OrderBy(b => b.Name, StringComparer.Ordinal).Select(b => new { b.Id, b.Name, revision = b.Editor.Snapshot.Revision, ancestorRevision = b.Ancestor.Revision }).ToArray(),
-                snapshot.DocumentId, snapshot.Revision, layout, linetypeAlignment = PatternAlignment.ToString(), objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
+                snapshot.DocumentId, snapshot.Revision, layout, linetypeAlignment = PatternAlignment.ToString(),
+                annotationMode = Annotation.Mode.ToString(), annotationPaperUnits = Annotation.Scale?.PaperUnits ?? 1,
+                annotationDrawingUnits = Annotation.Scale?.DrawingUnits ?? 1, objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
                 occurrences = scene.Items.Length, bounds = scene.Bounds.IsEmpty ? new Bounds2(-50, -50, 50, 50) : scene.Bounds,
                 state.UndoCount, state.RedoCount, selection = state.Selection, captureMilliseconds,
                 layouts = snapshot.Layouts.Select(l => l["Name"].Text).ToArray(), backends = renderer.Backends,
@@ -270,7 +272,7 @@ public sealed partial class Studio : IDisposable
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             session = next; liveEditor = new(next); activeBranch = null; branches.Clear(); mergePlans.Clear();
-            viewVersion = checked(viewVersion + 1); liveLayout = "Model"; livePatternAlignment = CadLinetypeAlignment.Periodic; graph = null;
+            viewVersion = checked(viewVersion + 1); liveLayout = "Model"; livePatternAlignment = CadLinetypeAlignment.Periodic; liveAnnotation = ModelAnnotationContext.Default; graph = null;
             liveRetained.Clear(); liveRetainedCompilers.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
             PublishChange();
         }
