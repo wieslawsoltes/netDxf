@@ -12,7 +12,13 @@ import tempfile
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOWS = {'.github/workflows/ci-build.yml', '.github/workflows/release.yml'}
+# Keep an exact inventory: the isolated Pages workflow does not replace either
+# package/release workflow, and unknown publishers must still be rejected.
+WORKFLOWS = {
+    '.github/workflows/ci-build.yml',
+    '.github/workflows/release.yml',
+    '.github/workflows/shadow-studio-pages.yml',
+}
 FRONT_DOORS = {'README.md': 32_768, 'doc/dxf-conformance/README.md': 24_576}
 REPORT = 'doc/dxf-conformance/remaining-major-gaps.md'
 RETIRED = {
@@ -65,7 +71,9 @@ def local_target(root: Path, document: str, destination: str) -> str | None:
 
 
 def workflow_inventory(paths: set[str]) -> None:
-    require(paths == WORKFLOWS, f'Expected only the two core workflows; got {sorted(paths)}')
+    require(paths == WORKFLOWS,
+            f'Workflow inventory mismatch: missing {sorted(WORKFLOWS - paths)}; '
+            f'unexpected {sorted(paths - WORKFLOWS)}')
 
 
 def size_limit(content: bytes, limit: int, label: str) -> None:
@@ -138,7 +146,9 @@ def check_retired_references(root: Path, paths: list[str]) -> None:
 
 def self_test() -> int:
     workflow_inventory(set(WORKFLOWS))
-    count = reject(lambda: workflow_inventory(WORKFLOWS - {next(iter(WORKFLOWS))}))
+    count = 0
+    for path in sorted(WORKFLOWS):
+        count += reject(lambda: workflow_inventory(WORKFLOWS - {path}))
     count += reject(lambda: workflow_inventory(WORKFLOWS | {'.github/workflows/temporary-publish.yml'}))
     size_limit(b'x', 1, 'control')
     count += reject(lambda: size_limit(b'', 1, 'control'))
@@ -183,7 +193,7 @@ def main() -> None:
     links += check_links(ROOT, REPORT, report)
     check_pipeline_commands(report, choices)
     check_retired_references(ROOT, paths)
-    print(f'PASS: two core workflow paths, three maintained documentation entry points, '
+    print(f'PASS: two core workflows plus the isolated Pages workflow, three maintained documentation entry points, '
           f'{links} existing local links, valid pipeline command names, no live retired-checkpoint references; {count} negative controls rejected. '
           'Source hygiene only, not additional CAD conformance or native acceptance.')
 
