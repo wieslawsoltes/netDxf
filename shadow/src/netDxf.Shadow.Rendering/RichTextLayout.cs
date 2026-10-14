@@ -26,6 +26,12 @@ public static partial class RichTextLayout
 
     public static RichTextLayoutResult Layout(CadText text, Func<RichTextStyle, string, TextRunMetrics> measure,
         int maximumRuns = 200_000)
+        => Layout(text, measure, false, maximumRuns);
+
+    /// <summary>Composes vertical-flow metrics without applying horizontal width/shear a second time.
+    /// The provider supplies flow/cross-flow ink bounds; runs retain their authored style.</summary>
+    public static RichTextLayoutResult Layout(CadText text, Func<RichTextStyle, string, TextRunMetrics> measure,
+        bool verticalFlow, int maximumRuns = 200_000)
     {
         ArgumentNullException.ThrowIfNull(text); ArgumentNullException.ThrowIfNull(measure);
         if (maximumRuns < 1) throw new ArgumentOutOfRangeException(nameof(maximumRuns));
@@ -56,7 +62,7 @@ public static partial class RichTextLayout
                 var elements = StringInfo.GetTextElementEnumerator(content); var count = 0;
                 while (elements.MoveNext())
                 {
-                    if (count++ > 0) advance += (style.Tracking - 1) * style.Height * 0.5 * style.WidthFactor;
+                    if (count++ > 0) advance += (style.Tracking - 1) * style.Height * 0.5 * (verticalFlow ? 1 : style.WidthFactor);
                     AppendRun(elements.GetTextElement());
                 }
             }
@@ -69,16 +75,16 @@ public static partial class RichTextLayout
 
             void AppendRun(string value)
             {
-                var m = Metrics(style, value); var runWidth = m.Advance * style.WidthFactor;
+                var m = Metrics(style, value); var runWidth = m.Advance * (verticalFlow ? 1 : style.WidthFactor);
                 if (!double.IsFinite(runWidth) || !double.IsFinite(advance + runWidth))
                     throw new ArgumentException("Text advance overflowed.", nameof(measure));
                 var rectangle = m.GlyphBounds ?? new Bounds2(0, -m.Ascent, m.Advance, m.Descent);
                 if (!rectangle.IsEmpty)
                 {
-                    var shear = -Math.Tan(style.ObliqueDegrees * Math.PI / 180);
+                    var shear = verticalFlow ? 0 : -Math.Tan(style.ObliqueDegrees * Math.PI / 180);
                     foreach (var px in new[] { rectangle.MinX, rectangle.MaxX })
                         foreach (var py in new[] { rectangle.MinY, rectangle.MaxY })
-                            ink = ink.Include(new(advance + px * style.WidthFactor + shear * py, py));
+                            ink = ink.Include(new(advance + px * (verticalFlow ? 1 : style.WidthFactor) + shear * py, py));
                 }
                 output.Add(new(value, style, advance, 0, runWidth)); advance += runWidth;
                 ascent = Math.Max(ascent, m.Ascent); descent = Math.Max(descent, m.Descent);
