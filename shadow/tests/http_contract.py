@@ -104,6 +104,19 @@ def run(dotnet: str, configuration: str) -> None:
             initial = post('linetype-view', fitted, alignment='Periodic')
             assert initial['revision'] == 0 and initial['linetypeAlignment'] == 'Periodic'
             passed('fitting no-op and periodic restore retain source revision')
+            request('annotation-view', {'revision': initial['revision'], 'mode': 'Enabled', 'paperUnits': 1, 'drawingUnits': 25}, expected=403)
+            request('annotation-view', {'revision': initial['revision'], 'mode': 'Enabled', 'paperUnits': 0, 'drawingUnits': 25}, initial, expected=400)
+            scaled = post('annotation-view', initial, mode='Enabled', paperUnits=1, drawingUnits=25)
+            assert scaled['revision'] == initial['revision'] and scaled['undoCount'] == initial['undoCount']
+            assert scaled['annotationMode'] == 'Enabled' and scaled['annotationDrawingUnits'] == 25
+            assert scaled['viewVersion'] > initial['viewVersion']
+            request('graph', s=initial, expected=409)
+            passed('model annotation view is guarded source-neutral and fences old requests')
+            same = post('annotation-view', scaled, mode='Enabled', paperUnits=1, drawingUnits=25)
+            assert same['viewVersion'] == scaled['viewVersion']
+            initial = post('annotation-view', same, mode='Drawing')
+            assert initial['revision'] == 0 and initial['annotationMode'] == 'Drawing'
+            passed('model annotation no-op and drawing restore preserve source history')
             stream = urlopen(base + '/api/events', timeout=15); streams.append(stream)
             cursor, first = notice(stream)
             assert first['reset'] and first['documentId'] == initial['documentId']; passed('SSE initial identity')
