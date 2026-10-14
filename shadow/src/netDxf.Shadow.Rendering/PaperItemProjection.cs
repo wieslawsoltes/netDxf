@@ -15,7 +15,8 @@ internal static class PaperItemProjection
         };
         var raw = source with { Contours = Transform(source.Contours, matrix), Style = style };
         // Resolve dash phase before depth clipping, so a clipped leading segment cannot restart the pattern.
-        var strokes = StrokePattern.GetContours(raw);
+        var strokes = source.PatternToWorld == Affine3.Identity ? StrokePattern.GetContours(raw)
+            : Transform(StrokePattern.GetContours(source), matrix);
         var contours = ViewportClipping.ClipLines(strokes, view.Back, view.Front);
         var regions = ImmutableArray.CreateBuilder<RenderRegion>();
         foreach (var region in source.Regions)
@@ -76,7 +77,7 @@ internal static class PaperItemProjection
         return source with
         {
             Key = view.Projection.ViewportEntity.Value + "/viewport/" + source.Key,
-            SourceToWorld = matrix * source.SourceToWorld, Projection = view.Projection,
+            SourceToWorld = matrix * source.SourceToWorld, Projection = view.Projection, PatternToWorld = Affine3.Identity,
             Style = style with { Dashes = [], Linetype = null }, Contours = contours, Filled = false, Regions = regions.ToImmutable(),
             Strokes = painted, Text = text, Image = image, TextClip = textClip, ImageClip = imageClip, Clips = [view.Clip], Bounds = bounds
         };
