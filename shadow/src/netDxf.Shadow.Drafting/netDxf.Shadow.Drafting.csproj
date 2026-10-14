@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
+  </ItemGroup>
+</Project>

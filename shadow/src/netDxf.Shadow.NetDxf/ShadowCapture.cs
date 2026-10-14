@@ -196,6 +196,10 @@ internal sealed class ShadowCapture
                 fields[field.Name] = ReadValue(field.GetValue(value), depth + 1);
             return new ShadowValue.Structure(type.FullName!, fields.ToImmutable());
         }
+        // Arrays belong to their element assembly, but are values/collections, not model
+        // identities. Array.Empty<T>() may be shared by unrelated owners; assigning it an
+        // identity makes independent entity copies collide on read-only empty arrays.
+        if (value is Array array) return ReadSequence(array, depth + 1);
         if (type.Assembly == typeof(DxfDocument).Assembly || value is EntityObject) return Reference(value);
         if (value is IEnumerable sequence) return ReadSequence(sequence, depth + 1);
         throw new NotSupportedException($"External object type {type.FullName} cannot be detached automatically.");
