@@ -29,7 +29,7 @@ internal static class SourceAccessors
             () => CreateTable(t), LazyThreadSafetyMode.ExecutionAndPublication)).Value;
     }
 
-    private static AccessorTable CreateTable(Type t) => new(
+    private static AccessorTable CreateTable(Type t) => new(CustomHeaderAccessors.Extend(t,
         t.GetMembers(BindingFlags.Instance | BindingFlags.Public)
             .Where(m => m is FieldInfo || m is PropertyInfo p && p.GetMethod?.IsPublic == true && p.GetIndexParameters().Length == 0)
             // DrawingEntities exposes filtered aliases of the same layout collection.
@@ -54,7 +54,7 @@ internal static class SourceAccessors
                     else ((FieldInfo)m).SetValue(target, value);
                 }
                 return new SourceAccessor(m.Name, valueType, writable, getter, Set);
-            }).ToArray());
+            }).ToArray()));
 
     private sealed class AccessorTable(SourceAccessor[] ordered)
     {
