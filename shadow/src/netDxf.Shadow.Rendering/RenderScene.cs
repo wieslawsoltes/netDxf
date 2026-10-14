@@ -3,7 +3,12 @@ using netDxf.Shadow.Geometry;
 
 namespace netDxf.Shadow.Rendering;
 
-public sealed record RenderContour(ImmutableArray<Vec3> Points, bool Closed);
+public sealed record RenderContour(ImmutableArray<Vec3> Points, bool Closed)
+{
+    /// <summary>Strictly increasing interior point indices where the periodic pattern restarts.
+    /// Default/empty continues across the entire contour. Each boundary belongs to both adjacent paths.</summary>
+    public ImmutableArray<int> PatternBreaks { get; init; }
+}
 public sealed record RenderRegion(ImmutableArray<RenderContour> Contours, CadFillRule FillRule, CadGradient? Gradient)
 {
     public uint? Argb { get; init; }
@@ -28,5 +33,8 @@ public sealed record RenderScene(Guid DocumentId, long Revision, string Layout, 
 public sealed record RenderCompileOptions(string Layout = "Model", double Tolerance = 0.05)
 {
     public bool IncludePaperViewports { get; init; } = true;
+    /// <summary>Consumer-only multiplier for authored linetype scales. Paper composition compensates
+    /// this scale per viewport before compiling both dashes and decorations.</summary>
+    public double LinetypeScale { get; init; } = 1;
     public PaperSpaceOptions PaperSpace { get; init; } = new();
 }

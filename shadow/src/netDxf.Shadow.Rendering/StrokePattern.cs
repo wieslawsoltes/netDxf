@@ -19,6 +19,7 @@ public static class StrokePattern
     {
         if (pattern.IsDefaultOrEmpty) return contours;
         if (maximumSegments < 1) throw new ArgumentOutOfRangeException(nameof(maximumSegments));
+        contours = LinetypePaths.Split(contours);
         var result = ImmutableArray.CreateBuilder<RenderContour>();
         foreach (var contour in contours)
         {

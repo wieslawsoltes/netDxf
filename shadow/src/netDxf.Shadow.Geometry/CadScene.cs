@@ -8,7 +8,12 @@ public sealed record CadStyle(uint Argb, double Lineweight, ImmutableArray<doubl
     /// <summary>Optional detached complex metadata. Dashes retains the signed effective stroke lengths.</summary>
     public CadLinetype? Linetype { get; init; }
 }
-public sealed record CadContour(ImmutableArray<Curve3> Curves, bool Closed = false);
+public sealed record CadContour(ImmutableArray<Curve3> Curves, bool Closed = false)
+{
+    /// <summary>Restart the periodic linetype at each authored analytic curve, not each sampled edge.
+    /// The curve chain must be connected. Semantic contours remain unchanged.</summary>
+    public bool RestartLinetypeAtCurves { get; init; }
+}
 /// <summary>Entity-level baseline spacing. Factor multiplies a single line (5/3 of the entity height).</summary>
 public sealed record CadLineSpacing(double Factor = 1, bool Exact = false);
 public sealed record CadText(string Content, Vec3 Origin, Vec3 XAxis, Vec3 YAxis, double Height,
@@ -64,7 +69,11 @@ public sealed record CadOccurrence(string Key, ObjectId Entity, ImmutableArray<O
 }
 public sealed record CadScene(Guid DocumentId, long Revision, string Layout, ImmutableArray<CadOccurrence> Occurrences,
     ImmutableArray<ShadowDiagnostic> Diagnostics);
-public sealed record SceneOptions(string Layout = "Model", int MaximumDepth = 64, int MaximumOccurrences = 1_000_000, bool IncludeInvisible = false);
+public sealed record SceneOptions(string Layout = "Model", int MaximumDepth = 64, int MaximumOccurrences = 1_000_000, bool IncludeInvisible = false)
+{
+    /// <summary>Consumer scale multiplied with authored LTSCALE and entity scale; never writes source state.</summary>
+    public double LinetypeScale { get; init; } = 1;
+}
 
 /// <summary>Custom entity projection has access only to detached shadow values.</summary>
 public interface IEntityProjector

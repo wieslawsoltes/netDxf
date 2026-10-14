@@ -41,7 +41,8 @@ public sealed partial class RenderCompiler
         ArgumentNullException.ThrowIfNull(snapshot);
         cancellationToken.ThrowIfCancellationRequested();
         options ??= new();
-        if (!(options.Tolerance > 0) || !double.IsFinite(options.Tolerance)) throw new ArgumentOutOfRangeException(nameof(options));
+        if (!(options.Tolerance > 0) || !double.IsFinite(options.Tolerance) ||
+            !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale)) throw new ArgumentOutOfRangeException(nameof(options));
         lock (gate)
         {
             var cache = snapshots.GetValue(snapshot, _ => new Cache());
@@ -50,13 +51,14 @@ public sealed partial class RenderCompiler
             var linetypeRevision = linetypes.Revision;
             var key = (options, projectionVersion, textRevision, linetypeRevision);
             if (builder.IsSnapshotCacheable && cache.Scenes.TryGetValue(key, out var cached)) return cached;
-            var scene = builder.Build(snapshot, new SceneOptions(options.Layout), cancellationToken);
+            var scene = builder.Build(snapshot, new SceneOptions(options.Layout) { LinetypeScale = options.LinetypeScale }, cancellationToken);
             var previousKey = (snapshot.DocumentId, options);
             previousScenes.TryGetValue(previousKey, out var previous);
             var result = CompileCore(scene, new(options.Tolerance), (o, s) => CompileCached(o, s, textRevision), previous, linetypes, cancellationToken);
             if (options.IncludePaperViewports && !string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase))
-                result = paperSpace.Compose(snapshot, result, options, tolerance => Compile(snapshot,
-                    options with { Layout = "Model", Tolerance = tolerance, IncludePaperViewports = false }, cancellationToken), cancellationToken);
+                result = paperSpace.Compose(snapshot, result, options, (tolerance, scale) => Compile(snapshot,
+                    options with { Layout = "Model", Tolerance = tolerance, IncludePaperViewports = false,
+                        LinetypeScale = options.LinetypeScale * scale }, cancellationToken), cancellationToken);
             if (builder.ProjectionVersion != projectionVersion) throw new InvalidOperationException("Projection resources changed while compiling. Retry with the current resource revision.");
             if (textEngine.Revision != textRevision) throw new InvalidOperationException("Font services changed while compiling. Retry with the current font revision.");
             if (linetypes.Revision != linetypeRevision) throw new InvalidOperationException("Linetype resources changed while compiling. Retry with the current resource revision.");

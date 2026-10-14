@@ -45,7 +45,8 @@ public sealed partial class StandardEntityProjector
             var hull = ConvexHull([a.Left.End, a.Right.End, b.Left.Start, b.Right.Start]);
             if (hull.Length >= 3) regions.AddRange(Polyline(hull, true).Contours);
         }
-        var geometry = new CadGeometry([new(centerlines.ToImmutable(), closed)]);
+        var geometry = new CadGeometry([new(centerlines.ToImmutable(), closed)
+            { RestartLinetypeAtCurves = !entity["LinetypeGeneration"].Boolean() }]);
         if (regions.Count > 0)
         {
             geometry = geometry with { DisplayContours = display.ToImmutable(), Regions = [new(regions.ToImmutable(), CadFillRule.NonZero)] };
