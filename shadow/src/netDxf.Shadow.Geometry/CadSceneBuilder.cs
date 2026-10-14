@@ -9,6 +9,8 @@ public sealed partial class CadSceneBuilder
     private readonly ProjectionCache cache;
     private readonly object buildGate = new();
     private readonly RootProjectionCache rootCache = new();
+    /// <summary>Ordered immutable extension registry. Consumers may discover optional resource capabilities.</summary>
+    public ImmutableArray<IEntityProjector> Projectors => projectors;
     public SceneBuildStatistics LastBuildStatistics { get { lock (buildGate) return rootCache.Statistics; } }
     public ProjectionCacheStatistics CacheStatistics => cache.Statistics;
     public bool IsSnapshotCacheable => projectors.All(p => p is ICacheableEntityProjector);

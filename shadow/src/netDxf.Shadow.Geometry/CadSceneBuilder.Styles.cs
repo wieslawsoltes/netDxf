@@ -25,12 +25,15 @@ public sealed partial class CadSceneBuilder
         var linetype = entity["Linetype"];
         if (string.Equals(linetype["Name"].Text, "ByLayer", StringComparison.OrdinalIgnoreCase)) linetype = layer["Linetype"];
         var entityScale = entity["LinetypeScale"].Number(1);
-        var dash = string.Equals(linetype["Name"].Text, "ByBlock", StringComparison.OrdinalIgnoreCase)
-            ? (parent?.Dashes ?? []).Select(d => d * entityScale).ToImmutableArray()
+        var byBlock = string.Equals(linetype["Name"].Text, "ByBlock", StringComparison.OrdinalIgnoreCase);
+        var dash = byBlock ? (parent?.Dashes ?? []).Select(d => d * entityScale).ToImmutableArray()
             : linetype["Segments"].Items.Select(s => s["Length"].Number() * entityScale * globalScale).ToImmutableArray();
+        var normal = entity["Normal"].Vector(Vec3.UnitZ);
+        var complex = byBlock ? parent?.Linetype?.MultiplyScale(entityScale) : CadLinetype.Read(linetype, entityScale * globalScale, normal);
+        if (complex is not null && complex.Normal != normal) complex = complex with { Normal = normal };
         var visible = entity["IsVisible"].Boolean(true) && layer["IsVisible"].Boolean(true) && !layer["IsFrozen"].Boolean() && (parent?.Visible ?? true);
         if (entity["Flags"].Text.Contains("Hidden", StringComparison.Ordinal)) visible = false;
-        return new(argb, width, dash, visible, layer["Name"].Text);
+        return new(argb, width, dash, visible, layer["Name"].Text) { Linetype = complex };
     }
 
     private static CadStyle ResolveLayerStyle(ShadowReader layer, double globalScale)
@@ -41,7 +44,8 @@ public sealed partial class CadSceneBuilder
         var alpha = (uint)Math.Round(255 * (1 - Math.Clamp(layer["Transparency"]["Value"].Number(), 0, 90) / 100));
         return new(rgb | alpha << 24, ParseLineweight(layer["Lineweight"].Text),
             layer["Linetype"]["Segments"].Items.Select(s => s["Length"].Number() * globalScale).ToImmutableArray(),
-            layer["IsVisible"].Boolean(true) && !layer["IsFrozen"].Boolean(), layer["Name"].Text);
+            layer["IsVisible"].Boolean(true) && !layer["IsFrozen"].Boolean(), layer["Name"].Text)
+            { Linetype = CadLinetype.Read(layer["Linetype"], globalScale, Vec3.UnitZ) };
     }
 
     private static double ParseLineweight(string value)

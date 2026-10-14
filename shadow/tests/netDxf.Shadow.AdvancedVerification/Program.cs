@@ -14,6 +14,8 @@ SourcePreparationVerification.Register(tests);
 IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 LinetypeSourceVerification.Register(tests);
+LinetypePlannerVerification.Register(tests);
+LinetypeRenderingVerification.Register(tests);
 HatchIslandVerification.Register(tests);
 RichTextVerification.Register(tests);
 MTextColorVerification.Register(tests);

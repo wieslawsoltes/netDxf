@@ -25,7 +25,7 @@ internal static class LinetypeSourceVerification
         {
             var shape = Shape(17, 0);
             shape.Name = "OTHER";
-            shape.Style = new ShapeStyle("shadow-other-not-installed.shx");
+            shape.Style = new ShapeStyle("shadow-other", "shadow-other-not-installed.shx");
             Check(shape.ShapeNumber == 17);
             shape.ShapeNumber = null;
             Check(shape.ShapeNumber is null && ((LinetypeShapeSegment)shape.Clone()).ShapeNumber is null);
@@ -46,8 +46,9 @@ internal static class LinetypeSourceVerification
         }));
     }
 
-    private static LinetypeShapeSegment Shape(short number, double length) => new("UNRESOLVED", new ShapeStyle("shadow-never-installed-resource.shx"),
-        length, new Vector2(0.125, -0.25), LinetypeSegmentRotationType.Absolute, 37, 0.75) { ShapeNumber = number };
+    private static LinetypeShapeSegment Shape(short number, double length) => new("UNRESOLVED",
+        new ShapeStyle("shadow-missing", "shadow-never-installed-resource.shx"), length,
+        new Vector2(0.125, -0.25), LinetypeSegmentRotationType.Absolute, 37, 0.75) { ShapeNumber = number };
 
     private static void RoundTrip(DxfVersion version, bool binary)
     {
