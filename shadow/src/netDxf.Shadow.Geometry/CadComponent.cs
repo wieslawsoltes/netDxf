@@ -23,7 +23,7 @@ public sealed record CadComponentStyle(CadStyle Value, CadStyleSource Color = Ca
         CadStyle Pick(CadStyleSource source) => source switch { CadStyleSource.Parent => parent, CadStyleSource.Layer => layer, _ => Value };
         return new((Pick(Color).Argb & 0xffffff) | (Pick(Alpha).Argb & 0xff000000), Pick(Lineweight).Lineweight,
             Pick(Dashes).Dashes.Select(d => d * scale).ToImmutableArray(), parent.Visible && Value.Visible,
-            InheritLayer ? parent.Layer : Value.Layer) { Linetype = Pick(Dashes).Linetype?.MultiplyScale(scale) };
+            InheritLayer ? parent.Layer : Value.Layer) { Linetype = Pick(Dashes).Linetype?.MultiplyScale(scale), LinetypeAlignment = Pick(Dashes).LinetypeAlignment };
     }
 }
 

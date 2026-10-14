@@ -36,5 +36,7 @@ public sealed record RenderCompileOptions(string Layout = "Model", double Tolera
     /// <summary>Consumer-only multiplier for authored linetype scales. Paper composition compensates
     /// this scale per viewport before compiling both dashes and decorations.</summary>
     public double LinetypeScale { get; init; } = 1;
+    /// <summary>Opt-in endpoint fitting. Periodic retains the original rendering contract.</summary>
+    public CadLinetypeAlignment LinetypeAlignment { get; init; }
     public PaperSpaceOptions PaperSpace { get; init; } = new();
 }

@@ -92,6 +92,18 @@ def run(dotnet: str, configuration: str) -> None:
             request('graph', expected=409)
             request('add', {'revision': 0, 'kind': 'line', 'x': 0, 'y': 0}, expected=409, custom={'X-Shadow-Studio':'1'})
             assert state()['revision'] == 0; passed('missing mutation and workspace headers are refused')
+            request('linetype-view', {'revision': initial['revision'], 'alignment': 'A'}, expected=403)
+            request('linetype-view', {'revision': initial['revision'], 'alignment': '1'}, initial, expected=400)
+            fitted = post('linetype-view', initial, alignment='A')
+            assert fitted['revision'] == initial['revision'] and fitted['undoCount'] == initial['undoCount']
+            assert fitted['linetypeAlignment'] == 'A' and fitted['viewVersion'] > initial['viewVersion']
+            request('graph', s=initial, expected=409)
+            passed('fitting view is source-neutral and fences stale requests')
+            same = post('linetype-view', fitted, alignment='A')
+            assert same['viewVersion'] == fitted['viewVersion']
+            initial = post('linetype-view', fitted, alignment='Periodic')
+            assert initial['revision'] == 0 and initial['linetypeAlignment'] == 'Periodic'
+            passed('fitting no-op and periodic restore retain source revision')
             stream = urlopen(base + '/api/events', timeout=15); streams.append(stream)
             cursor, first = notice(stream)
             assert first['reset'] and first['documentId'] == initial['documentId']; passed('SSE initial identity')

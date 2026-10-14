@@ -14,6 +14,7 @@ SourcePreparationVerification.Register(tests);
 IncrementalVerification.Register(tests);
 AppearanceVerification.Register(tests);
 LinetypeSourceVerification.Register(tests);
+LinetypeFittingVerification.Register(tests);
 LinetypeContinuityVerification.Register(tests);
 LinetypeScaleVerification.Register(tests);
 LinetypeComponentScaleVerification.Register(tests);

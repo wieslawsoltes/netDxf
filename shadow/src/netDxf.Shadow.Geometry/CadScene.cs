@@ -2,11 +2,15 @@ using System.Collections.Immutable;
 
 namespace netDxf.Shadow.Geometry;
 
+/// <summary>Periodic preserves authored phase; A fits endpoint dashes to each complete path.</summary>
+public enum CadLinetypeAlignment { Periodic, A }
+
 public sealed record CadStyle(uint Argb, double Lineweight, ImmutableArray<double> Dashes, bool Visible, string Layer)
 {
     public static CadStyle Default { get; } = new(0xffe4e8ef, 0.25, [], true, "0");
     /// <summary>Optional detached complex metadata. Dashes retains the signed effective stroke lengths.</summary>
     public CadLinetype? Linetype { get; init; }
+    public CadLinetypeAlignment LinetypeAlignment { get; init; }
 }
 public sealed record CadContour(ImmutableArray<Curve3> Curves, bool Closed = false)
 {
@@ -73,6 +77,7 @@ public sealed record SceneOptions(string Layout = "Model", int MaximumDepth = 64
 {
     /// <summary>Consumer scale multiplied with authored LTSCALE and entity scale; never writes source state.</summary>
     public double LinetypeScale { get; init; } = 1;
+    public CadLinetypeAlignment LinetypeAlignment { get; init; }
 }
 
 /// <summary>Custom entity projection has access only to detached shadow values.</summary>

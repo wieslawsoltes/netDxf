@@ -29,6 +29,9 @@ def run(executable=None):
         def fork(p):
             p.locator('#branch-name').fill('UI experiment <branch>');p.locator('#fork').click()
             p.wait_for_function("document.getElementById('workspace').value!=='live'")
+        p=page(); p.locator('#linetype-alignment').select_option('A')
+        p.wait_for_function("fixture.calls.some(c=>c.path==='linetype-view') && document.getElementById('linetype-alignment').value==='A'")
+        assert p.locator('#undo').is_disabled(); p.close(); print('PASS ui/fitting-control-changes-presentation-without-history')
         p=page(); assert p.locator('#connection').inner_text()=='Live updates connected'
         assert p.evaluate("fixture.calls.filter(c=>c.path==='render').every(c=>c.headers['X-Shadow-Workspace']==='live')")
         fork(p); assert p.locator('#save').is_disabled()
@@ -74,7 +77,7 @@ def run(executable=None):
         p.wait_for_function("fixture.calls.some(c=>c.path==='pick')")
         p.close();print('PASS ui/camera-changes-fence-picking-until-frame-publication')
         assert not errors,errors
-        browser.close();print('DOM verification: 7 scenarios passed; no page errors.')
+        browser.close();print('DOM verification: 8 scenarios passed; no page errors.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--executable');args=parser.parse_args();run(args.executable)

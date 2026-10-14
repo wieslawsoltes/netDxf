@@ -61,7 +61,7 @@ public sealed partial class Studio : IDisposable
     private RenderScene Scene(ShadowSnapshot? snapshot = null)
     {
         ObjectDisposedException.ThrowIf(disposed, this);
-        return (activeBranch?.Compiler ?? compiler).Compile(snapshot ?? Current, new(layout));
+        return (activeBranch?.Compiler ?? compiler).Compile(snapshot ?? Current, ViewOptions());
     }
     private void Check(long revision)
     {
@@ -78,7 +78,7 @@ public sealed partial class Studio : IDisposable
                 serverId, changeVersion, viewVersion, workspaceId = WorkspaceId, workspaceName = activeBranch?.Name ?? "Live document",
                 sourceRevision = session.Current.Revision, ancestorRevision = activeBranch?.Ancestor.Revision,
                 branches = branches.Values.OrderBy(b => b.Name, StringComparer.Ordinal).Select(b => new { b.Id, b.Name, revision = b.Editor.Snapshot.Revision, ancestorRevision = b.Ancestor.Revision }).ToArray(),
-                snapshot.DocumentId, snapshot.Revision, layout, objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
+                snapshot.DocumentId, snapshot.Revision, layout, linetypeAlignment = PatternAlignment.ToString(), objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
                 occurrences = scene.Items.Length, bounds = scene.Bounds.IsEmpty ? new Bounds2(-50, -50, 50, 50) : scene.Bounds,
                 state.UndoCount, state.RedoCount, selection = state.Selection, captureMilliseconds,
                 layouts = snapshot.Layouts.Select(l => l["Name"].Text).ToArray(), backends = renderer.Backends,
@@ -99,7 +99,7 @@ public sealed partial class Studio : IDisposable
             if (pending is not null) ValidatePlan(pending);
             var snapshot = pending?.Plan.Preview ?? (revision is { } r ? retained[r] : Current);
             var scene = revision is { } key && retainedCompilers.TryGetValue(key, out var frozen)
-                ? frozen.Compile(snapshot, new(layout), token) : pending is not null ? pending.Compiler.Compile(snapshot!, new(layout), token) : Scene(snapshot);
+                ? frozen.Compile(snapshot, ViewOptions(), token) : pending is not null ? pending.Compiler.Compile(snapshot!, ViewOptions(), token) : Scene(snapshot);
             var viewport = cx.HasValue && cy.HasValue && scale.HasValue ? new Viewport(new(cx.Value, cy.Value), scale.Value, width, height) : Viewport.Fit(scene.Bounds, width, height);
             renderer.Swap(backend);
             return renderer.Render(new(scene, viewport, ReferenceEquals(snapshot, Current) ? editor.State.Selection : null), token);
@@ -270,7 +270,7 @@ public sealed partial class Studio : IDisposable
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             session = next; liveEditor = new(next); activeBranch = null; branches.Clear(); mergePlans.Clear();
-            viewVersion = checked(viewVersion + 1); liveLayout = "Model"; graph = null;
+            viewVersion = checked(viewVersion + 1); liveLayout = "Model"; livePatternAlignment = CadLinetypeAlignment.Periodic; graph = null;
             liveRetained.Clear(); liveRetainedCompilers.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
             PublishChange();
         }
