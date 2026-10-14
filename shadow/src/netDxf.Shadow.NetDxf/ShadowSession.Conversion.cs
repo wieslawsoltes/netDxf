@@ -20,6 +20,7 @@ public sealed partial class ShadowSession
             var source = (resolve ?? capture.Source)(reference.Id);
             return target.IsInstanceOfType(source) ? source : throw new ArgumentException("Incompatible source reference.");
         }
+        if (target == typeof(object)) return ConvertBoxedValue(value, resolve);
         if (value is ShadowValue.Atom atom)
         {
             if (target.IsEnum) return Enum.Parse(target, atom.Text, false);
