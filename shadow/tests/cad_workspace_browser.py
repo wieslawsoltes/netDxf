@@ -13,6 +13,7 @@ from pathlib import Path
 import socket
 import subprocess
 import time
+import traceback
 import urllib.request
 from playwright.sync_api import sync_playwright, expect
 
@@ -54,6 +55,7 @@ def host(published: Path):
 
 def verify(url: str, executable: str | None = None):
     passed, errors, violations = [], [], []
+    failure = None
     def check(name: str, condition=True):
         if not condition:
             raise AssertionError(name)
@@ -74,7 +76,7 @@ def verify(url: str, executable: str | None = None):
             check('native CAD frontend loads under the unchanged host CSP', not errors and not violations)
             page.screenshot(path=str(OUTPUT / 'workspace.png'))
             page.locator('[data-action="new"]').first.click()
-            page.wait_for_function("document.querySelector('#studio').dataset.document !== 'demo'")
+            expect(page.locator('#studio')).not_to_have_attribute('data-document', 'demo')
             def state():
                 identifier = page.locator('#studio').get_attribute('data-document')
                 with urllib.request.urlopen(f'{url}/api/cad/{identifier}/state', timeout=10) as r:
@@ -87,7 +89,8 @@ def verify(url: str, executable: str | None = None):
                 field.fill(text)
                 field.press('Enter')
                 if change:
-                    page.wait_for_function("before => Number(document.querySelector('#revision').textContent.slice(1)) > before", arg=before)
+                    updated = wait_state(lambda data: data['state']['revision'] > before)
+                    expect(page.locator('#revision')).to_have_text(f"r{updated['state']['revision']}")
                 idle()
             def wait_state(predicate):
                 deadline = time.monotonic() + 15
@@ -140,7 +143,12 @@ def verify(url: str, executable: str | None = None):
             page.mouse.up()
             wait_state(lambda data: data['state']['revision'] > grip_revision)
             center = next(p['value'] for p in state()['properties']['properties'] if p['name']=='Center')
-            check('dragging the native center grip updates source coordinates', abs(float(center['X'])-160)<1e-6 and abs(float(center['Y'])-55)<1e-6)
+            # Pointer coordinates may be rounded by the platform to CSS pixels.
+            # Bound input quantization to one pixel, not a drawing-size epsilon.
+            input_tolerance = 1 / scale
+            check('dragging the native center grip updates source coordinates',
+                  abs(float(center['X'])-160) <= input_tolerance and
+                  abs(float(center['Y'])-55) <= input_tolerance)
             page.locator('[data-action="layer-new"]').first.click()
             page.get_by_role('textbox', name='Layer name', exact=True).fill('Fabrication')
             page.locator('#dialog-submit').click()
@@ -187,7 +195,7 @@ def verify(url: str, executable: str | None = None):
             original_id = page.locator('#studio').get_attribute('data-document')
             original_entities = state()['state']['entities']
             page.locator('#open-file').set_input_files(str(file))
-            page.wait_for_function("old => document.querySelector('#studio').dataset.document !== old", arg=original_id)
+            expect(page.locator('#studio')).not_to_have_attribute('data-document', original_id)
             expect(page.locator('#title')).to_contain_text('edited.dxf')
             idle()
             wait_state(lambda data: data['state']['entities']==original_entities)
@@ -205,13 +213,26 @@ def verify(url: str, executable: str | None = None):
             page.get_by_role('tab', name='Home', exact=True).click()
             page.set_viewport_size({'width': 900, 'height': 680})
             page.screenshot(path=str(OUTPUT/'workspace-compact.png'))
-            check('compact workspace has no document-level horizontal overflow', page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
+            # Read Chromium layout metrics without injecting/evaluating a script.
+            protocol = context.new_cdp_session(page)
+            metrics = protocol.send('Page.getLayoutMetrics')
+            protocol.detach()
+            check('compact workspace has no document-level horizontal overflow',
+                  metrics['cssContentSize']['width'] <= metrics['cssLayoutViewport']['clientWidth'])
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
+        except Exception:
+            failure = traceback.format_exc()
+            raise
         finally:
-            page.screenshot(path=str(OUTPUT/'final.png'))
-            (OUTPUT/'results.json').write_text(json.dumps({'passed':passed,'errors':errors,'cspViolations':violations},indent=2),encoding='utf-8')
-            context.close()
-            browser.close()
+            try:
+                page.screenshot(path=str(OUTPUT/'final.png'))
+            finally:
+                (OUTPUT/'results.json').write_text(json.dumps({
+                    'passed': passed, 'errors': errors,
+                    'cspViolations': violations, 'failure': failure
+                }, indent=2), encoding='utf-8')
+                context.close()
+                browser.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
