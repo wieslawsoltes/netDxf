@@ -27,12 +27,19 @@ internal static class DimensionExportVerification
         new Angular3PointDimension(new(0, 0), new(40, 0), new(30, 30), 15),
         new RadialDimension(new Vector2(0, 0), new Vector2(20, 10)),
         new DiametricDimension(new Vector2(0, 0), new Vector2(20, 10)),
-        new OrdinateDimension(new Vector2(0, 0), new Vector2(30, 10), new Vector2(30, 30), OrdinateDimensionAxis.X),
+        new OrdinateDimension(new Vector2(0, 0), new Vector2(30, 10), new Vector2(30, 30), OrdinateDimensionAxis.X, DimensionStyle.Default),
         new ArcLengthDimension(new Vector2(0, 0), 20, 0, 70, 25)
     ];
     private static string State(Dimension dimension) => JsonSerializer.Serialize(new
     {
-        dimension.DefinitionPoint, dimension.TextReferencePoint, dimension.TextPositionManuallySet,
+        // Capture every publicly observable geometric value, including subtype-specific
+        // dimension/arc line positions; Dimension.DefinitionPoint is intentionally internal.
+        geometry = dimension.GetType().GetProperties()
+            .Where(p => p.CanRead && p.GetIndexParameters().Length == 0 &&
+                (p.PropertyType.IsValueType || p.PropertyType == typeof(string)))
+            .OrderBy(p => p.Name, StringComparer.Ordinal)
+            .ToDictionary(p => p.Name, p => p.GetValue(dimension)),
+        dimension.TextReferencePoint, dimension.TextPositionManuallySet,
         dimension.Normal, dimension.Elevation, dimension.Measurement, block = dimension.Block?.Name
     });
     private static void Refuse(Action action)
@@ -64,7 +71,7 @@ internal static class DimensionExportVerification
             var document = new DxfDocument(); var dimension = new AlignedDimension(new(0, 0), new(40, 0), 10); document.Entities.Add(dimension);
             dimension.SecondReferencePoint = new(80, 0); dimension.Offset = 30;
             string before = State(dimension); var actual = (AlignedDimension)Read(Export(document)).Entities.Dimensions.Single();
-            Near(actual.Measurement, 80); Near(actual.Offset, 30); Near(actual.DefinitionPoint.X, 80); Near(actual.DefinitionPoint.Y, 30);
+            Near(actual.Measurement, 80); Near(actual.Offset, 30); Near(actual.DimLinePosition.X, 80); Near(actual.DimLinePosition.Y, 30);
             Require(State(dimension) == before, "Export normalized a live dimension outside editor history");
         }));
         tests.Add(("cad/export regenerates previously exported pictures after semantic edits", () =>
