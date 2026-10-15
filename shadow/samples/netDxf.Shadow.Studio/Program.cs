@@ -72,4 +72,5 @@ app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest reque
     StudioHttp.Execute(studio, http, () => Results.File(studio.Save(request.Revision), "application/dxf", "shadow-edited.dxf")));
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
 app.MapStudioWorkspaces();
+app.MapBigFontMaps();
 app.Run();
