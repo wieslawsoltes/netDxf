@@ -32,8 +32,19 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: cad-native-workbench
-          path: ${{ runner.temp }}/cad-build-tools/
+          name: cad-native-sdk
+          path: |
+            ${{ runner.temp }}/cad-build-tools/sdk.tar.gz
+            ${{ runner.temp }}/cad-build-tools/manifest.json
+          retention-days: 1
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: cad-native-dependencies
+          path: |
+            ${{ runner.temp }}/cad-build-tools/nuget.tar.gz
+            ${{ runner.temp }}/cad-build-tools/manifest.json
           retention-days: 1
           if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
