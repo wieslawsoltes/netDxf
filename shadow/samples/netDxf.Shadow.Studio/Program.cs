@@ -69,6 +69,19 @@ app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revisio
     }
     return Results.Ok(StudioHttp.Execute(studio, request, () => studio.LoadFont(revision, name, memory.ToArray())));
 });
+app.MapPost("/api/bigfont-map", async (Studio studio, HttpRequest request, long revision, CancellationToken token) =>
+{
+    const int limit = 4 * 1024 * 1024;
+    if (request.ContentLength > limit) return Results.BadRequest(new { error = "Sample mapping limit is 4 MiB." });
+    using var memory = new MemoryStream(); var buffer = new byte[32 * 1024];
+    while (true)
+    {
+        var count = await request.Body.ReadAsync(buffer, token); if (count == 0) break;
+        if (memory.Length + count > limit) return Results.BadRequest(new { error = "Sample mapping limit is 4 MiB." });
+        memory.Write(buffer, 0, count);
+    }
+    return Results.Ok(StudioHttp.Execute(studio, request, () => studio.LoadBigFontMap(revision, memory.ToArray())));
+});
 app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest request) =>
     StudioHttp.Execute(studio, http, () => Results.File(studio.Save(request.Revision), "application/dxf", "shadow-edited.dxf")));
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));

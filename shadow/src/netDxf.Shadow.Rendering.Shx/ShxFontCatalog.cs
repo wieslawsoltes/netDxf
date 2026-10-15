@@ -58,7 +58,7 @@ public sealed class ShxFontCatalog
         lock (gate)
         {
             if (current.Fonts.TryGetValue(alias, out var previous) && ReferenceEquals(previous, font) &&
-                current.BigFontMaps.TryGetValue(alias, out var previousMap) && ReferenceEquals(previousMap, map)) return current;
+                current.BigFontMaps.TryGetValue(alias, out var previousMap) && previousMap.Equals(map)) return current;
             CheckCapacity(alias);
             var next = current with { Revision = checked(current.Revision + 1), Fonts = current.Fonts.SetItem(alias, font),
                 BigFontMaps = current.BigFontMaps.SetItem(alias, map) };

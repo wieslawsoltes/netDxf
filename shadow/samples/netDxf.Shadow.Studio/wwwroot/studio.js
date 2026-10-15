@@ -83,6 +83,7 @@ function controls() {
   $('save').disabled = blocked || state?.workspaceId !== 'live';
   $('file').disabled = busy || stale;
   $('font-file').disabled = blocked || state?.workspaceId !== 'live';
+  $('bigfont-map-file').disabled = blocked || state?.workspaceId !== 'live';
   $('workspace').disabled = busy || stale;
   $('fork').disabled = blocked || state?.workspaceId !== 'live' || state?.branches.length >= 8;
   $('discard').disabled = busy || stale || state?.workspaceId === 'live';
@@ -418,3 +419,12 @@ if ($('annotation-apply')) $('annotation-apply').onclick = () => action('annotat
   paperUnits: Number($('annotation-paper').value),
   drawingUnits: Number($('annotation-drawing').value)
 }).catch(notify);
+
+$('bigfont-map-file').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  try {
+    if (file.size > 4 * 1024 * 1024) throw new Error('The sample mapping limit is 4 MiB.');
+    await command(`bigfont-map?${new URLSearchParams({ revision: state.revision })}`, {}, { raw: file });
+  } catch (error) { notify(error); }
+  finally { e.target.value = ''; }
+};
