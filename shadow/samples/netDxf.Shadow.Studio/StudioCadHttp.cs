@@ -11,6 +11,14 @@ internal static class StudioCadHttp
         routes.MapGet("/{id}/state", (string id, StudioDocumentHub hub) => hub.Use(id, s => s.CadState()));
         routes.MapPost("/{id}/command", (string id, StudioDocumentHub hub, HttpRequest http, CadCommandRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadCommand(request, token))));
+        routes.MapPost("/{id}/block/define", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockDefinitionRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadDefineBlock(request, token))));
+        routes.MapPost("/{id}/block/rename", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockRenameRequest request) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadRenameBlock(request))));
+        routes.MapPost("/{id}/hatch/create", (string id, StudioDocumentHub hub, HttpRequest http, CadHatchAuthoringRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadCreateHatch(request, token))));
+        routes.MapPost("/{id}/hatch/pattern", (string id, StudioDocumentHub hub, HttpRequest http, CadHatchPatternRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadChangeHatchPattern(request, token))));
         routes.MapPost("/{id}/select", (string id, StudioDocumentHub hub, HttpRequest http, CadSelectionRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadSelect(request, token))));
         routes.MapPost("/{id}/snap", (string id, StudioDocumentHub hub, HttpRequest http, CadSnapRequest request, CancellationToken token) =>
