@@ -178,7 +178,7 @@ internal static partial class BigFontVerification
         Test("DXF save and reload retain companion reference and Unicode content", () =>
         {
             var (session, text) = Source();
-            using var stream = new MemoryStream(); session.ReadSource(d => Check(d.Save(stream)));
+            using var stream = new MemoryStream(); session.MutateSource(d => Check(d.Save(stream)));
             stream.Position = 0; var loaded = DxfDocument.Load(stream)!;
             Check(loaded.Entities.Texts.Single().Style.BigFont == "big.shx" && loaded.Entities.Texts.Single().Value == text.Value);
             var result = new RenderCompiler(new CadSceneBuilder([new ShxEntityProjector(Catalog())])).Compile(new ShadowSession(loaded).Current);
