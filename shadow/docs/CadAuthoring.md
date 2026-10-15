@@ -111,8 +111,14 @@ pattern. The renderer's row/segment/work budgets are preflighted separately.
 
 `HATCHEDIT` (`HE`) and **Edit hatch** replace pattern data copy-on-write; another
 hatch sharing the old pattern is unaffected. The dialog reads the complete
-current source pattern, including custom families, description, origin and
-island policy. A native receipt and explicit source IDs protect delayed dialog
+current source pattern, including custom families, description, origin,
+island policy, native pattern type and double-fill flag. User-defined double
+patterns add a perpendicular family; the same flag is retained but ignored by
+rendering for predefined/custom types. The dialog exposes these fields instead
+of converting every imported pattern to Custom. PAT files do not contain the
+per-entity double flag. Pattern descriptions are in-memory/PAT metadata and the
+native DXF writer does not persist them. Overlapping file reads are generation-
+fenced so an older PAT load cannot replace a newer choice. A native receipt and explicit source IDs protect delayed dialog
 completion from switching silently to another selection or revision.
 
 New hatches are **non-associative** analytic copies. Editing the original

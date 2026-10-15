@@ -45,15 +45,20 @@ def verify_authoring(page, url: str, output: Path, state, command, wait_state, i
     expect(page.get_by_role('textbox', name='Hatch angle', exact=True)).to_have_value('30')
     page.get_by_role('combobox', name='Hatch pattern', exact=True).select_option('LINE')
     page.get_by_role('textbox', name='Hatch scale', exact=True).fill('5')
+    page.get_by_role('combobox', name='Hatch type', exact=True).select_option('0')
+    page.get_by_role('checkbox', name='Double hatch', exact=True).check()
     revision = state()['state']['revision']
     page.locator('#dialog-submit').click()
     wait_state(lambda data: data['state']['revision'] > revision)
     idle()
-    check('Hatch Edit dialog reads and edits source pattern values', pattern()['scale'] == 5 and pattern()['name'] == 'LINE')
+    check('Hatch Edit dialog preserves user-defined double pattern semantics',
+          pattern()['scale'] == 5 and pattern()['name'] == 'LINE' and pattern()['type'] == 0 and pattern()['isDouble'])
     command('U')
     check('hatch pattern undo retains previous source pattern', pattern()['name'] == 'CROSS' and pattern()['scale'] == 4)
     command('REDO')
     page.locator('[data-action="hatch-edit"]').first.click()
+    expect(page.get_by_role('combobox', name='Hatch type', exact=True)).to_have_value('0')
+    expect(page.get_by_role('checkbox', name='Double hatch', exact=True)).to_be_checked()
     page.get_by_role('button', name='Cancel', exact=True).click()
     idle()
 
@@ -69,7 +74,8 @@ def verify_authoring(page, url: str, output: Path, state, command, wait_state, i
     idle()
     actual = pattern()
     check('custom PAT import reaches native DXF pattern definitions',
-          actual['name'] == 'SYNTHETIC' and actual['description'] == 'Browser pattern' and actual['lines'][0]['dashes'] == [1, -1])
+          actual['name'] == 'SYNTHETIC' and actual['description'] == 'Browser pattern' and actual['lines'][0]['dashes'] == [1, -1] and
+          actual['type'] == 2 and not actual['isDouble'])
     page.locator('#command-input').press('Escape')
     idle()
     page.locator('#viewport').focus()

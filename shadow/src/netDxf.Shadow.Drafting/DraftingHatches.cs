@@ -5,9 +5,11 @@ namespace netDxf.Shadow.Drafting;
 
 /// <summary>Pattern-local offset uses along-line X and perpendicular Y, as in a DXF/PAT line family.</summary>
 public sealed record DraftingHatchLine(double Angle, Vec3 Origin, Vec3 Delta, ImmutableArray<double> Dashes = default);
+public enum DraftingHatchPatternType { UserDefined, Predefined, Custom }
 public sealed record DraftingHatchPattern(string Name = "SOLID", double Scale = 1, double Angle = 0,
     Vec3 Origin = default, CadHatchIslandStyle Islands = CadHatchIslandStyle.Normal,
-    ImmutableArray<DraftingHatchLine> Lines = default, string Description = "");
+    ImmutableArray<DraftingHatchLine> Lines = default, string Description = "",
+    DraftingHatchPatternType Type = DraftingHatchPatternType.Custom, bool IsDouble = false);
 public sealed record HatchAuthoringRequest(ImmutableArray<ObjectId> Boundaries = default,
     ImmutableArray<ImmutableArray<Vec3>> Polygons = default, DraftingHatchPattern? Pattern = null, string Layer = "0");
 
@@ -132,8 +134,10 @@ public static class DraftingHatches
         }
         if (!Enum.TryParse<CadHatchIslandStyle>(pattern["Style"].Text, out var style) || !Enum.IsDefined(style))
             throw new NotSupportedException("Unknown source hatch island policy.");
+        if (!Enum.TryParse<DraftingHatchPatternType>(pattern["Type"].Text, out var type) || !Enum.IsDefined(type))
+            throw new NotSupportedException("Unknown source hatch pattern type.");
         return new(pattern["Name"].Text, pattern["Scale"].Number(1), pattern["Angle"].Number(),
-            pattern["Origin"].Vector(), style, lines.ToImmutable(), pattern["Description"].Text);
+            pattern["Origin"].Vector(), style, lines.ToImmutable(), pattern["Description"].Text, type, pattern["IsDouble"].Boolean());
     }
 
     public static DraftingPlan ChangePattern(ShadowSnapshot snapshot, ImmutableArray<ObjectId> hatches,
@@ -180,7 +184,7 @@ public static class DraftingHatches
         ImmutableArray<CadContour> boundaries, CancellationToken token)
     {
         if (!double.IsFinite(pattern.Scale) || pattern.Scale < 1e-9 || pattern.Scale > 1e9 || !double.IsFinite(pattern.Angle) ||
-            !Enum.IsDefined(pattern.Islands)) throw new ArgumentException("Invalid hatch scale, angle or island policy.");
+            !Enum.IsDefined(pattern.Islands) || !Enum.IsDefined(pattern.Type)) throw new ArgumentException("Invalid hatch scale, angle or island policy.");
         if (pattern.Description is null || pattern.Description.Length > 4096) throw new ArgumentException("Pattern descriptions are limited to 4096 characters.");
         Finite(pattern.Origin); RequireXY(pattern.Origin);
         var lines = ResolvePattern(pattern); var native = ImmutableArray.CreateBuilder<ShadowValue>();
@@ -199,8 +203,11 @@ public static class DraftingHatches
                 new Dictionary<string, ShadowValue> { ["Angle"] = N(line.Angle), ["Origin"] = V(line.Origin),
                     ["Delta"] = V(line.Delta), ["DashPattern"] = new ShadowValue.Sequence(dashes.Select(N).ToImmutableArray()) });
             native.Add(R(id));
-            compiled.Add(new(pattern.Origin + rotation.Direction(line.Origin * pattern.Scale),
-                (angle + line.Angle) * Math.PI / 180, line.Delta * pattern.Scale, dashes.Select(n => n * pattern.Scale).ToImmutableArray()));
+            var definition = new CadPatternLine(pattern.Origin + rotation.Direction(line.Origin * pattern.Scale),
+                (angle + line.Angle) * Math.PI / 180, line.Delta * pattern.Scale, dashes.Select(n => n * pattern.Scale).ToImmutableArray());
+            compiled.Add(definition);
+            if (pattern.IsDouble && pattern.Type == DraftingHatchPatternType.UserDefined)
+                compiled.Add(definition with { Angle = definition.Angle + Math.PI / 2 });
         }
         // Use exactly the existing consumer's clipping budgets before publishing a pattern that cannot be displayed.
         if (compiled.Count != 0) HatchPatternGenerator.Generate(boundaries, compiled.ToImmutable(),
@@ -210,7 +217,8 @@ public static class DraftingHatches
             ["Description"] = ShadowValue.From(pattern.Description),
             ["Name"] = ShadowValue.From(pattern.Name.Trim().ToUpperInvariant()), ["Scale"] = N(pattern.Scale), ["Angle"] = N(angle),
             ["Origin"] = V(pattern.Origin), ["Style"] = E("HatchStyle", pattern.Islands.ToString()),
-            ["LineDefinitions"] = new ShadowValue.Sequence(native.ToImmutable()), ["Type"] = E("HatchType", "Custom")
+            ["LineDefinitions"] = new ShadowValue.Sequence(native.ToImmutable()),
+            ["Type"] = E("HatchType", pattern.Type.ToString()), ["IsDouble"] = ShadowValue.From(pattern.IsDouble)
         });
     }
     private static void RequireXY(Vec3 value)

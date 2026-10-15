@@ -51,6 +51,15 @@ export async function authoringDialog(name, { client, editable, edit, dialog, sh
   const angle = input('Hatch angle', '0', { required: true });
   const origin = input('Hatch origin', '0,0', { required: true });
   const islands = select('Hatch islands', islandStyles.map((text, value) => [value, text]));
+  const type = select('Hatch type', [['0', 'User-defined'], ['1', 'Predefined'], ['2', 'Custom']]);
+  const double = input('Double hatch', '', { type: 'checkbox' });
+  const setFamilyFlags = () => {
+    const chosen = patterns.get(pattern.value);
+    type.value = String(chosen?.type ?? 2); double.checked = !!chosen?.isDouble;
+    double.disabled = type.value !== '0';
+  };
+  pattern.addEventListener('change', setFamilyFlags);
+  type.addEventListener('change', () => { double.disabled = type.value !== '0'; });
   if (editing && entities.length === 1) {
     const current = await client.read(`hatch/pattern?revision=${data.state.revision}`);
     if (!current || current.entity !== entities[0].value || client.key !== key) throw new Error('The drawing changed while opening Hatch Edit. Reopen the dialog.');
@@ -61,30 +70,32 @@ export async function authoringDialog(name, { client, editable, edit, dialog, sh
       origin.value = `${p.origin.x},${p.origin.y}`; islands.value = String(p.islands);
     }
   }
+  setFamilyFlags();
   const file = input('Import PAT file', '', { type: 'file', accept: '.pat,text/plain' });
   const status = hint('Built-in patterns are original generic line families. Import your own PAT definitions for custom fills.');
-  let pending = false, importError = null, disposed = false;
+  let pending = false, importError = null, disposed = false, importGeneration = 0;
   file.addEventListener('change', async () => {
     const chosen = file.files?.[0]; if (!chosen) return;
+    const generation = ++importGeneration;
     pending = true; importError = null; status.textContent = 'Reading pattern definitions…';
     try {
       if (chosen.size > 1_048_576) throw new Error('PAT import is limited to 1 MiB.');
       const definitions = parsePat(await chosen.text());
-      if (disposed) return;
+      if (disposed || generation !== importGeneration) return;
       if (definitions.some(p => patterns.has(p.name))) throw new Error('Imported names must not duplicate built-in or already imported patterns.');
       // Update only after the complete file passes: partial imports are never retained.
       for (const definition of definitions) {
         patterns.set(definition.name, definition);
         pattern.append(el('option', { value: definition.name, text: `${definition.name} — ${definition.description || 'Custom'}` }));
       }
-      pattern.value = definitions[0].name; status.textContent = `${definitions.length} patterns imported from ${chosen.name}.`;
-    } catch (error) { importError = error; if (!disposed) status.textContent = error.message; }
-    finally { pending = false; }
+      pattern.value = definitions[0].name; setFamilyFlags(); status.textContent = `${definitions.length} patterns imported from ${chosen.name}.`;
+    } catch (error) { if (!disposed && generation === importGeneration) { importError = error; status.textContent = error.message; } }
+    finally { if (generation === importGeneration) pending = false; }
   });
   try {
     const accepted = await dialog(editing ? 'Hatch Edit' : 'Hatch Creation', [
       field('Pattern', pattern), field('Scale', scale), field('Angle (degrees)', angle), field('Origin (WCS)', origin),
-      field('Island detection', islands), field('Custom pattern file', file), status,
+      field('Island detection', islands), field('Pattern type', type), field('Perpendicular double fill', double), field('Custom pattern file', file), status,
       hint('Normal alternates nested islands. Outer fills only the outer band. Ignore fills through internal islands. ' +
         (editing ? 'Pattern edits preserve existing analytic boundaries.' : 'New hatches copy analytic XY boundaries and are non-associative; original objects are not modified.'))
     ], editing ? 'Apply' : 'Create');
@@ -93,7 +104,7 @@ export async function authoringDialog(name, { client, editable, edit, dialog, sh
     if (importError) throw importError;
     const chosen = patterns.get(pattern.value), value = number(scale.value), offset = parsePoint(origin.value);
     if (value < 1e-9 || value > 1e9 || Math.abs(offset.z) > 1e-9) throw new Error('Use a positive bounded scale and an XY pattern origin.');
-    const definition = { name: chosen.name, description: chosen.description || '', lines: chosen.lines, scale: value, angle: number(angle.value), origin: offset, islands: Number(islands.value) };
+    const definition = { name: chosen.name, description: chosen.description || '', lines: chosen.lines, scale: value, angle: number(angle.value), origin: offset, islands: Number(islands.value), type: Number(type.value), isDouble: double.checked };
     await commit(editing ? 'hatch/pattern' : 'hatch/create', editing ? { pattern: definition, entities } :
       { hatch: { boundaries: entities, pattern: definition, layer: currentLayer } });
     showPalette('Properties');
