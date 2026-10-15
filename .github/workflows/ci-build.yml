@@ -59,7 +59,15 @@ jobs:
       - name: Verify Studio HTTP and SSE contracts
         run: python shadow/tests/http_contract.py
       - name: Verify browser state receipt ordering
-        run: node --test shadow/tests/browser/state.test.mjs
+        run: node --test shadow/tests/browser/*.test.mjs
+      - name: Install CAD browser test dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Verify the published CAD workspace in Chromium (Linux)
+        if: runner.os == 'Linux'
+        run: python shadow/tests/cad_workspace_browser.py --published "${{ runner.temp }}/studio-linux-x64"
       - name: Retain rendered regression artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
