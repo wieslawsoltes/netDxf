@@ -292,7 +292,7 @@ public sealed partial class Studio : IDisposable
             {
                 liveEditor.SynchronizeSource(() => session.MutateSource(document =>
                 {
-                    if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing.");
+                    document.SaveWithDimensionPictures(stream);
                 }));
                 return stream.ToArray();
             }

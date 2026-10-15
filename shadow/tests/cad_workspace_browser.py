@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Real-origin Chromium integration for the published local CAD workspace.
 
-Requires playwright==1.57.0 and `python -m playwright install --with-deps chromium`.
+Requires playwright==1.57.0, ezdxf==1.4.4 and `python -m playwright install --with-deps chromium`.
 The production frontend, CSP and native API are used without mocked routes.
 """
 from __future__ import annotations
@@ -15,6 +15,7 @@ import subprocess
 import time
 import traceback
 import urllib.request
+import ezdxf
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -192,6 +193,14 @@ def verify(url: str, executable: str | None = None):
             file = OUTPUT/'edited.dxf'
             download.value.save_as(str(file))
             check('real DXF file download', file.stat().st_size > 1000 and b'SECTION' in file.read_bytes())
+            independent = ezdxf.readfile(file)
+            dimensions_before = list(independent.modelspace().query('DIMENSION'))
+            audit = independent.audit()
+            check('independent DXF audit preserves both dimensions without repairs',
+                  len(dimensions_before) == 2 and not audit.errors and not audit.fixes and
+                  len(independent.modelspace().query('DIMENSION')) == 2 and
+                  all(d.dxf.hasattr('geometry') and len(independent.blocks[d.dxf.geometry]) > 0
+                      for d in dimensions_before))
             original_id = page.locator('#studio').get_attribute('data-document')
             original_entities = state()['state']['entities']
             page.locator('#open-file').set_input_files(str(file))
