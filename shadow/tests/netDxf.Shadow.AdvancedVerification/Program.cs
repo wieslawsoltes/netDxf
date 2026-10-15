@@ -36,6 +36,7 @@ GalleryVerification.Register(tests);
 ViewportVerification.Register(tests);
 ShxVerification.Register(tests);
 VerticalShxVerification.Register(tests);
+BigFontVerification.Register(tests);
 ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
 DimensionVerification.Register(tests);

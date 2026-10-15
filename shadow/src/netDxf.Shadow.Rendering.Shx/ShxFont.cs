@@ -23,15 +23,18 @@ public sealed class ShxFont
     public ShxEmbedding Embedding { get; }
     public ImmutableDictionary<int, ShxSymbol> Symbols { get; }
     public ImmutableDictionary<string, int> Names { get; }
+    public ShxBigFontInfo? BigFont { get; }
     public bool IsFont => CapHeight > 0 && Encoding != ShxEncoding.Shapes;
 
     internal ShxFont(string name, int above, int below, int mode, ShxEncoding encoding,
-        ShxEmbedding embedding, ImmutableDictionary<int, ShxSymbol> symbols)
+        ShxEmbedding embedding, ImmutableDictionary<int, ShxSymbol> symbols, ShxBigFontInfo? bigFont = null)
     {
         if (above < 0 || below < 0 || mode is not (0 or 2) || !Enum.IsDefined(encoding) || (embedding & ~(ShxEmbedding.Disallowed | ShxEmbedding.ReadOnly)) != 0)
             throw new FormatException("Invalid SHX font metadata.");
+        if (bigFont is not null && (above <= 0 || encoding != ShxEncoding.PackedMultibyte))
+            throw new FormatException("BIGFONT requires positive metrics and packed character encoding.");
         Name = name; CapHeight = above; Descender = below; SupportsVerticalText = mode == 2;
-        Encoding = encoding; Embedding = embedding; Symbols = symbols;
+        Encoding = encoding; Embedding = embedding; Symbols = symbols; BigFont = bigFont;
         var names = ImmutableDictionary.CreateBuilder<string, int>(StringComparer.Ordinal);
         foreach (var symbol in symbols.Values.OrderBy(s => s.Number))
             if (symbol.Name.Length > 0 && !names.TryAdd(symbol.Name, symbol.Number))

@@ -11,7 +11,7 @@ public sealed record ShxGlyph(ImmutableArray<CadContour> Contours, Vec3 Advance,
     public double ExitScale { get; init; } = 1;
 }
 
-/// <summary>Bounded SHX instruction interpreter emitting analytic, immutable line/circular-arc geometry.</summary>
+/// <summary>Bounded SHX VM emitting analytic immutable geometry, including extended BIGFONT primitives.</summary>
 public static class ShxGlyphCompiler
 {
     public static ShxGlyph Compile(ShxFont font, int number, bool vertical = false,
@@ -29,11 +29,12 @@ public static class ShxGlyphCompiler
     {
         private static readonly double[] Dx = [1, 1, 1, .5, 0, -.5, -1, -1, -1, -1, -1, -.5, 0, .5, 1, 1];
         private static readonly double[] Dy = [0, .5, 1, 1, 1, 1, 1, .5, 0, -.5, -1, -1, -1, -1, -1, -.5];
-        private readonly Stack<Vec3> positions = new();
+        private Stack<Vec3> positions = new();
         private readonly HashSet<int> active = new();
         private readonly ImmutableArray<CadContour>.Builder contours = ImmutableArray.CreateBuilder<CadContour>();
         private readonly ImmutableArray<Curve3>.Builder run = ImmutableArray.CreateBuilder<Curve3>();
         private Vec3 position; private double scale = 1; private bool down = true;
+        private Affine3 output = Affine3.Identity;
         private int work, curves; private Bounds2 bounds = Bounds2.Empty;
 
         internal void Call(int number)
@@ -60,7 +61,7 @@ public static class ShxGlyphCompiler
                         case 6:
                             if (!positions.TryPop(out var saved)) throw new FormatException("SHX position stack underflow.");
                             Flush(); position = saved; break;
-                        case 7: Call(a[0]); break;
+                        case 7: if (a.Length == 6 && a[0] == 0) Primitive(a); else Call(a[0]); break;
                         case 8: Move(a[0], a[1]); break;
                         case 9: for (var i = 0; i < a.Length; i += 2) { Tick(); Move(a[i], a[i + 1]); } break;
                         case 10: Arc(a[0] * scale, 0, 256, a[1]); break;
@@ -75,6 +76,29 @@ public static class ShxGlyphCompiler
                 }
             }
             finally { active.Remove(number); }
+        }
+        private void Primitive(ImmutableArray<int> args)
+        {
+            var info = font.BigFont;
+            if (info is null || info.CharacterWidth <= 0 || font.CapHeight <= 0)
+                throw new FormatException("Extended subshape placement requires BIGFONT nominal dimensions.");
+            Flush();
+            var savedPosition = position; var savedScale = scale; var savedOutput = output;
+            var savedPen = down; var savedStack = positions;
+            output = output * Affine3.Move(position + new Vec3(args[2] * scale, args[3] * scale)) *
+                Affine3.Scale(new(args[4] * scale / info.CharacterWidth, args[5] * scale / font.CapHeight, 1));
+            position = Vec3.Zero; scale = 1; positions = new();
+            try
+            {
+                Call(args[1]);
+                if (positions.Count != 0) throw new FormatException("Extended BIGFONT primitive leaves an unbalanced position stack.");
+                Flush();
+            }
+            finally
+            {
+                position = savedPosition; scale = savedScale; output = savedOutput;
+                down = savedPen; positions = savedStack;
+            }
         }
         private void Tick()
         {
@@ -111,16 +135,19 @@ public static class ShxGlyphCompiler
         }
         private void Emit(Curve3 curve)
         {
-            if (!curve.Start.IsFinite || !curve.End.IsFinite) throw new ArithmeticException("SHX curve is outside the coordinate range.");
             if (!down) { Flush(); return; }
+            if (output != Affine3.Identity) curve = curve.Transform(output);
+            if (!curve.Start.IsFinite || !curve.End.IsFinite) throw new ArithmeticException("SHX curve is outside the coordinate range.");
             if (++curves > limits.MaximumCurves) throw new InvalidOperationException("SHX curve budget exceeded.");
             run.Add(curve); bounds = bounds.Include(curve.Start).Include(curve.End);
             if (curve is EllipseCurve arc)
             {
-                // SHX arcs are in the XY plane. Include every cardinal point within the directed sweep.
-                for (var quadrant = 0; quadrant < 4; quadrant++)
+                // Extended primitive placement can produce a nonuniform ellipse. Use parameter extrema,
+                // not circular cardinal angles, so retained ink bounds contain the actual geometry.
+                var x = Math.Atan2(arc.V.X, arc.U.X); var y = Math.Atan2(arc.V.Y, arc.U.Y);
+                Include(x); Include(x + Math.PI); Include(y); Include(y + Math.PI);
+                void Include(double angle)
                 {
-                    var angle = quadrant * Math.PI / 2;
                     var distance = arc.Sweep >= 0 ? Positive(angle - arc.StartAngle) : Positive(arc.StartAngle - angle);
                     if (distance <= Math.Abs(arc.Sweep) + 1e-12)
                         bounds = bounds.Include(arc.Center + arc.U * Math.Cos(angle) + arc.V * Math.Sin(angle));

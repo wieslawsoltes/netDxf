@@ -6,7 +6,7 @@ namespace netDxf.Shadow.Rendering.Shx;
 
 public sealed partial class ShxEntityProjector
 {
-    private CadGeometry ProjectText(CadText text, ShxFontSet fonts, ShxFont fallback, out string? diagnostic)
+    private CadGeometry ProjectText(CadText text, ShxFontSet fonts, ShxFont fallback, out string? diagnostic, ShxBigFontBinding? bigFont = null)
     {
         var issues = new SortedSet<string>(StringComparer.Ordinal);
         var work = 0L; var curveCount = 0L; var instructionBudget = options.MaximumGlyphInstructions;
@@ -69,6 +69,7 @@ public sealed partial class ShxEntityProjector
         ShxGlyph Glyph(ShxFont font, int number)
         {
             if (++work > options.MaximumCharacters * 8L) throw new InvalidOperationException("SHX text measurement work budget exceeded.");
+            if (MappedGlyph(font, bigFont, number, false, ref instructionBudget, Issue) is { } mapped) return mapped;
             var authored = number;
             if (font.Encoding == ShxEncoding.Legacy)
                 number = number switch { 0xb0 => 256, 0xb1 => 257, 0x2205 => 258, _ => number };
