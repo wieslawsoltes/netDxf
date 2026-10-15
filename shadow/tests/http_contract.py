@@ -185,6 +185,23 @@ def run(dotnet: str, configuration: str) -> None:
             request(f'bigfont-map?revision={mapped["revision"]}', b'{"schemaVersion":2}', same, expected=400)
             assert state()['fontRevision'] == same['fontRevision']
             passed('BIGFONT mapping no-op stale and malformed uploads preserve published state')
+
+            latest = state()
+            request('perspective-view', {'revision': latest['revision'], 'mode': 'LensLength'}, expected=403)
+            request('perspective-view', {'revision': latest['revision'], 'mode': 'unknown'}, latest, expected=400)
+            camera = post('perspective-view', latest, mode='TargetPlaneHeight', workPlaneZ=5)
+            assert camera['perspectiveMode'] == 'TargetPlaneHeight' and camera['perspectiveWorkPlaneZ'] == 5
+            assert camera['revision'] == latest['revision'] and camera['undoCount'] == latest['undoCount']
+            request('graph', s=latest, expected=409)
+            passed('perspective view settings are source neutral and advance the guarded epoch')
+            same = post('perspective-view', camera, mode='TargetPlaneHeight', workPlaneZ=5)
+            assert same['changeVersion'] == camera['changeVersion'] and same['viewVersion'] == camera['viewVersion']
+            branched = post('branches', same, name='Perspective HTTP branch')
+            assert branched['perspectiveMode'] == 'TargetPlaneHeight' and branched['perspectiveWorkPlaneZ'] == 5
+            disabled = post('perspective-view', branched, mode='Disabled', workPlaneZ=0)
+            live = post('workspace', disabled, id='live')
+            assert live['perspectiveMode'] == 'TargetPlaneHeight' and live['perspectiveWorkPlaneZ'] == 5
+            passed('perspective context no-op branch inheritance and workspace isolation')
             complete = True
         finally:
             for stream in streams: stream.close()

@@ -90,8 +90,23 @@ def run(executable=None):
         p.wait_for_selector('#notification:visible')
         assert not p.evaluate("fixture.calls.some(c=>c.path==='bigfont-map')")
         p.close(); print('PASS ui/oversized-bigfont-map-rejected-before-request')
+
+        p=page(); p.locator('#perspective-mode').select_option('TargetPlaneHeight');p.locator('#perspective-plane').fill('5');p.locator('#perspective-apply').click()
+        p.wait_for_function("fixture.calls.some(c=>c.path==='perspective-view') && fixture.state().perspectiveMode==='TargetPlaneHeight'")
+        assert p.locator('#undo').is_disabled() and p.locator('#perspective-plane').input_value()=='5'
+        p.close();print('PASS ui/perspective-policy-control-is-source-neutral')
+        p=page();p.locator('#perspective-mode').select_option('TargetPlaneHeight');p.locator('#perspective-apply').click()
+        p.wait_for_function("fixture.state().perspectiveMode==='TargetPlaneHeight'")
+        p.wait_for_timeout(200)
+        box=p.locator('#viewport').bounding_box();x=box['x']+box['width']/2;y=box['y']+box['height']/2
+        p.mouse.move(x,y);p.mouse.down();p.wait_for_function("fixture.state().perspectiveSelection===true")
+        p.mouse.move(x+50,y+10,steps=5);p.mouse.up()
+        p.wait_for_function("fixture.calls.some(c=>c.path==='translate-perspective')")
+        assert not p.evaluate("fixture.calls.some(c=>c.path==='translate')")
+        assert p.evaluate("(()=>{const b=JSON.parse(fixture.calls.find(c=>c.path==='translate-perspective').body);return Number.isFinite(b.fromX)&&Number.isFinite(b.toX)&&b.fromX!==b.toX})()")
+        p.close();print('PASS ui/perspective-drag-sends-two-paper-points-not-an-affine-delta')
         assert not errors,errors
-        browser.close();print('DOM verification: 10 scenarios passed; no page errors.')
+        browser.close();print('DOM verification: 12 scenarios passed; no page errors.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--executable');args=parser.parse_args();run(args.executable)

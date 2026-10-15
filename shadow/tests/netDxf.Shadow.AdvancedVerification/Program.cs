@@ -36,6 +36,7 @@ ParagraphLayoutVerification.Register(tests);
 ParagraphIntegrationVerification.Register(tests);
 GalleryVerification.Register(tests);
 ViewportVerification.Register(tests);
+PerspectiveVerification.Register(tests);
 ShxVerification.Register(tests);
 VerticalShxVerification.Register(tests);
 BigFontVerification.Register(tests);
