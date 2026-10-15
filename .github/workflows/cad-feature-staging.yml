@@ -1,0 +1,51 @@
+name: Temporary CAD source verification
+on:
+  push:
+    branches: [workbench/cad-block-authoring]
+    paths: ['.github/cad-stage.json']
+permissions:
+  contents: read
+jobs:
+  import:
+    if: github.repository == 'wieslawsoltes/netDxf' && github.ref == 'refs/heads/workbench/cad-block-authoring' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      commit: ${{ steps.source.outputs.commit }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - id: source
+        run: python tools/ci/cad_stage.py source
+        env:
+          GH_TOKEN: ${{ github.token }}
+  native:
+    needs: import
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NUGET_PACKAGES: ${{ runner.temp }}/cad-nuget
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ needs.import.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: '8.0.x'
+      - name: Recover verified official SDK and project dependencies
+        run: python tools/ci/cad_stage.py tooling
+      - name: Verify native block authoring
+        run: dotnet run --project shadow/tests/netDxf.Shadow.AdvancedVerification/netDxf.Shadow.AdvancedVerification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: cad-native-workbench
+          path: |
+            ${{ runner.temp }}/cad-build-tools/
+            artifacts/
+          retention-days: 1
+          if-no-files-found: error

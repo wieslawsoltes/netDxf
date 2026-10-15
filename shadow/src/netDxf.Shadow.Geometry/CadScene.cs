@@ -75,6 +75,9 @@ public sealed record CadScene(Guid DocumentId, long Revision, string Layout, Imm
     ImmutableArray<ShadowDiagnostic> Diagnostics);
 public sealed record SceneOptions(string Layout = "Model", int MaximumDepth = 64, int MaximumOccurrences = 1_000_000, bool IncludeInvisible = false)
 {
+    /// <summary>Optional source block root for definition editors. Geometry stays in definition
+    /// coordinates; Layout remains presentation metadata and no source ownership is changed.</summary>
+    public ObjectId? RootBlock { get; init; }
     /// <summary>Consumer scale multiplied with authored LTSCALE and entity scale; never writes source state.</summary>
     public double LinetypeScale { get; init; } = 1;
     public CadLinetypeAlignment LinetypeAlignment { get; init; }

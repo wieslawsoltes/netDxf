@@ -21,7 +21,22 @@ public sealed partial class DraftingPlanner
     public DraftingPlan Plan(ShadowSnapshot snapshot, DraftingCommand command, string layout = "Model",
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(snapshot); ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var owner = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown drawing layout.");
+        return PlanInOwner(snapshot, command, owner, cancellationToken);
+    }
+
+    /// <summary>Plan against a named definition without changing the drawing's active layout.</summary>
+    public DraftingPlan PlanInBlock(ShadowSnapshot snapshot, DraftingCommand command, ObjectId definition,
+        CancellationToken cancellationToken = default)
+    {
+        DraftingBlocks.Definition(snapshot, definition);
+        return PlanInOwner(snapshot, command, definition, cancellationToken, restrictOwner: true);
+    }
+
+    private DraftingPlan PlanInOwner(ShadowSnapshot snapshot, DraftingCommand command, ObjectId owner, CancellationToken cancellationToken, bool restrictOwner = false)
+    {
+        ArgumentNullException.ThrowIfNull(command);
         ArgumentException.ThrowIfNullOrWhiteSpace(command.Name);
         var points = command.Points.IsDefault ? ImmutableArray<Vec3>.Empty : command.Points;
         var ids = command.Entities.IsDefault ? ImmutableArray<ObjectId>.Empty : command.Entities.Distinct().ToImmutableArray();
@@ -30,12 +45,17 @@ public sealed partial class DraftingPlanner
         foreach (var point in points) CheckPoint(point);
         foreach (var number in new[] { command.Value, command.Secondary, command.Rotation })
             if (!double.IsFinite(number)) throw new ArgumentException("Command parameters must be finite.");
-        foreach (var id in ids) DraftingGuard.Entity(snapshot, id);
+        foreach (var id in ids)
+        {
+            var entity = DraftingGuard.Entity(snapshot, id);
+            if (restrictOwner && entity["Owner"].Id != owner) throw new ArgumentException("The selection must belong to the current editing space.");
+        }
         cancellationToken.ThrowIfCancellationRequested();
         command = command with { Name = command.Name.Trim().ToUpperInvariant(), Points = points, Entities = ids };
-        var owner = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown drawing layout.");
         return command.Name switch
         {
+            "BLOCK" => CreateBlockInOwner(snapshot, new(command.Text ?? "", points.Length == 1 ? points[0] :
+                throw new ArgumentException("BLOCK requires one base point."), ids, Layer: command.Layer), owner, cancellationToken),
             "MOVE" or "ROTATE" or "SCALE" or "MIRROR" => Transform(snapshot, command, cancellationToken),
             "COPY" or "ARRAY" => Copy(snapshot, command, owner, cancellationToken),
             "ERASE" => Erase(snapshot, command),
@@ -160,6 +180,7 @@ public sealed partial class DraftingPlanner
                 if (command.Reference is not { } block || snapshot.Read(block).Object is not { Kind: ShadowObjectKind.Block } blockNode ||
                     blockNode["Name"] is not ShadowValue.Atom blockName || blockName.Text.StartsWith('*'))
                     throw new ArgumentException("Choose an existing named block definition.");
+                DraftingBlocks.ValidateReference(snapshot, owner, block, limits.MaximumClonedObjects, token);
                 var scale = command.Value == 0 ? 1 : Positive(command.Value);
                 Add("Insert", new() { ["Block"] = new ShadowValue.Reference(block), ["Position"] = V(p[0]),
                     ["Scale"] = V(new(scale, scale, scale)), ["Rotation"] = N(command.Rotation) }); break;

@@ -50,18 +50,18 @@ public sealed partial class RenderCompiler
             var linetypeRevision = linetypes.Revision;
             var key = (options, projectionVersion, textRevision, linetypeRevision);
             if (builder.IsSnapshotCacheable && cache.Scenes.TryGetValue(key, out var cached)) return cached;
-            var annotation = string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase)
+            var annotation = options.RootBlock is null && string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase)
                 ? options.ModelAnnotation?.Resolve(snapshot) : null;
             var effectiveScale = options.LinetypeScale * (annotation?.Multiplier ?? 1);
             if (!(effectiveScale > 0) || !double.IsFinite(effectiveScale))
                 throw new ArgumentOutOfRangeException(nameof(options), "Combined annotation and linetype scale is outside the numeric range.");
-            var scene = builder.Build(snapshot, new SceneOptions(options.Layout) { LinetypeScale = effectiveScale, LinetypeAlignment = options.LinetypeAlignment }, cancellationToken);
+            var scene = builder.Build(snapshot, new SceneOptions(options.Layout) { RootBlock = options.RootBlock, LinetypeScale = effectiveScale, LinetypeAlignment = options.LinetypeAlignment }, cancellationToken);
             if (annotation?.Diagnostic is { } message)
                 scene = scene with { Diagnostics = scene.Diagnostics.Add(new("linetype.annotation", message)) };
             var previousKey = (snapshot.DocumentId, options);
             previousScenes.TryGetValue(previousKey, out var previous);
             var result = CompileCore(scene, new(options.Tolerance), (o, s) => CompileCached(o, s, textRevision), previous, linetypes, cancellationToken);
-            if (options.IncludePaperViewports && !string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase))
+            if (options.RootBlock is null && options.IncludePaperViewports && !string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase))
                 result = paperSpace.Compose(snapshot, result, options, (modelSnapshot, tolerance, scale) => Compile(modelSnapshot,
                     options with { Layout = "Model", Tolerance = tolerance, IncludePaperViewports = false,
                         LinetypeScale = options.LinetypeScale * scale, ModelAnnotation = null, ViewportOverrides = null }, cancellationToken), cancellationToken);
