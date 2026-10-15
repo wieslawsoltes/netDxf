@@ -1,10 +1,20 @@
+using netDxf.Shadow.Exchange.Dwg;
+
 namespace netDxf.Shadow.Studio;
+
+public sealed record CadSaveRequest(long Revision, string Format = "dxf", string? Version = null);
 
 internal static class StudioCadHttp
 {
     public static void MapCadWorkspace(this WebApplication app)
     {
         var routes = app.MapGroup("/api/cad");
+        routes.MapGet("/formats", () => new
+        {
+            provider = DrawingExchange.Provider,
+            dwgWriteVersions = DrawingExchange.WriteVersions,
+            defaultDwgVersion = "AC1032"
+        });
         routes.MapGet("/documents", (StudioDocumentHub hub) => hub.Documents());
         routes.MapPost("/documents", (StudioDocumentHub hub, CadNewDocumentRequest request) => hub.Create(request));
         routes.MapPost("/{id}/close", (string id, StudioDocumentHub hub, HttpRequest http, CadCloseDocumentRequest request) => hub.Close(id, http, request));
@@ -60,12 +70,33 @@ internal static class StudioCadHttp
                 var image = s.CadRender(width, height, cx, cy, scale, backend ?? "skia", white ?? false, revision, snapshot, token);
                 return Results.Bytes(image.Bytes, image.ContentType);
             })));
-        routes.MapPost("/{id}/save", (string id, StudioDocumentHub hub, HttpRequest http, RevisionRequest request) =>
-            Results.File(hub.Save(id, http, request.Revision), "application/dxf", "drawing.dxf"));
+        routes.MapPost("/{id}/save", (string id, StudioDocumentHub hub, HttpRequest http, CadSaveRequest request, CancellationToken token) =>
+        {
+            if (request.Format == "dxf")
+                return Results.File(hub.Save(id, http, request.Revision), "application/dxf", "drawing.dxf");
+            if (request.Format != "dwg") throw new ArgumentException("Choose DXF or DWG output.");
+            var version = request.Version ?? "AC1032";
+            if (!DrawingExchange.WriteVersions.Contains(version)) throw new ArgumentException("Unsupported DWG output version.");
+            var bytes = hub.Save(id, http, request.Revision, dxf => new DrawingExchange().Convert(
+                dxf, DrawingEncoding.Dxf, DrawingEncoding.Dwg, version, token).Content.ToArray());
+            return Results.File(bytes, "application/acad", "drawing.dwg");
+        });
         routes.MapPost("/{id}/load", async (string id, StudioDocumentHub hub, HttpRequest http, long revision, string name, CancellationToken token) =>
         {
+            // Reject stale identities before spending conversion work. Conversion
+            // holds no source references; Load rechecks the original receipt afterward.
+            hub.Use(id, s => StudioHttp.Execute(s, http, () =>
+            {
+                if (s.CadRevision != revision) throw new ShadowConflictException("Drawing changed before import.");
+                return true;
+            }));
             using var stream = await ReadBounded(http, 20 * 1024 * 1024, token);
-            return hub.Load(id, http, stream, revision, name);
+            var bytes = stream.ToArray();
+            if (!DrawingExchange.IsDwg(bytes)) return hub.Load(id, http, stream, revision, name);
+            var converted = new DrawingExchange().Convert(bytes, DrawingEncoding.Dwg, DrawingEncoding.Dxf, cancellationToken: token);
+            token.ThrowIfCancellationRequested();
+            using var dxf = new MemoryStream(converted.Content.ToArray(), writable: false);
+            return hub.Load(id, http, dxf, revision, name);
         });
         routes.MapPost("/{id}/font", async (string id, StudioDocumentHub hub, HttpRequest http, long revision, string name, CancellationToken token) =>
         {

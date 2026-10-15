@@ -1,3 +1,5 @@
+import { drawingFileName, inspectDrawing } from './exchange-contracts.mjs';
+import { saveDrawingAs } from './exchange-ui.mjs';
 import { authoringRequest } from './authoring-contracts.mjs';
 import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
 import { CadClient } from './client.mjs';
@@ -71,7 +73,7 @@ async function submit(text) {
   }
   if(!value) return start(lastCommand);
   const match=value.match(/^(\S+)(?:\s+([\s\S]*))?$/), name=match[1].toUpperCase(), rest=match[2]||'';
-  const aliases={U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot'};
+  const aliases={U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save-as',SAVEAS:'save-as',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]) return action(aliases[name]);
   await start(name);
@@ -220,7 +222,7 @@ async function merge(branch) {
   }
 }
 function download(blob,name) { const url=URL.createObjectURL(blob), a=el('a',{href:url,download:name});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000); }
-async function save() { editable();const blob=await client.mutate('save');download(blob,documents.find(d=>d.id===client.id)?.name||'drawing.dxf');await documentTabs();log('DXF download created. Keep the downloaded file to retain this session.','success'); }
+async function save() { editable();const blob=await client.mutate('save');download(blob,drawingFileName(documents.find(d=>d.id===client.id)?.name||'Drawing','dxf'));await documentTabs();log('DXF download created. Keep the downloaded file to retain this session.','success'); }
 async function exportImage(backend) {
   const query=new URLSearchParams({width:viewport.canvas.width,height:viewport.canvas.height,cx:viewport.camera.x,cy:viewport.camera.y,scale:viewport.camera.scale*viewport.dpr,backend,white:'true',revision:client.state.revision});
   if(snapshot!==null)query.set('snapshot',snapshot);
@@ -239,7 +241,7 @@ async function action(name) {
   if(isAuthoringAction(name)){cancel(false);return authoringDialog(name,{client,editable,edit,dialog,showPalette,currentLayer});}
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
   switch(name) {
-    case 'new':return newDocument(); case 'demo':return newDocument(true); case 'open':$('open-file').click();return;case 'save':return save();case 'font':$('font-file').click();return;
+    case 'new':return newDocument(); case 'demo':return newDocument(true); case 'open':$('open-file').click();return;case 'save':return save();case 'save-as':editable();return saveDrawingAs({client,dialog,inputRow,download,documentName:documents.find(d=>d.id===client.id)?.name||'Drawing',refreshDocuments:documentTabs,log,editable});case 'font':$('font-file').click();return;
     case 'undo':case 'redo':cancel(false);return edit(`history/${name}`);
     case 'fit':viewport.fit();return;case 'regen':await client.refresh();viewport.requestFrame();return;
     case 'zoom-in':viewport.camera.scale=Math.min(1e8,viewport.camera.scale*1.5);viewport.changed();return;
@@ -262,7 +264,7 @@ async function action(name) {
     case 'export-png':return exportImage('skia');case 'export-svg':return exportImage('svg');
     case 'legacy':window.open('diagnostics.html','_blank','noopener');return;
     case 'reset-ui':for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('workspace').className='workspace';$('studio').className='';document.documentElement.style.removeProperty('--palette-width');document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
-    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG, 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
+    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG import uses signature detection; SAVEAS offers host-declared DWG profiles with strict conversion checks. 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
     default:throw new Error(`Unknown workspace action: ${name}`);
   }
 }
@@ -281,7 +283,7 @@ function contextMenu(x,y) {
 }
 $('quick-access').replaceChildren(...[['new','New (Ctrl+N)'],['open','Open (Ctrl+O)'],['save','Save (Ctrl+S)'],['undo','Undo (Ctrl+Z)'],['redo','Redo (Ctrl+Y)']].map(([name,label])=>{const b=tool(name,label,true);b.querySelector('span').remove();return b;}));
 $('ribbon-tabs').replaceChildren(...tabs.map(name=>button(name,()=>{tab=name;drawRibbon();$('ribbon-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.textContent===name)));},{role:'tab','aria-selected':name===tab})));
-$('file-menu').addEventListener('click',()=>{const menu=$('context-menu');menu.replaceChildren(...[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF…'],['save','Save DXF'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>button(label,()=>action(name))));menu.style.left='3px';menu.style.top='32px';menu.hidden=false;});
+$('file-menu').addEventListener('click',()=>{const menu=$('context-menu');menu.replaceChildren(...[['new','New drawing'],['demo','New sample drawing'],['open','Open DXF / DWG…'],['save','Save DXF'],['save-as','Save drawing as…'],['export-png','Export PNG'],['export-svg','Export SVG'],['legacy','Advanced diagnostics']].map(([name,label])=>button(label,()=>action(name))));menu.style.left='3px';menu.style.top='32px';menu.hidden=false;});
 document.addEventListener('click',e=>{const command=e.target.closest('[data-command]'),target=e.target.closest('[data-action]');if(command)run(()=>start(command.dataset.command));else if(target)run(()=>action(target.dataset.action));if(!e.target.closest('#file-menu'))$('context-menu').hidden=true;});
 $('command-form').addEventListener('submit',e=>{e.preventDefault();const text=$('command-input').value;$('command-input').value='';run(()=>submit(text));});
 $('command-input').addEventListener('input',()=>{
@@ -290,8 +292,8 @@ $('command-input').addEventListener('input',()=>{
 });
 $('backend').addEventListener('change',e=>{viewport.backend=e.target.value;viewport.requestFrame();});
 $('open-file').addEventListener('change',e=>run(async()=>{
-  const file=e.target.files[0];e.target.value='';if(!file)return;if(file.size>20*1024*1024)throw new Error('DXF upload limit is 20 MiB.');
-  const created=await client.create(file.name,false);await activate(created.id);await client.mutate('load',file,{binary:true,query:{name:file.name}});viewport.fit();await documentTabs();log(`Opened ${file.name}.`,'success');
+  const file=e.target.files[0];e.target.value='';if(!file)return;const format=await inspectDrawing(file);
+  const created=await client.create(file.name,false);await activate(created.id);await client.mutate('load',file,{binary:true,query:{name:file.name}});viewport.fit();await documentTabs();log(`Opened ${format.toUpperCase()} drawing ${file.name}.`,'success');
 }));
 $('font-file').addEventListener('change',e=>run(async()=>{const file=e.target.files[0];e.target.value='';if(!file)return;editable();if(file.size>4*1024*1024)throw new Error('Font upload limit is 4 MiB.');await client.mutate('font',file,{binary:true,query:{name:file.name}});log(`Loaded ${file.name}.`,'success');}));
 document.addEventListener('keydown',e=>{

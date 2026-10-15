@@ -19,6 +19,7 @@ import traceback
 import urllib.request
 import ezdxf
 from cad_authoring_browser import verify_authoring
+from cad_exchange_browser import verify_exchange
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -244,6 +245,7 @@ def verify(url: str, executable: str | None = None):
             check('native SVG export', b'<svg' in svg.read_bytes())
             page.get_by_role('tab', name='Home', exact=True).click()
             verify_authoring(page, url, OUTPUT, state, command, wait_state, idle, check)
+            verify_exchange(page, url, OUTPUT, state, command, wait_state, idle, check)
             page.set_viewport_size({'width': 900, 'height': 680})
             page.screenshot(path=str(OUTPUT/'workspace-compact.png'))
             # Read Chromium layout metrics without injecting/evaluating a script.

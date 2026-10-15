@@ -25,7 +25,10 @@ public sealed class DrawingExchangeException(string message, ImmutableArray<Draw
 public sealed class DrawingExchange
 {
     public const string Provider = "ACadSharp 3.8.0";
-    public static ImmutableArray<string> WriteVersions { get; } = ["AC1014", "AC1015", "AC1018", "AC1024", "AC1027", "AC1032"];
+    // AC1014 is deliberately not advertised: the pinned provider's shared-INSERT
+    // round trip failed with a missing block handle. Never publish that unqualified
+    // profile or silently substitute another version. Read admission is independent.
+    public static ImmutableArray<string> WriteVersions { get; } = ["AC1015", "AC1018", "AC1024", "AC1027", "AC1032"];
     private readonly DrawingExchangeLimits limits;
     public DrawingExchange(DrawingExchangeLimits? limits = null)
     {
@@ -67,15 +70,17 @@ public sealed class DrawingExchange
             var sourceVersion = document.Header.Version.ToString();
             var original = Inventory(document, cancellationToken);
             if (target == DrawingEncoding.Dwg) document.Header.Version = Enum.Parse<ACadVersion>(outputDwgVersion);
-            // Use modern DXF as the transport into netDxf, without changing the live source document.
             else document.Header.Version = ACadVersion.AC1032;
             stage = "write-target";
             var encoded = Write(document, target, Notify, cancellationToken);
             stage = "read-target";
             var reread = Read(encoded, target, Notify, cancellationToken);
+            var outputVersion = reread.Header.Version.ToString();
             Equivalent(original, Inventory(reread, cancellationToken));
-            // Both directions are checked through the actual netDxf reader before adoption/download.
+            // Use modern DXF for the native validation transport regardless of the
+            // chosen DWG profile. This never changes the already encoded payload.
             stage = "validate-netdxf";
+            reread.Header.Version = ACadVersion.AC1032;
             var dxf = target == DrawingEncoding.Dxf ? encoded : Write(reread, DrawingEncoding.Dxf, Notify, cancellationToken);
             using (var stream = new MemoryStream(dxf, writable: false))
             {
@@ -83,7 +88,7 @@ public sealed class DrawingExchange
                 Equivalent(original, Inventory(native, cancellationToken));
             }
             cancellationToken.ThrowIfCancellationRequested();
-            return new(encoded.ToImmutableArray(), target, sourceVersion, reread.Header.Version.ToString(), diagnostics.ToImmutable(),
+            return new(encoded.ToImmutableArray(), target, sourceVersion, outputVersion, diagnostics.ToImmutable(),
                 original.Where(p => p.Key.Type != "#DEFINITION").Sum(p => p.Value), original.Keys.Select(k => k.Block).Distinct(StringComparer.OrdinalIgnoreCase).Count(n => !n.StartsWith('*')));
         }
         catch (OperationCanceledException) { throw; }
@@ -94,7 +99,7 @@ public sealed class DrawingExchange
 
     private CadDocument Read(byte[] bytes, DrawingEncoding encoding, NotificationEventHandler notify, CancellationToken token)
     {
-        using var stream = new BudgetStream(bytes, limits.MaximumInputBytes > limits.MaximumOutputBytes ? limits.MaximumInputBytes : limits.MaximumOutputBytes, token);
+        using var stream = new BudgetStream(bytes, Math.Max(limits.MaximumInputBytes, limits.MaximumOutputBytes), token);
         if (encoding == DrawingEncoding.Dwg)
         {
             using var reader = new DwgReader(stream, notify);
@@ -112,8 +117,7 @@ public sealed class DrawingExchange
         else { using var writer = new DxfWriter(stream, document, false); writer.OnNotification += notify; writer.Write(); }
         token.ThrowIfCancellationRequested(); return stream.ToArray();
     }
-    // This explicit inventory is deliberately narrower than the codec's full catalogue.
-    // Opaque solids, images/underlays and proxies require their own preservation contracts.
+    // Opaque solids, images/underlays and proxies require separate preservation contracts.
     private static readonly HashSet<string> EntityTypes = new(StringComparer.OrdinalIgnoreCase)
     { "LINE", "ARC", "CIRCLE", "ELLIPSE", "LWPOLYLINE", "POLYLINE", "POINT", "SPLINE", "TEXT", "MTEXT",
       "INSERT", "ATTDEF", "ATTRIB", "HATCH", "DIMENSION", "SOLID", "TRACE", "3DFACE", "VIEWPORT", "LEADER", "MLINE", "RAY", "XLINE", "TOLERANCE" };
@@ -140,10 +144,14 @@ public sealed class DrawingExchange
         foreach (var block in document.Blocks)
         {
             token.ThrowIfCancellationRequested(); if (++blocks > limits.MaximumBlocks) throw new ArgumentException("Block budget exceeded.");
-            // AttributeDefinition derives from DxfObject, not EntityObject. Count
-            // both public collections without dropping attribute definitions.
-            foreach (var entity in block.Entities.Cast<DxfObject>().Concat(block.AttributeDefinitions.Values))
+            // ATTDEF derives from DxfObject rather than EntityObject. netDxf also
+            // stores the paper-space VIEWPORT with id 1 on Layout, outside Entities.
+            IEnumerable<DxfObject> objects = block.Entities.Cast<DxfObject>().Concat(block.AttributeDefinitions.Values);
+            if (block.Record.Layout?.Viewport is { } paperViewport) objects = objects.Append(paperViewport);
+            var seen = new HashSet<DxfObject>(ReferenceEqualityComparer.Instance);
+            foreach (var entity in objects)
             {
+                if (!seen.Add(entity)) continue;
                 token.ThrowIfCancellationRequested(); if (++count > limits.MaximumEntities) throw new ArgumentException("Entity budget exceeded.");
                 Increment(result, block.Name, entity.CodeName);
             }
@@ -157,11 +165,15 @@ public sealed class DrawingExchange
     }
     private static void Equivalent(Dictionary<(string Block, string Type), int> before, Dictionary<(string Block, string Type), int> after)
     {
-        if (before.Count != after.Count || before.Any(pair => !after.TryGetValue(pair.Key, out var count) || count != pair.Value))
-            throw new InvalidDataException("Converted drawing changed the per-block entity inventory or named definitions; no partial document was adopted.");
+        var changed = before.Keys.Concat(after.Keys).Distinct().Where(key => before.GetValueOrDefault(key) != after.GetValueOrDefault(key))
+            .Take(8).Select(key => $"{key.Block}/{key.Type}: {before.GetValueOrDefault(key)} -> {after.GetValueOrDefault(key)}").ToArray();
+        if (changed.Length == 0) return;
+        var detail = string.Join("; ", changed);
+        if (detail.Length > 4096) detail = detail[..4096];
+        throw new InvalidDataException("Converted drawing changed the per-block entity inventory or named definitions; no partial document was adopted. " + detail);
     }
 
-    /// <summary>Bounds stream I/O and polls cancellation. Third-party decompression is not a hard process-memory sandbox.</summary>
+    /// <summary>Bounds stream I/O and polls cancellation. Decompression is not a hard process-memory sandbox.</summary>
     private sealed class BudgetStream : MemoryStream
     {
         private readonly int maximum; private readonly CancellationToken token;

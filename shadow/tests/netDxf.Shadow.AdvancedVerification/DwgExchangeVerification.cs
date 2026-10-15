@@ -14,6 +14,16 @@ internal static class DwgExchangeVerification
     {
         foreach (var version in DrawingExchange.WriteVersions)
             tests.Add(($"exchange/DWG {version} native primitives and shared blocks round trip", () => Roundtrip(version)));
+        tests.Add(("exchange/unqualified AC1014 output is refused without substituting another profile", () =>
+        {
+            Require(!DrawingExchange.WriteVersions.Contains("AC1014"), "Do not advertise a failed legacy qualification");
+            try
+            {
+                new DrawingExchange().Convert(Dxf(Fixture()), DrawingEncoding.Dxf, DrawingEncoding.Dwg, "AC1014");
+                throw new InvalidOperationException("Unqualified legacy export unexpectedly succeeded");
+            }
+            catch (ArgumentException error) { Require(error.Message.Contains("Unsupported DWG output version"), "Explicit profile admission refusal"); }
+        }));
         tests.Add(("exchange/signature profile input budget and cancellation refusals", () =>
         {
             var codec = new DrawingExchange(); var bytes = Dxf(Fixture());
@@ -54,9 +64,11 @@ internal static class DwgExchangeVerification
         var encoded = codec.Convert(input,DrawingEncoding.Dxf,DrawingEncoding.Dwg,version);
         Require(input.SequenceEqual(original), "Codec mutated caller input");
         Require(Encoding.ASCII.GetString(encoded.Content.AsSpan()[..6])==version && encoded.Encoding==DrawingEncoding.Dwg, "Real DWG signature");
+        Require(encoded.OutputVersion == version, "Validation transport must not replace output profile identity");
         var decoded = codec.Convert(encoded.Content.ToArray(),DrawingEncoding.Dwg,DrawingEncoding.Dxf);
         using var stream = new MemoryStream(decoded.Content.ToArray()); var loaded = DxfDocument.Load(stream)!;
         Require(loaded is not null && loaded.Entities.All.Count()==4, "Model-space root inventory");
+        Require(loaded.Layouts.Any(l => l.IsPaperSpace && l.Viewport is not null), "Paper-space metadata viewport survives native transport");
         var line = loaded.Entities.Lines.Single(); Near(line.StartPoint.X,-12.5); Near(line.StartPoint.Y,17.25); Near(line.EndPoint.X,42.5);
         Require(line.Layer.Name=="GEOMETRY", "Layer assignment");
         var circle = loaded.Entities.Circles.Single(); Near(circle.Center.X,25);Near(circle.Center.Y,35);Near(circle.Radius,7.5);
