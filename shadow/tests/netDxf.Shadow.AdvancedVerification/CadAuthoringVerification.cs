@@ -42,6 +42,23 @@ internal static class CadAuthoringVerification
     internal static void Register(List<(string Name, Action Run)> tests)
     {
         void Add(string name, Action test) => tests.Add(("authoring/" + name, test));
+        foreach (var firstType in new[] { "Block", "Insert", "Line", "AciColor" })
+            Add("block constructor resolution is independent of patch order: " + firstType, () =>
+            {
+                for (var iteration = 0; iteration < 8; iteration++)
+                {
+                    var line = new Line(Vector3.Zero, new Vector3(10, 0, 0)) { Color = new AciColor((byte)30, (byte)40, (byte)50) };
+                    var f = new Drawing(line).Attach();
+                    var plan = f.Planner.PlanBlockDefinition(f.Source.Current, new("Ordered", Vec3.Zero, f.Ids));
+                    var changes = plan.Patch.Changes.OrderBy(c => c.After?.Type == firstType ? 0 : 1)
+                        .ThenBy(c => c.Id.Value, StringComparer.Ordinal).ToImmutableArray();
+                    (plan with { Patch = plan.Patch with { Changes = changes } }).Execute(f.Editor);
+                    Require(f.Document.Entities.Inserts.Single().Block.Name == "Ordered");
+                    Require(f.Document.Blocks["Ordered"].Entities.Single() is Line copied && copied.Color.B == 50);
+                    f.Editor.Undo(); Require(ReferenceEquals(f.Document.Entities.Lines.Single(), line));
+                    f.Editor.Redo(); Require(f.Document.Entities.Inserts.Single().Block.Entities.Count == 1);
+                }
+            });
         Add("block base point preserves source appearance and canonical undo", () =>
         {
             var line = new Line(new Vector3(10,20,0), new Vector3(30,20,0)) { Color = new AciColor((byte)12,(byte)45,(byte)123) };
@@ -190,6 +207,33 @@ internal static class CadAuthoringVerification
             Refuse(()=>DraftingHatches.Create(before,new(Polygons:[[new(0,0),new(10,0),new(10,10)]],Pattern:new(Scale:double.NaN))));
             Refuse(()=>DraftingHatches.Create(before,new(Polygons:[[new(0,0),new(10,0),new(10,10)]]),cancellationToken:new(true)));
             Require(ReferenceEquals(before,f.Source.Current) && f.Editor.State.UndoCount==0);
+        });
+        Add("hatch read model retains description origin and custom families", () =>
+        {
+            var f = new Drawing(Rectangle(0,0,20,20)).Attach();
+            var pattern = new DraftingHatchPattern("CUSTOM", 2, 35, new(3,4), CadHatchIslandStyle.Ignore,
+                [new(25, Vec3.Zero, new(.5,3), [2,-1])], "Retained pattern description");
+            var plan = DraftingHatches.Create(f.Source.Current, new(f.Ids, Pattern: pattern)); plan.Execute(f.Editor);
+            var captured = DraftingHatches.ReadPattern(f.Source.Current, plan.Created.Single());
+            Require(captured.Name == "CUSTOM" && captured.Description == pattern.Description && captured.Islands == pattern.Islands);
+            Near(captured.Scale,2); Near(captured.Angle,35); Near(captured.Origin.X,3); Near(captured.Origin.Y,4);
+            Require(captured.Lines.Single().Dashes.SequenceEqual(new double[] { 2,-1 }));
+        });
+        Add("redefine without a description preserves authored block metadata", () =>
+        {
+            var block = new Block("Metadata") { Description = "Original description" }; block.Entities.Add(new Circle(Vector3.Zero,2));
+            var f = new Drawing(new Insert(block,Vector3.Zero),new Line(Vector3.Zero,Vector3.UnitX)).Attach();
+            var line = f.Source.Current.DrawingEntities().Single(e => e.Type == "Line").Id!.Value;
+            f.Planner.PlanBlockDefinition(f.Source.Current,new("Metadata",Vec3.Zero,[line],BlockSourceDisposition.Retain,BlockId(f,"Metadata"))).Execute(f.Editor);
+            Require(block.Description == "Original description");
+        });
+        Add("Studio hatch edit refuses source identities outside the current selection", () =>
+        {
+            using var studio = new Studio(false);
+            studio.CadCreateHatch(new(studio.CadRevision,new(Polygons:[[new(0,0),new(10,0),new(10,10)]])));
+            var before = studio.CadRevision;
+            Refuse(() => studio.CadChangeHatchPattern(new(before,new("LINE"),[new("H:missing")])));
+            Require(studio.CadRevision == before);
         });
         Add("Studio block and hatch operations use current selected sources", () =>
         {

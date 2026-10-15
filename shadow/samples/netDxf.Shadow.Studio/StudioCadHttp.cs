@@ -17,6 +17,8 @@ internal static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadRenameBlock(request))));
         routes.MapPost("/{id}/hatch/create", (string id, StudioDocumentHub hub, HttpRequest http, CadHatchAuthoringRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadCreateHatch(request, token))));
+        routes.MapGet("/{id}/hatch/pattern", (string id, StudioDocumentHub hub, HttpRequest http, long revision) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadReadHatchPattern(revision))));
         routes.MapPost("/{id}/hatch/pattern", (string id, StudioDocumentHub hub, HttpRequest http, CadHatchPatternRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadChangeHatchPattern(request, token))));
         routes.MapPost("/{id}/select", (string id, StudioDocumentHub hub, HttpRequest http, CadSelectionRequest request, CancellationToken token) =>

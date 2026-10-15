@@ -6,7 +6,7 @@ namespace netDxf.Shadow.Studio;
 public sealed record CadBlockDefinitionRequest(long Revision, BlockDefinitionRequest Definition);
 public sealed record CadBlockRenameRequest(long Revision, ObjectId Block, string Name);
 public sealed record CadHatchAuthoringRequest(long Revision, HatchAuthoringRequest Hatch);
-public sealed record CadHatchPatternRequest(long Revision, DraftingHatchPattern Pattern);
+public sealed record CadHatchPatternRequest(long Revision, DraftingHatchPattern Pattern, ImmutableArray<ObjectId> Entities = default);
 
 public sealed partial class Studio
 {
@@ -39,11 +39,20 @@ public sealed partial class Studio
             return ApplyAuthoring(DraftingHatches.Create(Current, hatch, layout, token), selected);
         }
     }
+    public object CadReadHatchPattern(long revision)
+    {
+        lock (gate)
+        {
+            Check(revision); var selected = CadSelected(Scene());
+            if (selected.Length != 1) return new { mixed = true, pattern = (DraftingHatchPattern?)null };
+            return new { mixed = false, entity = selected[0].Value, pattern = DraftingHatches.ReadPattern(Current, selected[0]) };
+        }
+    }
     public object CadChangeHatchPattern(CadHatchPatternRequest request, CancellationToken token = default)
     {
         lock (gate)
         {
-            Check(request.Revision); var selected = CadSelected(Scene());
+            Check(request.Revision); var selected = AuthoringSelection(request.Entities, CadSelected(Scene()));
             return ApplyAuthoring(DraftingHatches.ChangePattern(Current, selected, request.Pattern, token), selected);
         }
     }

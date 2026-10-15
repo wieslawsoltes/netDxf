@@ -1,3 +1,4 @@
+import { authoringCommands } from './authoring-contracts.mjs';
 /** Host-independent precision input, camera math and command state. No DOM, eval or network. */
 export const point = (x = 0, y = 0, z = 0) => ({ x, y, z });
 export const add = (a, b) => point(a.x + b.x, a.y + b.y, (a.z ?? 0) + (b.z ?? 0));
@@ -76,6 +77,7 @@ const N = (key, prompt, defaultValue, min = 1e-9, max = 1e12, integer = false) =
 const T = (key, prompt, defaultValue = '') => ({ kind: 'text', key, prompt, defaultValue });
 const spec = (aliases, label, steps = [], extra = {}) => ({ aliases: aliases.split(' '), label, steps, ...extra });
 export const commands = Object.freeze({
+  ...authoringCommands,
   LINE: spec('L', 'Line', [P('Specify first point')], { chain: 2 }),
   PLINE: spec('PL', 'Polyline', [P('Specify start point')], { chain: 2 }),
   RECTANG: spec('REC RECTANGLE', 'Rectangle', [P('Specify first corner'), P('Specify opposite corner')]),

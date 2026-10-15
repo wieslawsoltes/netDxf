@@ -7,7 +7,7 @@ namespace netDxf.Shadow.Drafting;
 public sealed record DraftingHatchLine(double Angle, Vec3 Origin, Vec3 Delta, ImmutableArray<double> Dashes = default);
 public sealed record DraftingHatchPattern(string Name = "SOLID", double Scale = 1, double Angle = 0,
     Vec3 Origin = default, CadHatchIslandStyle Islands = CadHatchIslandStyle.Normal,
-    ImmutableArray<DraftingHatchLine> Lines = default);
+    ImmutableArray<DraftingHatchLine> Lines = default, string Description = "");
 public sealed record HatchAuthoringRequest(ImmutableArray<ObjectId> Boundaries = default,
     ImmutableArray<ImmutableArray<Vec3>> Polygons = default, DraftingHatchPattern? Pattern = null, string Layer = "0");
 
@@ -113,6 +113,29 @@ public static class DraftingHatches
         }
     }
 
+    /// <summary>Reads complete editable pattern data without retaining mutable source objects.</summary>
+    public static DraftingHatchPattern ReadPattern(ShadowSnapshot snapshot, ObjectId id)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var entity = DraftingGuard.Entity(snapshot, id, false);
+        var pattern = entity["Pattern"];
+        if (entity.Type != "Hatch" || pattern.Type != "HatchPattern")
+            throw new NotSupportedException("This editor reads line-family and solid hatch patterns, not gradient definitions.");
+        var definitions = pattern["LineDefinitions"].Items.Take(129).ToArray();
+        if (definitions.Length > 128) throw new NotSupportedException("The source pattern exceeds the editing line-family budget.");
+        var lines = ImmutableArray.CreateBuilder<DraftingHatchLine>();
+        foreach (var line in definitions)
+        {
+            var dashes = line["DashPattern"].Items.Take(129).Select(v => v.Number()).ToImmutableArray();
+            if (dashes.Length > 128) throw new NotSupportedException("The source pattern exceeds the editing dash budget.");
+            lines.Add(new(line["Angle"].Number(), line["Origin"].Vector(), line["Delta"].Vector(), dashes));
+        }
+        if (!Enum.TryParse<CadHatchIslandStyle>(pattern["Style"].Text, out var style) || !Enum.IsDefined(style))
+            throw new NotSupportedException("Unknown source hatch island policy.");
+        return new(pattern["Name"].Text, pattern["Scale"].Number(1), pattern["Angle"].Number(),
+            pattern["Origin"].Vector(), style, lines.ToImmutable(), pattern["Description"].Text);
+    }
+
     public static DraftingPlan ChangePattern(ShadowSnapshot snapshot, ImmutableArray<ObjectId> hatches,
         DraftingHatchPattern pattern, CancellationToken cancellationToken = default)
     {
@@ -158,6 +181,7 @@ public static class DraftingHatches
     {
         if (!double.IsFinite(pattern.Scale) || pattern.Scale < 1e-9 || pattern.Scale > 1e9 || !double.IsFinite(pattern.Angle) ||
             !Enum.IsDefined(pattern.Islands)) throw new ArgumentException("Invalid hatch scale, angle or island policy.");
+        if (pattern.Description is null || pattern.Description.Length > 4096) throw new ArgumentException("Pattern descriptions are limited to 4096 characters.");
         Finite(pattern.Origin); RequireXY(pattern.Origin);
         var lines = ResolvePattern(pattern); var native = ImmutableArray.CreateBuilder<ShadowValue>();
         var compiled = ImmutableArray.CreateBuilder<CadPatternLine>();
@@ -183,6 +207,7 @@ public static class DraftingHatches
             new(MaximumRows: 100_000, MaximumSegments: 200_000, MaximumBoundaryPoints: 100_000), token);
         return edit.Create("netDxf.Entities.HatchPattern", ShadowObjectKind.Object, new Dictionary<string, ShadowValue>
         {
+            ["Description"] = ShadowValue.From(pattern.Description),
             ["Name"] = ShadowValue.From(pattern.Name.Trim().ToUpperInvariant()), ["Scale"] = N(pattern.Scale), ["Angle"] = N(angle),
             ["Origin"] = V(pattern.Origin), ["Style"] = E("HatchStyle", pattern.Islands.ToString()),
             ["LineDefinitions"] = new ShadowValue.Sequence(native.ToImmutable()), ["Type"] = E("HatchType", "Custom")
