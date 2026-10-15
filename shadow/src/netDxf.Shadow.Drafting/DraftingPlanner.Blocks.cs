@@ -9,7 +9,7 @@ public enum BlockSourceDisposition { Retain, ConvertToInsert, Delete }
 /// Redefine preserves the definition identity, so all existing INSERTs observe the new contents.</summary>
 public sealed record BlockDefinitionRequest(string Name, Vec3 BasePoint, ImmutableArray<ObjectId> Entities,
     BlockSourceDisposition Disposition = BlockSourceDisposition.ConvertToInsert,
-    ObjectId? Redefine = null, string Description = "", string InsertLayer = "0");
+    ObjectId? Redefine = null, string? Description = null, string InsertLayer = "0");
 
 public sealed partial class DraftingPlanner
 {
@@ -19,7 +19,7 @@ public sealed partial class DraftingPlanner
         ArgumentNullException.ThrowIfNull(snapshot); ArgumentNullException.ThrowIfNull(request);
         if (!Enum.IsDefined(request.Disposition)) throw new ArgumentOutOfRangeException(nameof(request));
         ValidateBlockName(request.Name); CheckPoint(request.BasePoint);
-        if (request.Description is null || request.Description.Length > 4096)
+        if (request.Description?.Length > 4096)
             throw new ArgumentException("Block descriptions are limited to 4096 characters.");
         var ids = request.Entities.IsDefault ? [] : request.Entities.Distinct().ToImmutableArray();
         if (ids.IsEmpty || ids.Length > limits.MaximumEntities) throw new ArgumentException("Select a bounded, nonempty set of source entities.");
@@ -46,13 +46,13 @@ public sealed partial class DraftingPlanner
         var edit = new ShadowGraphEdit(snapshot);
         var block = request.Redefine ?? edit.Create("netDxf.Blocks.Block", ShadowObjectKind.Block,
             new Dictionary<string, ShadowValue> { ["Name"] = ShadowValue.From(request.Name),
-                ["Origin"] = V(Vec3.Zero), ["Description"] = ShadowValue.From(request.Description),
+                ["Origin"] = V(Vec3.Zero), ["Description"] = ShadowValue.From(request.Description ?? ""),
                 ["Entities"] = new ShadowValue.Sequence([]) });
         if (request.Redefine is null)
             edit.ReplaceSequence(snapshot.Root, "Blocks", blocks.Select(b => b.Value).Append(new ShadowValue.Reference(block)));
         else
         {
-            edit.Set(block, "Description", ShadowValue.From(request.Description));
+            if (request.Description is not null) edit.Set(block, "Description", ShadowValue.From(request.Description));
             // Keep the existing origin. Existing references must not move when the definition changes.
         }
         var budget = 0;

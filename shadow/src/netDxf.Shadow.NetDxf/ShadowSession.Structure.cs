@@ -157,6 +157,12 @@ public sealed partial class ShadowSession
                     {
                         foreach (var candidate in candidates)
                         {
+                            // Read-only does not imply ownership. Owner is an inverse
+                            // relationship, and INSERT.Block is a constructor dependency
+                            // on a shared definition. Resolving either as a generated
+                            // child can create a false cycle, depending on patch order.
+                            if (candidate.Accessor.Name == "Owner" ||
+                                candidate.Accessor.Name == "Block" && additions[candidate.Owner].TypeName == "netDxf.Entities.Insert") continue;
                             if (constructing.Contains(candidate.Owner)) continue;
                             var owned = candidate.Accessor.Get(Resolve(candidate.Owner));
                             if (owned is null || owned.GetType().FullName != node.TypeName) continue;
