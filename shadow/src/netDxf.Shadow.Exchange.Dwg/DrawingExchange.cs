@@ -56,7 +56,8 @@ public sealed class DrawingExchange
             cancellationToken.ThrowIfCancellationRequested();
             if (diagnostics.Count >= limits.MaximumDiagnostics) throw new DrawingExchangeException("Codec diagnostic budget exceeded.", diagnostics.ToImmutable());
             var message = notification.Message ?? "Codec notification";
-            diagnostics.Add(new(stage, notification.NotificationType.ToString(), message.Length <= 4096 ? message : message[..4096]));
+            if (message.Length > 4096) message = message[..4096];
+            diagnostics.Add(new(stage, notification.NotificationType.ToString(), message));
             if (notification.NotificationType != NotificationType.None)
                 throw new DrawingExchangeException($"{Provider} refused {stage}: {message}", diagnostics.ToImmutable(), notification.Exception);
         }
@@ -139,7 +140,9 @@ public sealed class DrawingExchange
         foreach (var block in document.Blocks)
         {
             token.ThrowIfCancellationRequested(); if (++blocks > limits.MaximumBlocks) throw new ArgumentException("Block budget exceeded.");
-            foreach (var entity in block.Entities.Concat<netDxf.Entities.EntityObject>(block.AttributeDefinitions.Values))
+            // AttributeDefinition derives from DxfObject, not EntityObject. Count
+            // both public collections without dropping attribute definitions.
+            foreach (var entity in block.Entities.Cast<DxfObject>().Concat(block.AttributeDefinitions.Values))
             {
                 token.ThrowIfCancellationRequested(); if (++count > limits.MaximumEntities) throw new ArgumentException("Entity budget exceeded.");
                 Increment(result, block.Name, entity.CodeName);
