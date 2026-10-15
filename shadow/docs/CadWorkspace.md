@@ -73,6 +73,18 @@ shows/hides the palette, Ctrl+0 toggles the reduced-chrome view. Dynamic display
 is a prompt/coordinate readout; keyboard precision input stays in the command
 line rather than claiming every AutoCAD dynamic-input mode.
 
+### Input transaction fences
+
+A pointer gesture is bound to the drawing, workspace, view, revision, active
+command prompt and retained-snapshot state at pointer-down. Final object-snap
+acquisition is independent of hover sampling, so a later mouse move cannot
+abort an exact click into an unsnapped edit. Escape, a new command, a typed
+prompt advance or a document/view transition invalidates outstanding picks and
+grips. Stale or aborted final acquisition is refused explicitly; geometry is
+never committed to a different prompt or drawing as a fallback. Reads are also
+fenced by the client generation, including same-document reactivation and
+queued writes before the next native revision has been published.
+
 ## Connected command scope
 
 Construction: LINE, PLINE, RECTANG, POLYGON, CIRCLE, three-point ARC, ELLIPSE,
@@ -95,6 +107,13 @@ and grip diagnostics. Branches support fork/switch and explicit conflict-policy
 review before applying one canonical merge transaction to the live source.
 SHX/SHP loading and annotation/linetype view context remain available. PNG/SVG
 exports use native rendering; DXF save invokes the actual netDxf writer.
+Missing/generated dimension pictures are exported through the reusable bounded
+`SaveWithDimensionPictures` API without normalizing live source geometry outside
+editor history. Imported custom pictures are preserved. Reimport adds the
+picture's block-definition entities to the detached graph; these are not extra
+editable model-space roots. ASCII/binary output, repeated save, edited dimension
+headers, owner context, cleanup on failures and undo across save are covered by
+native regressions.
 
 This is an AutoCAD-inspired **2D** workspace, not certification of pixel-perfect
 AutoCAD parity. DWG, 3D solids/orbit, parametric constraints, block-definition

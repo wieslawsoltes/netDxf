@@ -8,7 +8,7 @@ export class CadViewport {
     this.camera = { x: 0, y: 0, scale: 3 }; this.size = { w: 1, h: 1 }; this.dpr = 1;
     this.settings = { grid: true, snap: false, ortho: false, polar: false, osnap: true, dynamic: true, gridStep: 10, snapModes: 23 };
     this.backend = 'skia'; this.snapshot = null; this.command = null; this.cursor = point(); this.pixel = null; this.frame = null;
-    this.generation = 0; this.pointers = new Map(); this.abort = null; this.snapAbort = null; this.snapGeneration = 0; this.panMode = false;
+    this.generation = 0; this.pointers = new Map(); this.abort = null; this.snapAbort = null; this.snapGeneration = 0; this.inputVersion = 0; this.pickAbort = null; this.panMode = false;
     this.resizeObserver = new ResizeObserver(() => this.resize()); this.resizeObserver.observe(element);
     element.addEventListener('pointerdown', e => this.down(e)); element.addEventListener('pointermove', e => this.move(e));
     element.addEventListener('pointerup', e => this.up(e)); element.addEventListener('pointercancel', e => this.cancelPointer(e));
@@ -55,18 +55,38 @@ export class CadViewport {
   async snapped(p, anchor, force = false, excludeSelection = !!this.drag?.grip) {
     const constrained = constrain(p, anchor, this.settings);
     if (!this.settings.osnap || !this.client.state || this.client.busy || this.snapshot !== null) { this.snapHit = null; return constrained; }
-    this.snapAbort?.abort(); const abort = this.snapAbort = new AbortController(), generation = ++this.snapGeneration;
-    const key = this.client.key;
+    // A final acquisition owns its request. Hover must never abort it and turn
+    // an exact snapped pick into an unsnapped fallback.
+    const abort = new AbortController();
+    if (force) { this.pickAbort?.abort(); this.pickAbort = abort; }
+    else { this.snapAbort?.abort(); this.snapAbort = abort; }
+    const generation = force ? this.inputVersion : ++this.snapGeneration;
+    const key = this.client.key, epoch = this.client.epoch;
     try {
       const hit = await this.client.read('snap', { signal: abort.signal,
         body: { point: constrained, tolerance: 12 / this.camera.scale, modes: this.settings.snapModes, anchor, excludeSelection } });
-      if (generation !== this.snapGeneration || key !== this.client.key) return constrained;
+      const current = !abort.signal.aborted && key === this.client.key && epoch === this.client.epoch &&
+        !this.client.busy && generation === (force ? this.inputVersion : this.snapGeneration);
+      if (!current) {
+        if (force) throw new Error('The drawing changed while acquiring a point. Repeat the pick.');
+        return constrained;
+      }
       this.snapHit = hit; this.invalidate(); return hit?.position || constrained;
-    } catch (error) { if (force && error.name !== 'AbortError') throw error; return constrained; }
+    } catch (error) { if (force) throw error; return constrained; }
+    finally { if (force && this.pickAbort === abort) this.pickAbort = null; }
   }
+  cancelInput() {
+    this.inputVersion++; this.snapGeneration++;
+    clearTimeout(this.snapTimer); this.snapAbort?.abort(); this.pickAbort?.abort();
+    this.snapHit = null; this.drag = null; this.pinch = null;
+    for (const id of this.pointers.keys()) if (this.element.hasPointerCapture(id)) this.element.releasePointerCapture(id);
+    this.pointers.clear(); this.element.classList.remove('panning'); this.invalidate();
+  }
+
   down(e) {
     if (e.target !== this.canvas || e.button === 2) return;
     e.preventDefault(); this.element.focus({ preventScroll: true }); const pixel = this.local(e);
+    this.inputVersion++; this.pickAbort?.abort();
     this.pointers.set(e.pointerId, pixel); this.element.setPointerCapture(e.pointerId);
     if (this.pointers.size === 2) {
       const [a, b] = [...this.pointers.values()]; this.pinch = { distance: distance(a, b), midpoint: point((a.x + b.x) / 2, (a.y + b.y) / 2) }; this.drag = null; return;
@@ -74,7 +94,8 @@ export class CadViewport {
     const pan = e.button === 1 || this.space || this.panMode, p = world(pixel, this.camera, this.size);
     let grip;
     if (!pan && !this.command && this.snapshot === null) grip = this.client.data?.grips.find(g => distance(screen(g.position, this.camera, this.size), pixel) < 8);
-    this.drag = { id: e.pointerId, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey, remove: e.shiftKey };
+    this.drag = { id: e.pointerId, inputVersion: this.inputVersion, key: this.client.key, epoch: this.client.epoch,
+      command: this.command, commandVersion: this.command?.version, snapshot: this.snapshot, pixel, last: pixel, first: p, current: p, pan, grip, moved: false, extend: e.ctrlKey || e.metaKey, remove: e.shiftKey };
     this.element.classList.toggle('panning', !!pan); this.invalidate();
   }
   move(e) {
@@ -97,7 +118,10 @@ export class CadViewport {
     this.resolved = constrain(this.cursor, anchor, this.settings); this.hooks.move?.(this.resolved, pixel);
     clearTimeout(this.snapTimer);
     if ((this.command && !this.command.selecting) || drag?.grip) this.snapTimer = setTimeout(async () => {
-      const position = await this.snapped(this.cursor, anchor); this.resolved = position; this.hooks.move?.(position, this.pixel); this.invalidate();
+      const version = this.inputVersion, generation = this.snapGeneration + 1, command = this.command, commandVersion = command?.version;
+      const position = await this.snapped(this.cursor, anchor);
+      if (version !== this.inputVersion || generation !== this.snapGeneration || command !== this.command || commandVersion !== this.command?.version) return;
+      this.resolved = position; this.hooks.move?.(position, this.pixel); this.invalidate();
     }, 70);
     else this.snapHit = null;
     this.invalidate();
@@ -112,8 +136,12 @@ export class CadViewport {
     if (this.client.busy || this.snapshot !== null) { this.invalidate(); return; }
     try {
       clearTimeout(this.snapTimer);
-      const receipt = this.client.key, command = this.command;
-      const current = () => { if (receipt !== this.client.key || command !== this.command) throw new Error('The workspace changed while acquiring a point. Repeat the pick.'); };
+      const current = () => {
+        if (drag.inputVersion !== this.inputVersion || drag.key !== this.client.key || drag.epoch !== this.client.epoch ||
+            drag.command !== this.command || drag.commandVersion !== this.command?.version || drag.snapshot !== this.snapshot || this.client.busy)
+          throw new Error('The drawing or command changed during the gesture. Repeat the pick.');
+      };
+      current();
       const p = world(this.local(e), this.camera, this.size);
       if (drag.grip && drag.moved) {
         const pos = await this.snapped(p, drag.grip.position, true, true); current(); await this.hooks.grip?.(drag.grip, pos);
@@ -124,7 +152,7 @@ export class CadViewport {
     } catch (error) { this.hooks.error?.(error); }
     this.invalidate();
   }
-  cancelPointer(e) { this.pointers.delete(e.pointerId); this.drag = null; this.pinch = null; this.element.classList.remove('panning'); this.invalidate(); }
+  cancelPointer(e) { this.pointers.delete(e.pointerId); this.cancelInput(); }
   draw() {
     const c = this.ctx, { w, h } = this.size; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, w, h);
     c.fillStyle = '#212830'; c.fillRect(0, 0, w, h);
@@ -203,5 +231,5 @@ export class CadViewport {
     c.setLineDash([]);
     const q = screen(cursor, this.camera, this.size); c.fillStyle = '#a8c4dd'; c.font = '11px Consolas'; c.fillText(format(distance(p.at(-1), cursor)), q.x + 12, q.y + 19);
   }
-  dispose() { this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
+  dispose() { this.cancelInput(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
 }

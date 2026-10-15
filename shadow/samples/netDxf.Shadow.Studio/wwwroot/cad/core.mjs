@@ -1,8 +1,8 @@
 /** Host-independent precision input, camera math and command state. No DOM, eval or network. */
 export const point = (x = 0, y = 0, z = 0) => ({ x, y, z });
-export const add = (a, b) => point(a.x + b.x, a.y + b.y, (a.z || 0) + (b.z || 0));
-export const sub = (a, b) => point(a.x - b.x, a.y - b.y, (a.z || 0) - (b.z || 0));
-export const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, (a.z || 0) - (b.z || 0));
+export const add = (a, b) => point(a.x + b.x, a.y + b.y, (a.z ?? 0) + (b.z ?? 0));
+export const sub = (a, b) => point(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0));
+export const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0));
 export const format = n => Number(n.toFixed(4)).toString();
 export function finite(n) {
   if (!Number.isFinite(n) || Math.abs(n) > 1e12) throw new Error('Value is outside the finite drafting range (±1e12).');
@@ -116,10 +116,10 @@ export class CommandSession {
   constructor(name, layer = '0', selectionCount = 0) {
     this.name = commandName(name); if (!this.name) throw new Error(`Unknown command: ${name}`);
     this.spec = commands[this.name]; this.command = { name: this.name, points: [], layer };
-    this.index = 0; this.selecting = !!this.spec.selection && !this.validSelection(selectionCount); this.complete = false;
+    this.version = 0; this.index = 0; this.selecting = !!this.spec.selection && !this.validSelection(selectionCount); this.complete = false;
   }
   validSelection(count) { return this.spec.exactSelection ? count === this.spec.exactSelection : count >= (this.spec.selection || 0); }
-  acceptSelection(count) { if (!this.validSelection(count)) throw new Error(`Select ${this.spec.exactSelection ? 'exactly ' : 'at least '}${this.spec.selection} source objects.`); this.selecting = false; this.complete = this.spec.steps.length === 0; }
+  acceptSelection(count) { if (!this.validSelection(count)) throw new Error(`Select ${this.spec.exactSelection ? 'exactly ' : 'at least '}${this.spec.selection} source objects.`); this.selecting = false; this.complete = this.spec.steps.length === 0; this.version++; }
   get anchor() { return this.command.points.at(-1) || null; }
   get step() { return this.selecting ? { kind: 'selection', prompt: 'Select objects in order; Enter to continue' } : this.spec.steps[this.index] || { kind: 'point', prompt: 'Next point or [Undo/Close]; Enter to finish' }; }
   get prompt() { const s = this.step; return `${this.name} — ${s.prompt}${s.defaultValue !== undefined && s.defaultValue !== '' ? ` <${s.defaultValue}>` : ''}:`; }
@@ -127,14 +127,14 @@ export class CommandSession {
     if (this.selecting || this.complete) throw new Error('The command is not accepting coordinates.');
     const value = String(text).trim(), step = this.step;
     if (this.spec.chain && ['U', 'UNDO'].includes(value.toUpperCase())) {
-      if (this.command.points.length) this.command.points.pop(); this.index = this.command.points.length ? 1 : 0; return;
+      if (this.command.points.length) this.command.points.pop(); this.index = this.command.points.length ? 1 : 0; this.version++; return;
     }
     if (this.spec.chain && (!value || ['C', 'CLOSE'].includes(value.toUpperCase()))) {
       const closed = !!value;
       if (closed && this.name === 'SPLINE') throw new Error('This command constructs open clamped control-point splines.');
       const minimum = closed ? Math.max(3, this.spec.chain) : this.spec.chain;
       if (this.command.points.length < minimum) throw new Error(`Specify at least ${minimum} points.`);
-      this.command.closed = closed; this.complete = true; return;
+      this.command.closed = closed; this.complete = true; this.version++; return;
     }
     if (step.kind === 'point') return this.pick(parsePoint(value, this.anchor || point(), cursor));
     if (step.kind === 'text') { const t = value || step.defaultValue; if (!t || t.length > 16384) throw new Error('Enter 1–16384 characters.'); this.command[step.key] = t; }
@@ -148,15 +148,17 @@ export class CommandSession {
   pick(p) {
     if (this.selecting || this.complete) throw new Error('Finish selecting objects first.');
     const step = this.step;
-    for (const v of [p.x, p.y, p.z || 0]) finite(v);
+    for (const v of [p.x, p.y, p.z ?? 0]) finite(v);
     if (step.kind === 'number' && step.key === 'value' && ['CIRCLE', 'POLYGON'].includes(this.name)) {
-      if (this.name === 'POLYGON') this.command.rotation = Math.atan2(p.y - this.anchor.y, p.x - this.anchor.x) * 180 / Math.PI;
-      return this.input(String(distance(p, this.anchor)));
+      const rotation = Math.atan2(p.y - this.anchor.y, p.x - this.anchor.x) * 180 / Math.PI;
+      this.input(String(distance(p, this.anchor)));
+      if (this.name === 'POLYGON') this.command.rotation = rotation;
+      return;
     }
     if (step.kind === 'number' && step.key === 'value' && this.name === 'ROTATE') return this.input(String(Math.atan2(p.y - this.anchor.y, p.x - this.anchor.x) * 180 / Math.PI));
     if (step.kind !== 'point') throw new Error('This prompt requires keyboard input.');
     if (this.anchor && distance(this.anchor, p) < 1e-9) throw new Error('The next point must be distinct.');
-    this.command.points.push(point(p.x, p.y, p.z || 0)); this.advance();
+    this.command.points.push(point(p.x, p.y, p.z ?? 0)); this.advance();
   }
-  advance() { this.index++; if (!this.spec.chain && this.index >= this.spec.steps.length) this.complete = true; }
+  advance() { this.version++; this.index++; if (!this.spec.chain && this.index >= this.spec.steps.length) this.complete = true; }
 }

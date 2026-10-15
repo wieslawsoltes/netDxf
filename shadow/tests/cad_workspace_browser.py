@@ -6,8 +6,10 @@ The production frontend, CSP and native API are used without mocked routes.
 """
 from __future__ import annotations
 import argparse
+from collections import Counter
 from contextlib import contextmanager
 import json
+import math
 import os
 from pathlib import Path
 import socket
@@ -57,6 +59,7 @@ def host(published: Path):
 def verify(url: str, executable: str | None = None):
     passed, errors, violations = [], [], []
     failure = None
+    diagnostics = {}
     def check(name: str, condition=True):
         if not condition:
             raise AssertionError(name)
@@ -202,13 +205,28 @@ def verify(url: str, executable: str | None = None):
                   all(d.dxf.hasattr('geometry') and len(independent.blocks[d.dxf.geometry]) > 0
                       for d in dimensions_before))
             original_id = page.locator('#studio').get_attribute('data-document')
-            original_entities = state()['state']['entities']
+            original = state()
+            # ShadowSnapshot.EntityIds counts every reachable entity, including
+            # block-definition content. Exported dimensions gain native picture
+            # entities on reimport; those must not become extra editable roots.
+            pictures = sum(len(independent.blocks[d.dxf.geometry]) for d in dimensions_before)
+            root_signature = lambda data: Counter((i['type'], i['layer'], i['count']) for i in data['items'])
+            original_roots = root_signature(original)
             page.locator('#open-file').set_input_files(str(file))
             expect(page.locator('#studio')).not_to_have_attribute('data-document', original_id)
             expect(page.locator('#title')).to_contain_text('edited.dxf')
             idle()
-            wait_state(lambda data: data['state']['entities']==original_entities)
-            check('download reopens in a separate native document')
+            reopened = wait_state(lambda data: data['itemCount']==original['itemCount'])
+            check('download reopens in a separate native document without extra editable roots',
+                  root_signature(reopened) == original_roots and
+                  reopened['state']['occurrences'] == original['state']['occurrences'] and
+                  all(math.isclose(reopened['state']['bounds'][axis], original['state']['bounds'][axis],
+                                   rel_tol=1e-9, abs_tol=1e-7) for axis in ('minX','minY','maxX','maxY')))
+            check('reimport captures native dimension pictures without duplicating drawing geometry',
+                  reopened['state']['entities'] == original['state']['entities'] + pictures)
+            diagnostics['reopen'] = {'sourceEntities': original['state']['entities'],
+                                     'reopenedEntities': reopened['state']['entities'],
+                                     'pictureEntities': pictures, 'editableRoots': reopened['itemCount']}
             page.locator('#backend').select_option('svg')
             # SVG decoding is asynchronous: wait for a matching render network response.
             with page.expect_response(lambda r:'/render?' in r.url and 'backend=svg' in r.url and r.status==200):
@@ -233,15 +251,17 @@ def verify(url: str, executable: str | None = None):
             failure = traceback.format_exc()
             raise
         finally:
+            # Diagnostic capture must never replace the original test failure.
             try:
-                page.screenshot(path=str(OUTPUT/'final.png'))
-            finally:
-                (OUTPUT/'results.json').write_text(json.dumps({
-                    'passed': passed, 'errors': errors,
-                    'cspViolations': violations, 'failure': failure
-                }, indent=2), encoding='utf-8')
-                context.close()
-                browser.close()
+                page.screenshot(path=str(OUTPUT/'final.png'), timeout=5000)
+            except Exception:
+                diagnostics['screenshotFailure'] = traceback.format_exc()
+            (OUTPUT/'results.json').write_text(json.dumps({
+                'passed': passed, 'errors': errors,
+                'cspViolations': violations, 'failure': failure, 'diagnostics': diagnostics
+            }, indent=2), encoding='utf-8')
+            context.close()
+            browser.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)

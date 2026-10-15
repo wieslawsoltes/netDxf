@@ -71,9 +71,9 @@ export class CadClient extends EventTarget {
     return result.finally(() => { this.busy--; this.epoch++; this.emit('busy'); });
   }
   async read(path, { body, signal, blob = false } = {}) {
-    const key = this.key, state = this.state, id = this.id;
+    const key = this.key, generation = this.epoch, state = this.state, id = this.id;
     const response = await this.request(this.url(path, id), { body, signal, headers: identityHeaders(state) });
     const result = blob ? await response.blob() : await response.json();
-    return key === this.key ? result : null;
+    return generation === this.epoch && key === this.key && !this.busy ? result : null;
   }
 }

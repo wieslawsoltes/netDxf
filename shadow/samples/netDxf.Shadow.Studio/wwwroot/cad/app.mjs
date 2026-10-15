@@ -35,7 +35,7 @@ function report(error) {
 function run(task) { Promise.resolve().then(task).catch(report); }
 function editable() { if(snapshot!==null) throw new Error('This is a read-only retained snapshot. Return to Current drawing before editing.'); if(!client.state) throw new Error('Load a drawing first.'); }
 async function edit(path,payload={}) { editable(); const result=await client.mutate(path,payload); await documentTabs(); return result; }
-function setSession(value) { session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
+function setSession(value) { viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
 function cancel(clearSelection=true) { setSession(null); $('command-input').value=''; $('suggestions').hidden=true; $('dynamic-input').hidden=true; if(clearSelection && client.state && snapshot===null && !client.busy) run(()=>edit('select',{mode:'clear'})); }
 async function start(name) {
   editable(); if(client.busy) throw new Error('Wait for the current operation to complete.');
