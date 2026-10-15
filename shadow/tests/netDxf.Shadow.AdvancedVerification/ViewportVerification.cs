@@ -21,6 +21,7 @@ internal static partial class ViewportVerification
     internal static void Register(List<(string Name, Action Run)> tests)
     {
         RegisterProjection(tests); RegisterEditing(tests); RegisterVisibility(tests); RegisterStudio(tests);
+        ViewportOverrideVerification.Register(tests);
     }
     private static (DxfDocument Document, DxfViewport View) Drawing()
     {

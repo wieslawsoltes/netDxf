@@ -23,7 +23,6 @@ public sealed partial class RenderCompiler
     private readonly Dictionary<(Guid Document, RenderCompileOptions Options), RenderScene> previousScenes = new();
     private long geometryCompilations, itemHits;
 
-    // Retain the original binary constructor signature as well as the extended source-friendly overload.
     public RenderCompiler(CadSceneBuilder? builder, ITextLayoutEngine? textLayout)
         : this(builder, textLayout, null, null) { }
 
@@ -63,9 +62,9 @@ public sealed partial class RenderCompiler
             previousScenes.TryGetValue(previousKey, out var previous);
             var result = CompileCore(scene, new(options.Tolerance), (o, s) => CompileCached(o, s, textRevision), previous, linetypes, cancellationToken);
             if (options.IncludePaperViewports && !string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase))
-                result = paperSpace.Compose(snapshot, result, options, (tolerance, scale) => Compile(snapshot,
+                result = paperSpace.Compose(snapshot, result, options, (modelSnapshot, tolerance, scale) => Compile(modelSnapshot,
                     options with { Layout = "Model", Tolerance = tolerance, IncludePaperViewports = false,
-                        LinetypeScale = options.LinetypeScale * scale, ModelAnnotation = null }, cancellationToken), cancellationToken);
+                        LinetypeScale = options.LinetypeScale * scale, ModelAnnotation = null, ViewportOverrides = null }, cancellationToken), cancellationToken);
             if (builder.ProjectionVersion != projectionVersion) throw new InvalidOperationException("Projection resources changed while compiling. Retry with the current resource revision.");
             if (textEngine.Revision != textRevision) throw new InvalidOperationException("Font services changed while compiling. Retry with the current font revision.");
             if (linetypes.Revision != linetypeRevision) throw new InvalidOperationException("Linetype resources changed while compiling. Retry with the current resource revision.");
@@ -79,7 +78,6 @@ public sealed partial class RenderCompiler
 
     private RenderItem CompileCached(CadOccurrence occurrence, SamplingOptions sampling, long textRevision)
     {
-        // Font invalidation does not invalidate non-text geometry.
         var key = (sampling, occurrence.Geometry.Text is null ? 0 : textRevision);
         var cache = occurrences.GetValue(occurrence, _ => new ItemCache());
         if (cache.Values.TryGetValue(key, out var item)) { Interlocked.Increment(ref itemHits); return item; }
@@ -102,7 +100,6 @@ public sealed partial class RenderCompiler
             data.Contours, occurrence.Geometry.Filled, occurrence.Geometry.Text, occurrence.Geometry.Image, data.Bounds)
             { Regions = data.Regions, Strokes = data.Strokes, TextLayout = data.TextLayout, SourceToWorld = occurrence.SourceToWorld,
                 IsPresentationOnly = occurrence.IsPresentationOnly, PatternToWorld = metricSpace == LinetypeMetricSpace.Definition ? occurrence.SourceToWorld : Affine3.Identity };
-        // Invalid patterns are diagnosed per entity during compilation, not as a frame-wide backend failure.
         _ = StrokePattern.GetContours(item);
         return item;
     }
