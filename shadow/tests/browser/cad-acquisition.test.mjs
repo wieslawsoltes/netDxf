@@ -112,3 +112,20 @@ test('a valid crossing gesture uses its original source receipt', async () => {
   view.hooks={box:(...values)=>args=values}; gesture(view,{moved:true,extend:true,remove:false});
   await view.up({...release,clientX:90}); assert.equal(args[2],true); assert.equal(args[3],true); assert.equal(args[4],false);
 });
+
+
+test('background refresh remains suspended through pointer capture and final acquisition', async () => {
+  const delayed=deferred(), view=viewport(()=>delayed.promise);
+  assert.equal(view.inputActive,true);
+  view.pointers.clear(); assert.equal(view.inputActive,false);
+  const pending=view.snapped(point(10,20),point(),true);
+  assert.equal(view.inputActive,true);
+  delayed.resolve({position:point(9,19)}); await pending;
+  assert.equal(view.inputActive,false);
+});
+test('cancelled final acquisition no longer blocks idle background refresh', async () => {
+  const delayed=deferred(), view=viewport(()=>delayed.promise);
+  view.pointers.clear(); const pending=view.snapped(point(10,20),point(),true);
+  assert.equal(view.inputActive,true); view.cancelInput(); assert.equal(view.inputActive,false);
+  delayed.resolve(null); await assert.rejects(pending,/changed/);
+});

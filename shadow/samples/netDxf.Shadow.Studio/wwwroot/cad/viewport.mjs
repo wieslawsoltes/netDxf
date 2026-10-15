@@ -18,6 +18,8 @@ export class CadViewport {
     element.addEventListener('dblclick', e => { if (e.button === 1) this.fit(); });
     element.addEventListener('contextmenu', e => { if (e.target === canvas) { e.preventDefault(); this.hooks.context?.(e); } });
   }
+  /** A background read must not advance its generation while a gesture owns input. */
+  get inputActive() { return this.pointers.size > 0 || !!this.pickAbort && !this.pickAbort.signal.aborted; }
   local(e) { const r = this.element.getBoundingClientRect(); return point(e.clientX - r.left, e.clientY - r.top); }
   resize() {
     const r = this.element.getBoundingClientRect(); this.size = { w: Math.max(1, r.width), h: Math.max(1, r.height) };

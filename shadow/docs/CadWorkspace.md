@@ -83,7 +83,9 @@ prompt advance or a document/view transition invalidates outstanding picks and
 grips. Stale or aborted final acquisition is refused explicitly; geometry is
 never committed to a different prompt or drawing as a fallback. Reads are also
 fenced by the client generation, including same-document reactivation and
-queued writes before the next native revision has been published.
+queued writes before the next native revision has been published. Idle background refresh is
+suspended while a pointer gesture or final snap acquisition owns input; merely
+holding a grip across the polling interval does not invalidate the gesture.
 
 ## Connected command scope
 

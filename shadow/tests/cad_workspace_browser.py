@@ -140,9 +140,13 @@ def verify(url: str, executable: str | None = None):
             radius.press('Enter')
             wait_state(lambda data: any(p['name']=='Radius' and p['value']=='30' for p in (data.get('properties') or {}).get('properties', [])))
             check('geometric selection and source inspector editing')
+            idle()
             grip_revision = state()['state']['revision']
             page.mouse.move(*pixel(140,40))
             page.mouse.down()
+            # Hold across the 2.5-second idle-refresh interval. An unchanged
+            # background read must not invalidate a live source grip gesture.
+            page.wait_for_timeout(3000)
             page.mouse.move(*pixel(160,55), steps=8)
             page.mouse.up()
             wait_state(lambda data: data['state']['revision'] > grip_revision)
@@ -150,7 +154,7 @@ def verify(url: str, executable: str | None = None):
             # Pointer coordinates may be rounded by the platform to CSS pixels.
             # Bound input quantization to one pixel, not a drawing-size epsilon.
             input_tolerance = 1 / scale
-            check('dragging the native center grip updates source coordinates',
+            check('held native center grip survives idle refresh and updates source coordinates',
                   abs(float(center['X'])-160) <= input_tolerance and
                   abs(float(center['Y'])-55) <= input_tolerance)
             page.locator('[data-action="layer-new"]').first.click()

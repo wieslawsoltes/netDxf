@@ -332,7 +332,7 @@ client.addEventListener('state',()=>{
 client.addEventListener('busy',()=>{$('connection').textContent=client.busy?'Working…':'Local';$('connection').classList.toggle('busy',!!client.busy);updateTools();if(!client.busy)viewport.requestFrame();});
 window.addEventListener('beforeunload',e=>{if(documents.some(d=>d.dirty)){e.preventDefault();e.returnValue='';}});
 window.addEventListener('pagehide',()=>viewport.dispose());
-setInterval(()=>{if(!document.hidden&&!client.busy&&!session&&!$('dialog').open&&!$('palette-content').contains(document.activeElement))run(async()=>{await client.refresh();await documentTabs();});},2500);
+setInterval(()=>{if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!$('dialog').open&&!$('palette-content').contains(document.activeElement))run(async()=>{await client.refresh();await documentTabs();});},2500);
 log('netDxf Shadow CAD Studio — native DXF · immutable transactions · local workspace');
 log('Type HELP for commands. Middle-drag pans; wheel zooms; Enter finishes; Escape cancels.');
 drawRibbon();modes();renderPalette();
