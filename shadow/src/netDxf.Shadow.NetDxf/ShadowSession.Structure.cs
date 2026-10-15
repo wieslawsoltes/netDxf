@@ -79,6 +79,10 @@ public sealed partial class ShadowSession
                 var clone = cloneable.Clone();
                 foreach (var write in group) write.Accessor.Set(clone, write.After);
             }
+            // Stable dependency phases: initialize owned payload, register definitions,
+            // then attach referencing entities. Reverse this order when detaching.
+            // Within a phase preserve captured membership order and native semantics.
+            collections = collections.OrderBy(p => p.AttachmentOrder).ToList();
             var attempted = 0;
             var attemptedMethods = 0;
             var touchedCollections = false;
@@ -92,7 +96,7 @@ public sealed partial class ShadowSession
                 }
                 // Moving entities across owners must release every old owner first.
                 touchedCollections = collections.Count != 0;
-                foreach (var plan in collections) plan.RemoveOld();
+                foreach (var plan in collections.AsEnumerable().Reverse()) plan.RemoveOld();
                 foreach (var plan in collections) plan.AddNew();
                 var next = capture.Capture(document, current);
                 foreach (var assertion in assertions)
@@ -115,11 +119,16 @@ public sealed partial class ShadowSession
                 var failures = new List<Exception> { error.GetBaseException() };
                 if (touchedCollections)
                 {
-                    // Clear every destination before restoring any source owner.
-                    foreach (var plan in collections.AsEnumerable().Reverse())
-                        try { plan.ClearForRollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    // Prepare from actual membership after a possibly partial source
+                    // callback. Release every changed destination before restoring any
+                    // original owner, without touching unchanged/reserved table entries.
+                    var rollback = new List<SourceCollectionPlan>(collections.Count);
                     foreach (var plan in collections)
-                        try { plan.Restore(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                        try { rollback.Add(plan.PrepareRollback()); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in rollback.AsEnumerable().Reverse())
+                        try { plan.RemoveOld(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in rollback)
+                        try { plan.AddNew(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
                 for (var index = attempted - 1; index >= 0; index--)
                     try { writes[index].Accessor.Set(writes[index].Source, writes[index].Before); }
@@ -148,15 +157,21 @@ public sealed partial class ShadowSession
                     bindings[id] = source; capture.Bind(id, source); return source;
                 }
                 if (!additions.TryGetValue(id, out var node)) throw new ShadowConflictException($"No source binding for {id}.");
-                if (!constructing.Add(id)) throw new ArgumentException($"Cyclic constructor dependency at {id}.");
+                if (!constructing.Add(id)) throw new ArgumentException($"Cyclic constructor dependency at {id} ({node.TypeName}).");
                 try
                 {
                     // Read-only owned collections must be bound to the new owner's actual
                     // collection instance, not constructed as an unrelated empty container.
-                    if ((ownedReferences ??= IndexOwnedReferences(additions)).TryGetValue(id, out var candidates))
+                    // Entity/table/definition references are shared semantic dependencies,
+                    // not constructor-owned objects (e.g. INSERT.Block and Entity.Owner).
+                    if (node.Kind == ShadowObjectKind.Object &&
+                        (ownedReferences ??= IndexOwnedReferences(additions)).TryGetValue(id, out var candidates))
                     {
                         foreach (var candidate in candidates)
                         {
+                            // Owner is a semantic back-reference, not an owned container.
+                            // Block.Owner is the public alias of its constructor-owned Record.
+                            if (candidate.Accessor.Name == "Owner" && additions[candidate.Owner].TypeName != "netDxf.Blocks.Block") continue;
                             if (constructing.Contains(candidate.Owner)) continue;
                             var owned = candidate.Accessor.Get(Resolve(candidate.Owner));
                             if (owned is null || owned.GetType().FullName != node.TypeName) continue;

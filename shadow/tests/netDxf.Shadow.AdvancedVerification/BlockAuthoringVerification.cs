@@ -161,6 +161,38 @@ internal static class BlockAuthoringVerification
             editor.Undo(); Require(doc.Blocks.Contains("Old"));editor.Redo();Require(doc.Blocks.Contains("Renamed"));
             Require(source.Current.DrawingEntities().Single()["Block"].Id==definition);
         }));
+        foreach (var definitionFirst in new[] { false, true })
+            tests.Add(($"block/source creation is independent of definition-first={definitionFirst} patch order", () =>
+            {
+                for (var iteration = 0; iteration < 12; iteration++)
+                {
+                    var (doc, source, editor, planner) = Drawing();
+                    var plan = planner.CreateBlock(source.Current, new("Ordered", new(10,20), Roots(source.Current)));
+                    var patch = plan.Patch with { Changes = plan.Patch.Changes
+                        .OrderBy(c => c.After?.Kind == ShadowObjectKind.Block ? (definitionFirst ? 0 : 2) : 1).ToImmutableArray() };
+                    editor.Execute("Create ordered block", patch);
+                    var definition = doc.Blocks["Ordered"]; var insert = doc.Entities.Inserts.Single();
+                    for (var replay = 0; replay < 3; replay++)
+                    {
+                        editor.Undo(); Require(!doc.Blocks.Contains("Ordered") && doc.Entities.All.Count() == 2);
+                        editor.Redo(); Require(ReferenceEquals(doc.Blocks["Ordered"], definition));
+                        Require(ReferenceEquals(doc.Entities.Inserts.Single(), insert) && definition.Entities.Count == 2);
+                    }
+                }
+            }));
+        tests.Add(("block/nested reference conversion replays without reordering shared definitions", () =>
+        {
+            var (doc, source, editor, planner) = Drawing();
+            planner.CreateBlock(source.Current, new("Child", new(10,20), Roots(source.Current))).Execute(editor);
+            planner.CreateBlock(source.Current, new("Parent", new(0,0), Roots(source.Current))).Execute(editor);
+            var child = doc.Blocks["Child"];
+            for (var i = 0; i < 4; i++)
+            {
+                editor.Undo(); Require(doc.Entities.Inserts.Single().Block == child && !doc.Blocks.Contains("Parent"));
+                editor.Redo(); Require(doc.Entities.Inserts.Single().Block.Name == "Parent" && ReferenceEquals(doc.Blocks["Child"], child));
+                Require(doc.Blocks["Parent"].Entities.OfType<Insert>().Single().Block == child);
+            }
+        }));
         tests.Add(("block/Studio editor saves one canonical transaction and closes the isolated branch",()=>
         {
             using var studio=new Studio(false);
