@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Explicit, diagnostic DWG/DXF exchange for source-backed shadow applications.</Description></PropertyGroup>
+  <ItemGroup>
+    <None Update="THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <PackageReference Include="ACadSharp" Version="3.8.0" />
+    <ProjectReference Include="../../../netDxf/netDxf.csproj" />
+  </ItemGroup>
+</Project>
