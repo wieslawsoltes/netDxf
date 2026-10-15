@@ -64,7 +64,13 @@ def verify_authoring(page, url: str, output: Path, state, command, wait_state, i
 
     # Import original synthetic line-family data; never rely on copyrighted font/pattern payloads.
     page.locator('[data-action="hatch-edit"]').first.click()
-    page.get_by_label('Import PAT file', exact=True).set_input_files({
+    # set_input_files does not auto-wait for visibility. The previous closed
+    # dialog still has an input while Hatch Edit awaits its native pattern read.
+    # Upload only after the new dialog and its current file input are visible.
+    expect(page.locator('#dialog')).to_be_visible()
+    pattern_file = page.get_by_label('Import PAT file', exact=True)
+    expect(pattern_file).to_be_visible()
+    pattern_file.set_input_files({
         'name': 'fixture.pat', 'mimeType': 'text/plain',
         'buffer': b'*SYNTHETIC, Browser pattern\n30,0,0,.5,2,1,-1\n'})
     expect(page.locator('#dialog-body')).to_contain_text('1 patterns imported')
