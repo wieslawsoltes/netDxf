@@ -31,9 +31,12 @@
       if(path==='branches') {const id='branch-'+(branches.size+1);branches.set(id,{name:body.name,ancestor:live.revision,snapshot:{...structuredClone(live),selection:[],undoCount:0,redoCount:0}});active=id;view++;}
       else if(path==='workspace') {active=body.id;view++;}
       else if(path==='bigfont-map') {fontRevision++;view++;fixture.mapText=await options.body.text();}
+
+      else if(path==='perspective-view') {current().perspectiveMode=body.mode;current().perspectiveWorkPlaneZ=body.workPlaneZ;view++;}
+      else if(path==='translate-perspective') {current().revision++;current().undoCount++;}
       else if(path==='linetype-view') {current().linetypeAlignment=body.alignment;view++;}
       else if(path==='select') current().selection=[body.key];
-      else if(path==='pick') current().selection=['line:1'];
+      else if(path==='pick') {current().selection=['line:1'];current().perspectiveSelection=!!current().perspectiveMode && current().perspectiveMode!=='Disabled';}
       else if(path==='add') {current().revision++;current().undoCount++;current().items.push({key:'circle:'+current().revision,id:'S:'+current().revision,type:'Circle',layer:'0',inserted:false});}
       else if(path==='snapshot') snapshots.push(current().revision);
       else if(path==='property') {current().revision++;current().undoCount++;}

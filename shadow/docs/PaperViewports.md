@@ -103,3 +103,11 @@ outside this composition layer. Source metadata is retained independently.
 
 Autodesk AutoCAD VIEWMODE reference:
 https://help.autodesk.com/view/ACD/2026/ENU/?caas=caas/documentation/CIV3D/2014/ENU/filesACD/GUID-01F9D6D3-0A43-4BCB-AA5C-65459D4BBC78-htm.html
+
+
+## Optional projective consumer
+
+Perspective viewports now have an explicit opt-in camera, clipping, typography and work-plane editing
+pipeline. Leave `PaperSpaceOptions.Perspective` null to preserve this document's original orthographic
+contract. See [Perspective.md](Perspective.md) for projective APIs, Studio controls, budgets and the
+remaining projective-paint/hidden-surface boundaries.

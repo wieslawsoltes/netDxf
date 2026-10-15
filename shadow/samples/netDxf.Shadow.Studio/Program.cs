@@ -42,6 +42,8 @@ app.MapPost("/api/translate", (Studio studio, HttpRequest http, MoveRequest requ
 app.MapPost("/api/property", (Studio studio, HttpRequest http, PropertyRequest request) => StudioHttp.Execute(studio, http, () => studio.SetProperty(request)));
 app.MapPost("/api/history/{operation}", (Studio studio, HttpRequest http, string operation, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.History(operation, request.Revision)));
 app.MapPost("/api/annotation-view", (Studio studio, HttpRequest http, AnnotationViewRequest request) => StudioHttp.Execute(studio, http, () => studio.SetAnnotationView(request)));
+app.MapPost("/api/perspective-view", (Studio studio, HttpRequest http, PerspectiveViewRequest request) => StudioHttp.Execute(studio, http, () => studio.SetPerspectiveView(request)));
+app.MapPost("/api/translate-perspective", (Studio studio, HttpRequest http, PerspectiveMoveRequest request) => StudioHttp.Execute(studio, http, () => studio.TranslatePerspective(request)));
 app.MapPost("/api/linetype-view", (Studio studio, HttpRequest http, LinetypeViewRequest request) => StudioHttp.Execute(studio, http, () => studio.SetLinetypeView(request)));
 app.MapPost("/api/layout", (Studio studio, HttpRequest http, LayoutRequest request) => StudioHttp.Execute(studio, http, () => studio.SetLayout(request)));
 app.MapPost("/api/add", (Studio studio, HttpRequest http, AddRequest request) => StudioHttp.Execute(studio, http, () => studio.Add(request)));

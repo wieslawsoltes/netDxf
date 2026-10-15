@@ -44,6 +44,8 @@ public static partial class AffineEditOperations
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (!keys.Contains(item.Key)) continue;
+            if (item.Projection?.Perspective is not null)
+                throw new NotSupportedException("A perspective display transform cannot be conjugated as an affine edit. Use model coordinates or ray-plane translation.");
             var map = editBlockDefinition ? item.SourceToWorld : item.Projection?.ModelToPaper ?? Affine3.Identity;
             if (!map.TryInverse(out var inverse)) throw new NotSupportedException("Singular selection coordinates.");
             var id = !editBlockDefinition && !item.InsertPath.IsEmpty ? item.InsertPath[0] : item.Entity;

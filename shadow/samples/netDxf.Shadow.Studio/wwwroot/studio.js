@@ -78,7 +78,7 @@ function controls() {
   const stale = !gate.current(state), blocked = busy || stale || readOnly();
   $('undo').disabled = blocked || !state?.undoCount;
   $('redo').disabled = blocked || !state?.redoCount;
-  for (const button of document.querySelectorAll('[data-add], [data-transform], #delete, #retain, #layout, #linetype-alignment, #annotation-mode, #annotation-paper, #annotation-drawing, #annotation-apply')) button.disabled = blocked;
+  for (const button of document.querySelectorAll('[data-add], [data-transform], #delete, #retain, #layout, #linetype-alignment, #annotation-mode, #annotation-paper, #annotation-drawing, #annotation-apply, #perspective-mode, #perspective-plane, #perspective-apply')) button.disabled = blocked;
   $('source-demo').disabled = blocked || state?.workspaceId !== 'live';
   $('save').disabled = blocked || state?.workspaceId !== 'live';
   $('file').disabled = busy || stale;
@@ -125,6 +125,10 @@ function update(value) {
   $('metrics').textContent = `${value.objects.toLocaleString()} objects · ${value.entities.toLocaleString()} entities · capture ${value.captureMilliseconds.toFixed(1)} ms`;
   optionList('layout', value.layouts.map(n => [n, n]), value.layout);
   $('linetype-alignment').value = value.linetypeAlignment ?? 'Periodic';
+  if ($('perspective-mode')) {
+    $('perspective-mode').value = value.perspectiveMode ?? 'Disabled';
+    $('perspective-plane').value = value.perspectiveWorkPlaneZ ?? 0;
+  }
   if ($('annotation-mode')) {
     $('annotation-mode').value = value.annotationMode ?? 'Drawing';
     $('annotation-paper').value = value.annotationPaperUnits ?? 1;
@@ -373,7 +377,10 @@ view.onpointerup = e => {
   if (!g?.moved || g.mode !== 'move' || readOnly()) return;
   const p = world(local(e)); let x = p.x - g.world.x, y = p.y - g.world.y;
   if (e.shiftKey) { x = Math.round(x / 10) * 10; y = Math.round(y / 10) * 10; }
-  action('translate', { x, y }, g.captured).catch(notify);
+  if (g.captured.perspectiveSelection) {
+    action('translate-perspective', { fromX: g.world.x, fromY: g.world.y,
+      toX: g.world.x + x, toY: g.world.y + y }, g.captured).catch(notify);
+  } else action('translate', { x, y }, g.captured).catch(notify);
 };
 view.onpointercancel = () => { drag = undefined; overlay(); }; view.oncontextmenu = e => e.preventDefault();
 view.addEventListener('wheel', e => {
@@ -389,7 +396,7 @@ document.onkeydown = e => {
   if (e.key === 'Delete') action('delete').catch(notify);
   if (e.key.toLowerCase() === 'f') fitDrawing();
   const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
-  if (d && state?.selection.length) { e.preventDefault(); action('translate', { x: d[0] * (e.shiftKey ? 10 : 1), y: d[1] * (e.shiftKey ? 10 : 1) }).catch(notify); }
+  if (d && state?.selection.length) { e.preventDefault(); if (state.perspectiveSelection) { notify(new Error('Drag a perspective selection on its explicit work plane; a paper delta is not a model delta.')); return; } action('translate', { x: d[0] * (e.shiftKey ? 10 : 1), y: d[1] * (e.shiftKey ? 10 : 1) }).catch(notify); }
 };
 document.onkeyup = e => { if (e.code === 'Space') space = false; };
 window.onblur = () => { space = false; drag = undefined; };
@@ -428,3 +435,7 @@ $('bigfont-map-file').onchange = async e => {
   } catch (error) { notify(error); }
   finally { e.target.value = ''; }
 };
+
+if ($('perspective-apply')) $('perspective-apply').onclick = () => action('perspective-view', {
+  mode: $('perspective-mode').value, workPlaneZ: Number($('perspective-plane').value)
+}).catch(notify);

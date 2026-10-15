@@ -7,7 +7,7 @@ namespace netDxf.Shadow.Rendering.SkiaSharp;
 
 /// <summary>HarfBuzz shaping and native glyph bounds, detached into immutable layout results.
 /// May be shared between a RenderCompiler and SkiaRenderBackend; the host owns its lifetime.</summary>
-public sealed class SkiaTextLayoutEngine : ITextLayoutEngine, IDisposable
+public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutlineProvider, IDisposable
 {
     private sealed record FontEntry(SKTypeface Typeface, SKShaper Shaper) : IDisposable
     {
