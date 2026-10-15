@@ -89,6 +89,7 @@ export const commands = Object.freeze({
   MTEXT: spec('MT', 'Multiline text', [P('Specify insertion point'), N('value', 'Text height', 3), N('secondary', 'Paragraph width', 40), T('text', 'Enter text (\\P for paragraphs)', 'Text')]),
   DIMALIGNED: spec('DAL', 'Aligned dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
   DIMLINEAR: spec('DLI', 'Linear dimension', [P('First extension origin'), P('Second extension origin'), P('Dimension line location')]),
+  BLOCK: spec('B', 'Create block', [P('Specify base point'), T('text', 'Block name')], { selection: 1 }),
   INSERT: spec('I', 'Insert block', [T('block', 'Block name'), P('Insertion point'), N('value', 'Uniform scale', 1), N('rotation', 'Rotation in degrees', 0, -1e12)]),
   MOVE: spec('M', 'Move', [P('Base point'), P('Second point')], { selection: 1 }),
   COPY: spec('CO CP', 'Copy', [P('Base point'), P('Second point')], { selection: 1 }),

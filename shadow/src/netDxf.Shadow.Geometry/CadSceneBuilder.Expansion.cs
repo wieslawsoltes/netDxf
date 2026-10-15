@@ -7,13 +7,17 @@ public sealed partial class CadSceneBuilder
     private CadScene BuildCore(ShadowSnapshot snapshot, SceneOptions options, CancellationToken cancellationToken)
     {
         if (options.MaximumDepth < 1 || options.MaximumOccurrences < 1 || !(options.LinetypeScale > 0) || !double.IsFinite(options.LinetypeScale)) throw new ArgumentOutOfRangeException(nameof(options));
-        if (!snapshot.Layout(options.Layout).Exists) throw new ArgumentException($"Unknown layout '{options.Layout}'.", nameof(options));
+        if (options.RootBlock is { } root && snapshot.Read(root).Object is not { Kind: ShadowObjectKind.Block })
+            throw new ArgumentException("The scene root is not a source block.", nameof(options));
+        if (options.RootBlock is null && !snapshot.Layout(options.Layout).Exists) throw new ArgumentException($"Unknown layout '{options.Layout}'.", nameof(options));
         if (!Enum.IsDefined(options.LinetypeAlignment)) throw new ArgumentOutOfRangeException(nameof(options));
         var output = ImmutableArray.CreateBuilder<CadOccurrence>();
         var diagnostics = snapshot.Diagnostics.ToBuilder();
         var activeBlocks = new HashSet<ObjectId>();
         var visits = 0;
-        var entities = snapshot.Layout(options.Layout)["AssociatedBlock"]["Entities"];
+        if (options.RootBlock is { } activeRoot) activeBlocks.Add(activeRoot);
+        var entities = options.RootBlock is { } blockRoot ? snapshot.Read(blockRoot)["Entities"] :
+            snapshot.Layout(options.Layout)["AssociatedBlock"]["Entities"];
         var membership = entities.Value is ShadowValue.Sequence ? entities.Value : entities["$items"].Value;
         var projectionVersion = ProjectionVersion;
         var rootTransaction = rootCache.Begin(snapshot, options, projectionVersion, membership, IsSnapshotCacheable);

@@ -41,6 +41,7 @@ public sealed partial class Studio
         public CadSceneBuilder SceneBuilder { get; } = sceneBuilder;
         public RenderCompiler Compiler { get; } = compiler;
         public string Layout { get; set; } = layout;
+        public ObjectId? BlockRoot { get; set; }
         public CadLinetypeAlignment LinetypeAlignment { get; set; }
         public ModelAnnotationContext Annotation { get; set; } = ModelAnnotationContext.Default;
         public SortedDictionary<long, ShadowSnapshot> Retained { get; } = new();
@@ -54,6 +55,7 @@ public sealed partial class Studio
             Editor = new(new ShadowMemoryStore(canonical));
             Retained.Clear(); RetainedCompilers.Clear();
             if (!canonical.Layout(Layout).Exists) Layout = "Model";
+            if (BlockRoot is { } root && !canonical.Objects.ContainsKey(root)) BlockRoot = null;
         }
     }
     private sealed record PendingMerge(BranchWorkspace Branch, ShadowSnapshot Incoming, ShadowMergePlan Plan,
