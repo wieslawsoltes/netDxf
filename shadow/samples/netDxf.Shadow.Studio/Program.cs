@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://127.0.0.1:5080");
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 20 * 1024 * 1024);
 builder.Services.AddSingleton<Studio>();
+builder.Services.AddSingleton<StudioDocumentHub>();
 var app = builder.Build();
 app.Use(async (context, next) =>
 {
@@ -72,4 +73,5 @@ app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest reque
     StudioHttp.Execute(studio, http, () => Results.File(studio.Save(request.Revision), "application/dxf", "shadow-edited.dxf")));
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
 app.MapStudioWorkspaces();
+app.MapCadWorkspace();
 app.Run();

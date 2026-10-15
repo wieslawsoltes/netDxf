@@ -38,6 +38,17 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Build shadow libraries and integrated Studio
         run: dotnet build shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Publish portable Studio (Linux)
+        if: runner.os == 'Linux'
+        run: dotnet publish shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj -c Release -r linux-x64 --self-contained true -p:TargetFrameworks=net8.0 -p:NoWarn=1591 -o "${{ runner.temp }}/studio-linux-x64"
+      - name: Retain portable Studio
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: studio-linux-x64
+          path: ${{ runner.temp }}/studio-linux-x64/
+          retention-days: 7
+          if-no-files-found: error
       - name: Verify snapshot, synchronization, geometry, graph and editor contracts
         run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
       - name: Verify structural history, incremental processing, appearance and rich text
@@ -48,7 +59,15 @@ jobs:
       - name: Verify Studio HTTP and SSE contracts
         run: python shadow/tests/http_contract.py
       - name: Verify browser state receipt ordering
-        run: node --test shadow/tests/browser/state.test.mjs
+        run: node --test shadow/tests/browser/*.test.mjs
+      - name: Install CAD browser test dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          python -m pip install playwright==1.57.0 ezdxf==1.4.4
+          python -m playwright install --with-deps chromium
+      - name: Verify the published CAD workspace in Chromium (Linux)
+        if: runner.os == 'Linux'
+        run: python shadow/tests/cad_workspace_browser.py --published "${{ runner.temp }}/studio-linux-x64"
       - name: Retain rendered regression artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

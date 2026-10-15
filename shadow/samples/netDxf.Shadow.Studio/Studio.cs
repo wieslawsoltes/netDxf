@@ -40,7 +40,9 @@ public sealed partial class Studio : IDisposable
     private double captureMilliseconds;
     private bool disposed;
 
-    public Studio()
+    public Studio() : this(true) { }
+
+    public Studio(bool demo)
     {
         shxFonts.Register("shadow-demo.shx", DemoFont());
         var shxProjector = new ShxEntityProjector(shxFonts);
@@ -53,7 +55,7 @@ public sealed partial class Studio : IDisposable
         }, "skia");
         try
         {
-            var timer = Stopwatch.StartNew(); session = new(CreateDocument());
+            var timer = Stopwatch.StartNew(); session = new(demo ? CreateDocument() : new DxfDocument());
             captureMilliseconds = timer.Elapsed.TotalMilliseconds; liveEditor = new(session);
         }
         catch { renderer.Dispose(); assets.Dispose(); textEngine.Dispose(); throw; }
@@ -290,7 +292,7 @@ public sealed partial class Studio : IDisposable
             {
                 liveEditor.SynchronizeSource(() => session.MutateSource(document =>
                 {
-                    if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing.");
+                    document.SaveWithDimensionPictures(stream);
                 }));
                 return stream.ToArray();
             }
