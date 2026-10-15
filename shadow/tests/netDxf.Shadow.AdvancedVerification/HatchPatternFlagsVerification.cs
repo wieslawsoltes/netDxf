@@ -28,7 +28,9 @@ internal static class HatchPatternFlagsVerification
         DraftingHatches.ChangePattern(source.Current,[id],captured with { Scale = 3 }).Execute(editor);
         var native = document.Entities.Hatches.Single().Pattern;
         Require(native.IsDouble && native.Type.ToString() == type.ToString(), "Pattern edit changed native flags.");
-        using var stream = new MemoryStream(); Require(document.Save(stream,binary), "DXF write failed."); stream.Position = 0;
+        using var stream = new MemoryStream();
+        editor.SynchronizeSource(() => source.MutateSource(d => Require(d.Save(stream,binary), "DXF write failed.")));
+        stream.Position = 0;
         var roundtrip = DxfDocument.Load(stream)!.Entities.Hatches.Single().Pattern;
         Require(roundtrip.IsDouble && roundtrip.Type.ToString() == type.ToString() && Math.Abs(roundtrip.Scale - 3) < 1e-7,
             "DXF round trip changed flags or scale.");
