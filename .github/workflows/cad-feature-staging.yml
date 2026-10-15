@@ -2,7 +2,7 @@ name: Temporary CAD source verification
 on:
   push:
     branches: [workbench/cad-block-authoring]
-    paths: ['.github/cad-stage.json']
+    paths: ['.github/cad-stage.json', '.github/workflows/cad-feature-staging.yml']
 permissions:
   contents: read
 jobs:
@@ -26,9 +26,8 @@ jobs:
     needs: import
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      NUGET_PACKAGES: ${{ runner.temp }}/cad-nuget
     steps:
+      - run: echo "NUGET_PACKAGES=$RUNNER_TEMP/cad-nuget" >> "$GITHUB_ENV"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ needs.import.outputs.commit }}
