@@ -15,6 +15,14 @@ internal static class StudioCadHttp
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadSelect(request, token))));
         routes.MapPost("/{id}/snap", (string id, StudioDocumentHub hub, HttpRequest http, CadSnapRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadSnap(request, token))));
+        routes.MapPost("/{id}/block/create", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockCreateRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadCreateBlock(request, token))));
+        routes.MapPost("/{id}/block/rename", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockRenameRequest request) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadRenameBlock(request))));
+        routes.MapPost("/{id}/block/begin", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockBeginRequest request) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadBeginBlock(request))));
+        routes.MapPost("/{id}/block/finish", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockFinishRequest request, CancellationToken token) =>
+            hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadFinishBlock(request, token))));
         routes.MapPost("/{id}/grip", (string id, StudioDocumentHub hub, HttpRequest http, CadGripRequest request) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadGrip(request))));
         routes.MapPost("/{id}/layer", (string id, StudioDocumentHub hub, HttpRequest http, CadLayerRequest request) =>

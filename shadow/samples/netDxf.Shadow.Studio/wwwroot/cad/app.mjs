@@ -1,4 +1,5 @@
 import { CadClient } from './client.mjs';
+import { blockTools } from './block-ui.mjs';
 import { CadViewport } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
 import { $, el, icon, tool, tabs, ribbon } from './ui.mjs';
@@ -16,6 +17,7 @@ const viewport = new CadViewport($('viewport'), $('drawing'), client, {
 let session = null, tab = 'Home', palette = 'Properties', currentLayer = '0', lastCommand = 'LINE';
 let documents = [], viewId = '', stateKey = '', activeIdentity = '', snapshot = null, lastInput = [], historyIndex = 0, toastTimer;
 const views = new Map(), layers = new Map();
+const blockUi = blockTools({client, edit, dialog, cancel, fit:()=>viewport.fit(), layer:()=>currentLayer});
 function persisted() { try { return JSON.parse(localStorage.getItem('netdxf-cad-ui-v1') || '{}'); } catch { return {}; } }
 const settings = persisted();
 for (const key of ['grid','snap','ortho','polar','osnap','dynamic']) if (typeof settings[key] === 'boolean') viewport.settings[key]=settings[key];
@@ -69,7 +71,7 @@ async function submit(text) {
   }
   if(!value) return start(lastCommand);
   const match=value.match(/^(\S+)(?:\s+([\s\S]*))?$/), name=match[1].toUpperCase(), rest=match[2]||'';
-  const aliases={U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot'};
+  const aliases={BEDIT:'block-edit',BE:'block-edit',BSAVE:'block-save',BCLOSE:'block-close',U:'undo',UNDO:'undo',REDO:'redo',QNEW:'new',NEW:'new',OPEN:'open',QSAVE:'save',SAVE:'save',PROPERTIES:'properties',PR:'properties',LA:'layers',LAYER:'layers',LIST:'explorer',REGEN:'regen',RE:'regen',PAN:'pan',P:'pan',OPTIONS:'settings',OSNAP:'settings',HELP:'help',SNAPSHOT:'snapshot'};
   if(name==='Z'||name==='ZOOM') { if(!rest||['E','EXTENTS','A','ALL'].includes(rest.toUpperCase())) viewport.fit(); else if(rest.toUpperCase()==='IN') await action('zoom-in'); else if(rest.toUpperCase()==='OUT') await action('zoom-out'); else throw new Error('ZOOM accepts Extents, In or Out.'); return; }
   if(aliases[name]) return action(aliases[name]);
   await start(name);
@@ -164,8 +166,12 @@ function renderPalette() {
     }
     content.append(el('p',{class:'hint',text:'Layer changes and assignments are undoable source transactions. Plot flags are stored in DXF; render exports do not apply CTB/STB plot styles.'}));
   } else if(palette==='Blocks') {
+    content.append(toolbar(button('Create definition…',()=>blockUi.create()),button('Edit definition…',()=>blockUi.begin())));
+    if(data.blockEditor) content.append(el('h3',{text:`Editing: ${data.blockEditor.name}`}), toolbar(button('Save block',()=>blockUi.finish(true)),button('Close / discard',()=>blockUi.finish(false))));
     content.append(el('p',{class:'intro',text:'Insert an existing native block definition. The source definition remains shared; each reference is independently selectable.'}));
-    for(const block of data.blocks) content.append(el('button',{class:'block-card',onclick:()=>run(async()=>{await start('INSERT');session.input(block.name);updatePrompt();})},[icon('INSERT'),el('b',{text:block.name}),el('small',{text:`${block.entities} definition entities`})]));
+    for(const block of data.blocks) content.append(el('section',{class:'layer-card'},[
+      el('button',{class:'block-card',onclick:()=>run(async()=>{await start('INSERT');session.input(block.name);updatePrompt();})},[icon('INSERT'),el('b',{text:block.name}),el('small',{text:`${block.entities} definition entities`})]),
+      toolbar(button('Edit',()=>blockUi.begin(block.id),{'aria-label':`Edit block ${block.name}`}),button('Rename',()=>blockUi.rename(block.id),{'aria-label':`Rename block ${block.name}`}))]));
     if(!data.blocks.length) content.append(el('p',{text:'No named block definitions in this drawing. Open a DXF containing blocks, or create a sample drawing.'}));
   } else if(palette==='Explorer') {
     const filter=el('input',{type:'search',placeholder:'Filter type, layer or handle','aria-label':'Filter drawing objects'}), list=el('div',{class:'object-list'});
@@ -235,6 +241,10 @@ async function draftingSettings() {
 async function action(name) {
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
   switch(name) {
+    case 'block-create':editable();return blockUi.create();
+    case 'block-edit':editable();return blockUi.begin();
+    case 'block-save':editable();return blockUi.finish(true);
+    case 'block-close':editable();return blockUi.finish(false);
     case 'new':return newDocument(); case 'demo':return newDocument(true); case 'open':$('open-file').click();return;case 'save':return save();case 'font':$('font-file').click();return;
     case 'undo':case 'redo':cancel(false);return edit(`history/${name}`);
     case 'fit':viewport.fit();return;case 'regen':await client.refresh();viewport.requestFrame();return;
@@ -325,7 +335,9 @@ client.addEventListener('state',()=>{
   if(nextView!==viewId){const saved=views.get(nextView);viewId=nextView;viewport.camera=saved||fit(s.bounds,viewport.size);}
   currentLayer=layers.get(client.id)||currentLayer;if(!client.data.layers.some(l=>l.name===currentLayer))currentLayer='0';
   $('layouts').replaceChildren(...s.layouts.map(name=>button(name,async()=>{cancel(false);setSnapshot(null);await edit('layout',{name});},{role:'tab','aria-selected':name===s.layout})));
-  $('revision').textContent=`r${s.revision}`;$('selection-count').textContent=`${client.data.selectedEntities.length} selected · ${client.data.itemCount} visible`;
+  $('revision').textContent=`r${s.revision}`;
+  if(snapshot===null){$('view-notice').hidden=!client.data.blockEditor;$('view-notice').textContent=client.data.blockEditor?`Block Editor: ${client.data.blockEditor.name} — BSAVE to commit, BCLOSE to discard`:'';}
+  if(client.data.blockEditor)$('layouts').querySelectorAll('button').forEach(b=>b.disabled=true);$('selection-count').textContent=`${client.data.selectedEntities.length} selected · ${client.data.itemCount} visible`;
   if(stateKey!==viewKey(s)){stateKey=viewKey(s);drawRibbon();renderPalette();viewport.setData();}
   $('loading').hidden=true;updatePrompt();updateTools();
 });
