@@ -167,6 +167,24 @@ def run(dotnet: str, configuration: str) -> None:
             reconnect = urlopen(Request(base + '/api/events', headers={'Last-Event-ID': cursor}), timeout=15); streams.append(reconnect)
             _, reset = notice(reconnect)
             assert reset['reset'] and reset['documentId'] == latest['documentId']; passed('SSE reconnect resynchronizes after replacement')
+            mapping = json.dumps({'schemaVersion': 1, 'resource': 'http-big.shx', 'characters': {'U+03A9': 32832}}).encode()
+            resource = b'*BIGFONT 1,1,128,128\n*0,4,HTTP\n20,0,2,0\n*32832,0,STEM\n8,0,20,0'
+            request(f'bigfont-map?revision={latest["revision"]}', mapping, expected=403)
+            request(f'bigfont-map?revision={latest["revision"]}', mapping, latest, expected=400)
+            assert state()['fontRevision'] == latest['fontRevision']
+            passed('BIGFONT map requires guarded explicit resource registration')
+            font = request(f'font?revision={latest["revision"]}&name=http-big.shp', resource, latest)
+            mapped = request(f'bigfont-map?revision={font["revision"]}', mapping, font)
+            assert mapped['fontRevision'] == font['fontRevision'] + 1 and mapped['revision'] == font['revision']
+            assert mapped['undoCount'] == font['undoCount'] and mapped['viewVersion'] > font['viewVersion']
+            request(f'bigfont-map?revision={mapped["revision"]}', mapping, font, expected=409)
+            passed('BIGFONT mapping publishes one resource revision without source history edits')
+            same = request(f'bigfont-map?revision={mapped["revision"]}', mapping, mapped)
+            assert same['fontRevision'] == mapped['fontRevision'] and same['changeVersion'] == mapped['changeVersion']
+            request(f'bigfont-map?revision={mapped["revision"]+1}', mapping, same, expected=409)
+            request(f'bigfont-map?revision={mapped["revision"]}', b'{"schemaVersion":2}', same, expected=400)
+            assert state()['fontRevision'] == same['fontRevision']
+            passed('BIGFONT mapping no-op stale and malformed uploads preserve published state')
             complete = True
         finally:
             for stream in streams: stream.close()

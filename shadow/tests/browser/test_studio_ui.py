@@ -18,7 +18,7 @@ def run(executable=None):
         def page():
             p=browser.new_page(viewport={'width':1600,'height':1050})
             p.on('pageerror',lambda error:errors.append(str(error)))
-            html=re.sub(r'<script\b[^>]*>.*?</script>|<link\b[^>]*>', '', (WEB/'index.html').read_text(),flags=re.S)
+            html=re.sub(r'<script\b[^>]*>.*?</script>|<link\b[^>]*>', '', (WEB/'diagnostics.html').read_text(),flags=re.S)
             p.set_content(html)
             p.add_style_tag(content=(WEB/'studio.css').read_text()+(WEB/'workspaces.css').read_text())
             p.add_script_tag(content=(Path(__file__).parent/'studio_fixture.js').read_text())
@@ -76,8 +76,22 @@ def run(executable=None):
         p.locator('#viewport').click(position={'x':100,'y':100})
         p.wait_for_function("fixture.calls.some(c=>c.path==='pick')")
         p.close();print('PASS ui/camera-changes-fence-picking-until-frame-publication')
+        p=page()
+        mapping=b'{"schemaVersion":1,"resource":"big.shx","characters":{"U+03A9":32832}}'
+        p.locator('#bigfont-map-file').set_input_files({'name':'map.json','mimeType':'application/json','buffer':mapping})
+        p.wait_for_function("fixture.calls.some(c=>c.path==='bigfont-map') && fixture.state().fontRevision===1")
+        assert p.evaluate("fixture.calls.find(c=>c.path==='bigfont-map').headers['X-Shadow-Studio']==='1'")
+        assert p.evaluate("JSON.parse(fixture.mapText).characters['U+03A9']===32832")
+        assert p.locator('#undo').is_disabled()
+        fork(p); assert p.locator('#bigfont-map-file').is_disabled()
+        p.close(); print('PASS ui/explicit-bigfont-map-upload-preserves-history-and-branch-resource-lock')
+        p=page()
+        p.locator('#bigfont-map-file').set_input_files({'name':'large.json','mimeType':'application/json','buffer':b' '* (4*1024*1024+1)})
+        p.wait_for_selector('#notification:visible')
+        assert not p.evaluate("fixture.calls.some(c=>c.path==='bigfont-map')")
+        p.close(); print('PASS ui/oversized-bigfont-map-rejected-before-request')
         assert not errors,errors
-        browser.close();print('DOM verification: 8 scenarios passed; no page errors.')
+        browser.close();print('DOM verification: 10 scenarios passed; no page errors.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--executable');args=parser.parse_args();run(args.executable)
