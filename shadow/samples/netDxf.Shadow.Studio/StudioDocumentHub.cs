@@ -58,13 +58,22 @@ public sealed class StudioDocumentHub : IDisposable
             }));
         }
     }
-    public byte[] Save(string id, HttpRequest http, long revision)
+    // Retain the original public signature and all existing host/receipt behavior.
+    public byte[] Save(string id, HttpRequest http, long revision) => Save(id, http, revision, static bytes => bytes);
+
+    /// <summary>Encode detached DXF before advancing the saved stamp. Encoding failure
+    /// preserves dirty state and is never retried implicitly.</summary>
+    public byte[] Save(string id, HttpRequest http, long revision, Func<byte[], byte[]> encode)
     {
+        ArgumentNullException.ThrowIfNull(encode);
         lock (gate)
         {
             return Use(id, studio => StudioHttp.Execute(studio, http, () =>
             {
-                var bytes = studio.Save(revision); entries[id].Saved = studio.CadStamp; return bytes;
+                var bytes = studio.Save(revision);
+                var encoded = encode(bytes);
+                if (encoded is null || encoded.Length == 0) throw new InvalidOperationException("The drawing encoder returned no output.");
+                entries[id].Saved = studio.CadStamp; return encoded;
             }));
         }
     }

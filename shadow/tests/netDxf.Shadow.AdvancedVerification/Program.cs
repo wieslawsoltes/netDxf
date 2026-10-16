@@ -7,6 +7,8 @@ MathVerification.Register(tests);
 DraftingVerification.Register(tests);
 CadAuthoringVerification.Register(tests);
 CollectionOrderingVerification.Register(tests);
+DwgExchangeVerification.Register(tests);
+HatchExchangeVerification.Register(tests);
 HatchPatternFlagsVerification.Register(tests);
 CadWorkspaceVerification.Register(tests);
 DimensionExportVerification.Register(tests);
