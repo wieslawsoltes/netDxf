@@ -1,3 +1,5 @@
+import { authoringRequest } from './authoring-contracts.mjs';
+import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
 import { CadClient } from './client.mjs';
 import { CadViewport } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
@@ -34,7 +36,7 @@ function report(error) {
 }
 function run(task) { Promise.resolve().then(task).catch(report); }
 function editable() { if(snapshot!==null) throw new Error('This is a read-only retained snapshot. Return to Current drawing before editing.'); if(!client.state) throw new Error('Load a drawing first.'); }
-async function edit(path,payload={}) { editable(); const result=await client.mutate(path,payload); await documentTabs(); return result; }
+async function edit(path,payload={},options={}) { editable(); const result=await client.mutate(path,payload,options); await documentTabs(); return result; }
 function setSession(value) { viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
 function cancel(clearSelection=true) { setSession(null); $('command-input').value=''; $('suggestions').hidden=true; $('dynamic-input').hidden=true; if(clearSelection && client.state && snapshot===null && !client.busy) run(()=>edit('select',{mode:'clear'})); }
 async function start(name) {
@@ -56,7 +58,7 @@ async function complete() {
   }
   const command=structuredClone(completed.command);
   if(command.name==='INSERT') { const block=client.data.blocks.find(b=>b.name.toLowerCase()===command.block.toLowerCase()); if(!block) { setSession(null); throw new Error(`Unknown block: ${command.block}`); } command.reference={value:block.id}; delete command.block; }
-  try { await edit('command',{command}); log(`${completed.name} completed — revision ${client.state.revision}.`,'success'); }
+  try { const authored=authoringRequest(command,client.data); await edit(authored?.path || 'command',authored?.body || {command},authored?{expectedKey:client.key}:{}); log(`${completed.name} completed — revision ${client.state.revision}.`,'success'); }
   finally { if(session===completed) setSession(null); }
 }
 async function submit(text) {
@@ -78,8 +80,8 @@ async function submit(text) {
     for(let i=0;i<tokens.length;i++) {
       if(!session) throw new Error('Extra input after command completion.');
       if(session.selecting) throw new Error('Preselect source objects before an inline modification command.');
-      const token=session.step.kind==='text'?tokens.slice(i).join(' '):tokens[i];
-      const isText=session.step.kind==='text'; session.input(token,viewport.resolved||viewport.cursor); if(session.complete) await complete(); if(isText) break;
+      const isText=session.step.kind==='text'&&session.index===session.spec.steps.length-1;
+      const token=isText?tokens.slice(i).join(' '):tokens[i]; session.input(token,viewport.resolved||viewport.cursor); if(session.complete) await complete(); if(isText) break;
     }
     updatePrompt(); viewport.invalidate();
   }
@@ -164,6 +166,7 @@ function renderPalette() {
     }
     content.append(el('p',{class:'hint',text:'Layer changes and assignments are undoable source transactions. Plot flags are stored in DXF; render exports do not apply CTB/STB plot styles.'}));
   } else if(palette==='Blocks') {
+    content.append(toolbar(button('Create block',()=>action('block-create')),button('Redefine',()=>action('block-redefine')),button('Rename',()=>action('block-rename'))));
     content.append(el('p',{class:'intro',text:'Insert an existing native block definition. The source definition remains shared; each reference is independently selectable.'}));
     for(const block of data.blocks) content.append(el('button',{class:'block-card',onclick:()=>run(async()=>{await start('INSERT');session.input(block.name);updatePrompt();})},[icon('INSERT'),el('b',{text:block.name}),el('small',{text:`${block.entities} definition entities`})]));
     if(!data.blocks.length) content.append(el('p',{text:'No named block definitions in this drawing. Open a DXF containing blocks, or create a sample drawing.'}));
@@ -233,6 +236,7 @@ async function draftingSettings() {
   if(await dialog('Drafting settings',content)) {const n=number(grid.value);if(n<1e-6||n>1e9)throw new Error('Grid spacing must be between 0.000001 and 1,000,000,000.');viewport.settings.gridStep=n;viewport.settings.snapModes=flags.reduce((sum,[bit,input])=>sum+(input.checked?bit:0),0);persist();viewport.invalidate();}
 }
 async function action(name) {
+  if(isAuthoringAction(name)){cancel(false);return authoringDialog(name,{client,editable,edit,dialog,showPalette,currentLayer});}
   if(['properties','layers','blocks','explorer','workspaces','diagnostics'].includes(name))return showPalette(name[0].toUpperCase()+name.slice(1));
   switch(name) {
     case 'new':return newDocument(); case 'demo':return newDocument(true); case 'open':$('open-file').click();return;case 'save':return save();case 'font':$('font-file').click();return;
@@ -258,7 +262,7 @@ async function action(name) {
     case 'export-png':return exportImage('skia');case 'export-svg':return exportImage('svg');
     case 'legacy':window.open('diagnostics.html','_blank','noopener');return;
     case 'reset-ui':for(const [key,value] of Object.entries({grid:true,snap:false,ortho:false,polar:false,osnap:true,dynamic:true,gridStep:10,snapModes:23}))viewport.settings[key]=value;$('workspace').className='workspace';$('studio').className='';document.documentElement.style.removeProperty('--palette-width');document.documentElement.style.removeProperty('--command-height');persist();modes();viewport.changed();return;
-    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. DWG, 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
+    case 'help':await dialog('Shadow CAD command reference',[el('p',{class:'hint',text:'Native netDxf editing on immutable shadow transactions. Enter ends point chains; C closes; U removes the last draft point; Escape cancels. Coordinates: X,Y; @dx,dy; @distance<angle. A bare distance follows the cursor. All edits are undoable.'}),el('table',{class:'help-table'},Object.entries(commands).map(([name,s])=>el('tr',{},[el('td',{text:`${name} (${s.aliases.join(', ')})`}),el('td',{text:s.label})]))),el('p',{class:'hint',text:'TRIM/EXTEND: select target LINE first, then a LINE/CIRCLE boundary, Enter, then pick an endpoint. FILLET/CHAMFER: two intersecting XY lines. EXPLODE: 2D polylines. SPLINE: cubic control points. These commands preserve native source geometry and refuse unsupported combinations. BLOCK creates shared definitions; BLOCKREDEFINE replaces one from selected sources; BLOCKRENAME retains references. HATCH/HATCHEDIT accept built-in name, scale, angle and island style. HATCHPOLY makes a solid polygon. Hatch settings import bounded custom PAT files. DWG, 3D solids, general curve trimming, AutoLISP and CTB/STB plotting are not implemented.'}),el('p',{class:'hint',text:'Ctrl+N/O/S: new/open/save · Ctrl+Z/Y: undo/redo · Ctrl+1: palettes · Ctrl+0: clean screen · F2: history · F3: object snap · F7: grid · F8: ortho · F9: grid snap · F10: polar · F12: dynamic input. Middle drag pans; wheel zooms about the pointer; right click opens command actions. Two-finger touch pans/zooms.'})],'Close');return;
     default:throw new Error(`Unknown workspace action: ${name}`);
   }
 }

@@ -118,8 +118,8 @@ headers, owner context, cleanup on failures and undo across save are covered by
 native regressions.
 
 This is an AutoCAD-inspired **2D** workspace, not certification of pixel-perfect
-AutoCAD parity. DWG, 3D solids/orbit, parametric constraints, block-definition
-authoring, hatch authoring, all grip/modify variants and full plot/page-setup
+AutoCAD parity. DWG, 3D solids/orbit, parametric constraints, a dedicated block-editing workspace, associative hatch
+regeneration, all grip/modify variants and full plot/page-setup
 workflows are not implemented by this UI. Existing imported content retains
 the shadow renderer's documented capability/diagnostic boundaries.
 
@@ -160,3 +160,11 @@ uncaught JavaScript/CSP errors. Screenshots, results and host diagnostics go to
 `artifacts/studio-browser/` and the existing retained verification artifact.
 The existing native verification, conformance, package/runtime and qualification
 gates remain active.
+
+## Block and hatch authoring
+
+The Blocks palette and Insert ribbon now expose **Create block**, **Redefine**
+and **Rename**. The Home ribbon exposes **Hatch**, **Edit hatch** and a
+**Solid hatch polygon** command. These operations use the shared authoring plans,
+not transient graphics. See [CAD authoring](CadAuthoring.md) for APIs, exact
+geometry admission, pattern import, examples and validation boundaries.

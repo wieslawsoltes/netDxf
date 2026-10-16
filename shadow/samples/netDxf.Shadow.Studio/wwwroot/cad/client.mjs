@@ -50,11 +50,12 @@ export class CadClient extends EventTarget {
     const data = await (await this.request(this.url('state', id))).json();
     if (generation === this.epoch && id === this.id && !this.busy && viewKey(data.state) !== viewKey(this.state)) this.adopt(data);
   }
-  mutate(path, payload = {}, { binary = false, query = null } = {}) {
+  mutate(path, payload = {}, { binary = false, query = null, expectedKey = null } = {}) {
     if (!this.state) return Promise.reject(new Error('Load a drawing first.'));
     const id = this.id, expectedScope = scope(this.state); this.busy++; this.epoch++; this.emit('busy');
     const execute = async () => {
       if (id !== this.id || expectedScope !== scope(this.state)) throw new ApiError('The drawing or workspace changed before this operation. Repeat the command in the current view.', 409);
+      if (expectedKey !== null && expectedKey !== this.key) throw new ApiError('The authoring receipt changed. Reopen the dialog or repeat the command.', 409);
       const state = this.state, headers = identityHeaders(state);
       const route = query ? `${path}?${new URLSearchParams({ ...query, revision: state.revision })}` : path;
       const response = await this.request(this.url(route, id), { body: binary ? payload : { ...payload, revision: state.revision }, headers });

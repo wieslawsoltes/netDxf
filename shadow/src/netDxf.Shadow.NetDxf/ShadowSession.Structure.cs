@@ -35,6 +35,10 @@ public sealed partial class ShadowSession
             resolver = new Resolver(Resolve, (value, type) => ConvertValue(value, type, Resolve));
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
             var collections = new List<SourceCollectionPlan>();
+            // A native block table refuses removal while INSERTs still reference a
+            // definition. Keep a stable O(C) partition instead of relying on the
+            // immutable dictionary/patch iteration order for these side effects.
+            var blockTables = new List<SourceCollectionPlan>();
             var methods = new List<SourceMethodPlan>();
             var collectionSources = new HashSet<object>(ReferenceEqualityComparer.Instance);
             var assertions = new List<(ObjectId Id, string Property, ShadowValue Value)>();
@@ -47,7 +51,10 @@ public sealed partial class ShadowSession
                 foreach (var (name, value) in change.After!.Properties)
                 {
                     if (change.Before is { } previous && ShadowValue.Equivalent(previous[name], value)) continue;
-                    if (name is "Handle" or "Owner" or "Type" or "CodeName") continue;
+                    // Type is read-only entity metadata on some objects, but a writable
+                    // semantic enum on HatchPattern and other public data-model types.
+                    // Let the accessor contract decide rather than dropping it by name.
+                    if (name is "Handle" or "Owner" or "CodeName") continue;
                     // The source allocator is monotonic; undo restores semantic objects,
                     // never rewinds handles that may already have been assigned elsewhere.
                     if (historical is not null && name == "HandleSeed") continue;
@@ -57,7 +64,8 @@ public sealed partial class ShadowSession
                         if (value is not ShadowValue.Sequence sequence) throw new ArgumentException("Collection membership must be a sequence.");
                         var collectionSource = name == "$items" ? source : accessor!.Get(source);
                         var plan = SourceCollectionPlan.TryCreate(collectionSource, sequence, resolver.Convert);
-                        if (plan is not null && !plan.IsNoOp && collectionSources.Add(collectionSource!)) collections.Add(plan);
+                        if (plan is not null && !plan.IsNoOp && collectionSources.Add(collectionSource!))
+                            (collectionSource is netDxf.Collections.BlockRecords ? blockTables : collections).Add(plan);
                         else if (plan is null && change.Before is not null) assertions.Add((change.Id, name, value));
                         continue;
                     }
@@ -91,8 +99,12 @@ public sealed partial class ShadowSession
                     write.Accessor.Set(write.Source, write.After);
                 }
                 // Moving entities across owners must release every old owner first.
-                touchedCollections = collections.Count != 0;
+                touchedCollections = collections.Count != 0 || blockTables.Count != 0;
                 foreach (var plan in collections) plan.RemoveOld();
+                foreach (var plan in blockTables) plan.RemoveOld();
+                // Register definitions before attaching their instances. The order
+                // within each partition remains exactly the prepared patch order.
+                foreach (var plan in blockTables) plan.AddNew();
                 foreach (var plan in collections) plan.AddNew();
                 var next = capture.Capture(document, current);
                 foreach (var assertion in assertions)
@@ -115,9 +127,15 @@ public sealed partial class ShadowSession
                 var failures = new List<Exception> { error.GetBaseException() };
                 if (touchedCollections)
                 {
-                    // Clear every destination before restoring any source owner.
+                    // Rollback obeys the same referential phases: release instance
+                    // memberships before definitions, restore definitions before
+                    // instances. Full-graph verification and fail-stop stay mandatory.
                     foreach (var plan in collections.AsEnumerable().Reverse())
                         try { plan.ClearForRollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in blockTables.AsEnumerable().Reverse())
+                        try { plan.ClearForRollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in blockTables)
+                        try { plan.Restore(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                     foreach (var plan in collections)
                         try { plan.Restore(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
@@ -157,6 +175,12 @@ public sealed partial class ShadowSession
                     {
                         foreach (var candidate in candidates)
                         {
+                            // Read-only does not imply ownership. Owner is an inverse
+                            // relationship, and INSERT.Block is a constructor dependency
+                            // on a shared definition. Resolving either as a generated
+                            // child can create a false cycle, depending on patch order.
+                            if (candidate.Accessor.Name == "Owner" ||
+                                candidate.Accessor.Name == "Block" && additions[candidate.Owner].TypeName == "netDxf.Entities.Insert") continue;
                             if (constructing.Contains(candidate.Owner)) continue;
                             var owned = candidate.Accessor.Get(Resolve(candidate.Owner));
                             if (owned is null || owned.GetType().FullName != node.TypeName) continue;
