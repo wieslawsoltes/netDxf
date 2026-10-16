@@ -7,6 +7,10 @@ namespace netDxf.Shadow.NetDxf;
 internal sealed class SourceCollectionPlan
 {
     private readonly object source;
+    private readonly Type elementType;
+    // Constructor-owned arrays/vertices precede registered definitions; entities are
+    // attached last so references never force a table to retain a removed definition.
+    internal int AttachmentOrder { get; }
     private readonly MethodInfo? insert;
     private readonly MethodInfo? removeAt;
     private readonly MethodInfo? add;
@@ -21,6 +25,8 @@ internal sealed class SourceCollectionPlan
     private SourceCollectionPlan(object source, Type elementType, object?[] after)
     {
         this.source = source;
+        this.elementType = elementType;
+        AttachmentOrder = source is netDxf.Collections.EntityCollection ? 2 : IsTable(source.GetType()) ? 1 : 0;
         array = source as Array;
         Before = ((IEnumerable)source).Cast<object?>().ToArray();
         After = after;
@@ -87,19 +93,17 @@ internal sealed class SourceCollectionPlan
     {
         if (array is not null) { AssignArray(After); return; }
         for (var i = prefix; i < After.Length - suffix; i++) Insert(i, After[i]);
-        if (!Matches(After)) throw new InvalidOperationException("The source collection rejected or reordered a requested change.");
+        if (!Matches(After)) throw new InvalidOperationException($"Source collection {source.GetType().FullName} rejected or reordered a requested change.");
     }
-    public void ClearForRollback()
+    /// <summary>Recover only changed membership. Clearing an entire table would also
+    /// remove untouched definitions, reallocating their handles and breaking rollback.</summary>
+    internal SourceCollectionPlan PrepareRollback() => new(source, elementType, Before);
+
+    private static bool IsTable(Type type)
     {
-        if (array is not null) return;
-        var values = ((IEnumerable)source).Cast<object?>().ToArray();
-        for (var i = values.Length - 1; i >= 0; i--) Remove(i, values[i]);
-    }
-    public void Restore()
-    {
-        if (array is not null) { AssignArray(Before); return; }
-        for (var i = 0; i < Before.Length; i++) Insert(i, Before[i]);
-        if (!Matches(Before)) throw new InvalidOperationException("Collection rollback did not restore its original membership.");
+        for (Type? current = type; current is not null; current = current.BaseType)
+            if (current.IsGenericType && current.GetGenericTypeDefinition() == typeof(netDxf.Collections.TableObjects<>)) return true;
+        return false;
     }
     private void AssignArray(object?[] values)
     {

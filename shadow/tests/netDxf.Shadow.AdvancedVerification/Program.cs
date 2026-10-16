@@ -10,6 +10,8 @@ CollectionOrderingVerification.Register(tests);
 DwgExchangeVerification.Register(tests);
 HatchExchangeVerification.Register(tests);
 HatchPatternFlagsVerification.Register(tests);
+BlockAuthoringVerification.Register(tests);
+BlockIntegrationVerification.Register(tests);
 CadWorkspaceVerification.Register(tests);
 DimensionExportVerification.Register(tests);
 StructuralVerification.Register(tests);

@@ -17,7 +17,7 @@ public sealed partial class Studio
     private readonly DraftingPlanner drafting = new();
     private ImmutableArray<ObjectId> cadSelectionOrder = [];
     private static readonly HashSet<string> SelectionCommands = new(StringComparer.OrdinalIgnoreCase)
-        { "MOVE", "COPY", "ROTATE", "SCALE", "MIRROR", "ARRAY", "OFFSET", "TRIM", "EXTEND", "FILLET", "CHAMFER", "JOIN", "EXPLODE", "ERASE" };
+        { "MOVE", "COPY", "ROTATE", "SCALE", "MIRROR", "ARRAY", "OFFSET", "TRIM", "EXTEND", "FILLET", "CHAMFER", "JOIN", "EXPLODE", "ERASE", "BLOCK" };
     public long CadRevision { get { lock (gate) return Current.Revision; } }
     public bool CadHasBranches { get { lock (gate) return branches.Count != 0; } }
     public (Guid Document, long Revision) CadStamp { get { lock (gate) return (session.Current.DocumentId, session.Current.Revision); } }
@@ -41,6 +41,9 @@ public sealed partial class Studio
             catch (InvalidOperationException error) { gripDiagnostic = error.Message; }
             return new
             {
+                blockEditor = activeBranch?.BlockRoot is { } blockRoot ? new { id = blockRoot.Value,
+                    name = snapshot.Read(blockRoot)["Name"].Text,
+                    changed = !ShadowGraphPatch.Between(activeBranch.Ancestor, snapshot).Changes.IsEmpty } : null,
                 state = State(), layers = DraftingLayers.Read(snapshot), selectedEntities = selected.Select(i => i.Value).ToArray(),
                 grips = grips.Select(g => new { g.Id, entity = g.Entity.Value, g.Property, g.Position, g.Kind, g.Index }), gripDiagnostic,
                 items = roots.Take(5000).Select(g => new { id = g.Key.Value, key = g.First().Key, type = snapshot.Read(g.Key).Type,
@@ -66,7 +69,9 @@ public sealed partial class Studio
                 command = command with { Entities = command.Entities.IsDefaultOrEmpty ? selected : command.Entities };
             }
             else command = command with { Entities = [] };
-            var plan = drafting.Plan(Current, command, layout, token); plan.Execute(editor);
+            var plan = activeBranch?.BlockRoot is { } root ? drafting.PlanInBlock(Current, command, root, token) :
+                drafting.Plan(Current, command, layout, token);
+            plan.Execute(editor);
             cadSelectionOrder = plan.Created.IsEmpty ? selected.Where(id => Current.Objects.ContainsKey(id)).ToImmutableArray() : plan.Created;
             editor.Select(DraftingQueries.Expand(Scene(), cadSelectionOrder));
             PublishChange(); return CadState();
@@ -84,7 +89,7 @@ public sealed partial class Studio
                 "window" or "crossing" => DraftingQueries.Select(scene,
                     new(Math.Min(request.First.X, request.Second.X), Math.Min(request.First.Y, request.Second.Y), Math.Max(request.First.X, request.Second.X), Math.Max(request.First.Y, request.Second.Y)),
                     request.Mode.Equals("window", StringComparison.OrdinalIgnoreCase) ? DraftingSelectionMode.Window : DraftingSelectionMode.Crossing, token: token),
-                "all" => DraftingQueries.Expand(scene, Current.DrawingEntities(layout).Select(e => e.Id!.Value).Take(10_001)),
+                "all" => DraftingQueries.Expand(scene, (activeBranch?.BlockRoot is { } root ? Current.Read(root)["Entities"].Items : Current.DrawingEntities(layout)).Select(e => e.Id!.Value).Take(10_001)),
                 "entity" when request.Entity is not null => DraftingQueries.Expand(scene, [new(request.Entity)]),
                 "clear" => [],
                 _ => throw new ArgumentException("Unknown selection mode.")

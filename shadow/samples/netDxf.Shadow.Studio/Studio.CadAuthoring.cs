@@ -17,7 +17,9 @@ public sealed partial class Studio
             Check(request.Revision); ArgumentNullException.ThrowIfNull(request.Definition);
             var selected = CadSelected(Scene());
             var definition = request.Definition with { Entities = AuthoringSelection(request.Definition.Entities, selected) };
-            return ApplyAuthoring(drafting.PlanBlockDefinition(Current, definition, layout, token), selected);
+            var plan = activeBranch?.BlockRoot is { } root ? drafting.PlanBlockDefinitionInDefinition(Current, definition, root, token) :
+                drafting.PlanBlockDefinition(Current, definition, layout, token);
+            return ApplyAuthoring(plan, selected);
         }
     }
     public object CadRenameBlock(CadBlockRenameRequest request)
@@ -36,7 +38,9 @@ public sealed partial class Studio
             var selected = CadSelected(Scene()); var hatch = request.Hatch;
             if (hatch.Polygons.IsDefaultOrEmpty || !hatch.Boundaries.IsDefaultOrEmpty)
                 hatch = hatch with { Boundaries = AuthoringSelection(hatch.Boundaries, selected) };
-            return ApplyAuthoring(DraftingHatches.Create(Current, hatch, layout, token), selected);
+            var plan = activeBranch?.BlockRoot is { } root ? DraftingHatches.CreateInDefinition(Current, hatch, root, token) :
+                DraftingHatches.Create(Current, hatch, layout, token);
+            return ApplyAuthoring(plan, selected);
         }
     }
     public object CadReadHatchPattern(long revision)

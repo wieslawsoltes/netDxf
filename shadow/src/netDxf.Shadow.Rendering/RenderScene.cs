@@ -34,6 +34,8 @@ public sealed record RenderScene(Guid DocumentId, long Revision, string Layout, 
     Bounds2 Bounds, SpatialIndex Index, ImmutableArray<ShadowDiagnostic> Diagnostics);
 public sealed record RenderCompileOptions(string Layout = "Model", double Tolerance = 0.05)
 {
+    /// <summary>Definition-space rendering, isolated from model annotation and paper projection.</summary>
+    public ObjectId? RootBlock { get; init; }
     public bool IncludePaperViewports { get; init; } = true;
     /// <summary>Consumer-only multiplier for authored linetype scales. Paper composition compensates
     /// this scale per viewport before compiling both dashes and decorations.</summary>

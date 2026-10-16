@@ -3,7 +3,11 @@ using netDxf.Shadow.Editor;
 
 namespace netDxf.Shadow.Drafting;
 
-public enum BlockSourceDisposition { Retain, ConvertToInsert, Delete }
+public enum BlockSourceDisposition
+{
+    Retain = 0, ConvertToInsert = 1, Delete = 2,
+    Convert = ConvertToInsert, Remove = Delete
+}
 
 /// <summary>Author a named shared definition from explicitly selected layout roots.
 /// Redefine preserves the definition identity, so all existing INSERTs observe the new contents.</summary>
@@ -16,6 +20,23 @@ public sealed partial class DraftingPlanner
     public DraftingPlan PlanBlockDefinition(ShadowSnapshot snapshot, BlockDefinitionRequest request,
         string layout = "Model", CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var owner = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown layout.");
+        return PlanBlockDefinitionInOwner(snapshot, request, owner, cancellationToken);
+    }
+
+    /// <summary>Reuse definition creation/redefinition inside an explicit named editing space.</summary>
+    public DraftingPlan PlanBlockDefinitionInDefinition(ShadowSnapshot snapshot, BlockDefinitionRequest request,
+        ObjectId owner, CancellationToken cancellationToken = default)
+    {
+        DraftingBlocks.Definition(snapshot, owner);
+        if (request?.Redefine == owner) throw new ArgumentException("Edit the open definition directly rather than redefining its own source selection.");
+        return PlanBlockDefinitionInOwner(snapshot, request!, owner, cancellationToken);
+    }
+
+    private DraftingPlan PlanBlockDefinitionInOwner(ShadowSnapshot snapshot, BlockDefinitionRequest request,
+        ObjectId owner, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(snapshot); ArgumentNullException.ThrowIfNull(request);
         if (!Enum.IsDefined(request.Disposition)) throw new ArgumentOutOfRangeException(nameof(request));
         ValidateBlockName(request.Name); CheckPoint(request.BasePoint);
@@ -23,13 +44,12 @@ public sealed partial class DraftingPlanner
             throw new ArgumentException("Block descriptions are limited to 4096 characters.");
         var ids = request.Entities.IsDefault ? [] : request.Entities.Distinct().ToImmutableArray();
         if (ids.IsEmpty || ids.Length > limits.MaximumEntities) throw new ArgumentException("Select a bounded, nonempty set of source entities.");
-        var owner = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown layout.");
         var ownerMembers = snapshot.Read(owner)["Entities"].Items.Select(e => e.Id).ToHashSet();
         foreach (var id in ids)
         {
             cancellationToken.ThrowIfCancellationRequested();
             DraftingGuard.Entity(snapshot, id, request.Disposition != BlockSourceDisposition.Retain);
-            if (!ownerMembers.Contains(id)) throw new ArgumentException("Block sources must be direct entities of the active layout.");
+            if (!ownerMembers.Contains(id)) throw new ArgumentException("Block sources must be direct entities of the active editing space.");
         }
         var blocks = snapshot.Document["Blocks"].Items.ToArray();
         var existing = request.Redefine is { } target ? blocks.FirstOrDefault(b => b.Id == target) : default;
@@ -42,6 +62,9 @@ public sealed partial class DraftingPlanner
         if (existing.Exists && !existing["Name"].Text.Equals(request.Name, StringComparison.Ordinal))
             throw new ArgumentException("Redefine retains the definition name; use RenameBlock explicitly.");
         ValidateBlockDependencies(snapshot, ids, request.Redefine, cancellationToken);
+        foreach (var id in ids)
+            if (snapshot.Read(id).Type == "Insert" && snapshot.Read(id)["Block"].Id is { } referenced)
+                DraftingBlocks.ValidateReference(snapshot, owner, referenced, limits.MaximumClonedObjects, cancellationToken);
 
         var edit = new ShadowGraphEdit(snapshot);
         var block = request.Redefine ?? edit.Create("netDxf.Blocks.Block", ShadowObjectKind.Block,

@@ -1,4 +1,4 @@
-import { authoringCommands } from './authoring-contracts.mjs';
+import { authoringCommands, blockName } from './authoring-contracts.mjs';
 /** Host-independent precision input, camera math and command state. No DOM, eval or network. */
 export const point = (x = 0, y = 0, z = 0) => ({ x, y, z });
 export const add = (a, b) => point(a.x + b.x, a.y + b.y, (a.z ?? 0) + (b.z ?? 0));
@@ -127,7 +127,16 @@ export class CommandSession {
   get prompt() { const s = this.step; return `${this.name} — ${s.prompt}${s.defaultValue !== undefined && s.defaultValue !== '' ? ` <${s.defaultValue}>` : ''}:`; }
   input(text, cursor = null) {
     if (this.selecting || this.complete) throw new Error('The command is not accepting coordinates.');
-    const value = String(text).trim(), step = this.step;
+    const value = String(text).trim();
+    // Keep the established name-first prompt while accepting coordinate-first BLOCK
+    // input. A comma cannot occur in a valid block name, so this is unambiguous.
+    // Parse before changing the session, and never mutate the shared command spec.
+    if (this.name === 'BLOCK' && this.index === 0 && value.includes(',')) {
+      const origin = parsePoint(value, point(), cursor);
+      this.spec = { ...this.spec, steps: [...authoringCommands.BLOCK.steps].reverse() };
+      return this.pick(origin);
+    }
+    const step = this.step;
     if (this.spec.chain && ['U', 'UNDO'].includes(value.toUpperCase())) {
       if (this.command.points.length) this.command.points.pop(); this.index = this.command.points.length ? 1 : 0; this.version++; return;
     }
@@ -139,7 +148,7 @@ export class CommandSession {
       this.command.closed = closed; this.complete = true; this.version++; return;
     }
     if (step.kind === 'point') return this.pick(parsePoint(value, this.anchor || point(), cursor));
-    if (step.kind === 'text') { const t = value || step.defaultValue; if (!t || t.length > 16384) throw new Error('Enter 1–16384 characters.'); this.command[step.key] = t; }
+    if (step.kind === 'text') { const t = value || step.defaultValue; if (!t || t.length > 16384) throw new Error('Enter 1–16384 characters.'); if(this.name === 'BLOCK') blockName(t); this.command[step.key] = t; }
     else {
       const n = value ? number(value) : step.defaultValue;
       if (!Number.isFinite(n) || n < step.min || n > step.max || (step.integer && !Number.isInteger(n))) throw new Error(`Enter ${step.integer ? 'an integer' : 'a number'} from ${step.min} to ${step.max}.`);

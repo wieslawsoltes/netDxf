@@ -35,10 +35,6 @@ public sealed partial class ShadowSession
             resolver = new Resolver(Resolve, (value, type) => ConvertValue(value, type, Resolve));
             var writes = new List<(object Source, SourceAccessor Accessor, object? Before, object? After)>();
             var collections = new List<SourceCollectionPlan>();
-            // A native block table refuses removal while INSERTs still reference a
-            // definition. Keep a stable O(C) partition instead of relying on the
-            // immutable dictionary/patch iteration order for these side effects.
-            var blockTables = new List<SourceCollectionPlan>();
             var methods = new List<SourceMethodPlan>();
             var collectionSources = new HashSet<object>(ReferenceEqualityComparer.Instance);
             var assertions = new List<(ObjectId Id, string Property, ShadowValue Value)>();
@@ -64,8 +60,7 @@ public sealed partial class ShadowSession
                         if (value is not ShadowValue.Sequence sequence) throw new ArgumentException("Collection membership must be a sequence.");
                         var collectionSource = name == "$items" ? source : accessor!.Get(source);
                         var plan = SourceCollectionPlan.TryCreate(collectionSource, sequence, resolver.Convert);
-                        if (plan is not null && !plan.IsNoOp && collectionSources.Add(collectionSource!))
-                            (collectionSource is netDxf.Collections.BlockRecords ? blockTables : collections).Add(plan);
+                        if (plan is not null && !plan.IsNoOp && collectionSources.Add(collectionSource!)) collections.Add(plan);
                         else if (plan is null && change.Before is not null) assertions.Add((change.Id, name, value));
                         continue;
                     }
@@ -87,6 +82,10 @@ public sealed partial class ShadowSession
                 var clone = cloneable.Clone();
                 foreach (var write in group) write.Accessor.Set(clone, write.After);
             }
+            // Stable dependency phases: initialize owned payload, register definitions,
+            // then attach referencing entities. Reverse this order when detaching.
+            // Within a phase preserve captured membership order and native semantics.
+            collections = collections.OrderBy(p => p.AttachmentOrder).ToList();
             var attempted = 0;
             var attemptedMethods = 0;
             var touchedCollections = false;
@@ -99,12 +98,8 @@ public sealed partial class ShadowSession
                     write.Accessor.Set(write.Source, write.After);
                 }
                 // Moving entities across owners must release every old owner first.
-                touchedCollections = collections.Count != 0 || blockTables.Count != 0;
-                foreach (var plan in collections) plan.RemoveOld();
-                foreach (var plan in blockTables) plan.RemoveOld();
-                // Register definitions before attaching their instances. The order
-                // within each partition remains exactly the prepared patch order.
-                foreach (var plan in blockTables) plan.AddNew();
+                touchedCollections = collections.Count != 0;
+                foreach (var plan in collections.AsEnumerable().Reverse()) plan.RemoveOld();
                 foreach (var plan in collections) plan.AddNew();
                 var next = capture.Capture(document, current);
                 foreach (var assertion in assertions)
@@ -127,17 +122,16 @@ public sealed partial class ShadowSession
                 var failures = new List<Exception> { error.GetBaseException() };
                 if (touchedCollections)
                 {
-                    // Rollback obeys the same referential phases: release instance
-                    // memberships before definitions, restore definitions before
-                    // instances. Full-graph verification and fail-stop stay mandatory.
-                    foreach (var plan in collections.AsEnumerable().Reverse())
-                        try { plan.ClearForRollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
-                    foreach (var plan in blockTables.AsEnumerable().Reverse())
-                        try { plan.ClearForRollback(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
-                    foreach (var plan in blockTables)
-                        try { plan.Restore(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    // Prepare from actual membership after a possibly partial source
+                    // callback. Release every changed destination before restoring any
+                    // original owner, without touching unchanged/reserved table entries.
+                    var rollback = new List<SourceCollectionPlan>(collections.Count);
                     foreach (var plan in collections)
-                        try { plan.Restore(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                        try { rollback.Add(plan.PrepareRollback()); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in rollback.AsEnumerable().Reverse())
+                        try { plan.RemoveOld(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
+                    foreach (var plan in rollback)
+                        try { plan.AddNew(); } catch (Exception e) { failures.Add(e.GetBaseException()); }
                 }
                 for (var index = attempted - 1; index >= 0; index--)
                     try { writes[index].Accessor.Set(writes[index].Source, writes[index].Before); }
@@ -166,21 +160,21 @@ public sealed partial class ShadowSession
                     bindings[id] = source; capture.Bind(id, source); return source;
                 }
                 if (!additions.TryGetValue(id, out var node)) throw new ShadowConflictException($"No source binding for {id}.");
-                if (!constructing.Add(id)) throw new ArgumentException($"Cyclic constructor dependency at {id}.");
+                if (!constructing.Add(id)) throw new ArgumentException($"Cyclic constructor dependency at {id} ({node.TypeName}).");
                 try
                 {
                     // Read-only owned collections must be bound to the new owner's actual
                     // collection instance, not constructed as an unrelated empty container.
-                    if ((ownedReferences ??= IndexOwnedReferences(additions)).TryGetValue(id, out var candidates))
+                    // Entity/table/definition references are shared semantic dependencies,
+                    // not constructor-owned objects (e.g. INSERT.Block and Entity.Owner).
+                    if (node.Kind == ShadowObjectKind.Object &&
+                        (ownedReferences ??= IndexOwnedReferences(additions)).TryGetValue(id, out var candidates))
                     {
                         foreach (var candidate in candidates)
                         {
-                            // Read-only does not imply ownership. Owner is an inverse
-                            // relationship, and INSERT.Block is a constructor dependency
-                            // on a shared definition. Resolving either as a generated
-                            // child can create a false cycle, depending on patch order.
-                            if (candidate.Accessor.Name == "Owner" ||
-                                candidate.Accessor.Name == "Block" && additions[candidate.Owner].TypeName == "netDxf.Entities.Insert") continue;
+                            // Owner is a semantic back-reference, not an owned container.
+                            // Block.Owner is the public alias of its constructor-owned Record.
+                            if (candidate.Accessor.Name == "Owner" && additions[candidate.Owner].TypeName != "netDxf.Blocks.Block") continue;
                             if (constructing.Contains(candidate.Owner)) continue;
                             var owned = candidate.Accessor.Get(Resolve(candidate.Owner));
                             if (owned is null || owned.GetType().FullName != node.TypeName) continue;

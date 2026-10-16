@@ -254,6 +254,74 @@ def verify(url: str, executable: str | None = None):
             protocol.detach()
             check('compact workspace has no document-level horizontal overflow',
                   metrics['cssContentSize']['width'] <= metrics['cssLayoutViewport']['clientWidth'])
+            # Block definition authoring is exercised only after the original DXF roundtrip assertions.
+            page.set_viewport_size({'width': 1600, 'height': 1000})
+            page.locator('[data-action="new"]').first.click()
+            wait_state(lambda data: data['state']['occurrences'] == 0)
+            command('REC 10,20 30,40')
+            command('C 40,30 5')
+            page.locator('#viewport').focus()
+            page.locator('#viewport').press('Control+a')
+            wait_state(lambda data: len(data['selectedEntities']) == 2)
+            command('BLOCK 10,20 BrowserPart')
+            check('BLOCK replaces native roots with a single reusable reference',
+                  state()['itemCount'] == 1 and state()['items'][0]['type'] == 'Insert' and
+                  next(b for b in state()['blocks'] if b['name'] == 'BrowserPart')['entities'] == 2)
+            command('BEDIT', False)
+            expect(page.locator('#dialog-title')).to_have_text('Edit block definition')
+            page.locator('#dialog-submit').click()
+            wait_state(lambda data: data.get('blockEditor') is not None)
+            command('C 70,0 4')
+            check('block editor renders definition roots with isolated history',
+                  state()['itemCount'] == 3 and state()['blockEditor']['changed'])
+            command('BSAVE', False)
+            wait_state(lambda data: data.get('blockEditor') is None and data['state']['workspaceId'] == 'live')
+            check('BSAVE updates the shared definition without extra model-space roots',
+                  state()['itemCount'] == 1 and next(b for b in state()['blocks'] if b['name'] == 'BrowserPart')['entities'] == 3)
+            command('U')
+            check('block save is one live undo transaction',
+                  next(b for b in state()['blocks'] if b['name'] == 'BrowserPart')['entities'] == 2)
+            command('REDO')
+            command('BEDIT', False)
+            page.locator('#dialog-submit').click()
+            wait_state(lambda data: data.get('blockEditor') is not None)
+            command('C 100,0 6')
+            command('BCLOSE', False)
+            expect(page.locator('#dialog-title')).to_have_text('Discard block edits')
+            page.locator('#dialog-submit').click()
+            wait_state(lambda data: data.get('blockEditor') is None)
+            check('BCLOSE discards changes without modifying the shared definition',
+                  next(b for b in state()['blocks'] if b['name'] == 'BrowserPart')['entities'] == 3)
+            with page.expect_download() as download:
+                page.locator('[data-action="save"]').first.click()
+            block_file = OUTPUT/'blocks.dxf'
+            download.value.save_as(str(block_file))
+            block_drawing = ezdxf.readfile(block_file)
+            block_audit = block_drawing.audit()
+            check('independent block DXF audit has no errors or repairs',
+                  not block_audit.errors and not block_audit.fixes and len(block_drawing.blocks['BrowserPart']) == 3 and
+                  len(block_drawing.modelspace().query('INSERT')) == 1)
+            page.locator('[data-action="blocks"]').first.click()
+            page.get_by_role('button', name='Rename block BrowserPart', exact=True).click()
+            page.get_by_role('textbox', name='New block name', exact=True).fill('RenamedBrowserPart')
+            page.locator('#dialog-submit').click()
+            wait_state(lambda data: any(b['name'] == 'RenamedBrowserPart' for b in data['blocks']))
+            idle()
+            check('definition palette rename uses the preserved structured ObjectId route',
+                  not any(b['name'] == 'BrowserPart' for b in state()['blocks']))
+            command('BEDIT RenamedBrowserPart', False)
+            wait_state(lambda data: data.get('blockEditor') is not None)
+            check('BEDIT accepts an explicit native definition name', state()['blockEditor']['name'] == 'RenamedBrowserPart')
+            command('C 200,0 4')
+            command('H SOLID 1 0 Normal')
+            command('B EditorHatch 200,0')
+            command('BSAVE', False)
+            wait_state(lambda data: data.get('blockEditor') is None)
+            check('existing HATCH and BLOCK workflows stay inside the isolated definition',
+                  state()['itemCount'] == 1 and
+                  next(b for b in state()['blocks'] if b['name'] == 'RenamedBrowserPart')['entities'] == 5 and
+                  next(b for b in state()['blocks'] if b['name'] == 'EditorHatch')['entities'] == 1)
+            page.screenshot(path=str(OUTPUT/'blocks-workspace.png'))
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:
             failure = traceback.format_exc()

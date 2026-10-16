@@ -32,11 +32,26 @@ public static class DraftingHatches
     public static DraftingPlan Create(ShadowSnapshot snapshot, HatchAuthoringRequest request,
         string layout = "Model", CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var owner = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown drawing layout.");
+        return CreateInOwner(snapshot, request, owner, cancellationToken);
+    }
+
+    /// <summary>Author hatch geometry in definition coordinates without changing layout ownership.</summary>
+    public static DraftingPlan CreateInDefinition(ShadowSnapshot snapshot, HatchAuthoringRequest request,
+        ObjectId owner, CancellationToken cancellationToken = default)
+    {
+        DraftingBlocks.Definition(snapshot, owner);
+        return CreateInOwner(snapshot, request, owner, cancellationToken);
+    }
+
+    private static DraftingPlan CreateInOwner(ShadowSnapshot snapshot, HatchAuthoringRequest request,
+        ObjectId owner, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(snapshot); ArgumentNullException.ThrowIfNull(request);
         var entities = request.Boundaries.IsDefault ? [] : request.Boundaries.Distinct().ToImmutableArray();
         var polygons = request.Polygons.IsDefault ? [] : request.Polygons;
         if (entities.Length + polygons.Length is < 1 or > 1024) throw new ArgumentException("Select 1–1024 closed hatch boundaries.");
-        var owner = snapshot.Layout(layout)["AssociatedBlock"].Id ?? throw new ArgumentException("Unknown drawing layout.");
         var roots = snapshot.Read(owner)["Entities"].Items.Select(e => e.Id).ToHashSet();
         var layer = snapshot.Document["Layers"].Items.FirstOrDefault(l => l["Name"].Text.Equals(request.Layer, StringComparison.OrdinalIgnoreCase));
         if (!layer.Exists || layer["IsLocked"].Boolean() || layer["IsFrozen"].Boolean()) throw new ArgumentException("Choose an unlocked, thawed hatch layer.");
@@ -47,7 +62,7 @@ public static class DraftingHatches
         {
             cancellationToken.ThrowIfCancellationRequested();
             var entity = DraftingGuard.Entity(snapshot, id, false); DraftingGuard.Planar(entity);
-            if (!roots.Contains(id)) throw new ArgumentException("Hatch boundaries must be direct entities of the active layout.");
+            if (!roots.Contains(id)) throw new ArgumentException("Hatch boundaries must be direct entities of the active editing space.");
             string edgeType; Dictionary<string, ShadowValue> properties;
             switch (entity.Type)
             {

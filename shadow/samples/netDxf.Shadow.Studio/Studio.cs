@@ -117,7 +117,7 @@ public sealed partial class Studio : IDisposable
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             if (graph is null || graph.Revision != Current.Revision || graphLayout != layout || graphFontRevision != CurrentFonts.Revision)
-            { graph = new TopologyBuilder().Build((activeBranch?.SceneBuilder ?? sceneBuilder).Build(Current, new(layout), token), cancellationToken: token); graphLayout = layout; graphFontRevision = CurrentFonts.Revision; }
+            { graph = new TopologyBuilder().Build((activeBranch?.SceneBuilder ?? sceneBuilder).Build(Current, new(layout) { RootBlock = activeBranch?.BlockRoot }, token), cancellationToken: token); graphLayout = layout; graphFontRevision = CurrentFonts.Revision; }
             return new
             {
                 documentId = Current.DocumentId, workspaceId = WorkspaceId, viewVersion, layout, fontRevision = CurrentFonts.Revision, graph.Revision, components = graph.ConnectedComponents().Length, graph.CycleRank,
@@ -210,6 +210,7 @@ public sealed partial class Studio : IDisposable
         lock (gate)
         {
             Check(request.Revision);
+            if (activeBranch?.BlockRoot is not null) throw new InvalidOperationException("Close the block editor before switching layouts.");
             if (!Current.Layout(request.Name).Exists) throw new ArgumentException("Unknown layout.");
             layout = request.Name; editor.Select([]); return UpdatedState();
         }

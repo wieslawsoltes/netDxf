@@ -13,7 +13,7 @@ public sealed partial class Studio
         get => activeBranch?.LinetypeAlignment ?? livePatternAlignment;
         set { if (activeBranch is { } branch) branch.LinetypeAlignment = value; else livePatternAlignment = value; }
     }
-    private RenderCompileOptions ViewOptions() => new(layout) { LinetypeAlignment = PatternAlignment, ModelAnnotation = Annotation,
+    private RenderCompileOptions ViewOptions() => new(layout) { RootBlock = activeBranch?.BlockRoot, LinetypeAlignment = PatternAlignment, ModelAnnotation = Annotation,
         PaperSpace = new() { Perspective = PerspectiveView.Options } };
 
     /// <summary>Changes workspace presentation only. Stale requests are guarded by the existing
