@@ -47,7 +47,10 @@ public sealed partial class ShadowSession
                 foreach (var (name, value) in change.After!.Properties)
                 {
                     if (change.Before is { } previous && ShadowValue.Equivalent(previous[name], value)) continue;
-                    if (name is "Handle" or "Owner" or "Type" or "CodeName") continue;
+                    // Type is read-only entity metadata on some objects, but a writable
+                    // semantic enum on HatchPattern and other public data-model types.
+                    // Let the accessor contract decide rather than dropping it by name.
+                    if (name is "Handle" or "Owner" or "CodeName") continue;
                     // The source allocator is monotonic; undo restores semantic objects,
                     // never rewinds handles that may already have been assigned elsewhere.
                     if (historical is not null && name == "HandleSeed") continue;
