@@ -2,7 +2,6 @@ import { installBrowserTransport } from './browser-transport.mjs';
 
 const nativeFetch = globalThis.fetch.bind(globalThis);
 const startup = document.getElementById('browser-startup');
-const runtime = document.getElementById('blazor-runtime');
 const diagnostics = document.body.dataset.workspace === 'diagnostics';
 
 try {
@@ -22,13 +21,15 @@ try {
   const loading = document.getElementById('loading');
   if (loading) loading.textContent = 'Starting browser CAD engine…';
   await Blazor.start();
+  // Starting the runtime is not the same as completing async Program.cs. Do not
+  // race font downloads and document initialization, even on a warm framework cache.
+  await DotNet.invokeMethodAsync('netDxf.Shadow.Studio.Browser', 'WhenReady');
   const transport = installBrowserTransport({ nativeFetch });
-  // This frozen diagnostic object is useful to integration tests and browser tooling.
   globalThis.shadowBrowser = Object.freeze({ runtime: 'blazor-webassembly', fetch: transport.fetch });
   await import(diagnostics ? './studio.js' : './cad/app.mjs');
   startup.remove();
   document.documentElement.dataset.shadowReady = 'true';
-  addEventListener('pagehide', event => { if (!event.persisted) transport.dispose(); }, { once: true });
+  addEventListener('pagehide', event => { if (!event.persisted) transport.dispose(); });
 } catch (error) {
   console.error('Shadow browser startup failed:', error);
   startup.dataset.error = 'true';

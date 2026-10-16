@@ -54,28 +54,30 @@ export function installBrowserTransport({ nativeFetch = globalThis.fetch.bind(gl
       start(controller) {
         let closed = false;
         const encoder = new TextEncoder();
-        finish = error => {
+        finish = (error, cancelled = false) => {
           if (closed) return;
-          closed = true; handle?.close(); request.signal.removeEventListener('abort', cancelled);
-          if (error) controller.error(error); else controller.close();
+          closed = true; handle?.close(); request.signal.removeEventListener('abort', onAbort);
+          // The Streams algorithm closes the controller before calling cancel().
+          // Closing it again would turn a normal reader cancellation into an error.
+          if (!cancelled) { if (error) controller.error(error); else controller.close(); }
         };
-        const cancelled = () => finish(request.signal.reason || new DOMException('Aborted', 'AbortError'));
-        request.signal.addEventListener('abort', cancelled, { once: true });
+        const onAbort = () => finish(request.signal.reason || new DOMException('Aborted', 'AbortError'));
+        request.signal.addEventListener('abort', onAbort, { once: true });
         handle = subscribe(request.headers.get('Last-Event-ID'), notice => {
           if (!closed) controller.enqueue(encoder.encode(`id: ${notice.eventId}\nevent: state\ndata: ${notice.data}\n\n`));
         }, finish);
       },
-      cancel() { finish?.(); }
+      cancel() { finish?.(undefined, true); }
     });
     return new Response(stream, { headers: { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache' } });
   }
 
   function localFetch(input, init) {
-    const source = input instanceof Request ? input.url : String(input);
-    const path = apiPath(source, baseURI);
-    if (path === null) return nativeFetch(input, init);
-    let request;
+    let request, path;
     try {
+      const source = input instanceof Request ? input.url : String(input);
+      path = apiPath(source, baseURI);
+      if (path === null) return nativeFetch(input, init);
       ensureOpen();
       request = new Request(input instanceof Request ? input : new URL(source, baseURI), init);
       abort(request.signal);
@@ -152,7 +154,6 @@ export function installBrowserTransport({ nativeFetch = globalThis.fetch.bind(gl
       globalThis.removeEventListener?.('beforeunload', beforeUnload);
       if (globalThis.fetch === localFetch) globalThis.fetch = originalFetch;
       if (globalThis.EventSource === BrowserEventSource) globalThis.EventSource = NativeEventSource;
-      // Unsubscribe first to release pending readers. Do not abandon unobserved promises.
       void tail.finally(() => invoke('Shutdown')).catch(error => console.error(error));
     }
   });
