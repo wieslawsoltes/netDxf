@@ -44,6 +44,7 @@ public sealed partial class Studio
         public ObjectId? BlockRoot { get; set; }
         public CadLinetypeAlignment LinetypeAlignment { get; set; }
         public ModelAnnotationContext Annotation { get; set; } = ModelAnnotationContext.Default;
+        public PerspectiveViewSettings PerspectiveView { get; set; } = new();
         public SortedDictionary<long, ShadowSnapshot> Retained { get; } = new();
         public Dictionary<long, RenderCompiler> RetainedCompilers { get; } = new();
 
@@ -98,7 +99,7 @@ public sealed partial class Studio
                 throw new ArgumentException("A branch with that name already exists.");
             var id = Guid.NewGuid().ToString("N"); var fonts = shxFonts.Current;
             var services = FrozenServices(fonts);
-            activeBranch = new(id, name, session.Current, fonts, services.Builder, services.Compiler, layout) { LinetypeAlignment = PatternAlignment, Annotation = Annotation };
+            activeBranch = new(id, name, session.Current, fonts, services.Builder, services.Compiler, layout) { LinetypeAlignment = PatternAlignment, Annotation = Annotation, PerspectiveView = PerspectiveView };
             branches.Add(id, activeBranch); viewVersion = checked(viewVersion + 1); graph = null;
             return UpdatedState();
         }

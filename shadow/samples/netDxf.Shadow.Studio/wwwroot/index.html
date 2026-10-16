@@ -44,7 +44,7 @@
     <div class="layout-bar"><div id="layouts" role="tablist" aria-label="Model and paper layouts"></div><div class="grow"></div><span id="selection-count">No selection</span></div>
     <footer class="statusbar"><span id="coordinates">0.0000, 0.0000, 0.0000</span><div id="drafting-modes"></div><div class="grow"></div><span id="revision">Revision —</span><select id="backend" aria-label="Render backend"><option value="skia">SkiaSharp</option><option value="svg">SVG</option></select><button data-action="settings" title="Drafting settings">⚙</button><span id="connection" role="status">Connecting</span></footer>
   </div>
-  <input type="file" id="open-file" accept=".dxf" hidden><input type="file" id="font-file" accept=".shx,.shp" hidden>
+  <input type="file" id="open-file" accept=".dxf,.dwg" hidden><input type="file" id="font-file" accept=".shx,.shp" hidden>
   <dialog id="dialog"><form method="dialog" id="dialog-form"><header><strong id="dialog-title"></strong><button value="cancel" formnovalidate aria-label="Close dialog">×</button></header><div id="dialog-body"></div><footer><button value="cancel" formnovalidate>Cancel</button><button id="dialog-submit" value="ok" class="primary">OK</button></footer></form></dialog>
   <div id="context-menu" class="context-menu" hidden></div><div id="toast" class="toast" role="alert" hidden></div>
   <noscript>Shadow CAD Studio requires JavaScript and its local ASP.NET host.</noscript>

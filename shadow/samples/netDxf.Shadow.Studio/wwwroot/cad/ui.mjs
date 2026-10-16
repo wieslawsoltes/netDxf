@@ -13,6 +13,7 @@ export function el(tag, attributes = {}, children = []) {
   return node;
 }
 const paths = {
+  BLOCK:'M3 3h12v12H3zM13 13h8v8h-8zM5 19h4M7 17v4', HATCH:'M3 3h18v18H3zM3 10l7-7M3 17L17 3M7 21L21 7M14 21l7-7', HATCHPOLY:'M3 5l18-2l-3 18H5zM4 12l8-8M6 20L20 6M13 21l7-7', HATCHEDIT:'M3 3h18v18H3zM3 10l7-7M3 17L17 3M7 21L21 7M14 21l7-7',
   LINE:'M3 20L21 4M2 18h4v4H2zM19 2h4v4h-4z', PLINE:'M3 19L9 6L15 17L21 4', RECTANG:'M3 5h18v14H3z', POLYGON:'M12 2L22 9L18 21H6L2 9z',
   CIRCLE:'M21 12a9 9 0 1 1-18 0a9 9 0 1 1 18 0M10 12h4M12 10v4', ARC:'M3 20C-1 1 25-3 21 16M2 18h3v3H2zM20 14h3v3h-3z',
   ELLIPSE:'M22 12a10 6 0 1 1-20 0a10 6 0 1 1 20 0', POINT:'M12 2v20M2 12h20M15 12a3 3 0 1 1-6 0a3 3 0 1 1 6 0',
@@ -24,7 +25,6 @@ const paths = {
   OFFSET:'M3 21V3h18M8 21V8h13M13 21v-8h8', TRIM:'M4 3v18M2 7h20M14 3l7 8M21 3l-7 8', EXTEND:'M4 3v18M3 15h12M15 11l5 4l-5 4M21 3v18',
   FILLET:'M3 22V10a7 7 0 0 1 7-7h12', CHAMFER:'M3 22V11L11 3h11', JOIN:'M2 16h8M14 8h8M8 12h8M10 10l-2 2l2 2M14 10l2 2l-2 2',
   EXPLODE:'M7 7h10v10H7zM5 5L1 1M19 5l4-4M19 19l4 4M5 19l-4 4', ERASE:'M3 14L14 3l8 8l-11 11H9zM8 9l8 8M10 22h12',
-  BLOCK:'M3 3h18v18H3zM7 7h4v4H7zM13 13h4v4h-4z',
   INSERT:'M3 3h12v12H3zM13 13h8v8h-8zM8 12l4 4M8 16h4v-4', DIST:'M2 17L19 2l4 4L6 21zM7 12l3 3M11 8l3 3M15 4l3 3', AREA:'M3 20V4h18v16zM7 4v16M12 4v16M17 4v16',
   new:'M5 2h10l5 5v15H5zM15 2v6h5M9 15h7M12 12v7', open:'M2 7V4h8l3 3h9v14H2zM2 11h20', save:'M3 2h16l3 3v17H3zM7 2v7h10V2M7 22v-9h11v9',
   undo:'M9 4L3 9l6 5M3 9h10a7 7 0 0 1 0 14', redo:'M15 4l6 5l-6 5M21 9H11a7 7 0 0 0 0 14',
@@ -37,7 +37,7 @@ const paths = {
 };
 export function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 24 24'); svg.setAttribute('class','icon'); svg.setAttribute('aria-hidden','true');
-  const p = document.createElementNS(svg.namespaceURI,'path'); p.setAttribute('d',paths[name] || paths.settings); svg.append(p); return svg;
+  const p = document.createElementNS(svg.namespaceURI,'path'); p.setAttribute('d',paths[name] || paths[{'block-create':'BLOCK','block-redefine':'BLOCK','block-rename':'BLOCK','hatch-create':'HATCH','hatch-edit':'HATCHEDIT'}[name]] || paths.settings); svg.append(p); return svg;
 }
 export function tool(name, label, action = false, large = false) {
   return el('button', { class:`tool${large ? ' large' : ''}`, [action ? 'data-action' : 'data-command']:name,
@@ -58,12 +58,12 @@ export function ribbon(tab, data, layer, changeLayer) {
     Home: [group('Draw',[c('LINE',true),c('PLINE',true),c('CIRCLE',true),c('ARC'),c('RECTANG'),c('ELLIPSE'),c('POLYGON'),c('SPLINE'),c('POINT')]),
       group('Modify',[c('MOVE'),c('COPY'),c('ERASE'),c('ROTATE'),c('MIRROR'),c('SCALE'),c('TRIM'),c('EXTEND'),c('OFFSET'),c('FILLET'),c('CHAMFER'),c('ARRAY'),c('JOIN'),c('EXPLODE')]),
       group('Annotation',[c('MTEXT',true),c('DIMALIGNED',true),c('TEXT'),c('DIMLINEAR'),c('DIST')]),layerTools,
-      group('Block',[a('blocks','Blocks',true),c('BLOCK'),a('block-edit','Edit block')]), group('Properties',[a('properties','Properties',true)])],
-    Insert: [group('Blocks',[a('blocks','Blocks palette',true),c('INSERT',true),c('BLOCK'),a('block-create','Create definition…'),a('block-edit','Edit block')]),group('Reference resources',[a('open','Open DXF',true),a('font','Load SHX / SHP',true)]),group('Documents',[a('new','New drawing'),a('demo','New sample drawing'),a('save','Save DXF')])],
+      group('Block',[a('blocks','Insert blocks',true),a('block-create','Create block'),a('block-redefine','Redefine')]),group('Hatch',[a('hatch-create','Hatch',true),c('HATCHPOLY'),a('hatch-edit','Edit hatch')]), group('Properties',[a('properties','Properties',true)])],
+    Insert: [group('Blocks',[a('blocks','Blocks palette',true),c('INSERT',true),a('block-create','Create block'),a('block-redefine','Redefine'),a('block-rename','Rename'),a('block-edit','Edit definition')]),group('Reference resources',[a('open','Open DXF / DWG',true),a('font','Load SHX / SHP',true)]),group('Documents',[a('new','New drawing'),a('demo','New sample drawing'),a('save','Save DXF')])],
     Annotate: [group('Text',[c('MTEXT',true),c('TEXT',true),a('font','SHX / SHP resources')]),group('Dimensions',[c('DIMALIGNED',true),c('DIMLINEAR',true)]),group('Measure',[c('DIST',true),c('AREA',true)]),group('Annotation context',[a('annotation','Model annotation scale',true)])],
     View: [group('Navigate',[a('fit','Zoom extents',true),a('pan','Pan',true),a('zoom-in','Zoom in'),a('zoom-out','Zoom out')]),group('Palettes',[a('properties','Properties'),a('layers','Layers'),a('blocks','Blocks'),a('explorer','Drawing explorer'),a('diagnostics','Diagnostics'),a('workspaces','Workspaces')]),group('Display',[a('settings','Drafting settings',true),a('clean','Clean screen'),a('graph','Topology overlay'),a('dock','Change docking side')]),group('History',[a('snapshot','Retain snapshot',true),a('snapshots','Snapshot views')])],
     Manage: [group('Drawing state',[a('workspaces','Immutable workspaces',true),a('snapshot','Retain snapshot',true),a('undo','Undo'),a('redo','Redo')]),group('Inspect',[a('explorer','Source explorer',true),a('diagnostics','Render diagnostics'),a('legacy','Advanced diagnostics')]),group('Settings',[a('settings','Drafting settings',true),a('reset-ui','Reset interface')])],
-    Output: [group('Drawing',[a('save','Save DXF',true)]),group('Render export',[a('export-png','Export PNG',true),a('export-svg','Export SVG',true)]),group('Presentation',[a('annotation','Annotation scale'),a('linetype','Linetype endpoint alignment'),a('snapshots','Snapshot views')])]
+    Output: [group('Drawing',[a('save','Save DXF',true),a('save-as','Save drawing as',true)]),group('Render export',[a('export-png','Export PNG',true),a('export-svg','Export SVG',true)]),group('Presentation',[a('annotation','Annotation scale'),a('linetype','Linetype endpoint alignment'),a('snapshots','Snapshot views')])]
   };
   const result=content[tab] || content.Home;
   if(data?.blockEditor) result.unshift(group('Block Editor',[a('block-save','Save block',true),a('block-close','Close / discard',true)]));

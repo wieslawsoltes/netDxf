@@ -81,6 +81,8 @@ public sealed partial class Studio : IDisposable
                 sourceRevision = session.Current.Revision, ancestorRevision = activeBranch?.Ancestor.Revision,
                 branches = branches.Values.OrderBy(b => b.Name, StringComparer.Ordinal).Select(b => new { b.Id, b.Name, revision = b.Editor.Snapshot.Revision, ancestorRevision = b.Ancestor.Revision }).ToArray(),
                 snapshot.DocumentId, snapshot.Revision, layout, linetypeAlignment = PatternAlignment.ToString(),
+                perspectiveMode = PerspectiveView.Mode, perspectiveWorkPlaneZ = PerspectiveView.WorkPlaneZ,
+                perspectiveSelection = scene.Items.Any(i => state.Selection.Contains(i.Key) && i.Projection?.Perspective is not null),
                 annotationMode = Annotation.Mode.ToString(), annotationPaperUnits = Annotation.Scale?.PaperUnits ?? 1,
                 annotationDrawingUnits = Annotation.Scale?.DrawingUnits ?? 1, objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
                 occurrences = scene.Items.Length, bounds = scene.Bounds.IsEmpty ? new Bounds2(-50, -50, 50, 50) : scene.Bounds,

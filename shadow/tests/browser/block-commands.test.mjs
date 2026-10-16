@@ -11,3 +11,14 @@ test('preselected BLOCK does not complete before a valid base point and name',()
  assert.throws(()=>s.input('NaN,0'));assert.equal(s.command.points.length,0);s.input('0,0');
  assert.throws(()=>s.input(''));assert.equal(s.complete,false);s.input('Part');assert.equal(s.command.layer,'Equipment');
 });
+
+test('name-first and coordinate-first BLOCK sessions do not change shared prompts',()=>{
+ const first=new CommandSession('BLOCK','0',1);first.input('10,20');first.input('Valve');
+ const second=new CommandSession('BLOCK','0',1);assert.equal(second.step.kind,'text');
+ second.input('Valve');second.input('10,20');assert.deepEqual(second.command,first.command);
+});
+test('malformed coordinate-first input preserves the complete command receipt',()=>{
+ const s=new CommandSession('BLOCK','0',1), before=JSON.stringify(s);
+ assert.throws(()=>s.input('NaN,0'));assert.equal(JSON.stringify(s),before);
+ s.input('10,20');const after=JSON.stringify(s);assert.throws(()=>s.input('bad/name'));assert.equal(JSON.stringify(s),after);
+});

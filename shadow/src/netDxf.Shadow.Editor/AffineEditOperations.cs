@@ -44,6 +44,8 @@ public static partial class AffineEditOperations
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (!keys.Contains(item.Key)) continue;
+            if (item.Projection?.Perspective is not null)
+                throw new NotSupportedException("A perspective display transform cannot be conjugated as an affine edit. Use model coordinates or ray-plane translation.");
             var map = editBlockDefinition ? item.SourceToWorld : item.Projection?.ModelToPaper ?? Affine3.Identity;
             if (!map.TryInverse(out var inverse)) throw new NotSupportedException("Singular selection coordinates.");
             var id = !editBlockDefinition && !item.InsertPath.IsEmpty ? item.InsertPath[0] : item.Entity;
@@ -74,7 +76,13 @@ public static partial class AffineEditOperations
                 throw new ArgumentOutOfRangeException(nameof(options));
             this.snapshot = snapshot; this.options = options; this.cancellation = cancellation; edit = new(snapshot);
         }
-        internal ShadowGraphPatch Build() { cancellation.ThrowIfCancellationRequested(); return edit.Build(); }
+        internal ShadowGraphPatch Build()
+        {
+            cancellation.ThrowIfCancellationRequested();
+            if (pruneHatchResources) edit.PruneUnreachable();
+            cancellation.ThrowIfCancellationRequested();
+            return edit.Build();
+        }
         internal void Visit(ShadowReader entity, Affine3 transform)
         {
             cancellation.ThrowIfCancellationRequested(); Validate(transform);
@@ -111,6 +119,7 @@ public static partial class AffineEditOperations
                     foreach (var name in new[] { "FirstVertex", "SecondVertex", "ThirdVertex", "FourthVertex" })
                         Vector(entity, name, plane.Local.Point(entity[name].Vector() with { Z = entity["Elevation"].Number() }));
                     SetPlane(entity, plane); Thickness(entity, transform, plane.Normal); break;
+                case "Hatch": Hatch(entity, transform); break;
                 case "Image": Image(entity, transform); break;
                 case "Text": case "Attribute": case "AttributeDefinition": Text(entity, transform); break;
                 case "MText": MultilineText(entity, transform); break;

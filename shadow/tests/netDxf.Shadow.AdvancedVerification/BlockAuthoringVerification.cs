@@ -39,7 +39,7 @@ internal static class BlockAuthoringVerification
     private static ImmutableArray<ObjectId> Roots(ShadowSnapshot s) => s.DrawingEntities().Select(e => e.Id!.Value).ToImmutableArray();
     internal static void Register(List<(string Name, Action Run)> tests)
     {
-        foreach (var disposition in Enum.GetValues<BlockSourceDisposition>())
+        foreach (var disposition in Enum.GetValues<BlockSourceDisposition>().Distinct())
             tests.Add(($"block/atomic {disposition} creation localizes owned geometry", () =>
             {
                 var (doc, source, editor, planner) = Drawing(); var before = source.Current;

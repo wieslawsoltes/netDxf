@@ -18,6 +18,8 @@ import time
 import traceback
 import urllib.request
 import ezdxf
+from cad_authoring_browser import verify_authoring
+from cad_exchange_browser import verify_exchange
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -242,6 +244,8 @@ def verify(url: str, executable: str | None = None):
             download.value.save_as(str(svg))
             check('native SVG export', b'<svg' in svg.read_bytes())
             page.get_by_role('tab', name='Home', exact=True).click()
+            verify_authoring(page, url, OUTPUT, state, command, wait_state, idle, check)
+            verify_exchange(page, url, OUTPUT, state, command, wait_state, idle, check)
             page.set_viewport_size({'width': 900, 'height': 680})
             page.screenshot(path=str(OUTPUT/'workspace-compact.png'))
             # Read Chromium layout metrics without injecting/evaluating a script.
@@ -297,6 +301,26 @@ def verify(url: str, executable: str | None = None):
             check('independent block DXF audit has no errors or repairs',
                   not block_audit.errors and not block_audit.fixes and len(block_drawing.blocks['BrowserPart']) == 3 and
                   len(block_drawing.modelspace().query('INSERT')) == 1)
+            page.locator('[data-action="blocks"]').first.click()
+            page.get_by_role('button', name='Rename block BrowserPart', exact=True).click()
+            page.get_by_role('textbox', name='New block name', exact=True).fill('RenamedBrowserPart')
+            page.locator('#dialog-submit').click()
+            wait_state(lambda data: any(b['name'] == 'RenamedBrowserPart' for b in data['blocks']))
+            idle()
+            check('definition palette rename uses the preserved structured ObjectId route',
+                  not any(b['name'] == 'BrowserPart' for b in state()['blocks']))
+            command('BEDIT RenamedBrowserPart', False)
+            wait_state(lambda data: data.get('blockEditor') is not None)
+            check('BEDIT accepts an explicit native definition name', state()['blockEditor']['name'] == 'RenamedBrowserPart')
+            command('C 200,0 4')
+            command('H SOLID 1 0 Normal')
+            command('B EditorHatch 200,0')
+            command('BSAVE', False)
+            wait_state(lambda data: data.get('blockEditor') is None)
+            check('existing HATCH and BLOCK workflows stay inside the isolated definition',
+                  state()['itemCount'] == 1 and
+                  next(b for b in state()['blocks'] if b['name'] == 'RenamedBrowserPart')['entities'] == 5 and
+                  next(b for b in state()['blocks'] if b['name'] == 'EditorHatch')['entities'] == 1)
             page.screenshot(path=str(OUTPUT/'blocks-workspace.png'))
             check('no uncaught JavaScript errors or CSP violations', not errors and not violations)
         except Exception:

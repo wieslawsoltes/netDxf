@@ -2,13 +2,13 @@
 (() => {
   const initial = {revision:0,undoCount:0,redoCount:0,selection:[],items:[{key:'line:1',id:'H:1',type:'Line',layer:'Piping',inserted:false}]};
   let live=structuredClone(initial), active='live', version=0, view=0, snapshots=[], list=[], branches=new Map();
-  let server='fixture-server';
+  let server='fixture-server', fontRevision=0;
   const current=()=>active==='live'?live:branches.get(active).snapshot;
   const state=()=>({...structuredClone(current()),serverId:server,changeVersion:version,viewVersion:view,
     documentId:'00000000-0000-4000-8000-000000000001',workspaceId:active,workspaceName:active==='live'?'Live document':branches.get(active).name,
     sourceRevision:live.revision,ancestorRevision:active==='live'?null:branches.get(active).ancestor,
     branches:[...branches].map(([id,b])=>({id,name:b.name,revision:b.snapshot.revision,ancestorRevision:b.ancestor})),
-    layout:'Model',layouts:['Model','Hatch islands'],fontRevision:0,fonts:[],objects:20,entities:current().items.length,
+    layout:'Model',layouts:['Model','Hatch islands'],fontRevision,fonts:[],objects:20,entities:current().items.length,
     occurrences:current().items.length,bounds:{minX:-50,minY:-50,maxX:50,maxY:50},captureMilliseconds:1,
     snapshots:[...snapshots],diagnostics:[]});
   const response=value=>new Response(JSON.stringify(value),{headers:{'Content-Type':'application/json'}});
@@ -27,12 +27,16 @@
     else if(path.startsWith('object/')) value=response({...state(),id:'H:1',type:'Line',properties:[{name:'EndPoint',kind:'Structure',writable:true,value:{X:'10',Y:'0',Z:'0'}}]});
     else if(path==='graph') value=response({...state(),nodes:[],edges:[],components:1,cycleRank:0,junctions:0,deadEnds:2,bridges:1});
     else {
-      const body=JSON.parse(options.body||'{}');
+      const body=options.body instanceof Blob ? {} : JSON.parse(options.body||'{}');
       if(path==='branches') {const id='branch-'+(branches.size+1);branches.set(id,{name:body.name,ancestor:live.revision,snapshot:{...structuredClone(live),selection:[],undoCount:0,redoCount:0}});active=id;view++;}
       else if(path==='workspace') {active=body.id;view++;}
+      else if(path==='bigfont-map') {fontRevision++;view++;fixture.mapText=await options.body.text();}
+
+      else if(path==='perspective-view') {current().perspectiveMode=body.mode;current().perspectiveWorkPlaneZ=body.workPlaneZ;view++;}
+      else if(path==='translate-perspective') {current().revision++;current().undoCount++;}
       else if(path==='linetype-view') {current().linetypeAlignment=body.alignment;view++;}
       else if(path==='select') current().selection=[body.key];
-      else if(path==='pick') current().selection=['line:1'];
+      else if(path==='pick') {current().selection=['line:1'];current().perspectiveSelection=!!current().perspectiveMode && current().perspectiveMode!=='Disabled';}
       else if(path==='add') {current().revision++;current().undoCount++;current().items.push({key:'circle:'+current().revision,id:'S:'+current().revision,type:'Circle',layer:'0',inserted:false});}
       else if(path==='snapshot') snapshots.push(current().revision);
       else if(path==='property') {current().revision++;current().undoCount++;}

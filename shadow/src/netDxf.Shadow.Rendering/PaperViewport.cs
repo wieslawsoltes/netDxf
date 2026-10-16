@@ -6,9 +6,14 @@ namespace netDxf.Shadow.Rendering;
 /// <summary>A shared immutable paper-space clip. No backend path or mutable source object is retained.</summary>
 public sealed record RenderClip(ImmutableArray<RenderContour> Contours, Bounds2 Bounds);
 
-/// <summary>Provenance and invertible camera mapping for a model occurrence displayed in paper space.</summary>
+/// <summary>Paper-view provenance. Affine mapping is invertible only for orthographic views;
+/// a non-null Perspective supplies projective mapping and picking rays.</summary>
 public sealed record PaperViewportProjection(ObjectId ViewportEntity, Affine3 ModelToPaper,
-    Affine3 PaperToModel, double Scale);
+    Affine3 PaperToModel, double Scale)
+{
+    /// <summary>Non-null for a projective view. The affine fields then describe only its target plane.</summary>
+    public PerspectiveCamera? Perspective { get; init; }
+}
 
 /// <summary>Bounds the amount of work performed while composing multiple model views.</summary>
 public sealed record PaperSpaceOptions(int MaximumViewports = 256, int MaximumItems = 1_000_000,
@@ -16,6 +21,7 @@ public sealed record PaperSpaceOptions(int MaximumViewports = 256, int MaximumIt
 {
     /// <summary>Maximum distinct model linetype scales compiled for one paper scene.</summary>
     public int MaximumPatternScales { get; init; } = 32;
+    public PerspectiveOptions? Perspective { get; init; }
 }
 
 internal sealed record PaperViewport(PaperViewportProjection Projection, RenderClip Clip,
@@ -29,7 +35,7 @@ internal sealed record PaperViewport(PaperViewportProjection Projection, RenderC
             ? (numeric & bit) != 0 : text.Split(',').Any(part => part.Trim() == name);
     }
 
-    internal static PaperViewport Read(ShadowReader entity, double tolerance, int maximumClipPoints)
+    internal static PaperViewport Read(ShadowReader entity, double tolerance, int maximumClipPoints, PerspectiveOptions? perspective = null)
     {
         if (entity.Id is not { } id) throw new ArgumentException("A viewport needs a source identity.");
         var width = entity["Width"].Number(); var height = entity["Height"].Number();
@@ -40,8 +46,17 @@ internal sealed record PaperViewport(PaperViewportProjection Projection, RenderC
             !center.IsFinite || !target.IsFinite || !viewCenter.IsFinite || !direction.IsFinite ||
             !double.IsFinite(direction.Length) || direction.Length == 0 || !double.IsFinite(twist))
             throw new ArgumentException("Viewport dimensions and camera values must be finite and nondegenerate.");
-        if (HasFlag(entity["Status"], "PerspectiveMode", 1))
-            throw new NotSupportedException("Perspective viewports require a projective renderer; they are not displayed as misleading orthographic views.");
+        var isPerspective = HasFlag(entity["Status"], "PerspectiveMode", 1);
+        if (isPerspective && perspective is null)
+            throw new NotSupportedException("Enable an explicit PerspectiveOptions policy to display perspective viewports.");
+        perspective?.Validate();
+        if (isPerspective && perspective!.FieldOfView == PerspectiveFieldOfView.LensLength)
+        {
+            var lens = entity["LensLength"].Number();
+            if (!(lens > 0) || !double.IsFinite(lens)) throw new ArgumentException("Perspective lens length must be positive and finite.");
+            viewHeight = direction.Length * (perspective.FilmHeightMillimeters / lens);
+            if (!(viewHeight > 0) || !double.IsFinite(viewHeight)) throw new ArgumentException("Lens field of view exceeds numeric range.");
+        }
         var basis = Affine3.ObjectCoordinates(direction);
         var worldToDcs = new Affine3(new(basis.X.X, basis.Y.X, basis.Z.X),
             new(basis.X.Y, basis.Y.Y, basis.Z.Y), new(basis.X.Z, basis.Y.Z, basis.Z.Z), Vec3.Zero);
@@ -86,7 +101,10 @@ internal sealed record PaperViewport(PaperViewportProjection Projection, RenderC
             ? entity["FrontClipPlane"].Number() : direction.Length;
         if ((backOn && !double.IsFinite(back)) || (frontOn && !double.IsFinite(front)) || back > front)
             throw new ArgumentException("Invalid viewport depth clipping interval.");
-        return new(new(id, transform, inverse, scale), new(contours, bounds),
+        var projection = new PaperViewportProjection(id, transform, inverse, scale);
+        if (isPerspective) projection = projection with { Perspective = new(transform,
+            new(center.X - viewCenter.X * scale, center.Y - viewCenter.Y * scale), direction.Length, perspective!.NearDistanceFraction) };
+        return new(projection, new(contours, bounds),
             entity["FrozenLayers"].Items.Select(layer => layer["Name"].Text).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase),
             back, front, (int)entity["Stacking"].Number(2));
     }

@@ -42,6 +42,8 @@ app.MapPost("/api/translate", (Studio studio, HttpRequest http, MoveRequest requ
 app.MapPost("/api/property", (Studio studio, HttpRequest http, PropertyRequest request) => StudioHttp.Execute(studio, http, () => studio.SetProperty(request)));
 app.MapPost("/api/history/{operation}", (Studio studio, HttpRequest http, string operation, RevisionRequest request) => StudioHttp.Execute(studio, http, () => studio.History(operation, request.Revision)));
 app.MapPost("/api/annotation-view", (Studio studio, HttpRequest http, AnnotationViewRequest request) => StudioHttp.Execute(studio, http, () => studio.SetAnnotationView(request)));
+app.MapPost("/api/perspective-view", (Studio studio, HttpRequest http, PerspectiveViewRequest request) => StudioHttp.Execute(studio, http, () => studio.SetPerspectiveView(request)));
+app.MapPost("/api/translate-perspective", (Studio studio, HttpRequest http, PerspectiveMoveRequest request) => StudioHttp.Execute(studio, http, () => studio.TranslatePerspective(request)));
 app.MapPost("/api/linetype-view", (Studio studio, HttpRequest http, LinetypeViewRequest request) => StudioHttp.Execute(studio, http, () => studio.SetLinetypeView(request)));
 app.MapPost("/api/layout", (Studio studio, HttpRequest http, LayoutRequest request) => StudioHttp.Execute(studio, http, () => studio.SetLayout(request)));
 app.MapPost("/api/add", (Studio studio, HttpRequest http, AddRequest request) => StudioHttp.Execute(studio, http, () => studio.Add(request)));
@@ -68,6 +70,21 @@ app.MapPost("/api/font", async (Studio studio, HttpRequest request, long revisio
         memory.Write(buffer, 0, count);
     }
     return Results.Ok(StudioHttp.Execute(studio, request, () => studio.LoadFont(revision, name, memory.ToArray())));
+});
+app.MapPost("/api/bigfont-map", async (Studio studio, HttpRequest request, long revision, CancellationToken token) =>
+{
+    // Fence stale document/workspace/view receipts before accepting any upload bytes.
+    StudioHttp.Execute(studio, request, () => true);
+    const int limit = 4 * 1024 * 1024;
+    if (request.ContentLength > limit) return Results.BadRequest(new { error = "Sample mapping limit is 4 MiB." });
+    using var memory = new MemoryStream(); var buffer = new byte[32 * 1024];
+    while (true)
+    {
+        var count = await request.Body.ReadAsync(buffer, token); if (count == 0) break;
+        if (memory.Length + count > limit) return Results.BadRequest(new { error = "Sample mapping limit is 4 MiB." });
+        memory.Write(buffer, 0, count);
+    }
+    return Results.Ok(StudioHttp.Execute(studio, request, () => studio.LoadBigFontMap(revision, memory.ToArray(), token)));
 });
 app.MapPost("/api/save", (Studio studio, HttpRequest http, RevisionRequest request) =>
     StudioHttp.Execute(studio, http, () => Results.File(studio.Save(request.Revision), "application/dxf", "shadow-edited.dxf")));

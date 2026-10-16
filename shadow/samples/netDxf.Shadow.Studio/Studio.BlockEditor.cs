@@ -5,7 +5,6 @@ namespace netDxf.Shadow.Studio;
 
 public sealed record CadBlockCreateRequest(long Revision, string Name, Vec3 BasePoint,
     string Disposition = "Convert", string Layer = "0", string Description = "");
-public sealed record CadBlockRenameRequest(long Revision, string Block, string Name);
 public sealed record CadBlockBeginRequest(long Revision, string Block);
 public sealed record CadBlockFinishRequest(long Revision, long TargetRevision, bool Save, bool Discard = false);
 
@@ -28,17 +27,6 @@ public sealed partial class Studio
         }
     }
 
-    public object CadRenameBlock(CadBlockRenameRequest request)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        lock (gate)
-        {
-            Check(request.Revision);
-            DraftingBlocks.Rename(Current, new(request.Block), request.Name).Execute(editor);
-            PublishChange(); return CadState();
-        }
-    }
-
     /// <summary>A definition editor is a normal immutable branch with an explicit scene root.
     /// It does not steal entity ownership or temporarily rewrite live INSERT transforms.</summary>
     public object CadBeginBlock(CadBlockBeginRequest request)
@@ -52,11 +40,12 @@ public sealed partial class Studio
             var id = Guid.NewGuid().ToString("N"); var fonts = shxFonts.Current; var services = FrozenServices(fonts);
             var branch = new BranchWorkspace(id, "Block: " + block["Name"].Text, session.Current, fonts,
                 services.Builder, services.Compiler, layout)
-                { BlockRoot = root, LinetypeAlignment = PatternAlignment, Annotation = Annotation };
+                { BlockRoot = root, LinetypeAlignment = PatternAlignment, Annotation = Annotation, PerspectiveView = PerspectiveView };
             // Validate the definition view before publishing the workspace transition.
             branch.Compiler.Compile(branch.Editor.Snapshot, ViewOptions() with { RootBlock = root });
+            var nextView = checked(viewVersion + 1);
             branches.Add(id, branch); activeBranch = branch; cadSelectionOrder = [];
-            viewVersion = checked(viewVersion + 1); graph = null; PublishChange(); return CadState();
+            viewVersion = nextView; graph = null; PublishChange(); return CadState();
         }
     }
 
@@ -70,6 +59,8 @@ public sealed partial class Studio
             Check(request.Revision);
             var branch = activeBranch;
             if (branch?.BlockRoot is not { } root) throw new InvalidOperationException("There is no active block editor.");
+            token.ThrowIfCancellationRequested();
+            var nextView = checked(viewVersion + 1);
             var changed = !ShadowGraphPatch.Between(branch.Ancestor, Current).Changes.IsEmpty;
             if (request.Save)
             {
@@ -81,7 +72,7 @@ public sealed partial class Studio
             }
             else if (changed && !request.Discard) throw new InvalidOperationException("Confirm discarding the modified definition, or save it.");
             branches.Remove(branch.Id); RemovePlans(branch); activeBranch = null; cadSelectionOrder = [];
-            liveEditor.Select([]); viewVersion = checked(viewVersion + 1); graph = null;
+            liveEditor.Select([]); viewVersion = nextView; graph = null;
             PublishChange(); return CadState();
         }
     }

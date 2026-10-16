@@ -3,7 +3,7 @@
 Studio supports reusable native BLOCK creation and isolated definition editing.
 The BLOCK command takes an ordered source selection, one base point and a name.
 `BLOCK 10,20 Part A` converts the selection into one native INSERT referencing the
-new definition. The Blocks palette's Create definition dialog also supports Retain
+new definition. The Blocks palette's Create block dialog also supports Retain
 (leave source objects) and Remove (remove source objects without inserting).
 Coordinates are localized by subtracting the specified base point. The new
 block's origin is zero and the reference is placed at the base point, so visible
@@ -59,3 +59,23 @@ Native roundtrip, deep-copy isolation, recursive/foreign/locked refusals, scene
 cache separation, undo/redo and Studio save/discard have dedicated verification.
 The real-origin Chromium test authors, edits, saves, undoes and independently
 audits the resulting DXF using the real native backend.
+
+## Integration contracts
+
+The existing `BlockSourceDisposition` numeric values remain Retain=0,
+ConvertToInsert=1 and Delete=2. The command API adds Convert and Remove as
+aliases, not new wire values. Creation shares one planner implementation; the
+existing redefinition API and source-preserving origin behavior remain available.
+Both `BLOCK name base-point` and `BLOCK base-point name` are accepted, with the
+existing name-first interactive prompt retained. `BEDIT name` can open a named
+definition directly. The existing rename route keeps its structured ObjectId
+payload; it is registered only once.
+
+Existing block and hatch authoring dialogs target the active definition while
+its editor is open. They do not write hidden geometry to the live model layout.
+Definition workspaces inherit perspective settings without projecting their local
+geometry; returning to the live workspace restores its independent view context.
+Save As, DWG exchange, hatch pattern editing and the main CAD landing page remain
+unchanged. Source collection adoption orders owned payload, shared tables and
+entity membership, then detaches in reverse order. Rollback is prepared from
+actual membership and does not clear unchanged reserved table entries.
