@@ -104,11 +104,19 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertNotIn('dotnet pack', self.pages)
         self.assertNotIn('nuget push', self.pages)
         self.assertNotIn('uses: ./.github/workflows/', self.pages)
-        # Only the generated gallery may be uploaded, after the real host has rendered it.
-        self.assertLess(build.index('dotnet publish '), build.index('python tools/ci/shadow_studio_pages.py'))
-        self.assertLess(build.index('python tools/ci/shadow_studio_pages.py'), build.index('uses: actions/upload-pages-artifact@'))
+        # Upload only the standalone WASM application after source, asset and real-browser checks.
+        publish = build.index('dotnet publish ')
+        validate = build.index('python tools/ci/shadow_studio_browser.py --published')
+        browser_test = build.index('python shadow/tests/blazor_studio_browser.py --published')
+        upload_index = build.index('uses: actions/upload-pages-artifact@')
+        self.assertLess(build.index('python tools/ci/shadow_studio_browser.py --check-source'), publish)
+        self.assertLess(publish, validate)
+        self.assertLess(validate, browser_test)
+        self.assertLess(browser_test, upload_index)
+        self.assertIn('netDxf.Shadow.Studio.Browser/netDxf.Shadow.Studio.Browser.csproj', build)
+        self.assertNotIn('python tools/ci/shadow_studio_pages.py', build)
         upload = build.split('uses: actions/upload-pages-artifact@', 1)[1].split('      - name:', 1)[0]
-        self.assertIn('          path: artifacts/shadow-studio-pages\n', upload)
+        self.assertIn('          path: artifacts/shadow-studio-browser/wwwroot\n', upload)
 
     def test_complete_conformance_job_preserves_steps_and_bounded_budget(self):
         # Run 38454383165 passed all 99,081 cases and 276 independent verifiers,
