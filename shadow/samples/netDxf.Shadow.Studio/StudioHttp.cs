@@ -7,14 +7,16 @@ internal static class StudioHttp
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
-    internal static T Execute<T>(Studio studio, HttpRequest request, Func<T> action)
+    internal static StudioRequestIdentity Identity(HttpRequest request)
     {
         if (!Guid.TryParseExact(request.Headers["X-Shadow-Document"], "D", out var document)
             || !long.TryParse(request.Headers["X-Shadow-View"], NumberStyles.None, CultureInfo.InvariantCulture, out var view)
             || request.Headers["X-Shadow-Workspace"].Count != 1)
             throw new ShadowConflictException("Fetch the current state and supply its document, workspace and view identity.");
-        return studio.ExecuteRequest(new(document, request.Headers["X-Shadow-Workspace"].ToString(), view), action);
+        return new(document, request.Headers["X-Shadow-Workspace"].ToString(), view);
     }
+
+    internal static T Execute<T>(Studio studio, HttpRequest request, Func<T> action) => studio.ExecuteRequest(Identity(request), action);
 
     internal static void MapStudioWorkspaces(this WebApplication app)
     {
@@ -35,8 +37,7 @@ internal static class StudioHttp
         context.Response.Headers.CacheControl = "no-cache, no-transform";
         context.Response.Headers["X-Accel-Buffering"] = "no";
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
-        // Keep the losing operation across iterations: do not accumulate orphaned channel
-        // waits or heartbeat timers on fast publication / slow connections.
+        // Keep outstanding waits across iterations; never accumulate orphaned operations.
         var read = subscription.Reader.WaitToReadAsync(token).AsTask();
         var heartbeat = timer.WaitForNextTickAsync(token).AsTask();
         try
@@ -65,7 +66,6 @@ internal static class StudioHttp
         finally
         {
             await cancellation.CancelAsync();
-            // Observe cancellation of the outstanding waits before disposing their owners.
             try { await Task.WhenAll(read, heartbeat); } catch (OperationCanceledException) when (token.IsCancellationRequested) { }
         }
     }

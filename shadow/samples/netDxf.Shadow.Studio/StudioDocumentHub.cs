@@ -3,9 +3,9 @@ namespace netDxf.Shadow.Studio;
 public sealed record CadNewDocumentRequest(string Name = "Drawing.dxf", bool Demo = false);
 public sealed record CadCloseDocumentRequest(long Revision, bool Discard = false);
 
-/// <summary>Bounded multi-document lifetime manager. Holding the hub gate prevents a close from
-/// disposing a renderer while an API operation uses it. The legacy DI-owned sample is borrowed.</summary>
-public sealed class StudioDocumentHub : IDisposable
+/// <summary>Transport-independent, bounded multi-document lifetime manager. The hub gate
+/// prevents a close from disposing a renderer while an operation uses it.</summary>
+public sealed partial class StudioDocumentHub : IDisposable
 {
     private sealed class Entry(string name, Studio studio, bool owned)
     {
@@ -16,8 +16,16 @@ public sealed class StudioDocumentHub : IDisposable
     }
     private readonly object gate = new();
     private readonly Dictionary<string, Entry> entries = new(StringComparer.Ordinal);
+    private readonly Func<bool, Studio> createStudio;
     private bool disposed;
-    public StudioDocumentHub(Studio legacy) { entries.Add("demo", new("Process loop.dxf", legacy, false)); }
+
+    public StudioDocumentHub(Studio legacy) : this(legacy, static demo => new Studio(demo)) { }
+    public StudioDocumentHub(Studio legacy, Func<bool, Studio> createStudio)
+    {
+        ArgumentNullException.ThrowIfNull(legacy);
+        this.createStudio = createStudio ?? throw new ArgumentNullException(nameof(createStudio));
+        entries.Add("demo", new("Process loop.dxf", legacy, false));
+    }
     public object Documents()
     {
         lock (gate)
@@ -31,8 +39,8 @@ public sealed class StudioDocumentHub : IDisposable
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
-            if (entries.Count >= 8) throw new InvalidOperationException("The local workspace allows eight open drawings. Close one before opening another.");
-            var name = Name(request.Name); var studio = new Studio(request.Demo); var id = Guid.NewGuid().ToString("N");
+            if (entries.Count >= 8) throw new InvalidOperationException("The workspace allows eight open drawings. Close one before opening another.");
+            var name = Name(request.Name); var studio = createStudio(request.Demo); var id = Guid.NewGuid().ToString("N");
             entries.Add(id, new(name, studio, true)); return new { id, name };
         }
     }
@@ -45,11 +53,11 @@ public sealed class StudioDocumentHub : IDisposable
             return action(entry.Studio);
         }
     }
-    public object Close(string id, HttpRequest http, CadCloseDocumentRequest request)
+    public object Close(string id, StudioRequestIdentity identity, CadCloseDocumentRequest request)
     {
         lock (gate)
         {
-            return Use(id, studio => StudioHttp.Execute(studio, http, () =>
+            return Use(id, studio => studio.ExecuteRequest(identity, () =>
             {
                 var entry = entries[id]; var stamp = studio.CadStamp;
                 if (studio.CadRevision != request.Revision) throw new ShadowConflictException("The drawing changed before close.");
@@ -58,17 +66,16 @@ public sealed class StudioDocumentHub : IDisposable
             }));
         }
     }
-    // Retain the original public signature and all existing host/receipt behavior.
-    public byte[] Save(string id, HttpRequest http, long revision) => Save(id, http, revision, static bytes => bytes);
+    public byte[] Save(string id, StudioRequestIdentity identity, long revision) => Save(id, identity, revision, static bytes => bytes);
 
     /// <summary>Encode detached DXF before advancing the saved stamp. Encoding failure
     /// preserves dirty state and is never retried implicitly.</summary>
-    public byte[] Save(string id, HttpRequest http, long revision, Func<byte[], byte[]> encode)
+    public byte[] Save(string id, StudioRequestIdentity identity, long revision, Func<byte[], byte[]> encode)
     {
         ArgumentNullException.ThrowIfNull(encode);
         lock (gate)
         {
-            return Use(id, studio => StudioHttp.Execute(studio, http, () =>
+            return Use(id, studio => studio.ExecuteRequest(identity, () =>
             {
                 var bytes = studio.Save(revision);
                 var encoded = encode(bytes);
@@ -77,12 +84,12 @@ public sealed class StudioDocumentHub : IDisposable
             }));
         }
     }
-    public object Load(string id, HttpRequest http, Stream stream, long revision, string name)
+    public object Load(string id, StudioRequestIdentity identity, Stream stream, long revision, string name)
     {
         lock (gate)
         {
             var safeName = Name(name);
-            return Use(id, studio => StudioHttp.Execute(studio, http, () =>
+            return Use(id, studio => studio.ExecuteRequest(identity, () =>
             {
                 studio.Load(stream, revision); entries[id].Name = safeName; entries[id].Saved = studio.CadStamp; return studio.CadState();
             }));
