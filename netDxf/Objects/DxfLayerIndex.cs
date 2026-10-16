@@ -76,7 +76,7 @@ namespace netDxf.Objects
                 if (this.Database != null)
                 {
                     this.Database.CheckRegistered(this); this.Database.CheckRegistered(child);
-                    if (!ReferenceEquals(child.Owner, this)) throw new ArgumentException("A registered buffer must already be owned by its index.", nameof(values));
+                    if (!loading && !ReferenceEquals(child.Owner, this)) throw new ArgumentException("A registered buffer must already be owned by its index.", nameof(values));
                 }
             }
             if (this.Database != null && !loading && !children.SetEquals(this.entries.Select(entry => entry.Buffer)))

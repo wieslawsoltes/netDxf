@@ -506,9 +506,9 @@ namespace netDxf.Tables
                         throw new ArgumentException(string.Format("The DimensionStyleOverrideType.{0} dimension style override must be a valid {1}", type, typeof(double)), nameof(value));
                     }
 
-                    if ((double)value < 0.000001 && !MathHelper.IsZero((double)value, double.Epsilon))
+                    if ((double)value < 0.0)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), value, string.Format("The {0} dimension style override must be equals or greater than 0.000001 or zero (no rounding off).", type));
+                        throw new ArgumentOutOfRangeException(nameof(value), value, string.Format("The {0} dimension style override must be nonnegative (zero disables rounding).", type));
                     }
 
                     break;
@@ -563,9 +563,9 @@ namespace netDxf.Tables
                         throw new ArgumentException(string.Format("The DimensionStyleOverrideType.{0} dimension style override must be a valid {1}", type, typeof(double)), nameof(value));
                     }
 
-                    if ((double)value < 0.000001 && !MathHelper.IsZero((double)value, double.Epsilon))
+                    if ((double)value < 0.0)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), value, string.Format("The {0} dimension style override must be equals or greater than 0.000001 or zero (no rounding off).", type));
+                        throw new ArgumentOutOfRangeException(nameof(value), value, string.Format("The {0} dimension style override must be nonnegative (zero disables rounding).", type));
                     }
 
                     break;

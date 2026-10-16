@@ -312,7 +312,7 @@ namespace netDxf.Entities
                             break;
                     }
 
-                    if (entity is Spline spline && spline.IsClosedPeriodic) PeriodicSplineData.Validate(spline);
+                    if (entity is Spline spline && spline.IsClosedPeriodic) HatchBoundaryPath.Spline.ValidatePeriodicEntity(spline);
                     prepared.Add(new KeyValuePair<HatchBoundaryPath, EntityObject>(path, entity));
                 }
             }

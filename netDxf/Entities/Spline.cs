@@ -49,6 +49,7 @@ namespace netDxf.Entities
         private double[] knots;
         private readonly short degree;
         private bool isClosedPeriodic;
+        private bool hasExplicitPeriodicControlPoints;
 
         private SplineKnotParameterization knotParameterization = SplineKnotParameterization.FitChord;
         private double knotTolerance = 0.0000001;
@@ -219,6 +220,12 @@ namespace netDxf.Entities
         /// <param name="knots">Spline knot vector.</param>
         /// <param name="degree">Degree of the spline curve. Valid values are 1 (linear), degree 2 (quadratic), degree 3 (cubic), and so on up to degree 10.</param>
         /// <param name="closedPeriodic">Sets if the spline as periodic closed (default false).</param>
+        /// <remarks>
+        /// Periodic input may use a compact cyclic control polygon with control count plus twice
+        /// the degree plus one knots, or a complete DXF polygon with control count plus degree
+        /// plus one knots. The latter is retained as HasExplicitPeriodicControlPoints without
+        /// synthesizing cyclic overlap or replacing the supplied knot vector.
+        /// </remarks>
         public Spline(IEnumerable<Vector3> controlPoints, IEnumerable<double> weigths, IEnumerable<double> knots, short degree, bool closedPeriodic)
             : this(controlPoints, weigths, knots, degree, null, SplineCreationMethod.ControlPoints, closedPeriodic)
         {
@@ -296,7 +303,12 @@ namespace netDxf.Entities
 
                 this.knots = knots.ToArray();
                 int numKnots;
-                if (closedPeriodic)
+                // Explicit DXF control polygons use the ordinary B-spline knot
+                // count even when the producer marks the curve periodic. Keep
+                // their complete basis; cyclic compaction would alter geometry.
+                this.hasExplicitPeriodicControlPoints = closedPeriodic &&
+                    (long)this.knots.Length == (long)numControlPoints + degree + 1;
+                if (closedPeriodic && !this.hasExplicitPeriodicControlPoints)
                 {
                     numKnots = numControlPoints + 2 * degree + 1;
                 }
@@ -348,6 +360,7 @@ namespace netDxf.Entities
             this.degree = source.degree;
             this.creationMethod = source.creationMethod;
             this.isClosedPeriodic = source.isClosedPeriodic;
+            this.hasExplicitPeriodicControlPoints = source.hasExplicitPeriodicControlPoints;
             this.knotParameterization = source.knotParameterization;
             this.knotTolerance = source.knotTolerance;
             this.ctrlPointTolerance = source.ctrlPointTolerance;
@@ -508,9 +521,26 @@ namespace netDxf.Entities
             get { return this.isClosedPeriodic; }
             set
             {
+                if (this.isClosedPeriodic == value) return;
                 this.knots = CreateKnotVector(this.controlPoints.Length, this.degree, value);
                 this.isClosedPeriodic = value;
+                this.hasExplicitPeriodicControlPoints = false;
             }
+        }
+
+        /// <summary>
+        /// Gets whether a periodic spline stores its complete DXF control polygon.
+        /// </summary>
+        /// <remarks>
+        /// When true, the knot count equals the control count plus degree plus one,
+        /// and no cyclic prefix may be added when evaluating or serializing the curve.
+        /// This preserves producer data whose periodic marker accompanies repeated knots
+        /// or a nonidentical control overlap. Otherwise periodic controls use the compact
+        /// representation and the last degree controls are prepended during evaluation.
+        /// </remarks>
+        public bool HasExplicitPeriodicControlPoints
+        {
+            get { return this.hasExplicitPeriodicControlPoints; }
         }
 
         /// <summary>
@@ -577,7 +607,7 @@ namespace netDxf.Entities
             Array.Reverse(this.fitPoints);
             Array.Reverse(this.controlPoints);
             if (this.weights != null) Array.Reverse(this.weights);
-            if (this.isClosedPeriodic)
+            if (this.isClosedPeriodic && !this.hasExplicitPeriodicControlPoints)
             {
                 // Serialized/evaluated periodic controls prepend the last p
                 // stored controls. Rotate the reversed stored polygon by p so
@@ -667,14 +697,17 @@ namespace netDxf.Entities
         /// <remarks>
         /// NURBS evaluator provided by mikau16 based on Michael V. implementation, roughly follows the notation of http://cs.mtu.edu/~shene/PUBLICATIONS/2004/NURBS.pdf
         /// Added a few modifications to make it work for open, closed, and periodic closed splines.
-        /// Nonperiodic curves use the active domain knots[degree] through knots[controls.Length].
+        /// Nonperiodic and explicit periodic curves use the active domain knots[degree] through knots[controls.Length].
+        /// A periodic packet with control count plus degree plus one knots uses its complete stored basis.
         /// Open samples include the evaluated right endpoint; closed samples exclude a duplicated endpoint.
         /// Nonperiodic evaluation requires finite source data, valid knot multiplicities, and 2 to 1000000 samples.
         /// Sampled rational poles or unrepresentable sampling parameters throw before a result is returned.
         /// </remarks>
         public static List<Vector3> NurbsEvaluator(Vector3[] controls, double[] weights, double[] knots, int degree, bool isClosed, bool isClosedPeriodic, int precision)
         {
-            if (!isClosedPeriodic) return EvaluateNonPeriodicSpline(controls, weights, knots, degree, isClosed, precision);
+            if (!isClosedPeriodic || (controls != null && knots != null &&
+                (long)knots.Length == (long)controls.Length + degree + 1))
+                return EvaluateNonPeriodicSpline(controls, weights, knots, degree, isClosed || isClosedPeriodic, precision);
 
             if (precision < 2)
             {

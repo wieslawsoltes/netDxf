@@ -1,5 +1,7 @@
 // Copyright (c) netDxf contributors. Licensed under the MIT License.
 using System;
+using System.Collections.Generic;
+using netDxf.IO;
 using netDxf.Tables;
 
 namespace netDxf.Entities
@@ -65,7 +67,8 @@ namespace netDxf.Entities
 
         internal Ole2Frame(byte[] binaryData, Vector3 upperLeftCorner, Vector3 lowerRightCorner,
             string description, short oleVersion, OleObjectType objectType, short tileMode, bool copyData,
-            Ole2FrameMetadataFields metadataFields = Ole2FrameMetadataFields.All)
+            Ole2FrameMetadataFields metadataFields = Ole2FrameMetadataFields.All,
+            IEnumerable<DxfTag> additionalMetadata = null)
             : base(EntityType.Ole2Frame, DxfObjectCode.Ole2Frame)
         {
             if (binaryData == null) throw new ArgumentNullException(nameof(binaryData));
@@ -80,6 +83,18 @@ namespace netDxf.Entities
             if (tileMode != 0 && tileMode != 1) throw new ArgumentOutOfRangeException(nameof(tileMode));
             if ((metadataFields & ~Ole2FrameMetadataFields.All) != 0)
                 throw new ArgumentOutOfRangeException(nameof(metadataFields));
+            var extensions = new List<DxfTag>();
+            var codes = new HashSet<short>();
+            if (additionalMetadata != null)
+            {
+                foreach (DxfTag tag in additionalMetadata)
+                {
+                    if (tag == null || !IsAdditionalMetadataCode(tag.Code) || !codes.Add(tag.Code))
+                        throw new ArgumentException("Additional OLE metadata requires unique unmodeled numeric groups.", nameof(additionalMetadata));
+                    extensions.Add(tag);
+                }
+            }
+            this.AdditionalMetadata = extensions.AsReadOnly();
             this.MetadataFields = metadataFields;
             this.binaryData = copyData ? (byte[])binaryData.Clone() : binaryData;
             this.UpperLeftCorner = upperLeftCorner;
@@ -106,6 +121,14 @@ namespace netDxf.Entities
         {
             return this.Copy(metadataFields);
         }
+
+        /// <summary>Gets retained numeric extension metadata without interpreting its private meaning.</summary>
+        /// <remarks>
+        /// The immutable values are preserved by Clone, WithMetadataFields and serialization.
+        /// They are separate from the binary OLE object and never cause that object to be activated.
+        /// Object identities, references, subclass framing and XData are not admitted as extension metadata.
+        /// </remarks>
+        public IReadOnlyList<DxfTag> AdditionalMetadata { get; }
 
         /// <summary>Gets the stored finite upper-left WCS corner.</summary>
         public Vector3 UpperLeftCorner { get; }
@@ -144,7 +167,7 @@ namespace netDxf.Entities
         private Ole2Frame Copy(Ole2FrameMetadataFields metadataFields)
         {
             var copy = new Ole2Frame(this.binaryData, this.UpperLeftCorner, this.LowerRightCorner,
-                this.Description, this.OleVersion, this.ObjectType, this.TileMode, true, metadataFields)
+                this.Description, this.OleVersion, this.ObjectType, this.TileMode, true, metadataFields, this.AdditionalMetadata)
             {
                 Layer = (Layer)this.Layer.Clone(), Linetype = (Linetype)this.Linetype.Clone(),
                 Color = (AciColor)this.Color.Clone(), Lineweight = this.Lineweight,
@@ -154,6 +177,19 @@ namespace netDxf.Entities
             foreach (XData data in this.XData.Values) copy.XData.Add((XData)data.Clone());
             this.CopyCommonDataTo(copy);
             return copy;
+        }
+
+        internal static bool IsAdditionalMetadataCode(short code)
+        {
+            if (code <= 0 || code >= 1000) return false;
+            switch (code)
+            {
+                case 10: case 20: case 30: case 11: case 21: case 31:
+                case 70: case 71: case 72: case 90: return false;
+            }
+            if (!DxfGroupCode.TryGetValueType(code, out DxfTagValueType type)) return false;
+            return type == DxfTagValueType.Double || type == DxfTagValueType.Int16 ||
+                type == DxfTagValueType.Int32 || type == DxfTagValueType.Int64 || type == DxfTagValueType.Boolean;
         }
 
         private static void ValidatePoint(Vector3 point, string parameter)

@@ -100,6 +100,9 @@ namespace netDxf.IO
 
         private void ResolveLayerIndexReferences()
         {
+            var staged = new Dictionary<DxfLayerIndex, List<DxfLayerIndexEntry>>();
+            var owners = new Dictionary<DxfIdBuffer, DxfLayerIndex>();
+            var metadata = (DatabaseMetadataReader)this.chunk;
             foreach (KeyValuePair<DxfLayerIndex, List<Tuple<string, string, int>>> pending in this.pendingLayerIndexes)
             {
                 if (!(pending.Key.Owner is DxfDictionary)) throw new FormatException("LAYER_INDEX requires a dictionary owner.");
@@ -107,13 +110,34 @@ namespace netDxf.IO
                 foreach (Tuple<string, string, int> item in pending.Value)
                 {
                     DxfIdBuffer buffer = this.GetObjectBySourceHandle(item.Item2) as DxfIdBuffer;
-                    if (buffer == null || !ReferenceEquals(buffer.Owner, pending.Key))
-                        throw new FormatException("LAYER_INDEX ownership target must be a reciprocally owned IDBUFFER: " + item.Item2);
+                    if (buffer == null || buffer.Owner != null && !ReferenceEquals(buffer.Owner, pending.Key))
+                        throw new FormatException("LAYER_INDEX ownership target must be an IDBUFFER without a conflicting owner: " + item.Item2);
+                    if (owners.ContainsKey(buffer) || !metadata.HasUniqueOwnershipDeclaration(item.Item2, pending.Key.Handle))
+                        throw new FormatException("LAYER_INDEX requires an unambiguous IDBUFFER ownership declaration: " + item.Item2);
                     if (buffer.References.Count != item.Item3)
                         throw new FormatException("LAYER_INDEX stored count does not match its IDBUFFER: " + item.Item2);
+                    owners.Add(buffer, pending.Key);
                     entries.Add(new DxfLayerIndexEntry(item.Item1, buffer));
                 }
-                try { pending.Key.LoadEntries(entries); }
+                staged.Add(pending.Key, entries);
+            }
+            // Validate the complete prospective graph before installing any backlinks.
+            // Group 360 can supply an absent/null IDBUFFER owner, but cannot override a
+            // foreign owner or combine with another ownership declaration.
+            foreach (DxfIdBuffer buffer in owners.Keys)
+            {
+                var ancestors = new HashSet<DxfObject>();
+                for (DxfObject current = buffer; current != null;)
+                {
+                    if (!ancestors.Add(current)) throw new FormatException("LAYER_INDEX ownership cannot form a cycle.");
+                    if (current.Owner != null) current = current.Owner;
+                    else if (current is DxfIdBuffer child && owners.TryGetValue(child, out DxfLayerIndex owner)) current = owner;
+                    else current = null;
+                }
+            }
+            foreach (KeyValuePair<DxfLayerIndex, List<DxfLayerIndexEntry>> pending in staged)
+            {
+                try { pending.Key.LoadEntries(pending.Value); }
                 catch (ArgumentException error) { throw new FormatException("Invalid LAYER_INDEX ownership graph.", error); }
             }
         }

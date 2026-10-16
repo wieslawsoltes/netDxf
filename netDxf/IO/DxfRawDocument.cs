@@ -306,7 +306,7 @@ namespace netDxf.IO
                 if (result.Count >= options.MaximumTags) throw new InvalidDataException("Raw DXF exceeds the tag-count budget.");
                 CheckValueBudget(tag, options);
                 if (tag.Code == 5 && (tag.ValueType == DxfTagValueType.String) != context.Code5IsString)
-                    throw new ArgumentException("Group 5 requires a DIMBLK name only inside a DIMSTYLE table entry, and a handle elsewhere.", nameof(tags));
+                    throw new ArgumentException("Group 5 requires a context-qualified DIMSTYLE name or opaque OBJECTS payload string, and a handle elsewhere.", nameof(tags));
                 context.Advance(tag);
                 result.Add(tag);
             }
@@ -379,9 +379,7 @@ namespace netDxf.IO
                 if (count++ >= options.MaximumTags) throw new InvalidDataException("Raw DXF exceeds the tag-count budget.");
                 reader.Code5IsString = context.Code5IsString;
                 reader.Next();
-                DxfTag tag = reader.Code == 5 && reader.Code5IsString
-                    ? DxfTag.CreateDimensionStyleArrowName(reader.ReadString())
-                    : new DxfTag(reader.Code, reader.Value);
+                DxfTag tag = context.CreateTag(reader.Code, reader.Value);
                 CheckValueBudget(tag, options);
                 context.Advance(tag);
                 yield return tag;
@@ -512,7 +510,7 @@ namespace netDxf.IO
             }
         }
 
-        private static Encoding ResolveEncoding(DxfVersion version, string name)
+        internal static Encoding ResolveEncoding(DxfVersion version, string name)
         {
             if (version >= DxfVersion.AutoCad2007) return new UTF8Encoding(false, true);
             int codePage = 1252;

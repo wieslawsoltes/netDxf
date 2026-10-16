@@ -4,12 +4,13 @@ using netDxf.Header;
 namespace NetDxf.Conformance;
 internal static partial class Program
 {
-    private static readonly string[] HatchPeriodicDefects = { "overlap-x", "overlap-y", "overlap-weight", "flag-weight", "zero-weight", "negative-weight", "count", "spans", "repeated", "domain", "empty", "degree", "weight-range" };
+    private static readonly string[] HatchPeriodicDefects = { "overlap-x", "overlap-y", "overlap-weight", "flag-weight", "zero-weight", "negative-weight", "count", "spans", "repeated", "domain", "empty", "degree", "weight-range", "multiplicity" };
+    private static readonly string[] HatchPeriodicConversionDefects = { "flag-weight", "count", "domain", "empty", "degree", "multiplicity" };
     private static void RegisterHatchPeriodicConversionTests()
     {
         foreach (var version in SupportedVersions) foreach (bool binary in new[] { false, true }) foreach (bool compact in new[] { false, true }) foreach (int plane in new[] { 0, 1 }) foreach (bool link in new[] { false, true })
             Run($"hatch-periodic/geometry/{version}/{binary}/{compact}/{plane}/{link}", () => HatchPeriodicGeometry(version, binary, compact, plane, link));
-        foreach (bool associated in new[] { false, true }) foreach (bool link in new[] { false, true }) foreach (string defect in HatchPeriodicDefects)
+        foreach (bool associated in new[] { false, true }) foreach (bool link in new[] { false, true }) foreach (string defect in HatchPeriodicConversionDefects)
             Run($"hatch-periodic/atomic/{associated}/{link}/{defect}", () => HatchPeriodicAtomic(associated, link, defect));
         foreach (bool binary in new[] { false, true }) foreach (string defect in HatchPeriodicDefects)
             Run($"hatch-periodic/storage/{binary}/{defect}", () => HatchPeriodicStorage(binary, defect));
@@ -57,6 +58,7 @@ internal static partial class Program
             case "count": edge.Knots = edge.Knots.Concat(new[] { 1.0 }).ToArray(); break;
             case "spans": edge.Knots[0] -= .125; break;
             case "repeated": edge.Knots[1] = edge.Knots[0]; break;
+            case "multiplicity": edge.Knots[1] = edge.Knots[2] = edge.Knots[3] = edge.Knots[0]; break;
             case "domain": edge.Knots = edge.Knots.Select(_ => 0.0).ToArray(); break;
             case "empty": edge.Knots = Array.Empty<double>(); edge.ControlPoints = Array.Empty<Vector3>(); break;
             case "degree": edge.Degree = 11; break;

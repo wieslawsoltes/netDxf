@@ -54,6 +54,28 @@ public sealed class ShadowObjectFactories
             if (node["Value"] is ShadowValue.Atom)
                 return Transparency.FromCadIndex((short)resolver.Convert(node["Value"], typeof(short))!);
         }
+        if (type == typeof(netDxf.Objects.DxfSortOrderEntry) && node["Target"] is ShadowValue.Reference target)
+            return new netDxf.Objects.DxfSortOrderEntry((DxfObject)resolver.Resolve(target.Id),
+                (string)resolver.Convert(node["SortHandle"], typeof(string))!);
+        if (type == typeof(netDxf.Objects.DxfDictionaryEntry) && node["Target"] is ShadowValue.NullValue)
+        {
+            if (node["IsHardOwner"] is not ShadowValue.Atom owner || !bool.TryParse(owner.Text, out var hardOwner) || hardOwner)
+                throw new NotSupportedException("Unresolved dictionary entries require explicit soft ownership.");
+            return netDxf.Objects.DxfDictionaryEntry.CreateUnresolvedSoftReference(
+                (string)resolver.Convert(node["Name"], typeof(string))!,
+                (string)resolver.Convert(node["TargetHandle"], typeof(string))!);
+        }
+        if (type == typeof(netDxf.Tables.TextStyle))
+        {
+            var style = netDxf.Tables.TextStyle.FromStoredFontFiles(
+                (string)resolver.Convert(node["Name"], typeof(string))!,
+                (string)resolver.Convert(node["FontFile"], typeof(string))!,
+                (string)resolver.Convert(node["BigFont"], typeof(string))!);
+            if (node["ExtendedFontData"] is not ShadowValue.NullValue)
+                style.ExtendedFontData = (netDxf.Tables.TextStyleFontData)resolver.Convert(
+                    node["ExtendedFontData"], typeof(netDxf.Tables.TextStyleFontData))!;
+            return style;
+        }
         if (type == typeof(netDxf.Entities.Ellipse) && node["MajorAxis"] is ShadowValue.Atom && node["MinorAxis"] is ShadowValue.Atom)
             return new netDxf.Entities.Ellipse(Vector3.Zero, (double)resolver.Convert(node["MajorAxis"], typeof(double))!,
                 (double)resolver.Convert(node["MinorAxis"], typeof(double))!);

@@ -121,7 +121,7 @@ namespace netDxf.IO
                 foreach (DxfDictionaryEntry entry in dictionary.Entries)
                 {
                     this.chunk.Write(3, this.EncodeDatabaseString(entry.Name));
-                    this.chunk.Write(entry.IsHardOwner ? (short)360 : (short)350, entry.Target.Handle);
+                    this.chunk.Write(entry.IsHardOwner ? (short)360 : (short)350, entry.TargetHandle);
                 }
                 if (dictionary is DxfDictionaryWithDefault fallback)
                 {

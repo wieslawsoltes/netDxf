@@ -175,6 +175,8 @@ internal static partial class Program
             dim.Style.AlternateUnits.Roundoff=1e-6;
             Check(AltLabel(dim).Contains("["),"Large finite alternate rendering");
             dim.Style.AlternateUnits.Multiplier=1e306;
+            Check(AltLabel(dim).Contains("["),"Finite alternate measurement with overflowing rounding quotient");
+            dim.Style.AlternateUnits.Multiplier=double.MaxValue;
             Throws<ArgumentOutOfRangeException>(()=>DimensionBlock.Build(dim));
         });
         Run("alternate-label/unknown-format",()=>

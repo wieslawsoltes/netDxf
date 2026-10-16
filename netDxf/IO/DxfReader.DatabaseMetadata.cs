@@ -6,14 +6,17 @@ namespace netDxf.IO
 {
     internal sealed partial class DxfReader
     {
-        // Observes only the common header before the first subclass marker. In particular,
-        // XRECORD payload groups 100/102/330/360 are never mistaken for object metadata.
+        // Object metadata comes only from the common header. Ownership declarations are
+        // also inventoried in payloads so a missing reciprocal owner can be inferred only
+        // when no other source record claims the same object.
         private sealed class DatabaseMetadataReader : ICodeValueReader
         {
             private readonly ICodeValueReader inner;
             private readonly Dictionary<string, DatabaseMetadata> records;
             private readonly HashSet<ulong> sourceIdentities;
             private readonly Dictionary<ulong, SourceRecordIdentity> sourceDeclarations = new Dictionary<ulong, SourceRecordIdentity>();
+            private readonly Dictionary<ulong, SourceRecordIdentity> ownershipDeclarations = new Dictionary<ulong, SourceRecordIdentity>();
+            private readonly HashSet<ulong> repeatedOwnershipDeclarations = new HashSet<ulong>();
             private DatabaseMetadata current = new DatabaseMetadata();
             private string handle;
             private string group;
@@ -31,6 +34,13 @@ namespace netDxf.IO
             public bool Code5IsString { get { return this.inner.Code5IsString; } set { this.inner.Code5IsString = value; } }
             internal void SkipComments() { this.SetSkipComments(true); }
             internal void SetSkipComments(bool value) { if (this.inner is TextCodeValueReader text) text.SkipComments = value; }
+            internal bool HasUniqueOwnershipDeclaration(string targetHandle, string ownerHandle)
+            {
+                return ulong.TryParse(targetHandle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong target)
+                    && ulong.TryParse(ownerHandle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong owner)
+                    && this.ownershipDeclarations.TryGetValue(target, out SourceRecordIdentity source)
+                    && !this.repeatedOwnershipDeclarations.Contains(target) && !source.Ambiguous && source.Handle == owner;
+            }
             public void Next()
             {
                 this.inner.Next();
@@ -46,6 +56,12 @@ namespace netDxf.IO
                     return;
                 }
                 if (this.sectionHeader && this.section == null && this.Code == 2) this.section = this.ReadString();
+                if (this.IsPhysicalSourceRecord() && this.Code >= 350 && this.Code <= 369
+                    && ulong.TryParse(this.ReadHex(), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong owned) && owned != 0)
+                {
+                    if (this.ownershipDeclarations.ContainsKey(owned)) this.repeatedOwnershipDeclarations.Add(owned);
+                    else this.ownershipDeclarations.Add(owned, this.SourceRecord);
+                }
                 if (!this.common) return;
                 if (this.Code == 102)
                 {

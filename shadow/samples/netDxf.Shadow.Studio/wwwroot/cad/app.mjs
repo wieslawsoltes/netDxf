@@ -41,7 +41,7 @@ function report(error) {
 function run(task) { Promise.resolve().then(task).catch(report); }
 function editable() { if(snapshot!==null) throw new Error('This is a read-only retained snapshot. Return to Current drawing before editing.'); if(!client.state) throw new Error('Load a drawing first.'); }
 async function edit(path,payload={},options={}) { editable(); const result=await client.mutate(path,payload,options); await documentTabs(); return result; }
-function setSession(value) { viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
+function setSession(value) { if(value!==null)client.beginInteraction(); viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
 function cancel(clearSelection=true) { setSession(null); $('command-input').value=''; $('suggestions').hidden=true; $('dynamic-input').hidden=true; if(clearSelection && client.state && snapshot===null && !client.busy) run(()=>edit('select',{mode:'clear'})); }
 async function start(name) {
   editable(); if(client.busy) throw new Error('Wait for the current operation to complete.');
@@ -309,7 +309,11 @@ $('command-input').addEventListener('input',()=>{
 $('backend').addEventListener('change',e=>{viewport.backend=e.target.value;viewport.requestFrame();});
 $('open-file').addEventListener('change',e=>run(async()=>{
   const file=e.target.files[0];e.target.value='';if(!file)return;const format=await inspectDrawing(file);
-  const created=await client.create(file.name,false);await activate(created.id);await client.mutate('load',file,{binary:true,query:{name:file.name}});viewport.fit();await documentTabs();log(`Opened ${format.toUpperCase()} drawing ${file.name}.`,'success');
+  log('Opening drawing…');
+  let opened;
+  try { opened=await client.open(file); }
+  catch(error) { await documentTabs().catch(()=>{});throw error; }
+  if(client.id===opened.id)viewport.fit();await documentTabs();log(`Opened ${format.toUpperCase()} drawing ${file.name}.`,'success');
 }));
 $('font-file').addEventListener('change',e=>run(async()=>{const file=e.target.files[0];e.target.value='';if(!file)return;editable();if(file.size>4*1024*1024)throw new Error('Font upload limit is 4 MiB.');await client.mutate('font',file,{binary:true,query:{name:file.name}});log(`Loaded ${file.name}.`,'success');}));
 document.addEventListener('keydown',e=>{

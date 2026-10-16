@@ -14,6 +14,7 @@ namespace netDxf.IO
                 throw new InvalidDataException("OLE2FRAME requires AcDbOle2Frame.");
             var seen = new HashSet<short>();
             var xdata = new List<XData>();
+            var additionalMetadata = new List<DxfTag>();
             Vector3 upper = Vector3.Zero, lower = Vector3.Zero;
             short version = 2, type = 2, tile = 0;
             string description = string.Empty;
@@ -62,7 +63,10 @@ namespace netDxf.IO
                             terminated = true;
                             break;
                         default:
-                            throw new InvalidDataException("Unsupported OLE2FRAME group " + code + "; use DxfRawDocument for private extensions.");
+                            if (!Ole2Frame.IsAdditionalMetadataCode(code))
+                                throw new InvalidDataException("Unsupported OLE2FRAME framing or reference group " + code + ".");
+                            additionalMetadata.Add(new DxfTag(code, this.chunk.Value));
+                            break;
                     }
                     this.chunk.Next();
                 }
@@ -85,7 +89,7 @@ namespace netDxf.IO
                     if (seen.Contains(71)) fields |= Ole2FrameMetadataFields.ObjectType;
                     if (seen.Contains(72)) fields |= Ole2FrameMetadataFields.TileMode;
                     var frame = new Ole2Frame(payload.ToArray(), upper, lower, description, version,
-                        (OleObjectType)type, tile, false, fields);
+                        (OleObjectType)type, tile, false, fields, additionalMetadata);
                     foreach (XData data in xdata) frame.XData.Add(data);
                     return frame;
                 }
@@ -116,6 +120,7 @@ namespace netDxf.IO
             }
             if ((fields & Ole2FrameMetadataFields.ObjectType) != 0) this.chunk.Write(71, (short)frame.ObjectType);
             if ((fields & Ole2FrameMetadataFields.TileMode) != 0) this.chunk.Write(72, frame.TileMode);
+            foreach (DxfTag tag in frame.AdditionalMetadata) this.chunk.Write(tag.Code, tag.Value);
             this.chunk.Write(90, frame.BinaryDataLength);
             byte[] data = frame.BinaryData;
             for (int offset = 0; offset < data.Length;)

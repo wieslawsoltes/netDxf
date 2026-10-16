@@ -34,12 +34,21 @@ namespace netDxf.IO
             SourceRecordIdentity source = this.CurrentSourceRecord;
             string codeName = this.chunk.ReadString();
             List<DxfTag> tags = new List<DxfTag>();
-            this.chunk.Next();
-            while (this.chunk.Code != 0)
+            DxfRawTagContext context = new DxfRawTagContext("OBJECTS", codeName);
+            bool previousCode5Mode = this.chunk.Code5IsString;
+            try
             {
-                if (this.chunk.Code != 999) tags.Add(new DxfTag(this.chunk.Code, this.chunk.Value));
-                this.chunk.Next();
+                while (true)
+                {
+                    this.chunk.Code5IsString = context.Code5IsString;
+                    this.chunk.Next();
+                    if (this.chunk.Code == 0) break;
+                    DxfTag tag = context.CreateTag(this.chunk.Code, this.chunk.Value);
+                    context.Advance(tag);
+                    if (this.chunk.Code != 999) tags.Add(tag);
+                }
             }
+            finally { this.chunk.Code5IsString = previousCode5Mode; }
             if (codeName == "TABLESTYLE" && this.doc.DrawingVariables.AcadVer >= netDxf.Header.DxfVersion.AutoCad2004
                 && tags.FirstOrDefault(t => t.Code == 100)?.Value as string == "AcDbTableStyle")
             {
@@ -277,6 +286,8 @@ namespace netDxf.IO
             DxfObjectDatabase database = this.doc.Objects;
             foreach (DatabaseRecord record in this.databaseRecords)
             {
+                foreach (Tuple<string, string, bool> entry in record.Entries)
+                    database.ReserveUnresolvedReference(new DxfTag(entry.Item3 ? (short)360 : (short)350, entry.Item2));
                 if (record.Object is DxfXRecord xrecord) foreach (DxfTag tag in xrecord.Data) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfOpaqueObject opaque) foreach (DxfTag tag in opaque.Tags) database.ReserveUnresolvedReference(tag);
                 if (record.Object is DxfStoredTableContent content) foreach (DxfTag tag in content.Payload) database.ReserveUnresolvedReference(tag);
@@ -349,8 +360,13 @@ namespace netDxf.IO
                     {
                         if (record == root && DxfObjectDatabase.IsReservedName(entry.Item1)) continue;
                         DxfObject target = this.GetObjectBySourceHandle(entry.Item2);
-                        if (target == null) throw new FormatException("Unresolved dictionary entry: " + entry.Item1 + " -> " + entry.Item2);
-                        dictionary.AddLoaded(entry.Item1, target, entry.Item3);
+                        if (target != null) dictionary.AddLoaded(entry.Item1, target, entry.Item3);
+                        else if (!entry.Item3 && !dictionary.IsHardOwner
+                            && DxfObjectText.Number(entry.Item2) != 0
+                            && !this.sourceObjectIdentities.Contains(DxfObjectText.Number(entry.Item2))
+                            && this.doc.GetObjectByHandle(entry.Item2) == null)
+                            dictionary.AddUnresolvedSoftReference(entry.Item1, entry.Item2);
+                        else throw new FormatException("Unresolved dictionary entry: " + entry.Item1 + " -> " + entry.Item2);
                     }
                 if (item is DxfDictionaryWithDefault fallback && record.Default != null && record.Default != "0")
                 {

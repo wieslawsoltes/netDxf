@@ -114,10 +114,8 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
             }
             if (type == typeof(TextStyle))
             {
-                var family = source["FontFamilyName"].Text;
-                result = family.Length > 0 && !source["FontFile"].Text.EndsWith(".shx", StringComparison.OrdinalIgnoreCase)
-                    ? new TextStyle(source["Name"].Text, family, EnumValue<FontStyle>(source["FontStyle"]))
-                    : new TextStyle(source["Name"].Text, source["FontFile"].Text.Length == 0 ? TextStyle.DefaultFont : source["FontFile"].Text);
+                result = TextStyle.FromStoredFontFiles(source["Name"].Text,
+                    source["FontFile"].Text, source["BigFont"].Text);
             }
             else if (type == typeof(Transparency))
             {
@@ -170,7 +168,7 @@ internal sealed class DimensionSnapshotReader(DimensionProjectionOptions options
             var name = property.Name;
             if (name is "Owner" or "Handle" or "Name" or "XData" or "ExtensionDictionary" or "Reactors" or "ProxyGraphics" or "Associations" or "Record") continue;
             if (target is Dimension && name == "Block") continue;
-            if (target is TextStyle && name is "FontFile" or "FontFamilyName" or "FontStyle") continue;
+            if (target is TextStyle && name is "FontFile" or "BigFont" or "FontFamilyName" or "FontStyle") continue;
             var value = source[name]; if (!value.Exists) continue;
             Budget(depth);
             if (target is Dimension dimension && name == "StyleOverrides") CopyOverrides(dimension.StyleOverrides, value, depth + 1);

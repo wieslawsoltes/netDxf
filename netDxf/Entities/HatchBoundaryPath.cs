@@ -750,10 +750,10 @@ namespace netDxf.Entities
                     throw new ArgumentException("The HatchBoundaryPath spline edge requires a spline entity with control points.", nameof(entity));
                 }
 
-                if (this.IsPeriodic) PeriodicSplineData.Validate(spline);
+                if (this.IsPeriodic) ValidatePeriodicEntity(spline);
                 Matrix3 trans = MathHelper.ArbitraryAxis(entity.Normal).Transpose();
 
-                int prefix = this.IsPeriodic ? this.Degree : 0;
+                int prefix = this.IsPeriodic && !spline.HasExplicitPeriodicControlPoints ? this.Degree : 0;
                 this.ControlPoints = new Vector3[spline.ControlPoints.Length + prefix];
                 for (int i = 0; i < prefix; i++)
                 {
@@ -805,10 +805,11 @@ namespace netDxf.Entities
             /// </summary>
             /// <returns>An <see cref="EntityObject">entity</see> equivalent to the actual edge.</returns>
             /// <remarks>
-            /// Periodic edges require a qualified expanded or legacy compact layout,
-            /// positive finite weights and cyclic strictly increasing knot spans.
+            /// Complete periodic control polygons retain their explicit rational basis.
+            /// Exactly equivalent cyclic polygons use the established compact representation;
+            /// legacy compact packets require positive finite weights and cyclic knot spans.
             /// Conversion preserves the source edge and does not refit its geometry.
-            /// Unsupported periodic forms remain available for storage and cloning.
+            /// Unqualified periodic forms remain available for storage and cloning.
             /// </remarks>
             public override EntityObject ConvertTo()
             {
@@ -821,18 +822,8 @@ namespace netDxf.Entities
                 {
                     if (!this.IsRational && this.ControlPoints.Any(point => point.Z != 1))
                         throw new NotSupportedException("A nonrational periodic HATCH with nonunit stored weights has no qualified conversion meaning.");
-                    if ((long)this.Knots.Length == (long)this.ControlPoints.Length + this.Degree + 1)
-                    {
-                        if (this.ControlPoints.Length < 2 * this.Degree + 1)
-                            throw new NotSupportedException("Periodic HATCH conversion requires a degree-fold cyclic control overlap.");
-                        for (int i = 0; i < this.Degree; i++)
-                        {
-                            Vector3 a = this.ControlPoints[i], b = this.ControlPoints[this.ControlPoints.Length - this.Degree + i];
-                            if (!PeriodicSplineData.Same(a.X, b.X) || !PeriodicSplineData.Same(a.Y, b.Y) || !PeriodicSplineData.Same(a.Z, b.Z))
-                                throw new NotSupportedException("Periodic HATCH conversion requires exact coordinate and weight overlap.");
-                        }
+                    if (this.CanCompactPeriodicControls())
                         first = this.Degree;
-                    }
                 }
                 for (int i = first; i < this.ControlPoints.Length; i++)
                 {
@@ -840,10 +831,9 @@ namespace netDxf.Entities
                     ctrl.Add(new Vector3(point.X, point.Y, 0.0));
                     weights.Add(point.Z);
                 }
-                if (this.IsPeriodic) PeriodicSplineData.Validate(ctrl.ToArray(), weights.ToArray(), this.Knots, this.Degree);
                 // Preserve the authored control geometry and fit metadata together;
                 // the fit-point authoring constructor would regenerate the controls.
-                return new Entities.Spline(ctrl, weights, knots, this.Degree,
+                Entities.Spline result = new Entities.Spline(ctrl, weights, knots, this.Degree,
                     this.fitPoints.Select(point => new Vector3(point.X, point.Y, 0.0)),
                     SplineCreationMethod.ControlPoints, this.IsPeriodic)
                 {
@@ -852,6 +842,46 @@ namespace netDxf.Entities
                     EndTangent = this.endTangent.HasValue
                         ? new Vector3(this.endTangent.Value.X, this.endTangent.Value.Y, 0.0) : (Vector3?) null
                 };
+                if (this.IsPeriodic) ValidatePeriodicEntity(result);
+                return result;
+            }
+
+            private bool CanCompactPeriodicControls()
+            {
+                if ((long)this.Knots.Length != (long)this.ControlPoints.Length + this.Degree + 1 ||
+                    this.ControlPoints.Length < 2 * this.Degree + 1) return false;
+                for (int i = 0; i < this.Degree; i++)
+                {
+                    Vector3 a = this.ControlPoints[i], b = this.ControlPoints[this.ControlPoints.Length - this.Degree + i];
+                    if (!PeriodicSplineData.Same(a.X, b.X) || !PeriodicSplineData.Same(a.Y, b.Y) || !PeriodicSplineData.Same(a.Z, b.Z))
+                        return false;
+                }
+                // The cyclic evaluator has stricter admission rules than a complete
+                // stored NURBS basis. Failed compaction retains that basis unchanged.
+                try
+                {
+                    Vector3[] controls = this.ControlPoints.Skip(this.Degree).Select(point => new Vector3(point.X, point.Y, 0)).ToArray();
+                    double[] weights = this.ControlPoints.Skip(this.Degree).Select(point => point.Z).ToArray();
+                    PeriodicSplineData.Validate(controls, weights, this.Knots, this.Degree);
+                    return true;
+                }
+                catch (ArgumentException) { return false; }
+                catch (NotSupportedException) { return false; }
+            }
+
+            internal static void ValidatePeriodicEntity(Entities.Spline spline)
+            {
+                if (!spline.HasExplicitPeriodicControlPoints)
+                {
+                    PeriodicSplineData.Validate(spline);
+                    return;
+                }
+                try { spline.ValidateParameterDefinition(); }
+                catch (InvalidOperationException error)
+                { throw new NotSupportedException("Periodic HATCH conversion requires a valid explicit rational basis.", error); }
+                foreach (Vector3 point in spline.FitPoints) PeriodicSplineData.Finite(point);
+                if (spline.StartTangent.HasValue) PeriodicSplineData.Finite(spline.StartTangent.Value);
+                if (spline.EndTangent.HasValue) PeriodicSplineData.Finite(spline.EndTangent.Value);
             }
 
             /// <summary>

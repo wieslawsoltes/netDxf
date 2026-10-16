@@ -27,8 +27,8 @@ using System;
 
 namespace netDxf.IO
 {
-    // A bounded lexical state machine, not an object/ownership schema. Both raw decoding and
-    // authored snapshots use it, so a context-qualified tag cannot bypass ordinary handle checks.
+    // A bounded lexical state machine. Raw decoding, authored snapshots and typed opaque-object
+    // capture share it, so context-qualified strings cannot bypass ordinary handle checks.
     internal sealed class DxfRawTagContext
     {
         private string section;
@@ -38,14 +38,34 @@ namespace netDxf.IO
         private bool tableNamePending;
         private int controlDepth;
         private bool xdata;
+        private bool objectIdentitySeen;
+        private string objectSubclass;
+
+        internal DxfRawTagContext() { }
+        internal DxfRawTagContext(string section, string record)
+        { this.section = section; this.record = record; }
 
         internal bool Code5IsString
         {
             get
             {
-                return Is(this.section, "TABLES") && Is(this.table, "DIMSTYLE") &&
-                    Is(this.record, "DIMSTYLE") && this.controlDepth == 0 && !this.xdata;
+                return this.controlDepth == 0 && !this.xdata &&
+                    (Is(this.section, "TABLES") && Is(this.table, "DIMSTYLE") && Is(this.record, "DIMSTYLE") ||
+                     this.IsOpaqueObjectCode5);
             }
+        }
+
+        internal bool IsOpaqueObjectCode5
+        {
+            get { return Is(this.section, "OBJECTS") && this.objectIdentitySeen && this.controlDepth == 0 && !this.xdata &&
+                DxfObjectSchema.IsOpaqueCode5Payload(this.record, this.objectSubclass); }
+        }
+
+        internal DxfTag CreateTag(short code, object value)
+        {
+            if (code != 5 || !this.Code5IsString) return new DxfTag(code, value);
+            return this.IsOpaqueObjectCode5 ? DxfTag.CreateOpaqueObjectCode5((string)value) :
+                DxfTag.CreateDimensionStyleArrowName((string)value);
         }
 
         internal void Advance(DxfTag tag)
@@ -56,6 +76,8 @@ namespace netDxf.IO
             {
                 this.controlDepth = 0;
                 this.xdata = false;
+                this.objectIdentitySeen = false;
+                this.objectSubclass = null;
                 this.record = value;
                 this.tableNamePending = false;
                 if (Is(value, "ENDSEC") || Is(value, "EOF"))
@@ -92,6 +114,11 @@ namespace netDxf.IO
                 if (value.StartsWith("{", StringComparison.Ordinal)) this.controlDepth++;
                 else if (value == "}" && this.controlDepth > 0) this.controlDepth--;
                 return;
+            }
+            if (Is(this.section, "OBJECTS") && this.controlDepth == 0)
+            {
+                if (tag.Code == 5 && this.objectSubclass == null) this.objectIdentitySeen = true;
+                else if (tag.Code == 100) this.objectSubclass = value;
             }
             if (tag.Code == 2 && this.tableNamePending && this.controlDepth == 0)
             {

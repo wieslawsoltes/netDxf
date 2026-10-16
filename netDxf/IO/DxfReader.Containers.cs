@@ -126,8 +126,10 @@ namespace netDxf.IO
                 table.BlockRecord = this.GetObjectBySourceHandle(record.ContainerReferences[0]) as BlockRecord ?? throw new FormatException("SORTENTSTABLE block pointer does not identify a block record.");
                 for (int i = 1; i < record.ContainerReferences.Count; i++)
                 {
-                    EntityObject entity = this.GetObjectBySourceHandle(record.ContainerReferences[i]) as EntityObject ?? throw new FormatException("SORTENTSTABLE reference does not identify a graphical entity.");
-                    table.Entries.Add(new DxfSortOrderEntry(entity, record.SortKeys[i - 1]));
+                    DxfObject target = this.GetObjectBySourceHandle(record.ContainerReferences[i]);
+                    if (!(target is EntityObject) && !(target is AttributeDefinition))
+                        throw new FormatException("SORTENTSTABLE reference does not identify a graphical entity or attribute definition.");
+                    table.Entries.Add(new DxfSortOrderEntry(target, record.SortKeys[i - 1]));
                 }
             }
         }

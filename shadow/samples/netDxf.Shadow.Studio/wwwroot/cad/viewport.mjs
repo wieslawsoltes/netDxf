@@ -14,7 +14,7 @@ export class CadViewport {
     element.addEventListener('pointerup', e => this.up(e)); element.addEventListener('pointercancel', e => this.cancelPointer(e));
     element.addEventListener('lostpointercapture', e => { if (this.drag?.id === e.pointerId) this.cancelPointer(e); });
     element.addEventListener('pointerleave', () => { if (!this.drag) { this.pixel = null; this.invalidate(); } });
-    element.addEventListener('wheel', e => { if (e.target !== canvas) return; e.preventDefault(); this.camera = zoom(this.camera, this.size, this.local(e), Math.exp(-Math.max(-300, Math.min(300, e.deltaY)) * .0015)); this.changed(); }, { passive: false });
+    element.addEventListener('wheel', e => { if (e.target !== canvas) return; this.client.beginInteraction?.(); e.preventDefault(); this.camera = zoom(this.camera, this.size, this.local(e), Math.exp(-Math.max(-300, Math.min(300, e.deltaY)) * .0015)); this.changed(); }, { passive: false });
     element.addEventListener('dblclick', e => { if (e.button === 1) this.fit(); });
     element.addEventListener('contextmenu', e => { if (e.target === canvas) { e.preventDefault(); this.hooks.context?.(e); } });
   }
@@ -87,6 +87,7 @@ export class CadViewport {
 
   down(e) {
     if (e.target !== this.canvas || e.button === 2) return;
+    this.client.beginInteraction?.();
     e.preventDefault(); this.element.focus({ preventScroll: true }); const pixel = this.local(e);
     this.inputVersion++; this.pickAbort?.abort();
     this.pointers.set(e.pointerId, pixel); this.element.setPointerCapture(e.pointerId);

@@ -114,9 +114,10 @@ namespace netDxf.IO
             this.ValidateSections();
             this.ValidateHatchBoundaryPresence();
             this.ValidateOutputSettings();
-            IReadOnlyList<string> databaseErrors = this.doc.Objects.Validate();
+            IReadOnlyList<string> databaseErrors = this.doc.Objects.ValidateForSave();
             if (databaseErrors.Count > 0) throw new InvalidOperationException("Invalid OBJECTS database: " + string.Join("; ", databaseErrors));
 
+            Encoding outputEncoding = this.PrepareOutputEncoding();
             this.ValidateDatabaseTransport();
             DxfClassCollection classDefinitions = this.PrepareClassDefinitions();
             this.ValidateOpaqueEntityClasses(classDefinitions);
@@ -243,18 +244,18 @@ namespace netDxf.IO
             dictionaries.Add(layerStates);
             layerStatesDictionary.Entries.Add(layerStates.Handle, DxfObjectCode.LayerStates);
 
-            databaseErrors = this.doc.Objects.Validate();
+            databaseErrors = this.doc.Objects.ValidateForSave();
             if (databaseErrors.Count > 0) throw new InvalidOperationException("Invalid OBJECTS database: " + string.Join("; ", databaseErrors));
 
             this.doc.DrawingVariables.HandleSeed = this.doc.NumHandles.ToString("X");
 
             if (this.isBinary)
             {
-                this.chunk = new BinaryCodeValueWriter(new BinaryWriter(stream, new UTF8Encoding(false)));
+                this.chunk = new BinaryCodeValueWriter(new BinaryWriter(stream, outputEncoding));
             }
             else
             {
-                this.chunk = new TextCodeValueWriter(new StreamWriter(stream, new UTF8Encoding(false)));
+                this.chunk = new TextCodeValueWriter(new StreamWriter(stream, outputEncoding));
 
                 // The comment group, 999, is not used in binary DXF files.
                 foreach (string comment in this.doc.Comments)
@@ -2489,7 +2490,7 @@ namespace netDxf.IO
                 this.chunk.Write(40, knot);
             }
 
-            if (spline.IsClosedPeriodic)
+            if (spline.IsClosedPeriodic && !spline.HasExplicitPeriodicControlPoints)
             {
                 for (int i = 0; i < spline.Degree; i++)
                 {

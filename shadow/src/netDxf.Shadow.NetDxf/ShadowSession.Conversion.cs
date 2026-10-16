@@ -33,6 +33,11 @@ public sealed partial class ShadowSession
                 throw new ArgumentException("Edits must contain finite numbers.");
             return result;
         }
+        if (value is ShadowValue.Structure { TypeName: "netDxf.Tables.TextStyleFontData" } fontData
+            && target == typeof(netDxf.Tables.TextStyleFontData))
+            return new netDxf.Tables.TextStyleFontData(
+                (string)ConvertValue(fontData.Fields["FamilyName"], typeof(string), resolve)!,
+                (int)ConvertValue(fontData.Fields["Flags"], typeof(int), resolve)!);
         if (value is ShadowValue.Structure structure && target.IsValueType)
         {
             double Number(string name) => structure.Fields.TryGetValue(name, out var field) ? Convert.ToDouble(ConvertValue(field, typeof(double), resolve), CultureInfo.InvariantCulture) : 0;

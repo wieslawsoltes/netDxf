@@ -16,6 +16,13 @@ public sealed partial class StandardEntityProjector : IEntityProjector
             case "Polyline2D": geometry = ProjectPolyline(entity, basis, out diagnostic); return true;
             case "Hatch": geometry = ProjectHatch(entity, basis, out diagnostic); return true;
             case "Image": geometry = ProjectImage(entity, basis); return true;
+            case "Ole2Frame":
+                var preview = entity["$oleRasterPreview"];
+                if (!preview.Exists) return false;
+                var corners = preview["Corners"].Items.Select(p => p.Vector()).ToImmutableArray();
+                if (corners.Length != 4 || corners.Any(p => !double.IsFinite(p.X) || !double.IsFinite(p.Y) || !double.IsFinite(p.Z)))
+                    throw new ArgumentException("Stored OLE preview requires four finite corners.");
+                geometry = new([], Image: new(preview["Reference"].Text, corners)); return true;
             case "Line": geometry = Curve(new LineCurve(entity["StartPoint"].Vector(), entity["EndPoint"].Vector())); return true;
             case "Point":
                 var point = entity["Position"].Vector();
@@ -48,7 +55,7 @@ public sealed partial class StandardEntityProjector : IEntityProjector
                 var knots = entity["Knots"].Items.Select(v => v.Number()).ToImmutableArray();
                 var degree = (int)entity["Degree"].Number(3);
                 var periodic = entity["IsClosedPeriodic"].Boolean();
-                if (periodic)
+                if (periodic && !entity["HasExplicitPeriodicControlPoints"].Boolean())
                 {
                     if (controls.Length < degree) throw new ArgumentException("Insufficient periodic spline controls.");
                     if (weights.IsDefaultOrEmpty) weights = Enumerable.Repeat(1.0, controls.Length).ToImmutableArray();

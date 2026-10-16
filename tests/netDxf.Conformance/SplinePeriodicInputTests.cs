@@ -30,20 +30,39 @@ internal static partial class Program
                     foreach (short component in new short[] { 10, 20, 30, 41 })
                     {
                         DxfVersion v = version; bool b = binary; short f = flags, c = component;
-                        Run($"spline/periodic-input/nonrepresentable/{v}/{b}/{f}/{c}", () =>
+                        Run($"spline/periodic-input/explicit-overlap/{v}/{b}/{f}/{c}", () =>
                         {
                             var tags = PeriodicSplineInputTags(v, 2, f, true);
                             int at = tags.FindIndex(t => t.Code == c);
                             tags[at] = new(c, (double)tags[at].Value + 0.125);
                             using var input = new MemoryStream(RawFixtureBytes(tags, b));
-#if DEBUG
-                            try { DxfDocument.Load(input); throw new InvalidOperationException("Nonoverlapping cyclic data was silently compacted."); }
-                            catch (NotSupportedException error)
-                            { Check(error.Message.Contains("Periodic SPLINE", StringComparison.Ordinal), "Missing contextual periodic layout diagnostic."); }
-#else
-                            Check(DxfDocument.Load(input) == null, "Nonoverlapping cyclic data was silently compacted.");
-#endif
-                            Check(input.CanRead, "Unsupported import closed caller stream.");
+                            var document = DxfDocument.Load(input) ?? throw new InvalidOperationException("Explicit periodic basis rejected.");
+                            var spline = document.Entities.Splines.Single();
+                            Check(spline.IsClosedPeriodic && spline.HasExplicitPeriodicControlPoints, "Nonidentical overlap must remain explicit.");
+                            Equal(7, spline.ControlPoints.Length, "Explicit controls were stripped.");
+                            var reference = new Spline(spline.ControlPoints, spline.Weights, spline.Knots, spline.Degree, false);
+                            for (int i = 0; i <= 10; i++)
+                            {
+                                double parameter = spline.Knots[2] + i * (spline.Knots[7] - spline.Knots[2]) / 10;
+                                Equal(reference.PointAt(parameter), spline.PointAt(parameter), "Explicit periodic rational basis changed.");
+                            }
+                            for (int cycle = 0; cycle < 2; cycle++)
+                            {
+                                using var output = new MemoryStream();
+                                Check(document.Save(output, b ^ (cycle != 0)), "Explicit periodic save failed.");
+                                output.Position = 0;
+                                var record = DxfRawDocument.Load(output).Sections.SelectMany(section => section.Records).Single(record => record.Name == "SPLINE");
+                                foreach (short code in new short[] { 10, 20, 30, 40, 41 })
+                                {
+                                    var expected = tags.TakeWhile(tag => tag.Code != 1001).Where(tag => tag.Code == code).Select(tag => (double)tag.Value).ToArray();
+                                    var actual = record.Tags.Where(tag => tag.Code == code).Select(tag => (double)tag.Value).ToArray();
+                                    Equal(expected.Length, actual.Length, "Explicit serialized group count.");
+                                    for (int i = 0; i < expected.Length; i++) SameDoubleBits(expected[i], actual[i], "Explicit periodic wire value.");
+                                }
+                                output.Position = 0;
+                                document = DxfDocument.Load(output) ?? throw new InvalidOperationException("Explicit periodic reload failed.");
+                            }
+                            Check(input.CanRead, "Periodic import closed caller stream.");
                         });
                     }
     }
