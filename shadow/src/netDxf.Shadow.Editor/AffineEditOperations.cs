@@ -76,7 +76,13 @@ public static partial class AffineEditOperations
                 throw new ArgumentOutOfRangeException(nameof(options));
             this.snapshot = snapshot; this.options = options; this.cancellation = cancellation; edit = new(snapshot);
         }
-        internal ShadowGraphPatch Build() { cancellation.ThrowIfCancellationRequested(); return edit.Build(); }
+        internal ShadowGraphPatch Build()
+        {
+            cancellation.ThrowIfCancellationRequested();
+            if (pruneHatchResources) edit.PruneUnreachable();
+            cancellation.ThrowIfCancellationRequested();
+            return edit.Build();
+        }
         internal void Visit(ShadowReader entity, Affine3 transform)
         {
             cancellation.ThrowIfCancellationRequested(); Validate(transform);
@@ -113,6 +119,7 @@ public static partial class AffineEditOperations
                     foreach (var name in new[] { "FirstVertex", "SecondVertex", "ThirdVertex", "FourthVertex" })
                         Vector(entity, name, plane.Local.Point(entity[name].Vector() with { Z = entity["Elevation"].Number() }));
                     SetPlane(entity, plane); Thickness(entity, transform, plane.Normal); break;
+                case "Hatch": Hatch(entity, transform); break;
                 case "Image": Image(entity, transform); break;
                 case "Text": case "Attribute": case "AttributeDefinition": Text(entity, transform); break;
                 case "MText": MultilineText(entity, transform); break;
