@@ -20,10 +20,13 @@ try {
   if (badge) { badge.textContent = 'BROWSER CAD'; badge.title = 'The complete netDxf engine runs locally in this browser tab.'; }
   const loading = document.getElementById('loading');
   if (loading) loading.textContent = 'Starting browser CAD engine…';
-  await Blazor.start();
-  // Starting the runtime is not the same as completing async Program.cs. Do not
-  // race font downloads and document initialization, even on a warm framework cache.
-  await DotNet.invokeMethodAsync('netDxf.Shadow.Studio.Browser', 'WhenReady');
+  // Blazor.start can complete before Program.cs is loaded or its async work completes.
+  // Program.cs calls this fence only after the application and native fonts are ready.
+  const ready = new Promise((resolve, reject) => {
+    globalThis.shadowBrowserBoot = Object.freeze({ complete: resolve, fail: message => reject(new Error(message)) });
+  });
+  await Promise.all([Blazor.start(), ready]);
+  delete globalThis.shadowBrowserBoot;
   const transport = installBrowserTransport({ nativeFetch });
   globalThis.shadowBrowser = Object.freeze({ runtime: 'blazor-webassembly', fetch: transport.fetch });
   await import(diagnostics ? './studio.js' : './cad/app.mjs');
