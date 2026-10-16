@@ -92,6 +92,10 @@ def run(dotnet: str, configuration: str) -> None:
             request('graph', expected=409)
             request('add', {'revision': 0, 'kind': 'line', 'x': 0, 'y': 0}, expected=409, custom={'X-Shadow-Studio':'1'})
             assert state()['revision'] == 0; passed('missing mutation and workspace headers are refused')
+            request('bigfont-map?revision=0', b'{}', expected=409,
+                    custom={'X-Shadow-Studio': '1', 'Content-Length': str(4 * 1024 * 1024 + 1)})
+            assert state()['revision'] == 0
+            passed('BIGFONT upload receipt is checked before accepting or sizing the body')
             request('linetype-view', {'revision': initial['revision'], 'alignment': 'A'}, expected=403)
             request('linetype-view', {'revision': initial['revision'], 'alignment': '1'}, initial, expected=400)
             fitted = post('linetype-view', initial, alignment='A')
@@ -167,6 +171,41 @@ def run(dotnet: str, configuration: str) -> None:
             reconnect = urlopen(Request(base + '/api/events', headers={'Last-Event-ID': cursor}), timeout=15); streams.append(reconnect)
             _, reset = notice(reconnect)
             assert reset['reset'] and reset['documentId'] == latest['documentId']; passed('SSE reconnect resynchronizes after replacement')
+            mapping = json.dumps({'schemaVersion': 1, 'resource': 'http-big.shx', 'characters': {'U+03A9': 32832}}).encode()
+            resource = b'*BIGFONT 1,1,128,128\n*0,4,HTTP\n20,0,2,0\n*32832,0,STEM\n8,0,20,0'
+            request(f'bigfont-map?revision={latest["revision"]}', mapping, expected=403)
+            request(f'bigfont-map?revision={latest["revision"]}', mapping, latest, expected=400)
+            assert state()['fontRevision'] == latest['fontRevision']
+            passed('BIGFONT map requires guarded explicit resource registration')
+            font = request(f'font?revision={latest["revision"]}&name=http-big.shp', resource, latest)
+            mapped = request(f'bigfont-map?revision={font["revision"]}', mapping, font)
+            assert mapped['fontRevision'] == font['fontRevision'] + 1 and mapped['revision'] == font['revision']
+            assert mapped['undoCount'] == font['undoCount'] and mapped['viewVersion'] > font['viewVersion']
+            request(f'bigfont-map?revision={mapped["revision"]}', mapping, font, expected=409)
+            passed('BIGFONT mapping publishes one resource revision without source history edits')
+            same = request(f'bigfont-map?revision={mapped["revision"]}', mapping, mapped)
+            assert same['fontRevision'] == mapped['fontRevision'] and same['changeVersion'] == mapped['changeVersion']
+            request(f'bigfont-map?revision={mapped["revision"]+1}', mapping, same, expected=409)
+            request(f'bigfont-map?revision={mapped["revision"]}', b'{"schemaVersion":2}', same, expected=400)
+            assert state()['fontRevision'] == same['fontRevision']
+            passed('BIGFONT mapping no-op stale and malformed uploads preserve published state')
+
+            latest = state()
+            request('perspective-view', {'revision': latest['revision'], 'mode': 'LensLength'}, expected=403)
+            request('perspective-view', {'revision': latest['revision'], 'mode': 'unknown'}, latest, expected=400)
+            camera = post('perspective-view', latest, mode='TargetPlaneHeight', workPlaneZ=5)
+            assert camera['perspectiveMode'] == 'TargetPlaneHeight' and camera['perspectiveWorkPlaneZ'] == 5
+            assert camera['revision'] == latest['revision'] and camera['undoCount'] == latest['undoCount']
+            request('graph', s=latest, expected=409)
+            passed('perspective view settings are source neutral and advance the guarded epoch')
+            same = post('perspective-view', camera, mode='TargetPlaneHeight', workPlaneZ=5)
+            assert same['changeVersion'] == camera['changeVersion'] and same['viewVersion'] == camera['viewVersion']
+            branched = post('branches', same, name='Perspective HTTP branch')
+            assert branched['perspectiveMode'] == 'TargetPlaneHeight' and branched['perspectiveWorkPlaneZ'] == 5
+            disabled = post('perspective-view', branched, mode='Disabled', workPlaneZ=0)
+            live = post('workspace', disabled, id='live')
+            assert live['perspectiveMode'] == 'TargetPlaneHeight' and live['perspectiveWorkPlaneZ'] == 5
+            passed('perspective context no-op branch inheritance and workspace isolation')
             complete = True
         finally:
             for stream in streams: stream.close()

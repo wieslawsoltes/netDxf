@@ -72,7 +72,14 @@ before publishing the directory, rejects invalid images or unexpected API
 responses, and carries the current document/workspace/view headers for guarded
 requests. No editor security checks are bypassed.
 
-## Full interactive Studio
+## Full interactive CAD workspace
+
+The default frontend is now the source-backed CAD workspace. See
+[CAD workspace](../../docs/CadWorkspace.md) for commands, precision input,
+selection/grips, layers, documents, reusable APIs and explicit feature boundaries.
+The previous diagnostics frontend is retained at `/diagnostics.html`.
+
+## Run the local Studio
 
 ```sh
 dotnet run --project shadow/samples/netDxf.Shadow.Studio/netDxf.Shadow.Studio.csproj \

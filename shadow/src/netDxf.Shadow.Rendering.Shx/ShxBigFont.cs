@@ -55,7 +55,7 @@ public sealed class ShxBigFontInfo
 
 /// <summary>Explicit, immutable Unicode-to-packed-word mapping. No filename/code-page guessing or
 /// process-global encoding registration is performed. Mapped missing glyphs remain diagnosable.</summary>
-public sealed class ShxBigFontMap
+public sealed class ShxBigFontMap : IEquatable<ShxBigFontMap>
 {
     public ImmutableDictionary<int, int> Characters { get; }
     public ShxBigFontMap(IEnumerable<KeyValuePair<int, int>> characters, int maximumCharacters = 65_536)
@@ -71,11 +71,22 @@ public sealed class ShxBigFontMap
         }
         Characters = result.ToImmutable();
     }
+    public bool Equals(ShxBigFontMap? other) => ReferenceEquals(this, other) || other is not null &&
+        Characters.Count == other.Characters.Count && Characters.All(pair => other.Characters.TryGetValue(pair.Key, out var value) && value == pair.Value);
+    public override bool Equals(object? obj) => obj is ShxBigFontMap other && Equals(other);
+    public override int GetHashCode()
+    {
+        var hash = new HashCode();
+        foreach (var pair in Characters.OrderBy(p => p.Key)) { hash.Add(pair.Key); hash.Add(pair.Value); }
+        return hash.ToHashCode();
+    }
+
     /// <summary>Builds mappings only for declared double-byte glyphs using a host-selected encoding.
     /// Invalid byte sequences and non-roundtripping aliases are excluded; ambiguous Unicode aliases fail.</summary>
     public static ShxBigFontMap FromEncoding(ShxFont font, Encoding encoding, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(font); ArgumentNullException.ThrowIfNull(encoding);
+        cancellationToken.ThrowIfCancellationRequested();
         var info = font.BigFont ?? throw new ArgumentException("Expected a BIGFONT resource.", nameof(font));
         var strict = (Encoding)encoding.Clone(); strict.DecoderFallback = DecoderFallback.ExceptionFallback; strict.EncoderFallback = EncoderFallback.ExceptionFallback;
         var values = new List<KeyValuePair<int, int>>();

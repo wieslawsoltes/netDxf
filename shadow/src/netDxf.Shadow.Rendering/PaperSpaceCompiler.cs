@@ -8,7 +8,7 @@ internal sealed partial class PaperSpaceCompiler
 {
     private sealed record ViewEntry(ImmutableArray<ShadowDependency> Dependencies, PaperViewport View);
     private sealed record ItemEntry(RenderItem Source, PaperViewport View, RenderItem? Result);
-    private readonly Dictionary<(Guid, ObjectId, double, int), ViewEntry> views = new();
+    private readonly Dictionary<(Guid, ObjectId, double, int, PerspectiveOptions?), ViewEntry> views = new();
     private readonly Dictionary<(Guid, ObjectId, string), ItemEntry> items = new();
 
 }

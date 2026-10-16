@@ -40,7 +40,9 @@ public sealed partial class Studio : IDisposable
     private double captureMilliseconds;
     private bool disposed;
 
-    public Studio()
+    public Studio() : this(true) { }
+
+    public Studio(bool demo)
     {
         shxFonts.Register("shadow-demo.shx", DemoFont());
         var shxProjector = new ShxEntityProjector(shxFonts);
@@ -53,7 +55,7 @@ public sealed partial class Studio : IDisposable
         }, "skia");
         try
         {
-            var timer = Stopwatch.StartNew(); session = new(CreateDocument());
+            var timer = Stopwatch.StartNew(); session = new(demo ? CreateDocument() : new DxfDocument());
             captureMilliseconds = timer.Elapsed.TotalMilliseconds; liveEditor = new(session);
         }
         catch { renderer.Dispose(); assets.Dispose(); textEngine.Dispose(); throw; }
@@ -79,6 +81,8 @@ public sealed partial class Studio : IDisposable
                 sourceRevision = session.Current.Revision, ancestorRevision = activeBranch?.Ancestor.Revision,
                 branches = branches.Values.OrderBy(b => b.Name, StringComparer.Ordinal).Select(b => new { b.Id, b.Name, revision = b.Editor.Snapshot.Revision, ancestorRevision = b.Ancestor.Revision }).ToArray(),
                 snapshot.DocumentId, snapshot.Revision, layout, linetypeAlignment = PatternAlignment.ToString(),
+                perspectiveMode = PerspectiveView.Mode, perspectiveWorkPlaneZ = PerspectiveView.WorkPlaneZ,
+                perspectiveSelection = scene.Items.Any(i => state.Selection.Contains(i.Key) && i.Projection?.Perspective is not null),
                 annotationMode = Annotation.Mode.ToString(), annotationPaperUnits = Annotation.Scale?.PaperUnits ?? 1,
                 annotationDrawingUnits = Annotation.Scale?.DrawingUnits ?? 1, objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
                 occurrences = scene.Items.Length, bounds = scene.Bounds.IsEmpty ? new Bounds2(-50, -50, 50, 50) : scene.Bounds,
@@ -290,7 +294,7 @@ public sealed partial class Studio : IDisposable
             {
                 liveEditor.SynchronizeSource(() => session.MutateSource(document =>
                 {
-                    if (!document.Save(stream)) throw new InvalidOperationException("netDxf could not save this drawing.");
+                    document.SaveWithDimensionPictures(stream);
                 }));
                 return stream.ToArray();
             }

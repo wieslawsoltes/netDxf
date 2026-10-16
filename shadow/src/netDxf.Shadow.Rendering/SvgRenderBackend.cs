@@ -28,7 +28,9 @@ public sealed partial class SvgRenderBackend : IRenderBackend
             writer.Attribute("width", frame.Viewport.Width); writer.Attribute("height", frame.Viewport.Height);
             xml.WriteAttributeString("viewBox", $"0 0 {frame.Viewport.Width} {frame.Viewport.Height}"); xml.WriteAttributeString("overflow", "hidden");
             xml.WriteStartElement("rect"); writer.Attribute("width", frame.Viewport.Width); writer.Attribute("height", frame.Viewport.Height);
-            xml.WriteAttributeString("fill", Writer.Color(frame.Background)); xml.WriteEndElement();
+            xml.WriteAttributeString("fill", Writer.Color(frame.Background));
+            if ((frame.Background >> 24) != 255) writer.Attribute("fill-opacity", (frame.Background >> 24) / 255.0);
+            xml.WriteEndElement();
             foreach (var item in frame.VisibleItems())
             {
                 cancellationToken.ThrowIfCancellationRequested();

@@ -67,6 +67,18 @@ public sealed class ShadowObjectFactories
                 return new netDxf.Entities.Spline(controls, weights, (double[])resolver.Convert(node["Knots"], typeof(double[]))!, degree, periodic);
             return new netDxf.Entities.Spline(controls, weights, degree, periodic);
         }
+        // Boundary-path overloads accept either entities or analytic edges. Resolve the
+        // requested representation explicitly rather than guessing the first constructor.
+        // Initialize polyline vertices before clone-based source preflight examines them.
+        if (type == typeof(netDxf.Entities.HatchBoundaryPath.Polyline))
+            return new netDxf.Entities.HatchBoundaryPath.Polyline
+            {
+                Vertexes = (Vector3[])resolver.Convert(node["Vertexes"], typeof(Vector3[]))!,
+                IsClosed = node["IsClosed"] is ShadowValue.Atom closed && bool.TryParse(closed.Text, out var flag) && flag
+            };
+        if (type == typeof(netDxf.Entities.HatchBoundaryPath) && node["Edges"] is ShadowValue.Sequence)
+            return new netDxf.Entities.HatchBoundaryPath(
+                (netDxf.Entities.HatchBoundaryPath.Edge[])resolver.Convert(node["Edges"], typeof(netDxf.Entities.HatchBoundaryPath.Edge[]))!);
         var empty = type.GetConstructor(Type.EmptyTypes);
         if (empty is not null) return empty.Invoke(null);
         // Constructor arguments are matched by their semantic property names. This handles

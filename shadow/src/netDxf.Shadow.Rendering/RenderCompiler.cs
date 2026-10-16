@@ -64,7 +64,7 @@ public sealed partial class RenderCompiler
             if (options.IncludePaperViewports && !string.Equals(options.Layout, "Model", StringComparison.OrdinalIgnoreCase))
                 result = paperSpace.Compose(snapshot, result, options, (modelSnapshot, tolerance, scale) => Compile(modelSnapshot,
                     options with { Layout = "Model", Tolerance = tolerance, IncludePaperViewports = false,
-                        LinetypeScale = options.LinetypeScale * scale, ModelAnnotation = null, ViewportOverrides = null }, cancellationToken), cancellationToken);
+                        LinetypeScale = options.LinetypeScale * scale, ModelAnnotation = null, ViewportOverrides = null }, cancellationToken), cancellationToken, textEngine as ITextOutlineProvider);
             if (builder.ProjectionVersion != projectionVersion) throw new InvalidOperationException("Projection resources changed while compiling. Retry with the current resource revision.");
             if (textEngine.Revision != textRevision) throw new InvalidOperationException("Font services changed while compiling. Retry with the current font revision.");
             if (linetypes.Revision != linetypeRevision) throw new InvalidOperationException("Linetype resources changed while compiling. Retry with the current resource revision.");

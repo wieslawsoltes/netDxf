@@ -6,7 +6,7 @@ namespace netDxf.Shadow.Rendering;
 internal sealed partial class PaperSpaceCompiler
 {
     internal RenderScene Compose(ShadowSnapshot snapshot, RenderScene paper, RenderCompileOptions options,
-        Func<ShadowSnapshot, double, double, RenderScene> compileModel, CancellationToken cancellationToken)
+        Func<ShadowSnapshot, double, double, RenderScene> compileModel, CancellationToken cancellationToken, ITextOutlineProvider? outlines = null)
     {
         var limits = options.PaperSpace ?? throw new ArgumentException("Paper-space budgets must be provided.", nameof(options));
         if (limits.MaximumViewports < 1 || limits.MaximumItems < 1 || limits.MaximumCandidates < 1 ||
@@ -15,10 +15,17 @@ internal sealed partial class PaperSpaceCompiler
         if (paper.Items.Length > limits.MaximumItems) throw new InvalidOperationException("Paper-space item budget exceeded.");
         var overrides = options.ViewportOverrides;
         overrides?.Validate(snapshot, cancellationToken);
+        limits.Perspective?.Validate();
+        var projectiveBudget = limits.Perspective is { } policy ? new PerspectiveWorkBudget(policy) : null;
         var diagnostics = paper.Diagnostics.ToBuilder();
         var active = ReadViews(snapshot, options, limits, diagnostics, cancellationToken);
         if (active.Count == 0) return paper with { Diagnostics = diagnostics.ToImmutable() };
-        var scale = active.Max(v => v.Projection.Scale);
+        // Conservative visible-frustum sampling amplification; the source sampler keeps its own quotas.
+        var scale = active.Max(v => v.Projection.Perspective is { } camera
+            ? v.Projection.Scale / camera.NearDistanceFraction * (1 +
+                Math.Max(Math.Max(Math.Abs(v.Clip.Bounds.MinX - camera.Center.X), Math.Abs(v.Clip.Bounds.MaxX - camera.Center.X)),
+                    Math.Max(Math.Abs(v.Clip.Bounds.MinY - camera.Center.Y), Math.Abs(v.Clip.Bounds.MaxY - camera.Center.Y))) /
+                    (v.Projection.Scale * camera.EyeDistance)) : v.Projection.Scale);
         var tolerance = options.Tolerance / scale;
         if (!(tolerance > 0) || !double.IsFinite(tolerance)) throw new InvalidOperationException("Viewport sampling tolerance is outside the numeric range.");
         var paperLinetypes = snapshot.Document["DrawingVariables"]["PsLtScale"].Number(1) != 0;
@@ -60,10 +67,19 @@ internal sealed partial class PaperSpaceCompiler
                 var key = (snapshot.DocumentId, view.Projection.ViewportEntity, source.Key);
                 if (!items.TryGetValue(key, out var cached) || !ReferenceEquals(source, cached.Source) || !ReferenceEquals(view, cached.View))
                 {
-                    var projected = PaperItemProjection.Project(source, view);
+                    RenderItem? projected;
+                    try
+                    {
+                        projected = view.Projection.Perspective is not null
+                            ? PerspectiveItemProjection.Project(source, view, projectiveBudget!, outlines, tolerance, cancellationToken)
+                            : PaperItemProjection.Project(source, view);
+                    }
+                    catch (NotSupportedException error)
+                    { diagnostics.Add(new("viewport.projective-paint", error.Message, source.Entity, DiagnosticSeverity.Error)); continue; }
                     if (items.Count >= 262_144) items.Clear();
                     items[key] = cached = new(source, view, projected);
                 }
+                else if (view.Projection.Perspective is not null) projectiveBudget!.Charge(PerspectiveItemProjection.PointCount(cached.Result));
                 if (cached.Result is { } item)
                 {
                     if (result.Count >= limits.MaximumItems - paper.Items.Length) throw new InvalidOperationException("Paper-space item budget exceeded.");

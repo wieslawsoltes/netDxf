@@ -14,6 +14,8 @@ internal static class SelectionTranslation
         foreach (var item in scene.Items)
         {
             if (!selection.Contains(item.Key)) continue;
+            if (item.Projection?.Perspective is not null)
+                throw new NotSupportedException("Perspective dragging requires an explicit model-space work plane; use TranslatePerspective.");
             var id = !editDefinition && !item.InsertPath.IsEmpty ? item.InsertPath[0] : item.Entity;
             Vec3 movement;
             if (editDefinition)

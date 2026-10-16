@@ -18,11 +18,11 @@ internal sealed partial class PaperSpaceCompiler
             if (entity["Stacking"].Number(2) <= 1 || PaperViewport.HasFlag(entity["Status"], "ViewportOff", 131072)) continue;
             try
             {
-                var key = (snapshot.DocumentId, id, options.Tolerance, limits.MaximumClipPoints);
+                var key = (snapshot.DocumentId, id, options.Tolerance, limits.MaximumClipPoints, limits.Perspective);
                 if (!views.TryGetValue(key, out var cached) || !cached.Dependencies.All(d => d.IsCurrent(snapshot)))
                 {
                     var reads = new ShadowReadSet();
-                    var view = PaperViewport.Read(entity.Observe(reads), options.Tolerance, limits.MaximumClipPoints);
+                    var view = PaperViewport.Read(entity.Observe(reads), options.Tolerance, limits.MaximumClipPoints, limits.Perspective);
                     if (views.Count >= 1024) views.Clear();
                     views[key] = cached = new(reads.Freeze(), view);
                 }
@@ -36,6 +36,7 @@ internal sealed partial class PaperSpaceCompiler
 
     private static IEnumerable<int> Candidates(RenderScene model, PaperViewport view, double tolerance)
     {
+        if (view.Projection.Perspective is not null) return Enumerable.Range(0, model.Items.Length);
         var matrix = view.Projection.ModelToPaper;
         if (Math.Abs(matrix.Z.X) > 1e-14 || Math.Abs(matrix.Z.Y) > 1e-14) return Enumerable.Range(0, model.Items.Length);
         var clip = view.Clip.Bounds; var bounds = Bounds2.Empty;

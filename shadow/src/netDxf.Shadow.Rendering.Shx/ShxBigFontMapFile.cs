@@ -17,12 +17,22 @@ public sealed record ShxBigFontMapReadOptions(int MaximumBytes = 4 * 1024 * 1024
 /// no font bytes, code-page inference or permission to open a path.</summary>
 public sealed record ShxBigFontMapFile(string Resource, ShxBigFontMap Map)
 {
+    /// <summary>Compatibility metadata reader. Accepts the existing host-alias and one-to-six
+    /// digit Unicode key syntax. Use ReadStrict at resource-import trust boundaries.</summary>
+    public static ShxBigFontMapFile Read(ReadOnlyMemory<byte> utf8, int maximumBytes = 4 * 1024 * 1024,
+        int maximumCharacters = 65_536, CancellationToken cancellationToken = default)
+        => ReadCore(utf8.Span, new(maximumBytes, maximumCharacters), false, cancellationToken);
+
     /// <summary>Read bounded UTF-8 JSON. Fields are case-sensitive; duplicate fields, duplicate Unicode
     /// aliases, unknown fields and trailing values are errors. A leading UTF-8 BOM is accepted.</summary>
-    public static ShxBigFontMapFile Read(ReadOnlySpan<byte> utf8, ShxBigFontMapReadOptions? options = null,
+    public static ShxBigFontMapFile ReadStrict(ReadOnlySpan<byte> utf8, ShxBigFontMapReadOptions? options = null,
         CancellationToken cancellationToken = default)
+        => ReadCore(utf8, options ?? new(), true, cancellationToken);
+
+    private static ShxBigFontMapFile ReadCore(ReadOnlySpan<byte> utf8, ShxBigFontMapReadOptions options,
+        bool strict, CancellationToken cancellationToken)
     {
-        options ??= new(); options.Validate(); cancellationToken.ThrowIfCancellationRequested();
+        options.Validate(); cancellationToken.ThrowIfCancellationRequested();
         if (utf8.Length > options.MaximumBytes) throw new InvalidOperationException("BIGFONT map byte budget exceeded.");
         if (utf8.StartsWith(new byte[] { 0xef, 0xbb, 0xbf })) utf8 = utf8[3..];
         try
@@ -48,7 +58,10 @@ public sealed record ShxBigFontMapFile(string Resource, ShxBigFontMap Map)
                 else if (field == 2)
                 {
                     Expect(ref reader, JsonTokenType.String);
-                    resource = reader.GetString()!; ValidateResource(resource);
+                    resource = reader.GetString()!;
+                    if (strict) ValidateResource(resource);
+                    else if (string.IsNullOrWhiteSpace(resource) || resource.Length > 2048 || resource.Any(char.IsControl))
+                        throw new FormatException("Incomplete or invalid BIGFONT map resource alias.");
                 }
                 else
                 {
@@ -60,13 +73,18 @@ public sealed record ShxBigFontMapFile(string Resource, ShxBigFontMap Map)
                         if (reader.TokenType != JsonTokenType.PropertyName) throw new FormatException("Expected a Unicode mapping key.");
                         if (characters.Count >= options.MaximumCharacters) throw new InvalidOperationException("BIGFONT mapping budget exceeded.");
                         var key = reader.GetString()!;
-                        if (key.Length is < 6 or > 8 || !key.StartsWith("U+", StringComparison.Ordinal) ||
+                        if (key.Length < (strict ? 6 : 3) || key.Length > 8 || !key.StartsWith("U+", StringComparison.Ordinal) ||
                             !int.TryParse(key.AsSpan(2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var unicode) || !Rune.IsValid(unicode))
                             throw new FormatException("Use U+ followed by four to six hexadecimal digits naming one Unicode scalar.");
                         Expect(ref reader, JsonTokenType.Number);
                         if (!reader.TryGetInt32(out var packed) || packed is < 1 or > 65535)
                             throw new FormatException("BIGFONT glyph identifiers must be integral words in 1..65535.");
-                        if (!characters.TryAdd(unicode, packed)) throw new FormatException("Duplicate BIGFONT Unicode mapping, including alternate key spellings.");
+                        if (!characters.TryAdd(unicode, packed))
+                        {
+                            const string message = "Duplicate BIGFONT Unicode mapping, including alternate key spellings.";
+                            if (strict) throw new FormatException(message);
+                            throw new ArgumentException(message);
+                        }
                     }
                     if (reader.TokenType != JsonTokenType.EndObject) throw new FormatException("Truncated BIGFONT character table.");
                     map = new(characters, options.MaximumCharacters);
@@ -81,9 +99,14 @@ public sealed record ShxBigFontMapFile(string Resource, ShxBigFontMap Map)
     }
 
     /// <summary>Canonical field order and ascending Unicode keys. Equivalent mappings serialize identically.</summary>
-    public byte[] Write(CancellationToken cancellationToken = default)
+    public byte[] Write() => Write(CancellationToken.None);
+
+    public byte[] Write(CancellationToken cancellationToken)
     {
-        ValidateResource(Resource); ArgumentNullException.ThrowIfNull(Map); cancellationToken.ThrowIfCancellationRequested();
+        ArgumentException.ThrowIfNullOrWhiteSpace(Resource); ArgumentNullException.ThrowIfNull(Map);
+        if (Resource.Length > 2048 || Resource.Any(char.IsControl)) throw new ArgumentException("Invalid resource alias.");
+        _ = new UTF8Encoding(false, true).GetByteCount(Resource);
+        cancellationToken.ThrowIfCancellationRequested();
         using var stream = new MemoryStream();
         using (var writer = new Utf8JsonWriter(stream))
         {
@@ -102,8 +125,7 @@ public sealed record ShxBigFontMapFile(string Resource, ShxBigFontMap Map)
     public static bool Equivalent(ShxBigFontMap left, ShxBigFontMap right)
     {
         ArgumentNullException.ThrowIfNull(left); ArgumentNullException.ThrowIfNull(right);
-        return ReferenceEquals(left, right) || left.Characters.Count == right.Characters.Count &&
-            left.Characters.All(pair => right.Characters.TryGetValue(pair.Key, out var value) && value == pair.Value);
+        return left.Equals(right);
     }
 
     internal static void ValidateResource(string resource)
