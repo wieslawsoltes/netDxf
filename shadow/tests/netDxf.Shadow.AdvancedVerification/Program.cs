@@ -47,6 +47,7 @@ BigFontVerification.Register(tests);
 BigFontMapFileVerification.Register(tests);
 ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
+HatchTranslationVerification.Register(tests);
 DimensionVerification.Register(tests);
 StudioTransformVerification.Register(tests);
 LinetypeTransportVerification.Register(tests);
