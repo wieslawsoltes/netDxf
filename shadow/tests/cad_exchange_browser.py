@@ -11,6 +11,8 @@ from playwright.sync_api import expect
 
 def verify_exchange(page, url: str, output: Path, state, command, wait_state, idle, check):
     original = state()
+    source_file = ezdxf.readfile(output/'authored.dxf')
+    source_hatch = list(source_file.blocks['Assembly'].query('HATCH'))[0]
     signature = lambda data: Counter((i['type'], i['layer'], i['count']) for i in data['items'])
     expected = signature(original)
     page.get_by_role('tab', name='Output', exact=True).click()
@@ -50,6 +52,11 @@ def verify_exchange(page, url: str, output: Path, state, command, wait_state, id
           sorted((i.dxf.insert.x, i.dxf.insert.y) for i in inserts) == [(10, 20), (100, 20)] and
           hatch.dxf.pattern_name == 'SYNTHETIC' and len(hatch.paths) == 1 and
           len(list(restored.modelspace().query('HATCH'))) == 1)
+    check('DWG exchange preserves hatch island style and ordered seed points without accumulation',
+          source_hatch.dxf.hatch_style == 1 and hatch.dxf.hatch_style == source_hatch.dxf.hatch_style and
+          hatch.dxf.pattern_type == source_hatch.dxf.pattern_type and
+          hatch.dxf.pattern_double == source_hatch.dxf.pattern_double and
+          list(hatch.seeds) == list(source_hatch.seeds))
 
     def failed_request(path, payload, revision=None, extra=None):
         s = state()['state']

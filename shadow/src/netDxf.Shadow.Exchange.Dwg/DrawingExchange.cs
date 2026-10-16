@@ -8,7 +8,7 @@ namespace netDxf.Shadow.Exchange.Dwg;
 public enum DrawingEncoding { Dxf, Dwg }
 public sealed record DrawingExchangeLimits(int MaximumInputBytes = 20 * 1024 * 1024,
     int MaximumOutputBytes = 64 * 1024 * 1024, int MaximumEntities = 100_000,
-    int MaximumBlocks = 4096, int MaximumDiagnostics = 128);
+    int MaximumBlocks = 4096, int MaximumDiagnostics = 128, int MaximumHatchSeedPoints = 100_000);
 public sealed record DrawingExchangeDiagnostic(string Stage, string Kind, string Message);
 public sealed record DrawingExchangeResult(ImmutableArray<byte> Content, DrawingEncoding Encoding,
     string SourceVersion, string OutputVersion, ImmutableArray<DrawingExchangeDiagnostic> Diagnostics,
@@ -22,7 +22,7 @@ public sealed class DrawingExchangeException(string message, ImmutableArray<Draw
 /// <summary>A stream-only, pinned codec adapter. Conversion is staged before source adoption.
 /// Unknown/unsupported codec notifications are errors, never silently discarded geometry.
 /// The structural check is not a proof of complete proprietary-format or byte fidelity.</summary>
-public sealed class DrawingExchange
+public sealed partial class DrawingExchange
 {
     public const string Provider = "ACadSharp 3.8.0";
     // AC1014 is deliberately not advertised: the pinned provider's shared-INSERT
@@ -36,7 +36,8 @@ public sealed class DrawingExchange
         if (this.limits.MaximumInputBytes is < 128 or > 256 * 1024 * 1024 ||
             this.limits.MaximumOutputBytes is < 128 or > 256 * 1024 * 1024 ||
             this.limits.MaximumEntities is < 1 or > 1_000_000 || this.limits.MaximumBlocks is < 1 or > 100_000 ||
-            this.limits.MaximumDiagnostics is < 1 or > 4096) throw new ArgumentOutOfRangeException(nameof(limits));
+            this.limits.MaximumDiagnostics is < 1 or > 4096 || this.limits.MaximumHatchSeedPoints is < 1 or > 1_000_000)
+            throw new ArgumentOutOfRangeException(nameof(limits));
     }
     public static bool IsDwg(ReadOnlySpan<byte> bytes)
     {
@@ -69,6 +70,7 @@ public sealed class DrawingExchange
             var document = Read(input.ToArray(), source, Notify, cancellationToken);
             var sourceVersion = document.Header.Version.ToString();
             var original = Inventory(document, cancellationToken);
+            var originalHatches = CaptureHatches(document, cancellationToken);
             if (target == DrawingEncoding.Dwg) document.Header.Version = Enum.Parse<ACadVersion>(outputDwgVersion);
             else document.Header.Version = ACadVersion.AC1032;
             stage = "write-target";
@@ -77,6 +79,7 @@ public sealed class DrawingExchange
             var reread = Read(encoded, target, Notify, cancellationToken);
             var outputVersion = reread.Header.Version.ToString();
             Equivalent(original, Inventory(reread, cancellationToken));
+            RequireHatchFacts(originalHatches, CaptureHatches(reread, cancellationToken), cancellationToken);
             // Use modern DXF for the native validation transport regardless of the
             // chosen DWG profile. This never changes the already encoded payload.
             stage = "validate-netdxf";
@@ -86,6 +89,7 @@ public sealed class DrawingExchange
             {
                 var native = DxfDocument.Load(stream) ?? throw new InvalidDataException("netDxf refused the converted DXF.");
                 Equivalent(original, Inventory(native, cancellationToken));
+                RequireHatchFacts(originalHatches, CaptureHatches(native, cancellationToken), cancellationToken);
             }
             cancellationToken.ThrowIfCancellationRequested();
             return new(encoded.ToImmutableArray(), target, sourceVersion, outputVersion, diagnostics.ToImmutable(),
@@ -108,7 +112,9 @@ public sealed class DrawingExchange
         }
         using var dxf = new DxfReader(stream, notify);
         dxf.Configuration = new DxfReaderConfiguration { Failsafe = false, KeepUnknownEntities = true, KeepUnknownNonGraphicalObjects = true };
-        return dxf.Read();
+        var decoded = dxf.Read();
+        ReconcileDxfHatches(bytes, decoded, token);
+        return decoded;
     }
     private byte[] Write(CadDocument document, DrawingEncoding encoding, NotificationEventHandler notify, CancellationToken token)
     {
