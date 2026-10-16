@@ -15,7 +15,7 @@ internal sealed partial class BrowserApplication
         Map("GET", "/api/browser/environment", _ => BrowserReply.Value(new
         {
             runtime = "blazor-webassembly", serverRequired = false,
-            fonts = "Bundled Noto Sans; SHX/SHP and BIGFONT mappings remain document resources.",
+            fonts = "Bundled Noto Sans; explicit TTF/OTF, SHX/SHP and BIGFONT resources.",
             routes = routes.Select(r => new { r.Method, r.Pattern }).ToArray()
         }));
         Map("GET", "/api/state", _ => BrowserReply.Value(studio.State()));
@@ -47,7 +47,7 @@ internal sealed partial class BrowserApplication
             using var stream = new MemoryStream(r.Bytes(DrawingLimit), writable: false);
             s.Load(stream, r.Long("revision")); return s.State();
         });
-        Legacy("POST", "/api/font", (s, r) => s.LoadFont(r.Long("revision"), r.Text("name"), r.Bytes(FontLimit)));
+        Legacy("POST", "/api/font", (s, r) => s.LoadBrowserFont(r.Long("revision"), r.Text("name"), r.Bytes(FontLimit)));
         Legacy("POST", "/api/bigfont-map", (s, r) => s.LoadBigFontMap(r.Long("revision"), r.Bytes(FontLimit), Token));
         Map("POST", "/api/save", r => studio.ExecuteRequest(r.Identity(), () => BrowserReply.Binary(studio.Save(r.Body<RevisionRequest>().Revision), "application/dxf")));
         Legacy("POST", "/api/branches", (s, r) => s.Fork(r.Body<ForkRequest>()));
@@ -55,7 +55,6 @@ internal sealed partial class BrowserApplication
         Legacy("POST", "/api/branches/discard", (s, r) => s.DiscardBranch(r.Body<BranchDeleteRequest>()));
         Legacy("POST", "/api/merge/preview", (s, r) => s.PreviewMerge(r.Body<MergePreviewRequest>(), Token));
         Legacy("POST", "/api/merge/apply", (s, r) => s.ApplyMerge(r.Body<MergeApplyRequest>()));
-        // Streaming is handled by the browser transport using the same subscriptions.
         Map("GET", "/api/events", _ => BrowserReply.Error(400, "Use the browser event stream transport."));
         MapCadRoutes();
     }

@@ -72,7 +72,7 @@ internal sealed partial class BrowserApplication
         });
         Cad("POST", "/api/cad/{id}/font", (s, r) =>
         {
-            s.LoadFont(r.Long("revision"), r.Text("name"), r.Bytes(FontLimit)); return s.CadState();
+            s.LoadBrowserFont(r.Long("revision"), r.Text("name"), r.Bytes(FontLimit)); return s.CadState();
         });
     }
 }

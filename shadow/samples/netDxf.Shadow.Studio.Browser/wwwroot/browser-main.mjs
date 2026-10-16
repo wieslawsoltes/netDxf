@@ -5,8 +5,6 @@ const startup = document.getElementById('browser-startup');
 const diagnostics = document.body.dataset.workspace === 'diagnostics';
 
 try {
-  // Reuse the actual frontend markup. Scripts are imported only after the .NET engine
-  // and the local transport are ready; no nonfunctional server frontend is published.
   const response = await nativeFetch(new URL(diagnostics ? 'diagnostics-shell.html' : 'studio-shell.html', document.baseURI));
   if (!response.ok) throw new Error(`Cannot load the Studio interface (${response.status}).`);
   const shell = new DOMParser().parseFromString(await response.text(), 'text/html');
@@ -18,6 +16,11 @@ try {
   }
   const badge = document.querySelector('.local-badge');
   if (badge) { badge.textContent = 'BROWSER CAD'; badge.title = 'The complete netDxf engine runs locally in this browser tab.'; }
+  const fontInput = document.getElementById('font-file');
+  if (fontInput) {
+    fontInput.accept = '.shx,.shp,.ttf,.otf';
+    fontInput.title = 'Load SHX/SHP strokes or TrueType/OpenType fonts. Fonts remain private to this drawing and browser tab.';
+  }
   const loading = document.getElementById('loading');
   if (loading) loading.textContent = 'Starting browser CAD engine…';
   // Blazor.start can complete before Program.cs is loaded or its async work completes.

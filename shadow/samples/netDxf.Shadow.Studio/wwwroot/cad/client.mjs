@@ -73,8 +73,17 @@ export class CadClient extends EventTarget {
   }
   async read(path, { body, signal, blob = false } = {}) {
     const key = this.key, generation = this.epoch, state = this.state, id = this.id;
-    const response = await this.request(this.url(path, id), { body, signal, headers: identityHeaders(state) });
-    const result = blob ? await response.blob() : await response.json();
-    return generation === this.epoch && key === this.key && !this.busy ? result : null;
+    const current = () => generation === this.epoch && key === this.key && !this.busy;
+    try {
+      const response = await this.request(this.url(path, id), { body, signal, headers: identityHeaders(state) });
+      const result = blob ? await response.blob() : await response.json();
+      return current() ? result : null;
+    } catch (error) {
+      // Errors belong to the same receipt as successful reads. An obsolete render or
+      // graph must not cancel a new command after a document/workspace switch.
+      // Current failures still propagate, and writes are never retried or suppressed.
+      if (!current()) return null;
+      throw error;
+    }
   }
 }

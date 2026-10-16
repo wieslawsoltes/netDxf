@@ -60,8 +60,7 @@ jobs:
       - name: Install native WebAssembly build tools
         run: dotnet workload install wasm-tools
       - name: Publish the complete browser application
-        # Do not globally override TargetFrameworks: the browser targets .NET 10,
-        # while its reusable dependencies retain their own framework selections.
+        # Keep dependency framework selections; only the browser targets .NET 10.
         run: >-
           dotnet publish shadow/samples/netDxf.Shadow.Studio.Browser/netDxf.Shadow.Studio.Browser.csproj
           -c Release -f net10.0 -p:NoWarn=1591
@@ -75,6 +74,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verify browser-only CAD at the root and repository subpath
         run: python shadow/tests/blazor_studio_browser.py --published artifacts/shadow-studio-browser/wwwroot
+      - name: Verify all sample layouts and explicit browser fonts
+        run: python shadow/tests/blazor_capabilities_browser.py --published artifacts/shadow-studio-browser/wwwroot
       - name: Retain browser diagnostics and published app
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
