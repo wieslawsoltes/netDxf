@@ -115,7 +115,7 @@ public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutli
         var family = style.FontFamily;
         if (family.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) || family.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
             family = Path.GetFileNameWithoutExtension(family);
-        var typeface = SKTypeface.FromFamilyName(family, nativeStyle) ?? SKTypeface.FromFamilyName("sans-serif", nativeStyle)
+        var typeface = typefaceResolver?.Invoke(style) ?? SKTypeface.FromFamilyName(family, nativeStyle) ?? SKTypeface.FromFamilyName("sans-serif", nativeStyle)
             ?? throw new InvalidOperationException("No usable system font is installed.");
         entry = new(typeface, new SKShaper(typeface)); fonts[key] = entry; return entry;
     }
