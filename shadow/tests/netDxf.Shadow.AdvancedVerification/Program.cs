@@ -46,6 +46,7 @@ ShxVerification.Register(tests);
 VerticalShxVerification.Register(tests);
 BigFontVerification.Register(tests);
 BigFontMapFileVerification.Register(tests);
+StrictBigFontMapFileVerification.Register(tests);
 ResourceRevisionVerification.Register(tests);
 AffineVerification.Register(tests);
 HatchTranslationVerification.Register(tests);

@@ -92,6 +92,10 @@ def run(dotnet: str, configuration: str) -> None:
             request('graph', expected=409)
             request('add', {'revision': 0, 'kind': 'line', 'x': 0, 'y': 0}, expected=409, custom={'X-Shadow-Studio':'1'})
             assert state()['revision'] == 0; passed('missing mutation and workspace headers are refused')
+            request('bigfont-map?revision=0', b'{}', expected=409,
+                    custom={'X-Shadow-Studio': '1', 'Content-Length': str(4 * 1024 * 1024 + 1)})
+            assert state()['revision'] == 0
+            passed('BIGFONT upload receipt is checked before accepting or sizing the body')
             request('linetype-view', {'revision': initial['revision'], 'alignment': 'A'}, expected=403)
             request('linetype-view', {'revision': initial['revision'], 'alignment': '1'}, initial, expected=400)
             fitted = post('linetype-view', initial, alignment='A')

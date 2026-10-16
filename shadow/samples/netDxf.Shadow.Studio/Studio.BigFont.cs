@@ -4,21 +4,24 @@ namespace netDxf.Shadow.Studio;
 
 public sealed partial class Studio
 {
-    /// <summary>Registers only an explicit map for an already uploaded resource. A retained branch
-    /// keeps its previous font/map set. Identical maps are exact no-ops, including the view epoch.</summary>
+    /// <summary>Retains the original source-compatible and binary-compatible entry point.</summary>
     public object LoadBigFontMap(long revision, byte[] bytes)
+        => LoadBigFontMap(revision, bytes, CancellationToken.None);
+
+    /// <summary>Import explicit interpretation for an uploaded BIGFONT resource. Publication is
+    /// atomic, cancellable and source-neutral; retained workspaces keep their pinned font/map set.</summary>
+    public object LoadBigFontMap(long revision, byte[] bytes, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(bytes);
-        var mapping = ShxBigFontMapFile.Read(bytes, MaximumFontBytes);
+        var mapping = ShxBigFontMapFile.ReadStrict(bytes, cancellationToken: cancellationToken);
         lock (gate)
         {
-            Check(revision); RequireLive();
-            var alias = ShxFontSet.FileName(mapping.Resource);
-            var font = shxFonts.Current.Resolve(alias) ?? throw new ArgumentException("Upload the named BIGFONT SHX/SHP resource before its map.");
+            cancellationToken.ThrowIfCancellationRequested(); Check(revision); RequireLive();
             var before = shxFonts.Current;
-            if (before.BigFontMaps.TryGetValue(alias, out var existing) && existing.Equals(mapping.Map)) return State();
-            var nextView = checked(viewVersion + 1);
-            shxFonts.RegisterBigFont(alias, font, mapping.Map);
+            var equivalent = before.BigFontMaps.TryGetValue(mapping.Resource, out var existing) && existing.Equals(mapping.Map);
+            var nextView = equivalent ? viewVersion : checked(viewVersion + 1);
+            var after = shxFonts.ImportBigFontMap(mapping, cancellationToken);
+            if (ReferenceEquals(before, after)) return State();
             viewVersion = nextView;
             editor.Select([]);
             return UpdatedState();

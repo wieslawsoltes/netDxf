@@ -65,6 +65,27 @@ public sealed class ShxFontCatalog
             Volatile.Write(ref current, next); return next;
         }
     }
+    /// <summary>Attach interpretation to an already registered exact basename. Validate all packed
+    /// words against its declared lead bytes before publication; absent glyph programs remain diagnosable.</summary>
+    public ShxFontSet ImportBigFontMap(ShxBigFontMapFile file, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        ArgumentNullException.ThrowIfNull(file); ShxBigFontMapFile.ValidateResource(file.Resource);
+        ArgumentNullException.ThrowIfNull(file.Map);
+        lock (gate)
+        {
+            if (!current.Fonts.TryGetValue(file.Resource, out var font) || font.BigFont is not { } info)
+                throw new ArgumentException("Upload the named BIGFONT resource before importing its mapping.", nameof(file));
+            foreach (var packed in file.Map.Characters.Values)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (packed < 256 || !info.IsLeadByte((byte)(packed >> 8)))
+                    throw new ArgumentException("A mapped word does not use a declared BIGFONT lead byte.", nameof(file));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            return RegisterBigFont(file.Resource, font, file.Map);
+        }
+    }
     public ShxFontSet Remove(string alias)
     {
         ArgumentNullException.ThrowIfNull(alias);
