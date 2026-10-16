@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 from contextlib import contextmanager
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-import io
 import json
 from pathlib import Path
 import threading
@@ -164,18 +163,23 @@ def verify(base, mount, browser, passed):
         page.locator('#open-file').set_input_files(str(file))
         expect(page.locator('#studio')).not_to_have_attribute('data-document', old_id)
         idle(); check('DXF upload reopens a separate document', state()['itemCount'] > 10)
-        s = state()['state']; identifier = page.locator('#studio').get_attribute('data-document')
-        exchange = page.evaluate('''async ({id,headers,revision}) => {
-          const saved=await fetch(`/api/cad/${id}/save`,{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify({revision,format:'dwg',version:'AC1032'})});
-          if(!saved.ok)throw new Error(await saved.text());
-          const blob=await saved.blob(); const bytes=new Uint8Array(await blob.arrayBuffer());
-          const created=await(await fetch('/api/cad/documents',{method:'POST',headers:{'X-Shadow-Studio':'1','Content-Type':'application/json'},body:JSON.stringify({name:'Roundtrip.dwg'})})).json();
-          const current=await(await fetch(`/api/cad/${created.id}/state`)).json(); const s=current.state;
-          const opened=await fetch(`/api/cad/${created.id}/load?revision=${s.revision}&name=Roundtrip.dwg`,{method:'POST',headers:{'X-Shadow-Studio':'1','X-Shadow-Document':s.documentId,'X-Shadow-Workspace':s.workspaceId,'X-Shadow-View':String(s.viewVersion)},body:blob});
-          if(!opened.ok)throw new Error(await opened.text());
-          return {magic:new TextDecoder().decode(bytes.slice(0,6)),size:bytes.length,count:(await opened.json()).itemCount};
-        }''', {'id': identifier, 'headers': headers(s), 'revision': s['revision']})
-        check('real managed DWG write/read in WebAssembly', exchange['magic'] == 'AC1032' and exchange['size'] > 1000 and exchange['count'] > 10)
+        # Drive the actual Save As workflow. Calling the save endpoint behind the UI's
+        # back can canonicalize the source and intentionally invalidate its old receipt.
+        # The real client adopts the post-save receipt before allowing the next command.
+        command('SAVEAS', False)
+        expect(page.locator('#dialog-title')).to_have_text('Save drawing as')
+        page.get_by_role('combobox', name='Drawing format', exact=True).select_option('dwg')
+        page.get_by_role('combobox', name='DWG version', exact=True).select_option('AC1032')
+        page.get_by_role('textbox', name='Drawing filename', exact=True).fill('Roundtrip.dwg')
+        with page.expect_download() as download:
+            page.locator('#dialog-submit').click()
+        dwg = OUTPUT / f'{tag}-edited.dwg'
+        download.value.save_as(str(dwg)); idle()
+        check('Save As downloads a real DWG from WebAssembly', dwg.read_bytes()[:6] == b'AC1032' and dwg.stat().st_size > 1000)
+        old_id = page.locator('#studio').get_attribute('data-document')
+        page.locator('#open-file').set_input_files(str(dwg))
+        expect(page.locator('#studio')).not_to_have_attribute('data-document', old_id)
+        idle(); check('DWG file picker reopens the edited drawing', state()['itemCount'] > 10)
         page.locator('[data-action="new"]').first.click(); wait_state(lambda value: value['itemCount'] == 0); idle()
         command('REC 10,20 30,40'); command('C 40,30 5')
         page.locator('#viewport').focus(); page.keyboard.press('Control+a')
@@ -192,12 +196,17 @@ def verify(base, mount, browser, passed):
         command('C 150,30 10'); command('H LINE 3 15 Normal'); command('HE CROSS 4 30 Outer')
         check('hatch authoring and editing', any(item['type'] == 'Hatch' for item in state()['items']))
         command('Z E', False)
+        # Let the debounced render and image decode complete before recording evidence.
+        # Correctness is asserted independently by the native state and render checks.
+        page.wait_for_timeout(1000)
+        expect(page.locator('#history .error')).to_have_count(0)
+        check('CAD user workflow has no reported operation errors')
         page.screenshot(path=str(OUTPUT / f'{tag}-cad.png'))
         page.set_viewport_size({'width': 900, 'height': 680})
         check('compact layout does not overflow horizontally', page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
+        page.wait_for_timeout(500)
         page.screenshot(path=str(OUTPUT / f'{tag}-compact.png'))
         check('CAD has no uncaught JavaScript errors', not errors)
-        # A separate tab has its own document session, exactly as a standalone browser app should.
         page.close(); page = context.new_page(); page.set_default_timeout(30000)
         page.on('pageerror', lambda error: errors.append(str(error)))
         ready('diagnostics.html')
