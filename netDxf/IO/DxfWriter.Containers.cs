@@ -15,7 +15,7 @@ namespace netDxf.IO
             {
                 this.chunk.Write(100, "AcDbSortentsTable"); this.chunk.Write(330, table.BlockRecord.Handle);
                 foreach (DxfSortOrderEntry entry in table.Entries)
-                { this.chunk.Write(331, entry.Entity.Handle); this.chunk.Write(5, entry.SortHandle); }
+                { this.chunk.Write(331, entry.Target.Handle); this.chunk.Write(5, entry.SortHandle); }
             }
             else if (item is DxfSpatialFilter filter)
             {

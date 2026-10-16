@@ -36,7 +36,7 @@ namespace netDxf.Entities
         /// <returns>An independent array containing position at index zero and derivative k at index k.</returns>
         /// <remarks>
         /// Evaluates the stored control definition; fit points and optional fit tangents are not refitted.
-        /// Nonperiodic degrees 1 through 10 support finite signed or zero weights when the selected
+        /// Nonperiodic and explicit periodic degrees 1 through 10 support finite signed or zero weights when the selected
         /// denominator is nonzero. Compact periodic definitions retain the existing cyclic-knot and
         /// positive-weight admission rules. Parameters are not wrapped, clamped or rescaled.
         /// Exact local homogeneous Taylor arithmetic and rational division precede one ties-to-even
@@ -58,7 +58,7 @@ namespace netDxf.Entities
             if (side < SplineParameterSide.Automatic || side > SplineParameterSide.Right)
                 throw new ArgumentOutOfRangeException(nameof(side), "Unknown parameter side.");
             this.ValidateParameterDefinition();
-            int count = this.controlPoints.Length + (this.isClosedPeriodic ? this.degree : 0);
+            int count = this.controlPoints.Length + (this.isClosedPeriodic && !this.hasExplicitPeriodicControlPoints ? this.degree : 0);
             double start = this.knots[this.degree], end = this.knots[count];
             if (parameter < start || parameter > end)
                 throw new ArgumentOutOfRangeException(nameof(parameter), "The parameter lies outside the active domain.");
@@ -81,12 +81,12 @@ namespace netDxf.Entities
             if (span < this.degree || span >= count || !(this.knots[span] < this.knots[span + 1]))
                 throw new InvalidOperationException("No nonempty spline span supports the requested limit.");
             return PeriodicSplineExactEvaluation.Derivatives(this.controlPoints, this.weights, this.knots,
-                this.degree, this.isClosedPeriodic, span, parameter, order);
+                this.degree, this.isClosedPeriodic && !this.hasExplicitPeriodicControlPoints, span, parameter, order);
         }
 
-        private void ValidateParameterDefinition()
+        internal void ValidateParameterDefinition()
         {
-            if (this.isClosedPeriodic)
+            if (this.isClosedPeriodic && !this.hasExplicitPeriodicControlPoints)
             {
                 PeriodicSplineData.Validate(this.controlPoints, this.weights, this.knots, this.degree);
                 return;

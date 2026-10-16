@@ -55,7 +55,7 @@ namespace netDxf.IO
 
         #region public properties
 
-        // The DIMSTYLE table's obsolete DIMBLK field is the sole raw group-5 name exception.
+        // Enabled only by a context-aware DIMSTYLE or opaque OBJECTS payload reader.
         public bool Code5IsString { get; set; }
 
         // Opted into only by DxfReader after leading comments are captured.

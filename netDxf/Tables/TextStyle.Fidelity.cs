@@ -7,6 +7,39 @@ namespace netDxf.Tables
         private TextStyleFlags flags;
         private double? lastHeight;
 
+        /// <summary>Creates a text style from independently stored DXF font file metadata.</summary>
+        /// <param name="name">The text style name.</param>
+        /// <param name="fontFile">Stored group 3, including an empty or extensionless value.</param>
+        /// <param name="bigFont">Stored group 4, independent of the primary font file.</param>
+        /// <returns>A detached text style retaining both file strings exactly.</returns>
+        /// <remarks>
+        /// This factory does not resolve paths, load fonts, or substitute filenames. It accepts
+        /// well-formed Unicode supported by STYLE transport, including escaped control characters.
+        /// ExtendedFontData may be assigned independently. Authoring constructors and setters retain
+        /// their font-format validation.
+        /// </remarks>
+        public static TextStyle FromStoredFontFiles(string name, string fontFile, string bigFont = "")
+        {
+            ValidateStoredFontString(name, nameof(name));
+            ValidateStoredFontString(fontFile, nameof(fontFile));
+            ValidateStoredFontString(bigFont, nameof(bigFont));
+            var style = new TextStyle(name, DefaultFont);
+            style.SetStoredFontFiles(fontFile, bigFont);
+            return style;
+        }
+
+        private static void ValidateStoredFontString(string value, string parameter)
+        {
+            if (value == null) throw new ArgumentNullException(parameter);
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!char.IsSurrogate(value[i])) continue;
+                if (char.IsHighSurrogate(value[i]) && i + 1 < value.Length && char.IsLowSurrogate(value[i + 1]))
+                { i++; continue; }
+                throw new ArgumentException("Stored STYLE strings cannot contain unpaired UTF-16 surrogates.", parameter);
+            }
+        }
+
         /// <summary>Gets or sets all stored group 70 bits.</summary>
         /// <remarks>The shape discriminator cannot be set on a TextStyle. Other bits are retained.</remarks>
         public TextStyleFlags Flags

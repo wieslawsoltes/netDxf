@@ -52,6 +52,7 @@ namespace netDxf.IO
         private readonly List<DxfRawHandleOccurrence> occurrences = new List<DxfRawHandleOccurrence>();
         private readonly List<DxfRawHandleDiagnostic> diagnostics = new List<DxfRawHandleDiagnostic>();
         private readonly DxfRawHandleIndexOptions options;
+        private bool hasOpaqueObjectCode5;
 
         private DxfRawHandleIndex(DxfRawDocument document, DxfRawHandleIndexOptions options, CancellationToken token)
         {
@@ -163,6 +164,8 @@ namespace netDxf.IO
                 if ((i & 255) == 0) token.ThrowIfCancellationRequested();
                 DxfTag tag = this.document.Tags[i];
                 if (tag.Code == 999) continue;
+                if (Eq(record.SectionName, "OBJECTS") && tag.Code == 5 && tag.ValueType == DxfTagValueType.String)
+                    this.hasOpaqueObjectCode5 = true;
                 // An embedded object's private grammar can reuse all nonzero codes.
                 // Without that grammar, even 100/102/1001-looking fields in its tail
                 // cannot be promoted to the enclosing object's structural links.

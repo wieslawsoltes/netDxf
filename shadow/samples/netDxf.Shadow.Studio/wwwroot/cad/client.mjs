@@ -3,11 +3,18 @@ import { identityHeaders, viewKey } from '../studio-state.mjs';
 export class ApiError extends Error {
   constructor(message, status) { super(message); this.name = 'ApiError'; this.status = status; }
 }
+export class DrawingOpenError extends Error {
+  constructor(error, retained = false) {
+    super(`${error.message || String(error)}${retained ? ' The new drawing tab was kept because it could not be closed safely.' : ''}`, { cause: error });
+    this.name = 'DrawingOpenError'; this.retained = retained;
+  }
+}
 const scope = s => s ? JSON.stringify([s.serverId, s.documentId, s.workspaceId, s.viewVersion]) : '';
 /** Serialized writes, generation-fenced reads, and no implicit retries of non-idempotent edits. */
 export class CadClient extends EventTarget {
   constructor(fetcher = (...args) => fetch(...args)) {
-    super(); this.fetcher = fetcher; this.id = null; this.data = null; this.epoch = 0; this.busy = 0; this.tail = Promise.resolve();
+    super(); this.fetcher = fetcher; this.id = null; this.data = null; this.epoch = 0; this.refreshGeneration = 0; this.busy = 0; this.tail = Promise.resolve();
+    this.openGeneration = 0; this.interactionGeneration = 0; this.pendingDocuments = new Set();
   }
   get state() { return this.data?.state; }
   get key() { return `${this.id}:${viewKey(this.state)}`; }
@@ -28,12 +35,55 @@ export class CadClient extends EventTarget {
     return response;
   }
   url(path, id = this.id) { if (!id) throw new Error('No active drawing.'); return `/api/cad/${encodeURIComponent(id)}/${path}`; }
-  async documents() { return (await this.request('/api/cad/documents')).json(); }
+  async documents() {
+    const documents = await (await this.request('/api/cad/documents')).json();
+    return documents.filter(document => !this.pendingDocuments.has(document.id));
+  }
   async create(name, demo = false) { return (await this.request('/api/cad/documents', { body: { name, demo } })).json(); }
-  async activate(id) {
+  /** Keep a newly started command or gesture in front without invalidating drawing reads. */
+  beginInteraction() { this.interactionGeneration++; }
+  /** Import in a detached document, keeping the visible drawing intact until success. */
+  async open(file, name = file.name) {
+    const id = this.id, epoch = this.epoch, interaction = this.interactionGeneration, generation = ++this.openGeneration;
+    let created, loader, emptyReceipt;
+    try {
+      created = await this.create(name, false);
+      this.pendingDocuments.add(created.id);
+      loader = new CadClient(this.fetcher);
+      await loader.activate(created.id);
+      const state = loader.state;
+      if (state.entities !== 0 || state.revision !== 0 || state.changeVersion !== 0 || state.workspaceId !== 'live')
+        throw new Error('The new drawing changed before import. Repeat Open.');
+      emptyReceipt = state;
+      const result = await loader.mutate('load', file, { binary: true, query: { name } });
+      if (!result?.state) throw new Error('The drawing loader did not return a drawing state.');
+    } catch (error) {
+      let retained = !!created;
+      if (created && emptyReceipt) {
+        try {
+          // The original empty receipt is deliberate. A lost import response or
+          // another editor's changes must never be deleted by failure cleanup.
+          await this.request(this.url('close', created.id), {
+            headers: identityHeaders(emptyReceipt), body: { revision: emptyReceipt.revision, discard: false }
+          });
+          retained = false;
+        } catch { /* A changed or unavailable document remains accessible. */ }
+      }
+      throw new DrawingOpenError(error, retained);
+    } finally {
+      if (created) this.pendingDocuments.delete(created.id);
+    }
+    // A later tab selection, edit, command, gesture or Open owns focus. The completed import still
+    // appears in the tabs when it no longer owns the foreground operation.
+    const active = id === this.id && epoch === this.epoch && generation === this.openGeneration &&
+      interaction === this.interactionGeneration && !this.busy;
+    if (active) await this.activate(created.id, loader.data);
+    return { ...created, active };
+  }
+  async activate(id, prepared = null) {
     if (this.busy) throw new Error('Finish the current drawing operation before switching documents.');
     const generation = ++this.epoch; this.id = id; this.data = null; this.emit('reset');
-    const data = await (await this.request(this.url('state', id))).json();
+    const data = prepared ?? await (await this.request(this.url('state', id))).json();
     if (generation === this.epoch && this.id === id) this.adopt(data);
   }
   adopt(data) {
@@ -46,9 +96,16 @@ export class CadClient extends EventTarget {
   }
   async refresh() {
     if (!this.id || !this.state || this.busy) return;
-    const id = this.id, generation = ++this.epoch;
-    const data = await (await this.request(this.url('state', id))).json();
-    if (generation === this.epoch && id === this.id && !this.busy && viewKey(data.state) !== viewKey(this.state)) this.adopt(data);
+    // Order polls independently of document changes. An unchanged background poll
+    // must not invalidate a slow render: no replacement frame would be requested.
+    const id = this.id, epoch = this.epoch, generation = ++this.refreshGeneration;
+    const current = () => generation === this.refreshGeneration && epoch === this.epoch && id === this.id && !this.busy;
+    try {
+      const data = await (await this.request(this.url('state', id))).json();
+      if (current() && viewKey(data.state) !== viewKey(this.state)) this.adopt(data);
+    } catch (error) {
+      if (current()) throw error;
+    }
   }
   mutate(path, payload = {}, { binary = false, query = null, expectedKey = null } = {}) {
     if (!this.state) return Promise.reject(new Error('Load a drawing first.'));

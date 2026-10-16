@@ -153,6 +153,28 @@ namespace netDxf.IO
         internal static readonly HashSet<string> Supported = new HashSet<string>(new[]
         { "DICTIONARY", "ACDBDICTIONARYWDFLT", "XRECORD", "ACDBPLACEHOLDER", "DICTIONARYVAR", "IDBUFFER", "SORTENTSTABLE" }, StringComparer.Ordinal);
 
+        // The typed document supports additional object schemas beyond the editable raw subset.
+        // Their group-5 fields retain handle validation even when a body falls back to opaque storage.
+        private static readonly HashSet<string> KnownObjectRecords = new HashSet<string>(Supported, StringComparer.OrdinalIgnoreCase)
+        {
+            "RASTERVARIABLES", "IMAGEDEF", "IMAGEDEF_REACTOR", "MLINESTYLE", "GROUP", "LAYOUT",
+            "DGNDEFINITION", "DWFDEFINITION", "PDFDEFINITION", "TABLESTYLE", "CELLSTYLEMAP",
+            "TABLEGEOMETRY", "TABLECONTENT", "SUNSTUDY", "SUN", "FIELD", "ACAD_FIELD", "DIMASSOC",
+            "DATATABLE", "SECTIONSETTINGS", "SECTION_SETTINGS", "SECTIONMANAGER", "SECTION_MANAGER",
+            "LAYER_INDEX", "LAYER_FILTER", "OBJECT_PTR", "SPATIAL_INDEX", "VBA_PROJECT", "SPATIAL_FILTER",
+            "GEODATA", "PLOTSETTINGS", "WIPEOUTVARIABLES", "MLEADERSTYLE", "LIGHTLIST"
+        };
+
+        internal static bool IsOpaqueCode5Payload(string record, string subclass)
+        {
+            if (string.IsNullOrEmpty(record) || string.IsNullOrEmpty(subclass) || KnownObjectRecords.Contains(record)) return false;
+            // A subclass can expose a known handle grammar even under an unfamiliar derived record.
+            return !StringComparer.OrdinalIgnoreCase.Equals(subclass, "AcDbObject") &&
+                !StringComparer.OrdinalIgnoreCase.Equals(subclass, "AcDbEntity") &&
+                !StringComparer.OrdinalIgnoreCase.Equals(subclass, "AcDbSortentsTable") &&
+                !StringComparer.OrdinalIgnoreCase.Equals(subclass, "AcDbLightList");
+        }
+
         internal static DxfRawStoredObject Read(IReadOnlyList<DxfTag> tags, DxfRawRecord source, int budget)
         {
             string type = tags.Count > 0 && tags[0].Code == 0 ? (string)tags[0].RawValue : "";

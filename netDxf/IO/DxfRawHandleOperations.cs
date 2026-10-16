@@ -165,6 +165,7 @@ namespace netDxf.IO
         /// Rejects duplicate/null identities, malformed controls, normalized duplicate mapping keys,
         /// collisions with unchanged identities, capture of formerly dangling references, and opaque
         /// handle slots touched by a source or target. Arbitrary group 320-329 values are not translated.
+        /// Opaque OBJECTS group-5 payload strings require a schema and reject any nontrivial remapping.
         /// An existing HANDSEED is raised past all identities when needed; absence is not invented.
         /// Changed handle tags use canonical uppercase hex. Unchanged tags retain their objects/values.
         /// This is not a class-specific clone/import/repair engine. Hidden handles in strings or binary
@@ -191,6 +192,8 @@ namespace netDxf.IO
                 if (source != target) changes.Add(source, target);
             }
             if (changes.Count == 0) return this.document;
+            if (this.hasOpaqueObjectCode5)
+                throw new InvalidOperationException("Opaque OBJECTS group-5 payloads require an application-specific schema before handle remapping.");
             foreach (DxfRawHandleDiagnostic diagnostic in this.diagnostics)
             {
                 cancellationToken.ThrowIfCancellationRequested();

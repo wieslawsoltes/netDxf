@@ -79,6 +79,8 @@ namespace netDxf.IO
     /// Encoding recognition is not permission to use a field in every record or DXF version.
     /// Group 5 is classified as a handle without context. The obsolete DIMBLK name in a
     /// DIMSTYLE table entry is an exception; use DxfTag.CreateDimensionStyleArrowName for that field.
+    /// Unmodeled OBJECTS subclasses can also retain group-5 payload strings through
+    /// DxfTag.CreateOpaqueObjectCode5; common identities and known schemas remain handles.
     /// Negative AutoLISP-only codes and gaps without a known encoding are not supported.
     /// The broad legacy codec ranges within 1000 through 1071 are retained for compatibility;
     /// this is not a declaration that every code in those ranges is a defined XData field.

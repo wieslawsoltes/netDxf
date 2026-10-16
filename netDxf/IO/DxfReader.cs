@@ -1662,7 +1662,7 @@ namespace netDxf.IO
                         break;
                     case 45:
                         dimrnd = this.chunk.ReadDouble();
-                        if (dimrnd < 0.000001 && !MathHelper.IsZero(dimrnd, double.Epsilon))
+                        if (dimrnd < 0.0)
                         {
                             dimrnd = defaultDim.DimRoundoff;
                         }
@@ -1794,7 +1794,7 @@ namespace netDxf.IO
                         break;
                     case 148:
                         double dimaltrnd = this.chunk.ReadDouble();
-                        if (dimaltrnd < 0.000001 && !MathHelper.IsZero(dimaltrnd, double.Epsilon))
+                        if (dimaltrnd < 0.0)
                         {
                             dimaltrnd = defaultDim.AlternateUnits.Roundoff;
                         }
@@ -7632,21 +7632,10 @@ namespace netDxf.IO
             // existing compatibility convention, not a prerequisite for it.
             bool isPeriodic = flags.HasFlag(SplineTypeFlags.Periodic) ||
                               flags.HasFlag(SplineTypeFlags.ClosedPeriodicSpline);
-            if (isPeriodic)
+            if (isPeriodic && CanCompactPeriodicSpline(ctrlPoints, weights, knots, degree))
             {
-                // The public model stores the compact cyclic control polygon;
-                // DXF stores degree repeated controls around the knot domain.
-                // Only strip an exact overlap: guessing here changes geometry.
-                if (ctrlPoints.Count < 2 * degree + 1)
-                    throw new NotSupportedException("Periodic SPLINE requires a degree-fold cyclic control overlap in this typed model.");
-                for (int i = 0; i < degree; i++)
-                {
-                    int tail = ctrlPoints.Count - degree + i;
-                    Vector3 a = ctrlPoints[i], b = ctrlPoints[tail];
-                    if (a.X != b.X || a.Y != b.Y || a.Z != b.Z ||
-                        (weights != null && weights[i] != weights[tail]))
-                        throw new NotSupportedException("Periodic SPLINE control points and weights must have an exact degree-fold cyclic overlap; refusing a lossy import.");
-                }
+                // Preserve the established compact representation only when it is
+                // exactly equivalent to the complete serialized rational basis.
                 ctrlPoints.RemoveRange(0, degree);
                 weights?.RemoveRange(0, degree);
             }
@@ -10054,11 +10043,11 @@ namespace netDxf.IO
                 name = imageDefDict.Entries[handle];
             }
 
-            Debug.Assert(TableObject.IsValidName(name), "Table object name is not valid.");
-            if (!TableObject.IsValidName(name))
-            {
-                return null;
-            }
+            // IMAGEDEF is named by an object-dictionary key, not a symbol-table
+            // entry. ImageDefinition deliberately permits punctuation that table
+            // names reject, so retain the key instead of discarding its target.
+            if (string.IsNullOrEmpty(name))
+                throw new InvalidDataException("IMAGEDEF requires a named image dictionary entry.");
 
             // The documentation says that this is the size of one pixel in AutoCAD units, but it seems that this is always the size of one pixel in millimeters
             // this value is used to calculate the image resolution in DPI or DPC, and the default image size.

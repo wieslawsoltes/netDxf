@@ -629,7 +629,16 @@ namespace netDxf
         /// <returns>The number rounded to the nearest value.</returns>
         public static double RoundToNearest(double number, double roundTo)
         {
-            double multiplier = Math.Round(number/roundTo, 0);
+            double quotient = number / roundTo;
+            // A finite value divided by a tiny positive increment can overflow even
+            // though its rounded value is finite. At that scale, the increment is
+            // far below one ULP and rounding cannot change the representable value.
+            if (double.IsInfinity(quotient) && !double.IsInfinity(number) &&
+                !double.IsNaN(number) && roundTo > 0.0 && !double.IsInfinity(roundTo))
+            {
+                return number;
+            }
+            double multiplier = Math.Round(quotient, 0);
             return multiplier * roundTo;
         }
         

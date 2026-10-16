@@ -115,6 +115,8 @@ internal sealed class ShadowCapture
                     }
                     if (accessor.CanWrite) writable.Add(accessor.Name);
                 }
+                if (entry.Source is Ole2Frame ole && OleRasterPreview.Read(ole) is not ShadowValue.NullValue)
+                    properties[OleRasterPreview.Property] = OleRasterPreview.Read(ole);
                 if (entry.Source is IEnumerable enumerable)
                     properties["$items"] = ReadSequence(enumerable, 0);
                 var kind = entry.Source switch
@@ -188,7 +190,9 @@ internal sealed class ShadowCapture
             };
             return new ShadowValue.Atom(type.FullName!, representation ?? string.Empty);
         }
-        if (type.IsValueType)
+        // ExtendedFontData is an immutable value returned as a fresh instance by its
+        // public getter. Source identity would make every unchanged capture differ.
+        if (type.IsValueType || value is TextStyleFontData)
         {
             var fields = ImmutableDictionary.CreateBuilder<string, ShadowValue>(StringComparer.Ordinal);
             foreach (var accessor in SourceAccessors.For(type)) fields[accessor.Name] = ReadValue(accessor.Get(value), depth + 1);

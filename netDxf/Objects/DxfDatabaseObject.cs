@@ -38,12 +38,29 @@ namespace netDxf.Objects
     /// <summary>A named link. Multiple names may link to the same target.</summary>
     public sealed class DxfDictionaryEntry
     {
+        private readonly string unresolvedTargetHandle;
         internal DxfDictionaryEntry(string name, DxfObject target, bool hardOwner)
-        { this.Name = name; this.Target = target; this.IsHardOwner = hardOwner; }
+        { this.Name = name; this.Target = target ?? throw new ArgumentNullException(nameof(target)); this.IsHardOwner = hardOwner; }
+        private DxfDictionaryEntry(string name, string targetHandle)
+        { this.Name = name; this.unresolvedTargetHandle = targetHandle; }
+        /// <summary>Creates an unresolved group-350 link without fabricating a target object.</summary>
+        /// <param name="name">The nonempty dictionary entry name.</param>
+        /// <param name="targetHandle">The nonzero hexadecimal handle to retain.</param>
+        /// <returns>A detached entry with a null target and a canonical target handle.</returns>
+        /// <remarks>Only a dictionary whose hard-owner flag is false can retain such an entry.</remarks>
+        public static DxfDictionaryEntry CreateUnresolvedSoftReference(string name, string targetHandle)
+        {
+            DxfDictionary.ValidateName(name);
+            return new DxfDictionaryEntry(name, DxfObjectText.Handle(targetHandle, false));
+        }
         /// <summary>Gets the entry name.</summary>
         public string Name { get; }
-        /// <summary>Gets the referenced object.</summary>
+        /// <summary>Gets the referenced object, or null for an unresolved soft reference.</summary>
         public DxfObject Target { get; }
+        /// <summary>Gets the live target's handle, or the retained handle of an unresolved soft reference.</summary>
+        public string TargetHandle { get { return this.Target?.Handle ?? this.unresolvedTargetHandle; } }
+        /// <summary>Gets whether this entry references a retained object.</summary>
+        public bool IsResolved { get { return this.Target != null; } }
         /// <summary>Gets whether the link is encoded as hard ownership (360), rather than soft ownership (350).</summary>
         public bool IsHardOwner { get; }
     }
@@ -55,6 +72,7 @@ namespace netDxf.Objects
         private readonly List<DxfDictionaryEntry> entries = new List<DxfDictionaryEntry>();
         private readonly Dictionary<string, DxfDictionaryEntry> index = new Dictionary<string, DxfDictionaryEntry>(StringComparer.OrdinalIgnoreCase);
         private DictionaryCloningFlags cloning = DictionaryCloningFlags.KeepExisting;
+        private bool isHardOwner = true;
         /// <summary>Creates a detached dictionary.</summary>
         public DxfDictionary() : this("DICTIONARY") { }
         internal DxfDictionary(string code) : base(code) { }
@@ -63,8 +81,17 @@ namespace netDxf.Objects
         /// <summary>Gets the number of names, including aliases.</summary>
         public int Count { get { return this.entries.Count; } }
         /// <summary>Gets or sets group 280, the dictionary's hard-owner flag.</summary>
-        /// <remarks>This flag is retained independently of each entry's 350/360 code.</remarks>
-        public bool IsHardOwner { get; set; } = true;
+        /// <remarks>This flag is retained independently of each entry's 350/360 code. Unresolved soft entries must be removed or resolved before enabling hard ownership.</remarks>
+        public bool IsHardOwner
+        {
+            get { return this.isHardOwner; }
+            set
+            {
+                if (value && this.entries.Exists(entry => !entry.IsResolved))
+                    throw new InvalidOperationException("A dictionary with unresolved soft entries cannot become a hard owner.");
+                this.isHardOwner = value;
+            }
+        }
         /// <summary>Gets or sets the duplicate-record cloning policy saved in group 281.</summary>
         public DictionaryCloningFlags Cloning
         {
@@ -73,11 +100,12 @@ namespace netDxf.Objects
         }
         /// <summary>Gets a target by name, or the configured default for dictionaries with a default.</summary>
         public DxfObject this[string name] { get { return this.TryGetValue(name, out DxfObject value) ? value : throw new KeyNotFoundException(name); } }
-        /// <summary>Looks up a name, applying a configured default when the name is absent.</summary>
+        /// <summary>Looks up a resolved target, applying a configured default only when the name is absent.</summary>
+        /// <remarks>An unresolved entry returns false and a null target; Contains still reports that its name is present.</remarks>
         public bool TryGetValue(string name, out DxfObject value)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
-            if (this.index.TryGetValue(name, out DxfDictionaryEntry entry)) { value = entry.Target; return true; }
+            if (this.index.TryGetValue(name, out DxfDictionaryEntry entry)) { value = entry.Target; return entry.IsResolved; }
             value = (this as DxfDictionaryWithDefault)?.Default;
             return value != null;
         }
@@ -103,6 +131,30 @@ namespace netDxf.Objects
             if (target is DxfDatabaseObject && target.Owner == null && target != this) target.Owner = this;
             this.AddLoaded(name, target, hardOwner);
         }
+        /// <summary>Preserves an unresolved soft reference without creating or adopting an object.</summary>
+        /// <param name="name">The nonempty entry name.</param>
+        /// <param name="targetHandle">A nonzero hexadecimal handle that does not identify an object in this database.</param>
+        /// <remarks>
+        /// The dictionary's hard-owner flag must be false. Saving retains this group-350 link and
+        /// allocation reserves its handle. Strict database validation reports the unresolved target,
+        /// and ownership graph cloning refuses it until the entry is removed or replaced.
+        /// </remarks>
+        public void AddUnresolvedSoftReference(string name, string targetHandle)
+        {
+            if (this.IsErased) throw new InvalidOperationException("An erased dictionary cannot adopt entries.");
+            DxfDictionaryEntry entry = DxfDictionaryEntry.CreateUnresolvedSoftReference(name, targetHandle);
+            if (this.IsHardOwner) throw new InvalidOperationException("Unresolved entries require a soft-owner dictionary.");
+            if (this.index.ContainsKey(name)) throw new ArgumentException("The dictionary already contains this name.", nameof(name));
+            if (this.Database != null)
+            {
+                if (this == this.Database.Root && DxfObjectDatabase.IsReservedName(name))
+                    throw new ArgumentException("This root entry is managed by an existing document collection.", nameof(name));
+                if (this.Database.Document.GetObjectByHandle(entry.TargetHandle) != null)
+                    throw new ArgumentException("The handle already identifies a document object; add its resolved target instead.", nameof(targetHandle));
+                this.Database.ReserveUnresolvedReference(new DxfTag(350, entry.TargetHandle));
+            }
+            this.index.Add(name, entry); this.entries.Add(entry);
+        }
         /// <summary>Removes a name; does not erase the referenced object or change its database identity.</summary>
         /// <remarks>Use database validation to identify owned objects no longer reachable by name.</remarks>
         public bool Remove(string name)
@@ -121,6 +173,14 @@ namespace netDxf.Objects
         {
             if (string.IsNullOrEmpty(name) || name.IndexOfAny(new[] { '\0', '\r', '\n' }) >= 0)
                 throw new ArgumentException("Dictionary names must be nonempty single-line strings.", nameof(name));
+        }
+        internal override IEnumerable<DxfTag> AllocationReservations
+        {
+            get
+            {
+                foreach (DxfDictionaryEntry entry in this.entries)
+                    if (!entry.IsResolved) yield return new DxfTag(350, entry.TargetHandle);
+            }
         }
         internal override DxfDatabaseObject CloneShell() { return new DxfDictionary { IsHardOwner = this.IsHardOwner, Cloning = this.Cloning }; }
     }

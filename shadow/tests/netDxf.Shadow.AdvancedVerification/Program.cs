@@ -4,6 +4,12 @@ using System.Text.Json;
 
 var tests = new List<(string Name, Action Run)>();
 MathVerification.Register(tests);
+ImportedSplineVerification.Register(tests);
+ImportedDrawOrderVerification.Register(tests);
+UnresolvedDictionaryVerification.Register(tests);
+StoredDimensionFontVerification.Register(tests);
+OleRasterPreviewVerification.Register(tests);
+DimensionRoundoffVerification.Register(tests);
 DraftingVerification.Register(tests);
 CadAuthoringVerification.Register(tests);
 CollectionOrderingVerification.Register(tests);

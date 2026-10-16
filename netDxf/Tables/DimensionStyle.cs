@@ -1165,9 +1165,9 @@ namespace netDxf.Tables
             get { return this.dimrnd; }
             set
             {
-                if (value < 0.000001 && !MathHelper.IsZero(value, double.Epsilon))
+                if (value < 0.0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "The nearest value to round all distances must be equal or greater than 0.000001 or zero (no rounding off).");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "The nearest value to round all distances must be nonnegative (zero disables rounding).");
                 }
                 this.dimrnd = value;
             }

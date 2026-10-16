@@ -47,6 +47,10 @@ namespace netDxf.Objects
         /// <summary>Checks ownership, object identities and all typed references without modifying the document.</summary>
         /// <returns>A stable list of diagnostic descriptions; an empty list means validation succeeded.</returns>
         public IReadOnlyList<string> Validate()
+        { return this.Validate(false); }
+        internal IReadOnlyList<string> ValidateForSave()
+        { return this.Validate(true); }
+        private IReadOnlyList<string> Validate(bool allowUnresolvedSoftEntries)
         {
             List<string> errors = new List<string>();
             foreach (DxfDatabaseObject item in this.objects.Values)
@@ -67,6 +71,14 @@ namespace netDxf.Objects
                 {
                     foreach (DxfDictionaryEntry entry in dictionary.Entries)
                     {
+                        if (!entry.IsResolved)
+                        {
+                            if (entry.IsHardOwner || dictionary.IsHardOwner || this.Document.GetObjectByHandle(entry.TargetHandle) != null)
+                                errors.Add("Invalid unresolved dictionary target: " + entry.Name);
+                            else if (!allowUnresolvedSoftEntries)
+                                errors.Add("Unresolved soft dictionary target: " + entry.Name + " -> " + entry.TargetHandle);
+                            continue;
+                        }
                         if (!this.IsRegistered(entry.Target)) errors.Add("Unregistered dictionary target: " + entry.Name);
                         if (entry.Target is netDxf.Entities.EntityObject) errors.Add("Graphical entity used as dictionary entry: " + entry.Name);
                         if (entry.Target.Owner != item) errors.Add("Dictionary ownership mismatch: " + entry.Name);
@@ -249,7 +261,12 @@ namespace netDxf.Objects
                 if (item is DxfDictionary dictionary)
                     foreach (DxfDictionaryEntry entry in dictionary.Entries)
                     {
-                        if (entry.Target is DxfDatabaseObject child) pending.Push(child);
+                        if (!entry.IsResolved)
+                        {
+                            if (entry.IsHardOwner || dictionary.IsHardOwner || this.Document.GetObjectByHandle(entry.TargetHandle) != null)
+                                throw new ArgumentException("An unresolved dictionary target conflicts with this database.", nameof(target));
+                        }
+                        else if (entry.Target is DxfDatabaseObject child) pending.Push(child);
                         else this.CheckRegistered(entry.Target);
                     }
                 foreach (DxfDatabaseObject child in item.DeclaredOwnedObjects)

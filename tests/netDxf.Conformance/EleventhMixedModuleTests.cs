@@ -191,8 +191,9 @@ internal static partial class Program
         IEnumerable<DxfTableStyleRowEdit> FailedRows()
         { var row = style.Rows.First(r => r.Values != null); yield return row.WithValues(EleventhRowValues(row)); doc.Objects.EraseSectionManager(manager); }
         Throws<InvalidOperationException>(() => style.ReplaceStyle(null, FailedRows()));
-        double original = edge.ControlPoints[0].X; edge.ControlPoints[0].X += .125;
-        Throws<NotSupportedException>(() => hatch.CreateBoundary(true)); edge.ControlPoints[0].X = original;
+        double[] originalKnots = edge.Knots;
+        edge.Knots = originalKnots.Concat(new[] { originalKnots[^1] }).ToArray();
+        Throws<ArgumentException>(() => hatch.CreateBoundary(true)); edge.Knots = originalKnots;
         Check(ReferenceEquals(oldStyle, style.Tags) && ReferenceEquals(oldRows, style.Rows) && ReferenceEquals(oldMap, map.Payload) && ReferenceEquals(oldNames, map.Entries), "Cross-module callback failure changed style/map snapshots");
         Check(hatch.Associative && oldSources.SequenceEqual(hatch.BoundaryPaths.Single().Entities) && oldReactors.SequenceEqual(curve.Reactors), "Failed boundary conversion changed old association/reactors");
         Check(members.SequenceEqual(doc.Entities.All) && records.SequenceEqual(legacy.VertexRecords), "Cross-module failure changed registration or actual child identities");

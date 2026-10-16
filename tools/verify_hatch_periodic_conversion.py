@@ -149,10 +149,15 @@ def main():
         try:check_output(*candidate)
         except (ValueError,AssertionError):negative+=1
         else:raise ValueError('Accepted actual-output corruption '+kind)
-    storage=list(args.artifacts.glob('hatch-periodic-storage-*.dxf'));check(len(storage)==26,'Unsupported conversion storage inventory')
+    storage=list(args.artifacts.glob('hatch-periodic-storage-*.dxf'))
+    stored_forms=('overlap-x','overlap-y','overlap-weight','flag-weight','zero-weight','negative-weight',
+        'count','spans','repeated','domain','empty','degree','weight-range','multiplicity')
+    expected_storage={f'hatch-periodic-storage-{binary}-{form}.dxf'
+        for binary in (False,True) for form in stored_forms}
+    check({file.name for file in storage}==expected_storage,'Retained periodic storage inventory')
     for file in storage:
         year={'AC1015':2000,'AC1018':2004,'AC1021':2007,'AC1024':2010,'AC1027':2013,'AC1032':2018}[ezdxf.readfile(file).dxfversion]
-        hatches=[t for t in records(file.read_bytes()).values() if t[0]==(0,'HATCH')];check(len(hatches)==1 and packet(hatches[0],year)['periodic'],'Unsupported stored periodic flag lost')
+        hatches=[t for t in records(file.read_bytes()).values() if t[0]==(0,'HATCH')];check(len(hatches)==1 and packet(hatches[0],year)['periodic'],'Retained periodic flag lost')
     local_samples=check_local_weights(args.artifacts)
     arithmetic=check_scaled_arithmetic(args.artifacts)
     print(json.dumps({'outputs':outputs,'canonical_audited_drawings':96,'compact_compatibility_drawings':48,'additional_canonical_curve_drawings':48,'periodic_curves':curves,'actual_evaluator_world_samples':curves*64,'exact_rational_local_weight_samples':local_samples,**arithmetic,'maximum_world_error':maximum,'storage_only_outputs':len(storage),'actual_output_negative_controls':negative,'audit_errors':0,'audit_fixes':0,'native_cad_execution':False},sort_keys=True))

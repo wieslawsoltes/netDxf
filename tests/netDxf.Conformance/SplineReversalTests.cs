@@ -55,10 +55,15 @@ internal static partial class Program
     private static Vector3 ReversalPoint(Spline spline, double parameter)
     {
         int p = spline.Degree;
-        Vector3[] cp = spline.IsClosedPeriodic
+        int wireControlCount = spline.Knots.Length - p - 1;
+        bool expand = spline.ControlPoints.Length != wireControlCount;
+        Equal(expand, spline.IsClosedPeriodic && !spline.HasExplicitPeriodicControlPoints,
+            "Spline representation disagrees with the independent wire knot count");
+        if (expand) Equal(wireControlCount, spline.ControlPoints.Length + p, "Compact wire control count");
+        Vector3[] cp = expand
             ? spline.ControlPoints.Skip(spline.ControlPoints.Length - p).Concat(spline.ControlPoints).ToArray()
             : spline.ControlPoints;
-        double[] w = spline.IsClosedPeriodic
+        double[] w = expand
             ? spline.Weights.Skip(spline.Weights.Length - p).Concat(spline.Weights).ToArray()
             : spline.Weights;
         double[] u = spline.Knots;
@@ -113,6 +118,15 @@ internal static partial class Program
                 File.WriteAllBytes(Path.Combine(ArtifactDirectory, $"spline-reverse-{version}-{binary}-{form}.dxf"), stream.ToArray());
             stream.Position = 0; doc = DxfDocument.Load(stream) ?? throw new InvalidOperationException("Reversed spline reload failed");
             var splines = doc.Entities.Splines.ToArray(); Equal(2, splines.Length, "Reversal entity count");
+            Equal(form == 2, splines[0].HasExplicitPeriodicControlPoints, "Noncyclic knot padding must retain explicit controls");
+            Equal(form == 2, splines[1].HasExplicitPeriodicControlPoints, "Reversed noncyclic knot padding must retain explicit controls");
+            double a = before.Knots[before.Degree], b = before.Knots[^(before.Degree + 1)];
+            for (int i = 0; i <= 32; i++)
+            {
+                double parameter = a + (b - a) * (i / 32.0);
+                Vector3 expected = ReversalPoint(before, parameter), actual = ReversalPoint(splines[0], parameter);
+                Near(expected.X, actual.X, "Transported locus X"); Near(expected.Y, actual.Y, "Transported locus Y"); Near(expected.Z, actual.Z, "Transported locus Z");
+            }
             CheckReversalGeometry(splines[0], splines[1]);
         }
     }

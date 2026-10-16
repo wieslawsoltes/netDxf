@@ -51,6 +51,12 @@ public sealed partial class ShadowSession
                     // semantic enum on HatchPattern and other public data-model types.
                     // Let the accessor contract decide rather than dropping it by name.
                     if (name is "Handle" or "Owner" or "CodeName") continue;
+                    if (name == OleRasterPreview.Property && source is netDxf.Entities.Ole2Frame ole)
+                    {
+                        if (!ShadowValue.Equivalent(OleRasterPreview.Read(ole), value))
+                            throw new NotSupportedException("Stored OLE preview data is derived and read-only.");
+                        continue;
+                    }
                     // The source allocator is monotonic; undo restores semantic objects,
                     // never rewinds handles that may already have been assigned elsewhere.
                     if (historical is not null && name == "HandleSeed") continue;

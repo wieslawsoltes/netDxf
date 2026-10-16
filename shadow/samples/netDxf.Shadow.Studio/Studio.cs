@@ -133,7 +133,7 @@ public sealed partial class Studio : IDisposable
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             if (!Current.Objects.TryGetValue(id, out var node)) throw new ArgumentException("Unknown object.");
-            return new { documentId = Current.DocumentId, workspaceId = WorkspaceId, viewVersion, revision = Current.Revision, id = id.Value, node.Type, properties = node.Properties.OrderBy(p => p.Key).Select(p => new
+            return new { documentId = Current.DocumentId, workspaceId = WorkspaceId, viewVersion, revision = Current.Revision, id = id.Value, node.Type, properties = node.Properties.Where(p => p.Key != "$oleRasterPreview").OrderBy(p => p.Key).Select(p => new
             { name = p.Key, value = Display(p.Value), writable = node.WritableProperties.Contains(p.Key) && p.Value is ShadowValue.Atom or ShadowValue.Structure, kind = p.Value.GetType().Name }).ToArray() };
         }
     }

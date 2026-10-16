@@ -10,7 +10,7 @@ namespace netDxf.IO
         private static bool GetSplineCounts(Spline spline, out long knots, out long controls, out long fits)
         {
             knots = spline.Knots.Length;
-            controls = (long)spline.ControlPoints.Length + (spline.IsClosedPeriodic ? spline.Degree : 0);
+            controls = (long)spline.ControlPoints.Length + (spline.IsClosedPeriodic && !spline.HasExplicitPeriodicControlPoints ? spline.Degree : 0);
             fits = spline.FitPoints.Count;
             return knots <= short.MaxValue && controls >= 0 && controls <= short.MaxValue && fits <= short.MaxValue;
         }

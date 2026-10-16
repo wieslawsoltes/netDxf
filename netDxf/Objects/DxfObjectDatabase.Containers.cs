@@ -35,7 +35,7 @@ namespace netDxf.Objects
             this.CheckRegistered(blockRecord);
             if (this.Document.DrawingVariables.AcadVer < DxfVersion.AutoCad2004) throw new NotSupportedException("SORTENTSTABLE authoring requires AutoCAD 2004 or later.");
             DxfSortentsTable table = new DxfSortentsTable(blockRecord);
-            foreach (DxfSortOrderEntry entry in entries) { if (entry != null) this.CheckRegistered(entry.Entity); table.Entries.Add(entry); }
+            foreach (DxfSortOrderEntry entry in entries) { if (entry != null) this.CheckRegistered(entry.Target); table.Entries.Add(entry); }
             DxfDictionary extension = blockRecord.ExtensionDictionary;
             if (extension != null && extension.Contains("ACAD_SORTENTS")) throw new InvalidOperationException("The block already has an ACAD_SORTENTS entry.");
             HeaderVariable sorting = null;

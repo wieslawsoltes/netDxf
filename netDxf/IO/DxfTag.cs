@@ -48,9 +48,9 @@ namespace netDxf.IO
         {
         }
 
-        private DxfTag(short code, object value, bool dimensionStyleArrowName)
+        private DxfTag(short code, object value, bool literalString)
         {
-            this.ValueType = dimensionStyleArrowName ? DxfTagValueType.String : DxfGroupCode.GetValueType(code);
+            this.ValueType = literalString ? DxfTagValueType.String : DxfGroupCode.GetValueType(code);
             if (value == null) throw new ArgumentNullException(nameof(value));
             Type expected;
             switch (this.ValueType)
@@ -94,6 +94,21 @@ namespace netDxf.IO
         public static DxfTag CreateDimensionStyleArrowName(string name)
         {
             return new DxfTag(5, name, true);
+        }
+
+        /// <summary>Preserves a group-5 string in an unmodeled OBJECTS subclass without assigning handle semantics.</summary>
+        /// <param name="value">The exact stored value, including hexadecimal-looking spelling; NUL is not permitted.</param>
+        /// <returns>A string tag whose value is not normalized or treated as an object identity.</returns>
+        /// <remarks>
+        /// Raw documents accept this tag only after the common identity and a private subclass marker
+        /// of an unknown OBJECTS record, outside application control groups and XData. Recognized
+        /// object schemas and their handle fields remain strict. The ordinary constructor still
+        /// interprets group 5 as a hexadecimal handle. Opaque payloads require an application schema
+        /// before graph cloning or handle remapping.
+        /// </remarks>
+        public static DxfTag CreateOpaqueObjectCode5(string value)
+        {
+            return new DxfTag(5, value, true);
         }
 
         /// <summary>Gets the group code.</summary>
