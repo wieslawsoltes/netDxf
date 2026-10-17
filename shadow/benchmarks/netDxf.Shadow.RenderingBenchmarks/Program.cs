@@ -109,9 +109,15 @@ void Measure<T>(string phase, Func<T> operation, Action<T> validate, object coun
         Write(new { kind = "measurement", phase, iteration = i, counts, milliseconds, allocatedBytes = allocated });
     }
     Write(new { kind = "median", phase, counts, iterations = measurements.Length,
-        milliseconds = measurements.Select(m => m.Milliseconds).Order().ElementAt(measurements.Length / 2),
+        milliseconds = Median(measurements.Select(m => m.Milliseconds)),
         minimumMilliseconds = measurements.Min(m => m.Milliseconds),
-        allocatedBytes = measurements.Select(m => m.AllocatedBytes).Order().ElementAt(measurements.Length / 2) });
+        allocatedBytes = Median(measurements.Select(m => (double)m.AllocatedBytes)) });
+}
+static double Median(IEnumerable<double> samples)
+{
+    var values = samples.Order().ToArray();
+    var middle = values.Length / 2;
+    return values.Length % 2 == 0 ? (values[middle - 1] + values[middle]) / 2 : values[middle];
 }
 void Write(object value) => Console.WriteLine(JsonSerializer.Serialize(value, json));
 static void Require(bool condition) { if (!condition) throw new InvalidOperationException("Synthetic rendering workload verification failed."); }
