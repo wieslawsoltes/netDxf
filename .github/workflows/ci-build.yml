@@ -139,16 +139,10 @@ jobs:
         env:
           REQUESTED_VERSION: ${{ inputs.version }}
         run: python tools/ci/pipeline.py metadata --version "$REQUESTED_VERSION"
-      - name: Build packages with portable symbols
+      - name: Build all twelve packages with one version and portable symbols
         env:
           VERSION: ${{ steps.metadata.outputs.version }}
-          COMMIT: ${{ steps.metadata.outputs.commit }}
-        run: >-
-          dotnet pack netDxf/netDxf.csproj -c Release -o artifacts/packages
-          -p:PackageVersion="$VERSION" -p:ContinuousIntegrationBuild=true
-          -p:RepositoryUrl=https://github.com/wieslawsoltes/netDxf -p:RepositoryCommit="$COMMIT"
-          -p:PackageProjectUrl=https://github.com/wieslawsoltes/netDxf -p:RepositoryType=git
-          -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -p:DebugType=portable -p:DebugSymbols=true
+        run: python tools/ci/pipeline.py pack --version "$VERSION"
       - name: Consume only the freshly produced package
         shell: bash
         env:
@@ -157,6 +151,10 @@ jobs:
         run: |
           dotnet restore tests/netDxf.PackageSmoke --source "$PWD/artifacts/packages" -p:PackageVersion="$VERSION" -p:NuGetAudit=false
           dotnet run --project tests/netDxf.PackageSmoke --no-restore -c Release -p:PackageVersion="$VERSION" | tee artifacts/packages/smoke.log
+      - name: Consume every Shadow package from an isolated candidate-only feed
+        env:
+          VERSION: ${{ steps.metadata.outputs.version }}
+        run: python tools/ci/pipeline.py shadow-smoke --version "$VERSION"
       - name: Inspect all assets, source identity, documentation and symbols
         env:
           VERSION: ${{ steps.metadata.outputs.version }}
@@ -308,7 +306,7 @@ jobs:
           retention-days: 14
 
   qualify:
-    needs: [conformance, runtime-evidence]
+    needs: [conformance, runtime-evidence, shadow]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

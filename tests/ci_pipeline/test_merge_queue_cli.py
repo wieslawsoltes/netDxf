@@ -19,8 +19,11 @@ class MergeQueueCliTests(unittest.TestCase):
     def checkout(self, root):
         (root/'tools/ci').mkdir(parents=True)
         shutil.copyfile(ROOT/'tools/ci/pipeline.py', root/'tools/ci/pipeline.py')
+        shutil.copyfile(ROOT/'tools/ci/package_catalog.py', root/'tools/ci/package_catalog.py')
         (root/'netDxf').mkdir()
-        (root/'netDxf/netDxf.csproj').write_text('<Project><PropertyGroup><Version>3.0.1</Version></PropertyGroup></Project>')
+        (root/'Directory.Build.props').write_text('<Project><PropertyGroup><Version>4.0.0-preview.1</Version></PropertyGroup></Project>')
+        (root/'netDxf/netDxf.csproj').write_text('<Project/>')
+        (root/'.gitignore').write_text('__pycache__/\n')
         self.git(root, 'init', '-q')
         self.git(root, 'config', 'user.name', 'Queue test')
         self.git(root, 'config', 'user.email', 'queue-test@example.invalid')
@@ -28,7 +31,7 @@ class MergeQueueCliTests(unittest.TestCase):
         self.git(root, 'commit', '-qm', 'Fixture source')
         sha = self.git(root, 'rev-parse', 'HEAD')
         self.git(root, 'update-ref', 'refs/remotes/origin/netstandard', sha)
-        self.git(root, 'tag', 'v3.0.1')
+        self.git(root, 'tag', 'v4.0.0-preview.1')
         return sha
 
     def plan(self, root, output, sha, event='merge_group', dry='true', ref_type='branch', ref_name='gh-readonly-queue/netstandard/pr-7', **overrides):
@@ -69,7 +72,7 @@ class MergeQueueCliTests(unittest.TestCase):
             root = Path(temp)/'source'; root.mkdir(); output=Path(temp)/'output'
             sha = self.checkout(root); result = self.plan(root, output, sha)
             self.assertEqual(0, result.returncode, result.stderr)
-            self.assertEqual({'version':'3.0.1-ci.77', 'tag':'', 'publish':False, 'prerelease':True,
+            self.assertEqual({'version':'4.0.0-preview.1.ci.77', 'tag':'', 'publish':False, 'prerelease':True,
                               'commit':sha, 'tree':self.git(root,'rev-parse','HEAD^{tree}')}, json.loads(result.stdout))
             self.assertIn('publish=false\n', output.read_text())
             self.assertEqual('', self.git(root, 'status', '--porcelain'))
@@ -81,7 +84,7 @@ class MergeQueueCliTests(unittest.TestCase):
                 for dry, kind in (('false','branch'),('false','tag'),('true','tag'),('true','branch')):
                     with self.subTest(event=event,dry=dry,kind=kind):
                         if output.exists():output.unlink()
-                        result=self.plan(root,output,sha,event=event,dry=dry,ref_type=kind,ref_name='v3.0.1')
+                        result=self.plan(root,output,sha,event=event,dry=dry,ref_type=kind,ref_name='v4.0.0-preview.1')
                         self.assertEqual(0,result.returncode,result.stderr)
                         self.assertIs(json.loads(result.stdout)['publish'],False)
                         self.assertEqual(sha,json.loads(result.stdout)['commit'])
@@ -105,11 +108,11 @@ class MergeQueueCliTests(unittest.TestCase):
             for event,dry,wanted in (('push','false',True),('workflow_dispatch','false',True),('workflow_dispatch','true',False)):
                 with self.subTest(event=event,dry=dry):
                     if output.exists():output.unlink()
-                    result=self.plan(root,output,sha,event=event,dry=dry,ref_type='tag',ref_name='v3.0.1')
+                    result=self.plan(root,output,sha,event=event,dry=dry,ref_type='tag',ref_name='v4.0.0-preview.1')
                     self.assertEqual(0,result.returncode,result.stderr)
                     receipt=json.loads(result.stdout)
-                    self.assertEqual(wanted,receipt['publish']);self.assertEqual('v3.0.1',receipt['tag'])
-                    self.assertEqual(sha,receipt['commit']);self.assertEqual('3.0.1',receipt['version'])
+                    self.assertEqual(wanted,receipt['publish']);self.assertEqual('v4.0.0-preview.1',receipt['tag'])
+                    self.assertEqual(sha,receipt['commit']);self.assertEqual('4.0.0-preview.1',receipt['version'])
                     self.assertEqual('',self.git(root,'status','--porcelain'))
         # These tests only calculate plans in disposable repositories; no publication occurs.
 

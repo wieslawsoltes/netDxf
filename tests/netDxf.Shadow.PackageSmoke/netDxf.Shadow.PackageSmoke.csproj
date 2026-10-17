@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Exact candidates, installed by NuGet; no source-project references. -->
+    <PackageReference Include="netDxf.netstandard" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.NetDxf" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Geometry" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Rendering" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Graph" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Editor" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Dimensions" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Drafting" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Rendering.Shx" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Rendering.SkiaSharp" Version="[$(PackageVersion)]" />
+    <PackageReference Include="netDxf.Shadow.Exchange.Dwg" Version="[$(PackageVersion)]" />
+  </ItemGroup>
+</Project>

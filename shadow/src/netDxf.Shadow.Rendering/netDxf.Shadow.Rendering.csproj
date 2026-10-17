@@ -1,3 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Backend-independent DXF render scenes, picking, paper-space composition, text layout and SVG output.</Description></PropertyGroup>
   <ItemGroup><ProjectReference Include="../netDxf.Shadow.Geometry/netDxf.Shadow.Geometry.csproj" /></ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ class MergeQueueTests(unittest.TestCase):
         release = (ROOT / '.github/workflows/release.yml').read_text()
         self.assertIn('uses: ./.github/workflows/ci-build.yml', release)
         build = (ROOT / '.github/workflows/ci-build.yml').read_text()
-        self.assertIn('needs: [conformance, runtime-evidence]', build)
+        self.assertIn('needs: [conformance, runtime-evidence, shadow]', build)
         self.assertIn('needs: [plan, build]', release)
         self.assertNotIn('  pull_request:', release)
         self.assertNotIn('  merge_group:', release)
@@ -37,7 +37,8 @@ class MergeQueueTests(unittest.TestCase):
     def test_queue_and_pr_force_dry_run_for_every_ref_kind(self):
         sha = 'a' * 40
         with patch.object(p, 'git', side_effect=lambda *args: '' if args[0] == 'status' else sha), \
-                patch.object(p.subprocess, 'run'), patch.object(p, 'build_version', return_value='3.0.1-ci.123'):
+                patch.object(p.subprocess, 'run'), patch.object(p, 'build_version', return_value='3.0.1-ci.123'), \
+                patch.object(p, 'source_version', return_value='3.0.1'):
             for event in ('merge_group', 'pull_request'):
                 for kind, ref in (('branch', 'gh-readonly-queue/netstandard/pr-190-deadbeef'), ('tag', 'v3.0.1')):
                     for requested in (False, True):
@@ -53,7 +54,8 @@ class MergeQueueTests(unittest.TestCase):
 
     def test_tagged_push_and_manual_publication_contract_stays_opt_in(self):
         sha = 'a' * 40
-        with patch.object(p, 'git', side_effect=lambda *args: '' if args[0] == 'status' else sha), patch.object(p.subprocess, 'run'):
+        with patch.object(p, 'git', side_effect=lambda *args: '' if args[0] == 'status' else sha), patch.object(p.subprocess, 'run'), \
+                patch.object(p, 'source_version', return_value='3.0.1'):
             for event in ('push', 'workflow_dispatch'):
                 self.assertIs(p.release_plan('tag', 'v3.0.1', sha, False, event)['publish'], True)
                 self.assertIs(p.release_plan('tag', 'v3.0.1', sha, True, event)['publish'], False)

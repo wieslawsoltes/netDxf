@@ -90,7 +90,10 @@ jobs:
     if: vars.NUGET_PUBLISH_ENABLED == 'true' && (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_nuget))
     environment: nuget
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -122,10 +125,22 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
         run: python tools/ci/publication.py
-      - name: Publish the verified package and symbols (duplicates remain errors)
+      - name: Require the NuGet trusted-publishing profile
         if: github.event_name == 'release' || !inputs.dry_run
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_USER: ${{ vars.NUGET_USER }}
+        run: test -n "$NUGET_USER" || { echo 'Configure the NUGET_USER Actions variable with your nuget.org profile name.'; exit 1; }
+      - name: Exchange GitHub OIDC for a short-lived NuGet key
+        if: github.event_name == 'release' || !inputs.dry_run
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        id: nuget-login
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish the verified packages and symbols (duplicates remain errors)
+        if: github.event_name == 'release' || !inputs.dry_run
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          test -n "$NUGET_API_KEY" || { echo 'Configure NUGET_API_KEY in the protected nuget environment.'; exit 1; }
-          dotnet nuget push artifacts/packages/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+          for package in artifacts/packages/*.nupkg; do
+            dotnet nuget push "$package" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --timeout 600
+          done

@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsPackable>false</IsPackable>
-    <PackageVersion Condition="'$(PackageVersion)' == ''">3.0.1-ci.0</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Deliberately no ProjectReference: exercise the actual produced package. -->

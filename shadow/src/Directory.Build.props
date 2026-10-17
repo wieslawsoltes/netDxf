@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="../Directory.Build.props" />
+  <Import Project="../../nuget/Package.props" />
+  <PropertyGroup>
+    <!-- Emit available API documentation without requiring comments on every member. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>

@@ -18,6 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools/ci'))
 import pipeline
 import runtime_assets
 import runtime_release
+import package_catalog
+from package_fixtures import write_package, write_catalog, write_shadow_receipt
 
 
 class RuntimeArchiveTests(unittest.TestCase):
@@ -30,18 +32,15 @@ class RuntimeArchiveTests(unittest.TestCase):
         self.identity = {'commit':'a'*40,'tree':'b'*40}
         self.identity_patch = patch.object(pipeline,'identity',return_value=self.identity)
         self.identity_patch.start(); self.addCleanup(self.identity_patch.stop)
-        self.build = {**self.identity,'package':pipeline.PACKAGE,'frameworks':list(pipeline.TFMS),'version':'3.0.2'}
-        (self.packages/'build.json').write_text(json.dumps(self.build))
+        self.build = {**self.identity,'package':pipeline.PACKAGE,'frameworks':list(pipeline.TFMS),'version':'3.0.2',
+                      'packages':package_catalog.manifest('3.0.2')}
+        write_catalog(self.packages)
         self.dlls = {t:b'MZ'+(t*50).encode() for t in pipeline.TFMS}
         for extension in ('nupkg','snupkg'):
             path = self.packages/f'{pipeline.PACKAGE}.3.0.2.{extension}'
-            with zipfile.ZipFile(path,'w') as z:
-                z.writestr('test.nuspec',f'<package><metadata><id>{pipeline.PACKAGE}</id><version>3.0.2</version><repository url="{pipeline.REPOSITORY}" commit="{self.identity["commit"]}"/><license>MIT</license></metadata></package>')
-                for target in pipeline.TFMS:
-                    if extension == 'nupkg':
-                        z.writestr(f'lib/{target}/{pipeline.PACKAGE}.dll',self.dlls[target])
-                        z.writestr(f'lib/{target}/{pipeline.PACKAGE}.xml','<doc/>')
-                    else:z.writestr(f'lib/{target}/{pipeline.PACKAGE}.pdb',b'BSJB'+b'0'*101)
+            write_package(path, symbols=extension == 'snupkg', dlls=self.dlls)
+        self.build['shadow_smoke'] = write_shadow_receipt(self.packages)
+        (self.packages/'build.json').write_text(json.dumps(self.build))
         package_hash = pipeline.digest(self.packages/f'{pipeline.PACKAGE}.3.0.2.nupkg')
         for index,(host,runtime,asset) in enumerate(runtime_assets.MATRIX):
             directory = self.reports/str(index); directory.mkdir()

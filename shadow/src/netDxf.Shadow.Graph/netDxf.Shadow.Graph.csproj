@@ -1,3 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>DXF connectivity and topology analysis, intersection splitting and graph algorithms.</Description></PropertyGroup>
   <ItemGroup><ProjectReference Include="../netDxf.Shadow.Geometry/netDxf.Shadow.Geometry.csproj" /></ItemGroup>
 </Project>
