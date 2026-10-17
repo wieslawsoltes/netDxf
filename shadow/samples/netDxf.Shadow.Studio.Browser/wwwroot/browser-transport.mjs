@@ -104,7 +104,7 @@ export function installBrowserTransport({ nativeFetch = globalThis.fetch.bind(gl
       if (result.status >= 200 && result.status < 300) {
         if (request.method === 'POST') possiblyDirty = true;
         if (path === '/api/cad/documents' && request.method === 'GET')
-          possiblyDirty = JSON.parse(result.json).some(document => document.dirty);
+          possiblyDirty = JSON.parse(result.json ?? new TextDecoder().decode(result.bytes)).some(document => document.dirty);
       }
       abort(request.signal);
       return new Response(result.bytes ?? result.json, { status: result.status, headers: { 'Content-Type': result.contentType } });

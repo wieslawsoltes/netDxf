@@ -27,7 +27,7 @@ app.Use(async (context, next) =>
 });
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.MapGet("/api/state", (Studio studio) => studio.State());
+app.MapGet("/api/state", (Studio studio, HttpContext context) => StudioHttp.Presentation(context, studio.State()));
 app.MapGet("/api/render", (Studio studio, HttpRequest request, int width, int height, double? cx, double? cy, double? scale, string? backend, long? snapshot, string? merge, CancellationToken cancellationToken) =>
 {
     var image = StudioHttp.Execute(studio, request, () => studio.Render(width, height, cx, cy, scale, backend ?? "skia", snapshot, cancellationToken, merge));

@@ -23,10 +23,15 @@ public static class BrowserRuntime
 public sealed record BrowserRequest(string Method, string Path, Dictionary<string, string> Headers, JsonElement? Body);
 public sealed record BrowserReply(int Status, string ContentType, string? Json, byte[]? Bytes)
 {
-    internal static readonly JsonSerializerOptions Serializer = new(JsonSerializerDefaults.Web);
-    public static BrowserReply Value(object? value) => new(200, "application/json", JsonSerializer.Serialize(value, Serializer), null);
+    internal static readonly JsonSerializerOptions Serializer = StudioJson.CreateOptions();
+    private static readonly BrowserReply NullValue = new(200, "application/json", "null", null);
+    // The byte[] interop channel copies UTF-8 directly. Embedding a large JSON string
+    // inside the interop envelope would escape it again, then re-encode it in Response.
+    public static BrowserReply Value(object? value) => value is null ? NullValue :
+        new(200, "application/json", null, JsonSerializer.SerializeToUtf8Bytes(value, Serializer));
     public static BrowserReply Binary(byte[] value, string type) => new(200, type, null, value);
-    public static BrowserReply Error(int status, string message) => new(status, "application/json", JsonSerializer.Serialize(new { error = message }, Serializer), null);
+    public static BrowserReply Error(int status, string message) =>
+        new(status, "application/json", null, JsonSerializer.SerializeToUtf8Bytes(new { error = message }, Serializer));
 }
 public sealed record BrowserNotice(string EventId, string Data);
 

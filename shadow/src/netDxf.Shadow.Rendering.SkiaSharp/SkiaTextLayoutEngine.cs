@@ -5,7 +5,13 @@ using netDxf.Shadow.Geometry;
 
 namespace netDxf.Shadow.Rendering.SkiaSharp;
 
-public readonly record struct SkiaTextCacheStatistics(long ShapeCompilations, long ShapeHits, int CachedRuns, int CachedUnits);
+public readonly record struct SkiaTextCacheStatistics(long ShapeCompilations, long ShapeHits, int CachedRuns, int CachedUnits)
+{
+    public long LayoutCompilations { get; init; }
+    public long SharedLayoutHits { get; init; }
+    public int CachedLayouts { get; init; }
+    public int CachedLayoutUnits { get; init; }
+}
 
 /// <summary>HarfBuzz shaping and native glyph bounds, detached into immutable layout results.
 /// May be shared between a RenderCompiler and SkiaRenderBackend; the host owns its lifetime.</summary>
@@ -21,10 +27,18 @@ public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutli
     private long revision;
     private bool disposed;
     public long Revision => Interlocked.Read(ref revision);
-    /// <summary>Cumulative shaping work and bounded native glyph-cache occupancy.</summary>
+    /// <summary>Cumulative shaping/layout work and bounded shared-cache occupancy.
+    /// SharedLayoutHits excludes the existing per-CadText identity fast path.</summary>
     public SkiaTextCacheStatistics CacheStatistics
     {
-        get { lock (gate) return new(shapeCompilations, shapeHits, shapedRuns.Count, shapedUnits); }
+        get
+        {
+            lock (gate) return new(shapeCompilations, shapeHits, shapedRuns.Count, shapedUnits)
+            {
+                LayoutCompilations = layoutCompilations, SharedLayoutHits = sharedLayoutHits,
+                CachedLayouts = sharedLayouts.Count, CachedLayoutUnits = layoutUnits
+            };
+        }
     }
 
     public RichTextLayoutResult Layout(CadText text)
@@ -33,7 +47,7 @@ public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutli
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
-            return layouts.GetValue(text, value => RichTextLayout.Layout(value, Measure));
+            return layouts.GetValue(text, LayoutShared);
         }
     }
 
@@ -44,7 +58,7 @@ public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutli
             ObjectDisposedException.ThrowIf(disposed, this);
             ClearShapedRuns();
             foreach (var font in fonts.Values) font.Dispose();
-            fonts.Clear(); layouts = new(); Interlocked.Increment(ref revision);
+            fonts.Clear(); layouts = new(); ClearSharedLayouts(); Interlocked.Increment(ref revision);
         }
     }
 
@@ -105,7 +119,7 @@ public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutli
     {
         var key = (style.FontFamily, style.Bold, style.Italic);
         if (fonts.TryGetValue(key, out var entry)) return entry;
-        if (fonts.Count >= 64) { ClearShapedRuns(); foreach (var old in fonts.Values) old.Dispose(); fonts.Clear(); }
+        if (fonts.Count >= 64) { ClearSharedLayouts(); ClearShapedRuns(); foreach (var old in fonts.Values) old.Dispose(); fonts.Clear(); }
         using var nativeStyle = new SKFontStyle(style.Bold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal,
             SKFontStyleWidth.Normal, style.Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
         var family = style.FontFamily;
@@ -125,7 +139,7 @@ public sealed partial class SkiaTextLayoutEngine : ITextLayoutEngine, ITextOutli
         lock (gate)
         {
             if (disposed) return;
-            disposed = true; ClearShapedRuns(); foreach (var entry in fonts.Values) entry.Dispose(); fonts.Clear(); layouts = new();
+            disposed = true; ClearShapedRuns(); foreach (var entry in fonts.Values) entry.Dispose(); fonts.Clear(); layouts = new(); ClearSharedLayouts();
         }
     }
 }

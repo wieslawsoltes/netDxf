@@ -14,9 +14,30 @@ public interface IShadowReadObserver
 /// </summary>
 public sealed class ShadowReadSet : IShadowReadObserver
 {
-    private readonly Dictionary<ObjectId, ShadowObject?> reads = new();
-    public void Read(ObjectId id, ShadowObject? node) => reads[id] = node;
-    public ImmutableArray<ShadowDependency> Freeze() => reads.Select(p => new ShadowDependency(p.Key, p.Value)).ToImmutableArray();
+    // Projectors commonly read one entity repeatedly. Keep that first dependency
+    // inline so those accesses need neither a dictionary allocation nor a hash lookup.
+    private ShadowDependency first;
+    private bool hasFirst;
+    private Dictionary<ObjectId, ShadowObject?>? others;
+
+    public void Read(ObjectId id, ShadowObject? node)
+    {
+        if (!hasFirst) { first = new(id, node); hasFirst = true; }
+        else if (first.Id == id)
+        {
+            if (!ReferenceEquals(first.Node, node)) first = new(first.Id, node);
+        }
+        else (others ??= new())[id] = node;
+    }
+    public ImmutableArray<ShadowDependency> Freeze()
+    {
+        if (!hasFirst) return [];
+        if (others is null) return [first];
+        var result = ImmutableArray.CreateBuilder<ShadowDependency>(others.Count + 1);
+        result.Add(first);
+        foreach (var (id, node) in others) result.Add(new(id, node));
+        return result.MoveToImmutable();
+    }
 }
 
 public readonly record struct ShadowDependency(ObjectId Id, ShadowObject? Node)

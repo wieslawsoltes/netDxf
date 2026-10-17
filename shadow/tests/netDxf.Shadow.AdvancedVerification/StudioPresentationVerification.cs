@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using netDxf;
 using netDxf.Blocks;
 using netDxf.Entities;
@@ -80,6 +82,106 @@ internal static class StudioPresentationVerification
             Require(first.GetProperty("state").GetProperty("items").GetArrayLength() == 2000);
             Require(first.GetProperty("state").GetProperty("occurrences").GetInt32() == 5003);
             Require(first.GetRawText() == Json(studio.CadState()).GetRawText());
+            RequireSerializationParity(studio.CadState(), StudioJson.CreateOptions());
+        });
+
+        Add("generated presentation writers preserve exact JSON across every sample layout", () =>
+        {
+            using var studio = new Studio();
+            var layouts = Json(studio.State()).GetProperty("layouts").EnumerateArray().Select(value => value.GetString()!).ToArray();
+            var options = StudioJson.CreateOptions();
+            foreach (var name in layouts)
+            {
+                studio.SetLayout(new(studio.CadRevision, name));
+                RequireSerializationParity(studio.State(), options);
+                RequireSerializationParity(studio.CadState(), options);
+            }
+        });
+
+        Add("generated presentation metadata honors serializer option fallbacks", () =>
+        {
+            using var studio = new Studio(); var data = studio.CadState();
+            var plain = StudioJson.CreateOptions(); plain.PropertyNamingPolicy = null;
+            var snake = StudioJson.CreateOptions(); snake.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            var pretty = StudioJson.CreateOptions(); pretty.WriteIndented = true;
+            var omit = StudioJson.CreateOptions(); omit.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+            var numbers = StudioJson.CreateOptions(); numbers.NumberHandling = JsonNumberHandling.WriteAsString;
+            var custom = StudioJson.CreateOptions(); custom.Converters.Add(new BoundsWriter());
+            foreach (var options in new[] { plain, snake, pretty, omit, numbers, custom })
+                RequireSerializationParity(data, options);
+        });
+
+        Add("generated math metadata preserves request deserialization", () =>
+        {
+            var options = StudioJson.CreateOptions();
+            var request = JsonSerializer.Deserialize<CadSelectionRequest>("""
+                {"revision":7,"mode":"window","first":{"x":"0.125","y":-2.5,"z":0},"second":{"x":3,"y":4,"z":5}}
+                """, options)!;
+            Require(request.Revision == 7 && request.Mode == "window" && request.First == new Vec3(0.125, -2.5, 0) && request.Second == new Vec3(3, 4, 5));
+        });
+
+        Add("generated nullable math contracts configure every native request metadata graph", () =>
+        {
+            var http = new Microsoft.AspNetCore.Http.Json.JsonOptions().SerializerOptions;
+            foreach (var options in new[] { StudioJson.CreateOptions(), StudioJson.CreateResponseOptions(http) })
+            {
+                options.MakeReadOnly();
+                // Minimal API endpoint initialization configures these complete graphs
+                // before invoking any route, including an unrelated GET state request.
+                foreach (var type in typeof(Studio).Assembly.GetTypes().Where(type => type.IsPublic && type.Name.EndsWith("Request", StringComparison.Ordinal)))
+                    _ = options.GetTypeInfo(type);
+                var snap = JsonSerializer.Deserialize<CadSnapRequest>("""
+                    {"point":{"x":1,"y":2,"z":3},"tolerance":0.5,"anchor":{"x":"0.125","y":-2.5,"z":0}}
+                    """, options)!;
+                var layer = JsonSerializer.Deserialize<CadLayerRequest>("""
+                    {"revision":7,"layer":{"id":{"value":"N:synthetic"},"name":"Synthetic"}}
+                    """, options)!;
+                Require(snap.Anchor == new Vec3(0.125, -2.5, 0) && layer.Layer.Id == new ObjectId("N:synthetic"));
+                Require(JsonSerializer.Deserialize<Vec3?>("null", options) is null);
+                Require(JsonSerializer.Deserialize<ObjectId?>("null", options) is null);
+                Require(JsonSerializer.Deserialize<Bounds2?>("{\"minX\":1,\"minY\":2,\"maxX\":3,\"maxY\":4}", options) == new Bounds2(1, 2, 3, 4));
+            }
+        });
+
+        Add("response options preserve host encoding and converters without changing request options", () =>
+        {
+            var document = new DxfDocument();
+            document.Entities.Add(new Line(Vector3.Zero, new Vector3(3, 4, 0)) { Layer = new netDxf.Tables.Layer("Synthetic-É-日本語") });
+            using var studio = Loaded(document); var data = studio.CadState();
+            foreach (var customize in new[] { false, true })
+            {
+                var configured = new Microsoft.AspNetCore.Http.Json.JsonOptions().SerializerOptions;
+                if (customize)
+                {
+                    configured.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+                    configured.WriteIndented = true;
+                    configured.Converters.Add(new BoundsWriter());
+                }
+                var originalResolver = configured.TypeInfoResolver;
+                var response = StudioJson.CreateResponseOptions(configured);
+                Require(!ReferenceEquals(response, configured) && ReferenceEquals(response.Encoder, configured.Encoder));
+                Require(ReferenceEquals(configured.TypeInfoResolver, originalResolver));
+                Require(JsonSerializer.SerializeToUtf8Bytes(data, configured).AsSpan().SequenceEqual(JsonSerializer.SerializeToUtf8Bytes(data, response)));
+                _ = configured.GetTypeInfo(typeof(CadSnapRequest));
+            }
+        });
+
+        Add("response options preserve custom host presentation resolvers and modifiers", () =>
+        {
+            using var studio = new Studio(); var data = studio.CadState();
+            var modified = new DefaultJsonTypeInfoResolver(); modified.Modifiers.Add(HidePresentationLayer);
+            foreach (var resolver in new IJsonTypeInfoResolver[] { modified, new PresentationResolver() })
+            {
+                var configured = new Microsoft.AspNetCore.Http.Json.JsonOptions().SerializerOptions;
+                configured.TypeInfoResolver = resolver;
+                var expected = JsonSerializer.SerializeToUtf8Bytes(data, configured);
+                var response = StudioJson.CreateResponseOptions(configured);
+                Require(ReferenceEquals(response.TypeInfoResolver, resolver));
+                Require(expected.AsSpan().SequenceEqual(JsonSerializer.SerializeToUtf8Bytes(data, response)));
+                using var json = JsonDocument.Parse(expected);
+                Require(!json.RootElement.GetProperty("items")[0].TryGetProperty("layer", out _));
+                Require(!json.RootElement.GetProperty("state").GetProperty("items")[0].TryGetProperty("layer", out _));
+            }
         });
 
         Add("view changes invalidate metadata without changing the source revision", () =>
@@ -142,6 +244,29 @@ internal static class StudioPresentationVerification
         catch { studio.Dispose(); throw; }
     }
     private static JsonElement Json(object value) => JsonSerializer.SerializeToElement(value, Web);
+    private static void RequireSerializationParity(object value, JsonSerializerOptions generated)
+    {
+        var reflection = new JsonSerializerOptions(generated) { TypeInfoResolver = new DefaultJsonTypeInfoResolver() };
+        Require(JsonSerializer.SerializeToUtf8Bytes(value, reflection).AsSpan().SequenceEqual(JsonSerializer.SerializeToUtf8Bytes(value, generated)));
+    }
+    private sealed class BoundsWriter : JsonConverter<Bounds2>
+    {
+        public override Bounds2 Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) => throw new NotSupportedException();
+        public override void Write(Utf8JsonWriter writer, Bounds2 value, JsonSerializerOptions options) => writer.WriteStringValue($"{value.MinX:R}:{value.MaxY:R}");
+    }
+    private static void HidePresentationLayer(JsonTypeInfo info)
+    {
+        if (info.Type.DeclaringType == typeof(Studio) && (info.Type.Name is "StateItem" or "CadItem"))
+            foreach (var property in info.Properties.Where(property => property.Name == "layer"))
+                property.ShouldSerialize = static (_, _) => false;
+    }
+    private sealed class PresentationResolver : DefaultJsonTypeInfoResolver
+    {
+        public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+        {
+            var info = base.GetTypeInfo(type, options); HidePresentationLayer(info); return info;
+        }
+    }
     private static string Server(JsonElement state) => state.GetProperty("serverId").GetString()!;
     private static long Change(JsonElement state) => state.GetProperty("changeVersion").GetInt64();
     private static long Revision(JsonElement state) => state.GetProperty("revision").GetInt64();

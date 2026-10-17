@@ -81,6 +81,32 @@ def run(dotnet: str, configuration: str) -> None:
 
             initial = state(); count = initial['entities']
             request('health'); passed('private host startup')
+            # Endpoint initialization configures every request type before this first
+            # GET. Exercise the nullable math bodies that previously broke the table,
+            # then compare native state responses across optimized and ordinary paths.
+            document = request('cad/documents', {'name': 'HTTP JSON probe', 'demo': False}, custom={'X-Shadow-Studio': '1'})
+            cad_prefix = 'cad/' + document['id']
+            cad = request(cad_prefix + '/state')
+            cad = post(cad_prefix + '/command', cad['state'], command={
+                'name': 'LINE', 'points': [{'x': '0.125', 'y': -2.5, 'z': 0}, {'x': 3, 'y': 4, 'z': 0}], 'reference': None})
+            assert cad['itemCount'] == 1
+            snap = request(cad_prefix + '/snap', {'point': {'x': 0.125, 'y': -2.5, 'z': 0}, 'tolerance': 0.5,
+                'modes': 1, 'anchor': {'x': '1.25', 'y': 0, 'z': 0}}, cad['state'])
+            assert {axis: snap['position'][axis] for axis in ['x', 'y', 'z']} == {'x': 0.125, 'y': -2.5, 'z': 0}
+            passed('CAD endpoint metadata and nullable math request binding')
+            cad = post(cad_prefix + '/layer', cad['state'], layer={'id': None, 'name': 'HTTP-É-日本語'})
+            layer = next(layer for layer in cad['layers'] if layer['name'] == 'HTTP-É-日本語')
+            cad = post(cad_prefix + '/layer', cad['state'], layer={'id': layer['id'], 'color': '#123456'})
+            state_bytes = request(cad_prefix + '/state', raw=True)
+            assert json.loads(state_bytes) == cad and 'HTTP-É-日本語'.encode() in state_bytes
+            assert next(layer for layer in cad['layers'] if layer['name'] == 'HTTP-É-日本語')['color'] == '#123456'
+            passed('native presentation preserves HTTP encoding and nullable layer identity')
+            receipt = cad['state']
+            unchanged = request(cad_prefix + '/state?knownServer=' + receipt['serverId'] + '&knownChange=' + str(receipt['changeVersion']), raw=True)
+            assert unchanged == b'null'
+            post(cad_prefix + '/close', receipt, discard=True)
+            assert state()['entities'] == count
+            passed('native conditional presentation and isolated document cleanup')
             for asset in ['/', '/studio.js', '/studio-state.mjs', '/workspaces.css']:
                 with urlopen(base + asset, timeout=15) as response:
                     payload = response.read()

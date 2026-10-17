@@ -21,9 +21,18 @@ Write(new
     processors = Environment.ProcessorCount, serverGc = GCSettings.IsServerGC,
     tieredCompilation = Environment.GetEnvironmentVariable("DOTNET_TieredCompilation") ?? "default",
     concurrentGc = Environment.GetEnvironmentVariable("DOTNET_gcConcurrent") ?? "default",
-    options.Case, options.Lines, options.Texts, options.Points, options.Iterations, options.Warmup,
+    options.Case, options.Lines, options.SceneEntities, options.Texts, options.DistinctTexts, options.Points, options.Iterations, options.Warmup,
     width = 1200, height = 900, fontFamily = "sans-serif"
 });
+if (options.Case is "all" or "scene")
+{
+    var snapshot = SyntheticScene.Create(options.SceneEntities);
+    var counts = new { entities = options.SceneEntities, objects = snapshot.Objects.Count, layers = SyntheticScene.Layers };
+    Measure("cold-scene-projection", () => new CadSceneBuilder().Build(snapshot),
+        scene => Require(scene.Diagnostics.IsEmpty && scene.Occurrences.Length == options.SceneEntities), counts);
+    Measure("cold-snapshot-render-compilation", () => new RenderCompiler().Compile(snapshot),
+        scene => Require(scene.Diagnostics.IsEmpty && scene.Items.Length == options.SceneEntities), counts);
+}
 if (options.Case is "all" or "lines")
 {
     var source = LineScene(options.Lines);
@@ -37,7 +46,7 @@ if (options.Case is "all" or "text")
 {
     var source = new CadScene(Guid.NewGuid(), 0, "Model", Enumerable.Range(0, options.Texts).Select(i =>
     {
-        var text = new CadText("Valve " + i % 80 + " supply water", new(i % 30 * 16, i / 30 * 5),
+        var text = new CadText("Valve " + i % options.DistinctTexts + " supply water", new(i % 30 * 16, i / 30 * 5),
             Vec3.UnitX, Vec3.UnitY, 2, "sans-serif", "BaselineLeft", false, 0);
         return new CadOccurrence("label/" + i, new("label/" + i), [], CadStyle.Default, new([], Text: text));
     }).ToImmutableArray(), []);
@@ -45,7 +54,8 @@ if (options.Case is "all" or "text")
     {
         using var engine = new SkiaTextLayoutEngine();
         return RenderCompiler.Compile(source, textLayout: engine);
-    }, scene => Require(scene.Items.Length == options.Texts && scene.Diagnostics.IsEmpty), new { labels = options.Texts, distinctNumbers = Math.Min(80, options.Texts) });
+    }, scene => Require(scene.Items.Length == options.Texts && scene.Diagnostics.IsEmpty),
+        new { labels = options.Texts, distinctLabels = Math.Min(options.DistinctTexts, options.Texts) });
     using var textEngine = new SkiaTextLayoutEngine();
     var scene = RenderCompiler.Compile(source, textLayout: textEngine);
     Draw("text-camera-redraw", scene, textEngine, new { labels = options.Texts });
@@ -150,9 +160,9 @@ static RenderScene PathScene(int points)
     return new(Guid.NewGuid(), 0, "Model", immutable, bounds, new SpatialIndex(immutable.Select(item => item.Bounds)), []);
 }
 internal sealed record Measurement(double Milliseconds, long AllocatedBytes);
-internal sealed record Options(string Case = "all", int Lines = 200_000, int Texts = 1500, int Points = 500_000, int Iterations = 5, int Warmup = 2, bool Help = false)
+internal sealed record Options(string Case = "all", int Lines = 200_000, int SceneEntities = 20_000, int Texts = 1500, int DistinctTexts = 80, int Points = 500_000, int Iterations = 5, int Warmup = 2, bool Help = false)
 {
-    internal const string Usage = "Usage: --case all|lines|text|paths --lines 200000 --texts 1500 --points 500000 --iterations 5 --warmup 2";
+    internal const string Usage = "Usage: --case all|scene|lines|text|paths --scene-entities 20000 --lines 200000 --texts 1500 --distinct-texts 80 --points 500000 --iterations 5 --warmup 2";
     internal static Options Parse(string[] args)
     {
         var options = new Options();
@@ -163,14 +173,16 @@ internal sealed record Options(string Case = "all", int Lines = 200_000, int Tex
             if (++i >= args.Length) throw new ArgumentException("Missing value for " + key);
             if (key == "--case")
             {
-                if (args[i] is not ("all" or "lines" or "text" or "paths")) throw new ArgumentException("Unknown rendering workload.");
+                if (args[i] is not ("all" or "scene" or "lines" or "text" or "paths")) throw new ArgumentException("Unknown rendering workload.");
                 options = options with { Case = args[i] }; continue;
             }
             if (!int.TryParse(args[i], out var value)) throw new ArgumentException("Invalid integer for " + key);
             options = key switch
             {
                 "--lines" when value is >= 1 and <= 1_000_000 => options with { Lines = value },
+                "--scene-entities" when value is >= 1 and <= 200_000 => options with { SceneEntities = value },
                 "--texts" when value is >= 1 and <= 20_000 => options with { Texts = value },
+                "--distinct-texts" when value is >= 1 and <= 20_000 => options with { DistinctTexts = value },
                 "--points" when value is >= 2 and <= 2_000_000 => options with { Points = value },
                 "--iterations" when value is >= 1 and <= 100 => options with { Iterations = value },
                 "--warmup" when value is >= 0 and <= 20 => options with { Warmup = value },

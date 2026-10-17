@@ -5,6 +5,7 @@ namespace netDxf.Shadow.NetDxf;
 /// <summary>Exact, bounded sharing for the common immutable values in captured geometry.</summary>
 internal static class ShadowCaptureValues
 {
+    internal static readonly ShadowValue.Sequence EmptySequence = new(ImmutableArray<ShadowValue>.Empty);
     private static readonly ShadowValue True = ShadowValue.From(true);
     private static readonly ShadowValue False = ShadowValue.From(false);
     private static readonly ShadowValue Zero = ShadowValue.From(0.0);
