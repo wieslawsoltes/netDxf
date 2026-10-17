@@ -1,22 +1,53 @@
 # netDxf
 
-A C# library for reading, creating, editing and writing DXF drawings.
-This repository develops the `netDxf.netstandard` package and its conformance tools.
+[![Build, test and package](https://github.com/wieslawsoltes/netDxf/actions/workflows/ci-build.yml/badge.svg?branch=netstandard)](https://github.com/wieslawsoltes/netDxf/actions/workflows/ci-build.yml)
+[![Release](https://github.com/wieslawsoltes/netDxf/actions/workflows/release.yml/badge.svg)](https://github.com/wieslawsoltes/netDxf/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**The implementation target is complete DXF version, object-model and feature support.**
-Full AutoCAD parity is not yet established. Typed editing, raw preservation,
-feature evaluation and coordinated regeneration are separate capabilities.
-Native AutoCAD execution is outside the development acceptance scope; it is not
-required to complete or merge a feature. Specification-based tests, independent
-readers, exact round trips and the existing build/package checks remain required.
-See the [remaining major gaps](doc/dxf-conformance/remaining-major-gaps.md) and
-[contract index](doc/dxf-conformance/README.md) for current scope and priorities.
+A C# library for reading, creating, editing and writing DXF drawings.
+This repository develops `netDxf.netstandard`, eleven modular Shadow packages for
+immutable snapshots, synchronization, geometry, rendering and editing, and their
+conformance tools.
+
+## NuGet packages
+
+All twelve packages share version **`4.0.0-preview.1`**, defined once in
+[Directory.Build.props](Directory.Build.props). The version badges include
+prereleases and reflect what is currently published on nuget.org. The new preview
+packages become available when the [trusted-publishing release workflow](doc/CI-RELEASE.md#one-time-trusted-publishing-setup)
+is configured and its release is published.
+
+| Package | Purpose | Targets | NuGet | Downloads |
+|---|---|---|---|---|
+| [netDxf.netstandard](https://www.nuget.org/packages/netDxf.netstandard) | DXF reader, object model, editing and writer | .NET Standard 2.0; .NET Framework 4.7.1 / 4.8; .NET 6 / 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.netstandard.svg)](https://www.nuget.org/packages/netDxf.netstandard) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.netstandard.svg)](https://www.nuget.org/packages/netDxf.netstandard) |
+| [netDxf.Shadow](https://www.nuget.org/packages/netDxf.Shadow) | Immutable object graph and snapshot contracts | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.svg)](https://www.nuget.org/packages/netDxf.Shadow) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.svg)](https://www.nuget.org/packages/netDxf.Shadow) |
+| [netDxf.Shadow.NetDxf](https://www.nuget.org/packages/netDxf.Shadow.NetDxf) | Capture and bidirectional netDxf synchronization | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.NetDxf.svg)](https://www.nuget.org/packages/netDxf.Shadow.NetDxf) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.NetDxf.svg)](https://www.nuget.org/packages/netDxf.Shadow.NetDxf) |
+| [netDxf.Shadow.Geometry](https://www.nuget.org/packages/netDxf.Shadow.Geometry) | Semantic geometry projection and spatial processing | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Geometry.svg)](https://www.nuget.org/packages/netDxf.Shadow.Geometry) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Geometry.svg)](https://www.nuget.org/packages/netDxf.Shadow.Geometry) |
+| [netDxf.Shadow.Graph](https://www.nuget.org/packages/netDxf.Shadow.Graph) | Topology and graph analysis | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Graph.svg)](https://www.nuget.org/packages/netDxf.Shadow.Graph) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Graph.svg)](https://www.nuget.org/packages/netDxf.Shadow.Graph) |
+| [netDxf.Shadow.Rendering](https://www.nuget.org/packages/netDxf.Shadow.Rendering) | Backend-independent presentation and rendering contracts | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Rendering.svg)](https://www.nuget.org/packages/netDxf.Shadow.Rendering) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Rendering.svg)](https://www.nuget.org/packages/netDxf.Shadow.Rendering) |
+| [netDxf.Shadow.Rendering.SkiaSharp](https://www.nuget.org/packages/netDxf.Shadow.Rendering.SkiaSharp) | SkiaSharp renderer and native text shaping | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Rendering.SkiaSharp.svg)](https://www.nuget.org/packages/netDxf.Shadow.Rendering.SkiaSharp) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Rendering.SkiaSharp.svg)](https://www.nuget.org/packages/netDxf.Shadow.Rendering.SkiaSharp) |
+| [netDxf.Shadow.Rendering.Shx](https://www.nuget.org/packages/netDxf.Shadow.Rendering.Shx) | SHX font and shape rendering | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Rendering.Shx.svg)](https://www.nuget.org/packages/netDxf.Shadow.Rendering.Shx) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Rendering.Shx.svg)](https://www.nuget.org/packages/netDxf.Shadow.Rendering.Shx) |
+| [netDxf.Shadow.Editor](https://www.nuget.org/packages/netDxf.Shadow.Editor) | Editing commands, selection and undo/redo | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Editor.svg)](https://www.nuget.org/packages/netDxf.Shadow.Editor) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Editor.svg)](https://www.nuget.org/packages/netDxf.Shadow.Editor) |
+| [netDxf.Shadow.Drafting](https://www.nuget.org/packages/netDxf.Shadow.Drafting) | Drafting tools and CAD workspace commands | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Drafting.svg)](https://www.nuget.org/packages/netDxf.Shadow.Drafting) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Drafting.svg)](https://www.nuget.org/packages/netDxf.Shadow.Drafting) |
+| [netDxf.Shadow.Dimensions](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) | Dimension regeneration over detached snapshots | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Dimensions.svg)](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Dimensions.svg)](https://www.nuget.org/packages/netDxf.Shadow.Dimensions) |
+| [netDxf.Shadow.Exchange.Dwg](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) | Explicit DWG/DXF exchange through ACadSharp | .NET 8 | [![NuGet](https://img.shields.io/nuget/vpre/netDxf.Shadow.Exchange.Dwg.svg)](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) | [![Downloads](https://img.shields.io/nuget/dt/netDxf.Shadow.Exchange.Dwg.svg)](https://www.nuget.org/packages/netDxf.Shadow.Exchange.Dwg) |
+
+Every package includes XML API documentation, a package README, MIT license
+metadata and portable `.snupkg` symbols. Internal dependencies use the same
+release version. Studio applications, tests and benchmarks are not NuGet packages.
 
 ## Install and use
 
 ```sh
-dotnet add package netDxf.netstandard
+dotnet add package netDxf.netstandard --version 4.0.0-preview.1
+
+# Optional modules for a .NET 8 application:
+dotnet add package netDxf.Shadow.NetDxf --version 4.0.0-preview.1
+dotnet add package netDxf.Shadow.Rendering.SkiaSharp --version 4.0.0-preview.1
 ```
+
+Install only the modules your application uses; NuGet resolves their dependencies.
+The [Shadow guide](shadow/README.md) describes the modules and their APIs.
 
 The published package may not include unreleased or draft-PR work. To use a
 particular implementation, build the reviewed source revision instead.
@@ -112,12 +143,14 @@ and qualification evidence. Test totals and row counts are not completeness perc
 | Location | Purpose |
 |---|---|
 | [netDxf](netDxf) | Library source and XML API documentation |
+| [Shadow packages](shadow/src) | Immutable snapshots, synchronization, geometry, rendering, editing and exchange |
+| [Shadow guide](shadow/README.md) | Architecture, APIs and Studio applications |
 | [TestDxfDocument](TestDxfDocument) | Sample/test application |
 | [Conformance tests](tests/netDxf.Conformance) | Versioned API and drawing regressions |
 | [Tools](tools) | Independent verifiers, coverage generation and source tooling |
 | [Major-gap report](doc/dxf-conformance/remaining-major-gaps.md) | Prioritized remaining capabilities and acceptance criteria |
 | [Contract index](doc/dxf-conformance/README.md) | Feature-specific behavior, evidence and limits |
-| [CI and release](doc/CI-RELEASE.md) | Source binding, package/runtime qualification and opt-in publication |
+| [CI and release](doc/CI-RELEASE.md) | Package qualification, NuGet trusted-publishing setup and release instructions |
 
 ## Contribution and release policy
 

@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net471;net48;net6.0;net8.0</TargetFrameworks>
-    <Version>3.0.1</Version>
     <Authors>Daniel Carvajal</Authors>
     <Owners>haplokuon</Owners>
     <Company>netDxf</Company>
@@ -12,18 +11,12 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>netDxf.snk</AssemblyOriginatorKeyFile>
-    <PackageProjectUrl>https://github.com/haplokuon/netDxf</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/haplokuon/netDxf</RepositoryUrl>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseFile></PackageLicenseFile>
     <PackageReleaseNotes>netDxf is a .net library programmed in C# to read and write AutoCAD DXF files. It supports AutoCad2000, AutoCad2004, AutoCad2007, AutoCad2010, AutoCad2013, and AutoCad2018 DXF database versions, in both text and binary format.</PackageReleaseNotes>
-    <PackageTags>netDxf, Dxf, Dxf reader, Dxf writer, AutoCad</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>netDxf</Title>
     <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <AssemblyName>netDxf.netstandard</AssemblyName>
+    <PackageId>netDxf.netstandard</PackageId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,8 +26,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702</NoWarn>
     <OutputPath></OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -55,5 +46,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net48'">
     <Reference Include="System.Numerics" />
   </ItemGroup>
+
+  <Import Project="../nuget/Package.props" />
 
 </Project>

@@ -15,7 +15,7 @@ class RuntimeReleaseGateTests(unittest.TestCase):
         self.assertNotIn('paths:', triggers)  # Every source or consumer change is tested.
         self.assertRegex(release, r'(?m)^  build:\n    needs: plan\n    uses: \./\.github/workflows/ci-build\.yml$')
         qualify = build.split('  qualify:\n', 1)[1]
-        self.assertIn('needs: [conformance, runtime-evidence]', qualify)
+        self.assertIn('needs: [conformance, runtime-evidence, shadow]', qualify)
         self.assertIn('needs: [plan, build]', release)
         self.assertNotIn('always()', qualify)
         runtime_jobs = build.split('  runtime-smoke:\n', 1)[1]

@@ -1,3 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Source-independent DXF editing, selection, snapping and immutable undo/redo history.</Description></PropertyGroup>
   <ItemGroup><ProjectReference Include="../netDxf.Shadow.Rendering/netDxf.Shadow.Rendering.csproj" /></ItemGroup>
 </Project>

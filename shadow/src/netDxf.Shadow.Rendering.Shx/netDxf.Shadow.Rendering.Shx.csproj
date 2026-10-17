@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Managed SHX/SHP stroke font decoding, glyph execution and DXF text/shape projection.</Description></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../netDxf.Shadow.Rendering/netDxf.Shadow.Rendering.csproj" />
   </ItemGroup>

@@ -9,11 +9,13 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('pipeline', ROOT/'tools/ci/pipeline.py')
 p = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p)
+import package_catalog
+from package_fixtures import write_package
 
 
 class PipelineTests(unittest.TestCase):
     def test_versions(self):
-        for value in ('3.0.2', '3.1.0-rc.1', '0.0.0-ci.0'):
+        for value in ('3.0.2', '3.1.0-rc.1', '0.0.0-ci.0', '4.0.0-preview.1', '4.0.0-preview.1.ci.77'):
             self.assertEqual(value, p.version(value))
         for value in ('', 'v3.0.2', '03.0.2', '3.0', '3.0.2+build', '3.0.2-01', '3.0.2\nx=y', '$(id)', '../3.0.2', '65535.0.0'):
             with self.subTest(value=value), self.assertRaises(ValueError): p.version(value)
@@ -53,17 +55,31 @@ class PipelineTests(unittest.TestCase):
 
     def test_moved_tag_and_unmerged_tag_rejected(self):
         sha = 'a'*40
-        with patch.object(p, 'git', side_effect=[sha,'b'*40]):
+        with patch.object(p, 'source_version', return_value='3.0.2'), patch.object(p, 'git', side_effect=[sha,'b'*40]):
             with self.assertRaises(ValueError): p.release_plan('tag','v3.0.2',sha,False)
-        with patch.object(p, 'git', return_value=sha), patch.object(p.subprocess,'run',side_effect=p.subprocess.CalledProcessError(1,['git'])):
+        with patch.object(p, 'source_version', return_value='3.0.2'), patch.object(p, 'git', return_value=sha), patch.object(p.subprocess,'run',side_effect=p.subprocess.CalledProcessError(1,['git'])):
             with self.assertRaises(p.subprocess.CalledProcessError): p.release_plan('tag','v3.0.2',sha,False)
 
     def test_publishing_and_prerelease(self):
         sha = 'a'*40
         with patch.object(p, 'git', side_effect=lambda *args: '' if args[0] == 'status' else sha), patch.object(p.subprocess, 'run'):
-            result = p.release_plan('tag','v3.0.2-rc.1',sha,False)
+            with patch.object(p, 'source_version', return_value='3.0.2-rc.1'):
+                result = p.release_plan('tag','v3.0.2-rc.1',sha,False)
             self.assertTrue(result['publish']); self.assertTrue(result['prerelease'])
-            self.assertFalse(p.release_plan('tag','v3.0.2',sha,True)['publish'])
+            with patch.object(p, 'source_version', return_value='3.0.2'):
+                self.assertFalse(p.release_plan('tag','v3.0.2',sha,True)['publish'])
+
+    def test_tag_cannot_change_committed_release_version(self):
+        with patch.object(p, 'git', return_value='a'*40), patch.object(p, 'source_version', return_value='4.0.0-preview.1'):
+            with self.assertRaisesRegex(ValueError, 'committed shared package version'):
+                p.release_plan('tag', 'v4.0.0', 'a'*40, False)
+
+    def test_ci_prerelease_extends_shared_version(self):
+        with patch.dict(p.os.environ, {'GITHUB_RUN_NUMBER': '77'}):
+            for base, expected in (('4.0.0-preview.1', '4.0.0-preview.1.ci.77'), ('4.0.0', '4.0.0-ci.77')):
+                with patch.object(p, 'source_version', return_value=base):
+                    self.assertEqual(expected, p.build_version())
+                    self.assertEqual(base, p.build_version(base))
 
 
 
@@ -72,7 +88,9 @@ class QualificationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp); packages = root/'packages'; packages.mkdir(); evidence=root/'tests'
             identity={'commit':'a'*40,'tree':'b'*40}
-            (packages/'build.json').write_text(json.dumps({**identity,'version':'3.0.2','package':p.PACKAGE,'frameworks':p.TFMS}))
+            shadow_receipt = {'sha256':'c'*64, 'log_sha256':'d'*64, 'packages':12, 'scenarios':8}
+            (packages/'build.json').write_text(json.dumps({**identity,'version':'3.0.2','package':p.PACKAGE,'frameworks':p.TFMS,
+                'packages':package_catalog.manifest('3.0.2'), 'shadow_smoke':shadow_receipt}))
             p.seal(packages)
             for host in ('ubuntu-latest','windows-latest'):
                 for config in ('Debug','Release'):
@@ -86,9 +104,11 @@ class QualificationTests(unittest.TestCase):
             # This fixture isolates the original conformance gate. Runtime evidence
             # receives full, unmocked archive/receipt tests in test_runtime_release.py.
             import runtime_release
+            import shadow_packages
             runtime = root/'runtime.zip'; runtime.write_bytes(b'runtime fixture')
             runtime_receipt = {'sha256':p.digest(runtime),'profiles':8,'scenario_executions':96}
-            with patch.object(p,'identity',return_value=identity), patch.object(runtime_release,'verify',return_value=runtime_receipt):
+            with patch.object(p,'identity',return_value=identity), patch.object(runtime_release,'verify',return_value=runtime_receipt), \
+                    patch.object(shadow_packages, 'verify', return_value=shadow_receipt):
                 p.qualify(packages,evidence,runtime);p.verify(packages)
                 release=evidence/'dxf-conformance-windows-latest-Release/conformance/results.json'
                 release.write_text('[{"name":"substitution","passed":true}]')
@@ -103,7 +123,8 @@ class QualificationTests(unittest.TestCase):
 
     def test_release_receipt_matrix_is_complete(self):
         import copy
-        build={'package':p.PACKAGE,'frameworks':list(p.TFMS)}
+        build={'package':p.PACKAGE,'frameworks':list(p.TFMS), 'version':'3.0.2',
+               'packages':package_catalog.manifest('3.0.2'), 'shadow_smoke':{'packages':12, 'scenarios':8}}
         report={**build,'conformance':[{'host':host,'configuration':config,'count':10,'sha256':'d'*64}
                   for host in ('ubuntu-latest','windows-latest') for config in ('Debug','Release')],
                 'independent_verifiers':len(list((ROOT/'tools').glob('verify_*.py'))),
@@ -124,11 +145,7 @@ class QualificationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)/'test.nupkg'
             def make(targets=p.TFMS,sha='a'*40,ver='3.0.2'):
-                with zipfile.ZipFile(path,'w') as z:
-                    z.writestr('test.nuspec',f'<package><metadata><id>{p.PACKAGE}</id><version>{ver}</version><repository url="{p.REPOSITORY}" commit="{sha}"/><license>MIT</license></metadata></package>')
-                    for tfm in targets:
-                        z.writestr(f'lib/{tfm}/{p.PACKAGE}.dll',b'MZ'+b'0'*100)
-                        z.writestr(f'lib/{tfm}/{p.PACKAGE}.xml','<doc/>')
+                write_package(path, selected=ver, commit=sha, frameworks=targets)
             make();p.inspect_package(path,'3.0.2','a'*40)
             for args in ({'targets':p.TFMS[:-1]},{'sha':'b'*40},{'ver':'3.0.3'}):
                 make(**args)

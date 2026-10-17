@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Reusable CAD drafting commands and immutable editing plans for shadow snapshots.</Description></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../netDxf.Shadow.Editor/netDxf.Shadow.Editor.csproj" />
   </ItemGroup>

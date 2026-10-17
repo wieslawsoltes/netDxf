@@ -13,10 +13,16 @@ import xml.etree.ElementTree as ET
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-TFMS = ('netstandard2.0', 'net471', 'net48', 'net6.0', 'net8.0')
-PACKAGE = 'netDxf.netstandard'
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import package_catalog
+
+# These two legacy fields describe the core runtime matrix, not the entire release.
+TFMS = package_catalog.CORE_FRAMEWORKS
+PACKAGE = package_catalog.CORE
 REPOSITORY = 'https://github.com/wieslawsoltes/netDxf'
 VERSION = re.compile(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?\Z')
+NUSPEC_FRAMEWORKS = {'netstandard2.0': '.NETStandard2.0', 'net471': '.NETFramework4.7.1',
+                    'net48': '.NETFramework4.8', 'net6.0': 'net6.0', 'net8.0': 'net8.0'}
 
 
 def require(condition: bool, message: str) -> None:
@@ -60,10 +66,17 @@ def emit(values: dict) -> None:
 def build_version(requested: str = '') -> str:
     if requested:
         return version(requested)
-    base = ET.parse(ROOT / 'netDxf/netDxf.csproj').findtext('./PropertyGroup/Version')
+    base = source_version()
     run = os.environ.get('GITHUB_RUN_NUMBER', '0')
     require(run.isdigit(), 'Run number must be numeric')
-    return version(f'{base}-ci.{run}')
+    # SemVer has one prerelease separator: preview.1.ci.77, never preview.1-ci.77.
+    return version(f'{base}{"." if "-" in base else "-"}ci.{int(run)}')
+
+
+def source_version() -> str:
+    values = ET.parse(ROOT / 'Directory.Build.props').findall('./PropertyGroup/Version')
+    require(len(values) == 1 and values[0].text is not None, 'Missing/ambiguous shared package version')
+    return version(values[0].text)
 
 
 def release_plan(ref_type: str, ref_name: str, sha: str, dry_run: bool, event_name: str = "") -> dict:
@@ -75,6 +88,7 @@ def release_plan(ref_type: str, ref_name: str, sha: str, dry_run: bool, event_na
     if ref_type == 'tag':
         require(ref_name.startswith('v'), 'Release tag must start with v')
         chosen = version(ref_name[1:])
+        require(chosen == source_version(), 'Release tag must match the committed shared package version')
         require(git('rev-parse', f'refs/tags/{ref_name}^{{commit}}') == sha, 'Tag moved')
         subprocess.run(['git', 'merge-base', '--is-ancestor', sha, 'refs/remotes/origin/netstandard'], cwd=ROOT, check=True)
     else:
@@ -84,7 +98,12 @@ def release_plan(ref_type: str, ref_name: str, sha: str, dry_run: bool, event_na
             'publish': not dry_run, 'prerelease': '-' in chosen, **identity()}
 
 
-def inspect_package(path: Path, selected: str, commit: str, symbols: bool = False) -> None:
+def inspect_package(path: Path, selected: str, commit: str, symbols: bool = False,
+                    package_id: str = PACKAGE) -> None:
+    selected = version(selected)
+    require(package_id in package_catalog.BY_ID, 'Unreviewed package identity')
+    item = package_catalog.BY_ID[package_id]
+    require(path.is_file() and not path.is_symlink(), 'Missing/linked package')
     with zipfile.ZipFile(path) as archive:
         names = archive.namelist()
         require(len(names) == len(set(names)) and archive.testzip() is None, 'Damaged/duplicate package entries')
@@ -94,20 +113,91 @@ def inspect_package(path: Path, selected: str, commit: str, symbols: bool = Fals
         root = ET.fromstring(archive.read(specs[0]))
         metadata = root.find('{*}metadata')
         require(metadata is not None, 'Missing metadata')
-        require(metadata.findtext('{*}id') == PACKAGE and metadata.findtext('{*}version') == selected, 'Package identity mismatch')
+        require(metadata.findtext('{*}id') == item.id and metadata.findtext('{*}version') == selected, 'Package identity mismatch')
         repo = metadata.find('{*}repository')
-        require(repo is not None and repo.get('url') == REPOSITORY and repo.get('commit') == commit, 'Package source mismatch')
+        require(repo is not None and repo.get('url') == REPOSITORY and repo.get('commit') == commit and
+                repo.get('type') == 'git', 'Package source mismatch')
+        require(bool((metadata.findtext('{*}description') or '').strip()), 'Missing package description')
+        # The SDK intentionally omits package documentation/license metadata from snupkg.
+        if not symbols:
+            require(bool((metadata.findtext('{*}authors') or '').strip()), 'Missing package authors')
+            license_info = metadata.find('{*}license')
+            require(license_info is not None and license_info.text == 'MIT' and
+                    license_info.get('type') == 'expression', 'License metadata mismatch')
+            require(metadata.findtext('{*}readme') == 'README.md' and 'README.md' in names and
+                    archive.getinfo('README.md').file_size > 0, 'Missing package README')
+            require('LICENSE' in names and archive.getinfo('LICENSE').file_size > 0, 'Missing package license file')
+        dependencies = metadata.find('{*}dependencies')
+        groups = list(dependencies) if dependencies is not None else []
+        require(all(group.tag.rsplit('}', 1)[-1] == 'group' for group in groups), 'Ungrouped package dependency')
+        require(len(groups) == len(item.frameworks) and
+                {group.get('targetFramework') for group in groups} == {NUSPEC_FRAMEWORKS[tfm] for tfm in item.frameworks},
+                'Incorrect dependency target groups')
+        expected_dependencies = dict([(name, selected) for name in item.internal] + list(item.external))
+        for group in groups:
+            entries = list(group)
+            require(all(entry.tag.rsplit('}', 1)[-1] == 'dependency' for entry in entries) and
+                    len(entries) == len(expected_dependencies) and
+                    {entry.get('id') for entry in entries} == set(expected_dependencies), 'Package dependency inventory mismatch')
+            for entry in entries:
+                pinned = expected_dependencies[entry.attrib['id']]
+                require(entry.get('version') in (pinned, f'[{pinned}]'), 'Package dependency version mismatch: ' + entry.attrib['id'])
+                require(not entry.get('include') or entry.get('include').lower() == 'all', 'Restricted package dependency assets')
+                excluded = {asset.strip().lower() for asset in (entry.get('exclude') or '').split(',') if asset.strip()}
+                require(excluded <= {'build', 'analyzers'}, 'Excluded package dependency runtime/compile assets')
         extension = 'pdb' if symbols else 'dll'
-        wanted = {f'lib/{tfm}/{PACKAGE}.{extension}' for tfm in TFMS}
+        wanted = {f'lib/{tfm}/{item.assembly}.{extension}' for tfm in item.frameworks}
         actual = {n for n in names if n.startswith('lib/') and n.endswith('.' + extension)}
         require(actual == wanted, f'Incorrect {extension} target inventory: {actual}')
         for name in wanted:
             require(archive.getinfo(name).file_size > 100, 'Empty assembly/symbols')
             if symbols:
                 require(archive.read(name)[:4] == b'BSJB', 'Symbols are not portable PDBs')
+            else:
+                require(archive.read(name)[:2] == b'MZ', 'Invalid managed assembly image')
         if not symbols:
-            require(all(f'lib/{tfm}/{PACKAGE}.xml' in names for tfm in TFMS), 'Missing XML documentation')
-            require(metadata.findtext('{*}license') == 'MIT', 'License metadata mismatch')
+            documentation = {f'lib/{tfm}/{item.assembly}.xml' for tfm in item.frameworks}
+            require({n for n in names if n.startswith('lib/') and n.endswith('.xml')} == documentation, 'Missing/extra XML documentation')
+            for name in documentation:
+                doc = ET.fromstring(archive.read(name))
+                require(doc.tag == 'doc' and doc.findtext('./assembly/name') == item.assembly, 'Wrong XML documentation assembly')
+        if item.id == 'netDxf.Shadow.Exchange.Dwg' and not symbols:
+            require('THIRD-PARTY-NOTICES.txt' in names and archive.getinfo('THIRD-PARTY-NOTICES.txt').file_size > 0,
+                    'Missing DWG provider third-party notices')
+
+
+def inspect_packages(directory: Path, selected: str, commit: str) -> None:
+    for extension in ('nupkg', 'snupkg'):
+        wanted = {f'{item.id}.{selected}.{extension}' for item in package_catalog.PACKAGES}
+        actual = {path.name for path in directory.glob('*.' + extension)}
+        require(actual == wanted, f'Missing/extra {extension} package inventory: {sorted(actual ^ wanted)}')
+        for item in package_catalog.PACKAGES:
+            inspect_package(directory / f'{item.id}.{selected}.{extension}', selected, commit,
+                            extension == 'snupkg', item.id)
+
+
+def validate_build_manifest(build: dict) -> None:
+    selected = version(build['version'])
+    require(build.get('package') == PACKAGE and tuple(build.get('frameworks', ())) == TFMS,
+            'Release core package or target mismatch')
+    require(build.get('packages') == package_catalog.manifest(selected), 'Release package catalog mismatch')
+
+
+def pack(directory: Path, selected: str) -> None:
+    selected = version(selected)
+    package_catalog.validate_source(ROOT)
+    source = identity()
+    directory.mkdir(parents=True, exist_ok=True)
+    require(not any(directory.iterdir()), 'Pack output must be empty; refusing mixed release artifacts')
+    for item in package_catalog.PACKAGES:
+        subprocess.run(['dotnet', 'pack', item.project, '-c', 'Release', '-o', str(directory.resolve()),
+                        f'-p:Version={selected}', f'-p:PackageVersion={selected}', '-p:ContinuousIntegrationBuild=true',
+                        f'-p:RepositoryCommit={source["commit"]}', f'-p:SourceRevisionId={source["commit"]}',
+                        f'-p:RepositoryUrl={REPOSITORY}', f'-p:PackageProjectUrl={REPOSITORY}', '-p:RepositoryType=git',
+                        '-p:IncludeSymbols=true', '-p:SymbolPackageFormat=snupkg', '-p:DebugType=portable',
+                        '-p:DebugSymbols=true'], cwd=ROOT, check=True)
+    require(identity() == source, 'Source changed during package build')
+    inspect_packages(directory, selected, source['commit'])
 
 
 def seal(directory: Path) -> None:
@@ -134,13 +224,13 @@ def verify(directory: Path) -> None:
 def package_manifest(directory: Path, selected: str) -> None:
     selected = version(selected)
     source = identity()
-    for ext in ('nupkg', 'snupkg'):
-        packages = list(directory.glob('*.' + ext))
-        require(len(packages) == 1, 'Missing/extra package')
-        require(packages[0].name == f'{PACKAGE}.{selected}.{ext}', 'Unexpected package filename')
-        inspect_package(packages[0], selected, source['commit'], ext == 'snupkg')
+    package_catalog.validate_source(ROOT)
+    inspect_packages(directory, selected, source['commit'])
+    import shadow_packages
+    shadow = shadow_packages.verify(directory, selected, source)
     subprocess.run(['git', 'archive', '--format=tar.gz', '-o', str(directory.resolve() / f'netDxf-{selected}-source.tar.gz'), 'HEAD'], cwd=ROOT, check=True)
-    metadata = {**source, 'package': PACKAGE, 'version': selected, 'frameworks': TFMS}
+    metadata = {**source, 'package': PACKAGE, 'version': selected, 'frameworks': TFMS,
+                'packages': package_catalog.manifest(selected), 'shadow_smoke': shadow}
     (directory / 'build.json').write_text(json.dumps(metadata, indent=2) + '\n', encoding='utf-8')
     seal(directory)
     verify(directory)
@@ -159,7 +249,11 @@ def test_results(path: Path) -> list:
 def qualify(packages: Path, evidence: Path, runtime_evidence: Path | None = None) -> None:
     verify(packages)
     build = json.loads((packages / 'build.json').read_text(encoding='utf-8'))
+    validate_build_manifest(build)
     require(build['commit'] == identity()['commit'] and build['tree'] == identity()['tree'], 'Wrong release source')
+    import shadow_packages
+    shadow = shadow_packages.verify(packages, build['version'], {key: build[key] for key in ('commit', 'tree')})
+    require(build.get('shadow_smoke') == shadow, 'Shadow package smoke evidence differs from build receipt')
     results = []
     for host in ('ubuntu-latest', 'windows-latest'):
         debug_records = None
@@ -191,7 +285,7 @@ def qualify(packages: Path, evidence: Path, runtime_evidence: Path | None = None
     report = {**build, 'conformance': results, 'independent_verifiers': len(records),
               'independent_report_sha256': digest(independent), 'runtime_evidence': runtime}
     (packages / 'qualification.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-    (packages / 'RELEASE-NOTES.md').write_text(f"# netDxf {build['version']}\n\nSource: `{build['commit']}`\n\nAll five target frameworks built. Each of four Linux/Windows Debug/Release configurations passed {results[0]['count']:,} conformance cases; {len(records)} independent verifiers passed. Package-consumer smoke tests passed. All eight packaged target/runtime profiles and 96 smoke-scenario executions were revalidated; their receipts and process logs are retained in runtime-evidence.zip.\n\nThis release does not claim complete all-version AutoCAD parity or native visual qualification. See doc/dxf-conformance for scoped contracts and remaining limitations.\n", encoding='utf-8')
+    (packages / 'RELEASE-NOTES.md').write_text(f"# netDxf {build['version']}\n\nSource: `{build['commit']}`\n\nAll {len(package_catalog.PACKAGES)} packages share this version: the core targets five frameworks and eleven Shadow libraries target .NET 8. Every package includes XML documentation, a README, MIT licensing and separate portable symbols. Each of four Linux/Windows Debug/Release configurations passed {results[0]['count']:,} conformance cases; {len(records)} independent verifiers passed. All eight core packaged target/runtime profiles and 96 smoke-scenario executions were revalidated; their receipts and process logs are retained in runtime-evidence.zip. The installed-only Shadow consumer verified all {shadow['packages']} package assemblies and {shadow['scenarios']} scenarios, including native Skia/HarfBuzz rendering and DWG exchange; source-bound evidence is retained in shadow-smoke.json and shadow-smoke.log.\n\nSee doc/dxf-conformance for scoped contracts and remaining limitations.\n", encoding='utf-8')
     seal(packages)
     verify(packages)
 
@@ -206,7 +300,9 @@ def validate_qualification(report: dict, build: dict) -> None:
     require(scripts and report['independent_verifiers'] == len(scripts), 'Incomplete release independent inventory')
     require(re.fullmatch(r'[0-9a-f]{64}', report['independent_report_sha256']) is not None, 'Missing independent report hash')
     for manifest in (build, report):
-        require(manifest['package'] == PACKAGE and tuple(manifest['frameworks']) == TFMS, 'Release package or target mismatch')
+        validate_build_manifest(manifest)
+    require(report.get('shadow_smoke') == build.get('shadow_smoke') and
+            isinstance(build.get('shadow_smoke'), dict), 'Release Shadow consumer evidence mismatch')
 
 
 def verify_release(directory: Path) -> None:
@@ -217,21 +313,21 @@ def verify_release(directory: Path) -> None:
         require(build[key] == value and qualification[key] == value, 'Release source mismatch')
     require(qualification['version'] == build['version'], 'Release version mismatch')
     validate_qualification(qualification, build)
+    package_catalog.validate_source(ROOT)
+    inspect_packages(directory, version(build['version']), build['commit'])
+    import shadow_packages
+    shadow = shadow_packages.verify(directory, build['version'], {key: build[key] for key in ('commit', 'tree')})
+    require(build['shadow_smoke'] == shadow, 'Release Shadow consumer evidence differs from archived execution')
     import runtime_release
     runtime = runtime_release.verify(directory, directory / runtime_release.ARCHIVE_NAME)
     require(qualification.get('runtime_evidence') == runtime, 'Release runtime evidence receipt differs from archived execution evidence')
     tag = os.environ.get('RELEASE_TAG', '')
     require(tag.startswith('v') and version(tag[1:]) == build['version'], 'Release tag/package version mismatch')
-    for ext in ('nupkg', 'snupkg'):
-        assets = list(directory.glob('*.' + ext))
-        require(len(assets) == 1, 'Unexpected package inventory')
-        require(assets[0].name == f"{PACKAGE}.{build['version']}.{ext}", 'Unexpected release package filename')
-        inspect_package(assets[0], version(build['version']), build['commit'], ext == 'snupkg')
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('metadata', 'release-plan', 'provenance', 'package', 'verify', 'verify-release', 'qualify'))
+    parser.add_argument('command', choices=('metadata', 'release-plan', 'provenance', 'pack', 'shadow-smoke', 'package', 'verify', 'verify-release', 'qualify'))
     parser.add_argument('--version', default='')
     parser.add_argument('--directory', type=Path, default=ROOT / 'artifacts/packages')
     parser.add_argument('--evidence', type=Path, default=ROOT / 'artifacts/release-tests')
@@ -245,6 +341,11 @@ def main() -> None:
         (args.directory / 'ci-source.json').write_text(json.dumps(identity(), indent=2) + '\n', encoding='utf-8')
     elif args.command == 'package':
         package_manifest(args.directory, args.version)
+    elif args.command == 'pack':
+        pack(args.directory, args.version)
+    elif args.command == 'shadow-smoke':
+        import shadow_packages
+        emit(shadow_packages.run(args.directory, version(args.version)))
     elif args.command == 'verify':
         verify(args.directory)
     elif args.command == 'verify-release':

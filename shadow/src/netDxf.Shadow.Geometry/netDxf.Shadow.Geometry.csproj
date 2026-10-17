@@ -1,3 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Description>Double-precision semantic geometry, drawing styles and spatial indexing over immutable DXF snapshots.</Description></PropertyGroup>
   <ItemGroup><ProjectReference Include="../netDxf.Shadow/netDxf.Shadow.csproj" /></ItemGroup>
 </Project>

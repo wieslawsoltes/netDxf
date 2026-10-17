@@ -130,7 +130,7 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertEqual(expected, hashlib.sha256(original.rstrip().encode()).hexdigest())
 
     def test_qualification_requires_tests_and_every_runtime(self):
-        self.assertIn('needs: [conformance, runtime-evidence]', job(self.build, 'qualify'))
+        self.assertIn('needs: [conformance, runtime-evidence, shadow]', job(self.build, 'qualify'))
         self.assertIn('needs: runtime-smoke', job(self.build, 'runtime-evidence'))
         self.assertIn('needs: package', job(self.build, 'runtime-smoke'))
         self.assertIn('needs: build', job(self.build, 'package'))
@@ -187,11 +187,41 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertNotIn('secrets.', self.build)
         self.assertNotIn('contents: write', self.build)
         self.assertEqual(1, self.release.count('contents: write'))
-        self.assertEqual(1, self.release.count('secrets.NUGET_API_KEY'))
+        self.assertNotIn('secrets.NUGET_API_KEY', self.release)
+        self.assertNotIn('id-token: write', self.build)
+        self.assertEqual(1, self.release.count('id-token: write'))
+        publish = job(self.release, 'publish-nuget')
+        self.assertIn('      contents: read\n      id-token: write\n', publish)
+        self.assertIn('user: ${{ vars.NUGET_USER }}', publish)
+        self.assertIn('NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}', publish)
+        self.assertNotIn('--skip-duplicate', publish)
+        verification = publish.index('run: python tools/ci/publication.py')
+        login = publish.index('uses: NuGet/login@')
+        push = publish.index('dotnet nuget push')
+        self.assertLess(verification, login)
+        self.assertLess(login, push)
         for text in (self.build, self.release, self.pages):
             for action in re.findall(r'uses: ([^\s]+)', text):
                 self.assertTrue(action.startswith('./.github/workflows/') or re.fullmatch(r'[\w.-]+/[\w./-]+@[0-9a-f]{40}', action), action)
             self.assertNotIn('persist-credentials: true', text)
+
+    def test_nuget_dry_run_does_not_request_oidc_or_require_a_profile(self):
+        publish = job(self.release, 'publish-nuget')
+        for name in ('Require the NuGet trusted-publishing profile',
+                     'Exchange GitHub OIDC for a short-lived NuGet key'):
+            section = publish.split('      - name: ' + name, 1)[1].split('      - name:', 1)[0]
+            expression = re.search(r'^        if: (.+)$', section, re.M)[1]
+            for event, dry, expected in (('release', True, True), ('workflow_dispatch', True, False),
+                                         ('workflow_dispatch', False, True)):
+                self.assertEqual(expected, evaluate(expression, {'github': {'event_name': event}, 'inputs': {'dry_run': dry}}))
+
+    def test_shadow_packages_are_consumed_before_sealing_the_release(self):
+        package = job(self.build, 'package')
+        pack = package.index('python tools/ci/pipeline.py pack --version "$VERSION"')
+        consume = package.index('python tools/ci/pipeline.py shadow-smoke --version "$VERSION"')
+        seal = package.index('python tools/ci/pipeline.py package --version "$VERSION"')
+        self.assertLess(pack, consume)
+        self.assertLess(consume, seal)
 
 
 if __name__ == '__main__': unittest.main()

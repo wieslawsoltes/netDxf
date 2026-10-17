@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <!-- The entire published package family shares one release version. -->
+    <Version>4.0.0-preview.1</Version>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">$(Version)</PackageVersion>
+    <!-- Libraries opt in through nuget/Package.props; tools and samples do not pack. -->
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true' Or '$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+</Project>

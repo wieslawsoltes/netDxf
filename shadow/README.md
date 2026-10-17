@@ -14,6 +14,22 @@ Mutable netDxf document <-> serialized adapter <-> immutable shadow snapshots
                   SkiaSharp / SVG / custom backend
 ```
 
+## Install packages
+
+The eleven libraries under `shadow/src` are independently consumable NuGet
+packages. They share **`4.0.0-preview.1`** with `netDxf.netstandard` and target
+.NET 8. See the [package table and current NuGet badges](../README.md#nuget-packages)
+and the [release setup](../doc/CI-RELEASE.md).
+
+```sh
+dotnet add package netDxf.Shadow.NetDxf --version 4.0.0-preview.1
+dotnet add package netDxf.Shadow.Editor --version 4.0.0-preview.1
+dotnet add package netDxf.Shadow.Rendering.SkiaSharp --version 4.0.0-preview.1
+```
+
+NuGet resolves the required core, geometry and rendering dependencies. Add the
+optional Graph, Drafting, Dimensions, SHX and DWG modules as needed.
+
 ## Build, verify and run
 
 From the repository root:
@@ -73,7 +89,9 @@ netDxf has no complete property-notification stream. Arbitrary direct source cha
 
 ## Integrated API example
 
-The following uses the adapter, editor, graph and two renderer backends. References should point at the corresponding projects in the table above.
+The following uses the adapter, editor, graph and two renderer backends. Use the
+corresponding NuGet packages from the same release, or project references when
+developing inside this repository.
 
 ```csharp
 using netDxf;
