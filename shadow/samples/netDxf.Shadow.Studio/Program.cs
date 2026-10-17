@@ -8,6 +8,7 @@ builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://127.0.0.1:5080"
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 20 * 1024 * 1024);
 builder.Services.AddSingleton<Studio>();
 builder.Services.AddSingleton<StudioDocumentHub>();
+builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, Studio.PresentationJsonResolver));
 var app = builder.Build();
 app.Use(async (context, next) =>
 {

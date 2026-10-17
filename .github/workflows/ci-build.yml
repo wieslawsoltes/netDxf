@@ -53,6 +53,13 @@ jobs:
         run: dotnet run --project shadow/tests/netDxf.Shadow.Verification/netDxf.Shadow.Verification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
       - name: Verify structural history, incremental processing, appearance and rich text
         run: dotnet run --project shadow/tests/netDxf.Shadow.AdvancedVerification/netDxf.Shadow.AdvancedVerification.csproj -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591
+      - name: Smoke-test synthetic performance workloads (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          dotnet run --project benchmarks/netDxf.MetadataBenchmarks -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591 -- --entities 100 --references 8 --iterations 1 --warmup 0 --encoding both
+          dotnet run --project shadow/benchmarks/netDxf.Shadow.CaptureBenchmarks -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591 -- --entities 100 --iterations 1 --warmup 0 --encoding both --workload shared-blocks
+          dotnet run --project shadow/benchmarks/netDxf.Shadow.RenderingBenchmarks -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591 -- --case all --scene-entities 100 --lines 100 --texts 40 --distinct-texts 8 --points 100 --iterations 1 --warmup 0
+          dotnet run --project shadow/benchmarks/netDxf.Shadow.PresentationBenchmarks -c Release -p:TargetFrameworks=net8.0 -p:NoWarn=1591 -- --entities 100 --iterations 1 --warmup 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'

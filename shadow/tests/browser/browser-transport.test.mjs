@@ -6,6 +6,7 @@ const baseURI = 'https://example.test/netDxf/';
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const gate = () => { let resolve, reject; const promise = new Promise((a,b) => { resolve=a; reject=b; }); return {promise,resolve,reject}; };
 const reply = (value = {}) => ({status:200,contentType:'application/json',json:JSON.stringify(value),bytes:null});
+const utf8Reply = (value, status = 200) => ({status,contentType:'application/json',json:null,bytes:new TextEncoder().encode(JSON.stringify(value))});
 async function fixture(t, invoke, nativeFetch = async () => new Response('asset')) {
   const calls=[];
   const transport=installBrowserTransport({baseURI,nativeFetch,invoke:async (name,...args)=>{
@@ -54,6 +55,44 @@ test('failed writes retain their status and are never retried',async t=>{
   const f=await fixture(t,()=>({status:409,contentType:'application/json',json:'{"error":"stale"}',bytes:null}));
   const response=await f.fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"revision":1}'});
   assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:'stale'});assert.equal(f.calls.length,1);
+});
+test('UTF-8 JSON replies preserve Unicode, numbers, clone and body ownership',async t=>{
+  const value={name:'Příčný 日本語 🚀',quoted:'"\\\n\t',position:{x:1/3,y:-1.7976931348623157e308,z:null},enabled:false};
+  const expected=JSON.stringify(value), bytes=new TextEncoder().encode(` ${expected} `), view=bytes.subarray(1,bytes.length-1);
+  const f=await fixture(t,()=>({status:200,contentType:'application/json',json:null,bytes:view}));
+  const response=await f.fetch('/api/state'), clone=response.clone();
+  bytes.fill(0);
+  assert.equal(response.headers.get('content-type'),'application/json');
+  assert.equal(await response.text(),expected);
+  assert.deepEqual(await clone.json(),value);
+  await assert.rejects(response.json(),TypeError);
+});
+test('UTF-8 errors and compact unchanged replies preserve fetch semantics',async t=>{
+  let count=0;
+  const f=await fixture(t,()=>++count===1?utf8Reply({error:'Drawing “synthetic” changed.'},409):reply(null));
+  const error=await f.fetch('/api/save',{method:'POST',body:new Uint8Array([1])});
+  assert.equal(error.ok,false);assert.equal(error.status,409);
+  assert.deepEqual(await error.json(),{error:'Drawing “synthetic” changed.'});
+  const unchanged=await f.fetch('/api/cad/drawing/state?knownServer=server&knownChange=7');
+  assert.equal(unchanged.ok,true);assert.equal((await unchanged.arrayBuffer()).byteLength,4);
+  assert.equal(f.calls.length,2);
+});
+test('document dirty tracking accepts UTF-8 and legacy string replies',async t=>{
+  const add=globalThis.addEventListener,remove=globalThis.removeEventListener,handlers=new Map();
+  globalThis.addEventListener=(name,handler)=>handlers.set(name,handler);
+  globalThis.removeEventListener=(name,handler)=>{if(handlers.get(name)===handler)handlers.delete(name);};
+  let result=utf8Reply([{id:'drawing',name:'Synthetic',dirty:true}]);
+  const f=await fixture(t,()=>result);
+  t.after(()=>{f.transport.dispose();globalThis.addEventListener=add;globalThis.removeEventListener=remove;});
+  const prevented=()=>{let value=false;handlers.get('beforeunload')({preventDefault(){value=true;},returnValue:null});return value;};
+  assert.equal(prevented(),false);
+  assert.equal((await (await f.fetch('/api/cad/documents')).json())[0].dirty,true);
+  assert.equal(prevented(),true);
+  result=utf8Reply([{id:'drawing',name:'Synthetic',dirty:false}]);
+  await f.fetch('/api/cad/documents');assert.equal(prevented(),false);
+  result=reply([{id:'drawing',dirty:true}]);
+  await f.fetch('/api/cad/documents');assert.equal(prevented(),true);
+  result=reply([]);await f.fetch('/api/cad/documents');assert.equal(prevented(),false);
 });
 test('interop calls are serialized and a failed call does not poison the queue',async t=>{
   const first=gate();let count=0;

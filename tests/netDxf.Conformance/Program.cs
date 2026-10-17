@@ -21,6 +21,7 @@ internal static partial class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         Directory.CreateDirectory(ArtifactDirectory);
+        RegisterMetadataTraversalTests();
         RegisterAttributeMTextTests();
         RegisterDrawingCompatibilityTests();
         RegisterOpaqueObjectCode5Tests();

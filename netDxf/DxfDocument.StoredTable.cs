@@ -51,8 +51,13 @@ namespace netDxf
             DxfObject target = this.GetObjectByHandle(handle);
             if (target != null) return target;
             if (!ulong.TryParse(handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong value) || value == 0) return null;
-            foreach (DxfObject item in this.RetainedMetadataObjects())
-                if (ulong.TryParse(item.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong candidate) && candidate == value) return item;
+            foreach (DxfObject item in this.AddedObjects.Values)
+            {
+                target = VisitObjectMetadataMembers(item, value, (member, expected) => member != null
+                    && ulong.TryParse(member.Handle, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong candidate)
+                    && candidate == expected);
+                if (target != null) return target;
+            }
             return null;
         }
         // One predicate serves entity, containing-block, attribute synchronization and viewport replacement.

@@ -5,8 +5,10 @@ rendering stages independently. No input files are required or read.
 
 | Phase | What is timed |
 | --- | --- |
+| Cold scene projection | A fresh scene builder reading 20,000 synthetic snapshot entities across 16 shared layers, including dependency tracking, style resolution and analytic geometry projection. |
+| Cold snapshot render compilation | A fresh render compiler performing scene projection, exact line sampling, render-item creation and spatial indexing from that same immutable snapshot. |
 | Connected lines | Compilation of exact analytic lines, including render-item creation and spatial indexing. |
-| Cold text layout | A fresh native text engine and complete scene compilation, with repeated words and 80 distinct numbers. The immutable synthetic source is reused. |
+| Cold text layout | A fresh native text engine and complete scene compilation, with repeated words and 80 distinct labels by default. The immutable synthetic source is reused. |
 | Camera redraw | Drawing to an existing CPU Skia surface with a different pan and zoom on every iteration. This includes new picture recording, all visible geometry, and rasterization. |
 | SVG | Complete SVG serialization with invariant round-trip coordinate precision. |
 | PNG / RGBA | Rendering to a new surface plus the selected lossless transport. The camera is held constant so the already recorded picture is reusable. |
@@ -17,9 +19,13 @@ Run from the repository root:
 dotnet run --project shadow/benchmarks/netDxf.Shadow.RenderingBenchmarks -c Release -- --case all --iterations 5 --warmup 2
 ```
 
-The default workloads contain 200,000 connected line segments, 1,500 labels, and
-500,000 path vertices. Use `--case lines`, `--case text`, or `--case paths` to isolate a
-stage, and `--lines`, `--texts`, or `--points` to change its size. Frames are 1200 × 900.
+The default workloads contain 20,000 snapshot entities, 200,000 connected line
+segments, 1,500 labels, and 500,000 path vertices. Use `--case scene`, `--case lines`,
+`--case text`, or `--case paths` to isolate a stage, and `--scene-entities`, `--lines`,
+`--texts`, or `--points` to change its size. Frames are 1200 × 900.
+Use `--distinct-texts` to vary the number of complete label strings independently of
+their placements. For example, `--case text --texts 1500 --distinct-texts 1500` measures
+unique labels, while `--distinct-texts 80` measures repeated local layouts.
 The text workload uses the host's `sans-serif` font; keep fonts and operating system
 constant for a comparison. `--warmup 0 --iterations 1` exposes first-use work that
 occurs inside each timed phase. Scene construction and prepared redraw resources

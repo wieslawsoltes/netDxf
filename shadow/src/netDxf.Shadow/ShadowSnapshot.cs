@@ -79,9 +79,17 @@ public readonly struct ShadowReader
     public ShadowSnapshot? Snapshot { get; }
     public ShadowValue Value { get; }
     private readonly IShadowReadObserver? observer;
+    private readonly ShadowObject? resolved;
     public ShadowReader(ShadowSnapshot snapshot, ShadowValue value, IShadowReadObserver? observer = null)
-    { Snapshot = snapshot; Value = value; this.observer = observer; }
-    public ShadowReader Observe(IShadowReadObserver readObserver) => Snapshot is null ? default : new(Snapshot, Value, readObserver);
+    {
+        Snapshot = snapshot; Value = value; this.observer = observer;
+        // The snapshot and its object table are immutable. Resolve once, but preserve
+        // dependency notification on every actual Object access rather than here.
+        resolved = value is ShadowValue.Reference reference ? snapshot?.Objects.GetValueOrDefault(reference.Id) : null;
+    }
+    private ShadowReader(ShadowSnapshot snapshot, ShadowValue value, IShadowReadObserver? observer, ShadowObject? resolved)
+    { Snapshot = snapshot; Value = value; this.observer = observer; this.resolved = resolved; }
+    public ShadowReader Observe(IShadowReadObserver readObserver) => Snapshot is null ? default : new(Snapshot, Value, readObserver, resolved);
     /// <summary>Resolve another immutable object without dropping dependency observation.</summary>
     public ShadowReader Resolve(ObjectId id) => Snapshot is null ? default : new(Snapshot, new ShadowValue.Reference(id), observer);
     public ObjectId? Id => Value is ShadowValue.Reference r ? r.Id : null;
@@ -90,9 +98,8 @@ public readonly struct ShadowReader
         get
         {
             if (Snapshot is null || Id is not { } id) return null;
-            var node = Snapshot.Objects.GetValueOrDefault(id);
-            observer?.Read(id, node);
-            return node;
+            observer?.Read(id, resolved);
+            return resolved;
         }
     }
     public bool Exists => Value is not null && Value is not ShadowValue.NullValue;

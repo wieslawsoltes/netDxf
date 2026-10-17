@@ -19,20 +19,37 @@ namespace netDxf
         private static List<DxfObject> ObjectMetadataMembers(DxfObject owner)
         {
             var result = new List<DxfObject>();
-            if (owner == null) return result;
-            result.Add(owner);
+            VisitObjectMetadataMembers(owner, result, (item, items) => { items.Add(item); return false; });
+            return result;
+        }
+
+        // Walk the actual owned records in the same order as metadata enumeration.
+        // A visitor may stop at a matching member without materializing the graph.
+        private static DxfObject VisitObjectMetadataMembers<TState>(DxfObject owner, TState state, Func<DxfObject, TState, bool> visit)
+        {
+            if (owner == null) return null;
+            if (visit(owner, state)) return owner;
             if (owner is Insert insert)
             {
-                foreach (netDxf.Entities.Attribute attribute in insert.Attributes) result.Add(attribute);
-                if (insert.SequenceEnd != null) result.Add(insert.SequenceEnd);
+                foreach (netDxf.Entities.Attribute attribute in insert.Attributes)
+                    if (visit(attribute, state)) return attribute;
+                if (insert.SequenceEnd != null && visit(insert.SequenceEnd, state)) return insert.SequenceEnd;
             }
-            if (owner is Block block) result.Add(block.End);
-            if (owner is Polyline3D polyline) foreach (Polyline3DRecord record in polyline.StoredRecords) result.Add(record);
-            if (owner is PolygonMesh mesh) foreach (PolygonMeshRecord record in mesh.StoredRecords) result.Add(record);
-            if (owner is PolyfaceMesh polyface) foreach (PolyfaceMeshRecord record in polyface.StoredRecords) result.Add(record);
-            if (owner is Polyline2D legacy) foreach (Polyline2DRecord record in legacy.StoredRecords) result.Add(record);
-            if (owner is Layout layout && layout.Viewport != null) result.Add(layout.Viewport);
-            return result;
+            if (owner is Block block && visit(block.End, state)) return block.End;
+            if (owner is Polyline3D polyline)
+                foreach (Polyline3DRecord record in polyline.StoredRecords)
+                    if (visit(record, state)) return record;
+            if (owner is PolygonMesh mesh)
+                foreach (PolygonMeshRecord record in mesh.StoredRecords)
+                    if (visit(record, state)) return record;
+            if (owner is PolyfaceMesh polyface)
+                foreach (PolyfaceMeshRecord record in polyface.StoredRecords)
+                    if (visit(record, state)) return record;
+            if (owner is Polyline2D legacy)
+                foreach (Polyline2DRecord record in legacy.StoredRecords)
+                    if (visit(record, state)) return record;
+            if (owner is Layout layout && layout.Viewport != null && visit(layout.Viewport, state)) return layout.Viewport;
+            return null;
         }
         internal void BindMetadataObject(DxfObject item)
         {
@@ -63,14 +80,17 @@ namespace netDxf
 
         internal List<DxfObject> RetainedMetadataObjects()
         {
-            var found = new HashSet<DxfObject>(new MetadataIdentityComparer());
-            var result = new List<DxfObject>();
-            Action<DxfObject> add = item => { if (item != null && found.Add(item)) result.Add(item); };
+            var collector = new MetadataCollector();
             foreach (DxfObject item in this.AddedObjects.Values)
-            {
-                foreach (DxfObject member in ObjectMetadataMembers(item)) add(member);
-            }
-            return result;
+                VisitObjectMetadataMembers(item, collector, (member, state) => { state.Add(member); return false; });
+            return collector.Items;
+        }
+        private sealed class MetadataCollector
+        {
+            private readonly HashSet<DxfObject> found = new HashSet<DxfObject>(new MetadataIdentityComparer());
+            internal readonly List<DxfObject> Items = new List<DxfObject>();
+            internal void Add(DxfObject item)
+            { if (item != null && this.found.Add(item)) this.Items.Add(item); }
         }
         internal List<DxfObjectReference> ApplicationRegistryReferences(ApplicationRegistry registry)
         {

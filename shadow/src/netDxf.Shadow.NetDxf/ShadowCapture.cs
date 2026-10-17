@@ -16,6 +16,7 @@ internal sealed class ShadowCapture
     private sealed record Identity(ObjectId Id)
     {
         public ShadowValue.Reference Reference { get; } = new(Id);
+        public object? CaptureToken { get; set; }
     }
     private readonly ConditionalWeakTable<object, Identity> identities = new();
     private readonly ShadowCapturePropertyCache propertyCache = new();
@@ -24,12 +25,12 @@ internal sealed class ShadowCapture
     private long nextId;
     private Dictionary<ObjectId, object> sources = new();
     private Queue<(ObjectId Id, object Source)> pending = new();
-    private HashSet<ObjectId> scheduled = new();
+    private object? captureToken;
     private ImmutableDictionary<ObjectId, ShadowObject>.Builder nodes = null!;
     private ImmutableArray<ShadowDiagnostic>.Builder diagnostics = null!;
     private List<ObjectId>? addedSources;
     private int changedObjects;
-    private HashSet<ObjectId> changedIds = new();
+    private HashSet<ObjectId>? changedIds;
     private bool incremental;
 
     public ShadowCapture(ShadowCaptureOptions options)
@@ -69,6 +70,11 @@ internal sealed class ShadowCapture
     private ShadowValue Reference(object value)
     {
         var identity = IdentityFor(value);
+        var token = captureToken;
+        // Source bindings cannot change during a capture. Validate each identity on
+        // its first visit, then return repeated references without rehashing its ID.
+        // The token contains no sources and is replaced for every full/dirty pass.
+        if (token is not null && ReferenceEquals(identity.CaptureToken, token)) return identity.Reference;
         var id = identity.Id;
         if (sources.TryGetValue(id, out var existing) && !ReferenceEquals(existing, value))
             throw new InvalidOperationException($"Duplicate source identity {id}; DXF handles must be unique.");
@@ -77,37 +83,43 @@ internal sealed class ShadowCapture
             sources[id] = value;
             addedSources?.Add(id);
         }
-        if ((!incremental || !nodes.ContainsKey(id)) && scheduled.Add(id)) pending.Enqueue((id, value));
+        if (token is not null)
+        {
+            identity.CaptureToken = token;
+            if (!incremental || !nodes.ContainsKey(id)) pending.Enqueue((id, value));
+        }
         return identity.Reference;
     }
 
     public ShadowSnapshot Capture(DxfDocument document, ShadowSnapshot? previous, IReadOnlyCollection<ObjectId>? dirty = null)
     {
         changedObjects = 0;
-        changedIds = new();
+        // Initial attachment has no predecessor to journal. Avoid indexing all of
+        // its new identities a second time solely for a journal that cannot be used.
+        changedIds = previous is null ? null : new();
         incremental = previous is not null && dirty is not null;
         var oldSources = sources;
-        sources = incremental ? oldSources : new();
+        sources = incremental ? oldSources : new(oldSources.Count);
         addedSources = incremental ? new() : null;
         pending = new();
-        scheduled = new();
+        captureToken = new();
         nodes = previous?.Objects.ToBuilder() ?? ImmutableDictionary.CreateBuilder<ObjectId, ShadowObject>();
         diagnostics = ImmutableArray.CreateBuilder<ShadowDiagnostic>();
-        if (incremental)
-        {
-            var dirtySet = dirty!.ToHashSet();
-            diagnostics.AddRange(previous!.Diagnostics.Where(d => d.Object is null || !dirtySet.Contains(d.Object.Value)));
-            foreach (var id in dirtySet)
-            {
-                if (!oldSources.TryGetValue(id, out var source)) throw new ShadowConflictException($"Unknown dirty object {id}.");
-                scheduled.Add(id);
-                pending.Enqueue((id, source));
-            }
-        }
-        else Reference(document);
-        var root = Identify(document);
         try
         {
+            if (incremental)
+            {
+                var dirtySet = dirty!.ToHashSet();
+                diagnostics.AddRange(previous!.Diagnostics.Where(d => d.Object is null || !dirtySet.Contains(d.Object.Value)));
+                foreach (var id in dirtySet)
+                {
+                    if (!oldSources.TryGetValue(id, out var source)) throw new ShadowConflictException($"Unknown dirty object {id}.");
+                    IdentityFor(source).CaptureToken = captureToken;
+                    pending.Enqueue((id, source));
+                }
+            }
+            else Reference(document);
+            var root = Identify(document);
             while (pending.TryDequeue(out var entry))
             {
                 if (sources.Count > options.MaximumObjects) throw new InvalidOperationException("Shadow object budget exceeded.");
@@ -149,7 +161,7 @@ internal sealed class ShadowCapture
                 else
                 {
                     nodes[entry.Id] = new(entry.Id, type, kind, fields, SourceAccessors.WritableFor(sourceType));
-                    changedObjects++; changedIds.Add(entry.Id);
+                    changedObjects++; changedIds?.Add(entry.Id);
                 }
             }
             // A full refresh still visits every reachable source. Starting from the
@@ -166,8 +178,8 @@ internal sealed class ShadowCapture
             var next = new ShadowSnapshot(documentId, previous is null ? 0 : checked(previous.Revision + 1), root, objects, entities, issues);
             if (previous is not null)
                 ShadowChangeJournal.Record(previous, next,
-                    changedIds.Where(id => !previous.Objects.ContainsKey(id)),
-                    changedIds.Where(previous.Objects.ContainsKey),
+                    changedIds!.Where(id => !previous.Objects.ContainsKey(id)),
+                    changedIds!.Where(previous.Objects.ContainsKey),
                     incremental ? [] : previous.Objects.Keys.Where(id => !objects.ContainsKey(id)));
             return next;
         }
@@ -178,7 +190,14 @@ internal sealed class ShadowCapture
             sources = oldSources;
             throw;
         }
-        finally { addedSources = null; }
+        finally
+        {
+            addedSources = null;
+            captureToken = null;
+            // A failed traversal may have queued newly reachable sources. Releasing
+            // the queue also releases them after the binding rollback above.
+            pending.Clear();
+        }
     }
 
     public ShadowValue Preview(object? value)
@@ -245,12 +264,16 @@ internal sealed class ShadowCapture
 
     private ShadowValue.Sequence ReadSequence(IEnumerable enumerable, int depth)
     {
-        var values = ImmutableArray.CreateBuilder<ShadowValue>();
+        ImmutableArray<ShadowValue>.Builder? values = null;
         foreach (var item in enumerable)
         {
-            if (values.Count >= options.MaximumCollectionItems) throw new InvalidOperationException("Shadow collection budget exceeded.");
+            if (values?.Count >= options.MaximumCollectionItems) throw new InvalidOperationException("Shadow collection budget exceeded.");
+            values ??= ImmutableArray.CreateBuilder<ShadowValue>();
             values.Add(ReadValue(item, depth + 1));
         }
-        return new(values.ToImmutable());
+        // Still enumerate empty sources: even their MoveNext/Dispose behavior is
+        // observable. Only their detached storage can be shared without inspection.
+        return values is null ? ShadowCaptureValues.EmptySequence
+            : new(values.Count == values.Capacity ? values.MoveToImmutable() : values.ToImmutable());
     }
 }

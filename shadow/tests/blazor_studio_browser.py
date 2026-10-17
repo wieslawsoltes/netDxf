@@ -155,6 +155,16 @@ def verify(base, mount, browser, passed):
           return await response.text();
         }''', {'path': f'/api/cad/{identifier}/state?knownServer={s["serverId"]}&knownChange={s["changeVersion"]}', 'headers': headers(s)})
         check('unchanged local state poll is a four-byte response', unchanged == 'null')
+        json_transport = page.evaluate('''async path => {
+          const reply=await DotNet.invokeMethodAsync('netDxf.Shadow.Studio.Browser','Dispatch',
+            {method:'GET',path,headers:{},body:null},null);
+          if(!(reply.bytes instanceof Uint8Array))return false;
+          const text=new TextDecoder('utf-8',{fatal:true}).decode(reply.bytes);
+          const response=await fetch(path); if(!response.ok)throw new Error(await response.text());
+          return reply.status===200 && reply.contentType==='application/json' && reply.json===null &&
+            text===await response.text();
+        }''', f'/api/cad/{identifier}/state')
+        check('JSON state crosses interop as exact UTF-8 bytes', json_transport)
         bad = page.evaluate('''async ({path,headers,revision}) => {
           const response=await fetch(path,{method:'POST',headers:{...headers,'Content-Type':'application/json','X-Shadow-View':'999999'},body:JSON.stringify({revision})});
           return response.status;

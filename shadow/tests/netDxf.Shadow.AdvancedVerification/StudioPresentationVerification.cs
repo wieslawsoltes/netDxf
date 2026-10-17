@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using netDxf;
 using netDxf.Blocks;
 using netDxf.Entities;
@@ -80,6 +82,42 @@ internal static class StudioPresentationVerification
             Require(first.GetProperty("state").GetProperty("items").GetArrayLength() == 2000);
             Require(first.GetProperty("state").GetProperty("occurrences").GetInt32() == 5003);
             Require(first.GetRawText() == Json(studio.CadState()).GetRawText());
+            RequireSerializationParity(studio.CadState(), StudioJson.CreateOptions());
+        });
+
+        Add("generated presentation writers preserve exact JSON across every sample layout", () =>
+        {
+            using var studio = new Studio();
+            var layouts = Json(studio.State()).GetProperty("layouts").EnumerateArray().Select(value => value.GetString()!).ToArray();
+            var options = StudioJson.CreateOptions();
+            foreach (var name in layouts)
+            {
+                studio.SetLayout(new(studio.CadRevision, name));
+                RequireSerializationParity(studio.State(), options);
+                RequireSerializationParity(studio.CadState(), options);
+            }
+        });
+
+        Add("generated presentation metadata honors serializer option fallbacks", () =>
+        {
+            using var studio = new Studio(); var data = studio.CadState();
+            var plain = StudioJson.CreateOptions(); plain.PropertyNamingPolicy = null;
+            var snake = StudioJson.CreateOptions(); snake.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            var pretty = StudioJson.CreateOptions(); pretty.WriteIndented = true;
+            var omit = StudioJson.CreateOptions(); omit.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+            var numbers = StudioJson.CreateOptions(); numbers.NumberHandling = JsonNumberHandling.WriteAsString;
+            var custom = StudioJson.CreateOptions(); custom.Converters.Add(new BoundsWriter());
+            foreach (var options in new[] { plain, snake, pretty, omit, numbers, custom })
+                RequireSerializationParity(data, options);
+        });
+
+        Add("generated math metadata preserves request deserialization", () =>
+        {
+            var options = StudioJson.CreateOptions();
+            var request = JsonSerializer.Deserialize<CadSelectionRequest>("""
+                {"revision":7,"mode":"window","first":{"x":"0.125","y":-2.5,"z":0},"second":{"x":3,"y":4,"z":5}}
+                """, options)!;
+            Require(request.Revision == 7 && request.Mode == "window" && request.First == new Vec3(0.125, -2.5, 0) && request.Second == new Vec3(3, 4, 5));
         });
 
         Add("view changes invalidate metadata without changing the source revision", () =>
@@ -142,6 +180,16 @@ internal static class StudioPresentationVerification
         catch { studio.Dispose(); throw; }
     }
     private static JsonElement Json(object value) => JsonSerializer.SerializeToElement(value, Web);
+    private static void RequireSerializationParity(object value, JsonSerializerOptions generated)
+    {
+        var reflection = new JsonSerializerOptions(generated) { TypeInfoResolver = new DefaultJsonTypeInfoResolver() };
+        Require(JsonSerializer.SerializeToUtf8Bytes(value, reflection).AsSpan().SequenceEqual(JsonSerializer.SerializeToUtf8Bytes(value, generated)));
+    }
+    private sealed class BoundsWriter : JsonConverter<Bounds2>
+    {
+        public override Bounds2 Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) => throw new NotSupportedException();
+        public override void Write(Utf8JsonWriter writer, Bounds2 value, JsonSerializerOptions options) => writer.WriteStringValue($"{value.MinX:R}:{value.MaxY:R}");
+    }
     private static string Server(JsonElement state) => state.GetProperty("serverId").GetString()!;
     private static long Change(JsonElement state) => state.GetProperty("changeVersion").GetInt64();
     private static long Revision(JsonElement state) => state.GetProperty("revision").GetInt64();

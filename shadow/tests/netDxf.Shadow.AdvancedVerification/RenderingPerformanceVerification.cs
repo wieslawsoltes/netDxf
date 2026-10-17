@@ -74,7 +74,8 @@ internal static class RenderingPerformanceVerification
             using var engine = TextEngine();
             var scene = Compile(Enumerable.Range(0, 120).Select(i => TextGeometry("Valve supply water", new(i % 12 * 20, i / 12 * 8))), engine);
             var before = engine.CacheStatistics;
-            Require(before.ShapeCompilations == 4 && before.ShapeHits > 100, "Repeated words or spaces were reshaped.");
+            Require(before.ShapeCompilations == 4 && before.LayoutCompilations == 1 && before.SharedLayoutHits > 100,
+                "Repeated words, spaces or local text layouts were compiled again.");
             using var backend = new SkiaRenderBackend(textLayout: engine);
             var fit = Viewport.Fit(scene.Bounds, 480, 320);
             for (var i = 0; i < 6; i++)
