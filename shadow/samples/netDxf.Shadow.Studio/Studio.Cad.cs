@@ -25,6 +25,7 @@ public sealed partial class Studio
     private ImmutableArray<ObjectId> CadSelected(RenderScene scene)
     {
         var keys = editor.State.Selection;
+        if (keys.IsEmpty) return cadSelectionOrder = [];
         var present = scene.Items.Where(i => keys.Contains(i.Key)).Select(DraftingQueries.Root).Distinct().ToHashSet();
         cadSelectionOrder = cadSelectionOrder.Where(present.Contains).Concat(present.Except(cadSelectionOrder).OrderBy(i => i.Value, StringComparer.Ordinal)).ToImmutableArray();
         return cadSelectionOrder;
@@ -35,7 +36,7 @@ public sealed partial class Studio
         lock (gate)
         {
             var scene = Scene(); var selected = CadSelected(scene); var snapshot = Current;
-            var roots = scene.Items.GroupBy(DraftingQueries.Root).ToArray();
+            var metadata = CadMetadata(snapshot, scene);
             ImmutableArray<DraftingGrip> grips = []; string? gripDiagnostic = null;
             try { if (selected.Length <= 128) grips = DraftingGrips.Read(snapshot, selected); else gripDiagnostic = "Grips are hidden for selections over 128 objects."; }
             catch (InvalidOperationException error) { gripDiagnostic = error.Message; }
@@ -44,13 +45,10 @@ public sealed partial class Studio
                 blockEditor = activeBranch?.BlockRoot is { } blockRoot ? new { id = blockRoot.Value,
                     name = snapshot.Read(blockRoot)["Name"].Text,
                     changed = !ShadowGraphPatch.Between(activeBranch.Ancestor, snapshot).Changes.IsEmpty } : null,
-                state = State(), layers = DraftingLayers.Read(snapshot), selectedEntities = selected.Select(i => i.Value).ToArray(),
+                state = State(), layers = metadata.Layers, selectedEntities = selected.Select(i => i.Value).ToArray(),
                 grips = grips.Select(g => new { g.Id, entity = g.Entity.Value, g.Property, g.Position, g.Kind, g.Index }), gripDiagnostic,
-                items = roots.Take(5000).Select(g => new { id = g.Key.Value, key = g.First().Key, type = snapshot.Read(g.Key).Type,
-                    layer = snapshot.Read(g.Key)["Layer"]["Name"].Text, count = g.Count(), bounds = g.Aggregate(Bounds2.Empty, (b, item) => b.Union(item.Bounds)) }).ToArray(), itemCount = roots.Length,
-                blocks = snapshot.Document["Blocks"].Items.Where(b => !b["Name"].Text.StartsWith('*')).Take(1024)
-                    .Select(b => new { id = b.Id!.Value.Value, name = b["Name"].Text, entities = b["Entities"].Items.Count() }).ToArray(),
-                linetypes = snapshot.Document["Linetypes"].Items.Select(l => l["Name"].Text).ToArray(),
+                items = metadata.Items, itemCount = metadata.ItemCount,
+                blocks = metadata.Blocks, linetypes = metadata.Linetypes,
                 properties = selected.Length == 1 ? Inspect(selected[0]) : null
             };
         }
@@ -136,7 +134,17 @@ public sealed partial class Studio
         }
     }
     public RenderImage CadRender(int width, int height, double cx, double cy, double scale, string backend, bool white,
-        long revision, long? snapshot, CancellationToken token)
+        long revision, long? snapshot, CancellationToken token) =>
+        CadRenderCore(width, height, cx, cy, scale, backend, white, revision, snapshot, token, false);
+
+    /// <summary>Lossless straight RGBA for a local canvas transport. File exports continue
+    /// to use PNG/SVG; this entry point applies the same camera, selection and source guards.</summary>
+    public RenderImage CadRenderPixels(int width, int height, double cx, double cy, double scale, bool white,
+        long revision, long? snapshot, CancellationToken token) =>
+        CadRenderCore(width, height, cx, cy, scale, "skia", white, revision, snapshot, token, true);
+
+    private RenderImage CadRenderCore(int width, int height, double cx, double cy, double scale, string backend, bool white,
+        long revision, long? snapshot, CancellationToken token, bool pixels)
     {
         lock (gate)
         {
@@ -145,8 +153,9 @@ public sealed partial class Studio
             var source = snapshot is { } key ? retained.GetValueOrDefault(key) ?? throw new ShadowConflictException("Snapshot unavailable.") : Current;
             var scene = snapshot is { } saved && retainedCompilers.TryGetValue(saved, out var frozen) ? frozen.Compile(source, ViewOptions(), token) : Scene(source);
             var viewport = new Viewport(new(cx, cy), scale, width, height); viewport.Validate(); renderer.Swap(backend);
-            return renderer.Render(new(scene, viewport, snapshot is null ? editor.State.Selection : null,
-                white ? 0xffffffff : 0x00212830, 0xff58baff), token);
+            var frame = new RenderFrame(scene, viewport, snapshot is null ? editor.State.Selection : null,
+                white ? 0xffffffff : 0x00212830, 0xff58baff);
+            return pixels ? renderer.RenderPixels(frame, token) : renderer.Render(frame, token);
         }
     }
 }

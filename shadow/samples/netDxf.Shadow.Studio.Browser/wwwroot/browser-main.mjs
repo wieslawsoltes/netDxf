@@ -31,7 +31,7 @@ try {
   await Promise.all([Blazor.start(), ready]);
   delete globalThis.shadowBrowserBoot;
   const transport = installBrowserTransport({ nativeFetch });
-  globalThis.shadowBrowser = Object.freeze({ runtime: 'blazor-webassembly', fetch: transport.fetch });
+  globalThis.shadowBrowser = Object.freeze({ runtime: 'blazor-webassembly', rasterFrames: true, fetch: transport.fetch });
   await import(diagnostics ? './studio.js' : './cad/app.mjs');
   startup.remove();
   document.documentElement.dataset.shadowReady = 'true';

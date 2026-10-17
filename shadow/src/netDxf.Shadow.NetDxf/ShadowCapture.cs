@@ -13,8 +13,12 @@ public sealed record ShadowCaptureOptions(int MaximumObjects = 2_000_000, int Ma
 /// <summary>Captures reachable public instance state without retaining source objects in snapshots.</summary>
 internal sealed class ShadowCapture
 {
-    private sealed record Identity(ObjectId Id);
+    private sealed record Identity(ObjectId Id)
+    {
+        public ShadowValue.Reference Reference { get; } = new(Id);
+    }
     private readonly ConditionalWeakTable<object, Identity> identities = new();
+    private readonly ShadowCapturePropertyCache propertyCache = new();
     private readonly ShadowCaptureOptions options;
     private readonly Guid documentId = Guid.NewGuid();
     private long nextId;
@@ -48,18 +52,24 @@ internal sealed class ShadowCapture
         sources[id] = value;
     }
 
-    private ObjectId Identify(object value) => identities.GetValue(value, o =>
+    private Identity IdentityFor(object value)
     {
-        var handle = (o as DxfObject)?.Handle;
+        if (identities.TryGetValue(value, out var identity)) return identity;
+        var handle = (value as DxfObject)?.Handle;
         var id = !string.IsNullOrEmpty(handle) && ulong.TryParse(handle, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var number)
             ? new ObjectId("H:" + number.ToString("X", CultureInfo.InvariantCulture))
             : new ObjectId("O:" + Interlocked.Increment(ref nextId).ToString(CultureInfo.InvariantCulture));
-        return new(id);
-    }).Id;
+        identity = new(id);
+        identities.Add(value, identity);
+        return identity;
+    }
+
+    private ObjectId Identify(object value) => IdentityFor(value).Id;
 
     private ShadowValue Reference(object value)
     {
-        var id = Identify(value);
+        var identity = IdentityFor(value);
+        var id = identity.Id;
         if (sources.TryGetValue(id, out var existing) && !ReferenceEquals(existing, value))
             throw new InvalidOperationException($"Duplicate source identity {id}; DXF handles must be unique.");
         if (existing is null)
@@ -68,7 +78,7 @@ internal sealed class ShadowCapture
             addedSources?.Add(id);
         }
         if ((!incremental || !nodes.ContainsKey(id)) && scheduled.Add(id)) pending.Enqueue((id, value));
-        return new ShadowValue.Reference(id);
+        return identity.Reference;
     }
 
     public ShadowSnapshot Capture(DxfDocument document, ShadowSnapshot? previous, IReadOnlyCollection<ObjectId>? dirty = null)
@@ -81,7 +91,7 @@ internal sealed class ShadowCapture
         addedSources = incremental ? new() : null;
         pending = new();
         scheduled = new();
-        nodes = incremental ? previous!.Objects.ToBuilder() : ImmutableDictionary.CreateBuilder<ObjectId, ShadowObject>();
+        nodes = previous?.Objects.ToBuilder() ?? ImmutableDictionary.CreateBuilder<ObjectId, ShadowObject>();
         diagnostics = ImmutableArray.CreateBuilder<ShadowDiagnostic>();
         if (incremental)
         {
@@ -101,24 +111,29 @@ internal sealed class ShadowCapture
             while (pending.TryDequeue(out var entry))
             {
                 if (sources.Count > options.MaximumObjects) throw new InvalidOperationException("Shadow object budget exceeded.");
-                var properties = ImmutableDictionary.CreateBuilder<string, ShadowValue>(StringComparer.Ordinal);
-                var writable = ImmutableHashSet.CreateBuilder<string>(StringComparer.Ordinal);
-                foreach (var accessor in SourceAccessors.For(entry.Source.GetType()))
+                var sourceType = entry.Source.GetType();
+                var cacheKey = ShadowCapturePropertyCache.Key(entry.Source, sourceType);
+                if (!propertyCache.TryGet(cacheKey, out var fields))
                 {
-                    try { properties[accessor.Name] = ReadValue(accessor.Get(entry.Source), 0); }
-                    catch (Exception error)
+                    var properties = ImmutableDictionary.CreateBuilder<string, ShadowValue>(StringComparer.Ordinal);
+                    foreach (var accessor in SourceAccessors.For(sourceType))
                     {
-                        if (options.FailOnUnreadableProperty) throw;
-                        var message = error.GetBaseException().Message;
-                        properties[accessor.Name] = new ShadowValue.Fault(message);
-                        diagnostics.Add(new("capture.property", accessor.Name + ": " + message, entry.Id));
+                        try { properties[accessor.Name] = ReadValue(accessor.Get(entry.Source), 0); }
+                        catch (Exception error)
+                        {
+                            if (options.FailOnUnreadableProperty) throw;
+                            var message = error.GetBaseException().Message;
+                            properties[accessor.Name] = new ShadowValue.Fault(message);
+                            diagnostics.Add(new("capture.property", accessor.Name + ": " + message, entry.Id));
+                        }
                     }
-                    if (accessor.CanWrite) writable.Add(accessor.Name);
+                    if (entry.Source is Ole2Frame ole && OleRasterPreview.Read(ole) is { } preview and not ShadowValue.NullValue)
+                        properties[OleRasterPreview.Property] = preview;
+                    if (entry.Source is IEnumerable enumerable)
+                        properties["$items"] = ReadSequence(enumerable, 0);
+                    fields = properties.ToImmutable();
+                    propertyCache.Add(cacheKey, fields);
                 }
-                if (entry.Source is Ole2Frame ole && OleRasterPreview.Read(ole) is not ShadowValue.NullValue)
-                    properties[OleRasterPreview.Property] = OleRasterPreview.Read(ole);
-                if (entry.Source is IEnumerable enumerable)
-                    properties["$items"] = ReadSequence(enumerable, 0);
                 var kind = entry.Source switch
                 {
                     EntityObject => ShadowObjectKind.Entity,
@@ -128,16 +143,21 @@ internal sealed class ShadowCapture
                     TableObject => ShadowObjectKind.Table,
                     _ => ShadowObjectKind.Object
                 };
-                var fields = properties.ToImmutable();
-                var type = entry.Source.GetType().FullName!;
+                var type = sourceType.FullName!;
                 if (previous is not null && previous.Objects.TryGetValue(entry.Id, out var old) && old.TypeName == type && ShadowValue.Equivalent(old.Properties, fields))
                     nodes[entry.Id] = old;
                 else
                 {
-                    nodes[entry.Id] = new(entry.Id, type, kind, fields, writable.ToImmutable());
+                    nodes[entry.Id] = new(entry.Id, type, kind, fields, SourceAccessors.WritableFor(sourceType));
                     changedObjects++; changedIds.Add(entry.Id);
                 }
             }
+            // A full refresh still visits every reachable source. Starting from the
+            // previous immutable map avoids rebuilding its tree for unchanged nodes;
+            // prune only after the traversal has established the complete reachability.
+            if (!incremental && previous is not null)
+                foreach (var id in previous.Objects.Keys)
+                    if (!sources.ContainsKey(id)) nodes.Remove(id);
             var objects = nodes.ToImmutable();
             var issues = diagnostics.ToImmutable();
             var same = previous is not null && previous.Objects.Count == objects.Count && changedObjects == 0 && previous.Diagnostics.SequenceEqual(issues);
@@ -174,6 +194,18 @@ internal sealed class ShadowCapture
         if (value is null) return ShadowValue.Null;
         if (depth > options.MaximumValueDepth) throw new InvalidOperationException("Shadow value nesting budget exceeded.");
         var type = value.GetType();
+        if (value is bool boolean) return ShadowCaptureValues.Boolean(boolean);
+        if (value is double number) return ShadowCaptureValues.Double(number);
+        if (value is Vector2 vector2)
+        {
+            if (depth == options.MaximumValueDepth) throw new InvalidOperationException("Shadow value nesting budget exceeded.");
+            return ShadowCaptureValues.Vector(vector2);
+        }
+        if (value is Vector3 vector3)
+        {
+            if (depth == options.MaximumValueDepth) throw new InvalidOperationException("Shadow value nesting budget exceeded.");
+            return ShadowCaptureValues.Vector(vector3);
+        }
         if (value is string text) return ShadowValue.From(text);
         if (ReferenceEquals(value, StringComparer.Ordinal)) return new ShadowValue.Atom("System.StringComparer", "Ordinal");
         if (ReferenceEquals(value, StringComparer.OrdinalIgnoreCase)) return new ShadowValue.Atom("System.StringComparer", "OrdinalIgnoreCase");
@@ -181,7 +213,6 @@ internal sealed class ShadowCapture
         {
             var representation = value switch
             {
-                double d => d.ToString("R", CultureInfo.InvariantCulture),
                 float f => f.ToString("R", CultureInfo.InvariantCulture),
                 DateTime dt => dt.ToString("O", CultureInfo.InvariantCulture),
                 DateTimeOffset dto => dto.ToString("O", CultureInfo.InvariantCulture),
@@ -196,6 +227,9 @@ internal sealed class ShadowCapture
         {
             var fields = ImmutableDictionary.CreateBuilder<string, ShadowValue>(StringComparer.Ordinal);
             foreach (var accessor in SourceAccessors.For(type)) fields[accessor.Name] = ReadValue(accessor.Get(value), depth + 1);
+            // A value-type getter may mutate an object referenced by a public field.
+            // Preserve the generic path's final field read after all getters run;
+            // an earlier detached field value can otherwise become stale mid-capture.
             foreach (var field in type.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
                 fields[field.Name] = ReadValue(field.GetValue(value), depth + 1);
             return new ShadowValue.Structure(type.FullName!, fields.ToImmutable());

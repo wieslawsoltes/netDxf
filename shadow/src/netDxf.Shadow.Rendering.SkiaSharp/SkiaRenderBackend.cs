@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using global::SkiaSharp;
 using netDxf.Shadow.Geometry;
 
@@ -9,11 +10,17 @@ public interface ISkiaImageResolver { SKImage? Resolve(string reference); }
 public interface IVersionedSkiaImageResolver : ISkiaImageResolver { long Revision { get; } }
 
 /// <summary>PNG output and direct rendering to caller-owned CPU/GPU canvases.</summary>
-public sealed partial class SkiaRenderBackend : IRenderBackend
+public sealed partial class SkiaRenderBackend : IRasterRenderBackend
 {
     private readonly object gate = new();
     private readonly Dictionary<(RenderScene, Viewport, long ImageRevision, long FontRevision, uint Background), SKPicture> pictures = new();
     private readonly Dictionary<(RenderClip, Viewport), SKPath> clipPaths = new();
+    private SKPaint? itemPaint = CreateItemPaint();
+    private static SKPaint CreateItemPaint() => new()
+    {
+        IsAntialias = true, Style = SKPaintStyle.Stroke,
+        StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round
+    };
     private readonly ISkiaImageResolver? images;
     private readonly SkiaTextLayoutEngine textEngine;
     private readonly bool ownsTextEngine;
@@ -35,6 +42,29 @@ public sealed partial class SkiaRenderBackend : IRenderBackend
             Draw(surface.Canvas, frame, cancellationToken);
             using var image = surface.Snapshot(); using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
             return new(encoded.ToArray(), "image/png");
+        }
+    }
+
+    public RenderImage RenderPixels(RenderFrame frame, CancellationToken cancellationToken = default)
+    {
+        frame.Viewport.Validate();
+        lock (gate)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            using var surface = SKSurface.Create(new SKImageInfo(frame.Viewport.Width, frame.Viewport.Height, SKColorType.Rgba8888, SKAlphaType.Premul))
+                ?? throw new InvalidOperationException("Skia could not allocate the render surface.");
+            Draw(surface.Canvas, frame, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            var info = new SKImageInfo(frame.Viewport.Width, frame.Viewport.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+            var bytes = GC.AllocateUninitializedArray<byte>(checked(info.Width * info.Height * 4));
+            var pinned = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            try
+            {
+                if (!surface.ReadPixels(info, pinned.AddrOfPinnedObject(), checked(info.Width * 4), 0, 0))
+                    throw new InvalidOperationException("Skia could not read the render pixels.");
+            }
+            finally { pinned.Free(); }
+            return new(bytes, "application/x-shadow-rgba");
         }
     }
 
@@ -90,6 +120,7 @@ public sealed partial class SkiaRenderBackend : IRenderBackend
             if (disposed) return;
             disposed = true; foreach (var picture in pictures.Values) picture.Dispose(); pictures.Clear();
             foreach (var path in clipPaths.Values) path.Dispose(); clipPaths.Clear();
+            itemPaint?.Dispose(); itemPaint = null;
             if (ownsTextEngine) textEngine.Dispose();
         }
     }

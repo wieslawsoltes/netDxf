@@ -52,7 +52,7 @@ public sealed partial class RenderCompiler
             catch (Exception error) when (error is not OperationCanceledException)
             { diagnostics.Add(new("render.linetype", error.Message, occurrence.Entity, DiagnosticSeverity.Error)); }
         }
-        var immutable = items.ToImmutable();
+        var immutable = items.Count == items.Capacity ? items.MoveToImmutable() : items.ToImmutable();
         SpatialIndex? index = null;
         if (previous is not null && previous.Items.Length == immutable.Length)
         {

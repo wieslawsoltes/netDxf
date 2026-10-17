@@ -4,7 +4,7 @@ import { authoringRequest } from './authoring-contracts.mjs';
 import { authoringDialog, isAuthoringAction } from './authoring-ui.mjs';
 import { CadClient } from './client.mjs';
 import { blockTools } from './block-ui.mjs';
-import { CadViewport } from './viewport.mjs';
+import { CadViewport, bindViewportPageLifetime } from './viewport.mjs';
 import { CommandSession, commands, commandName, number, point, distance, polygonArea, format, fit } from './core.mjs';
 import { $, el, icon, tool, tabs, ribbon } from './ui.mjs';
 import { viewKey } from '../studio-state.mjs';
@@ -38,7 +38,7 @@ function report(error) {
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('toast').hidden=true,7000);
   if (error?.status===409) { cancel(false); client.refresh().catch(()=>{}); }
 }
-function run(task) { Promise.resolve().then(task).catch(report); }
+function run(task) { return Promise.resolve().then(task).catch(report); }
 function editable() { if(snapshot!==null) throw new Error('This is a read-only retained snapshot. Return to Current drawing before editing.'); if(!client.state) throw new Error('Load a drawing first.'); }
 async function edit(path,payload={},options={}) { editable(); const result=await client.mutate(path,payload,options); await documentTabs(); return result; }
 function setSession(value) { if(value!==null)client.beginInteraction(); viewport.cancelInput(); session=value; viewport.command=value; viewport.panMode=false; viewport.snapHit=null; updatePrompt(); updateTools(); viewport.invalidate(); }
@@ -259,7 +259,7 @@ async function action(name) {
     case 'block-close':editable();return blockUi.finish(false);
     case 'new':return newDocument(); case 'demo':return newDocument(true); case 'open':$('open-file').click();return;case 'save':return save();case 'save-as':editable();return saveDrawingAs({client,dialog,inputRow,download,documentName:documents.find(d=>d.id===client.id)?.name||'Drawing',refreshDocuments:documentTabs,log,editable});case 'font':$('font-file').click();return;
     case 'undo':case 'redo':cancel(false);return edit(`history/${name}`);
-    case 'fit':viewport.fit();return;case 'regen':await client.refresh();viewport.requestFrame();return;
+    case 'fit':viewport.fit();return;case 'regen':await client.refresh();viewport.requestFrame(true);return;
     case 'zoom-in':viewport.camera.scale=Math.min(1e8,viewport.camera.scale*1.5);viewport.changed();return;
     case 'zoom-out':viewport.camera.scale=Math.max(1e-8,viewport.camera.scale/1.5);viewport.changed();return;
     case 'pan':{const next=!viewport.panMode;cancel(false);viewport.panMode=next;log(next?'Pan: drag in the drawing; Escape to exit.':'Pan mode ended.');return;}
@@ -341,7 +341,7 @@ function splitter(id,vertical){const node=$(id);node.addEventListener('pointerdo
   const up=()=>{node.removeEventListener('pointermove',move);persist();};node.addEventListener('pointermove',move);node.addEventListener('pointerup',up,{once:true});node.addEventListener('pointercancel',up,{once:true});});
   node.addEventListener('keydown',e=>{const step=e.key==='ArrowLeft'||e.key==='ArrowDown'?-20:e.key==='ArrowRight'||e.key==='ArrowUp'?20:0;if(!step)return;e.preventDefault();const size=vertical?$('palette').getBoundingClientRect().width:$('command-line').getBoundingClientRect().height;document.documentElement.style.setProperty(vertical?'--palette-width':'--command-height',`${Math.max(vertical?210:32,Math.min(vertical?550:innerHeight*.55,size+step))}px`);persist();});}
 splitter('palette-splitter',true);splitter('command-splitter',false);
-client.addEventListener('reset',()=>{viewport.frame=null;viewport.graph=null;$('loading').hidden=false;viewport.invalidate();});
+client.addEventListener('reset',()=>{viewport.clearFrame();viewport.graph=null;$('loading').hidden=false;viewport.invalidate();});
 client.addEventListener('state',()=>{
   const s=client.state; $('studio').dataset.document=client.id;
   const identity=JSON.stringify([client.id,s.serverId,s.documentId,s.workspaceId,s.viewVersion]);
@@ -359,8 +359,14 @@ client.addEventListener('state',()=>{
 });
 client.addEventListener('busy',()=>{$('connection').textContent=client.busy?'Working…':'Local';$('connection').classList.toggle('busy',!!client.busy);updateTools();if(!client.busy)viewport.requestFrame();});
 window.addEventListener('beforeunload',e=>{if(documents.some(d=>d.dirty)){e.preventDefault();e.returnValue='';}});
-window.addEventListener('pagehide',()=>viewport.dispose());
-setInterval(()=>{if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!$('dialog').open&&!$('palette-content').contains(document.activeElement))run(async()=>{await client.refresh();await documentTabs();});},2500);
+bindViewportPageLifetime(viewport);
+async function pollDocuments() {
+  try {
+    if(!document.hidden&&!client.busy&&!session&&!viewport.inputActive&&!$('dialog').open&&!$('palette-content').contains(document.activeElement))
+      await run(async()=>{await client.refresh();await documentTabs();});
+  } finally { setTimeout(pollDocuments,2500); }
+}
+setTimeout(pollDocuments,2500);
 log('netDxf Shadow CAD Studio — native DXF · immutable transactions · local workspace');
 log('Type HELP for commands. Middle-drag pans; wheel zooms; Enter finishes; Escape cancels.');
 drawRibbon();modes();renderPalette();

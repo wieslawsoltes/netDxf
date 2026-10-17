@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -11,10 +12,13 @@ internal sealed record SourceAccessor(string Name, Type ValueType, bool CanWrite
 internal static class SourceAccessors
 {
     // GetOrAdd may invoke its factory concurrently. Lazy prevents duplicate reflection
-    // walks and expression compilation; losing dictionary factories allocate only Lazy.
+    // walks and delegate creation; losing dictionary factories allocate only Lazy.
     private static readonly ConcurrentDictionary<Type, Lazy<AccessorTable>> Cache = new();
+    private static readonly MethodInfo PropertyGetterFactory = typeof(SourceAccessors).GetMethod(
+        nameof(CreatePropertyGetter), BindingFlags.NonPublic | BindingFlags.Static)!;
 
     public static SourceAccessor[] For(Type type) => GetTable(type).Ordered;
+    public static ImmutableHashSet<string> WritableFor(Type type) => GetTable(type).Writable;
 
     public static SourceAccessor? Find(Type type, string name)
     {
@@ -39,12 +43,18 @@ internal static class SourceAccessors
             .OrderBy(m => m.Name, StringComparer.Ordinal)
             .Select(m =>
             {
-                var source = Expression.Parameter(typeof(object), "source");
-                var instance = Expression.Convert(source, m.DeclaringType!);
-                var member = m is PropertyInfo p ? Expression.Property(instance, p) : Expression.Field(instance, (FieldInfo)m);
-                var getter = Expression.Lambda<Func<object, object?>>(Expression.Convert(member, typeof(object)), source).Compile();
                 var writable = m is PropertyInfo property ? property.SetMethod?.IsPublic == true : !((FieldInfo)m).IsInitOnly && !((FieldInfo)m).IsLiteral;
                 var valueType = m is PropertyInfo pi ? pi.PropertyType : ((FieldInfo)m).FieldType;
+                Func<object, object?> getter;
+                if (m is PropertyInfo p)
+                    getter = (Func<object, object?>)PropertyGetterFactory.MakeGenericMethod(m.DeclaringType!, valueType)
+                        .Invoke(null, [p.GetMethod!])!;
+                else
+                {
+                    var source = Expression.Parameter(typeof(object), "source");
+                    var member = Expression.Field(Expression.Convert(source, m.DeclaringType!), (FieldInfo)m);
+                    getter = Expression.Lambda<Func<object, object?>>(Expression.Convert(member, typeof(object)), source).Compile();
+                }
                 void Set(object target, object? value)
                 {
                     if (!writable) throw new InvalidOperationException($"{m.DeclaringType!.Name}.{m.Name} is read-only.");
@@ -56,10 +66,34 @@ internal static class SourceAccessors
                 return new SourceAccessor(m.Name, valueType, writable, getter, Set);
             }).ToArray()));
 
+    // PropertyInfo.GetValue and compiled expression trees both use reflective calls
+    // when dynamic code is unavailable (for example, standalone WebAssembly). Bind
+    // the actual method once, leaving only casts and a delegate call in capture.
+    private static Func<object, object?> CreatePropertyGetter<TSource, TValue>(MethodInfo method)
+    {
+        if (typeof(TSource).IsValueType)
+        {
+            var getter = (ValueGetter<TSource, TValue>)method.CreateDelegate(typeof(ValueGetter<TSource, TValue>));
+            return source =>
+            {
+                // Match the previous expression's unbox-by-value semantics, including
+                // getters on mutable structs. Source writes still use the boxed setter.
+                var value = (TSource)source;
+                return getter(ref value);
+            };
+        }
+        var referenceGetter = (Func<TSource, TValue>)method.CreateDelegate(typeof(Func<TSource, TValue>));
+        return source => referenceGetter((TSource)source);
+    }
+
+    private delegate TValue ValueGetter<TSource, out TValue>(ref TSource source);
+
     private sealed class AccessorTable(SourceAccessor[] ordered)
     {
         // Capture still walks the same nearest-declaration, ordinal-sorted array.
         public SourceAccessor[] Ordered { get; } = ordered;
+        public ImmutableHashSet<string> Writable { get; } = ordered.Where(static accessor => accessor.CanWrite)
+            .Select(static accessor => accessor.Name).ToImmutableHashSet(StringComparer.Ordinal);
         public FrozenDictionary<string, SourceAccessor> ByName { get; } =
             ordered.ToFrozenDictionary(static accessor => accessor.Name, StringComparer.Ordinal);
     }

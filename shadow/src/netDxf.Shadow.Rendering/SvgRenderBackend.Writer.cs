@@ -1,5 +1,5 @@
+using System.Collections.Immutable;
 using System.Globalization;
-using System.Text;
 using System.Xml;
 using netDxf.Shadow.Geometry;
 
@@ -10,25 +10,43 @@ public sealed partial class SvgRenderBackend
     private sealed class Writer(RenderFrame frame, XmlWriter xml, ISvgImageResolver? images)
     {
         private int nextId;
-        public void Attribute(string name, double value) => xml.WriteAttributeString(name, N(value));
-        private string PathData(IEnumerable<RenderContour> contours)
+        private readonly char[] numberBuffer = new char[4096];
+        public void Attribute(string name, double value)
         {
-            var path = new StringBuilder();
+            xml.WriteStartAttribute(name);
+            var count = Format(value, numberBuffer);
+            xml.WriteChars(numberBuffer, 0, count); xml.WriteEndAttribute();
+        }
+        private void PathData(ImmutableArray<RenderContour> contours)
+        {
+            xml.WriteStartAttribute("d");
+            var count = 0;
             foreach (var contour in contours)
             {
                 for (var i = 0; i < contour.Points.Length; i++)
                 {
                     var p = frame.Viewport.ToScreen(contour.Points[i]);
-                    path.Append(i == 0 ? 'M' : 'L').Append(N(p.X)).Append(' ').Append(N(p.Y));
+                    // A round-trip double fits in 32 characters; reserve two numbers
+                    // plus the path command and the separating space before writing.
+                    if (numberBuffer.Length - count < 2 * 32 + 2) Flush();
+                    numberBuffer[count++] = i == 0 ? 'M' : 'L';
+                    count += Format(p.X, numberBuffer.AsSpan(count));
+                    numberBuffer[count++] = ' ';
+                    count += Format(p.Y, numberBuffer.AsSpan(count));
                 }
-                if (contour.Closed) path.Append('Z');
+                if (contour.Closed)
+                {
+                    if (count == numberBuffer.Length) Flush();
+                    numberBuffer[count++] = 'Z';
+                }
             }
-            return path.ToString();
+            Flush(); xml.WriteEndAttribute();
+            void Flush() { if (count > 0) xml.WriteChars(numberBuffer, 0, count); count = 0; }
         }
-        public void Path(IEnumerable<RenderContour> contours, string fill, string? stroke, CadFillRule rule, uint color, double width)
+        public void Path(ImmutableArray<RenderContour> contours, string fill, string? stroke, CadFillRule rule, uint color, double width)
         {
-            var data = PathData(contours); if (data.Length == 0) return;
-            xml.WriteStartElement("path"); xml.WriteAttributeString("d", data); xml.WriteAttributeString("fill", fill);
+            if (!contours.Any(static contour => !contour.Points.IsEmpty || contour.Closed)) return;
+            xml.WriteStartElement("path"); PathData(contours); xml.WriteAttributeString("fill", fill);
             xml.WriteAttributeString("fill-rule", rule == CadFillRule.NonZero ? "nonzero" : "evenodd");
             if (stroke is not null)
             {
@@ -98,10 +116,10 @@ public sealed partial class SvgRenderBackend
                 clipId = "shadow-image-clip-" + nextId++;
                 xml.WriteStartElement("defs"); xml.WriteStartElement("clipPath"); xml.WriteAttributeString("id", clipId); xml.WriteAttributeString("clipPathUnits", "userSpaceOnUse");
                 xml.WriteStartElement("path");
-                var contours = image.ClipOutside
-                    ? new[] { new RenderContour(image.Corners, true), new RenderContour(image.ClipPolygon, true) }
-                    : new[] { new RenderContour(image.ClipPolygon, true) };
-                xml.WriteAttributeString("d", PathData(contours)); xml.WriteAttributeString("clip-rule", "evenodd");
+                ImmutableArray<RenderContour> contours = image.ClipOutside
+                    ? [new RenderContour(image.Corners, true), new RenderContour(image.ClipPolygon, true)]
+                    : [new RenderContour(image.ClipPolygon, true)];
+                PathData(contours); xml.WriteAttributeString("clip-rule", "evenodd");
                 xml.WriteEndElement(); xml.WriteEndElement(); xml.WriteEndElement();
             }
             var filter = ImageFilter(image);
@@ -130,6 +148,13 @@ public sealed partial class SvgRenderBackend
         {
             if (!double.IsFinite(value)) throw new ArithmeticException("SVG coordinates must be finite.");
             return value.ToString("R", CultureInfo.InvariantCulture);
+        }
+        private static int Format(double value, Span<char> destination)
+        {
+            if (!double.IsFinite(value)) throw new ArithmeticException("SVG coordinates must be finite.");
+            if (!value.TryFormat(destination, out var written, "R", CultureInfo.InvariantCulture))
+                throw new InvalidOperationException("The SVG numeric buffer is too small.");
+            return written;
         }
         public static string Color(uint argb) => "#" + (argb & 0xffffff).ToString("x6", CultureInfo.InvariantCulture);
     }
