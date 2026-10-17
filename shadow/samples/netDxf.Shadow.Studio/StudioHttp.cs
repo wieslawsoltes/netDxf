@@ -1,11 +1,22 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace netDxf.Shadow.Studio;
 
 internal static class StudioHttp
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
+    private static readonly ConditionalWeakTable<JsonSerializerOptions, JsonSerializerOptions> PresentationOptions = new();
+
+    internal static IResult Presentation(HttpContext context, object value)
+    {
+        // Generated writers are a response optimization. Keep ASP.NET request-body
+        // metadata on its configured resolver, and clone its options once per host.
+        var configured = context.RequestServices.GetRequiredService<IOptions<Microsoft.AspNetCore.Http.Json.JsonOptions>>().Value.SerializerOptions;
+        return Results.Json(value, PresentationOptions.GetValue(configured, StudioJson.CreateResponseOptions));
+    }
 
     internal static StudioRequestIdentity Identity(HttpRequest request)
     {

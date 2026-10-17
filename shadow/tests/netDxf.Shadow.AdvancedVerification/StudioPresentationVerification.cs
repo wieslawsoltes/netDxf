@@ -120,6 +120,70 @@ internal static class StudioPresentationVerification
             Require(request.Revision == 7 && request.Mode == "window" && request.First == new Vec3(0.125, -2.5, 0) && request.Second == new Vec3(3, 4, 5));
         });
 
+        Add("generated nullable math contracts configure every native request metadata graph", () =>
+        {
+            var http = new Microsoft.AspNetCore.Http.Json.JsonOptions().SerializerOptions;
+            foreach (var options in new[] { StudioJson.CreateOptions(), StudioJson.CreateResponseOptions(http) })
+            {
+                options.MakeReadOnly();
+                // Minimal API endpoint initialization configures these complete graphs
+                // before invoking any route, including an unrelated GET state request.
+                foreach (var type in typeof(Studio).Assembly.GetTypes().Where(type => type.IsPublic && type.Name.EndsWith("Request", StringComparison.Ordinal)))
+                    _ = options.GetTypeInfo(type);
+                var snap = JsonSerializer.Deserialize<CadSnapRequest>("""
+                    {"point":{"x":1,"y":2,"z":3},"tolerance":0.5,"anchor":{"x":"0.125","y":-2.5,"z":0}}
+                    """, options)!;
+                var layer = JsonSerializer.Deserialize<CadLayerRequest>("""
+                    {"revision":7,"layer":{"id":{"value":"N:synthetic"},"name":"Synthetic"}}
+                    """, options)!;
+                Require(snap.Anchor == new Vec3(0.125, -2.5, 0) && layer.Layer.Id == new ObjectId("N:synthetic"));
+                Require(JsonSerializer.Deserialize<Vec3?>("null", options) is null);
+                Require(JsonSerializer.Deserialize<ObjectId?>("null", options) is null);
+                Require(JsonSerializer.Deserialize<Bounds2?>("{\"minX\":1,\"minY\":2,\"maxX\":3,\"maxY\":4}", options) == new Bounds2(1, 2, 3, 4));
+            }
+        });
+
+        Add("response options preserve host encoding and converters without changing request options", () =>
+        {
+            var document = new DxfDocument();
+            document.Entities.Add(new Line(Vector3.Zero, new Vector3(3, 4, 0)) { Layer = new netDxf.Tables.Layer("Synthetic-É-日本語") });
+            using var studio = Loaded(document); var data = studio.CadState();
+            foreach (var customize in new[] { false, true })
+            {
+                var configured = new Microsoft.AspNetCore.Http.Json.JsonOptions().SerializerOptions;
+                if (customize)
+                {
+                    configured.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+                    configured.WriteIndented = true;
+                    configured.Converters.Add(new BoundsWriter());
+                }
+                var originalResolver = configured.TypeInfoResolver;
+                var response = StudioJson.CreateResponseOptions(configured);
+                Require(!ReferenceEquals(response, configured) && ReferenceEquals(response.Encoder, configured.Encoder));
+                Require(ReferenceEquals(configured.TypeInfoResolver, originalResolver));
+                Require(JsonSerializer.SerializeToUtf8Bytes(data, configured).AsSpan().SequenceEqual(JsonSerializer.SerializeToUtf8Bytes(data, response)));
+                _ = configured.GetTypeInfo(typeof(CadSnapRequest));
+            }
+        });
+
+        Add("response options preserve custom host presentation resolvers and modifiers", () =>
+        {
+            using var studio = new Studio(); var data = studio.CadState();
+            var modified = new DefaultJsonTypeInfoResolver(); modified.Modifiers.Add(HidePresentationLayer);
+            foreach (var resolver in new IJsonTypeInfoResolver[] { modified, new PresentationResolver() })
+            {
+                var configured = new Microsoft.AspNetCore.Http.Json.JsonOptions().SerializerOptions;
+                configured.TypeInfoResolver = resolver;
+                var expected = JsonSerializer.SerializeToUtf8Bytes(data, configured);
+                var response = StudioJson.CreateResponseOptions(configured);
+                Require(ReferenceEquals(response.TypeInfoResolver, resolver));
+                Require(expected.AsSpan().SequenceEqual(JsonSerializer.SerializeToUtf8Bytes(data, response)));
+                using var json = JsonDocument.Parse(expected);
+                Require(!json.RootElement.GetProperty("items")[0].TryGetProperty("layer", out _));
+                Require(!json.RootElement.GetProperty("state").GetProperty("items")[0].TryGetProperty("layer", out _));
+            }
+        });
+
         Add("view changes invalidate metadata without changing the source revision", () =>
         {
             using var studio = new Studio();
@@ -189,6 +253,19 @@ internal static class StudioPresentationVerification
     {
         public override Bounds2 Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) => throw new NotSupportedException();
         public override void Write(Utf8JsonWriter writer, Bounds2 value, JsonSerializerOptions options) => writer.WriteStringValue($"{value.MinX:R}:{value.MaxY:R}");
+    }
+    private static void HidePresentationLayer(JsonTypeInfo info)
+    {
+        if (info.Type.DeclaringType == typeof(Studio) && (info.Type.Name is "StateItem" or "CadItem"))
+            foreach (var property in info.Properties.Where(property => property.Name == "layer"))
+                property.ShouldSerialize = static (_, _) => false;
+    }
+    private sealed class PresentationResolver : DefaultJsonTypeInfoResolver
+    {
+        public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+        {
+            var info = base.GetTypeInfo(type, options); HidePresentationLayer(info); return info;
+        }
     }
     private static string Server(JsonElement state) => state.GetProperty("serverId").GetString()!;
     private static long Change(JsonElement state) => state.GetProperty("changeVersion").GetInt64();

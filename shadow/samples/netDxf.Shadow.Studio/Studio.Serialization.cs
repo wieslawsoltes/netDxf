@@ -16,6 +16,22 @@ public static class StudioJson
         options.TypeInfoResolver = JsonTypeInfoResolver.Combine(Studio.PresentationJsonResolver, new DefaultJsonTypeInfoResolver());
         return options;
     }
+
+    /// <summary>Use presentation writers for a response while preserving the host's
+    /// configured encoding, converters and other JSON settings. The input options are unchanged.</summary>
+    public static JsonSerializerOptions CreateResponseOptions(JsonSerializerOptions configured)
+    {
+        var options = new JsonSerializerOptions(configured);
+        // A host resolver or modifier may intentionally change these exact contracts.
+        // In that case its result takes precedence over this optional optimization.
+        if (configured.TypeInfoResolver is not null &&
+            (configured.TypeInfoResolverChain.Count == 0 || configured.TypeInfoResolverChain.Any(resolver =>
+                resolver.GetType() != typeof(DefaultJsonTypeInfoResolver) || ((DefaultJsonTypeInfoResolver)resolver).Modifiers.Count != 0)))
+            return options;
+        options.TypeInfoResolver = JsonTypeInfoResolver.Combine(Studio.PresentationJsonResolver,
+            configured.TypeInfoResolver ?? new DefaultJsonTypeInfoResolver());
+        return options;
+    }
 }
 
 public sealed partial class Studio
@@ -31,5 +47,10 @@ public sealed partial class Studio
     [JsonSerializable(typeof(ImmutableArray<CadItem>))]
     [JsonSerializable(typeof(ImmutableArray<CadBlock>))]
     [JsonSerializable(typeof(ImmutableArray<DraftingLayer>))]
+    // .NET 8 cannot reflect nullable wrappers around generated constructor-based
+    // struct converters. Include the public math wrappers used by request contracts.
+    [JsonSerializable(typeof(Vec3?))]
+    [JsonSerializable(typeof(ObjectId?))]
+    [JsonSerializable(typeof(Bounds2?))]
     private sealed partial class PresentationJsonContext : JsonSerializerContext { }
 }
