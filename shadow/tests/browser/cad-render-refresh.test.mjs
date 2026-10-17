@@ -76,3 +76,14 @@ test('a current background refresh failure retains its status', async () => {
   await client.activate('drawing');
   await assert.rejects(client.refresh(), error => error instanceof ApiError && error.status === 503 && error.message === 'state unavailable');
 });
+
+test('conditional background refresh sends the exact receipt and accepts an unchanged null response', async () => {
+  const paths = [];
+  const client = new CadClient(async path => { paths.push(path); return response(paths.length === 1 ? receipt(7) : null); });
+  await client.activate('drawing'); const before = client.data, epoch = client.epoch;
+  let changes = 0; client.addEventListener('state', () => changes++);
+  await client.refresh();
+  const query = new URLSearchParams(paths[1].split('?')[1]);
+  assert.equal(query.get('knownServer'), 'server'); assert.equal(query.get('knownChange'), '7');
+  assert.equal(client.data, before); assert.equal(client.epoch, epoch); assert.equal(changes, 0);
+});

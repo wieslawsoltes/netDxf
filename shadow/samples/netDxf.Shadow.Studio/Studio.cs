@@ -75,6 +75,7 @@ public sealed partial class Studio : IDisposable
         lock (gate)
         {
             var snapshot = Current; var scene = Scene(); var state = editor.State;
+            var metadata = StateMetadata(snapshot, scene);
             return new
             {
                 serverId, changeVersion, viewVersion, workspaceId = WorkspaceId, workspaceName = activeBranch?.Name ?? "Live document",
@@ -82,15 +83,14 @@ public sealed partial class Studio : IDisposable
                 branches = branches.Values.OrderBy(b => b.Name, StringComparer.Ordinal).Select(b => new { b.Id, b.Name, revision = b.Editor.Snapshot.Revision, ancestorRevision = b.Ancestor.Revision }).ToArray(),
                 snapshot.DocumentId, snapshot.Revision, layout, linetypeAlignment = PatternAlignment.ToString(),
                 perspectiveMode = PerspectiveView.Mode, perspectiveWorkPlaneZ = PerspectiveView.WorkPlaneZ,
-                perspectiveSelection = scene.Items.Any(i => state.Selection.Contains(i.Key) && i.Projection?.Perspective is not null),
+                perspectiveSelection = state.Selection.Count > 0 && scene.Items.Any(i => state.Selection.Contains(i.Key) && i.Projection?.Perspective is not null),
                 annotationMode = Annotation.Mode.ToString(), annotationPaperUnits = Annotation.Scale?.PaperUnits ?? 1,
                 annotationDrawingUnits = Annotation.Scale?.DrawingUnits ?? 1, objects = snapshot.Objects.Count, entities = snapshot.EntityIds.Count,
                 occurrences = scene.Items.Length, bounds = scene.Bounds.IsEmpty ? new Bounds2(-50, -50, 50, 50) : scene.Bounds,
                 state.UndoCount, state.RedoCount, selection = state.Selection, captureMilliseconds,
-                layouts = snapshot.Layouts.Select(l => l["Name"].Text).ToArray(), backends = renderer.Backends,
+                layouts = metadata.Layouts, backends = renderer.Backends,
                 snapshots = retained.Keys.ToArray(), fonts = CurrentFonts.Fonts.Keys.Order().ToArray(), fontRevision = CurrentFonts.Revision,
-                diagnostics = scene.Diagnostics.Take(200).Select(d => new { d.Code, d.Message, id = d.Object?.Value, severity = d.Severity.ToString() }).ToArray(),
-                items = scene.Items.Take(2000).Select(i => new { i.Key, id = i.Entity.Value, type = snapshot.Objects[i.Entity].Type, i.Style.Layer, inserted = !i.InsertPath.IsEmpty }).ToArray()
+                diagnostics = metadata.Diagnostics, items = metadata.Items
             };
         }
     }
@@ -277,6 +277,7 @@ public sealed partial class Studio : IDisposable
         {
             ObjectDisposedException.ThrowIf(disposed, this);
             session = next; liveEditor = new(next); activeBranch = null; branches.Clear(); mergePlans.Clear();
+            statePresentation = null; cadPresentation = null;
             viewVersion = checked(viewVersion + 1); liveLayout = "Model"; livePatternAlignment = CadLinetypeAlignment.Periodic; liveAnnotation = ModelAnnotationContext.Default; graph = null;
             liveRetained.Clear(); liveRetainedCompilers.Clear(); captureMilliseconds = timer.Elapsed.TotalMilliseconds;
             PublishChange();
@@ -310,7 +311,8 @@ public sealed partial class Studio : IDisposable
         lock (gate)
         {
             if (disposed) return;
-            disposed = true; CompleteSubscriptions(); activeBranch = null; branches.Clear(); mergePlans.Clear(); liveRetained.Clear(); liveRetainedCompilers.Clear(); renderer.Dispose(); assets.Dispose(); textEngine.Dispose();
+            disposed = true; CompleteSubscriptions(); activeBranch = null; branches.Clear(); mergePlans.Clear(); liveRetained.Clear(); liveRetainedCompilers.Clear();
+            statePresentation = null; cadPresentation = null; renderer.Dispose(); assets.Dispose(); textEngine.Dispose();
         }
     }
 }

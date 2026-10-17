@@ -90,6 +90,10 @@ def verify(url: str, executable: str | None = None):
             def idle():
                 expect(page.locator('#connection')).to_have_text('Local')
             def command(text: str, change=True):
+                # A server-side state read can observe a selection before its browser
+                # response has finished. Submit only after the client adopts that receipt.
+                idle()
+                expect(page.locator('#prompt')).to_have_text('Command:')
                 before = state()['state']['revision']
                 field = page.locator('#command-input')
                 field.fill(text)

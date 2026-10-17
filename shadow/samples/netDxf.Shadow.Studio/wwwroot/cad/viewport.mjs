@@ -1,6 +1,11 @@
 import { point, add, sub, distance, screen, world, zoom, fit, constrain, format } from './core.mjs';
 import { viewKey } from '../studio-state.mjs';
 
+/** A cached page resumes its live viewport, including its frame and resize observer. */
+export function bindViewportPageLifetime(viewport, target = globalThis) {
+  target.addEventListener('pagehide', event => { if (!event.persisted) viewport.dispose(); });
+}
+
 /** Presentation adapter only: native geometry and selection decisions stay in the shadow services. */
 export class CadViewport {
   constructor(element, canvas, client, hooks = {}) {
@@ -22,37 +27,67 @@ export class CadViewport {
   get inputActive() { return this.pointers.size > 0 || !!this.pickAbort && !this.pickAbort.signal.aborted; }
   local(e) { const r = this.element.getBoundingClientRect(); return point(e.clientX - r.left, e.clientY - r.top); }
   resize() {
-    const r = this.element.getBoundingClientRect(); this.size = { w: Math.max(1, r.width), h: Math.max(1, r.height) };
-    this.dpr = Math.max(.1, Math.min(devicePixelRatio || 1, 2, 4096 / this.size.w, 4096 / this.size.h));
+    const r = this.element.getBoundingClientRect(), size = { w: Math.max(1, r.width), h: Math.max(1, r.height) };
+    const dpr = Math.max(.1, Math.min(devicePixelRatio || 1, 2, 4096 / size.w, 4096 / size.h));
+    if (size.w === this.size.w && size.h === this.size.h && dpr === this.dpr &&
+        this.canvas.width === Math.max(1, Math.floor(size.w * dpr)) && this.canvas.height === Math.max(1, Math.floor(size.h * dpr))) return;
+    this.size = size; this.dpr = dpr;
     this.canvas.width = Math.max(1, Math.floor(this.size.w * this.dpr)); this.canvas.height = Math.max(1, Math.floor(this.size.h * this.dpr)); this.changed();
   }
   fit() { this.camera = fit(this.client.state?.bounds, this.size); this.changed(); }
   setData() {
     const s = this.client.state, identity = s ? `${this.client.id}:${s.serverId}:${s.documentId}:${s.workspaceId}` : '';
-    if (identity !== this.identity) { this.frame = null; this.graph = null; this.snapHit = null; this.identity = identity; }
+    if (identity !== this.identity) { this.clearFrame(); this.graph = null; this.snapHit = null; this.identity = identity; }
     this.changed();
   }
   changed() { this.invalidate(); this.hooks.camera?.(this.camera); this.requestFrame(); }
   invalidate() { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = 0; this.draw(); }); }
-  requestFrame() {
+  frameKey() {
+    return JSON.stringify([this.client.key, this.backend, this.snapshot, this.camera.x, this.camera.y,
+      this.camera.scale, this.size.w, this.size.h, this.canvas.width, this.canvas.height, this.dpr]);
+  }
+  clearFrame() { this.frame?.image.close?.(); this.frame = null; }
+  requestFrame(force = false) {
+    const key = this.client.state ? this.frameKey() : null;
+    // Coalesce identical work without aborting a slow frame. A changed mutation epoch
+    // still replaces an in-flight read; a completed frame has no read epoch to expire.
+    if (!force && key !== null && this.pendingFrame?.key === key && this.pendingFrame.epoch === this.client.epoch) return;
     clearTimeout(this.renderTimer); this.abort?.abort(); const generation = ++this.generation;
-    this.renderTimer = setTimeout(() => this.render(generation), 45);
+    this.pendingFrame = null;
+    if (key === null || !force && this.frame?.renderKey === key) return;
+    // Camera motion previews the existing full-quality frame. Rebuild once the captured
+    // pan/pinch ends instead of blocking pointer delivery with obsolete native renders.
+    if (!force && this.frame && (this.drag?.pan || this.pinch)) return;
+    this.pendingFrame = { key, epoch: this.client.epoch };
+    this.renderTimer = setTimeout(() => { this.renderTimer = 0; void this.render(generation); }, 45);
   }
   async render(generation) {
-    if (!this.client.state || this.client.busy || this.size.w < 2 || this.size.h < 2) return;
+    if (generation !== this.generation) return;
+    if (!this.client.state || this.client.busy || this.size.w < 2 || this.size.h < 2) { this.pendingFrame = null; return; }
     const stateKey = this.client.key, camera = { ...this.camera }, size = { ...this.size }, dpr = this.dpr;
+    const renderKey = this.frameKey(), width = this.canvas.width, height = this.canvas.height;
+    const pixels = this.backend === 'skia' && globalThis.shadowBrowser?.rasterFrames === true &&
+      typeof createImageBitmap === 'function' && typeof ImageData === 'function';
     const query = new URLSearchParams({ width: this.canvas.width, height: this.canvas.height, cx: camera.x, cy: camera.y,
       scale: camera.scale * dpr, backend: this.backend, revision: this.client.state.revision });
     if (this.snapshot !== null) query.set('snapshot', this.snapshot);
+    if (pixels) query.set('pixels', 'true');
     const abort = this.abort = new AbortController();
     try {
-      const blob = await this.client.read(`render?${query}`, { blob: true, signal: abort.signal });
-      if (!blob || generation !== this.generation) return;
-      const url = URL.createObjectURL(blob), image = new Image();
-      try { image.src = url; await image.decode(); } finally { URL.revokeObjectURL(url); }
-      if (generation !== this.generation || stateKey !== this.client.key) return;
-      this.frame = { image, camera, size, key: stateKey }; this.invalidate(); this.hooks.frame?.();
-    } catch (error) { if (error.name !== 'AbortError') this.hooks.error?.(error); }
+      const payload = await this.client.read(`render?${query}`, { blob: !pixels, buffer: pixels, signal: abort.signal });
+      if (!payload || generation !== this.generation) return;
+      let image;
+      if (pixels) {
+        if (payload.byteLength !== width * height * 4) throw new Error('The raster frame has an invalid pixel buffer.');
+        image = await createImageBitmap(new ImageData(new Uint8ClampedArray(payload), width, height), { colorSpaceConversion: 'none' });
+      } else {
+        const url = URL.createObjectURL(payload); image = new Image();
+        try { image.src = url; await image.decode(); } finally { URL.revokeObjectURL(url); }
+      }
+      if (generation !== this.generation || stateKey !== this.client.key) { image.close?.(); return; }
+      this.clearFrame(); this.frame = { image, camera, size, key: stateKey, renderKey }; this.invalidate(); this.hooks.frame?.();
+    } catch (error) { if (generation === this.generation && error.name !== 'AbortError') this.hooks.error?.(error); }
+    finally { if (generation === this.generation) this.pendingFrame = null; }
   }
   async snapped(p, anchor, force = false, excludeSelection = !!this.drag?.grip) {
     const constrained = constrain(p, anchor, this.settings);
@@ -78,11 +113,13 @@ export class CadViewport {
     finally { if (force && this.pickAbort === abort) this.pickAbort = null; }
   }
   cancelInput() {
+    const cameraActive = !!this.drag?.pan || !!this.pinch;
     this.inputVersion++; this.snapGeneration++;
     clearTimeout(this.snapTimer); this.snapAbort?.abort(); this.pickAbort?.abort();
     this.snapHit = null; this.drag = null; this.pinch = null;
     for (const id of this.pointers.keys()) if (this.element.hasPointerCapture(id)) this.element.releasePointerCapture(id);
     this.pointers.clear(); this.element.classList.remove('panning'); this.invalidate();
+    if (cameraActive) this.requestFrame();
   }
 
   down(e) {
@@ -131,7 +168,7 @@ export class CadViewport {
   }
   async up(e) {
     this.pointers.delete(e.pointerId);
-    if (this.pinch) { if (this.pointers.size < 2) this.pinch = null; this.drag = null; return; }
+    if (this.pinch) { if (this.pointers.size < 2) { this.pinch = null; this.changed(); } this.drag = null; return; }
     const drag = this.drag; if (!drag || drag.id !== e.pointerId) return;
     this.drag = null; this.element.classList.remove('panning');
     if (this.element.hasPointerCapture(e.pointerId)) this.element.releasePointerCapture(e.pointerId);
@@ -234,5 +271,5 @@ export class CadViewport {
     c.setLineDash([]);
     const q = screen(cursor, this.camera, this.size); c.fillStyle = '#a8c4dd'; c.font = '11px Consolas'; c.fillText(format(distance(p.at(-1), cursor)), q.x + 12, q.y + 19);
   }
-  dispose() { this.cancelInput(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
+  dispose() { this.cancelInput(); this.generation++; this.pendingFrame = null; this.clearFrame(); this.resizeObserver.disconnect(); this.abort?.abort(); this.snapAbort?.abort(); clearTimeout(this.renderTimer); clearTimeout(this.snapTimer); cancelAnimationFrame(this.raf); }
 }

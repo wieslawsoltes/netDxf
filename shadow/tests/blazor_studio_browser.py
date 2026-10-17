@@ -129,6 +129,32 @@ def verify(base, mount, browser, passed):
               return {length:bytes.length,magic:Array.from(bytes.slice(0,4)),text:new TextDecoder().decode(bytes.slice(0,200)),type:response.headers.get('Content-Type')};
             }''', {'path': f'/api/cad/{identifier}/render?width=800&height=600&cx=200&cy=80&scale=1&backend={backend}&revision={s["revision"]}', 'headers': headers(s)})
             check('native ' + backend + ' rendering and binary interop', image['length'] > 100 and (image['magic'] == magic if magic else '<svg' in image['text']))
+        pixels = page.evaluate('''async ({path,headers}) => {
+          const response=await fetch(path,{headers}); if(!response.ok)throw new Error(await response.text());
+          const url=URL.createObjectURL(await response.blob()), png=new Image();
+          try {png.src=url; await png.decode();} finally {URL.revokeObjectURL(url);}
+          const raw=await fetch(path+'&pixels=true',{headers}); if(!raw.ok)throw new Error(await raw.text());
+          const bytes=await raw.arrayBuffer(), width=800, height=600;
+          if(bytes.byteLength!==width*height*4)throw new Error('Invalid RGBA frame length.');
+          const bitmap=await createImageBitmap(new ImageData(new Uint8ClampedArray(bytes),width,height),{colorSpaceConversion:'none'});
+          try {
+            const read=image=>{
+              const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height;
+              const context=canvas.getContext('2d'); context.drawImage(image,0,0);
+              return context.getImageData(0,0,width,height).data;
+            };
+            const expected=read(png), actual=read(bitmap);
+            return {exact:expected.every((value,index)=>value===actual[index]),
+                    painted:expected.some((value,index)=>index%4===3 && value>0),
+                    type:raw.headers.get('Content-Type')};
+          } finally {bitmap.close();}
+        }''', {'path': f'/api/cad/{identifier}/render?width=800&height=600&cx=200&cy=80&scale=1&backend=skia&revision={s["revision"]}', 'headers': headers(s)})
+        check('local RGBA presentation exactly matches PNG pixels', pixels['exact'] and pixels['painted'] and pixels['type'] == 'application/x-shadow-rgba')
+        unchanged = page.evaluate('''async ({path,headers}) => {
+          const response=await fetch(path,{headers}); if(!response.ok)throw new Error(await response.text());
+          return await response.text();
+        }''', {'path': f'/api/cad/{identifier}/state?knownServer={s["serverId"]}&knownChange={s["changeVersion"]}', 'headers': headers(s)})
+        check('unchanged local state poll is a four-byte response', unchanged == 'null')
         bad = page.evaluate('''async ({path,headers,revision}) => {
           const response=await fetch(path,{method:'POST',headers:{...headers,'Content-Type':'application/json','X-Shadow-View':'999999'},body:JSON.stringify({revision})});
           return response.status;

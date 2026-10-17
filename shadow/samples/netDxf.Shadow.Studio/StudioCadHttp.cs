@@ -18,7 +18,9 @@ internal static class StudioCadHttp
         routes.MapGet("/documents", (StudioDocumentHub hub) => hub.Documents());
         routes.MapPost("/documents", (StudioDocumentHub hub, CadNewDocumentRequest request) => hub.Create(request));
         routes.MapPost("/{id}/close", (string id, StudioDocumentHub hub, HttpRequest http, CadCloseDocumentRequest request) => hub.Close(id, http, request));
-        routes.MapGet("/{id}/state", (string id, StudioDocumentHub hub) => hub.Use(id, s => s.CadState()));
+        routes.MapGet("/{id}/state", (string id, string? knownServer, long? knownChange, StudioDocumentHub hub) =>
+            hub.Use(id, s => s.CadStateIfChanged(knownServer, knownChange) is { } state
+                ? (IResult)Results.Json(state) : Results.Text("null", "application/json")));
         routes.MapPost("/{id}/command", (string id, StudioDocumentHub hub, HttpRequest http, CadCommandRequest request, CancellationToken token) =>
             hub.Use(id, s => StudioHttp.Execute(s, http, () => s.CadCommand(request, token))));
         routes.MapPost("/{id}/block/define", (string id, StudioDocumentHub hub, HttpRequest http, CadBlockDefinitionRequest request, CancellationToken token) =>

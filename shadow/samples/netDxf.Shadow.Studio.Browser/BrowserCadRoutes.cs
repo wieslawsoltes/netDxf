@@ -13,7 +13,7 @@ internal sealed partial class BrowserApplication
         Map("GET", "/api/cad/documents", _ => BrowserReply.Value(documents.Documents()));
         Map("POST", "/api/cad/documents", r => BrowserReply.Value(documents.Create(r.Body<CadNewDocumentRequest>())));
         Map("POST", "/api/cad/{id}/close", r => BrowserReply.Value(documents.Close(r.Parameter("id"), r.Identity(), r.Body<CadCloseDocumentRequest>())));
-        Map("GET", "/api/cad/{id}/state", r => documents.Use(r.Parameter("id"), s => BrowserReply.Value(s.CadState())));
+        Map("GET", "/api/cad/{id}/state", r => documents.Use(r.Parameter("id"), s => BrowserReply.Value(s.CadStateIfChanged(r.Optional("knownServer"), r.OptionalLong("knownChange")))));
         Cad("POST", "/api/cad/{id}/command", (s, r) => s.CadCommand(r.Body<CadCommandRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/define", (s, r) => s.CadDefineBlock(r.Body<CadBlockDefinitionRequest>(), Token));
         Cad("POST", "/api/cad/{id}/block/rename", (s, r) => s.CadRenameBlock(r.Body<CadBlockRenameRequest>()));
@@ -41,8 +41,13 @@ internal sealed partial class BrowserApplication
         Cad("GET", "/api/cad/{id}/graph", (s, _) => s.Graph(Token));
         Map("GET", "/api/cad/{id}/render", r => documents.Use(r.Parameter("id"), s => s.ExecuteRequest(r.Identity(), () =>
         {
-            var image = s.CadRender(r.Int("width"), r.Int("height"), r.Double("cx"), r.Double("cy"), r.Double("scale"),
-                r.Optional("backend") ?? "skia", r.Boolean("white"), r.Long("revision"), r.OptionalLong("snapshot"), Token);
+            var backend = r.Optional("backend") ?? "skia";
+            if (r.Boolean("pixels") && backend != "skia") throw new ArgumentException("Pixel frames require the Skia backend.");
+            var image = r.Boolean("pixels")
+                ? s.CadRenderPixels(r.Int("width"), r.Int("height"), r.Double("cx"), r.Double("cy"), r.Double("scale"),
+                    r.Boolean("white"), r.Long("revision"), r.OptionalLong("snapshot"), Token)
+                : s.CadRender(r.Int("width"), r.Int("height"), r.Double("cx"), r.Double("cy"), r.Double("scale"),
+                    backend, r.Boolean("white"), r.Long("revision"), r.OptionalLong("snapshot"), Token);
             return BrowserReply.Binary(image.Bytes, image.ContentType);
         })));
         Map("POST", "/api/cad/{id}/save", r =>

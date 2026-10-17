@@ -101,8 +101,9 @@ export class CadClient extends EventTarget {
     const id = this.id, epoch = this.epoch, generation = ++this.refreshGeneration;
     const current = () => generation === this.refreshGeneration && epoch === this.epoch && id === this.id && !this.busy;
     try {
-      const data = await (await this.request(this.url('state', id))).json();
-      if (current() && viewKey(data.state) !== viewKey(this.state)) this.adopt(data);
+      const query = new URLSearchParams({ knownServer: this.state.serverId, knownChange: this.state.changeVersion });
+      const data = await (await this.request(this.url(`state?${query}`, id))).json();
+      if (data !== null && current() && viewKey(data.state) !== viewKey(this.state)) this.adopt(data);
     } catch (error) {
       if (current()) throw error;
     }
@@ -128,12 +129,12 @@ export class CadClient extends EventTarget {
     this.tail = result.catch(() => {});
     return result.finally(() => { this.busy--; this.epoch++; this.emit('busy'); });
   }
-  async read(path, { body, signal, blob = false } = {}) {
+  async read(path, { body, signal, blob = false, buffer = false } = {}) {
     const key = this.key, generation = this.epoch, state = this.state, id = this.id;
     const current = () => generation === this.epoch && key === this.key && !this.busy;
     try {
       const response = await this.request(this.url(path, id), { body, signal, headers: identityHeaders(state) });
-      const result = blob ? await response.blob() : await response.json();
+      const result = buffer ? await response.arrayBuffer() : blob ? await response.blob() : await response.json();
       return current() ? result : null;
     } catch (error) {
       // Errors belong to the same receipt as successful reads. An obsolete render or

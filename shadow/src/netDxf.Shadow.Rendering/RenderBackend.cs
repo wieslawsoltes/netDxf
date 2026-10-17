@@ -31,6 +31,13 @@ public interface IRenderBackend : IDisposable
     RenderImage Render(RenderFrame frame, CancellationToken cancellationToken = default);
 }
 
+/// <summary>Optional lossless in-process raster transport. Pixels are tightly packed, straight-alpha
+/// RGBA8888 in viewport row order; their content type is application/x-shadow-rgba.</summary>
+public interface IRasterRenderBackend : IRenderBackend
+{
+    RenderImage RenderPixels(RenderFrame frame, CancellationToken cancellationToken = default);
+}
+
 /// <summary>Serializes rendering and backend replacement, so an in-flight backend is never disposed.</summary>
 public sealed class RenderHost : IDisposable
 {
@@ -59,6 +66,16 @@ public sealed class RenderHost : IDisposable
     {
         frame.Viewport.Validate();
         lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); return backend.Render(frame, cancellationToken); }
+    }
+    public RenderImage RenderPixels(RenderFrame frame, CancellationToken cancellationToken = default)
+    {
+        frame.Viewport.Validate();
+        lock (gate)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            return backend is IRasterRenderBackend raster ? raster.RenderPixels(frame, cancellationToken)
+                : throw new NotSupportedException("The active backend does not provide raster pixels.");
+        }
     }
     public void Dispose() { lock (gate) { if (disposed) return; disposed = true; backend.Dispose(); } }
 }
