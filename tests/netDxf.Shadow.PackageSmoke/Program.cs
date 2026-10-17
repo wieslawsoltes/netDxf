@@ -18,6 +18,7 @@ using netDxf.Shadow.NetDxf;
 using netDxf.Shadow.Rendering;
 using netDxf.Shadow.Rendering.Shx;
 using netDxf.Shadow.Rendering.SkiaSharp;
+using Viewport = netDxf.Shadow.Rendering.Viewport;
 
 internal static class Program
 {
