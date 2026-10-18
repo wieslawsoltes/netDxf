@@ -13,6 +13,8 @@
     <NotoFontSource>https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac</NotoFontSource>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/netDxf.Shadow.Agents/netDxf.Shadow.Agents.csproj" />
+    <ProjectReference Include="../../src/netDxf.Shadow.Mcp/netDxf.Shadow.Mcp.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.119.4" />
@@ -27,7 +29,7 @@
     <ProjectReference Include="../../src/netDxf.Shadow.Rendering.Shx/netDxf.Shadow.Rendering.Shx.csproj" />
     <!-- The browser compiles the actual Studio services, not a second implementation. -->
     <Compile Include="../netDxf.Shadow.Studio/*.cs"
-             Exclude="../netDxf.Shadow.Studio/Program.cs;../netDxf.Shadow.Studio/StudioHttp.cs;../netDxf.Shadow.Studio/StudioCadHttp.cs;../netDxf.Shadow.Studio/StudioDocumentHub.Http.cs"
+             Exclude="../netDxf.Shadow.Studio/Program.cs;../netDxf.Shadow.Studio/StudioHttp.cs;../netDxf.Shadow.Studio/StudioCadHttp.cs;../netDxf.Shadow.Studio/StudioDocumentHub.Http.cs;../netDxf.Shadow.Studio/StudioAgentHttp.cs"
              Link="Shared/%(Filename)%(Extension)" />
     <Content Include="../netDxf.Shadow.Studio/wwwroot/**/*"
              Exclude="../netDxf.Shadow.Studio/wwwroot/index.html;../netDxf.Shadow.Studio/wwwroot/diagnostics.html"

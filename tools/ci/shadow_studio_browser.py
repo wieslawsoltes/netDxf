@@ -39,7 +39,9 @@ def source_contract():
 def prepare(published: Path):
     required = ('index.html', 'diagnostics.html', 'studio-shell.html', 'diagnostics-shell.html',
                 'browser-main.mjs', 'browser-transport.mjs', '_framework/blazor.webassembly.js',
-                'cad/app.mjs', 'cad/client.mjs', 'cad/cad.css', 'studio.js', 'studio.css', 'DWG-NOTICES.txt')
+                'cad/app.mjs', 'cad/client.mjs', 'cad/cad.css', 'studio.js', 'studio.css', 'DWG-NOTICES.txt',
+                'agents/workspace.mjs', 'agents/client.mjs', 'agents/contracts.mjs', 'agents/render.mjs',
+                'agents/studio-control.mjs', 'agents/mcp-bridge.mjs', 'agents/agents.css')
     for relative in required:
         if not (published / relative).is_file():
             raise ValueError(f'Missing browser publish asset: {relative}')

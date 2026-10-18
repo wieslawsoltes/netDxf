@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using netDxf;
 using netDxf.Entities;
 using netDxf.Shadow;
+using netDxf.Shadow.Agents;
+using netDxf.Shadow.Mcp;
 using netDxf.Shadow.Dimensions;
 using netDxf.Shadow.Drafting;
 using netDxf.Shadow.Editor;
@@ -35,7 +37,9 @@ internal static class Program
                 ("shx-program", Shx),
                 ("vector-render", Svg),
                 ("native-text-raster", NativeRendering),
-                ("dwg-exchange", Dwg)
+                ("dwg-exchange", Dwg),
+                ("mcp-tools", Mcp),
+                ("agent-workspace", Agents)
             ];
             foreach (var scenario in scenarios)
             {
@@ -46,7 +50,8 @@ internal static class Program
             [
                 typeof(DxfDocument), typeof(ShadowSnapshot), typeof(ShadowSession), typeof(CadSceneBuilder),
                 typeof(RenderCompiler), typeof(TopologyBuilder), typeof(EditorSession), typeof(DimensionEntityProjector),
-                typeof(DraftingPlanner), typeof(ShxFontReader), typeof(SkiaRenderBackend), typeof(DrawingExchange)
+                typeof(DraftingPlanner), typeof(ShxFontReader), typeof(SkiaRenderBackend), typeof(DrawingExchange),
+                typeof(McpToolRegistry), typeof(AgentSession)
             ];
             var assemblies = entryPoints.Select(type =>
             {
@@ -63,7 +68,7 @@ internal static class Program
                     informational_version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
                 };
             }).ToArray();
-            Require(assemblies.Select(value => value.id).Distinct().Count() == 12, "Missing package assembly.");
+            Require(assemblies.Select(value => value.id).Distinct().Count() == 14, "Missing package assembly.");
             var receipt = new
             {
                 schema = 1, passed = true,
@@ -88,6 +93,27 @@ internal static class Program
 
     private static string RequiredEnvironment(string name) => Environment.GetEnvironmentVariable(name)
         is { Length: > 0 } value ? value : throw new InvalidOperationException($"Missing {name}.");
+    private static void Mcp()
+    {
+        var fixture = Fixture(); var editor = new EditorSession(fixture.Session);
+        var tools = new McpToolRegistry(); ShadowMcpTools.Register(tools, new(() => editor, () => fixture.Session));
+        var result = tools.ExecuteAsync("shadow_state", McpJson.EmptyObject).AsTask().GetAwaiter().GetResult();
+        Require(!result.IsError && result.Text.Contains(fixture.Session.Current.DocumentId.ToString(), StringComparison.Ordinal), "Installed MCP could not inspect the native source snapshot.");
+        Require(ShadowMcpServer.CreateOptions(tools).Handlers.CallToolHandler is not null, "Official MCP handlers were not available.");
+    }
+    private static void Agents()
+    {
+        var workspace = new MemoryAgentWorkspace(); var registry = new McpToolRegistry();
+        AgentWorkspaceTools.Register(registry, workspace);
+        workspace.Write("src/example.cs", "public class Example { }", 0);
+        // Construct the real SDK adapter without making an inference request or requiring an account.
+        var client = ShadowAgentProviders.Create(new() { Provider = "openai", ApiKey = "package-smoke-not-a-real-key", Model = "test-model" });
+        using var agent = new AgentSession(client, registry, new() { PermissionMode = AgentPermissionMode.ReadOnly }, workspace);
+        var result = agent.ExecuteToolAsync("workspace_read", McpJson.Parse("""{"path":"src/example.cs"}""")).GetAwaiter().GetResult();
+        Require(!result.IsError && result.Text.Contains("class Example", StringComparison.Ordinal), "Installed harness could not execute a workspace tool.");
+        var checkpoint = agent.Export(); agent.Import(checkpoint);
+        Require(agent.Workspace.Read("src/example.cs").Content == "public class Example { }", "Installed agent checkpoint lost the source file.");
+    }
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);

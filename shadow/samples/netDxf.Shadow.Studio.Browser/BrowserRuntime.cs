@@ -8,10 +8,10 @@ using global::SkiaSharp;
 namespace netDxf.Shadow.Studio.Browser;
 
 /// <summary>Only the transport crosses JS interop. Drawing objects never leave .NET.</summary>
-public static class BrowserRuntime
+public static partial class BrowserRuntime
 {
     private static BrowserApplication? application;
-    internal static void Initialize(BrowserApplication value) => application = value;
+    internal static void Initialize(BrowserApplication value, IJSRuntime javascript) { application = value; value.InitializeAgents(javascript); }
     private static BrowserApplication App => application ?? throw new InvalidOperationException("The browser engine is not initialized.");
     [JSInvokable] public static BrowserReply Dispatch(BrowserRequest request, byte[]? upload) => App.Dispatch(request, upload);
     [JSInvokable] public static string Subscribe(string? lastEventId) => App.Subscribe(lastEventId);
@@ -134,7 +134,9 @@ internal sealed partial class BrowserApplication : IDisposable
         if (disposed) return;
         disposed = true;
         foreach (var subscription in subscriptions.Values) subscription.Dispose();
-        subscriptions.Clear(); documents.Dispose(); studio.Dispose();
+        subscriptions.Clear(); agents?.Cancel();
+        if (agents is not null) _ = agents.DisposeAsync();
+        documents.Dispose(); studio.Dispose();
     }
     private void Map(string method, string pattern, Func<Request, BrowserReply> action) =>
         routes.Add(new(method, pattern, pattern.Split('/', StringSplitOptions.RemoveEmptyEntries), action));

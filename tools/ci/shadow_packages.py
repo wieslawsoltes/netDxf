@@ -18,7 +18,7 @@ import pipeline
 RECEIPT = 'shadow-smoke.json'
 LOG = 'shadow-smoke.log'
 SCENARIOS = ('capture-sync', 'geometry-topology', 'editor-drafting', 'dimension-projection',
-             'shx-program', 'vector-render', 'native-text-raster', 'dwg-exchange')
+             'shx-program', 'vector-render', 'native-text-raster', 'dwg-exchange', 'mcp-tools', 'agent-workspace')
 FIELDS = {'schema', 'passed', 'version', 'commit', 'tree', 'host', 'runtime_version',
           'scenarios', 'assemblies', 'packages', 'log_sha256'}
 

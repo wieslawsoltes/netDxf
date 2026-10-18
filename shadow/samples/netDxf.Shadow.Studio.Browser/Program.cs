@@ -12,7 +12,7 @@ var javascript = host.Services.GetRequiredService<IJSRuntime>();
 try
 {
     using var http = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-    BrowserRuntime.Initialize(await BrowserApplication.CreateAsync(http));
+    BrowserRuntime.Initialize(await BrowserApplication.CreateAsync(http), javascript);
     // Notify JS from the loaded application, rather than invoking an assembly that
     // Blazor.start may not have loaded yet. Font initialization is included in this fence.
     await javascript.InvokeVoidAsync("shadowBrowserBoot.complete");
